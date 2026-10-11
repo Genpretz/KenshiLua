@@ -21,7 +21,7 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (528)
+## 1. Notification Callbacks (663)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -82,8 +82,6 @@ Events.off(handlerId)
 | `InventoryGUI::addTradePartner` | `function(self: InventoryGUI, payment: boolean, canDrop: boolean, isPlayer: boolean, whoHand: hand)` |
 | `BuildModeWindow::confirm` | `function(self: BuildModeWindow, widget: Widget)` |
 | `SquadManagementScreen::removeSquad` | `function(self: SquadManagementScreen, squadData: lightuserdata)` |
-| `ManagementScreen::addMessage` | `function(self: ManagementScreen, owner: string, message: string, logColor: integer)` |
-| `TitleScreen::loadGame` | `function(self: TitleScreen, widget: Widget)` |
 | `Character::addGoal` | `function(self: Character, taskType: integer, subject: RootObject)` |
 | `Character::addJob` | `function(self: Character, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
 | `Character::addOrder` | `function(self: Character, destBuilding: Building, taskType: integer, subject: RootObject, shift: boolean, clear: boolean, location: Vector3)` |
@@ -110,14 +108,6 @@ Events.off(handlerId)
 | `Building::_NV_buyMeCallback` | `function(self: Building, result: integer)` |
 | `DataPanelLine_Button::pressCallback` | `function(self: DataPanelLine_Button, sender: Widget)` |
 | `InventoryGUI::fencingConfirmationCallback` | `function(self: InventoryGUI, b: integer)` |
-| `OrdersPanel::blockmodeButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::holdButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::passiveButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::chaseButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::tauntButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
 | `ContextMenu::showContextMenu` | `function(self: ContextMenu, on: boolean, what: RootObject)` |
 | `ContextMenuGUI::show` | `function(self: ContextMenuGUI, ordersList: lektor<integer>, name: string, offset: boolean)` |
 | `Inventory::_NV__sectionAddItemCallback` | `function(self: Inventory, item: Item)` |
@@ -553,8 +543,153 @@ Events.off(handlerId)
 | `SplashScreen::update` | `function(self: SplashScreen)` |
 | `SplashScreen::skip` | `function(self: SplashScreen)` |
 | `SplashScreen::addLogo` | `function(self: SplashScreen, file: string, scale: number)` |
+| `OrderCellView::_CONSTRUCTOR` | `function(self: OrderCellView, parent: Widget)` |
+| `OrderCellView::_DESTRUCTOR` | `function(self: OrderCellView)` |
+| `OrderCellView::update` | `function(self: OrderCellView, info: lightuserdata, data: OrderData)` |
+| `OrderCellView::getCellDimension` | `function(sender: Widget, coord: IntCoord, drop: boolean)` |
+| `OrderCellView::getWidget` | `function(self: OrderCellView, result: Widget)` |
+| `OrderCellView::onRemove` | `function(self: OrderCellView, sender: Widget)` |
+| `OrderCellView::resize` | `function(self: OrderCellView)` |
+| `OrderData::_CONSTRUCTOR` | `function(self: OrderData)` |
+| `OrderData::set` | `function(self: OrderData, task: Tasker, index: integer, enabled: boolean)` |
+| `OrderData::updateText` | `function(self: OrderData)` |
+| `OrderData::_DESTRUCTOR` | `function(self: OrderData)` |
+| `OrderData::operator=` | `function(self: OrderData, other: OrderData, result: OrderData)` |
+| `OrdersItemBox::_CONSTRUCTOR` | `function(self: OrdersItemBox, parent: Widget)` |
+| `OrdersItemBox::_DESTRUCTOR` | `function(self: OrdersItemBox)` |
+| `OrdersPanel::_CONSTRUCTOR` | `function(self: OrdersPanel, mainbar: MainBarGUI, panel: Widget)` |
+| `OrdersPanel::_DESTRUCTOR` | `function(self: OrdersPanel)` |
+| `OrdersPanel::update` | `function(self: OrdersPanel, character: Character)` |
+| `OrdersPanel::clear` | `function(self: OrdersPanel)` |
+| `OrdersPanel::command` | `function(self: OrdersPanel, command: integer)` |
+| `OrdersPanel::refreshOrders` | `function(self: OrdersPanel)` |
+| `OrdersPanel::moveJob` | `function(self: OrdersPanel, orderIndex: integer, targetIndex: integer)` |
+| `OrdersPanel::removeJob` | `function(self: OrdersPanel, data: OrderData)` |
+| `OrdersPanel::notifyEndDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, result: boolean)` |
+| `OrdersPanel::toggleStealth` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::toggleRanged` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::setSpeed` | `function(self: OrdersPanel, speed: integer)` |
+| `OrdersPanel::setSpeedImage` | `function(self: OrdersPanel, speed: integer)` |
+| `OrdersPanel::speedPrevious` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::speedNext` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::blockmodeButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::holdButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::passiveButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::chaseButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::tauntButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OptionsWindow::_NV_show` | `function(self: OptionsWindow, value: boolean)` |
+| `OptionsWindow::show` | `function(self: OptionsWindow)` |
+| `OptionsWindow::hide` | `function(self: OptionsWindow)` |
+| `OptionsWindow::toggle` | `function(self: OptionsWindow)` |
+| `OptionsWindow::setKey` | `function(self: OptionsWindow, code: integer)` |
+| `OptionsWindow::_NV_update` | `function(self: OptionsWindow)` |
+| `OptionsWindow::_CONSTRUCTOR` | `function(self: OptionsWindow)` |
+| `OptionsWindow::_DESTRUCTOR` | `function(self: OptionsWindow)` |
+| `OptionsWindow::saveLocationChanged` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeFontSize` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeVolume` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleNames` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::resetTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeDistances` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleCompositor` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::resetAllKeys` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::saveOptions` | `function(self: OptionsWindow)` |
+| `OptionsWindow::create` | `function(self: OptionsWindow)` |
+| `OptionsWindow::updateResolutions` | `function(self: OptionsWindow)` |
+| `OptionsWindow::closeButton` | `function(self: OptionsWindow, sender: Widget)` |
+| `MapScreen::MapMarkerTown::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerTown, town: TownBase, mapScreen: MapScreen)` |
+| `MapScreen::MapMarkerTown::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerTown)` |
+| `MapScreen::MapMarkerTown::update` | `function(self: MapScreen::MapMarkerTown, mapPosition: IntPoint, zoom: integer)` |
+| `MapScreen::MapMarkerTown::setVisible` | `function(self: MapScreen::MapMarkerTown, value: boolean)` |
+| `MapScreen::MapMarkerCharacter::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter, character: RootObjectBase, mapScreen: MapScreen)` |
+| `MapScreen::MapMarkerCharacter::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter)` |
+| `MapScreen::MapMarkerCharacter::update` | `function(self: MapScreen::MapMarkerCharacter, mapPosition: IntPoint)` |
+| `MapScreen::MapMarkerCharacter::setVisible` | `function(self: MapScreen::MapMarkerCharacter, value: boolean)` |
+| `MapScreen::_CONSTRUCTOR` | `function(self: MapScreen, screen: ManagementScreen)` |
+| `MapScreen::_DESTRUCTOR` | `function(self: MapScreen)` |
+| `MapScreen::clear` | `function(self: MapScreen)` |
+| `MapScreen::centerCamera` | `function(self: MapScreen)` |
+| `MapScreen::clearTempMarkers` | `function(self: MapScreen)` |
+| `MapScreen::refresh` | `function(self: MapScreen)` |
+| `MapScreen::update` | `function(self: MapScreen)` |
+| `MapScreen::addSquad` | `function(self: MapScreen, squad: Platoon)` |
+| `MapScreen::removeSquad` | `function(self: MapScreen, squad: Platoon)` |
+| `MapScreen::hide` | `function(self: MapScreen)` |
+| `MapScreen::setMovementMarker` | `function(self: MapScreen, position: Vector3, time: number)` |
+| `MapScreen::showRoads` | `function(self: MapScreen, on: boolean)` |
+| `MapScreen::updatePlayerTownMapMarker` | `function(self: MapScreen, town: hand)` |
+| `MapScreen::updateZoom` | `function(self: MapScreen)` |
+| `MapScreen::updateCameraMarker` | `function(self: MapScreen)` |
+| `MapScreen::refreshTowns` | `function(self: MapScreen)` |
+| `MapScreen::refreshSquads` | `function(self: MapScreen)` |
+| `MapScreen::updateCharacterMarker` | `function(self: MapScreen, object: RootObjectBase)` |
+| `MapScreen::worldToMapCoords` | `function(self: MapScreen, position: Vector3, result: IntPoint)` |
+| `MapScreen::mapCoordsToWorld` | `function(self: MapScreen, point: IntPoint, result: Vector3)` |
+| `MapScreen::mapMouseWheel` | `function(self: MapScreen, sender: Widget, rel: integer)` |
+| `MapScreen::mapMousePressed` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MapScreen::mapMouseReleased` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MapScreen::setupRoads` | `function(self: MapScreen)` |
+| `MapScreen::updateRoads` | `function(self: MapScreen)` |
+| `MapScreen::centerButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::zoomInButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::zoomOutButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::getMarkerColor` | `function(who: RootObjectBase, result: Colour)` |
+| `ManagementScreen::_DESTRUCTOR` | `function(self: ManagementScreen)` |
+| `ManagementScreen::update` | `function(self: ManagementScreen)` |
+| `ManagementScreen::clear` | `function(self: ManagementScreen)` |
+| `ManagementScreen::setVisible` | `function(self: ManagementScreen, on: boolean, tab: integer)` |
+| `ManagementScreen::closeEverythingButton` | `function(self: ManagementScreen, widget: Widget, name: string)` |
+| `ManagementScreen::tabCallback` | `function(self: ManagementScreen, sender: Widget, index: number)` |
+| `ManagementScreen::getTab` | `function(self: ManagementScreen, index: integer, result: Widget)` |
+| `ManagementScreen::getWidget` | `function(self: ManagementScreen, name: string, result: Widget)` |
+| `ManagementScreen::refresh` | `function(self: ManagementScreen, current: GameData, progress: number)` |
+| `ManagementScreen::refreshResearchList` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshResearchRate` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshDiplomacy` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshSquads` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshMap` | `function(self: ManagementScreen, centerCamera: boolean)` |
+| `ManagementScreen::showRoads` | `function(self: ManagementScreen, value: boolean)` |
+| `ManagementScreen::addSquadToMap` | `function(self: ManagementScreen, squad: Platoon)` |
+| `ManagementScreen::removeSquadFromMap` | `function(self: ManagementScreen, squad: Platoon)` |
+| `ManagementScreen::addMessage` | `function(self: ManagementScreen, owner: string, message: string, logColor: integer)` |
+| `ManagementScreen::resetSquads` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshMessages` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshAI` | `function(self: ManagementScreen)` |
+| `ManagementScreen::setCraftingBench` | `function(self: ManagementScreen, buildingHandle: hand)` |
+| `ManagementScreen::printResearch` | `function(panel: DatapanelGUI, data: GameData, listName: string, displayName: string, category: integer)` |
+| `ManagementScreen::showDebugMarker` | `function(self: ManagementScreen, position: Vector3)` |
+| `ManagementScreen::_CONSTRUCTOR` | `function(self: ManagementScreen)` |
+| `ManagementScreen::updateResearchListRate` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshResearchListDescription` | `function(self: ManagementScreen)` |
+| `ManagementScreen::researchTypeSelect` | `function(self: ManagementScreen, sender: Widget, index: number)` |
+| `ManagementScreen::addButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `ManagementScreen::removeButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `ManagementScreen::mouseOverCallback` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer)` |
+| `ManagementScreen::TechItemViewData::getName` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
+| `ManagementScreen::TechItemViewData::getValue` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
+| `ManagementScreen::TechItemViewData::setItem` | `function(self: ManagementScreen::TechItemViewData, item: lightuserdata)` |
+| `ManagementScreen::TechItemViewData::_DESTRUCTOR` | `function(self: ManagementScreen::TechItemViewData)` |
+| `ManagementScreen::researchQueueTooltip` | `function(self: ManagementScreen, layout: BaseLayout, info: lightuserdata, data: ManagementScreen::TechItemViewData)` |
+| `ManagementScreen::researchRemoved` | `function(self: ManagementScreen, index: integer, item: ManagementScreen::TechItemViewData)` |
+| `TitleScreen::_CONSTRUCTOR` | `function(self: TitleScreen)` |
+| `TitleScreen::_DESTRUCTOR` | `function(self: TitleScreen)` |
+| `TitleScreen::_NV_clear` | `function(self: TitleScreen)` |
+| `TitleScreen::_NV_show` | `function(self: TitleScreen, on: boolean)` |
+| `TitleScreen::_NV_update` | `function(self: TitleScreen)` |
+| `TitleScreen::loadGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::importGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::showOptions` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::credits` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::exitGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::continueGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::hover` | `function(self: TitleScreen, sender: Widget, other: Widget)` |
+| `TitleScreen::setCreditsVisible` | `function(self: TitleScreen, value: boolean)` |
 
-## 2. Override Callbacks (196)
+## 2. Override Callbacks (212)
 
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
@@ -754,6 +889,22 @@ Events.off(handlerId)
 | `DialogueWindow::getTop` | `function(self: DialogueWindow, defaultVal: integer) -> integer` |
 | `SplashScreen::getState` | `function(self: SplashScreen, defaultVal: integer) -> integer` |
 | `SplashScreen::getEnded` | `function(self: SplashScreen, defaultVal: boolean) -> boolean` |
+| `OrdersPanel::notifyStartDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
+| `OrdersPanel::notifyRequestDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
+| `OptionsWindow::getSingleton` | `function(defaultVal: OptionsWindow) -> OptionsWindow` |
+| `OptionsWindow::isVisible` | `function(self: OptionsWindow, defaultVal: boolean) -> boolean` |
+| `OptionsWindow::waitingForKey` | `function(self: OptionsWindow, defaultVal: boolean) -> boolean` |
+| `MapScreen::MapMarkerTown::getVisible` | `function(self: MapScreen::MapMarkerTown, defaultVal: boolean) -> boolean` |
+| `MapScreen::MapMarkerCharacter::getVisible` | `function(self: MapScreen::MapMarkerCharacter, defaultVal: boolean) -> boolean` |
+| `MapScreen::getVisible` | `function(self: MapScreen, defaultVal: boolean) -> boolean` |
+| `MapScreen::getMouseWorldPosition` | `function(self: MapScreen, position: Vector3, defaultVal: boolean) -> boolean` |
+| `ManagementScreen::getSingleton` | `function(defaultVal: ManagementScreen) -> ManagementScreen` |
+| `ManagementScreen::getVisible` | `function(self: ManagementScreen, defaultVal: boolean) -> boolean` |
+| `ManagementScreen::getCurrentTab` | `function(self: ManagementScreen, defaultVal: number) -> number` |
+| `ManagementScreen::TechItemViewData::getProgress` | `function(self: ManagementScreen::TechItemViewData, defaultVal: number) -> number` |
+| `ManagementScreen::researchValidateOrder` | `function(self: ManagementScreen, first: integer, second: integer, defaultVal: boolean) -> boolean` |
+| `TitleScreen::getSingleton` | `function(defaultVal: TitleScreen) -> TitleScreen` |
+| `TitleScreen::closeTheOtherBits` | `function(self: TitleScreen, defaultVal: boolean) -> boolean` |
 
 ## Detailed Callback Documentation
 
@@ -6802,6 +6953,71 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `MainTabPortraitPlatoon`
 
+### `ManagementScreen::TechItemViewData::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+
+### `ManagementScreen::TechItemViewData::getName`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `result`: `string`
+
+### `ManagementScreen::TechItemViewData::getProgress`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `ManagementScreen::TechItemViewData::getValue`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `result`: `string`
+
+### `ManagementScreen::TechItemViewData::setItem`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, item)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `item`: `lightuserdata`
+
+### `ManagementScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::addButtonPress`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
 ### `ManagementScreen::addMessage`
 
 - **Category**: Notification / Observer
@@ -6811,6 +7027,613 @@ Events.off(handlerId)
   - `owner`: `string`
   - `message`: `string`
   - `logColor`: `integer`
+
+### `ManagementScreen::addSquadToMap`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `squad`: `Platoon`
+
+### `ManagementScreen::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::closeEverythingButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget, name)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `widget`: `Widget`
+  - `name`: `string`
+
+### `ManagementScreen::getCurrentTab`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `ManagementScreen::getSingleton`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `ManagementScreen`
+- **Returns**: `ManagementScreen`
+
+### `ManagementScreen::getTab`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, index, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `index`: `integer`
+  - `result`: `Widget`
+
+### `ManagementScreen::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ManagementScreen::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `ManagementScreen::mouseOverCallback`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+
+### `ManagementScreen::printResearch`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(panel, data, listName, displayName, category)`
+- **Parameters**:
+  - `panel`: `DatapanelGUI`
+  - `data`: `GameData`
+  - `listName`: `string`
+  - `displayName`: `string`
+  - `category`: `integer`
+
+### `ManagementScreen::refresh`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, current, progress)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `current`: `GameData`
+  - `progress`: `number`
+
+### `ManagementScreen::refreshAI`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshDiplomacy`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshMap`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, centerCamera)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `centerCamera`: `boolean`
+
+### `ManagementScreen::refreshMessages`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshResearchList`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshResearchListDescription`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshResearchRate`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshSquads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::removeButtonPress`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `ManagementScreen::removeSquadFromMap`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `squad`: `Platoon`
+
+### `ManagementScreen::researchQueueTooltip`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, layout, info, data)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `layout`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `data`: `ManagementScreen::TechItemViewData`
+
+### `ManagementScreen::researchRemoved`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, index, item)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `index`: `integer`
+  - `item`: `ManagementScreen::TechItemViewData`
+
+### `ManagementScreen::researchTypeSelect`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `ManagementScreen::researchValidateOrder`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, first, second, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `first`: `integer`
+  - `second`: `integer`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ManagementScreen::resetSquads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::setCraftingBench`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, buildingHandle)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `buildingHandle`: `hand`
+
+### `ManagementScreen::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on, tab)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `on`: `boolean`
+  - `tab`: `integer`
+
+### `ManagementScreen::showDebugMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `position`: `Vector3`
+
+### `ManagementScreen::showRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `value`: `boolean`
+
+### `ManagementScreen::tabCallback`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `ManagementScreen::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::updateResearchListRate`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `MapScreen::MapMarkerCharacter::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character, mapScreen)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `character`: `RootObjectBase`
+  - `mapScreen`: `MapScreen`
+
+### `MapScreen::MapMarkerCharacter::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+
+### `MapScreen::MapMarkerCharacter::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::MapMarkerCharacter::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `value`: `boolean`
+
+### `MapScreen::MapMarkerCharacter::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mapPosition)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `mapPosition`: `IntPoint`
+
+### `MapScreen::MapMarkerTown::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, town, mapScreen)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `town`: `TownBase`
+  - `mapScreen`: `MapScreen`
+
+### `MapScreen::MapMarkerTown::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+
+### `MapScreen::MapMarkerTown::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::MapMarkerTown::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `value`: `boolean`
+
+### `MapScreen::MapMarkerTown::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mapPosition, zoom)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `mapPosition`: `IntPoint`
+  - `zoom`: `integer`
+
+### `MapScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, screen)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `screen`: `ManagementScreen`
+
+### `MapScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::addSquad`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `squad`: `Platoon`
+
+### `MapScreen::centerButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+
+### `MapScreen::centerCamera`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::clearTempMarkers`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::getMarkerColor`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(who, result)`
+- **Parameters**:
+  - `who`: `RootObjectBase`
+  - `result`: `Colour`
+
+### `MapScreen::getMouseWorldPosition`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, position, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `position`: `Vector3`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::hide`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::mapCoordsToWorld`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, point, result)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `point`: `IntPoint`
+  - `result`: `Vector3`
+
+### `MapScreen::mapMousePressed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `MapScreen::mapMouseReleased`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `MapScreen::mapMouseWheel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, rel)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+  - `rel`: `integer`
+
+### `MapScreen::refresh`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::refreshSquads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::refreshTowns`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::removeSquad`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `squad`: `Platoon`
+
+### `MapScreen::setMovementMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position, time)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `position`: `Vector3`
+  - `time`: `number`
+
+### `MapScreen::setupRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::showRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `on`: `boolean`
+
+### `MapScreen::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::updateCameraMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::updateCharacterMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, object)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `object`: `RootObjectBase`
+
+### `MapScreen::updatePlayerTownMapMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, town)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `town`: `hand`
+
+### `MapScreen::updateRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::updateZoom`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::worldToMapCoords`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position, result)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `position`: `Vector3`
+  - `result`: `IntPoint`
+
+### `MapScreen::zoomInButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+
+### `MapScreen::zoomOutButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
 
 ### `MedicalSystem::_CONSTRUCTOR`
 
@@ -6919,6 +7742,318 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `NewGameOptionsWindow`
 
+### `OptionsWindow::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `value`: `boolean`
+
+### `OptionsWindow::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::changeDistances`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::changeFontSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::changeVolume`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::closeButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `sender`: `Widget`
+
+### `OptionsWindow::create`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::getSingleton`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `OptionsWindow`
+- **Returns**: `OptionsWindow`
+
+### `OptionsWindow::hide`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::isVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `OptionsWindow::resetAllKeys`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::resetTutorials`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::saveLocationChanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::saveOptions`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::setKey`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, code)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `code`: `integer`
+
+### `OptionsWindow::show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::toggle`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::toggleCompositor`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::toggleNames`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::toggleTutorials`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::updateResolutions`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::waitingForKey`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `OrderCellView::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, parent)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `parent`: `Widget`
+
+### `OrderCellView::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+
+### `OrderCellView::getCellDimension`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(sender, coord, drop)`
+- **Parameters**:
+  - `sender`: `Widget`
+  - `coord`: `IntCoord`
+  - `drop`: `boolean`
+
+### `OrderCellView::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `result`: `Widget`
+
+### `OrderCellView::onRemove`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `sender`: `Widget`
+
+### `OrderCellView::resize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+
+### `OrderCellView::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, info, data)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `info`: `lightuserdata`
+  - `data`: `OrderData`
+
+### `OrderData::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderData`
+
+### `OrderData::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderData`
+
+### `OrderData::operator=`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, other, result)`
+- **Parameters**:
+  - `self`: `OrderData`
+  - `other`: `OrderData`
+  - `result`: `OrderData`
+
+### `OrderData::set`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, task, index, enabled)`
+- **Parameters**:
+  - `self`: `OrderData`
+  - `task`: `Tasker`
+  - `index`: `integer`
+  - `enabled`: `boolean`
+
+### `OrderData::updateText`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderData`
+
+### `OrdersItemBox::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, parent)`
+- **Parameters**:
+  - `self`: `OrdersItemBox`
+  - `parent`: `Widget`
+
+### `OrdersItemBox::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersItemBox`
+
+### `OrdersPanel::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mainbar, panel)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `mainbar`: `MainBarGUI`
+  - `panel`: `Widget`
+
+### `OrdersPanel::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+
 ### `OrdersPanel::blockmodeButton`
 
 - **Category**: Notification / Observer
@@ -6934,6 +8069,21 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
+
+### `OrdersPanel::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+
+### `OrdersPanel::command`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, command)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `command`: `integer`
 
 ### `OrdersPanel::holdButtonCallback`
 
@@ -6959,6 +8109,47 @@ Events.off(handlerId)
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
+### `OrdersPanel::moveJob`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, orderIndex, targetIndex)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `orderIndex`: `integer`
+  - `targetIndex`: `integer`
+
+### `OrdersPanel::notifyEndDropOrder`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, info, result)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `result`: `boolean`
+
+### `OrdersPanel::notifyRequestDropOrder`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sender, info, defaultVal)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `OrdersPanel::notifyStartDropOrder`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sender, info, defaultVal)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
 ### `OrdersPanel::passiveButtonCallback`
 
 - **Category**: Notification / Observer
@@ -6975,6 +8166,53 @@ Events.off(handlerId)
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
+### `OrdersPanel::refreshOrders`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+
+### `OrdersPanel::removeJob`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `data`: `OrderData`
+
+### `OrdersPanel::setSpeed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, speed)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `speed`: `integer`
+
+### `OrdersPanel::setSpeedImage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, speed)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `speed`: `integer`
+
+### `OrdersPanel::speedNext`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
+### `OrdersPanel::speedPrevious`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
 ### `OrdersPanel::tauntButtonCallback`
 
 - **Category**: Notification / Observer
@@ -6982,6 +8220,30 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
+
+### `OrdersPanel::toggleRanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
+### `OrdersPanel::toggleStealth`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
+### `OrdersPanel::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `character`: `Character`
 
 ### `Ownerships::canIUseThisBuilding`
 
@@ -7436,13 +8698,123 @@ Events.off(handlerId)
   - `defaultVal`: `Tasker`
 - **Returns**: `Tasker`
 
+### `TitleScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `on`: `boolean`
+
+### `TitleScreen::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::closeTheOtherBits`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `TitleScreen::continueGame`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
+### `TitleScreen::credits`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
+### `TitleScreen::exitGame`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
+### `TitleScreen::getSingleton`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `TitleScreen`
+- **Returns**: `TitleScreen`
+
+### `TitleScreen::hover`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, other)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+  - `other`: `Widget`
+
+### `TitleScreen::importGame`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
 ### `TitleScreen::loadGame`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, widget)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
   - `self`: `TitleScreen`
-  - `widget`: `Widget`
+  - `sender`: `Widget`
+
+### `TitleScreen::setCreditsVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `value`: `boolean`
+
+### `TitleScreen::showOptions`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
 
 ### `TortureBuilding::_CONSTRUCTOR`
 

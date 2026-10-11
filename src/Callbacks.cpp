@@ -95,10 +95,18 @@
 #include "Bindings/Kenshi/Gui/ContextMenuBinding.h"
 #include "Bindings/Kenshi/Gui/ContextMenuGUIBinding.h"
 #include "Bindings/Kenshi/Gui/ManagementScreenBinding.h"
+#include "Bindings/Kenshi/ManagementScreen_TechItemViewDataBinding.h"
+#include "Bindings/Kenshi/Gui/MapMarkerCharacterBinding.h"
+#include "Bindings/Kenshi/Gui/MapMarkerTownBinding.h"
+#include "Bindings/Kenshi/Gui/MapScreenBinding.h"
 #include "Bindings/Kenshi/Gui/MainBarGUIBinding.h"
 #include "Bindings/Kenshi/Gui/MainTabPortraitPlatoonBinding.h"
 #include "Bindings/Kenshi/Gui/NewGameOptionsWindowBinding.h"
 #include "Bindings/Kenshi/Gui/OrdersPanelBinding.h"
+#include "Bindings/Kenshi/Gui/OrderCellViewBinding.h"
+#include "Bindings/Kenshi/Gui/OrderDataBinding.h"
+#include "Bindings/Kenshi/Gui/OrdersItemBoxBinding.h"
+#include "Bindings/Kenshi/Gui/OptionsWindowBinding.h"
 #include "Bindings/Kenshi/Gui/SquadManagementScreenBinding.h"
 #include "Bindings/Kenshi/Gui/SplashScreenBinding.h"
 #include "Bindings/Kenshi/Gui/TitleScreenBinding.h"
@@ -193,7 +201,11 @@
 #include <kenshi/gui/GUIWindow.h>
 #include <kenshi/gui/InventoryGUI.h>
 #include <kenshi/gui/MainBarGUI.h>
+#include <kenshi/gui/ManagementScreen.h>
+#include <kenshi/gui/MapScreen.h>
 #include <kenshi/gui/NewGameOptionsWindow.h>
+#include <kenshi/gui/OptionsWindow.h>
+#include <kenshi/gui/OrdersPanel.h>
 #include <kenshi/gui/ScreenLabel.h>
 #include <kenshi/gui/SplashScreen.h>
 #include <kenshi/gui/ToolTip.h>
@@ -274,12 +286,20 @@ namespace KenshiLua
     static inline const char* ContextMenuMetatable()                                { return ContextMenuBinding::getMetatableName(); }
     static inline const char* ContextMenuGUIMetatable()                             { return ContextMenuGUIBinding::getMetatableName(); }
     static inline const char* ManagementScreenMetatable()                           { return ManagementScreenBinding::getMetatableName(); }
+    static inline const char* ManagementTechItemViewDataMetatable()                 { return ManagementScreen_TechItemViewDataBinding::getMetatableName(); }
+    static inline const char* MapMarkerCharacterMetatable()                         { return MapMarkerCharacterBinding::getMetatableName(); }
+    static inline const char* MapMarkerTownMetatable()                              { return MapMarkerTownBinding::getMetatableName(); }
+    static inline const char* MapScreenMetatable()                                  { return MapScreenBinding::getMetatableName(); }
     static inline const char* MainBarGUIMetatable()                                 { return MainBarGUIBinding::getMetatableName(); }
     static inline const char* MainTabPortraitPlatoonMetatable()                     { return MainTabPortraitPlatoonBinding::getMetatableName(); }
     static inline const char* MedicalSystemMetatable()                              { return MedicalSystemBinding::getMetatableName(); }
     static inline const char* MyGuiWidgetMetatable()                                { return MyGUIBinding::getMetatableName(); }
     static inline const char* NewGameOptionsWindowMetatable()                       { return NewGameOptionsWindowBinding::getMetatableName(); }
     static inline const char* OrdersPanelMetatable()                                { return OrdersPanelBinding::getMetatableName(); }
+    static inline const char* OrderCellViewMetatable()                              { return OrderCellViewBinding::getMetatableName(); }
+    static inline const char* OrderDataMetatable()                                  { return OrderDataBinding::getMetatableName(); }
+    static inline const char* OrdersItemBoxMetatable()                              { return OrdersItemBoxBinding::getMetatableName(); }
+    static inline const char* OptionsWindowMetatable()                              { return OptionsWindowBinding::getMetatableName(); }
     static inline const char* OwnershipsMetatable()                                 { return OwnershipsBinding::getMetatableName(); }
     static inline const char* PlatoonMetatable()                                    { return PlatoonBinding::getMetatableName(); }
     static inline const char* PlayerInterfaceMetatable()                            { return PlayerInterfaceBinding::getMetatableName(); }
@@ -418,11 +438,20 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, LimbsInventoryLayout* val)             { pushObject<LimbsInventoryLayout>(L, val, LimbsInventoryLayoutMetatable()); }
     static inline void pushArg(lua_State* L, LockedArmour* val)                     { pushObject<LockedArmour>(L, val, LockedArmourMetatable()); }
     static inline void pushArg(lua_State* L, ManagementScreen* val)                 { pushObject<ManagementScreen>(L, val, ManagementScreenMetatable()); }
+    static inline void pushArg(lua_State* L, ManagementScreen::TechItemViewData* val) { pushObject<ManagementScreen::TechItemViewData>(L, val, ManagementTechItemViewDataMetatable()); }
+    static inline void pushArg(lua_State* L, const ManagementScreen::TechItemViewData& val) { pushValue<ManagementScreen::TechItemViewData>(L, val, ManagementTechItemViewDataMetatable()); }
+    static inline void pushArg(lua_State* L, MapScreen* val)                        { pushObject<MapScreen>(L, val, MapScreenMetatable()); }
+    static inline void pushArg(lua_State* L, MapScreen::MapMarkerTown* val)         { pushObject<MapScreen::MapMarkerTown>(L, val, MapMarkerTownMetatable()); }
+    static inline void pushArg(lua_State* L, MapScreen::MapMarkerCharacter* val)    { pushObject<MapScreen::MapMarkerCharacter>(L, val, MapMarkerCharacterMetatable()); }
     static inline void pushArg(lua_State* L, MainBarGUI* val)                       { pushObject<MainBarGUI>(L, val, MainBarGUIMetatable()); }
     static inline void pushArg(lua_State* L, MainTabPortraitPlatoon* val)           { pushObject<MainTabPortraitPlatoon>(L, val, MainTabPortraitPlatoonMetatable()); }
     static inline void pushArg(lua_State* L, MedicalSystem* val)                    { pushObject<MedicalSystem>(L, val, MedicalSystemMetatable()); }
     static inline void pushArg(lua_State* L, NewGameOptionsWindow* val)             { pushObject<NewGameOptionsWindow>(L, val, NewGameOptionsWindowMetatable()); }
     static inline void pushArg(lua_State* L, OrdersPanel* val)                      { pushObject<OrdersPanel>(L, val, OrdersPanelMetatable()); }
+    static inline void pushArg(lua_State* L, OrderCellView* val)                    { pushObject<OrderCellView>(L, val, OrderCellViewMetatable()); }
+    static inline void pushArg(lua_State* L, OrderData* val)                        { pushObject<OrderData>(L, val, OrderDataMetatable()); }
+    static inline void pushArg(lua_State* L, OrdersItemBox* val)                    { pushObject<OrdersItemBox>(L, val, OrdersItemBoxMetatable()); }
+    static inline void pushArg(lua_State* L, OptionsWindow* val)                    { pushObject<OptionsWindow>(L, val, OptionsWindowMetatable()); }
     static inline void pushArg(lua_State* L, Ownerships* val)                       { pushObject<Ownerships>(L, val, OwnershipsMetatable()); }
     static inline void pushArg(lua_State* L, Platoon* val)                          { pushObject<Platoon>(L, val, PlatoonMetatable()); }
     static inline void pushArg(lua_State* L, PlayerInterface* val)                  { pushObject<PlayerInterface>(L, val, PlayerInterfaceMetatable()); }
@@ -1167,18 +1196,6 @@ void CallSquadManagementScreenRemoveSquadCallbacks(SquadManagementScreen* screen
     KenshiLua::EventSystem::get().callHandlers("SquadManagementScreen::removeSquad", &pusher);
 }
 
-void CallManagementScreenAddMessageCallbacks(ManagementScreen* screen, const std::string& owner, const std::string& message, int logColor)
-{
-    ArgPusher4<ManagementScreen*, const std::string&, const std::string&, int> pusher(screen, owner, message, logColor);
-    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::addMessage", &pusher);
-}
-
-void CallTitleScreenLoadGameCallbacks(TitleScreen* titleScreen, MyGUI::Widget* sender)
-{
-    ArgPusher2<TitleScreen*, MyGUI::Widget*> pusher(titleScreen, sender);
-    KenshiLua::EventSystem::get().callHandlers("TitleScreen::loadGame", &pusher);
-}
-
 void CallCharacterAddGoalCallbacks(Character* character, int task, RootObject* subject)
 {
     ArgPusher3<Character*, int, RootObject*> pusher(character, task, subject);
@@ -1357,54 +1374,6 @@ void CallInventoryGUIFencingConfirmationCallbacks(InventoryGUI* gui, int b)
 {
     ArgPusher2<InventoryGUI*, int> pusher(gui, b);
     KenshiLua::EventSystem::get().callHandlers("InventoryGUI::fencingConfirmationCallback", &pusher);
-}
-
-void CallOrdersPanelBlockModeButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::blockmodeButton", &pusher);
-}
-
-void CallOrdersPanelHoldButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::holdButtonCallback", &pusher);
-}
-
-void CallOrdersPanelPassiveButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::passiveButtonCallback", &pusher);
-}
-
-void CallOrdersPanelChaseButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::chaseButtonCallback", &pusher);
-}
-
-void CallOrdersPanelTauntButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::tauntButtonCallback", &pusher);
-}
-
-void CallOrdersPanelMedicButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::medicButton", &pusher);
-}
-
-void CallOrdersPanelLiftButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::liftButton", &pusher);
-}
-
-void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender)
-{
-    ArgPusher2<OrdersPanel*, MyGUI::Widget*> pusher(panel, sender);
-    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::prospectingButton", &pusher);
 }
 
 void CallContextMenuShowContextMenuCallbacks(ContextMenu* menu, bool on, RootObject* what)
@@ -5152,4 +5121,974 @@ void CallSplashScreenAddLogoCallbacks(SplashScreen* thisptr, const std::string& 
 {
     ArgPusher3<SplashScreen*, const std::string&, float> pusher(thisptr, file, scale);
     KenshiLua::EventSystem::get().callHandlers("SplashScreen::addLogo", &pusher);
+}
+
+
+// GUI hook callbacks: OrdersPanel, OptionsWindow, MapScreen,
+// ManagementScreen, and TitleScreen.
+
+void CallOrderCellViewConstructedCallbacks(OrderCellView* self, MyGUI::Widget* parent)
+{
+    ArgPusher2<OrderCellView*, KenshiLua::WidgetArg> pusher(self, parent);
+    KenshiLua::EventSystem::get().callHandlers("OrderCellView::_CONSTRUCTOR", &pusher);
+}
+
+void CallOrderCellViewDestructorCallbacks(OrderCellView* self)
+{
+    ArgPusher1<OrderCellView*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrderCellView::_DESTRUCTOR", &pusher);
+}
+
+void CallOrderCellViewUpdateCallbacks(OrderCellView* self, void* info, OrderData* data)
+{
+    ArgPusher3<OrderCellView*, void*, OrderData*> pusher(self, info, data);
+    KenshiLua::EventSystem::get().callHandlers("OrderCellView::update", &pusher);
+}
+
+void CallOrderCellViewGetCellDimensionCallbacks(MyGUI::Widget* sender, const MyGUI::IntCoord& coord, bool drop)
+{
+    ArgPusher3<KenshiLua::WidgetArg, const MyGUI::IntCoord&, bool> pusher(sender, coord, drop);
+    KenshiLua::EventSystem::get().callHandlers("OrderCellView::getCellDimension", &pusher);
+}
+
+void CallOrderCellViewGetWidgetCallbacks(OrderCellView* self, MyGUI::Widget* result)
+{
+    ArgPusher2<OrderCellView*, KenshiLua::WidgetArg> pusher(self, result);
+    KenshiLua::EventSystem::get().callHandlers("OrderCellView::getWidget", &pusher);
+}
+
+void CallOrderCellViewOnRemoveCallbacks(OrderCellView* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrderCellView*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrderCellView::onRemove", &pusher);
+}
+
+void CallOrderCellViewResizeCallbacks(OrderCellView* self)
+{
+    ArgPusher1<OrderCellView*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrderCellView::resize", &pusher);
+}
+
+void CallOrderDataConstructedCallbacks(OrderData* self)
+{
+    ArgPusher1<OrderData*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrderData::_CONSTRUCTOR", &pusher);
+}
+
+void CallOrderDataSetCallbacks(OrderData* self, Tasker* task, int index, bool enabled)
+{
+    ArgPusher4<OrderData*, Tasker*, int, bool> pusher(self, task, index, enabled);
+    KenshiLua::EventSystem::get().callHandlers("OrderData::set", &pusher);
+}
+
+void CallOrderDataUpdateTextCallbacks(OrderData* self)
+{
+    ArgPusher1<OrderData*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrderData::updateText", &pusher);
+}
+
+void CallOrderDataDestructorCallbacks(OrderData* self)
+{
+    ArgPusher1<OrderData*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrderData::_DESTRUCTOR", &pusher);
+}
+
+void CallOrderDataAssignCallbacks(OrderData* self, OrderData* other, OrderData* result)
+{
+    ArgPusher3<OrderData*, OrderData*, OrderData*> pusher(self, other, result);
+    KenshiLua::EventSystem::get().callHandlers("OrderData::operator=", &pusher);
+}
+
+void CallOrdersItemBoxConstructedCallbacks(OrdersItemBox* self, MyGUI::Widget* parent)
+{
+    ArgPusher2<OrdersItemBox*, KenshiLua::WidgetArg> pusher(self, parent);
+    KenshiLua::EventSystem::get().callHandlers("OrdersItemBox::_CONSTRUCTOR", &pusher);
+}
+
+void CallOrdersItemBoxDestructorCallbacks(OrdersItemBox* self)
+{
+    ArgPusher1<OrdersItemBox*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrdersItemBox::_DESTRUCTOR", &pusher);
+}
+
+void CallOrdersPanelConstructedCallbacks(OrdersPanel* self, MainBarGUI* mainbar, MyGUI::Widget* panel)
+{
+    ArgPusher3<OrdersPanel*, MainBarGUI*, KenshiLua::WidgetArg> pusher(self, mainbar, panel);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::_CONSTRUCTOR", &pusher);
+}
+
+void CallOrdersPanelDestructorCallbacks(OrdersPanel* self)
+{
+    ArgPusher1<OrdersPanel*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::_DESTRUCTOR", &pusher);
+}
+
+void CallOrdersPanelUpdateCallbacks(OrdersPanel* self, Character* character)
+{
+    ArgPusher2<OrdersPanel*, Character*> pusher(self, character);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::update", &pusher);
+}
+
+void CallOrdersPanelClearCallbacks(OrdersPanel* self)
+{
+    ArgPusher1<OrdersPanel*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::clear", &pusher);
+}
+
+void CallOrdersPanelCommandCallbacks(OrdersPanel* self, int command)
+{
+    ArgPusher2<OrdersPanel*, int> pusher(self, command);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::command", &pusher);
+}
+
+void CallOrdersPanelRefreshOrdersCallbacks(OrdersPanel* self)
+{
+    ArgPusher1<OrdersPanel*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::refreshOrders", &pusher);
+}
+
+void CallOrdersPanelMoveJobCallbacks(OrdersPanel* self, int orderIndex, int targetIndex)
+{
+    ArgPusher3<OrdersPanel*, int, int> pusher(self, orderIndex, targetIndex);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::moveJob", &pusher);
+}
+
+void CallOrdersPanelRemoveJobCallbacks(OrdersPanel* self, OrderData* data)
+{
+    ArgPusher2<OrdersPanel*, OrderData*> pusher(self, data);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::removeJob", &pusher);
+}
+
+bool CallOrdersPanelNotifyStartDropOrderCallbacks(OrdersPanel* self, wraps::BaseLayout* sender, void* info, bool defaultVal)
+{
+    ArgPusher4<OrdersPanel*, wraps::BaseLayout*, void*, bool> pusher(self, sender, info, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("OrdersPanel::notifyStartDropOrder", &pusher, defaultVal);
+}
+
+bool CallOrdersPanelNotifyRequestDropOrderCallbacks(OrdersPanel* self, wraps::BaseLayout* sender, void* info, bool defaultVal)
+{
+    ArgPusher4<OrdersPanel*, wraps::BaseLayout*, void*, bool> pusher(self, sender, info, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("OrdersPanel::notifyRequestDropOrder", &pusher, defaultVal);
+}
+
+void CallOrdersPanelNotifyEndDropOrderCallbacks(OrdersPanel* self, wraps::BaseLayout* sender, void* info, bool result)
+{
+    ArgPusher4<OrdersPanel*, wraps::BaseLayout*, void*, bool> pusher(self, sender, info, result);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::notifyEndDropOrder", &pusher);
+}
+
+void CallOrdersPanelToggleStealthCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::toggleStealth", &pusher);
+}
+
+void CallOrdersPanelToggleRangedCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::toggleRanged", &pusher);
+}
+
+void CallOrdersPanelSetSpeedCallbacks(OrdersPanel* self, int speed)
+{
+    ArgPusher2<OrdersPanel*, int> pusher(self, speed);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::setSpeed", &pusher);
+}
+
+void CallOrdersPanelSetSpeedImageCallbacks(OrdersPanel* self, int speed)
+{
+    ArgPusher2<OrdersPanel*, int> pusher(self, speed);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::setSpeedImage", &pusher);
+}
+
+void CallOrdersPanelSpeedPreviousCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::speedPrevious", &pusher);
+}
+
+void CallOrdersPanelSpeedNextCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::speedNext", &pusher);
+}
+
+OptionsWindow* CallOptionsWindowGetSingletonCallbacks(OptionsWindow* defaultVal)
+{
+    ArgPusher1<OptionsWindow*> pusher(defaultVal);
+    return static_cast<OptionsWindow*>(KenshiLua::EventSystem::get().callHandlersObject("OptionsWindow::getSingleton", KenshiLua::OptionsWindowMetatable(), &pusher));
+}
+
+void CallOptionsWindowNVShowCallbacks(OptionsWindow* self, bool value)
+{
+    ArgPusher2<OptionsWindow*, bool> pusher(self, value);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::_NV_show", &pusher);
+}
+
+void CallOptionsWindowShowCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::show", &pusher);
+}
+
+void CallOptionsWindowHideCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::hide", &pusher);
+}
+
+void CallOptionsWindowToggleCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::toggle", &pusher);
+}
+
+bool CallOptionsWindowIsVisibleCallbacks(OptionsWindow* self, bool defaultVal)
+{
+    ArgPusher2<OptionsWindow*, bool> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("OptionsWindow::isVisible", &pusher, defaultVal);
+}
+
+bool CallOptionsWindowWaitingForKeyCallbacks(OptionsWindow* self, bool defaultVal)
+{
+    ArgPusher2<OptionsWindow*, bool> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("OptionsWindow::waitingForKey", &pusher, defaultVal);
+}
+
+void CallOptionsWindowSetKeyCallbacks(OptionsWindow* self, int code)
+{
+    ArgPusher2<OptionsWindow*, int> pusher(self, code);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::setKey", &pusher);
+}
+
+void CallOptionsWindowNVUpdateCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::_NV_update", &pusher);
+}
+
+void CallOptionsWindowConstructedCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::_CONSTRUCTOR", &pusher);
+}
+
+void CallOptionsWindowDestructorCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::_DESTRUCTOR", &pusher);
+}
+
+void CallOptionsWindowSaveLocationChangedCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::saveLocationChanged", &pusher);
+}
+
+void CallOptionsWindowChangeFontSizeCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::changeFontSize", &pusher);
+}
+
+void CallOptionsWindowChangeVolumeCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::changeVolume", &pusher);
+}
+
+void CallOptionsWindowToggleNamesCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::toggleNames", &pusher);
+}
+
+void CallOptionsWindowResetTutorialsCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::resetTutorials", &pusher);
+}
+
+void CallOptionsWindowToggleTutorialsCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::toggleTutorials", &pusher);
+}
+
+void CallOptionsWindowChangeDistancesCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::changeDistances", &pusher);
+}
+
+void CallOptionsWindowToggleCompositorCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::toggleCompositor", &pusher);
+}
+
+void CallOptionsWindowResetAllKeysCallbacks(OptionsWindow* self, DataPanelLine* line)
+{
+    ArgPusher2<OptionsWindow*, DataPanelLine*> pusher(self, line);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::resetAllKeys", &pusher);
+}
+
+void CallOptionsWindowSaveOptionsCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::saveOptions", &pusher);
+}
+
+void CallOptionsWindowCreateCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::create", &pusher);
+}
+
+void CallOptionsWindowUpdateResolutionsCallbacks(OptionsWindow* self)
+{
+    ArgPusher1<OptionsWindow*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::updateResolutions", &pusher);
+}
+
+void CallOptionsWindowCloseButtonCallbacks(OptionsWindow* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OptionsWindow*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OptionsWindow::closeButton", &pusher);
+}
+
+void CallMapMarkerTownConstructedCallbacks(MapScreen::MapMarkerTown* self, TownBase* town, MapScreen* mapScreen)
+{
+    ArgPusher3<MapScreen::MapMarkerTown*, TownBase*, MapScreen*> pusher(self, town, mapScreen);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerTown::_CONSTRUCTOR", &pusher);
+}
+
+void CallMapMarkerTownDestructorCallbacks(MapScreen::MapMarkerTown* self)
+{
+    ArgPusher1<MapScreen::MapMarkerTown*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerTown::_DESTRUCTOR", &pusher);
+}
+
+void CallMapMarkerTownUpdateCallbacks(MapScreen::MapMarkerTown* self, const MyGUI::IntPoint& mapPosition, int zoom)
+{
+    ArgPusher3<MapScreen::MapMarkerTown*, const MyGUI::IntPoint&, int> pusher(self, mapPosition, zoom);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerTown::update", &pusher);
+}
+
+void CallMapMarkerTownSetVisibleCallbacks(MapScreen::MapMarkerTown* self, bool value)
+{
+    ArgPusher2<MapScreen::MapMarkerTown*, bool> pusher(self, value);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerTown::setVisible", &pusher);
+}
+
+bool CallMapMarkerTownGetVisibleCallbacks(MapScreen::MapMarkerTown* self, bool defaultVal)
+{
+    ArgPusher2<MapScreen::MapMarkerTown*, bool> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("MapScreen::MapMarkerTown::getVisible", &pusher, defaultVal);
+}
+
+void CallMapMarkerCharacterConstructedCallbacks(MapScreen::MapMarkerCharacter* self, RootObjectBase* character, MapScreen* mapScreen)
+{
+    ArgPusher3<MapScreen::MapMarkerCharacter*, RootObjectBase*, MapScreen*> pusher(self, character, mapScreen);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerCharacter::_CONSTRUCTOR", &pusher);
+}
+
+void CallMapMarkerCharacterDestructorCallbacks(MapScreen::MapMarkerCharacter* self)
+{
+    ArgPusher1<MapScreen::MapMarkerCharacter*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerCharacter::_DESTRUCTOR", &pusher);
+}
+
+void CallMapMarkerCharacterUpdateCallbacks(MapScreen::MapMarkerCharacter* self, const MyGUI::IntPoint& mapPosition)
+{
+    ArgPusher2<MapScreen::MapMarkerCharacter*, const MyGUI::IntPoint&> pusher(self, mapPosition);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerCharacter::update", &pusher);
+}
+
+void CallMapMarkerCharacterSetVisibleCallbacks(MapScreen::MapMarkerCharacter* self, bool value)
+{
+    ArgPusher2<MapScreen::MapMarkerCharacter*, bool> pusher(self, value);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::MapMarkerCharacter::setVisible", &pusher);
+}
+
+bool CallMapMarkerCharacterGetVisibleCallbacks(MapScreen::MapMarkerCharacter* self, bool defaultVal)
+{
+    ArgPusher2<MapScreen::MapMarkerCharacter*, bool> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("MapScreen::MapMarkerCharacter::getVisible", &pusher, defaultVal);
+}
+
+void CallMapScreenConstructedCallbacks(MapScreen* self, ManagementScreen* screen)
+{
+    ArgPusher2<MapScreen*, ManagementScreen*> pusher(self, screen);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::_CONSTRUCTOR", &pusher);
+}
+
+void CallMapScreenDestructorCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::_DESTRUCTOR", &pusher);
+}
+
+void CallMapScreenClearCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::clear", &pusher);
+}
+
+bool CallMapScreenGetVisibleCallbacks(MapScreen* self, bool defaultVal)
+{
+    ArgPusher2<MapScreen*, bool> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("MapScreen::getVisible", &pusher, defaultVal);
+}
+
+void CallMapScreenCenterCameraCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::centerCamera", &pusher);
+}
+
+void CallMapScreenClearTempMarkersCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::clearTempMarkers", &pusher);
+}
+
+void CallMapScreenRefreshCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::refresh", &pusher);
+}
+
+void CallMapScreenUpdateCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::update", &pusher);
+}
+
+void CallMapScreenAddSquadCallbacks(MapScreen* self, Platoon* squad)
+{
+    ArgPusher2<MapScreen*, Platoon*> pusher(self, squad);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::addSquad", &pusher);
+}
+
+void CallMapScreenRemoveSquadCallbacks(MapScreen* self, Platoon* squad)
+{
+    ArgPusher2<MapScreen*, Platoon*> pusher(self, squad);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::removeSquad", &pusher);
+}
+
+void CallMapScreenHideCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::hide", &pusher);
+}
+
+void CallMapScreenSetMovementMarkerCallbacks(MapScreen* self, const Ogre::Vector3& position, float time)
+{
+    ArgPusher3<MapScreen*, const Ogre::Vector3&, float> pusher(self, position, time);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::setMovementMarker", &pusher);
+}
+
+void CallMapScreenShowRoadsCallbacks(MapScreen* self, bool on)
+{
+    ArgPusher2<MapScreen*, bool> pusher(self, on);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::showRoads", &pusher);
+}
+
+void CallMapScreenUpdatePlayerTownMapMarkerCallbacks(MapScreen* self, const hand& town)
+{
+    ArgPusher2<MapScreen*, const hand&> pusher(self, town);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::updatePlayerTownMapMarker", &pusher);
+}
+
+void CallMapScreenUpdateZoomCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::updateZoom", &pusher);
+}
+
+void CallMapScreenUpdateCameraMarkerCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::updateCameraMarker", &pusher);
+}
+
+void CallMapScreenRefreshTownsCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::refreshTowns", &pusher);
+}
+
+void CallMapScreenRefreshSquadsCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::refreshSquads", &pusher);
+}
+
+void CallMapScreenUpdateCharacterMarkerCallbacks(MapScreen* self, RootObjectBase* object)
+{
+    ArgPusher2<MapScreen*, RootObjectBase*> pusher(self, object);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::updateCharacterMarker", &pusher);
+}
+
+bool CallMapScreenGetMouseWorldPositionCallbacks(MapScreen* self, const Ogre::Vector3& position, bool defaultVal)
+{
+    ArgPusher3<MapScreen*, const Ogre::Vector3&, bool> pusher(self, position, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("MapScreen::getMouseWorldPosition", &pusher, defaultVal);
+}
+
+void CallMapScreenWorldToMapCoordsCallbacks(MapScreen* self, const Ogre::Vector3& position, const MyGUI::IntPoint& result)
+{
+    ArgPusher3<MapScreen*, const Ogre::Vector3&, const MyGUI::IntPoint&> pusher(self, position, result);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::worldToMapCoords", &pusher);
+}
+
+void CallMapScreenMapCoordsToWorldCallbacks(MapScreen* self, const MyGUI::IntPoint& point, const Ogre::Vector3& result)
+{
+    ArgPusher3<MapScreen*, const MyGUI::IntPoint&, const Ogre::Vector3&> pusher(self, point, result);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::mapCoordsToWorld", &pusher);
+}
+
+void CallMapScreenMapMouseWheelCallbacks(MapScreen* self, MyGUI::Widget* sender, int rel)
+{
+    ArgPusher3<MapScreen*, KenshiLua::WidgetArg, int> pusher(self, sender, rel);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::mapMouseWheel", &pusher);
+}
+
+void CallMapScreenMapMousePressedCallbacks(MapScreen* self, MyGUI::Widget* sender, int left, int top, int id)
+{
+    ArgPusher5<MapScreen*, KenshiLua::WidgetArg, int, int, int> pusher(self, sender, left, top, id);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::mapMousePressed", &pusher);
+}
+
+void CallMapScreenMapMouseReleasedCallbacks(MapScreen* self, MyGUI::Widget* sender, int left, int top, int id)
+{
+    ArgPusher5<MapScreen*, KenshiLua::WidgetArg, int, int, int> pusher(self, sender, left, top, id);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::mapMouseReleased", &pusher);
+}
+
+void CallMapScreenSetupRoadsCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::setupRoads", &pusher);
+}
+
+void CallMapScreenUpdateRoadsCallbacks(MapScreen* self)
+{
+    ArgPusher1<MapScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::updateRoads", &pusher);
+}
+
+void CallMapScreenCenterButtonCallbacks(MapScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<MapScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::centerButton", &pusher);
+}
+
+void CallMapScreenZoomInButtonCallbacks(MapScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<MapScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::zoomInButton", &pusher);
+}
+
+void CallMapScreenZoomOutButtonCallbacks(MapScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<MapScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::zoomOutButton", &pusher);
+}
+
+void CallMapScreenGetMarkerColorCallbacks(RootObjectBase* who, const MyGUI::Colour& result)
+{
+    ArgPusher2<RootObjectBase*, const MyGUI::Colour&> pusher(who, result);
+    KenshiLua::EventSystem::get().callHandlers("MapScreen::getMarkerColor", &pusher);
+}
+
+ManagementScreen* CallManagementScreenGetSingletonCallbacks(ManagementScreen* defaultVal)
+{
+    ArgPusher1<ManagementScreen*> pusher(defaultVal);
+    return static_cast<ManagementScreen*>(KenshiLua::EventSystem::get().callHandlersObject("ManagementScreen::getSingleton", KenshiLua::ManagementScreenMetatable(), &pusher));
+}
+
+void CallManagementScreenDestructorCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::_DESTRUCTOR", &pusher);
+}
+
+void CallManagementScreenUpdateCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::update", &pusher);
+}
+
+void CallManagementScreenClearCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::clear", &pusher);
+}
+
+bool CallManagementScreenGetVisibleCallbacks(ManagementScreen* self, bool defaultVal)
+{
+    ArgPusher2<ManagementScreen*, bool> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ManagementScreen::getVisible", &pusher, defaultVal);
+}
+
+void CallManagementScreenSetVisibleCallbacks(ManagementScreen* self, bool on, int tab)
+{
+    ArgPusher3<ManagementScreen*, bool, int> pusher(self, on, tab);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::setVisible", &pusher);
+}
+
+void CallManagementScreenCloseEverythingButtonCallbacks(ManagementScreen* self, MyGUI::Widget* widget, const std::string& name)
+{
+    ArgPusher3<ManagementScreen*, KenshiLua::WidgetArg, const std::string&> pusher(self, widget, name);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::closeEverythingButton", &pusher);
+}
+
+void CallManagementScreenTabCallbackCallbacks(ManagementScreen* self, MyGUI::Widget* sender, double index)
+{
+    ArgPusher3<ManagementScreen*, KenshiLua::WidgetArg, double> pusher(self, sender, index);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::tabCallback", &pusher);
+}
+
+double CallManagementScreenGetCurrentTabCallbacks(ManagementScreen* self, double defaultVal)
+{
+    ArgPusher2<ManagementScreen*, double> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersNumber("ManagementScreen::getCurrentTab", &pusher, defaultVal);
+}
+
+void CallManagementScreenGetTabCallbacks(ManagementScreen* self, int index, MyGUI::Widget* result)
+{
+    ArgPusher3<ManagementScreen*, int, KenshiLua::WidgetArg> pusher(self, index, result);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::getTab", &pusher);
+}
+
+void CallManagementScreenGetWidgetCallbacks(ManagementScreen* self, const std::string& name, MyGUI::Widget* result)
+{
+    ArgPusher3<ManagementScreen*, const std::string&, KenshiLua::WidgetArg> pusher(self, name, result);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::getWidget", &pusher);
+}
+
+void CallManagementScreenRefreshCallbacks(ManagementScreen* self, GameData* current, float progress)
+{
+    ArgPusher3<ManagementScreen*, GameData*, float> pusher(self, current, progress);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refresh", &pusher);
+}
+
+void CallManagementScreenRefreshResearchListCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshResearchList", &pusher);
+}
+
+void CallManagementScreenRefreshResearchRateCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshResearchRate", &pusher);
+}
+
+void CallManagementScreenRefreshDiplomacyCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshDiplomacy", &pusher);
+}
+
+void CallManagementScreenRefreshSquadsCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshSquads", &pusher);
+}
+
+void CallManagementScreenRefreshMapCallbacks(ManagementScreen* self, bool centerCamera)
+{
+    ArgPusher2<ManagementScreen*, bool> pusher(self, centerCamera);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshMap", &pusher);
+}
+
+void CallManagementScreenShowRoadsCallbacks(ManagementScreen* self, bool value)
+{
+    ArgPusher2<ManagementScreen*, bool> pusher(self, value);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::showRoads", &pusher);
+}
+
+void CallManagementScreenAddSquadToMapCallbacks(ManagementScreen* self, Platoon* squad)
+{
+    ArgPusher2<ManagementScreen*, Platoon*> pusher(self, squad);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::addSquadToMap", &pusher);
+}
+
+void CallManagementScreenRemoveSquadFromMapCallbacks(ManagementScreen* self, Platoon* squad)
+{
+    ArgPusher2<ManagementScreen*, Platoon*> pusher(self, squad);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::removeSquadFromMap", &pusher);
+}
+
+void CallManagementScreenResetSquadsCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::resetSquads", &pusher);
+}
+
+void CallManagementScreenRefreshMessagesCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshMessages", &pusher);
+}
+
+void CallManagementScreenRefreshAICallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshAI", &pusher);
+}
+
+void CallManagementScreenSetCraftingBenchCallbacks(ManagementScreen* self, const hand& buildingHandle)
+{
+    ArgPusher2<ManagementScreen*, const hand&> pusher(self, buildingHandle);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::setCraftingBench", &pusher);
+}
+
+void CallManagementScreenPrintResearchCallbacks(DatapanelGUI* panel, GameData* data, const std::string& listName, const std::string& displayName, int category)
+{
+    ArgPusher5<DatapanelGUI*, GameData*, const std::string&, const std::string&, int> pusher(panel, data, listName, displayName, category);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::printResearch", &pusher);
+}
+
+void CallManagementScreenShowDebugMarkerCallbacks(ManagementScreen* self, const Ogre::Vector3& position)
+{
+    ArgPusher2<ManagementScreen*, const Ogre::Vector3&> pusher(self, position);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::showDebugMarker", &pusher);
+}
+
+void CallManagementScreenConstructedCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::_CONSTRUCTOR", &pusher);
+}
+
+void CallManagementScreenUpdateResearchListRateCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::updateResearchListRate", &pusher);
+}
+
+void CallManagementScreenRefreshResearchListDescriptionCallbacks(ManagementScreen* self)
+{
+    ArgPusher1<ManagementScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::refreshResearchListDescription", &pusher);
+}
+
+void CallManagementScreenResearchTypeSelectCallbacks(ManagementScreen* self, MyGUI::Widget* sender, double index)
+{
+    ArgPusher3<ManagementScreen*, KenshiLua::WidgetArg, double> pusher(self, sender, index);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::researchTypeSelect", &pusher);
+}
+
+void CallManagementScreenAddButtonPressCallbacks(ManagementScreen* self, MyGUI::Widget* sender, int left, int top, int id)
+{
+    ArgPusher5<ManagementScreen*, KenshiLua::WidgetArg, int, int, int> pusher(self, sender, left, top, id);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::addButtonPress", &pusher);
+}
+
+void CallManagementScreenRemoveButtonPressCallbacks(ManagementScreen* self, MyGUI::Widget* sender, int left, int top, int id)
+{
+    ArgPusher5<ManagementScreen*, KenshiLua::WidgetArg, int, int, int> pusher(self, sender, left, top, id);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::removeButtonPress", &pusher);
+}
+
+void CallManagementScreenMouseOverCallbacks(ManagementScreen* self, MyGUI::Widget* sender, int left, int top)
+{
+    ArgPusher4<ManagementScreen*, KenshiLua::WidgetArg, int, int> pusher(self, sender, left, top);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::mouseOverCallback", &pusher);
+}
+
+void CallTechItemViewDataGetNameCallbacks(ManagementScreen::TechItemViewData* self, const std::string& result)
+{
+    ArgPusher2<ManagementScreen::TechItemViewData*, const std::string&> pusher(self, result);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::TechItemViewData::getName", &pusher);
+}
+
+void CallTechItemViewDataGetValueCallbacks(ManagementScreen::TechItemViewData* self, const std::string& result)
+{
+    ArgPusher2<ManagementScreen::TechItemViewData*, const std::string&> pusher(self, result);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::TechItemViewData::getValue", &pusher);
+}
+
+double CallTechItemViewDataGetProgressCallbacks(ManagementScreen::TechItemViewData* self, double defaultVal)
+{
+    ArgPusher2<ManagementScreen::TechItemViewData*, double> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersNumber("ManagementScreen::TechItemViewData::getProgress", &pusher, defaultVal);
+}
+
+void CallTechItemViewDataSetItemCallbacks(ManagementScreen::TechItemViewData* self, void* item)
+{
+    ArgPusher2<ManagementScreen::TechItemViewData*, void*> pusher(self, item);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::TechItemViewData::setItem", &pusher);
+}
+
+void CallTechItemViewDataDestructorCallbacks(ManagementScreen::TechItemViewData* self)
+{
+    ArgPusher1<ManagementScreen::TechItemViewData*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::TechItemViewData::_DESTRUCTOR", &pusher);
+}
+
+void CallManagementScreenResearchQueueTooltipCallbacks(ManagementScreen* self, wraps::BaseLayout* layout, void* info, const ManagementScreen::TechItemViewData& data)
+{
+    ArgPusher4<ManagementScreen*, wraps::BaseLayout*, void*, const ManagementScreen::TechItemViewData&> pusher(self, layout, info, data);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::researchQueueTooltip", &pusher);
+}
+
+void CallManagementScreenResearchRemovedCallbacks(ManagementScreen* self, int index, const ManagementScreen::TechItemViewData& item)
+{
+    ArgPusher3<ManagementScreen*, int, const ManagementScreen::TechItemViewData&> pusher(self, index, item);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::researchRemoved", &pusher);
+}
+
+bool CallManagementScreenResearchValidateOrderCallbacks(ManagementScreen* self, int first, int second, bool defaultVal)
+{
+    ArgPusher4<ManagementScreen*, int, int, bool> pusher(self, first, second, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("ManagementScreen::researchValidateOrder", &pusher, defaultVal);
+}
+
+TitleScreen* CallTitleScreenGetSingletonCallbacks(TitleScreen* defaultVal)
+{
+    ArgPusher1<TitleScreen*> pusher(defaultVal);
+    return static_cast<TitleScreen*>(KenshiLua::EventSystem::get().callHandlersObject("TitleScreen::getSingleton", KenshiLua::TitleScreenMetatable(), &pusher));
+}
+
+void CallTitleScreenConstructedCallbacks(TitleScreen* self)
+{
+    ArgPusher1<TitleScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::_CONSTRUCTOR", &pusher);
+}
+
+void CallTitleScreenDestructorCallbacks(TitleScreen* self)
+{
+    ArgPusher1<TitleScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::_DESTRUCTOR", &pusher);
+}
+
+void CallTitleScreenNVClearCallbacks(TitleScreen* self)
+{
+    ArgPusher1<TitleScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::_NV_clear", &pusher);
+}
+
+void CallTitleScreenNVShowCallbacks(TitleScreen* self, bool on)
+{
+    ArgPusher2<TitleScreen*, bool> pusher(self, on);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::_NV_show", &pusher);
+}
+
+void CallTitleScreenNVUpdateCallbacks(TitleScreen* self)
+{
+    ArgPusher1<TitleScreen*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::_NV_update", &pusher);
+}
+
+bool CallTitleScreenCloseTheOtherBitsCallbacks(TitleScreen* self, bool defaultVal)
+{
+    ArgPusher2<TitleScreen*, bool> pusher(self, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("TitleScreen::closeTheOtherBits", &pusher, defaultVal);
+}
+
+void CallTitleScreenImportGameCallbacks(TitleScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<TitleScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::importGame", &pusher);
+}
+
+void CallTitleScreenShowOptionsCallbacks(TitleScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<TitleScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::showOptions", &pusher);
+}
+
+void CallTitleScreenCreditsCallbacks(TitleScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<TitleScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::credits", &pusher);
+}
+
+void CallTitleScreenExitGameCallbacks(TitleScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<TitleScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::exitGame", &pusher);
+}
+
+void CallTitleScreenContinueGameCallbacks(TitleScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<TitleScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::continueGame", &pusher);
+}
+
+void CallTitleScreenHoverCallbacks(TitleScreen* self, MyGUI::Widget* sender, MyGUI::Widget* other)
+{
+    ArgPusher3<TitleScreen*, KenshiLua::WidgetArg, KenshiLua::WidgetArg> pusher(self, sender, other);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::hover", &pusher);
+}
+
+void CallTitleScreenSetCreditsVisibleCallbacks(TitleScreen* self, bool value)
+{
+    ArgPusher2<TitleScreen*, bool> pusher(self, value);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::setCreditsVisible", &pusher);
+}
+
+void CallOrdersPanelBlockModeButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::blockmodeButton", &pusher);
+}
+
+void CallOrdersPanelHoldButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::holdButtonCallback", &pusher);
+}
+
+void CallOrdersPanelPassiveButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::passiveButtonCallback", &pusher);
+}
+
+void CallOrdersPanelChaseButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::chaseButtonCallback", &pusher);
+}
+
+void CallOrdersPanelTauntButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::tauntButtonCallback", &pusher);
+}
+
+void CallOrdersPanelMedicButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::medicButton", &pusher);
+}
+
+void CallOrdersPanelLiftButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::liftButton", &pusher);
+}
+
+void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<OrdersPanel*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("OrdersPanel::prospectingButton", &pusher);
+}
+
+void CallManagementScreenAddMessageCallbacks(ManagementScreen* self, const std::string& owner, const std::string& message, int logColor)
+{
+    ArgPusher4<ManagementScreen*, const std::string&, const std::string&, int> pusher(self, owner, message, logColor);
+    KenshiLua::EventSystem::get().callHandlers("ManagementScreen::addMessage", &pusher);
+}
+
+void CallTitleScreenLoadGameCallbacks(TitleScreen* self, MyGUI::Widget* sender)
+{
+    ArgPusher2<TitleScreen*, KenshiLua::WidgetArg> pusher(self, sender);
+    KenshiLua::EventSystem::get().callHandlers("TitleScreen::loadGame", &pusher);
 }

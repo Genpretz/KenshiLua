@@ -44,6 +44,11 @@
     <ClCompile Include="src\Hooks\Hooks_DialogueWindow.cpp" />
     <ClCompile Include="src\Hooks\Hooks_NewGameOptionsWindow.cpp" />
     <ClCompile Include="src\Hooks\Hooks_SplashScreen.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_OrdersPanel.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_OptionsWindow.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_MapScreen.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_ManagementScreen.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_TitleScreen.cpp" />
     <ClCompile Include="src\Hooks\Hooks_InputHandler.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Inventory.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Item.cpp" />

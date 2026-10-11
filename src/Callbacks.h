@@ -5,6 +5,8 @@
 #include <kenshi/gui/CharacterStatsWindow.h> // nested Stat and StatGroup types
 #include <kenshi/gui/FactionsScreen.h> // nested FactionRelationsLine types
 #include <kenshi/gui/InventoryGUI.h> // nested inventory helper types
+#include <kenshi/gui/MapScreen.h> // nested map marker types
+#include <kenshi/gui/ManagementScreen.h> // nested research item type
 
 // Forward declaration — avoids pulling in the full headers in every
 // translation unit that only needs to call these dispatchers.
@@ -46,6 +48,11 @@ class GameSaveState;
 class GameDataCopyStandalone;
 class Town;
 class OrdersPanel;
+class OrderCellView;
+class OrderData;
+class OrdersItemBox;
+class OptionsWindow;
+class MapScreen;
 class ContextMenu;
 class ContextMenuGUI;
 class DataPanelLine_Button;
@@ -620,16 +627,6 @@ void CallBuildModeWindowConfirmCallbacks(BuildModeWindow* window, MyGUI::Widget*
 // Lua signature:  function(self, squadData)
 void CallSquadManagementScreenRemoveSquadCallbacks(SquadManagementScreen* screen, void* squadData);
 
-// Fired by ManagementScreen::addMessage hook
-// Lua event name: "ManagementScreen::addMessage"
-// Lua signature:  function(self, owner, message, logColor)
-void CallManagementScreenAddMessageCallbacks(ManagementScreen* screen, const std::string& owner, const std::string& message, int logColor);
-
-// Fired by TitleScreen::loadGame hook
-// Lua event name: "TitleScreen::loadGame"
-// Lua signature:  function(self, widget)
-void CallTitleScreenLoadGameCallbacks(TitleScreen* titleScreen, MyGUI::Widget* sender);
-
 // Fired by Character::addGoal hook
 // Lua event name: "Character::addGoal"
 // Lua signature:  function(self, taskType, subject)
@@ -783,46 +780,6 @@ void CallDataPanelLineButtonPressCallbacks(DataPanelLine_Button* button, MyGUI::
 // Lua event name: "InventoryGUI::fencingConfirmationCallback"
 // Lua signature:  function(self, b)
 void CallInventoryGUIFencingConfirmationCallbacks(InventoryGUI* gui, int b);
-
-// Fired by OrdersPanel::blockmodeButton hook.
-// Lua event name: "OrdersPanel::blockmodeButton"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelBlockModeButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
-
-// Fired by OrdersPanel::holdButtonCallback hook.
-// Lua event name: "OrdersPanel::holdButtonCallback"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelHoldButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
-
-// Fired by OrdersPanel::passiveButtonCallback hook.
-// Lua event name: "OrdersPanel::passiveButtonCallback"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelPassiveButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
-
-// Fired by OrdersPanel::chaseButtonCallback hook.
-// Lua event name: "OrdersPanel::chaseButtonCallback"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelChaseButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
-
-// Fired by OrdersPanel::tauntButtonCallback hook.
-// Lua event name: "OrdersPanel::tauntButtonCallback"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelTauntButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
-
-// Fired by OrdersPanel::medicButton hook.
-// Lua event name: "OrdersPanel::medicButton"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelMedicButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
-
-// Fired by OrdersPanel::liftButton hook.
-// Lua event name: "OrdersPanel::liftButton"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelLiftButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
-
-// Fired by OrdersPanel::prospectingButton hook.
-// Lua event name: "OrdersPanel::prospectingButton"
-// Lua signature:  function(self, sender)
-void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* panel, MyGUI::Widget* sender);
 
 // Fired by ContextMenu::showContextMenu hook, after the original call returns.
 // `on` and `what` are the original arguments: the requested visibility and the target, which can be nil.
@@ -3941,3 +3898,653 @@ void CallSplashScreenSkipCallbacks(SplashScreen* thisptr);
 // Lua event name: "SplashScreen::addLogo"
 // Lua signature:  function(self, file, scale)
 void CallSplashScreenAddLogoCallbacks(SplashScreen* thisptr, const std::string& file, float scale);
+
+
+// -----------------------------------------------------------
+// Callbacks for OrdersPanel.h, OptionsWindow.h, MapScreen.h,
+// ManagementScreen.h, and TitleScreen.h
+// -----------------------------------------------------------
+
+// Lua event name: "OrderCellView::_CONSTRUCTOR"
+// Lua signature: function(self, parent)
+void CallOrderCellViewConstructedCallbacks(OrderCellView* self, MyGUI::Widget* parent);
+
+// Lua event name: "OrderCellView::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallOrderCellViewDestructorCallbacks(OrderCellView* self);
+
+// Lua event name: "OrderCellView::update"
+// Lua signature: function(self, info, data)
+void CallOrderCellViewUpdateCallbacks(OrderCellView* self, void* info, OrderData* data);
+
+// Lua event name: "OrderCellView::getCellDimension"
+// Lua signature: function(sender, coord, drop)
+void CallOrderCellViewGetCellDimensionCallbacks(MyGUI::Widget* sender, const MyGUI::IntCoord& coord, bool drop);
+
+// Lua event name: "OrderCellView::getWidget"
+// Lua signature: function(self, result)
+void CallOrderCellViewGetWidgetCallbacks(OrderCellView* self, MyGUI::Widget* result);
+
+// Lua event name: "OrderCellView::onRemove"
+// Lua signature: function(self, sender)
+void CallOrderCellViewOnRemoveCallbacks(OrderCellView* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrderCellView::resize"
+// Lua signature: function(self)
+void CallOrderCellViewResizeCallbacks(OrderCellView* self);
+
+// Lua event name: "OrderData::_CONSTRUCTOR"
+// Lua signature: function(self)
+void CallOrderDataConstructedCallbacks(OrderData* self);
+
+// Lua event name: "OrderData::set"
+// Lua signature: function(self, task, index, enabled)
+void CallOrderDataSetCallbacks(OrderData* self, Tasker* task, int index, bool enabled);
+
+// Lua event name: "OrderData::updateText"
+// Lua signature: function(self)
+void CallOrderDataUpdateTextCallbacks(OrderData* self);
+
+// Lua event name: "OrderData::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallOrderDataDestructorCallbacks(OrderData* self);
+
+// Lua event name: "OrderData::operator="
+// Lua signature: function(self, other, result)
+void CallOrderDataAssignCallbacks(OrderData* self, OrderData* other, OrderData* result);
+
+// Lua event name: "OrdersItemBox::_CONSTRUCTOR"
+// Lua signature: function(self, parent)
+void CallOrdersItemBoxConstructedCallbacks(OrdersItemBox* self, MyGUI::Widget* parent);
+
+// Lua event name: "OrdersItemBox::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallOrdersItemBoxDestructorCallbacks(OrdersItemBox* self);
+
+// Lua event name: "OrdersPanel::_CONSTRUCTOR"
+// Lua signature: function(self, mainbar, panel)
+void CallOrdersPanelConstructedCallbacks(OrdersPanel* self, MainBarGUI* mainbar, MyGUI::Widget* panel);
+
+// Lua event name: "OrdersPanel::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallOrdersPanelDestructorCallbacks(OrdersPanel* self);
+
+// Lua event name: "OrdersPanel::update"
+// Lua signature: function(self, character)
+void CallOrdersPanelUpdateCallbacks(OrdersPanel* self, Character* character);
+
+// Lua event name: "OrdersPanel::clear"
+// Lua signature: function(self)
+void CallOrdersPanelClearCallbacks(OrdersPanel* self);
+
+// Lua event name: "OrdersPanel::command"
+// Lua signature: function(self, command)
+void CallOrdersPanelCommandCallbacks(OrdersPanel* self, int command);
+
+// Lua event name: "OrdersPanel::refreshOrders"
+// Lua signature: function(self)
+void CallOrdersPanelRefreshOrdersCallbacks(OrdersPanel* self);
+
+// Lua event name: "OrdersPanel::moveJob"
+// Lua signature: function(self, orderIndex, targetIndex)
+void CallOrdersPanelMoveJobCallbacks(OrdersPanel* self, int orderIndex, int targetIndex);
+
+// Lua event name: "OrdersPanel::removeJob"
+// Lua signature: function(self, data)
+void CallOrdersPanelRemoveJobCallbacks(OrdersPanel* self, OrderData* data);
+
+// Lua event name: "OrdersPanel::notifyStartDropOrder"
+// Lua signature: function(self, sender, info, defaultVal) -> boolean
+bool CallOrdersPanelNotifyStartDropOrderCallbacks(OrdersPanel* self, wraps::BaseLayout* sender, void* info, bool defaultVal);
+
+// Lua event name: "OrdersPanel::notifyRequestDropOrder"
+// Lua signature: function(self, sender, info, defaultVal) -> boolean
+bool CallOrdersPanelNotifyRequestDropOrderCallbacks(OrdersPanel* self, wraps::BaseLayout* sender, void* info, bool defaultVal);
+
+// Lua event name: "OrdersPanel::notifyEndDropOrder"
+// Lua signature: function(self, sender, info, result)
+void CallOrdersPanelNotifyEndDropOrderCallbacks(OrdersPanel* self, wraps::BaseLayout* sender, void* info, bool result);
+
+// Lua event name: "OrdersPanel::toggleStealth"
+// Lua signature: function(self, sender)
+void CallOrdersPanelToggleStealthCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::toggleRanged"
+// Lua signature: function(self, sender)
+void CallOrdersPanelToggleRangedCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::setSpeed"
+// Lua signature: function(self, speed)
+void CallOrdersPanelSetSpeedCallbacks(OrdersPanel* self, int speed);
+
+// Lua event name: "OrdersPanel::setSpeedImage"
+// Lua signature: function(self, speed)
+void CallOrdersPanelSetSpeedImageCallbacks(OrdersPanel* self, int speed);
+
+// Lua event name: "OrdersPanel::speedPrevious"
+// Lua signature: function(self, sender)
+void CallOrdersPanelSpeedPreviousCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::speedNext"
+// Lua signature: function(self, sender)
+void CallOrdersPanelSpeedNextCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::blockmodeButton"
+// Lua signature: function(self, sender)
+void CallOrdersPanelBlockModeButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::holdButtonCallback"
+// Lua signature: function(self, sender)
+void CallOrdersPanelHoldButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::passiveButtonCallback"
+// Lua signature: function(self, sender)
+void CallOrdersPanelPassiveButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::chaseButtonCallback"
+// Lua signature: function(self, sender)
+void CallOrdersPanelChaseButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::tauntButtonCallback"
+// Lua signature: function(self, sender)
+void CallOrdersPanelTauntButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::medicButton"
+// Lua signature: function(self, sender)
+void CallOrdersPanelMedicButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::liftButton"
+// Lua signature: function(self, sender)
+void CallOrdersPanelLiftButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OrdersPanel::prospectingButton"
+// Lua signature: function(self, sender)
+void CallOrdersPanelProspectingButtonCallbacks(OrdersPanel* self, MyGUI::Widget* sender);
+
+// Lua event name: "OptionsWindow::getSingleton"
+// Lua signature: function(defaultVal) -> OptionsWindow
+OptionsWindow* CallOptionsWindowGetSingletonCallbacks(OptionsWindow* defaultVal);
+
+// Lua event name: "OptionsWindow::_NV_show"
+// Lua signature: function(self, value)
+void CallOptionsWindowNVShowCallbacks(OptionsWindow* self, bool value);
+
+// Lua event name: "OptionsWindow::show"
+// Lua signature: function(self)
+void CallOptionsWindowShowCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::hide"
+// Lua signature: function(self)
+void CallOptionsWindowHideCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::toggle"
+// Lua signature: function(self)
+void CallOptionsWindowToggleCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::isVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallOptionsWindowIsVisibleCallbacks(OptionsWindow* self, bool defaultVal);
+
+// Lua event name: "OptionsWindow::waitingForKey"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallOptionsWindowWaitingForKeyCallbacks(OptionsWindow* self, bool defaultVal);
+
+// Lua event name: "OptionsWindow::setKey"
+// Lua signature: function(self, code)
+void CallOptionsWindowSetKeyCallbacks(OptionsWindow* self, int code);
+
+// Lua event name: "OptionsWindow::_NV_update"
+// Lua signature: function(self)
+void CallOptionsWindowNVUpdateCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::_CONSTRUCTOR"
+// Lua signature: function(self)
+void CallOptionsWindowConstructedCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallOptionsWindowDestructorCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::saveLocationChanged"
+// Lua signature: function(self, line)
+void CallOptionsWindowSaveLocationChangedCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::changeFontSize"
+// Lua signature: function(self, line)
+void CallOptionsWindowChangeFontSizeCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::changeVolume"
+// Lua signature: function(self, line)
+void CallOptionsWindowChangeVolumeCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::toggleNames"
+// Lua signature: function(self, line)
+void CallOptionsWindowToggleNamesCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::resetTutorials"
+// Lua signature: function(self, line)
+void CallOptionsWindowResetTutorialsCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::toggleTutorials"
+// Lua signature: function(self, line)
+void CallOptionsWindowToggleTutorialsCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::changeDistances"
+// Lua signature: function(self, line)
+void CallOptionsWindowChangeDistancesCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::toggleCompositor"
+// Lua signature: function(self, line)
+void CallOptionsWindowToggleCompositorCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::resetAllKeys"
+// Lua signature: function(self, line)
+void CallOptionsWindowResetAllKeysCallbacks(OptionsWindow* self, DataPanelLine* line);
+
+// Lua event name: "OptionsWindow::saveOptions"
+// Lua signature: function(self)
+void CallOptionsWindowSaveOptionsCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::create"
+// Lua signature: function(self)
+void CallOptionsWindowCreateCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::updateResolutions"
+// Lua signature: function(self)
+void CallOptionsWindowUpdateResolutionsCallbacks(OptionsWindow* self);
+
+// Lua event name: "OptionsWindow::closeButton"
+// Lua signature: function(self, sender)
+void CallOptionsWindowCloseButtonCallbacks(OptionsWindow* self, MyGUI::Widget* sender);
+
+// Lua event name: "MapScreen::MapMarkerTown::_CONSTRUCTOR"
+// Lua signature: function(self, town, mapScreen)
+void CallMapMarkerTownConstructedCallbacks(MapScreen::MapMarkerTown* self, TownBase* town, MapScreen* mapScreen);
+
+// Lua event name: "MapScreen::MapMarkerTown::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallMapMarkerTownDestructorCallbacks(MapScreen::MapMarkerTown* self);
+
+// Lua event name: "MapScreen::MapMarkerTown::update"
+// Lua signature: function(self, mapPosition, zoom)
+void CallMapMarkerTownUpdateCallbacks(MapScreen::MapMarkerTown* self, const MyGUI::IntPoint& mapPosition, int zoom);
+
+// Lua event name: "MapScreen::MapMarkerTown::setVisible"
+// Lua signature: function(self, value)
+void CallMapMarkerTownSetVisibleCallbacks(MapScreen::MapMarkerTown* self, bool value);
+
+// Lua event name: "MapScreen::MapMarkerTown::getVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallMapMarkerTownGetVisibleCallbacks(MapScreen::MapMarkerTown* self, bool defaultVal);
+
+// Lua event name: "MapScreen::MapMarkerCharacter::_CONSTRUCTOR"
+// Lua signature: function(self, character, mapScreen)
+void CallMapMarkerCharacterConstructedCallbacks(MapScreen::MapMarkerCharacter* self, RootObjectBase* character, MapScreen* mapScreen);
+
+// Lua event name: "MapScreen::MapMarkerCharacter::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallMapMarkerCharacterDestructorCallbacks(MapScreen::MapMarkerCharacter* self);
+
+// Lua event name: "MapScreen::MapMarkerCharacter::update"
+// Lua signature: function(self, mapPosition)
+void CallMapMarkerCharacterUpdateCallbacks(MapScreen::MapMarkerCharacter* self, const MyGUI::IntPoint& mapPosition);
+
+// Lua event name: "MapScreen::MapMarkerCharacter::setVisible"
+// Lua signature: function(self, value)
+void CallMapMarkerCharacterSetVisibleCallbacks(MapScreen::MapMarkerCharacter* self, bool value);
+
+// Lua event name: "MapScreen::MapMarkerCharacter::getVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallMapMarkerCharacterGetVisibleCallbacks(MapScreen::MapMarkerCharacter* self, bool defaultVal);
+
+// Lua event name: "MapScreen::_CONSTRUCTOR"
+// Lua signature: function(self, screen)
+void CallMapScreenConstructedCallbacks(MapScreen* self, ManagementScreen* screen);
+
+// Lua event name: "MapScreen::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallMapScreenDestructorCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::clear"
+// Lua signature: function(self)
+void CallMapScreenClearCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::getVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallMapScreenGetVisibleCallbacks(MapScreen* self, bool defaultVal);
+
+// Lua event name: "MapScreen::centerCamera"
+// Lua signature: function(self)
+void CallMapScreenCenterCameraCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::clearTempMarkers"
+// Lua signature: function(self)
+void CallMapScreenClearTempMarkersCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::refresh"
+// Lua signature: function(self)
+void CallMapScreenRefreshCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::update"
+// Lua signature: function(self)
+void CallMapScreenUpdateCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::addSquad"
+// Lua signature: function(self, squad)
+void CallMapScreenAddSquadCallbacks(MapScreen* self, Platoon* squad);
+
+// Lua event name: "MapScreen::removeSquad"
+// Lua signature: function(self, squad)
+void CallMapScreenRemoveSquadCallbacks(MapScreen* self, Platoon* squad);
+
+// Lua event name: "MapScreen::hide"
+// Lua signature: function(self)
+void CallMapScreenHideCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::setMovementMarker"
+// Lua signature: function(self, position, time)
+void CallMapScreenSetMovementMarkerCallbacks(MapScreen* self, const Ogre::Vector3& position, float time);
+
+// Lua event name: "MapScreen::showRoads"
+// Lua signature: function(self, on)
+void CallMapScreenShowRoadsCallbacks(MapScreen* self, bool on);
+
+// Lua event name: "MapScreen::updatePlayerTownMapMarker"
+// Lua signature: function(self, town)
+void CallMapScreenUpdatePlayerTownMapMarkerCallbacks(MapScreen* self, const hand& town);
+
+// Lua event name: "MapScreen::updateZoom"
+// Lua signature: function(self)
+void CallMapScreenUpdateZoomCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::updateCameraMarker"
+// Lua signature: function(self)
+void CallMapScreenUpdateCameraMarkerCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::refreshTowns"
+// Lua signature: function(self)
+void CallMapScreenRefreshTownsCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::refreshSquads"
+// Lua signature: function(self)
+void CallMapScreenRefreshSquadsCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::updateCharacterMarker"
+// Lua signature: function(self, object)
+void CallMapScreenUpdateCharacterMarkerCallbacks(MapScreen* self, RootObjectBase* object);
+
+// Lua event name: "MapScreen::getMouseWorldPosition"
+// Lua signature: function(self, position, defaultVal) -> boolean
+bool CallMapScreenGetMouseWorldPositionCallbacks(MapScreen* self, const Ogre::Vector3& position, bool defaultVal);
+
+// Lua event name: "MapScreen::worldToMapCoords"
+// Lua signature: function(self, position, result)
+void CallMapScreenWorldToMapCoordsCallbacks(MapScreen* self, const Ogre::Vector3& position, const MyGUI::IntPoint& result);
+
+// Lua event name: "MapScreen::mapCoordsToWorld"
+// Lua signature: function(self, point, result)
+void CallMapScreenMapCoordsToWorldCallbacks(MapScreen* self, const MyGUI::IntPoint& point, const Ogre::Vector3& result);
+
+// Lua event name: "MapScreen::mapMouseWheel"
+// Lua signature: function(self, sender, rel)
+void CallMapScreenMapMouseWheelCallbacks(MapScreen* self, MyGUI::Widget* sender, int rel);
+
+// Lua event name: "MapScreen::mapMousePressed"
+// Lua signature: function(self, sender, left, top, id)
+void CallMapScreenMapMousePressedCallbacks(MapScreen* self, MyGUI::Widget* sender, int left, int top, int id);
+
+// Lua event name: "MapScreen::mapMouseReleased"
+// Lua signature: function(self, sender, left, top, id)
+void CallMapScreenMapMouseReleasedCallbacks(MapScreen* self, MyGUI::Widget* sender, int left, int top, int id);
+
+// Lua event name: "MapScreen::setupRoads"
+// Lua signature: function(self)
+void CallMapScreenSetupRoadsCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::updateRoads"
+// Lua signature: function(self)
+void CallMapScreenUpdateRoadsCallbacks(MapScreen* self);
+
+// Lua event name: "MapScreen::centerButton"
+// Lua signature: function(self, sender)
+void CallMapScreenCenterButtonCallbacks(MapScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "MapScreen::zoomInButton"
+// Lua signature: function(self, sender)
+void CallMapScreenZoomInButtonCallbacks(MapScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "MapScreen::zoomOutButton"
+// Lua signature: function(self, sender)
+void CallMapScreenZoomOutButtonCallbacks(MapScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "MapScreen::getMarkerColor"
+// Lua signature: function(who, result)
+void CallMapScreenGetMarkerColorCallbacks(RootObjectBase* who, const MyGUI::Colour& result);
+
+// Lua event name: "ManagementScreen::getSingleton"
+// Lua signature: function(defaultVal) -> ManagementScreen
+ManagementScreen* CallManagementScreenGetSingletonCallbacks(ManagementScreen* defaultVal);
+
+// Lua event name: "ManagementScreen::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallManagementScreenDestructorCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::update"
+// Lua signature: function(self)
+void CallManagementScreenUpdateCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::clear"
+// Lua signature: function(self)
+void CallManagementScreenClearCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::getVisible"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallManagementScreenGetVisibleCallbacks(ManagementScreen* self, bool defaultVal);
+
+// Lua event name: "ManagementScreen::setVisible"
+// Lua signature: function(self, on, tab)
+void CallManagementScreenSetVisibleCallbacks(ManagementScreen* self, bool on, int tab);
+
+// Lua event name: "ManagementScreen::closeEverythingButton"
+// Lua signature: function(self, widget, name)
+void CallManagementScreenCloseEverythingButtonCallbacks(ManagementScreen* self, MyGUI::Widget* widget, const std::string& name);
+
+// Lua event name: "ManagementScreen::tabCallback"
+// Lua signature: function(self, sender, index)
+void CallManagementScreenTabCallbackCallbacks(ManagementScreen* self, MyGUI::Widget* sender, double index);
+
+// Lua event name: "ManagementScreen::getCurrentTab"
+// Lua signature: function(self, defaultVal) -> number
+double CallManagementScreenGetCurrentTabCallbacks(ManagementScreen* self, double defaultVal);
+
+// Lua event name: "ManagementScreen::getTab"
+// Lua signature: function(self, index, result)
+void CallManagementScreenGetTabCallbacks(ManagementScreen* self, int index, MyGUI::Widget* result);
+
+// Lua event name: "ManagementScreen::getWidget"
+// Lua signature: function(self, name, result)
+void CallManagementScreenGetWidgetCallbacks(ManagementScreen* self, const std::string& name, MyGUI::Widget* result);
+
+// Lua event name: "ManagementScreen::refresh"
+// Lua signature: function(self, current, progress)
+void CallManagementScreenRefreshCallbacks(ManagementScreen* self, GameData* current, float progress);
+
+// Lua event name: "ManagementScreen::refreshResearchList"
+// Lua signature: function(self)
+void CallManagementScreenRefreshResearchListCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::refreshResearchRate"
+// Lua signature: function(self)
+void CallManagementScreenRefreshResearchRateCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::refreshDiplomacy"
+// Lua signature: function(self)
+void CallManagementScreenRefreshDiplomacyCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::refreshSquads"
+// Lua signature: function(self)
+void CallManagementScreenRefreshSquadsCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::refreshMap"
+// Lua signature: function(self, centerCamera)
+void CallManagementScreenRefreshMapCallbacks(ManagementScreen* self, bool centerCamera);
+
+// Lua event name: "ManagementScreen::showRoads"
+// Lua signature: function(self, value)
+void CallManagementScreenShowRoadsCallbacks(ManagementScreen* self, bool value);
+
+// Lua event name: "ManagementScreen::addSquadToMap"
+// Lua signature: function(self, squad)
+void CallManagementScreenAddSquadToMapCallbacks(ManagementScreen* self, Platoon* squad);
+
+// Lua event name: "ManagementScreen::removeSquadFromMap"
+// Lua signature: function(self, squad)
+void CallManagementScreenRemoveSquadFromMapCallbacks(ManagementScreen* self, Platoon* squad);
+
+// Lua event name: "ManagementScreen::addMessage"
+// Lua signature: function(self, owner, message, logColor)
+void CallManagementScreenAddMessageCallbacks(ManagementScreen* self, const std::string& owner, const std::string& message, int logColor);
+
+// Lua event name: "ManagementScreen::resetSquads"
+// Lua signature: function(self)
+void CallManagementScreenResetSquadsCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::refreshMessages"
+// Lua signature: function(self)
+void CallManagementScreenRefreshMessagesCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::refreshAI"
+// Lua signature: function(self)
+void CallManagementScreenRefreshAICallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::setCraftingBench"
+// Lua signature: function(self, buildingHandle)
+void CallManagementScreenSetCraftingBenchCallbacks(ManagementScreen* self, const hand& buildingHandle);
+
+// Lua event name: "ManagementScreen::printResearch"
+// Lua signature: function(panel, data, listName, displayName, category)
+void CallManagementScreenPrintResearchCallbacks(DatapanelGUI* panel, GameData* data, const std::string& listName, const std::string& displayName, int category);
+
+// Lua event name: "ManagementScreen::showDebugMarker"
+// Lua signature: function(self, position)
+void CallManagementScreenShowDebugMarkerCallbacks(ManagementScreen* self, const Ogre::Vector3& position);
+
+// Lua event name: "ManagementScreen::_CONSTRUCTOR"
+// Lua signature: function(self)
+void CallManagementScreenConstructedCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::updateResearchListRate"
+// Lua signature: function(self)
+void CallManagementScreenUpdateResearchListRateCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::refreshResearchListDescription"
+// Lua signature: function(self)
+void CallManagementScreenRefreshResearchListDescriptionCallbacks(ManagementScreen* self);
+
+// Lua event name: "ManagementScreen::researchTypeSelect"
+// Lua signature: function(self, sender, index)
+void CallManagementScreenResearchTypeSelectCallbacks(ManagementScreen* self, MyGUI::Widget* sender, double index);
+
+// Lua event name: "ManagementScreen::addButtonPress"
+// Lua signature: function(self, sender, left, top, id)
+void CallManagementScreenAddButtonPressCallbacks(ManagementScreen* self, MyGUI::Widget* sender, int left, int top, int id);
+
+// Lua event name: "ManagementScreen::removeButtonPress"
+// Lua signature: function(self, sender, left, top, id)
+void CallManagementScreenRemoveButtonPressCallbacks(ManagementScreen* self, MyGUI::Widget* sender, int left, int top, int id);
+
+// Lua event name: "ManagementScreen::mouseOverCallback"
+// Lua signature: function(self, sender, left, top)
+void CallManagementScreenMouseOverCallbacks(ManagementScreen* self, MyGUI::Widget* sender, int left, int top);
+
+// Lua event name: "ManagementScreen::TechItemViewData::getName"
+// Lua signature: function(self, result)
+void CallTechItemViewDataGetNameCallbacks(ManagementScreen::TechItemViewData* self, const std::string& result);
+
+// Lua event name: "ManagementScreen::TechItemViewData::getValue"
+// Lua signature: function(self, result)
+void CallTechItemViewDataGetValueCallbacks(ManagementScreen::TechItemViewData* self, const std::string& result);
+
+// Lua event name: "ManagementScreen::TechItemViewData::getProgress"
+// Lua signature: function(self, defaultVal) -> number
+double CallTechItemViewDataGetProgressCallbacks(ManagementScreen::TechItemViewData* self, double defaultVal);
+
+// Lua event name: "ManagementScreen::TechItemViewData::setItem"
+// Lua signature: function(self, item)
+void CallTechItemViewDataSetItemCallbacks(ManagementScreen::TechItemViewData* self, void* item);
+
+// Lua event name: "ManagementScreen::TechItemViewData::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallTechItemViewDataDestructorCallbacks(ManagementScreen::TechItemViewData* self);
+
+// Lua event name: "ManagementScreen::researchQueueTooltip"
+// Lua signature: function(self, layout, info, data)
+void CallManagementScreenResearchQueueTooltipCallbacks(ManagementScreen* self, wraps::BaseLayout* layout, void* info, const ManagementScreen::TechItemViewData& data);
+
+// Lua event name: "ManagementScreen::researchRemoved"
+// Lua signature: function(self, index, item)
+void CallManagementScreenResearchRemovedCallbacks(ManagementScreen* self, int index, const ManagementScreen::TechItemViewData& item);
+
+// Lua event name: "ManagementScreen::researchValidateOrder"
+// Lua signature: function(self, first, second, defaultVal) -> boolean
+bool CallManagementScreenResearchValidateOrderCallbacks(ManagementScreen* self, int first, int second, bool defaultVal);
+
+// Lua event name: "TitleScreen::getSingleton"
+// Lua signature: function(defaultVal) -> TitleScreen
+TitleScreen* CallTitleScreenGetSingletonCallbacks(TitleScreen* defaultVal);
+
+// Lua event name: "TitleScreen::_CONSTRUCTOR"
+// Lua signature: function(self)
+void CallTitleScreenConstructedCallbacks(TitleScreen* self);
+
+// Lua event name: "TitleScreen::_DESTRUCTOR"
+// Lua signature: function(self)
+void CallTitleScreenDestructorCallbacks(TitleScreen* self);
+
+// Lua event name: "TitleScreen::_NV_clear"
+// Lua signature: function(self)
+void CallTitleScreenNVClearCallbacks(TitleScreen* self);
+
+// Lua event name: "TitleScreen::_NV_show"
+// Lua signature: function(self, on)
+void CallTitleScreenNVShowCallbacks(TitleScreen* self, bool on);
+
+// Lua event name: "TitleScreen::_NV_update"
+// Lua signature: function(self)
+void CallTitleScreenNVUpdateCallbacks(TitleScreen* self);
+
+// Lua event name: "TitleScreen::closeTheOtherBits"
+// Lua signature: function(self, defaultVal) -> boolean
+bool CallTitleScreenCloseTheOtherBitsCallbacks(TitleScreen* self, bool defaultVal);
+
+// Lua event name: "TitleScreen::loadGame"
+// Lua signature: function(self, sender)
+void CallTitleScreenLoadGameCallbacks(TitleScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "TitleScreen::importGame"
+// Lua signature: function(self, sender)
+void CallTitleScreenImportGameCallbacks(TitleScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "TitleScreen::showOptions"
+// Lua signature: function(self, sender)
+void CallTitleScreenShowOptionsCallbacks(TitleScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "TitleScreen::credits"
+// Lua signature: function(self, sender)
+void CallTitleScreenCreditsCallbacks(TitleScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "TitleScreen::exitGame"
+// Lua signature: function(self, sender)
+void CallTitleScreenExitGameCallbacks(TitleScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "TitleScreen::continueGame"
+// Lua signature: function(self, sender)
+void CallTitleScreenContinueGameCallbacks(TitleScreen* self, MyGUI::Widget* sender);
+
+// Lua event name: "TitleScreen::hover"
+// Lua signature: function(self, sender, other)
+void CallTitleScreenHoverCallbacks(TitleScreen* self, MyGUI::Widget* sender, MyGUI::Widget* other);
+
+// Lua event name: "TitleScreen::setCreditsVisible"
+// Lua signature: function(self, value)
+void CallTitleScreenSetCreditsVisibleCallbacks(TitleScreen* self, bool value);
