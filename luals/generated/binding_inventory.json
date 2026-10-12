@@ -26464,7 +26464,7 @@
       "parent_metatable": "KenshiLua.GUIWindow",
       "properties": [
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "attributesDatapanel",
           "type": "DatapanelGUI"
         },
@@ -26474,7 +26474,7 @@
           "type": "boolean"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "character",
           "type": "Character"
         },
@@ -26484,32 +26484,32 @@
           "type": "string"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "description1Datapanel",
           "type": "DatapanelGUI"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "description2Datapanel",
           "type": "DatapanelGUI"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "skills1Datapanel",
           "type": "DatapanelGUI"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "skills2Datapanel",
           "type": "DatapanelGUI"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "skills3Datapanel",
           "type": "DatapanelGUI"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "skills4Datapanel",
           "type": "DatapanelGUI"
         },
@@ -26519,7 +26519,7 @@
           "type": "integer"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "statsDatapanel",
           "type": "DatapanelGUI"
         },

@@ -21,7 +21,7 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## 1. Notification Callbacks (151)
+## 1. Notification Callbacks (663)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -82,8 +82,6 @@ Events.off(handlerId)
 | `InventoryGUI::addTradePartner` | `function(self: InventoryGUI, payment: boolean, canDrop: boolean, isPlayer: boolean, whoHand: hand)` |
 | `BuildModeWindow::confirm` | `function(self: BuildModeWindow, widget: Widget)` |
 | `SquadManagementScreen::removeSquad` | `function(self: SquadManagementScreen, squadData: lightuserdata)` |
-| `ManagementScreen::addMessage` | `function(self: ManagementScreen, owner: string, message: string, logColor: integer)` |
-| `TitleScreen::loadGame` | `function(self: TitleScreen, widget: Widget)` |
 | `Character::addGoal` | `function(self: Character, taskType: integer, subject: RootObject)` |
 | `Character::addJob` | `function(self: Character, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
 | `Character::addOrder` | `function(self: Character, destBuilding: Building, taskType: integer, subject: RootObject, shift: boolean, clear: boolean, location: Vector3)` |
@@ -110,14 +108,6 @@ Events.off(handlerId)
 | `Building::_NV_buyMeCallback` | `function(self: Building, result: integer)` |
 | `DataPanelLine_Button::pressCallback` | `function(self: DataPanelLine_Button, sender: Widget)` |
 | `InventoryGUI::fencingConfirmationCallback` | `function(self: InventoryGUI, b: integer)` |
-| `OrdersPanel::blockmodeButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::holdButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::passiveButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::chaseButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::tauntButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
 | `ContextMenu::showContextMenu` | `function(self: ContextMenu, on: boolean, what: RootObject)` |
 | `ContextMenuGUI::show` | `function(self: ContextMenuGUI, ordersList: lektor<integer>, name: string, offset: boolean)` |
 | `Inventory::_NV__sectionAddItemCallback` | `function(self: Inventory, item: Item)` |
@@ -176,8 +166,530 @@ Events.off(handlerId)
 | `CharacterAnimal::_NV_foodUpdate` | `function(self: CharacterAnimal)` |
 | `CharacterAnimal::_NV_init` | `function(self: CharacterAnimal)` |
 | `CharacterAnimal::_NV_dropItem` | `function(self: CharacterAnimal, item: RootObject)` |
+| `GUIWindow::_NV_setPositionReal` | `function(self: GUIWindow, x: number, y: number)` |
+| `GUIWindow::_NV_setPosition` | `function(self: GUIWindow, x: integer, y: integer)` |
+| `GUIWindow::_NV_update` | `function(self: GUIWindow)` |
+| `GUIWindow::_NV_autoChangeSelectedObject` | `function(self: GUIWindow, obj: hand)` |
+| `GUIWindow::getWidget` | `function(self: GUIWindow, result: Widget)` |
+| `GUIWindow::_NV_resize` | `function(self: GUIWindow, w: integer, h: integer)` |
+| `CharacterStatsWindow::Stat::_DESTRUCTOR` | `function(self: CharacterStatsWindow::Stat)` |
+| `CharacterStatsWindow::Stat::operator=` | `function(self: CharacterStatsWindow::Stat, that: CharacterStatsWindow::Stat)` |
+| `CharacterStatsWindow::StatGroup::_DESTRUCTOR` | `function(self: CharacterStatsWindow::StatGroup)` |
+| `CharacterStatsWindow::_CONSTRUCTOR` | `function(self: CharacterStatsWindow, charHandle: hand)` |
+| `CharacterStatsWindow::_DESTRUCTOR` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::_NV_clear` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::_NV_create` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::_NV_update` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::_NV_show` | `function(self: CharacterStatsWindow, on: boolean)` |
+| `CharacterStatsWindow::_NV_autoChangeSelectedObject` | `function(self: CharacterStatsWindow, obj: hand)` |
+| `CharacterStatsWindow::setAutoUpdateMode` | `function(self: CharacterStatsWindow, on: boolean)` |
+| `CharacterStatsWindow::setupStats` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::updateStats` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::clearDesctiption` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::closeWindow` | `function(self: CharacterStatsWindow, sender: Widget, name: string)` |
+| `CharacterStatsWindow::statMouseOver` | `function(self: CharacterStatsWindow, sender: Widget, arg2: integer, arg3: integer)` |
+| `CharacterStatsWindow::addStat` | `function(type: integer, id: string, name: string, active: boolean, description: string)` |
+| `CharacterStatsWindow::BuildStats` | `function()` |
+| `DatapanelGUI::_NV_setPositionReal` | `function(self: DatapanelGUI, x: number, y: number)` |
+| `DatapanelGUI::_NV_setPosition` | `function(self: DatapanelGUI, x: integer, y: integer)` |
+| `DatapanelGUI::_NV_resize` | `function(self: DatapanelGUI, w: integer, h: integer)` |
+| `DatapanelGUI::_NV_clear` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::_NV_clearPage` | `function(self: DatapanelGUI, cat: integer)` |
+| `DatapanelGUI::_NV_hideAllWidgets` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::_NV_create` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::_NV_show` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::show_NonSmooth` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV_update` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::setPanelName` | `function(self: DatapanelGUI, name: string)` |
+| `DatapanelGUI::_NV_showTabs` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV_addTab` | `function(self: DatapanelGUI, id: integer, name: string, icon: string)` |
+| `DatapanelGUI::_NV_setTabEnabled` | `function(self: DatapanelGUI, id: integer, enabled: boolean)` |
+| `DatapanelGUI::_NV_setTabName` | `function(self: DatapanelGUI, id: integer, name: string)` |
+| `DatapanelGUI::setCaption` | `function(self: DatapanelGUI, s: string)` |
+| `DatapanelGUI::setCloseCallback` | `function(self: DatapanelGUI, close: lightuserdata)` |
+| `DatapanelGUI::_NV_setAutomaticRefresh` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV_setAutomaticTargeting` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV__zeroLines` | `function(self: DatapanelGUI, cat: integer, result: DataPanelLine)` |
+| `DatapanelGUI::setLineStatInfo` | `function(self: DatapanelGUI, s1: string, s2: string, category: integer, result: DataPanelLine)` |
+| `DatapanelGUI::setLineFaction` | `function(self: DatapanelGUI, s1: string, s2: string, category: integer, v1: number, v2: number, result: DataPanelLine_Faction)` |
+| `DatapanelGUI::setLineTextButton` | `function(self: DatapanelGUI, text: string, caption: string, category: integer, buttonWidth: number, skin: string, result: DataPanelLine_Button)` |
+| `DatapanelGUI::setLineButton` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, result: DataPanelLine_Button)` |
+| `DatapanelGUI::setLineToggleButton` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, result: DataPanelLine_Button)` |
+| `DatapanelGUI::setLineSliderEditable` | `function(self: DatapanelGUI, key: string, category: integer, showName: boolean, min: number, max: number, value: lightuserdata, result: DataPanelLine_SliderEditable)` |
+| `DatapanelGUI::setLineText` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, wordWrap: boolean, textAlign: integer, result: DataPanelLine_Text)` |
+| `DatapanelGUI::setLineTextEditable` | `function(self: DatapanelGUI, key: string, text: string, category: integer, showKey: boolean, multiLine: boolean, textAlign: integer, width: number, result: DataPanelLine_TextEditable)` |
+| `DatapanelGUI::setLineSlider` | `function(self: DatapanelGUI, key: string, caption: string, min: number, max: number, category: integer, value: lightuserdata, scale: number, result: DataPanelLine_Slider)` |
+| `DatapanelGUI::setLineProgress` | `function(self: DatapanelGUI, key: string, category: integer, progressValue: number, progressText: string, showKey: boolean, result: DataPanelLine_Progress)` |
+| `DatapanelGUI::removeLine` | `function(self: DatapanelGUI, s1: string, category: integer)` |
+| `DatapanelGUI::setLineCheckbox` | `function(self: DatapanelGUI, s1: string, val: lightuserdata, category: integer, result: DataPanelLine_CheckBox)` |
+| `DatapanelGUI::setLineDropBox` | `function(self: DatapanelGUI, key: string, category: integer, valPtr: lightuserdata, goBox: boolean, width: number, result: DataPanelLine_DropBox)` |
+| `DatapanelGUI::addSpace` | `function(self: DatapanelGUI, category: integer, h: number)` |
+| `DatapanelGUI::setLines` | `function(self: DatapanelGUI, data: lektor<StringPair>, category: integer)` |
+| `DatapanelGUI::_NV_setCategoryIcon` | `function(self: DatapanelGUI, cat: integer, image: string)` |
+| `DatapanelGUI::_NV_changeCategory` | `function(self: DatapanelGUI, cat: integer)` |
+| `DatapanelGUI::addCustomLine` | `function(self: DatapanelGUI, line: DataPanelLine)` |
+| `DatapanelGUI::_NV_autoChangeSelectedObject` | `function(self: DatapanelGUI, obj: hand)` |
+| `DatapanelGUI::_NV_setObject` | `function(self: DatapanelGUI, obj: hand)` |
+| `DatapanelGUI::_NV_setLineSpacing` | `function(self: DatapanelGUI, numLinesPerScreen: number)` |
+| `DatapanelGUI::tabButton` | `function(self: DatapanelGUI, sender: Widget, arg2: integer, arg3: integer, arg4: integer)` |
+| `DatapanelGUI::_DESTRUCTOR` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::createLine` | `function(self: DatapanelGUI, line: DataPanelLine, category: integer, lastLine: boolean, result: DataPanelLine)` |
+| `DatapanelGUI::closeButtonCallback` | `function(self: DatapanelGUI, arg1: Widget, arg2: string)` |
+| `DatapanelGUI::mouseOverCallback` | `function(self: DatapanelGUI, sender: Widget)` |
+| `DatapanelGUI::notifyMouseWheel` | `function(self: DatapanelGUI, sender: Widget, rel: integer)` |
+| `DatapanelGUI::getCoords` | `function(self: DatapanelGUI, left: number, top: number, width: number, height: number, result: IntCoord)` |
+| `DatapanelGUI::clearCategoryTabs` | `function(self: DatapanelGUI)` |
+| `DataPanelLine::_DESTRUCTOR` | `function(self: DataPanelLine)` |
+| `DataPanelLine::_NV_setVisible` | `function(self: DataPanelLine, on: boolean)` |
+| `DataPanelLine::_NV_setEnabled` | `function(self: DataPanelLine, on: boolean)` |
+| `DataPanelLine::_NV_refresh` | `function(self: DataPanelLine)` |
+| `DataPanelLine::_NV_createMe` | `function(self: DataPanelLine, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine::_NV_resize` | `function(self: DataPanelLine, width: integer, height: integer)` |
+| `DataPanelLine_Faction::_CONSTRUCTOR` | `function(self: DataPanelLine_Faction, a: string, b: string, cat: integer, vv1: number, vv2: number)` |
+| `DataPanelLine_Faction::_NV_createMe` | `function(self: DataPanelLine_Faction, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Faction::_DESTRUCTOR` | `function(self: DataPanelLine_Faction)` |
+| `DataPanelLine_Research::_CONSTRUCTOR` | `function(self: DataPanelLine_Research, a: string, b: string, cat: integer, vv1: number, barColor: string, Xbut: boolean)` |
+| `DataPanelLine_Research::_NV_createMe` | `function(self: DataPanelLine_Research, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Research::_DESTRUCTOR` | `function(self: DataPanelLine_Research)` |
+| `DataPanelLine_Button::_CONSTRUCTOR` | `function(self: DataPanelLine_Button, a: string, b: string, cat: integer, w: number, skin: string)` |
+| `DataPanelLine_Button::_NV_getUserData` | `function(self: DataPanelLine_Button, result: hand)` |
+| `DataPanelLine_Button::_NV_createMe` | `function(self: DataPanelLine_Button, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Button::_DESTRUCTOR` | `function(self: DataPanelLine_Button)` |
+| `DataPanelLine_SliderEditable::setEditableValuePtr` | `function(self: DataPanelLine_SliderEditable, val: lightuserdata, lo: number, hi: number)` |
+| `DataPanelLine_SliderEditable::_NV_updateValuePtr` | `function(self: DataPanelLine_SliderEditable, ptr: lightuserdata)` |
+| `DataPanelLine_SliderEditable::setValue` | `function(self: DataPanelLine_SliderEditable, v: number)` |
+| `DataPanelLine_SliderEditable::_NV_refresh` | `function(self: DataPanelLine_SliderEditable)` |
+| `DataPanelLine_SliderEditable::setPrecision` | `function(self: DataPanelLine_SliderEditable, dp: integer)` |
+| `DataPanelLine_SliderEditable::_CONSTRUCTOR` | `function(self: DataPanelLine_SliderEditable, text: string, category: integer, showName: boolean, min: number, max: number, value: lightuserdata)` |
+| `DataPanelLine_SliderEditable::_NV_createMe` | `function(self: DataPanelLine_SliderEditable, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_SliderEditable::editCallback` | `function(self: DataPanelLine_SliderEditable, sender: Widget)` |
+| `DataPanelLine_SliderEditable::sliderCallback` | `function(self: DataPanelLine_SliderEditable, sender: Widget, position: integer)` |
+| `DataPanelLine_SliderEditable::_DESTRUCTOR` | `function(self: DataPanelLine_SliderEditable)` |
+| `DataPanelLine_Text::_CONSTRUCTOR` | `function(self: DataPanelLine_Text, key: string, text: string, category: integer, wordWrap: boolean, textAlign: integer)` |
+| `DataPanelLine_Text::_NV_createMe` | `function(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Text::_DESTRUCTOR` | `function(self: DataPanelLine_Text)` |
+| `DataPanelLine_TextEditable::_CONSTRUCTOR` | `function(self: DataPanelLine_TextEditable, key: string, text: string, category: integer, showKey: boolean, multiLine: boolean, textAlign: integer, width: number)` |
+| `DataPanelLine_TextEditable::_NV_createMe` | `function(self: DataPanelLine_TextEditable, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_TextEditable::textChanged` | `function(self: DataPanelLine_TextEditable, sender: Widget)` |
+| `DataPanelLine_TextEditable::_DESTRUCTOR` | `function(self: DataPanelLine_TextEditable)` |
+| `DataPanelLine_Slider::_CONSTRUCTOR` | `function(self: DataPanelLine_Slider, key: string, text: string, min: number, max: number, category: integer, scale: number)` |
+| `DataPanelLine_Slider::sliderValueChanged` | `function(self: DataPanelLine_Slider, sender: Widget, value: integer)` |
+| `DataPanelLine_Slider::_NV_updateValuePtr` | `function(self: DataPanelLine_Slider, ptr: lightuserdata)` |
+| `DataPanelLine_Slider::setValue` | `function(self: DataPanelLine_Slider, value: number)` |
+| `DataPanelLine_Slider::_NV_refresh` | `function(self: DataPanelLine_Slider)` |
+| `DataPanelLine_Slider::_NV_createMe` | `function(self: DataPanelLine_Slider, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Slider::_DESTRUCTOR` | `function(self: DataPanelLine_Slider)` |
+| `DataPanelLine_Progress::setProgress` | `function(self: DataPanelLine_Progress, value: number, text: string)` |
+| `DataPanelLine_Progress::_CONSTRUCTOR` | `function(self: DataPanelLine_Progress, key: string, category: integer, showKey: boolean)` |
+| `DataPanelLine_Progress::_NV_createMe` | `function(self: DataPanelLine_Progress, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Progress::_DESTRUCTOR` | `function(self: DataPanelLine_Progress)` |
+| `DataPanelLine_CheckBox::_NV_updateValuePtr` | `function(self: DataPanelLine_CheckBox, ptr: lightuserdata)` |
+| `DataPanelLine_CheckBox::_NV_refresh` | `function(self: DataPanelLine_CheckBox)` |
+| `DataPanelLine_CheckBox::setValue` | `function(self: DataPanelLine_CheckBox, checked: boolean)` |
+| `DataPanelLine_CheckBox::setValuePtr` | `function(self: DataPanelLine_CheckBox, valPtr: lightuserdata)` |
+| `DataPanelLine_CheckBox::_CONSTRUCTOR` | `function(self: DataPanelLine_CheckBox, key: string, cat: integer, val: lightuserdata)` |
+| `DataPanelLine_CheckBox::notifyToggleCheck` | `function(self: DataPanelLine_CheckBox, sender: Widget)` |
+| `DataPanelLine_CheckBox::_NV_createMe` | `function(self: DataPanelLine_CheckBox, parent: DatapanelGUI, topReal: number, lastLine: boolean)` |
+| `DataPanelLine_CheckBox::_DESTRUCTOR` | `function(self: DataPanelLine_CheckBox)` |
+| `DataPanelLine_DropBox::addAValue` | `function(self: DataPanelLine_DropBox, key: string, val: integer)` |
+| `DataPanelLine_DropBox::setSelectedValue` | `function(self: DataPanelLine_DropBox, val: integer)` |
+| `DataPanelLine_DropBox::getSelectedText` | `function(self: DataPanelLine_DropBox, result: string)` |
+| `DataPanelLine_DropBox::clearValues` | `function(self: DataPanelLine_DropBox)` |
+| `DataPanelLine_DropBox::_NV_createMe` | `function(self: DataPanelLine_DropBox, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_DropBox::_NV_updateValuePtr` | `function(self: DataPanelLine_DropBox, ptr: lightuserdata)` |
+| `DataPanelLine_DropBox::_NV_refresh` | `function(self: DataPanelLine_DropBox)` |
+| `DataPanelLine_DropBox::_CONSTRUCTOR` | `function(self: DataPanelLine_DropBox, text: string, category: integer, valuePtr: lightuserdata, width: number, hasGobox: boolean)` |
+| `DataPanelLine_DropBox::selectionChange` | `function(self: DataPanelLine_DropBox, sender: Widget, i: integer)` |
+| `DataPanelLine_DropBox::goPressed` | `function(self: DataPanelLine_DropBox, sender: Widget)` |
+| `DataPanelLine_DropBox::_DESTRUCTOR` | `function(self: DataPanelLine_DropBox)` |
+| `DataPanelLine_KeyConfig::_CONSTRUCTOR` | `function(self: DataPanelLine_KeyConfig, cmd: string, text: string, cat: integer)` |
+| `DataPanelLine_KeyConfig::getCommand` | `function(self: DataPanelLine_KeyConfig, result: string)` |
+| `DataPanelLine_KeyConfig::setKey` | `function(self: DataPanelLine_KeyConfig, s: string)` |
+| `DataPanelLine_KeyConfig::eraseKey` | `function(self: DataPanelLine_KeyConfig, key: string)` |
+| `DataPanelLine_KeyConfig::_NV_refresh` | `function(self: DataPanelLine_KeyConfig)` |
+| `DataPanelLine_KeyConfig::cancel` | `function(self: DataPanelLine_KeyConfig)` |
+| `DataPanelLine_KeyConfig::_NV_createMe` | `function(self: DataPanelLine_KeyConfig, p: DatapanelGUI, vpos: number, lastLine: boolean)` |
+| `DataPanelLine_KeyConfig::clickButton` | `function(self: DataPanelLine_KeyConfig, sender: Widget)` |
+| `DataPanelLine_KeyConfig::_DESTRUCTOR` | `function(self: DataPanelLine_KeyConfig)` |
+| `ForgottenGUI::_CONSTRUCTOR` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::_DESTRUCTOR` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::clearGUI` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::shutDown` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::restart` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::changeFontSize` | `function()` |
+| `ForgottenGUI::setupGuiScaling` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::init` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::showLoadingMessage` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::showPauseMessage` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::setLoading` | `function(self: ForgottenGUI, value: boolean)` |
+| `ForgottenGUI::messageBox` | `function(self: ForgottenGUI, title: string, message: string, btn: integer, modal: boolean, callback: lightuserdata, result: Widget)` |
+| `ForgottenGUI::hideMessageBox` | `function(self: ForgottenGUI, enter: boolean, result: boolean)` |
+| `ForgottenGUI::showMainbar` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::updateBountyPanelVisibility` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::toggle` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::showNames` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::showPrintOutput` | `function(self: ForgottenGUI, v: boolean)` |
+| `ForgottenGUI::showCharacterEditor` | `function(self: ForgottenGUI, characters: lektor<Character>, mode: integer, races: vector<GameDataReference>::type)` |
+| `ForgottenGUI::closeCharacterEditor` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::showCharacterStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::closeCharacterStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::closeAllCharacterStatsWindows` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::toggleStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::toggleCharacterStatsWindowPermanent` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::selectedObjectsChanged` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::updateToOrdersPanel` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::notifyTownDeleted` | `function(self: ForgottenGUI, t: Town)` |
+| `ForgottenGUI::update` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::showTradeWindow` | `function(self: ForgottenGUI, a: hand, b: hand, type: integer)` |
+| `ForgottenGUI::closeTradeWindow` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::showInventory` | `function(self: ForgottenGUI, owner: hand, autoPosition: boolean, x: number, y: number, result: InventoryGUI)` |
+| `ForgottenGUI::showTraderInventory` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
+| `ForgottenGUI::showInventoryBuilding` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
+| `ForgottenGUI::showInventoryNPC` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
+| `ForgottenGUI::closeInventory` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::closeInventoryBuilding` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeAllInventories` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeAllWindows` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::toggleInventory` | `function(self: ForgottenGUI, owner: hand, parentInv: InventoryGUI, attached: boolean, result: InventoryGUI)` |
+| `ForgottenGUI::toggleInventoryWindowPermanent` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::toggleHelpWindow` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::addWindowToUpdateList` | `function(self: ForgottenGUI, win: GUIWindow)` |
+| `ForgottenGUI::removeWindowFromUpdateList` | `function(self: ForgottenGUI, win: GUIWindow)` |
+| `ForgottenGUI::addScreenLabel` | `function(self: ForgottenGUI, label: ScreenLabelInterface)` |
+| `ForgottenGUI::addDatapanelToUpdateList` | `function(self: ForgottenGUI, datapanel: DatapanelGUI)` |
+| `ForgottenGUI::removeDatapanelFromUpdateList` | `function(self: ForgottenGUI, datapanel: DatapanelGUI)` |
+| `ForgottenGUI::destroyWidget` | `function(self: ForgottenGUI, widget: Widget)` |
+| `ForgottenGUI::setup` | `function(self: ForgottenGUI, mRoot: lightuserdata, window: lightuserdata)` |
+| `ForgottenGUI::setMouseCursorVisible` | `function(self: ForgottenGUI, visible: boolean)` |
+| `ForgottenGUI::_showTradeWindow` | `function(self: ForgottenGUI, a: RootObject, b: RootObject, tradeType: integer)` |
+| `ForgottenGUI::setInventoryPosition` | `function(self: ForgottenGUI, owner: hand, inventory: InventoryGUI)` |
+| `ForgottenGUI::inventoriesSelectedObjectUpdate` | `function(self: ForgottenGUI, selectedObject: hand)` |
+| `ForgottenGUI::keepWindownOnScreen` | `function(self: ForgottenGUI, win: Widget)` |
+| `ForgottenGUI::getDataLineColor` | `function(self: ForgottenGUI, actualVal: integer, normalVal: integer, result: string)` |
+| `ForgottenGUI::createPanel` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createPanelAbs` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createImage` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, image: string, result: Widget)` |
+| `ForgottenGUI::createImageAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, image: string, result: Widget)` |
+| `ForgottenGUI::createRotatableImageAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, image: string, result: Widget)` |
+| `ForgottenGUI::createTabPanel` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createButtonAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, name: string, text: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createButton` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, text: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createDropBox` | `function(self: ForgottenGUI, parent: Widget, name: string, top: number, left: number, width: number, height: number, result: Widget)` |
+| `ForgottenGUI::createDropBoxAbs` | `function(self: ForgottenGUI, parent: Widget, name: string, top: integer, left: integer, width: integer, height: integer, result: Widget)` |
+| `ForgottenGUI::createProgressBar` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, type: string, result: Widget)` |
+| `ForgottenGUI::createProgressBarAbs` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, type: string, result: Widget)` |
+| `ForgottenGUI::createFloatingLabel` | `function(self: ForgottenGUI, top: number, left: number, width: number, height: number, text: string, a: integer, layer: string, result: Widget)` |
+| `ForgottenGUI::createValueEdit` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, result: Widget)` |
+| `ForgottenGUI::createScrollBarAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, range: integer, value: integer, result: Widget)` |
+| `ForgottenGUI::createCheckbox` | `function(self: ForgottenGUI, parent: Widget, left: integer, top: integer, width: integer, height: integer, caption: string, result: Widget)` |
+| `ForgottenGUI::createValueEditTransparent` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, result: Widget)` |
+| `ForgottenGUI::createListbox` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, result: Widget)` |
+| `ForgottenGUI::createFloatingImage` | `function(self: ForgottenGUI, image: string, top: number, left: number, width: number, height: number, layer: string, result: Widget)` |
+| `ForgottenGUI::createFloatingImageAbs` | `function(self: ForgottenGUI, image: string, top: number, left: number, width: number, height: number, layer: string, result: Widget)` |
+| `ForgottenGUI::createFloatingProgressBar` | `function(self: ForgottenGUI, result: FloatingProgressBar)` |
+| `ForgottenGUI::createScreenLabel` | `function(self: ForgottenGUI, text: string, textColour: Colour, textSize: integer, risingSpeed: integer, result: ScreenLabel)` |
+| `ForgottenGUI::createScreenLabelD` | `function(self: ForgottenGUI, text: string, time: number, result: ScreenLabelDebug)` |
+| `NewGameOptionsWindow::_CONSTRUCTOR` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::_DESTRUCTOR` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::setVisible` | `function(self: NewGameOptionsWindow, visible: boolean)` |
+| `NewGameOptionsWindow::setPosition` | `function(self: NewGameOptionsWindow, x: integer, y: integer)` |
+| `NewGameOptionsWindow::update` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::setOptions` | `function(self: NewGameOptionsWindow, options: GameplayOptions)` |
+| `InventoryIcon::_CONSTRUCTOR` | `function(self: InventoryIcon, item: Item, position: types::TPoint<int>, parent: Widget)` |
+| `InventoryIcon::setPosition` | `function(self: InventoryIcon, position: types::TPoint<int>)` |
+| `InventoryIcon::getSize` | `function(self: InventoryIcon, result: types::TSize<int>)` |
+| `InventoryIcon::update` | `function(self: InventoryIcon)` |
+| `InventoryIcon::getWidget` | `function(self: InventoryIcon, result: Widget)` |
+| `InventoryIcon::createIconImage` | `function(item: Item, name: string, size: iVector2)` |
+| `InventoryIcon::getItemSize` | `function(itemData: GameData, result: types::TSize<int>)` |
+| `InventoryIcon::getItemPosition` | `function(x: integer, y: integer, result: types::TPoint<int>)` |
+| `InventoryIcon::_DESTRUCTOR` | `function(self: InventoryIcon)` |
+| `InventorySectionGUI::_CONSTRUCTOR` | `function(self: InventorySectionGUI, widget: Widget, sectionName: string)` |
+| `InventorySectionGUI::_DESTRUCTOR` | `function(self: InventorySectionGUI)` |
+| `InventorySectionGUI::getItemAbsolutePosition` | `function(self: InventorySectionGUI, x: integer, y: integer, result: types::TPoint<int>)` |
+| `InventorySectionGUI::getWidget` | `function(self: InventorySectionGUI, result: Widget)` |
+| `InventorySectionGUI::getPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, round: boolean, result: types::TPoint<int>)` |
+| `InventorySectionGUI::setEnabled` | `function(self: InventorySectionGUI, value: boolean)` |
+| `InventorySectionGUI::refreshIcons` | `function(self: InventorySectionGUI, section: InventorySection)` |
+| `InventorySectionGUI::update` | `function(self: InventorySectionGUI)` |
+| `InventoryGUI::TradeResult::_CONSTRUCTOR` | `function(self: InventoryGUI::TradeResult, value: integer)` |
+| `InventoryGUI::TradeResult::showMessage` | `function(self: InventoryGUI::TradeResult)` |
+| `InventoryGUI::TradeResult::ShowMessage` | `function(value: integer)` |
+| `InventoryGUI::InventoryTradeData::operator=` | `function(self: InventoryGUI::InventoryTradeData, other: InventoryGUI::InventoryTradeData)` |
+| `InventoryGUI::setTradingTown` | `function(town: hand)` |
+| `InventoryGUI::removeTradePartner` | `function(tradeWith: InventoryGUI)` |
+| `InventoryGUI::clearTradePartners` | `function()` |
+| `InventoryGUI::_NV_autoChangeSelectedObject` | `function(self: InventoryGUI, obj: hand)` |
+| `InventoryGUI::_NV_update` | `function(self: InventoryGUI)` |
+| `InventoryGUI::_NV_show` | `function(self: InventoryGUI, on: boolean)` |
+| `InventoryGUI::_NV_setPositionReal` | `function(self: InventoryGUI, x: number, y: number)` |
+| `InventoryGUI::_NV_refreshSection` | `function(self: InventoryGUI, section: InventorySection)` |
+| `InventoryGUI::refreshSection` | `function(self: InventoryGUI)` |
+| `InventoryGUI::autoArrangeButton` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::openBackpackButton` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::openLimbsInterface` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::showBackpack` | `function(self: InventoryGUI, on: boolean)` |
+| `InventoryGUI::windowButtonPressed` | `function(self: InventoryGUI, widget: Widget, name: string)` |
+| `InventoryGUI::stealingGUIInfoUpdate` | `function(self: InventoryGUI)` |
+| `InventoryGUI::getTrader1Trader2` | `function(self: InventoryGUI, trader1: InventoryGUI, trader2: InventoryGUI)` |
+| `InventoryGUI::playSound` | `function(self: InventoryGUI, eventId: string, item: Item)` |
+| `InventoryGUI::refreshAllSections` | `function(self: InventoryGUI)` |
+| `InventoryGUI::updateDatapanel` | `function(self: InventoryGUI)` |
+| `InventoryGUI::rightClickAutoEquipping` | `function(self: InventoryGUI)` |
+| `InventoryGUI::returnItem` | `function(self: InventoryGUI, item: Item, sectionName: string)` |
+| `InventoryGUI::sectionMouseButtonPressed` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `InventoryGUI::sectionMouseButtonReleased` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `InventoryGUI::onWindowFocus` | `function(self: InventoryGUI, sender: Widget, focus: boolean)` |
+| `InventoryGUI::windowMoved` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::getWindowCoord` | `function(self: InventoryGUI, result: types::TCoord<int>)` |
+| `InventoryGUI::_DESTRUCTOR` | `function(self: InventoryGUI)` |
+| `InventoryGUI::RClickAutoTrade` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
+| `InventoryGUI::RClickAutoTradeAll` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
+| `InventoryGUI::FenceCallbackData::_DESTRUCTOR` | `function(self: InventoryGUI::FenceCallbackData)` |
+| `InventoryGUI::getSectionWithMouseLocal` | `function(self: InventoryGUI, result: string)` |
+| `InventoryGUI::getSlotWithMouse` | `function(self: InventoryGUI, result: iVector2)` |
+| `InventoryLayout::_CONSTRUCTOR` | `function(self: InventoryLayout, file: string)` |
+| `InventoryLayout::_DESTRUCTOR` | `function(self: InventoryLayout)` |
+| `InventoryLayout::getWindow` | `function(self: InventoryLayout, result: Widget)` |
+| `InventoryLayout::getWidget` | `function(self: InventoryLayout, name: string, result: Widget)` |
+| `InventoryLayout::setupDataPanelInfos` | `function(self: InventoryLayout, name: string)` |
+| `InventoryLayout::notifyCellSizeChanged` | `function()` |
+| `InventoryLayout::setSectionGUIDisabled` | `function(self: InventoryLayout, sectionName: string, width: integer, height: integer)` |
+| `InventoryLayout::resizeSection` | `function(self: InventoryLayout, section: InventorySection, sectionGUI: InventorySectionGUI, result: types::TSize<int>)` |
+| `InventoryLayout::resizeSectionWidget` | `function(self: InventoryLayout, width: integer, height: integer, widget: Widget, result: types::TSize<int>)` |
+| `GenericFixedInventoryLayout::_NV_setSize` | `function(self: GenericFixedInventoryLayout, slotsW: integer, slotsH: integer)` |
+| `GenericFixedInventoryLayout::_DESTRUCTOR` | `function(self: GenericFixedInventoryLayout)` |
+| `BackpackInventoryLayout::_CONSTRUCTOR` | `function(self: BackpackInventoryLayout, standAlone: boolean)` |
+| `BackpackInventoryLayout::_DESTRUCTOR` | `function(self: BackpackInventoryLayout)` |
+| `MainTabPortraitPlatoon::addTab` | `function(self: MainTabPortraitPlatoon, tabControl: Widget, visible: boolean)` |
+| `MainTabPortraitPlatoon::detach` | `function(self: MainTabPortraitPlatoon)` |
+| `MainTabPortraitPlatoon::setFlash` | `function(self: MainTabPortraitPlatoon, flash: boolean)` |
+| `MainTabPortraitPlatoon::update` | `function(self: MainTabPortraitPlatoon)` |
+| `MainTabPortraitPlatoon::_DESTRUCTOR` | `function(self: MainTabPortraitPlatoon)` |
+| `MainBarGUI::_CONSTRUCTOR` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_DESTRUCTOR` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_clear` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_update` | `function(self: MainBarGUI)` |
+| `MainBarGUI::speedChanged` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_updateBountyPanelVisibility` | `function(self: MainBarGUI)` |
+| `MainBarGUI::updatePotraitsPlatoon` | `function(self: MainBarGUI)` |
+| `MainBarGUI::updatePortraits` | `function(self: MainBarGUI)` |
+| `MainBarGUI::refreshPortraitTabs` | `function(self: MainBarGUI)` |
+| `MainBarGUI::ordersPanelClear` | `function(self: MainBarGUI)` |
+| `MainBarGUI::setMessagePosition` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_show` | `function(self: MainBarGUI, on: boolean)` |
+| `MainBarGUI::setLevelEditMode` | `function(self: MainBarGUI, on: boolean)` |
+| `MainBarGUI::setLevelEditInteriorMode` | `function(self: MainBarGUI, interiorMode: boolean)` |
+| `MainBarGUI::setExtendInfoPanelEnabled` | `function(self: MainBarGUI, enabled: boolean)` |
+| `MainBarGUI::_NV_autoChangeSelectedObject` | `function(self: MainBarGUI, obj: hand)` |
+| `MainBarGUI::pressedKey` | `function(self: MainBarGUI, keycode: integer)` |
+| `MainBarGUI::updatePortrait` | `function(self: MainBarGUI, character: hand)` |
+| `MainBarGUI::platoonUpdated` | `function(self: MainBarGUI, platoon: RootObjectContainer, charAdded: boolean)` |
+| `MainBarGUI::updatePortraitSize` | `function(self: MainBarGUI, platoon: ActivePlatoon)` |
+| `MainBarGUI::closeMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleFactionWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleTechWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleCraftWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleSquadWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeFloorButtonUp` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeFloorButtonDown` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleInventory` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleStatsWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleHelpWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeSpeed` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::buildButton` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::ordersPanelFill` | `function(self: MainBarGUI, character: hand)` |
+| `MainBarGUI::serialise` | `function(self: MainBarGUI, data: GameData)` |
+| `MainBarGUI::loadFromSerialise` | `function(self: MainBarGUI, data: GameData)` |
+| `MainBarGUI::portraitChangeSelection` | `function(self: MainBarGUI, sender: Widget, index: number, follow: boolean)` |
+| `MainBarGUI::portraitSelectItemAccept` | `function(self: MainBarGUI, sender: Widget, index: number)` |
+| `MainBarGUI::portraitNotifyItem` | `function(self: MainBarGUI, sender: Widget, info: lightuserdata)` |
+| `MainBarGUI::tabPlatoonChange` | `function(self: MainBarGUI, sender: Widget, index: number)` |
+| `MainBarGUI::extendInfoPanel` | `function(self: MainBarGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MainBarGUI::getPausePanel` | `function(self: MainBarGUI, result: Widget)` |
+| `MainBarGUI::getLoadingPanel` | `function(self: MainBarGUI, result: Widget)` |
+| `MainBarGUI::getMedicalPanel` | `function(self: MainBarGUI, result: lightuserdata)` |
+| `MainBarGUI::getBuildingInventoryPosition` | `function(self: MainBarGUI, result: types::TPoint<int>)` |
+| `MainBarGUI::_getWidget` | `function(self: MainBarGUI, name: string, result: Widget)` |
+| `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine, faction: Faction)` |
+| `FactionsScreen::FactionRelationsLine::attachToWidget` | `function(self: FactionsScreen::FactionRelationsLine, widget: Widget)` |
+| `FactionsScreen::FactionRelationsLine::update` | `function(self: FactionsScreen::FactionRelationsLine)` |
+| `FactionsScreen::FactionRelationsLine::_DESTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine)` |
+| `FactionsScreen::_CONSTRUCTOR` | `function(self: FactionsScreen, screen: ManagementScreen)` |
+| `FactionsScreen::_DESTRUCTOR` | `function(self: FactionsScreen)` |
+| `FactionsScreen::clear` | `function(self: FactionsScreen)` |
+| `FactionsScreen::update` | `function(self: FactionsScreen)` |
+| `FactionsScreen::refresh` | `function(self: FactionsScreen)` |
+| `FactionsScreen::updateInfo` | `function(self: FactionsScreen)` |
+| `FactionsScreen::notifyEditTextChange` | `function(self: FactionsScreen, sender: Widget)` |
+| `FactionsScreen::setFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
+| `FactionsScreen::loseFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
+| `FactionsScreen::factionLineSelected` | `function(self: FactionsScreen, sender: Widget)` |
+| `FactionsScreen::notifyMouseWheel` | `function(self: FactionsScreen, sender: Widget, rel: integer)` |
+| `DialogueWindow::setVisible` | `function(self: DialogueWindow, visible: boolean)` |
+| `DialogueWindow::_NV_show` | `function(self: DialogueWindow, on: boolean)` |
+| `DialogueWindow::hide` | `function(self: DialogueWindow, dialogue: Dialogue)` |
+| `DialogueWindow::_NV_update` | `function(self: DialogueWindow)` |
+| `DialogueWindow::activateResponse` | `function(self: DialogueWindow, index: integer)` |
+| `DialogueWindow::setNPCText` | `function(self: DialogueWindow, text: string)` |
+| `DialogueWindow::setResponses` | `function(self: DialogueWindow, responses: void)` |
+| `DialogueWindow::clearResponses` | `function(self: DialogueWindow)` |
+| `DialogueWindow::changePortrait` | `function(self: DialogueWindow, character: Character, player: boolean)` |
+| `DialogueWindow::_DESTRUCTOR` | `function(self: DialogueWindow)` |
+| `DialogueWindow::updatePanelsPosition` | `function(self: DialogueWindow)` |
+| `SplashScreen::_CONSTRUCTOR` | `function(self: SplashScreen)` |
+| `SplashScreen::_DESTRUCTOR` | `function(self: SplashScreen)` |
+| `SplashScreen::update` | `function(self: SplashScreen)` |
+| `SplashScreen::skip` | `function(self: SplashScreen)` |
+| `SplashScreen::addLogo` | `function(self: SplashScreen, file: string, scale: number)` |
+| `OrderCellView::_CONSTRUCTOR` | `function(self: OrderCellView, parent: Widget)` |
+| `OrderCellView::_DESTRUCTOR` | `function(self: OrderCellView)` |
+| `OrderCellView::update` | `function(self: OrderCellView, info: lightuserdata, data: OrderData)` |
+| `OrderCellView::getCellDimension` | `function(sender: Widget, coord: IntCoord, drop: boolean)` |
+| `OrderCellView::getWidget` | `function(self: OrderCellView, result: Widget)` |
+| `OrderCellView::onRemove` | `function(self: OrderCellView, sender: Widget)` |
+| `OrderCellView::resize` | `function(self: OrderCellView)` |
+| `OrderData::_CONSTRUCTOR` | `function(self: OrderData)` |
+| `OrderData::set` | `function(self: OrderData, task: Tasker, index: integer, enabled: boolean)` |
+| `OrderData::updateText` | `function(self: OrderData)` |
+| `OrderData::_DESTRUCTOR` | `function(self: OrderData)` |
+| `OrderData::operator=` | `function(self: OrderData, other: OrderData, result: OrderData)` |
+| `OrdersItemBox::_CONSTRUCTOR` | `function(self: OrdersItemBox, parent: Widget)` |
+| `OrdersItemBox::_DESTRUCTOR` | `function(self: OrdersItemBox)` |
+| `OrdersPanel::_CONSTRUCTOR` | `function(self: OrdersPanel, mainbar: MainBarGUI, panel: Widget)` |
+| `OrdersPanel::_DESTRUCTOR` | `function(self: OrdersPanel)` |
+| `OrdersPanel::update` | `function(self: OrdersPanel, character: Character)` |
+| `OrdersPanel::clear` | `function(self: OrdersPanel)` |
+| `OrdersPanel::command` | `function(self: OrdersPanel, command: integer)` |
+| `OrdersPanel::refreshOrders` | `function(self: OrdersPanel)` |
+| `OrdersPanel::moveJob` | `function(self: OrdersPanel, orderIndex: integer, targetIndex: integer)` |
+| `OrdersPanel::removeJob` | `function(self: OrdersPanel, data: OrderData)` |
+| `OrdersPanel::notifyEndDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, result: boolean)` |
+| `OrdersPanel::toggleStealth` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::toggleRanged` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::setSpeed` | `function(self: OrdersPanel, speed: integer)` |
+| `OrdersPanel::setSpeedImage` | `function(self: OrdersPanel, speed: integer)` |
+| `OrdersPanel::speedPrevious` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::speedNext` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::blockmodeButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::holdButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::passiveButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::chaseButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::tauntButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OptionsWindow::_NV_show` | `function(self: OptionsWindow, value: boolean)` |
+| `OptionsWindow::show` | `function(self: OptionsWindow)` |
+| `OptionsWindow::hide` | `function(self: OptionsWindow)` |
+| `OptionsWindow::toggle` | `function(self: OptionsWindow)` |
+| `OptionsWindow::setKey` | `function(self: OptionsWindow, code: integer)` |
+| `OptionsWindow::_NV_update` | `function(self: OptionsWindow)` |
+| `OptionsWindow::_CONSTRUCTOR` | `function(self: OptionsWindow)` |
+| `OptionsWindow::_DESTRUCTOR` | `function(self: OptionsWindow)` |
+| `OptionsWindow::saveLocationChanged` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeFontSize` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeVolume` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleNames` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::resetTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeDistances` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleCompositor` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::resetAllKeys` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::saveOptions` | `function(self: OptionsWindow)` |
+| `OptionsWindow::create` | `function(self: OptionsWindow)` |
+| `OptionsWindow::updateResolutions` | `function(self: OptionsWindow)` |
+| `OptionsWindow::closeButton` | `function(self: OptionsWindow, sender: Widget)` |
+| `MapScreen::MapMarkerTown::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerTown, town: TownBase, mapScreen: MapScreen)` |
+| `MapScreen::MapMarkerTown::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerTown)` |
+| `MapScreen::MapMarkerTown::update` | `function(self: MapScreen::MapMarkerTown, mapPosition: IntPoint, zoom: integer)` |
+| `MapScreen::MapMarkerTown::setVisible` | `function(self: MapScreen::MapMarkerTown, value: boolean)` |
+| `MapScreen::MapMarkerCharacter::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter, character: RootObjectBase, mapScreen: MapScreen)` |
+| `MapScreen::MapMarkerCharacter::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter)` |
+| `MapScreen::MapMarkerCharacter::update` | `function(self: MapScreen::MapMarkerCharacter, mapPosition: IntPoint)` |
+| `MapScreen::MapMarkerCharacter::setVisible` | `function(self: MapScreen::MapMarkerCharacter, value: boolean)` |
+| `MapScreen::_CONSTRUCTOR` | `function(self: MapScreen, screen: ManagementScreen)` |
+| `MapScreen::_DESTRUCTOR` | `function(self: MapScreen)` |
+| `MapScreen::clear` | `function(self: MapScreen)` |
+| `MapScreen::centerCamera` | `function(self: MapScreen)` |
+| `MapScreen::clearTempMarkers` | `function(self: MapScreen)` |
+| `MapScreen::refresh` | `function(self: MapScreen)` |
+| `MapScreen::update` | `function(self: MapScreen)` |
+| `MapScreen::addSquad` | `function(self: MapScreen, squad: Platoon)` |
+| `MapScreen::removeSquad` | `function(self: MapScreen, squad: Platoon)` |
+| `MapScreen::hide` | `function(self: MapScreen)` |
+| `MapScreen::setMovementMarker` | `function(self: MapScreen, position: Vector3, time: number)` |
+| `MapScreen::showRoads` | `function(self: MapScreen, on: boolean)` |
+| `MapScreen::updatePlayerTownMapMarker` | `function(self: MapScreen, town: hand)` |
+| `MapScreen::updateZoom` | `function(self: MapScreen)` |
+| `MapScreen::updateCameraMarker` | `function(self: MapScreen)` |
+| `MapScreen::refreshTowns` | `function(self: MapScreen)` |
+| `MapScreen::refreshSquads` | `function(self: MapScreen)` |
+| `MapScreen::updateCharacterMarker` | `function(self: MapScreen, object: RootObjectBase)` |
+| `MapScreen::worldToMapCoords` | `function(self: MapScreen, position: Vector3, result: IntPoint)` |
+| `MapScreen::mapCoordsToWorld` | `function(self: MapScreen, point: IntPoint, result: Vector3)` |
+| `MapScreen::mapMouseWheel` | `function(self: MapScreen, sender: Widget, rel: integer)` |
+| `MapScreen::mapMousePressed` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MapScreen::mapMouseReleased` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MapScreen::setupRoads` | `function(self: MapScreen)` |
+| `MapScreen::updateRoads` | `function(self: MapScreen)` |
+| `MapScreen::centerButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::zoomInButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::zoomOutButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::getMarkerColor` | `function(who: RootObjectBase, result: Colour)` |
+| `ManagementScreen::_DESTRUCTOR` | `function(self: ManagementScreen)` |
+| `ManagementScreen::update` | `function(self: ManagementScreen)` |
+| `ManagementScreen::clear` | `function(self: ManagementScreen)` |
+| `ManagementScreen::setVisible` | `function(self: ManagementScreen, on: boolean, tab: integer)` |
+| `ManagementScreen::closeEverythingButton` | `function(self: ManagementScreen, widget: Widget, name: string)` |
+| `ManagementScreen::tabCallback` | `function(self: ManagementScreen, sender: Widget, index: number)` |
+| `ManagementScreen::getTab` | `function(self: ManagementScreen, index: integer, result: Widget)` |
+| `ManagementScreen::getWidget` | `function(self: ManagementScreen, name: string, result: Widget)` |
+| `ManagementScreen::refresh` | `function(self: ManagementScreen, current: GameData, progress: number)` |
+| `ManagementScreen::refreshResearchList` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshResearchRate` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshDiplomacy` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshSquads` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshMap` | `function(self: ManagementScreen, centerCamera: boolean)` |
+| `ManagementScreen::showRoads` | `function(self: ManagementScreen, value: boolean)` |
+| `ManagementScreen::addSquadToMap` | `function(self: ManagementScreen, squad: Platoon)` |
+| `ManagementScreen::removeSquadFromMap` | `function(self: ManagementScreen, squad: Platoon)` |
+| `ManagementScreen::addMessage` | `function(self: ManagementScreen, owner: string, message: string, logColor: integer)` |
+| `ManagementScreen::resetSquads` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshMessages` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshAI` | `function(self: ManagementScreen)` |
+| `ManagementScreen::setCraftingBench` | `function(self: ManagementScreen, buildingHandle: hand)` |
+| `ManagementScreen::printResearch` | `function(panel: DatapanelGUI, data: GameData, listName: string, displayName: string, category: integer)` |
+| `ManagementScreen::showDebugMarker` | `function(self: ManagementScreen, position: Vector3)` |
+| `ManagementScreen::_CONSTRUCTOR` | `function(self: ManagementScreen)` |
+| `ManagementScreen::updateResearchListRate` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshResearchListDescription` | `function(self: ManagementScreen)` |
+| `ManagementScreen::researchTypeSelect` | `function(self: ManagementScreen, sender: Widget, index: number)` |
+| `ManagementScreen::addButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `ManagementScreen::removeButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `ManagementScreen::mouseOverCallback` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer)` |
+| `ManagementScreen::TechItemViewData::getName` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
+| `ManagementScreen::TechItemViewData::getValue` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
+| `ManagementScreen::TechItemViewData::setItem` | `function(self: ManagementScreen::TechItemViewData, item: lightuserdata)` |
+| `ManagementScreen::TechItemViewData::_DESTRUCTOR` | `function(self: ManagementScreen::TechItemViewData)` |
+| `ManagementScreen::researchQueueTooltip` | `function(self: ManagementScreen, layout: BaseLayout, info: lightuserdata, data: ManagementScreen::TechItemViewData)` |
+| `ManagementScreen::researchRemoved` | `function(self: ManagementScreen, index: integer, item: ManagementScreen::TechItemViewData)` |
+| `TitleScreen::_CONSTRUCTOR` | `function(self: TitleScreen)` |
+| `TitleScreen::_DESTRUCTOR` | `function(self: TitleScreen)` |
+| `TitleScreen::_NV_clear` | `function(self: TitleScreen)` |
+| `TitleScreen::_NV_show` | `function(self: TitleScreen, on: boolean)` |
+| `TitleScreen::_NV_update` | `function(self: TitleScreen)` |
+| `TitleScreen::loadGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::importGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::showOptions` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::credits` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::exitGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::continueGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::hover` | `function(self: TitleScreen, sender: Widget, other: Widget)` |
+| `TitleScreen::setCreditsVisible` | `function(self: TitleScreen, value: boolean)` |
 
-## 2. Override Callbacks (117)
+## 2. Override Callbacks (212)
 
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
@@ -298,6 +810,101 @@ Events.off(handlerId)
 | `CharacterAnimal::_NV_getSmellHuntingThresholdBlood` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
 | `CharacterAnimal::_NV_getSmellHuntingThresholdEggs` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
 | `CharacterAnimal::_NV_getHPMultiplier` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `GUIWindow::_NV_getWidth` | `function(self: GUIWindow, defaultVal: integer) -> integer` |
+| `GUIWindow::_NV_getHeight` | `function(self: GUIWindow, defaultVal: integer) -> integer` |
+| `GUIWindow::_NV_getWidthReal` | `function(self: GUIWindow, defaultVal: number) -> number` |
+| `GUIWindow::_NV_getHeightReal` | `function(self: GUIWindow, defaultVal: number) -> number` |
+| `GUIWindow::_NV_isVisible` | `function(self: GUIWindow, defaultVal: boolean) -> boolean` |
+| `CharacterStatsWindow::_NV_isVisible` | `function(self: CharacterStatsWindow, defaultVal: boolean) -> boolean` |
+| `CharacterStatsWindow::sumStats` | `function(self: CharacterStatsWindow, defaultVal: integer) -> integer` |
+| `CharacterStatsWindow::getStatsPanel` | `function(self: CharacterStatsWindow, group: integer, defaultVal: DatapanelGUI) -> DatapanelGUI` |
+| `CharacterStatsWindow::getStat` | `function(type: integer, defaultVal: CharacterStatsWindow::Stat) -> CharacterStatsWindow::Stat` |
+| `CharacterStatsWindow::getStatById` | `function(id: string, defaultVal: CharacterStatsWindow::Stat) -> CharacterStatsWindow::Stat` |
+| `DatapanelGUI::_NV_getLine` | `function(self: DatapanelGUI, key: string, cat: integer, defaultVal: DataPanelLine) -> DataPanelLine` |
+| `DatapanelGUI::lineExists` | `function(self: DatapanelGUI, key: string, cat: integer, defaultVal: boolean) -> boolean` |
+| `DatapanelGUI::getNumLines` | `function(self: DatapanelGUI, cat: integer, defaultVal: integer) -> integer` |
+| `DatapanelGUI::getLineByNum` | `function(self: DatapanelGUI, cat: integer, i: integer, defaultVal: DataPanelLine) -> DataPanelLine` |
+| `DatapanelGUI::getNextVerticalPos` | `function(self: DatapanelGUI, category: integer, defaultVal: number) -> number` |
+| `DatapanelGUI::dataExists` | `function(self: DatapanelGUI, cat: integer, name: string, defaultVal: boolean) -> boolean` |
+| `DataPanelLine::_NV_getBottom` | `function(self: DataPanelLine, defaultVal: integer) -> integer` |
+| `DataPanelLine_Slider::getValue` | `function(self: DataPanelLine_Slider, defaultVal: number) -> number` |
+| `DataPanelLine_DropBox::getSelectedValue` | `function(self: DataPanelLine_DropBox, defaultVal: integer) -> integer` |
+| `DataPanelLine_KeyConfig::oldKey` | `function(self: DataPanelLine_KeyConfig, defaultVal: integer) -> integer` |
+| `ForgottenGUI::getTopOfScreenMessagePosition` | `function(self: ForgottenGUI, defaultVal: number) -> number` |
+| `ForgottenGUI::isLoadingMessageVisible` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isLoading` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isPaused` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::inDialogue` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::hasModalMessage` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::getInDialogue` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::getToolTip` | `function(self: ForgottenGUI, defaultVal: ToolTip) -> ToolTip` |
+| `ForgottenGUI::isStatsWindowOpen` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::getInventoryWindow` | `function(self: ForgottenGUI, who: hand, defaultVal: InventoryGUI) -> InventoryGUI` |
+| `ForgottenGUI::getNumOpenInventoryWindows` | `function(self: ForgottenGUI, defaultVal: integer) -> integer` |
+| `ForgottenGUI::getInventoryWindowWithMouse` | `function(self: ForgottenGUI, defaultVal: InventoryGUI) -> InventoryGUI` |
+| `ForgottenGUI::hasInventoryWindowOpen` | `function(self: ForgottenGUI, obj: hand, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isAnyInventoryWindowOpen` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::widgetHasMouse` | `function(self: ForgottenGUI, w: Widget, defaultVal: boolean) -> boolean` |
+| `NewGameOptionsWindow::getVisible` | `function(self: NewGameOptionsWindow, defaultVal: boolean) -> boolean` |
+| `InventorySectionGUI::hasMouse` | `function(self: InventorySectionGUI, defaultVal: boolean) -> boolean` |
+| `InventorySectionGUI::getBestPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, item: Item, slot: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::TradeResult::operator==` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::TradeResult::operator!=` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::InventoryTradeData::isValid` | `function(self: InventoryGUI::InventoryTradeData, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::lockedItemCheck` | `function(item: LockedArmour, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getTradingTown` | `function(defaultVal: Town) -> Town` |
+| `InventoryGUI::canDropMouseItemWithoutPaying` | `function(cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::_NV_isVisible` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getBackpack` | `function(self: InventoryGUI, defaultVal: ContainerItem) -> ContainerItem` |
+| `InventoryGUI::_NV_getInventory` | `function(self: InventoryGUI, defaultVal: Inventory) -> Inventory` |
+| `InventoryGUI::hasSameOwner` | `function(self: InventoryGUI, other: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::_NV_getCallbackCharacter` | `function(self: InventoryGUI, defaultVal: Character) -> Character` |
+| `InventoryGUI::_NV_getCallbackObject` | `function(self: InventoryGUI, defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::getSelectedItem` | `function(self: InventoryGUI, sectionName: string, defaultVal: Item) -> Item` |
+| `InventoryGUI::getMouseItem` | `function(self: InventoryGUI, defaultVal: Item) -> Item` |
+| `InventoryGUI::takeCertainAmountFrom` | `function(self: InventoryGUI, baseItem: Item, amount: integer, defaultVal: Item) -> Item` |
+| `InventoryGUI::pickupItemToMouse` | `function(self: InventoryGUI, sectionName: string, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::placeItemFromMouse` | `function(self: InventoryGUI, sectionName: string, mousePos: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isTradingForMoney` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isStealing` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isWithinRangeToTrade` | `function(self: InventoryGUI, otherOwner: RootObject, stealing: boolean, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::setItemToPlayerPortrait` | `function(self: InventoryGUI, item: Item, character: Character, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::fencingConfirmation` | `function(self: InventoryGUI, item: Item, thief: RootObject, fence: Character, sectionName: string, mouse: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getPlayerTradeCharacter` | `function(self: InventoryGUI, defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::tryToEquip` | `function(self: InventoryGUI, item: Item, replace: boolean, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::hasMouse` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getNPCTrader` | `function(defaultVal: Character) -> Character` |
+| `InventoryGUI::isTradingForMoney_static` | `function(defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::isTradingAndStealing_static` | `function(defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::getTraderPriceMultiplier` | `function(defaultVal: number) -> number` |
+| `InventoryGUI::makeIconForItem` | `function(item: Item, x: integer, y: integer, defaultVal: InventoryIcon) -> InventoryIcon` |
+| `InventoryLayout::_NV_getDatapanel` | `function(self: InventoryLayout, defaultVal: DatapanelGUI) -> DatapanelGUI` |
+| `InventoryLayout::createSectionGUI` | `function(self: InventoryLayout, section: InventorySection, defaultVal: InventorySectionGUI) -> InventorySectionGUI` |
+| `MainBarGUI::_NV_getToolTip` | `function(self: MainBarGUI, defaultVal: ToolTip) -> ToolTip` |
+| `MainBarGUI::getDatapanel` | `function(self: MainBarGUI, id: string, defaultVal: DatapanelGUI) -> DatapanelGUI` |
+| `FactionsScreen::FactionRelationsLine::LessSort::operator()` | `function(comparator: lightuserdata, left: FactionsScreen::FactionRelationsLine, right: FactionsScreen::FactionRelationsLine, defaultVal: boolean) -> boolean` |
+| `FactionsScreen::getVisible` | `function(self: FactionsScreen, defaultVal: boolean) -> boolean` |
+| `DialogueWindow::getVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
+| `DialogueWindow::_NV_isVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
+| `DialogueWindow::getTop` | `function(self: DialogueWindow, defaultVal: integer) -> integer` |
+| `SplashScreen::getState` | `function(self: SplashScreen, defaultVal: integer) -> integer` |
+| `SplashScreen::getEnded` | `function(self: SplashScreen, defaultVal: boolean) -> boolean` |
+| `OrdersPanel::notifyStartDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
+| `OrdersPanel::notifyRequestDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
+| `OptionsWindow::getSingleton` | `function(defaultVal: OptionsWindow) -> OptionsWindow` |
+| `OptionsWindow::isVisible` | `function(self: OptionsWindow, defaultVal: boolean) -> boolean` |
+| `OptionsWindow::waitingForKey` | `function(self: OptionsWindow, defaultVal: boolean) -> boolean` |
+| `MapScreen::MapMarkerTown::getVisible` | `function(self: MapScreen::MapMarkerTown, defaultVal: boolean) -> boolean` |
+| `MapScreen::MapMarkerCharacter::getVisible` | `function(self: MapScreen::MapMarkerCharacter, defaultVal: boolean) -> boolean` |
+| `MapScreen::getVisible` | `function(self: MapScreen, defaultVal: boolean) -> boolean` |
+| `MapScreen::getMouseWorldPosition` | `function(self: MapScreen, position: Vector3, defaultVal: boolean) -> boolean` |
+| `ManagementScreen::getSingleton` | `function(defaultVal: ManagementScreen) -> ManagementScreen` |
+| `ManagementScreen::getVisible` | `function(self: ManagementScreen, defaultVal: boolean) -> boolean` |
+| `ManagementScreen::getCurrentTab` | `function(self: ManagementScreen, defaultVal: number) -> number` |
+| `ManagementScreen::TechItemViewData::getProgress` | `function(self: ManagementScreen::TechItemViewData, defaultVal: number) -> number` |
+| `ManagementScreen::researchValidateOrder` | `function(self: ManagementScreen, first: integer, second: integer, defaultVal: boolean) -> boolean` |
+| `TitleScreen::getSingleton` | `function(defaultVal: TitleScreen) -> TitleScreen` |
+| `TitleScreen::closeTheOtherBits` | `function(self: TitleScreen, defaultVal: boolean) -> boolean` |
 
 ## Detailed Callback Documentation
 
@@ -354,6 +961,21 @@ Events.off(handlerId)
   - `level`: `integer`
   - `defaultVal`: `Armour`
 - **Returns**: `Armour`
+
+### `BackpackInventoryLayout::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, standAlone)`
+- **Parameters**:
+  - `self`: `BackpackInventoryLayout`
+  - `standAlone`: `boolean`
+
+### `BackpackInventoryLayout::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `BackpackInventoryLayout`
 
 ### `Bounty::_CONSTRUCTOR`
 
@@ -1285,6 +1907,217 @@ Events.off(handlerId)
   - `defaultVal`: `CharacterHuman`
 - **Returns**: `CharacterHuman`
 
+### `CharacterStatsWindow::BuildStats`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::BuildStats hook after the original call`
+- **Lua Signature**: `function()`
+- **Parameters**: None
+
+### `CharacterStatsWindow::Stat::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::Stat::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow::Stat`
+
+### `CharacterStatsWindow::Stat::operator=`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::Stat::operator= hook after the original call`
+- **Lua Signature**: `function(self, that)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow::Stat`
+  - `that`: `CharacterStatsWindow::Stat`
+
+### `CharacterStatsWindow::StatGroup::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::StatGroup::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow::StatGroup`
+
+### `CharacterStatsWindow::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, charHandle)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `charHandle`: `hand`
+
+### `CharacterStatsWindow::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+
+### `CharacterStatsWindow::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::_NV_autoChangeSelectedObject hook after the original call`
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `obj`: `hand`
+
+### `CharacterStatsWindow::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::_NV_clear hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+
+### `CharacterStatsWindow::_NV_create`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::_NV_create hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+
+### `CharacterStatsWindow::_NV_isVisible`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `CharacterStatsWindow::_NV_isVisible hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `CharacterStatsWindow::_NV_show`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::_NV_show hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `on`: `boolean`
+
+### `CharacterStatsWindow::_NV_update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::_NV_update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+
+### `CharacterStatsWindow::addStat`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::addStat hook after the original call`
+- **Lua Signature**: `function(type, id, name, active, description)`
+- **Parameters**:
+  - `type`: `integer`
+  - `id`: `string`
+  - `name`: `string`
+  - `active`: `boolean`
+  - `description`: `string`
+
+### `CharacterStatsWindow::clearDesctiption`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::clearDesctiption hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+
+### `CharacterStatsWindow::closeWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::closeWindow hook before the original call`
+- **Lua Signature**: `function(self, sender, name)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `sender`: `Widget`
+  - `name`: `string`
+
+### `CharacterStatsWindow::getStat`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `CharacterStatsWindow::getStat hook after the original call`
+- **Lua Signature**: `function(type, defaultVal)`
+- **Parameters**:
+  - `type`: `integer`
+  - `defaultVal`: `CharacterStatsWindow::Stat`
+- **Returns**: `CharacterStatsWindow::Stat`
+- **Notes**: Returning nil or a non-Stat value keeps defaultVal.
+
+### `CharacterStatsWindow::getStatById`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `CharacterStatsWindow::getStatById hook after the original call`
+- **Lua Signature**: `function(id, defaultVal)`
+- **Parameters**:
+  - `id`: `string`
+  - `defaultVal`: `CharacterStatsWindow::Stat`
+- **Returns**: `CharacterStatsWindow::Stat`
+- **Notes**: Returning nil or a non-Stat value keeps defaultVal.
+
+### `CharacterStatsWindow::getStatsPanel`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `CharacterStatsWindow::getStatsPanel hook after the original call`
+- **Lua Signature**: `function(self, group, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `group`: `integer`
+  - `defaultVal`: `DatapanelGUI`
+- **Returns**: `DatapanelGUI`
+- **Notes**: Returning nil or a non-DatapanelGUI value keeps defaultVal.
+
+### `CharacterStatsWindow::setAutoUpdateMode`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::setAutoUpdateMode hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `on`: `boolean`
+
+### `CharacterStatsWindow::setupStats`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::setupStats hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+
+### `CharacterStatsWindow::statMouseOver`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::statMouseOver hook after the original call`
+- **Lua Signature**: `function(self, sender, arg2, arg3)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `sender`: `Widget`
+  - `arg2`: `integer`
+  - `arg3`: `integer`
+
+### `CharacterStatsWindow::sumStats`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `CharacterStatsWindow::sumStats hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `CharacterStatsWindow::updateStats`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::updateStats hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow`
+
 ### `CombatClass::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -1432,6 +2265,112 @@ Events.off(handlerId)
   - `defaultVal`: `Damages`
 - **Returns**: `Damages`
 
+### `DataPanelLine::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+
+### `DataPanelLine::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine::_NV_getBottom`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine::_NV_getBottom hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `DataPanelLine::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+
+### `DataPanelLine::_NV_resize`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_resize hook after the original call`
+- **Lua Signature**: `function(self, width, height)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `width`: `integer`
+  - `height`: `integer`
+
+### `DataPanelLine::_NV_setEnabled`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_setEnabled hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `on`: `boolean`
+
+### `DataPanelLine::_NV_setVisible`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_setVisible hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `on`: `boolean`
+
+### `DataPanelLine_Button::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, a, b, cat, w, skin)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+  - `a`: `string`
+  - `b`: `string`
+  - `cat`: `integer`
+  - `w`: `number`
+  - `skin`: `string`
+
+### `DataPanelLine_Button::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+
+### `DataPanelLine_Button::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_Button::_NV_getUserData`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_NV_getUserData hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+  - `result`: `hand`
+
 ### `DataPanelLine_Button::pressCallback`
 
 - **Category**: Notification / Observer
@@ -1439,6 +2378,1231 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `DataPanelLine_Button`
   - `sender`: `Widget`
+
+### `DataPanelLine_CheckBox::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, cat, val)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `key`: `string`
+  - `cat`: `integer`
+  - `val`: `lightuserdata`
+
+### `DataPanelLine_CheckBox::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+
+### `DataPanelLine_CheckBox::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, topReal, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `parent`: `DatapanelGUI`
+  - `topReal`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_CheckBox::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+
+### `DataPanelLine_CheckBox::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `ptr`: `lightuserdata`
+
+### `DataPanelLine_CheckBox::notifyToggleCheck`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::notifyToggleCheck hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `sender`: `Widget`
+
+### `DataPanelLine_CheckBox::setValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::setValue hook after the original call`
+- **Lua Signature**: `function(self, checked)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `checked`: `boolean`
+
+### `DataPanelLine_CheckBox::setValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::setValuePtr hook after the original call`
+- **Lua Signature**: `function(self, valPtr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `valPtr`: `lightuserdata`
+
+### `DataPanelLine_DropBox::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, text, category, valuePtr, width, hasGobox)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `text`: `string`
+  - `category`: `integer`
+  - `valuePtr`: `lightuserdata`
+  - `width`: `number`
+  - `hasGobox`: `boolean`
+
+### `DataPanelLine_DropBox::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+
+### `DataPanelLine_DropBox::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_DropBox::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+
+### `DataPanelLine_DropBox::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `ptr`: `lightuserdata`
+
+### `DataPanelLine_DropBox::addAValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::addAValue hook after the original call`
+- **Lua Signature**: `function(self, key, val)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `key`: `string`
+  - `val`: `integer`
+
+### `DataPanelLine_DropBox::clearValues`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::clearValues hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+
+### `DataPanelLine_DropBox::getSelectedText`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::getSelectedText hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `result`: `string`
+
+### `DataPanelLine_DropBox::getSelectedValue`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine_DropBox::getSelectedValue hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `DataPanelLine_DropBox::goPressed`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::goPressed hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `sender`: `Widget`
+
+### `DataPanelLine_DropBox::selectionChange`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::selectionChange hook after the original call`
+- **Lua Signature**: `function(self, sender, i)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `sender`: `Widget`
+  - `i`: `integer`
+
+### `DataPanelLine_DropBox::setSelectedValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::setSelectedValue hook after the original call`
+- **Lua Signature**: `function(self, val)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `val`: `integer`
+
+### `DataPanelLine_Faction::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Faction::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, a, b, cat, vv1, vv2)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Faction`
+  - `a`: `string`
+  - `b`: `string`
+  - `cat`: `integer`
+  - `vv1`: `number`
+  - `vv2`: `number`
+
+### `DataPanelLine_Faction::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Faction::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Faction`
+
+### `DataPanelLine_Faction::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Faction::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Faction`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_KeyConfig::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, cmd, text, cat)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `cmd`: `string`
+  - `text`: `string`
+  - `cat`: `integer`
+
+### `DataPanelLine_KeyConfig::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+
+### `DataPanelLine_KeyConfig::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, p, vpos, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `p`: `DatapanelGUI`
+  - `vpos`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_KeyConfig::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+
+### `DataPanelLine_KeyConfig::cancel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::cancel hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+
+### `DataPanelLine_KeyConfig::clickButton`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::clickButton hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `sender`: `Widget`
+
+### `DataPanelLine_KeyConfig::eraseKey`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::eraseKey hook after the original call`
+- **Lua Signature**: `function(self, key)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `key`: `string`
+
+### `DataPanelLine_KeyConfig::getCommand`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::getCommand hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `result`: `string`
+
+### `DataPanelLine_KeyConfig::oldKey`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine_KeyConfig::oldKey hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `DataPanelLine_KeyConfig::setKey`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::setKey hook after the original call`
+- **Lua Signature**: `function(self, s)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `s`: `string`
+
+### `DataPanelLine_Progress::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, category, showKey)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+  - `key`: `string`
+  - `category`: `integer`
+  - `showKey`: `boolean`
+
+### `DataPanelLine_Progress::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+
+### `DataPanelLine_Progress::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_Progress::setProgress`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::setProgress hook after the original call`
+- **Lua Signature**: `function(self, value, text)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+  - `value`: `number`
+  - `text`: `string`
+
+### `DataPanelLine_Research::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Research::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, a, b, cat, vv1, barColor, Xbut)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Research`
+  - `a`: `string`
+  - `b`: `string`
+  - `cat`: `integer`
+  - `vv1`: `number`
+  - `barColor`: `string`
+  - `Xbut`: `boolean`
+
+### `DataPanelLine_Research::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Research::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Research`
+
+### `DataPanelLine_Research::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Research::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Research`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_Slider::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, text, min, max, category, scale)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `key`: `string`
+  - `text`: `string`
+  - `min`: `number`
+  - `max`: `number`
+  - `category`: `integer`
+  - `scale`: `number`
+
+### `DataPanelLine_Slider::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+
+### `DataPanelLine_Slider::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_Slider::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+
+### `DataPanelLine_Slider::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `ptr`: `lightuserdata`
+
+### `DataPanelLine_Slider::getValue`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine_Slider::getValue hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `DataPanelLine_Slider::setValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::setValue hook after the original call`
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `value`: `number`
+
+### `DataPanelLine_Slider::sliderValueChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::sliderValueChanged hook after the original call`
+- **Lua Signature**: `function(self, sender, value)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `sender`: `Widget`
+  - `value`: `integer`
+
+### `DataPanelLine_SliderEditable::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, text, category, showName, min, max, value)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `text`: `string`
+  - `category`: `integer`
+  - `showName`: `boolean`
+  - `min`: `number`
+  - `max`: `number`
+  - `value`: `lightuserdata`
+
+### `DataPanelLine_SliderEditable::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+
+### `DataPanelLine_SliderEditable::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_SliderEditable::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+
+### `DataPanelLine_SliderEditable::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `ptr`: `lightuserdata`
+
+### `DataPanelLine_SliderEditable::editCallback`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::editCallback hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `sender`: `Widget`
+
+### `DataPanelLine_SliderEditable::setEditableValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::setEditableValuePtr hook after the original call`
+- **Lua Signature**: `function(self, val, lo, hi)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `val`: `lightuserdata`
+  - `lo`: `number`
+  - `hi`: `number`
+
+### `DataPanelLine_SliderEditable::setPrecision`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::setPrecision hook after the original call`
+- **Lua Signature**: `function(self, dp)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `dp`: `integer`
+
+### `DataPanelLine_SliderEditable::setValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::setValue hook after the original call`
+- **Lua Signature**: `function(self, v)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `v`: `number`
+
+### `DataPanelLine_SliderEditable::sliderCallback`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::sliderCallback hook after the original call`
+- **Lua Signature**: `function(self, sender, position)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `sender`: `Widget`
+  - `position`: `integer`
+
+### `DataPanelLine_Text::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Text::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, text, category, wordWrap, textAlign)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Text`
+  - `key`: `string`
+  - `text`: `string`
+  - `category`: `integer`
+  - `wordWrap`: `boolean`
+  - `textAlign`: `integer`
+
+### `DataPanelLine_Text::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Text::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Text`
+
+### `DataPanelLine_Text::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Text::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Text`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_TextEditable::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, text, category, showKey, multiLine, textAlign, width)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+  - `key`: `string`
+  - `text`: `string`
+  - `category`: `integer`
+  - `showKey`: `boolean`
+  - `multiLine`: `boolean`
+  - `textAlign`: `integer`
+  - `width`: `number`
+
+### `DataPanelLine_TextEditable::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+
+### `DataPanelLine_TextEditable::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### `DataPanelLine_TextEditable::textChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::textChanged hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+  - `sender`: `Widget`
+
+### `DatapanelGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+
+### `DatapanelGUI::_NV__zeroLines`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV__zeroLines hook after the original call`
+- **Lua Signature**: `function(self, cat, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `cat`: `integer`
+  - `result`: `DataPanelLine`
+
+### `DatapanelGUI::_NV_addTab`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_addTab hook after the original call`
+- **Lua Signature**: `function(self, id, name, icon)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `id`: `integer`
+  - `name`: `string`
+  - `icon`: `string`
+
+### `DatapanelGUI::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_autoChangeSelectedObject hook after the original call`
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `obj`: `hand`
+
+### `DatapanelGUI::_NV_changeCategory`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_changeCategory hook after the original call`
+- **Lua Signature**: `function(self, cat)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `cat`: `integer`
+
+### `DatapanelGUI::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_clear hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+
+### `DatapanelGUI::_NV_clearPage`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_clearPage hook after the original call`
+- **Lua Signature**: `function(self, cat)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `cat`: `integer`
+
+### `DatapanelGUI::_NV_create`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_create hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+
+### `DatapanelGUI::_NV_getLine`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DatapanelGUI::_NV_getLine hook after the original call`
+- **Lua Signature**: `function(self, key, cat, defaultVal)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `cat`: `integer`
+  - `defaultVal`: `DataPanelLine`
+- **Returns**: `DataPanelLine`
+- **Notes**: Returning nil or a non-DataPanelLine value keeps defaultVal.
+
+### `DatapanelGUI::_NV_hideAllWidgets`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_hideAllWidgets hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+
+### `DatapanelGUI::_NV_resize`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_resize hook after the original call`
+- **Lua Signature**: `function(self, w, h)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `w`: `integer`
+  - `h`: `integer`
+
+### `DatapanelGUI::_NV_setAutomaticRefresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setAutomaticRefresh hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `on`: `boolean`
+
+### `DatapanelGUI::_NV_setAutomaticTargeting`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setAutomaticTargeting hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `on`: `boolean`
+
+### `DatapanelGUI::_NV_setCategoryIcon`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setCategoryIcon hook after the original call`
+- **Lua Signature**: `function(self, cat, image)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `cat`: `integer`
+  - `image`: `string`
+
+### `DatapanelGUI::_NV_setLineSpacing`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setLineSpacing hook after the original call`
+- **Lua Signature**: `function(self, numLinesPerScreen)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `numLinesPerScreen`: `number`
+
+### `DatapanelGUI::_NV_setObject`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setObject hook after the original call`
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `obj`: `hand`
+
+### `DatapanelGUI::_NV_setPosition`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setPosition hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `x`: `integer`
+  - `y`: `integer`
+
+### `DatapanelGUI::_NV_setPositionReal`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setPositionReal hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `x`: `number`
+  - `y`: `number`
+
+### `DatapanelGUI::_NV_setTabEnabled`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setTabEnabled hook after the original call`
+- **Lua Signature**: `function(self, id, enabled)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `id`: `integer`
+  - `enabled`: `boolean`
+
+### `DatapanelGUI::_NV_setTabName`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_setTabName hook after the original call`
+- **Lua Signature**: `function(self, id, name)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `id`: `integer`
+  - `name`: `string`
+
+### `DatapanelGUI::_NV_show`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_show hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `on`: `boolean`
+
+### `DatapanelGUI::_NV_showTabs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_showTabs hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `on`: `boolean`
+
+### `DatapanelGUI::_NV_update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::_NV_update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+
+### `DatapanelGUI::addCustomLine`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::addCustomLine hook after the original call`
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `line`: `DataPanelLine`
+
+### `DatapanelGUI::addSpace`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::addSpace hook after the original call`
+- **Lua Signature**: `function(self, category, h)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `category`: `integer`
+  - `h`: `number`
+
+### `DatapanelGUI::clearCategoryTabs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::clearCategoryTabs hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+
+### `DatapanelGUI::closeButtonCallback`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::closeButtonCallback hook before the original call`
+- **Lua Signature**: `function(self, arg1, arg2)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `arg1`: `Widget`
+  - `arg2`: `string`
+
+### `DatapanelGUI::createLine`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::createLine hook after the original call`
+- **Lua Signature**: `function(self, line, category, lastLine, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `line`: `DataPanelLine`
+  - `category`: `integer`
+  - `lastLine`: `boolean`
+  - `result`: `DataPanelLine`
+
+### `DatapanelGUI::dataExists`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DatapanelGUI::dataExists hook after the original call`
+- **Lua Signature**: `function(self, cat, name, defaultVal)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `cat`: `integer`
+  - `name`: `string`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `DatapanelGUI::getCoords`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::getCoords hook after the original call`
+- **Lua Signature**: `function(self, left, top, width, height, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `left`: `number`
+  - `top`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `result`: `IntCoord`
+
+### `DatapanelGUI::getLineByNum`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DatapanelGUI::getLineByNum hook after the original call`
+- **Lua Signature**: `function(self, cat, i, defaultVal)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `cat`: `integer`
+  - `i`: `integer`
+  - `defaultVal`: `DataPanelLine`
+- **Returns**: `DataPanelLine`
+- **Notes**: Returning nil or a non-DataPanelLine value keeps defaultVal.
+
+### `DatapanelGUI::getNextVerticalPos`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DatapanelGUI::getNextVerticalPos hook after the original call`
+- **Lua Signature**: `function(self, category, defaultVal)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `category`: `integer`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `DatapanelGUI::getNumLines`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DatapanelGUI::getNumLines hook after the original call`
+- **Lua Signature**: `function(self, cat, defaultVal)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `cat`: `integer`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `DatapanelGUI::lineExists`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DatapanelGUI::lineExists hook after the original call`
+- **Lua Signature**: `function(self, key, cat, defaultVal)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `cat`: `integer`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `DatapanelGUI::mouseOverCallback`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::mouseOverCallback hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `sender`: `Widget`
+
+### `DatapanelGUI::notifyMouseWheel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::notifyMouseWheel hook after the original call`
+- **Lua Signature**: `function(self, sender, rel)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `sender`: `Widget`
+  - `rel`: `integer`
+
+### `DatapanelGUI::removeLine`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::removeLine hook after the original call`
+- **Lua Signature**: `function(self, s1, category)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `s1`: `string`
+  - `category`: `integer`
+
+### `DatapanelGUI::setCaption`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setCaption hook after the original call`
+- **Lua Signature**: `function(self, s)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `s`: `string`
+
+### `DatapanelGUI::setCloseCallback`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setCloseCallback hook after the original call`
+- **Lua Signature**: `function(self, close)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `close`: `lightuserdata`
+
+### `DatapanelGUI::setLineButton`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineButton hook after the original call`
+- **Lua Signature**: `function(self, key, caption, category, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `caption`: `string`
+  - `category`: `integer`
+  - `result`: `DataPanelLine_Button`
+
+### `DatapanelGUI::setLineCheckbox`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineCheckbox hook after the original call`
+- **Lua Signature**: `function(self, s1, val, category, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `s1`: `string`
+  - `val`: `lightuserdata`
+  - `category`: `integer`
+  - `result`: `DataPanelLine_CheckBox`
+
+### `DatapanelGUI::setLineDropBox`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineDropBox hook after the original call`
+- **Lua Signature**: `function(self, key, category, valPtr, goBox, width, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `category`: `integer`
+  - `valPtr`: `lightuserdata`
+  - `goBox`: `boolean`
+  - `width`: `number`
+  - `result`: `DataPanelLine_DropBox`
+
+### `DatapanelGUI::setLineFaction`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineFaction hook after the original call`
+- **Lua Signature**: `function(self, s1, s2, category, v1, v2, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `s1`: `string`
+  - `s2`: `string`
+  - `category`: `integer`
+  - `v1`: `number`
+  - `v2`: `number`
+  - `result`: `DataPanelLine_Faction`
+
+### `DatapanelGUI::setLineProgress`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineProgress hook after the original call`
+- **Lua Signature**: `function(self, key, category, progressValue, progressText, showKey, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `category`: `integer`
+  - `progressValue`: `number`
+  - `progressText`: `string`
+  - `showKey`: `boolean`
+  - `result`: `DataPanelLine_Progress`
+
+### `DatapanelGUI::setLineSlider`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineSlider hook after the original call`
+- **Lua Signature**: `function(self, key, caption, min, max, category, value, scale, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `caption`: `string`
+  - `min`: `number`
+  - `max`: `number`
+  - `category`: `integer`
+  - `value`: `lightuserdata`
+  - `scale`: `number`
+  - `result`: `DataPanelLine_Slider`
+
+### `DatapanelGUI::setLineSliderEditable`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineSliderEditable hook after the original call`
+- **Lua Signature**: `function(self, key, category, showName, min, max, value, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `category`: `integer`
+  - `showName`: `boolean`
+  - `min`: `number`
+  - `max`: `number`
+  - `value`: `lightuserdata`
+  - `result`: `DataPanelLine_SliderEditable`
+
+### `DatapanelGUI::setLineStatInfo`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineStatInfo hook after the original call`
+- **Lua Signature**: `function(self, s1, s2, category, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `s1`: `string`
+  - `s2`: `string`
+  - `category`: `integer`
+  - `result`: `DataPanelLine`
+
+### `DatapanelGUI::setLineText`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineText hook after the original call`
+- **Lua Signature**: `function(self, key, caption, category, wordWrap, textAlign, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `caption`: `string`
+  - `category`: `integer`
+  - `wordWrap`: `boolean`
+  - `textAlign`: `integer`
+  - `result`: `DataPanelLine_Text`
+
+### `DatapanelGUI::setLineTextButton`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineTextButton hook after the original call`
+- **Lua Signature**: `function(self, text, caption, category, buttonWidth, skin, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `text`: `string`
+  - `caption`: `string`
+  - `category`: `integer`
+  - `buttonWidth`: `number`
+  - `skin`: `string`
+  - `result`: `DataPanelLine_Button`
+
+### `DatapanelGUI::setLineTextEditable`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineTextEditable hook after the original call`
+- **Lua Signature**: `function(self, key, text, category, showKey, multiLine, textAlign, width, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `text`: `string`
+  - `category`: `integer`
+  - `showKey`: `boolean`
+  - `multiLine`: `boolean`
+  - `textAlign`: `integer`
+  - `width`: `number`
+  - `result`: `DataPanelLine_TextEditable`
+
+### `DatapanelGUI::setLineToggleButton`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLineToggleButton hook after the original call`
+- **Lua Signature**: `function(self, key, caption, category, result)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `key`: `string`
+  - `caption`: `string`
+  - `category`: `integer`
+  - `result`: `DataPanelLine_Button`
+
+### `DatapanelGUI::setLines`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLines hook after the original call`
+- **Lua Signature**: `function(self, data, category)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `data`: `lektor<StringPair>`
+  - `category`: `integer`
+
+### `DatapanelGUI::setPanelName`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setPanelName hook after the original call`
+- **Lua Signature**: `function(self, name)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `name`: `string`
+
+### `DatapanelGUI::show_NonSmooth`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::show_NonSmooth hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `on`: `boolean`
+
+### `DatapanelGUI::tabButton`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::tabButton hook after the original call`
+- **Lua Signature**: `function(self, sender, arg2, arg3, arg4)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `sender`: `Widget`
+  - `arg2`: `integer`
+  - `arg3`: `integer`
+  - `arg4`: `integer`
 
 ### `DialogLineData::_CONSTRUCTOR`
 
@@ -1557,6 +3721,124 @@ Events.off(handlerId)
   - `defaultVal`: `DialogueWindow`
 - **Returns**: `DialogueWindow`
 
+### `DialogueWindow::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired before DialogueWindow::_DESTRUCTOR.
+
+### `DialogueWindow::_NV_isVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after DialogueWindow::_NV_isVisible.
+
+### `DialogueWindow::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `on`: `boolean`
+- **Notes**: Fired after DialogueWindow::_NV_show.
+
+### `DialogueWindow::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired after DialogueWindow::_NV_update.
+
+### `DialogueWindow::activateResponse`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, index)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `index`: `integer`
+- **Notes**: Fired after DialogueWindow::activateResponse.
+
+### `DialogueWindow::changePortrait`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character, player)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `character`: `Character`
+  - `player`: `boolean`
+- **Notes**: Fired after DialogueWindow::changePortrait.
+
+### `DialogueWindow::clearResponses`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired after DialogueWindow::clearResponses.
+
+### `DialogueWindow::getTop`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+- **Notes**: Fired after DialogueWindow::getTop.
+
+### `DialogueWindow::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after DialogueWindow::getVisible.
+
+### `DialogueWindow::hide`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, dialogue)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `dialogue`: `Dialogue`
+- **Notes**: Fired after DialogueWindow::hide.
+
+### `DialogueWindow::setNPCText`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, text)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `text`: `string`
+- **Notes**: Fired after DialogueWindow::setNPCText.
+
+### `DialogueWindow::setResponses`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, responses)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `responses`: `void`
+- **Notes**: Fired after DialogueWindow::setResponses. responses is borrowed lightuserdata.
+
+### `DialogueWindow::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, visible)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+  - `visible`: `boolean`
+- **Notes**: Fired after DialogueWindow::setVisible.
+
 ### `DialogueWindow::show`
 
 - **Category**: Notification / Observer
@@ -1564,6 +3846,14 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `DialogueWindow`
   - `dialogue`: `Dialogue`
+
+### `DialogueWindow::updatePanelsPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DialogueWindow`
+- **Notes**: Fired after DialogueWindow::updatePanelsPosition.
 
 ### `DoorStuff::_CONSTRUCTOR`
 
@@ -1739,6 +4029,159 @@ Events.off(handlerId)
   - `defaultVal`: `FactionWarMgr`
 - **Returns**: `FactionWarMgr`
 
+### `FactionsScreen::FactionRelationsLine::LessSort::operator()`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(comparator, left, right, defaultVal)`
+- **Parameters**:
+  - `comparator`: `lightuserdata`
+  - `left`: `FactionsScreen::FactionRelationsLine`
+  - `right`: `FactionsScreen::FactionRelationsLine`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::LessSort::operator().
+
+### `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+  - `faction`: `Faction`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::_CONSTRUCTOR.
+
+### `FactionsScreen::FactionRelationsLine::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+- **Notes**: Fired before FactionsScreen::FactionRelationsLine::_DESTRUCTOR.
+
+### `FactionsScreen::FactionRelationsLine::attachToWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+  - `widget`: `Widget`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::attachToWidget.
+
+### `FactionsScreen::FactionRelationsLine::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::update.
+
+### `FactionsScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, screen)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `screen`: `ManagementScreen`
+- **Notes**: Fired after FactionsScreen::_CONSTRUCTOR.
+
+### `FactionsScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired before FactionsScreen::_DESTRUCTOR.
+
+### `FactionsScreen::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::clear.
+
+### `FactionsScreen::factionLineSelected`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+- **Notes**: Fired after FactionsScreen::factionLineSelected.
+
+### `FactionsScreen::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after FactionsScreen::getVisible.
+
+### `FactionsScreen::loseFocus`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, first, second)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `first`: `Widget`
+  - `second`: `Widget`
+- **Notes**: Fired after FactionsScreen::loseFocus.
+
+### `FactionsScreen::notifyEditTextChange`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+- **Notes**: Fired after FactionsScreen::notifyEditTextChange.
+
+### `FactionsScreen::notifyMouseWheel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, rel)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+  - `rel`: `integer`
+- **Notes**: Fired after FactionsScreen::notifyMouseWheel.
+
+### `FactionsScreen::refresh`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::refresh.
+
+### `FactionsScreen::setFocus`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, first, second)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `first`: `Widget`
+  - `second`: `Widget`
+- **Notes**: Fired after FactionsScreen::setFocus.
+
+### `FactionsScreen::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::update.
+
+### `FactionsScreen::updateInfo`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::updateInfo.
+
 ### `FarmBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -1782,6 +4225,1003 @@ Events.off(handlerId)
   - `self`: `FarmBuilding`
   - `rate`: `number`
 
+### `ForgottenGUI::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::_showTradeWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::_showTradeWindow hook after the original call`
+- **Lua Signature**: `function(self, a, b, tradeType)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `a`: `RootObject`
+  - `b`: `RootObject`
+  - `tradeType`: `integer`
+
+### `ForgottenGUI::addDatapanelToUpdateList`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::addDatapanelToUpdateList hook after the original call`
+- **Lua Signature**: `function(self, datapanel)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `datapanel`: `DatapanelGUI`
+
+### `ForgottenGUI::addScreenLabel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::addScreenLabel hook after the original call`
+- **Lua Signature**: `function(self, label)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `label`: `ScreenLabelInterface`
+
+### `ForgottenGUI::addWindowToUpdateList`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::addWindowToUpdateList hook after the original call`
+- **Lua Signature**: `function(self, win)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `win`: `GUIWindow`
+
+### `ForgottenGUI::changeFontSize`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::changeFontSize hook after the original call`
+- **Lua Signature**: `function()`
+- **Parameters**: None
+
+### `ForgottenGUI::clearGUI`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::clearGUI hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::closeAllCharacterStatsWindows`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeAllCharacterStatsWindows hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::closeAllInventories`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeAllInventories hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::closeAllWindows`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeAllWindows hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::closeCharacterEditor`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeCharacterEditor hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::closeCharacterStatsWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeCharacterStatsWindow hook after the original call`
+- **Lua Signature**: `function(self, owner)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+
+### `ForgottenGUI::closeInventory`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeInventory hook after the original call`
+- **Lua Signature**: `function(self, owner)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+
+### `ForgottenGUI::closeInventoryBuilding`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeInventoryBuilding hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::closeTradeWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::closeTradeWindow hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::createButton`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createButton hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, name, text, skin, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `name`: `string`
+  - `text`: `string`
+  - `skin`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createButtonAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createButtonAbs hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, name, text, skin, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `integer`
+  - `left`: `integer`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `name`: `string`
+  - `text`: `string`
+  - `skin`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createCheckbox`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createCheckbox hook after the original call`
+- **Lua Signature**: `function(self, parent, left, top, width, height, caption, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `caption`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createDropBox`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createDropBox hook after the original call`
+- **Lua Signature**: `function(self, parent, name, top, left, width, height, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `name`: `string`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createDropBoxAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createDropBoxAbs hook after the original call`
+- **Lua Signature**: `function(self, parent, name, top, left, width, height, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `name`: `string`
+  - `top`: `integer`
+  - `left`: `integer`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createFloatingImage`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createFloatingImage hook after the original call`
+- **Lua Signature**: `function(self, image, top, left, width, height, layer, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `image`: `string`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `layer`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createFloatingImageAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createFloatingImageAbs hook after the original call`
+- **Lua Signature**: `function(self, image, top, left, width, height, layer, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `image`: `string`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `layer`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createFloatingLabel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createFloatingLabel hook after the original call`
+- **Lua Signature**: `function(self, top, left, width, height, text, a, layer, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `text`: `string`
+  - `a`: `integer`
+  - `layer`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createFloatingProgressBar`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createFloatingProgressBar hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `result`: `FloatingProgressBar`
+
+### `ForgottenGUI::createImage`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createImage hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, image, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `image`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createImageAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createImageAbs hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, image, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `integer`
+  - `left`: `integer`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `image`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createListbox`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createListbox hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createPanel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createPanel hook after the original call`
+- **Lua Signature**: `function(self, name, top, left, width, height, layer, skin, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `name`: `string`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `layer`: `string`
+  - `skin`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createPanelAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createPanelAbs hook after the original call`
+- **Lua Signature**: `function(self, name, top, left, width, height, layer, skin, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `name`: `string`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `layer`: `string`
+  - `skin`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createProgressBar`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createProgressBar hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, type, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `type`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createProgressBarAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createProgressBarAbs hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, type, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `type`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createRotatableImageAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createRotatableImageAbs hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, image, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `integer`
+  - `left`: `integer`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `image`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createScreenLabel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createScreenLabel hook after the original call`
+- **Lua Signature**: `function(self, text, textColour, textSize, risingSpeed, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `text`: `string`
+  - `textColour`: `Colour`
+  - `textSize`: `integer`
+  - `risingSpeed`: `integer`
+  - `result`: `ScreenLabel`
+
+### `ForgottenGUI::createScreenLabelD`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createScreenLabelD hook after the original call`
+- **Lua Signature**: `function(self, text, time, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `text`: `string`
+  - `time`: `number`
+  - `result`: `ScreenLabelDebug`
+
+### `ForgottenGUI::createScrollBarAbs`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createScrollBarAbs hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, range, value, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `integer`
+  - `left`: `integer`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `range`: `integer`
+  - `value`: `integer`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createTabPanel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createTabPanel hook after the original call`
+- **Lua Signature**: `function(self, name, top, left, width, height, layer, skin, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `name`: `string`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `layer`: `string`
+  - `skin`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createValueEdit`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createValueEdit hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, name, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::createValueEditTransparent`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::createValueEditTransparent hook after the original call`
+- **Lua Signature**: `function(self, parent, top, left, width, height, name, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `parent`: `Widget`
+  - `top`: `number`
+  - `left`: `number`
+  - `width`: `number`
+  - `height`: `number`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `ForgottenGUI::destroyWidget`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::destroyWidget hook before the original call`
+- **Lua Signature**: `function(self, widget)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `widget`: `Widget`
+
+### `ForgottenGUI::getDataLineColor`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::getDataLineColor hook after the original call`
+- **Lua Signature**: `function(self, actualVal, normalVal, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `actualVal`: `integer`
+  - `normalVal`: `integer`
+  - `result`: `string`
+
+### `ForgottenGUI::getInDialogue`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::getInDialogue hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::getInventoryWindow`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::getInventoryWindow hook after the original call`
+- **Lua Signature**: `function(self, who, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `who`: `hand`
+  - `defaultVal`: `InventoryGUI`
+- **Returns**: `InventoryGUI`
+- **Notes**: Returning nil or a non-InventoryGUI value keeps defaultVal.
+
+### `ForgottenGUI::getInventoryWindowWithMouse`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::getInventoryWindowWithMouse hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `InventoryGUI`
+- **Returns**: `InventoryGUI`
+- **Notes**: Returning nil or a non-InventoryGUI value keeps defaultVal.
+
+### `ForgottenGUI::getNumOpenInventoryWindows`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::getNumOpenInventoryWindows hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `ForgottenGUI::getToolTip`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::getToolTip hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `ToolTip`
+- **Returns**: `ToolTip`
+- **Notes**: Returning nil or a non-ToolTip value keeps defaultVal.
+
+### `ForgottenGUI::getTopOfScreenMessagePosition`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::getTopOfScreenMessagePosition hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `ForgottenGUI::hasInventoryWindowOpen`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::hasInventoryWindowOpen hook after the original call`
+- **Lua Signature**: `function(self, obj, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `obj`: `hand`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::hasModalMessage`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::hasModalMessage hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::hideMessageBox`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::hideMessageBox hook after the original call`
+- **Lua Signature**: `function(self, enter, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `enter`: `boolean`
+  - `result`: `boolean`
+
+### `ForgottenGUI::inDialogue`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::inDialogue hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::init`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::init hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::inventoriesSelectedObjectUpdate`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::inventoriesSelectedObjectUpdate hook after the original call`
+- **Lua Signature**: `function(self, selectedObject)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `selectedObject`: `hand`
+
+### `ForgottenGUI::isAnyInventoryWindowOpen`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::isAnyInventoryWindowOpen hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::isLoading`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::isLoading hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::isLoadingMessageVisible`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::isLoadingMessageVisible hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::isPaused`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::isPaused hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::isStatsWindowOpen`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::isStatsWindowOpen hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ForgottenGUI::keepWindownOnScreen`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::keepWindownOnScreen hook after the original call`
+- **Lua Signature**: `function(self, win)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `win`: `Widget`
+
+### `ForgottenGUI::messageBox`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::messageBox hook after the original call`
+- **Lua Signature**: `function(self, title, message, btn, modal, callback, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `title`: `string`
+  - `message`: `string`
+  - `btn`: `integer`
+  - `modal`: `boolean`
+  - `callback`: `lightuserdata`
+  - `result`: `Widget`
+
+### `ForgottenGUI::notifyTownDeleted`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::notifyTownDeleted hook after the original call`
+- **Lua Signature**: `function(self, t)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `t`: `Town`
+
+### `ForgottenGUI::removeDatapanelFromUpdateList`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::removeDatapanelFromUpdateList hook after the original call`
+- **Lua Signature**: `function(self, datapanel)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `datapanel`: `DatapanelGUI`
+
+### `ForgottenGUI::removeWindowFromUpdateList`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::removeWindowFromUpdateList hook after the original call`
+- **Lua Signature**: `function(self, win)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `win`: `GUIWindow`
+
+### `ForgottenGUI::restart`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::restart hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::selectedObjectsChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::selectedObjectsChanged hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::setInventoryPosition`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::setInventoryPosition hook after the original call`
+- **Lua Signature**: `function(self, owner, inventory)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+  - `inventory`: `InventoryGUI`
+
+### `ForgottenGUI::setLoading`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::setLoading hook after the original call`
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `value`: `boolean`
+
+### `ForgottenGUI::setMouseCursorVisible`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::setMouseCursorVisible hook after the original call`
+- **Lua Signature**: `function(self, visible)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `visible`: `boolean`
+
+### `ForgottenGUI::setup`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::setup hook after the original call`
+- **Lua Signature**: `function(self, mRoot, window)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `mRoot`: `lightuserdata`
+  - `window`: `lightuserdata`
+
+### `ForgottenGUI::setupGuiScaling`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::setupGuiScaling hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::showCharacterEditor`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showCharacterEditor hook before the original call`
+- **Lua Signature**: `function(self, characters, mode, races)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `characters`: `lektor<Character>`
+  - `mode`: `integer`
+  - `races`: `vector<GameDataReference>::type`
+
+### `ForgottenGUI::showCharacterStatsWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showCharacterStatsWindow hook after the original call`
+- **Lua Signature**: `function(self, owner)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+
+### `ForgottenGUI::showInventory`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showInventory hook after the original call`
+- **Lua Signature**: `function(self, owner, autoPosition, x, y, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+  - `autoPosition`: `boolean`
+  - `x`: `number`
+  - `y`: `number`
+  - `result`: `InventoryGUI`
+
+### `ForgottenGUI::showInventoryBuilding`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showInventoryBuilding hook after the original call`
+- **Lua Signature**: `function(self, owner, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+  - `result`: `InventoryGUI`
+
+### `ForgottenGUI::showInventoryNPC`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showInventoryNPC hook after the original call`
+- **Lua Signature**: `function(self, owner, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+  - `result`: `InventoryGUI`
+
+### `ForgottenGUI::showLoadingMessage`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showLoadingMessage hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `on`: `boolean`
+
+### `ForgottenGUI::showMainbar`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showMainbar hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `on`: `boolean`
+
+### `ForgottenGUI::showNames`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showNames hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `on`: `boolean`
+
+### `ForgottenGUI::showPauseMessage`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showPauseMessage hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `on`: `boolean`
+
+### `ForgottenGUI::showPrintOutput`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showPrintOutput hook after the original call`
+- **Lua Signature**: `function(self, v)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `v`: `boolean`
+
+### `ForgottenGUI::showTradeWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showTradeWindow hook after the original call`
+- **Lua Signature**: `function(self, a, b, type)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `a`: `hand`
+  - `b`: `hand`
+  - `type`: `integer`
+
+### `ForgottenGUI::showTraderInventory`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showTraderInventory hook after the original call`
+- **Lua Signature**: `function(self, owner, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+  - `result`: `InventoryGUI`
+
+### `ForgottenGUI::shutDown`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::shutDown hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::toggle`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::toggle hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::toggleCharacterStatsWindowPermanent`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::toggleCharacterStatsWindowPermanent hook after the original call`
+- **Lua Signature**: `function(self, owner)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+
+### `ForgottenGUI::toggleHelpWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::toggleHelpWindow hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::toggleInventory`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::toggleInventory hook after the original call`
+- **Lua Signature**: `function(self, owner, parentInv, attached, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+  - `parentInv`: `InventoryGUI`
+  - `attached`: `boolean`
+  - `result`: `InventoryGUI`
+
+### `ForgottenGUI::toggleInventoryWindowPermanent`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::toggleInventoryWindowPermanent hook after the original call`
+- **Lua Signature**: `function(self, owner)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+
+### `ForgottenGUI::toggleStatsWindow`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::toggleStatsWindow hook after the original call`
+- **Lua Signature**: `function(self, owner)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+
+### `ForgottenGUI::update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::updateBountyPanelVisibility`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::updateBountyPanelVisibility hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::updateToOrdersPanel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::updateToOrdersPanel hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+
+### `ForgottenGUI::widgetHasMouse`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `ForgottenGUI::widgetHasMouse hook after the original call`
+- **Lua Signature**: `function(self, w, defaultVal)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `w`: `Widget`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
 ### `FurnaceBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -1807,6 +5247,112 @@ Events.off(handlerId)
   - `self`: `FurnaceBuilding`
   - `worker`: `Character`
   - `amount`: `number`
+
+### `GUIWindow::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_autoChangeSelectedObject hook after the original call`
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `obj`: `hand`
+
+### `GUIWindow::_NV_getHeight`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getHeight hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `GUIWindow::_NV_getHeightReal`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getHeightReal hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `GUIWindow::_NV_getWidth`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getWidth hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `GUIWindow::_NV_getWidthReal`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getWidthReal hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `GUIWindow::_NV_isVisible`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_isVisible hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `GUIWindow::_NV_resize`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_resize hook after the original call`
+- **Lua Signature**: `function(self, w, h)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `w`: `integer`
+  - `h`: `integer`
+
+### `GUIWindow::_NV_setPosition`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_setPosition hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `x`: `integer`
+  - `y`: `integer`
+
+### `GUIWindow::_NV_setPositionReal`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_setPositionReal hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `x`: `number`
+  - `y`: `number`
+
+### `GUIWindow::_NV_update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+
+### `GUIWindow::getWidget`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::getWidget hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `result`: `Widget`
 
 ### `GameData::_CONSTRUCTOR`
 
@@ -1888,6 +5434,22 @@ Events.off(handlerId)
   - `self`: `GenericFixedInventoryLayout`
   - `defaultVal`: `GenericFixedInventoryLayout`
 - **Returns**: `GenericFixedInventoryLayout`
+
+### `GenericFixedInventoryLayout::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `GenericFixedInventoryLayout`
+
+### `GenericFixedInventoryLayout::_NV_setSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, slotsW, slotsH)`
+- **Parameters**:
+  - `self`: `GenericFixedInventoryLayout`
+  - `slotsW`: `integer`
+  - `slotsH`: `integer`
 
 ### `InputHandler::_CONSTRUCTOR`
 
@@ -2003,6 +5565,100 @@ Events.off(handlerId)
   - `type`: `integer`
 - **Returns**: `InventorySection`
 
+### `InventoryGUI::FenceCallbackData::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI::FenceCallbackData`
+
+### `InventoryGUI::InventoryTradeData::isValid`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::InventoryTradeData`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::InventoryTradeData::operator=`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, other)`
+- **Parameters**:
+  - `self`: `InventoryGUI::InventoryTradeData`
+  - `other`: `InventoryGUI::InventoryTradeData`
+
+### `InventoryGUI::RClickAutoTrade`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `invSectionName`: `string`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `sendingTo`: `InventoryGUI`
+  - `thieveryChecks`: `boolean`
+  - `first`: `boolean`
+  - `result`: `InventoryGUI::TradeResult`
+
+### `InventoryGUI::RClickAutoTradeAll`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `invSectionName`: `string`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `sendingTo`: `InventoryGUI`
+  - `thieveryChecks`: `boolean`
+  - `first`: `boolean`
+  - `result`: `InventoryGUI::TradeResult`
+
+### `InventoryGUI::TradeResult::ShowMessage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(value)`
+- **Parameters**:
+  - `value`: `integer`
+
+### `InventoryGUI::TradeResult::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `value`: `integer`
+
+### `InventoryGUI::TradeResult::operator!=`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `other`: `InventoryGUI::TradeResult`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::TradeResult::operator==`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `other`: `InventoryGUI::TradeResult`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::TradeResult::showMessage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+
 ### `InventoryGUI::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -2015,6 +5671,89 @@ Events.off(handlerId)
   - `defaultVal`: `InventoryGUI`
 - **Returns**: `InventoryGUI`
 
+### `InventoryGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `obj`: `hand`
+
+### `InventoryGUI::_NV_getCallbackCharacter`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `Character`
+- **Returns**: `Character`
+
+### `InventoryGUI::_NV_getCallbackObject`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::_NV_getInventory`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `Inventory`
+- **Returns**: `Inventory`
+
+### `InventoryGUI::_NV_isVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::_NV_refreshSection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, section)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `section`: `InventorySection`
+
+### `InventoryGUI::_NV_setPositionReal`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `x`: `number`
+  - `y`: `number`
+
+### `InventoryGUI::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `on`: `boolean`
+
+### `InventoryGUI::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
 ### `InventoryGUI::addTradePartner`
 
 - **Category**: Notification / Observer
@@ -2026,6 +5765,43 @@ Events.off(handlerId)
   - `isPlayer`: `boolean`
   - `whoHand`: `hand`
 
+### `InventoryGUI::autoArrangeButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryGUI::canDropMouseItemWithoutPaying`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(cameFrom, defaultVal)`
+- **Parameters**:
+  - `cameFrom`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::clearTradePartners`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function()`
+- **Parameters**: None
+
+### `InventoryGUI::fencingConfirmation`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, item, thief, fence, sectionName, mouse, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `thief`: `RootObject`
+  - `fence`: `Character`
+  - `sectionName`: `string`
+  - `mouse`: `types::TPoint<int>`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
 ### `InventoryGUI::fencingConfirmationCallback`
 
 - **Category**: Notification / Observer
@@ -2033,6 +5809,453 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `InventoryGUI`
   - `b`: `integer`
+
+### `InventoryGUI::getBackpack`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `ContainerItem`
+- **Returns**: `ContainerItem`
+
+### `InventoryGUI::getMouseItem`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `Item`
+- **Returns**: `Item`
+
+### `InventoryGUI::getNPCTrader`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `Character`
+- **Returns**: `Character`
+
+### `InventoryGUI::getPlayerTradeCharacter`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::getSectionWithMouseLocal`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `result`: `string`
+
+### `InventoryGUI::getSelectedItem`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sectionName, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sectionName`: `string`
+  - `defaultVal`: `Item`
+- **Returns**: `Item`
+
+### `InventoryGUI::getSlotWithMouse`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `result`: `iVector2`
+
+### `InventoryGUI::getTrader1Trader2`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, trader1, trader2)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `trader1`: `InventoryGUI`
+  - `trader2`: `InventoryGUI`
+
+### `InventoryGUI::getTraderPriceMultiplier`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `InventoryGUI::getTradingTown`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `Town`
+- **Returns**: `Town`
+
+### `InventoryGUI::getWindowCoord`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `result`: `types::TCoord<int>`
+
+### `InventoryGUI::hasMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::hasSameOwner`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `other`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::isStealing`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, cameFrom, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `cameFrom`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::isTradingAndStealing_static`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::isTradingForMoney`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, cameFrom, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `cameFrom`: `InventoryGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::isTradingForMoney_static`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `RootObject`
+- **Returns**: `RootObject`
+
+### `InventoryGUI::isWithinRangeToTrade`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, otherOwner, stealing, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `otherOwner`: `RootObject`
+  - `stealing`: `boolean`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::lockedItemCheck`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(item, defaultVal)`
+- **Parameters**:
+  - `item`: `LockedArmour`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::makeIconForItem`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(item, x, y, defaultVal)`
+- **Parameters**:
+  - `item`: `Item`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `defaultVal`: `InventoryIcon`
+- **Returns**: `InventoryIcon`
+
+### `InventoryGUI::onWindowFocus`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, focus)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+  - `focus`: `boolean`
+
+### `InventoryGUI::openBackpackButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryGUI::openLimbsInterface`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryGUI::pickupItemToMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sectionName, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sectionName`: `string`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::placeItemFromMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sectionName, mousePos, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sectionName`: `string`
+  - `mousePos`: `types::TPoint<int>`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::playSound`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, eventId, item)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `eventId`: `string`
+  - `item`: `Item`
+
+### `InventoryGUI::refreshAllSections`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::refreshSection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::removeTradePartner`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(tradeWith)`
+- **Parameters**:
+  - `tradeWith`: `InventoryGUI`
+
+### `InventoryGUI::returnItem`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, item, sectionName)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `sectionName`: `string`
+
+### `InventoryGUI::rightClickAutoEquipping`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::sectionMouseButtonPressed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `InventoryGUI::sectionMouseButtonReleased`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `InventoryGUI::setItemToPlayerPortrait`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, item, character, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `character`: `Character`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::setTradingTown`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(town)`
+- **Parameters**:
+  - `town`: `hand`
+
+### `InventoryGUI::showBackpack`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `on`: `boolean`
+
+### `InventoryGUI::stealingGUIInfoUpdate`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::takeCertainAmountFrom`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, baseItem, amount, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `baseItem`: `Item`
+  - `amount`: `integer`
+  - `defaultVal`: `Item`
+- **Returns**: `Item`
+
+### `InventoryGUI::tryToEquip`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, item, replace, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `item`: `Item`
+  - `replace`: `boolean`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventoryGUI::updateDatapanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+
+### `InventoryGUI::windowButtonPressed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget, name)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `widget`: `Widget`
+  - `name`: `string`
+
+### `InventoryGUI::windowMoved`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `sender`: `Widget`
+
+### `InventoryIcon::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, item, position, parent)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `item`: `Item`
+  - `position`: `types::TPoint<int>`
+  - `parent`: `Widget`
+
+### `InventoryIcon::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+
+### `InventoryIcon::createIconImage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(item, name, size)`
+- **Parameters**:
+  - `item`: `Item`
+  - `name`: `string`
+  - `size`: `iVector2`
+
+### `InventoryIcon::getItemPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(x, y, result)`
+- **Parameters**:
+  - `x`: `integer`
+  - `y`: `integer`
+  - `result`: `types::TPoint<int>`
+
+### `InventoryIcon::getItemSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(itemData, result)`
+- **Parameters**:
+  - `itemData`: `GameData`
+  - `result`: `types::TSize<int>`
+
+### `InventoryIcon::getSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `result`: `types::TSize<int>`
+
+### `InventoryIcon::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `result`: `Widget`
+
+### `InventoryIcon::setPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
+  - `position`: `types::TPoint<int>`
+
+### `InventoryIcon::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryIcon`
 
 ### `InventoryItemBase::_CONSTRUCTOR`
 
@@ -2057,6 +6280,192 @@ Events.off(handlerId)
   - `isPlayer`: `boolean`
   - `defaultVal`: `integer`
 - **Returns**: `integer`
+
+### `InventoryLayout::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, file)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `file`: `string`
+
+### `InventoryLayout::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+
+### `InventoryLayout::_NV_getDatapanel`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `defaultVal`: `DatapanelGUI`
+- **Returns**: `DatapanelGUI`
+
+### `InventoryLayout::createSectionGUI`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, section, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `section`: `InventorySection`
+  - `defaultVal`: `InventorySectionGUI`
+- **Returns**: `InventorySectionGUI`
+
+### `InventoryLayout::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `InventoryLayout::getWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `result`: `Widget`
+
+### `InventoryLayout::notifyCellSizeChanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function()`
+- **Parameters**: None
+
+### `InventoryLayout::resizeSection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, section, sectionGUI, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `section`: `InventorySection`
+  - `sectionGUI`: `InventorySectionGUI`
+  - `result`: `types::TSize<int>`
+
+### `InventoryLayout::resizeSectionWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, width, height, widget, result)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `width`: `integer`
+  - `height`: `integer`
+  - `widget`: `Widget`
+  - `result`: `types::TSize<int>`
+
+### `InventoryLayout::setSectionGUIDisabled`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sectionName, width, height)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `sectionName`: `string`
+  - `width`: `integer`
+  - `height`: `integer`
+
+### `InventoryLayout::setupDataPanelInfos`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name)`
+- **Parameters**:
+  - `self`: `InventoryLayout`
+  - `name`: `string`
+
+### `InventorySectionGUI::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget, sectionName)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `widget`: `Widget`
+  - `sectionName`: `string`
+
+### `InventorySectionGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+
+### `InventorySectionGUI::getBestPositionSlot`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, position, section, item, slot, defaultVal)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `position`: `types::TPoint<int>`
+  - `section`: `InventorySection`
+  - `item`: `Item`
+  - `slot`: `types::TPoint<int>`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventorySectionGUI::getItemAbsolutePosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, x, y, result)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `result`: `types::TPoint<int>`
+
+### `InventorySectionGUI::getPositionSlot`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position, section, round, result)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `position`: `types::TPoint<int>`
+  - `section`: `InventorySection`
+  - `round`: `boolean`
+  - `result`: `types::TPoint<int>`
+
+### `InventorySectionGUI::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `result`: `Widget`
+
+### `InventorySectionGUI::hasMouse`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `InventorySectionGUI::refreshIcons`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, section)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `section`: `InventorySection`
+
+### `InventorySectionGUI::setEnabled`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
+  - `value`: `boolean`
+
+### `InventorySectionGUI::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventorySectionGUI`
 
 ### `Item::_CONSTRUCTOR`
 
@@ -2120,6 +6529,495 @@ Events.off(handlerId)
   - `defaultVal`: `LockedArmour`
 - **Returns**: `LockedArmour`
 
+### `MainBarGUI::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `obj`: `hand`
+
+### `MainBarGUI::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_NV_getToolTip`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `defaultVal`: `ToolTip`
+- **Returns**: `ToolTip`
+
+### `MainBarGUI::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `on`: `boolean`
+
+### `MainBarGUI::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_NV_updateBountyPanelVisibility`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::_getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `MainBarGUI::buildButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::changeFloorButtonDown`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::changeFloorButtonUp`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::changeSpeed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::closeMapWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::extendInfoPanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `MainBarGUI::getBuildingInventoryPosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `types::TPoint<int>`
+
+### `MainBarGUI::getDatapanel`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, id, defaultVal)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `id`: `string`
+  - `defaultVal`: `DatapanelGUI`
+- **Returns**: `DatapanelGUI`
+
+### `MainBarGUI::getLoadingPanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `Widget`
+
+### `MainBarGUI::getMedicalPanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `lightuserdata`
+
+### `MainBarGUI::getPausePanel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `result`: `Widget`
+
+### `MainBarGUI::loadFromSerialise`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `data`: `GameData`
+
+### `MainBarGUI::ordersPanelClear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::ordersPanelFill`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `character`: `hand`
+
+### `MainBarGUI::platoonUpdated`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon, charAdded)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `platoon`: `RootObjectContainer`
+  - `charAdded`: `boolean`
+
+### `MainBarGUI::portraitChangeSelection`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index, follow)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `index`: `number`
+  - `follow`: `boolean`
+
+### `MainBarGUI::portraitNotifyItem`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, info)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `info`: `lightuserdata`
+
+### `MainBarGUI::portraitSelectItemAccept`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `MainBarGUI::pressedKey`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, keycode)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `keycode`: `integer`
+
+### `MainBarGUI::refreshPortraitTabs`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::serialise`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `data`: `GameData`
+
+### `MainBarGUI::setExtendInfoPanelEnabled`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, enabled)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `enabled`: `boolean`
+
+### `MainBarGUI::setLevelEditInteriorMode`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, interiorMode)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `interiorMode`: `boolean`
+
+### `MainBarGUI::setLevelEditMode`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `on`: `boolean`
+
+### `MainBarGUI::setMessagePosition`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::speedChanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::tabPlatoonChange`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `MainBarGUI::toggleCraftWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleFactionWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleHelpWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleInventory`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleMapWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleSquadWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleStatsWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::toggleTechWindow`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `sender`: `Widget`
+
+### `MainBarGUI::updatePortrait`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `character`: `hand`
+
+### `MainBarGUI::updatePortraitSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `platoon`: `ActivePlatoon`
+
+### `MainBarGUI::updatePortraits`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainBarGUI::updatePotraitsPlatoon`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+### `MainTabPortraitPlatoon::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+
+### `MainTabPortraitPlatoon::addTab`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, tabControl, visible)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+  - `tabControl`: `Widget`
+  - `visible`: `boolean`
+
+### `MainTabPortraitPlatoon::detach`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+
+### `MainTabPortraitPlatoon::setFlash`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, flash)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+  - `flash`: `boolean`
+
+### `MainTabPortraitPlatoon::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainTabPortraitPlatoon`
+
+### `ManagementScreen::TechItemViewData::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+
+### `ManagementScreen::TechItemViewData::getName`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `result`: `string`
+
+### `ManagementScreen::TechItemViewData::getProgress`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `ManagementScreen::TechItemViewData::getValue`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `result`: `string`
+
+### `ManagementScreen::TechItemViewData::setItem`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, item)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `item`: `lightuserdata`
+
+### `ManagementScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::addButtonPress`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
 ### `ManagementScreen::addMessage`
 
 - **Category**: Notification / Observer
@@ -2129,6 +7027,613 @@ Events.off(handlerId)
   - `owner`: `string`
   - `message`: `string`
   - `logColor`: `integer`
+
+### `ManagementScreen::addSquadToMap`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `squad`: `Platoon`
+
+### `ManagementScreen::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::closeEverythingButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget, name)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `widget`: `Widget`
+  - `name`: `string`
+
+### `ManagementScreen::getCurrentTab`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+### `ManagementScreen::getSingleton`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `ManagementScreen`
+- **Returns**: `ManagementScreen`
+
+### `ManagementScreen::getTab`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, index, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `index`: `integer`
+  - `result`: `Widget`
+
+### `ManagementScreen::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ManagementScreen::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `name`: `string`
+  - `result`: `Widget`
+
+### `ManagementScreen::mouseOverCallback`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+
+### `ManagementScreen::printResearch`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(panel, data, listName, displayName, category)`
+- **Parameters**:
+  - `panel`: `DatapanelGUI`
+  - `data`: `GameData`
+  - `listName`: `string`
+  - `displayName`: `string`
+  - `category`: `integer`
+
+### `ManagementScreen::refresh`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, current, progress)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `current`: `GameData`
+  - `progress`: `number`
+
+### `ManagementScreen::refreshAI`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshDiplomacy`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshMap`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, centerCamera)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `centerCamera`: `boolean`
+
+### `ManagementScreen::refreshMessages`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshResearchList`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshResearchListDescription`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshResearchRate`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::refreshSquads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::removeButtonPress`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `ManagementScreen::removeSquadFromMap`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `squad`: `Platoon`
+
+### `ManagementScreen::researchQueueTooltip`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, layout, info, data)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `layout`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `data`: `ManagementScreen::TechItemViewData`
+
+### `ManagementScreen::researchRemoved`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, index, item)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `index`: `integer`
+  - `item`: `ManagementScreen::TechItemViewData`
+
+### `ManagementScreen::researchTypeSelect`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `ManagementScreen::researchValidateOrder`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, first, second, defaultVal)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `first`: `integer`
+  - `second`: `integer`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `ManagementScreen::resetSquads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::setCraftingBench`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, buildingHandle)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `buildingHandle`: `hand`
+
+### `ManagementScreen::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on, tab)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `on`: `boolean`
+  - `tab`: `integer`
+
+### `ManagementScreen::showDebugMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `position`: `Vector3`
+
+### `ManagementScreen::showRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `value`: `boolean`
+
+### `ManagementScreen::tabCallback`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, index)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+  - `sender`: `Widget`
+  - `index`: `number`
+
+### `ManagementScreen::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `ManagementScreen::updateResearchListRate`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `ManagementScreen`
+
+### `MapScreen::MapMarkerCharacter::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character, mapScreen)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `character`: `RootObjectBase`
+  - `mapScreen`: `MapScreen`
+
+### `MapScreen::MapMarkerCharacter::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+
+### `MapScreen::MapMarkerCharacter::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::MapMarkerCharacter::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `value`: `boolean`
+
+### `MapScreen::MapMarkerCharacter::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mapPosition)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `mapPosition`: `IntPoint`
+
+### `MapScreen::MapMarkerTown::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, town, mapScreen)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `town`: `TownBase`
+  - `mapScreen`: `MapScreen`
+
+### `MapScreen::MapMarkerTown::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+
+### `MapScreen::MapMarkerTown::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::MapMarkerTown::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `value`: `boolean`
+
+### `MapScreen::MapMarkerTown::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mapPosition, zoom)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `mapPosition`: `IntPoint`
+  - `zoom`: `integer`
+
+### `MapScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, screen)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `screen`: `ManagementScreen`
+
+### `MapScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::addSquad`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `squad`: `Platoon`
+
+### `MapScreen::centerButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+
+### `MapScreen::centerCamera`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::clearTempMarkers`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::getMarkerColor`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(who, result)`
+- **Parameters**:
+  - `who`: `RootObjectBase`
+  - `result`: `Colour`
+
+### `MapScreen::getMouseWorldPosition`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, position, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `position`: `Vector3`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `MapScreen::hide`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::mapCoordsToWorld`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, point, result)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `point`: `IntPoint`
+  - `result`: `Vector3`
+
+### `MapScreen::mapMousePressed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `MapScreen::mapMouseReleased`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, left, top, id)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+  - `left`: `integer`
+  - `top`: `integer`
+  - `id`: `integer`
+
+### `MapScreen::mapMouseWheel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, rel)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+  - `rel`: `integer`
+
+### `MapScreen::refresh`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::refreshSquads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::refreshTowns`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::removeSquad`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squad)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `squad`: `Platoon`
+
+### `MapScreen::setMovementMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position, time)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `position`: `Vector3`
+  - `time`: `number`
+
+### `MapScreen::setupRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::showRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `on`: `boolean`
+
+### `MapScreen::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::updateCameraMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::updateCharacterMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, object)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `object`: `RootObjectBase`
+
+### `MapScreen::updatePlayerTownMapMarker`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, town)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `town`: `hand`
+
+### `MapScreen::updateRoads`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::updateZoom`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen`
+
+### `MapScreen::worldToMapCoords`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, position, result)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `position`: `Vector3`
+  - `result`: `IntPoint`
+
+### `MapScreen::zoomInButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
+
+### `MapScreen::zoomOutButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `MapScreen`
+  - `sender`: `Widget`
 
 ### `MedicalSystem::_CONSTRUCTOR`
 
@@ -2175,6 +7680,380 @@ Events.off(handlerId)
   - `time`: `number`
 - **Notes**: Raised by the renderer at the start of every frame, including while the game is paused. The argument is the time since the previous frame, in seconds.
 
+### `NewGameOptionsWindow::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+
+### `NewGameOptionsWindow::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+
+### `NewGameOptionsWindow::getVisible`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `NewGameOptionsWindow::getVisible hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `NewGameOptionsWindow::setOptions`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::setOptions hook after the original call`
+- **Lua Signature**: `function(self, options)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `options`: `GameplayOptions`
+
+### `NewGameOptionsWindow::setPosition`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::setPosition hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `x`: `integer`
+  - `y`: `integer`
+
+### `NewGameOptionsWindow::setVisible`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::setVisible hook after the original call`
+- **Lua Signature**: `function(self, visible)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+  - `visible`: `boolean`
+
+### `NewGameOptionsWindow::update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `NewGameOptionsWindow::update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `NewGameOptionsWindow`
+
+### `OptionsWindow::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `value`: `boolean`
+
+### `OptionsWindow::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::changeDistances`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::changeFontSize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::changeVolume`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::closeButton`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `sender`: `Widget`
+
+### `OptionsWindow::create`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::getSingleton`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `OptionsWindow`
+- **Returns**: `OptionsWindow`
+
+### `OptionsWindow::hide`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::isVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `OptionsWindow::resetAllKeys`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::resetTutorials`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::saveLocationChanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::saveOptions`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::setKey`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, code)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `code`: `integer`
+
+### `OptionsWindow::show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::toggle`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::toggleCompositor`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::toggleNames`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::toggleTutorials`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, line)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `line`: `DataPanelLine`
+
+### `OptionsWindow::updateResolutions`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+
+### `OptionsWindow::waitingForKey`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `OptionsWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `OrderCellView::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, parent)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `parent`: `Widget`
+
+### `OrderCellView::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+
+### `OrderCellView::getCellDimension`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(sender, coord, drop)`
+- **Parameters**:
+  - `sender`: `Widget`
+  - `coord`: `IntCoord`
+  - `drop`: `boolean`
+
+### `OrderCellView::getWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `result`: `Widget`
+
+### `OrderCellView::onRemove`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `sender`: `Widget`
+
+### `OrderCellView::resize`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+
+### `OrderCellView::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, info, data)`
+- **Parameters**:
+  - `self`: `OrderCellView`
+  - `info`: `lightuserdata`
+  - `data`: `OrderData`
+
+### `OrderData::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderData`
+
+### `OrderData::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderData`
+
+### `OrderData::operator=`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, other, result)`
+- **Parameters**:
+  - `self`: `OrderData`
+  - `other`: `OrderData`
+  - `result`: `OrderData`
+
+### `OrderData::set`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, task, index, enabled)`
+- **Parameters**:
+  - `self`: `OrderData`
+  - `task`: `Tasker`
+  - `index`: `integer`
+  - `enabled`: `boolean`
+
+### `OrderData::updateText`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrderData`
+
+### `OrdersItemBox::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, parent)`
+- **Parameters**:
+  - `self`: `OrdersItemBox`
+  - `parent`: `Widget`
+
+### `OrdersItemBox::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersItemBox`
+
+### `OrdersPanel::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mainbar, panel)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `mainbar`: `MainBarGUI`
+  - `panel`: `Widget`
+
+### `OrdersPanel::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+
 ### `OrdersPanel::blockmodeButton`
 
 - **Category**: Notification / Observer
@@ -2190,6 +8069,21 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
+
+### `OrdersPanel::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+
+### `OrdersPanel::command`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, command)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `command`: `integer`
 
 ### `OrdersPanel::holdButtonCallback`
 
@@ -2215,6 +8109,47 @@ Events.off(handlerId)
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
+### `OrdersPanel::moveJob`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, orderIndex, targetIndex)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `orderIndex`: `integer`
+  - `targetIndex`: `integer`
+
+### `OrdersPanel::notifyEndDropOrder`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, info, result)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `result`: `boolean`
+
+### `OrdersPanel::notifyRequestDropOrder`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sender, info, defaultVal)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `OrdersPanel::notifyStartDropOrder`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, sender, info, defaultVal)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `BaseLayout`
+  - `info`: `lightuserdata`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
 ### `OrdersPanel::passiveButtonCallback`
 
 - **Category**: Notification / Observer
@@ -2231,6 +8166,53 @@ Events.off(handlerId)
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
+### `OrdersPanel::refreshOrders`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+
+### `OrdersPanel::removeJob`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `data`: `OrderData`
+
+### `OrdersPanel::setSpeed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, speed)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `speed`: `integer`
+
+### `OrdersPanel::setSpeedImage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, speed)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `speed`: `integer`
+
+### `OrdersPanel::speedNext`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
+### `OrdersPanel::speedPrevious`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
 ### `OrdersPanel::tauntButtonCallback`
 
 - **Category**: Notification / Observer
@@ -2238,6 +8220,30 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
+
+### `OrdersPanel::toggleRanged`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
+### `OrdersPanel::toggleStealth`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `sender`: `Widget`
+
+### `OrdersPanel::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, character)`
+- **Parameters**:
+  - `self`: `OrdersPanel`
+  - `character`: `Character`
 
 ### `Ownerships::canIUseThisBuilding`
 
@@ -2582,6 +8588,68 @@ Events.off(handlerId)
   - `defaultVal`: `ShopTrader`
 - **Returns**: `ShopTrader`
 
+### `SplashScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+
+### `SplashScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+
+### `SplashScreen::addLogo`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::addLogo hook after the original call`
+- **Lua Signature**: `function(self, file, scale)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+  - `file`: `string`
+  - `scale`: `number`
+
+### `SplashScreen::getEnded`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `SplashScreen::getEnded hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `SplashScreen::getState`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `SplashScreen::getState hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+### `SplashScreen::skip`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::skip hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+
+### `SplashScreen::update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `SplashScreen::update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `SplashScreen`
+
 ### `SquadManagementScreen::removeSquad`
 
 - **Category**: Notification / Observer
@@ -2630,13 +8698,123 @@ Events.off(handlerId)
   - `defaultVal`: `Tasker`
 - **Returns**: `Tasker`
 
+### `TitleScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `on`: `boolean`
+
+### `TitleScreen::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+### `TitleScreen::closeTheOtherBits`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `TitleScreen::continueGame`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
+### `TitleScreen::credits`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
+### `TitleScreen::exitGame`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
+### `TitleScreen::getSingleton`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(defaultVal)`
+- **Parameters**:
+  - `defaultVal`: `TitleScreen`
+- **Returns**: `TitleScreen`
+
+### `TitleScreen::hover`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, other)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+  - `other`: `Widget`
+
+### `TitleScreen::importGame`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
+
 ### `TitleScreen::loadGame`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, widget)`
+- **Lua Signature**: `function(self, sender)`
 - **Parameters**:
   - `self`: `TitleScreen`
-  - `widget`: `Widget`
+  - `sender`: `Widget`
+
+### `TitleScreen::setCreditsVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `value`: `boolean`
+
+### `TitleScreen::showOptions`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+  - `sender`: `Widget`
 
 ### `TortureBuilding::_CONSTRUCTOR`
 
