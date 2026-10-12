@@ -36,14 +36,6 @@ static int AppearanceBase_get_msgClearHarpoons(lua_State* L)
     return 1;
 }
 
-static int AppearanceBase_get_woundsListMutex(lua_State* L)
-{
-    AppearanceBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AppearanceBase is nil");
-    lua_pushlightuserdata(L, (void*)&instance->woundsListMutex);
-    return 1;
-}
-
 static int AppearanceBase_get_body(lua_State* L)
 {
     AppearanceBase* instance = getInstance(L, 1);
@@ -334,13 +326,6 @@ static int AppearanceBase_set_msgClearHarpoons(lua_State* L)
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
     instance->msgClearHarpoons = lua_toboolean(L, 2) != 0;
     return 0;
-}
-
-static int AppearanceBase_set_woundsListMutex(lua_State* L)
-{
-    AppearanceBase* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AppearanceBase is nil");
-    return luaL_error(L, "woundsListMutex is read-only");
 }
 
 static int AppearanceBase_set_isCreatingBody(lua_State* L)
@@ -1302,6 +1287,7 @@ LIGHTUSERDATA DEPENDENCIES:
 /*
 Skipped properties needing manual binding:
   line 63: attachedObjects (boost::unordered::unordered_map<std::string, AttachedEntity*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachedEntity*>, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 69: woundsListMutex (boost::shared_mutex) - getter and setter not implemented; mutex type has no Lua binding
   line 172: bodyMaterial (Ogre::SharedPtr<Ogre::Material>) - unsupported type
 */
 
@@ -1413,7 +1399,6 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __getters table
     registerGetter(L, "slots", AppearanceBase_get_slots);
     registerGetter(L, "msgClearHarpoons", AppearanceBase_get_msgClearHarpoons);
-    registerGetter(L, "woundsListMutex", AppearanceBase_get_woundsListMutex);
     registerGetter(L, "body", AppearanceBase_get_body);
     registerGetter(L, "bodyLoader", AppearanceBase_get_bodyLoader);
     registerGetter(L, "isCreatingBody", AppearanceBase_get_isCreatingBody);
@@ -1447,7 +1432,6 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "msgClearHarpoons", AppearanceBase_set_msgClearHarpoons);
-    registerSetter(L, "woundsListMutex", AppearanceBase_set_woundsListMutex);
     registerSetter(L, "isCreatingBody", AppearanceBase_set_isCreatingBody);
     registerSetter(L, "bodyRadius", AppearanceBase_set_bodyRadius);
     registerSetter(L, "me", AppearanceBase_set_me);

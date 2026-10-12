@@ -617,7 +617,6 @@
 |---|---|---|---|
 | slots | `lightuserdata` | R | `obj.slots` |
 | msgClearHarpoons | `boolean` | RW | `obj.msgClearHarpoons = <value>` |
-| woundsListMutex | `lightuserdata` | R | `obj.woundsListMutex` |
 | body | `lightuserdata` | RW | `obj.body = <value>` |
 | bodyLoader | `lightuserdata` | R | `obj.bodyLoader` |
 | isCreatingBody | `boolean` | RW | `obj.isCreatingBody = <value>` |
@@ -939,11 +938,6 @@
 ## BackThreadMessagesToMainT
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
 **Metatable:** `KenshiLua.BackThreadMessagesToMainT`
-
-### Fields
-| Lua Name | Type | R/W | Example |
-|---|---|---|---|
-| swapMutex | `unknown` | RW | `obj.swapMutex = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |

@@ -12,12 +12,6 @@ static BackThreadMessagesToMainT* getInstance(lua_State* L, int idx)
     return checkObject<BackThreadMessagesToMainT>(L, idx, BackThreadMessagesToMainTBinding::getMetatableName());
 }
 
-// --- Getters for BackThreadMessagesToMainT ---
-static int BackThreadMessagesToMainT_get_swapMutex(lua_State* L) { return 0; }
-
-// --- Setters for BackThreadMessagesToMainT ---
-static int BackThreadMessagesToMainT_set_swapMutex(lua_State* L) { return 0; }
-
 int BackThreadMessagesToMainTBinding::gc(lua_State* L)
 {
     return 0;
@@ -50,7 +44,7 @@ Skipped methods needing manual binding:
 
 /*
 Skipped properties needing manual binding:
-  line 22: swapMutex (Ogre::Mutex) - unsupported type
+  line 148: swapMutex (boost::recursive_mutex) - getter and setter not implemented; mutex type has no Lua binding
 */
 
 void BackThreadMessagesToMainTBinding::registerBinding(lua_State* L)
@@ -78,11 +72,9 @@ void BackThreadMessagesToMainTBinding::registerBinding(lua_State* L)
 
     luaL_getmetatable(L, BackThreadMessagesToMainTBinding::getMetatableName());
     lua_newtable(L);
-    registerGetter(L, "swapMutex", BackThreadMessagesToMainT_get_swapMutex);
     lua_setfield(L, -2, "__getters");
 
     lua_newtable(L);
-    registerSetter(L, "swapMutex", BackThreadMessagesToMainT_set_swapMutex);
     lua_setfield(L, -2, "__setters");
 
     lua_pop(L, 1);
