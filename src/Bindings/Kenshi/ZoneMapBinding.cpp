@@ -558,7 +558,7 @@ Skipped methods needing manual binding:
   line 221: const Ogre::Aabb& getBoundingBox(...) - reference return type
   line 239: void getMaterialValues(...) - static method
   line 240: Ogre::SharedPtr<Ogre::Material> getTerrainMaterial_DX11(...) - static method
-  line 241: std::string getBiomeTextureArrayData(...) - static method
+  line 241: std::string getBiomeTextureArrayData(...) - unavailable (KenshiLib.lib contains only ZoneMap_getBiomeTextureArrayData_PLACEHOLDER)
   line 242: Ogre::SharedPtr<Ogre::Texture> createTextureArray(...) - static method
   line 243: Ogre::SharedPtr<Ogre::Material> materialCallback(...) - static method
   line 244: void destroyMaterialCallback(...) - static method

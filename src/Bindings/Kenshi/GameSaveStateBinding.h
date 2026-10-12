@@ -30,7 +30,7 @@ public:
     static int createFromSerialisedInstanceData(lua_State* L);
     static int addState(lua_State* L);
     static int getInstanceID(lua_State* L);
-    // Commented out as this method is not exported by kenshilib:
+    // Unavailable: KenshiLib.lib contains only GameSaveState_getAllStates_PLACEHOLDER.
     // static int getAllStates(lua_State* L);
     static int operator_bool(lua_State* L);
 };

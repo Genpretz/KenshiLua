@@ -89,6 +89,8 @@ int CraftingInventoryLayoutBinding::setupSections(lua_State* L)
 
 int CraftingInventoryLayoutBinding::_NV_setupSections(lua_State* L)
 {
+    // KenshiLib.lib contains only CraftingInventoryLayout_setupSections_PLACEHOLDER.
+    // Preserve the published Lua alias by dispatching through the virtual method.
     CraftingInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingInventoryLayout is nil");
 

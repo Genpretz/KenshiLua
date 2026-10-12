@@ -65,6 +65,11 @@ int ResearchBuildingInventoryLayoutBinding::setupSections(lua_State* L)
     return 0;
 }
 
+/*
+Skipped methods needing manual binding:
+  line 15: void _NV_setupSections(...) - direct/non-virtual call unavailable (KenshiLib.lib contains only ResearchBuildingInventoryLayout_setupSections_PLACEHOLDER)
+*/
+
 int ResearchBuildingInventoryLayoutBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model

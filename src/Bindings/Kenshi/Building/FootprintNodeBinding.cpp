@@ -93,7 +93,7 @@ Skipped methods needing manual binding:
   line 571: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
   line 572: const Ogre::Aabb getLocalAABB(...) - unsupported return type
   line 573: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
-  line 577: bool collisionTestOK(...) - unsupported arg type
+  line 577: bool collisionTestOK(...) - virtual dispatch has an unsupported arg type; direct call unavailable (KenshiLib.lib contains only PreviewBuilding_FootprintNode_collisionTestOK_PLACEHOLDER)
   line 578: bool _NV_collisionTestOK(...) - unsupported arg type
 */
 

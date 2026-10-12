@@ -505,6 +505,8 @@ int GameDataBinding::addDeletedInstance(lua_State* L)
 
 int GameDataBinding::storeHandleList(lua_State* L)
 {
+    // Only the lektor<hand> overload is exported. The ogre_unordered_set<hand>
+    // overload has only GameData_storeHandleList_PLACEHOLDER in KenshiLib.lib.
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
@@ -514,6 +516,12 @@ int GameDataBinding::storeHandleList(lua_State* L)
     instance->storeHandleList(*handle, name);
     return 0;
 }
+
+/*
+KenshiLib export note:
+  line 99: the ogre_unordered_set<hand> getHandleList(...) overload is unavailable (KenshiLib.lib contains only GameData_getHandleList_PLACEHOLDER)
+  line 100: the lektor<hand> getHandleList(...) overload is exported but is not currently bound
+*/
 
 int GameDataBinding::storeHandle(lua_State* L)
 {

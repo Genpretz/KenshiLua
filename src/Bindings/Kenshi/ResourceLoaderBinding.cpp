@@ -198,9 +198,9 @@ int ResourceLoaderBinding::destroy(lua_State* L)
 /*
 Skipped methods needing manual binding:
   line 97: boost::function<void __cdecl(...) - static method
-  line 104: Ogre::Entity* loadModelEntity(...) - unsupported arg type
+  line 104: Ogre::Entity* loadModelEntity(...) - unavailable (KenshiLib.lib contains only ResourceLoader_loadModelEntity_PLACEHOLDER)
   line 105: Ogre::Entity* loadModelEntityDetached(...) - unsupported arg type
-  line 106: void loadTextureUnitArray(...) - unsupported arg type
+  line 106: void loadTextureUnitArray(...) - unavailable (KenshiLib.lib contains only ResourceLoader_loadTextureUnitArray_PLACEHOLDER)
   line 107: void loadTextureUnit(...) - unsupported arg type
   line 108: bool isTextureLoaded(...) - unsupported arg type
   line 109: Ogre::SceneNode* getSceneNode(...) - unsupported arg type

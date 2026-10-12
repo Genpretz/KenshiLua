@@ -110,7 +110,7 @@ int ObjectInstanceBinding::operator_assign(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 150: void updateInstancedObjectAttachedDatas(...) - unsupported arg type
+  line 150: void updateInstancedObjectAttachedDatas(...) - unavailable (KenshiLib.lib contains only GameData_ObjectInstance_updateInstancedObjectAttachedDatas_PLACEHOLDER)
 */
 
 /*

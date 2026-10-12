@@ -39,7 +39,7 @@ int AnimalInventoryLayoutBinding::setupSections(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 17: void _NV_setupSections(...) - unexported in KenshiLib.lib
+  line 17: void _NV_setupSections(...) - direct/non-virtual call unavailable (KenshiLib.lib contains only AnimalInventoryLayout_setupSections_PLACEHOLDER)
 */
 
 int AnimalInventoryLayoutBinding::gc(lua_State* L)

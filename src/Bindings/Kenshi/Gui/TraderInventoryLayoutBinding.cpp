@@ -48,8 +48,8 @@ int TraderInventoryLayoutBinding::setupSections(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 13: void _NV_setupSections(...) - unexported in KenshiLib.lib
-  line 14: void resize(...) - unexported in KenshiLib.lib (MASM identifier length limit)
+  line 13: void _NV_setupSections(...) - direct/non-virtual call unavailable (KenshiLib.lib contains only TraderInventoryLayout_setupSections_PLACEHOLDER)
+  line 14: void resize(...) - unavailable (KenshiLib.lib contains only TraderInventoryLayout_resize_PLACEHOLDER)
 */
 
 int TraderInventoryLayoutBinding::notifyMouseWheel(lua_State* L)

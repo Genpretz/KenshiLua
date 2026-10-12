@@ -57,11 +57,11 @@ This document registers all C++ SDK classes and complex types that are currently
 | `Ogre::Renderable::Visitor*` | 1 |
 | `Ogre::Root*` | 1 |
 | `Ogre::SceneMemoryMgrTypes` | 1 |
-| `Ogre::SceneNode*` | 10 |
+| `Ogre::SceneNode*` | 9 |
 | `Ogre::SharedPtr<Ogre::Material>` | 4 |
 | `Ogre::SharedPtr<Ogre::Resource>` | 6 |
 | `Ogre::SharedPtr<Ogre::Texture>` | 5 |
-| `Ogre::TextureUnitState*` | 2 |
+| `Ogre::TextureUnitState*` | 1 |
 | `PatrolInfo&` | 2 |
 | `PhysFileParams&` | 6 |
 | `PhysFileParams*` | 6 |
@@ -105,16 +105,15 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const Ogre::FrameEvent&` | 1 |
 | `const Ogre::Matrix4&` | 1 |
 | `const Ogre::Ray&` | 1 |
-| `const Ogre::SharedPtr<Ogre::Material>&` | 2 |
+| `const Ogre::SharedPtr<Ogre::Material>&` | 1 |
 | `const Ogre::SharedPtr<Ogre::Mesh>&` | 1 |
 | `const Ogre::SharedPtr<Ogre::Texture>&` | 1 |
 | `const Ogre::vector<GameDataReference>::type*` | 1 |
 | `const Ogre::vector<TutorialItem*>::type&` | 1 |
-| `const Ogre::vector<std::string>::type&` | 2 |
 | `const PhysicsActorData*` | 2 |
 | `const PhysicsJointData*` | 2 |
 | `const PhysicsModelData*` | 1 |
-| `const boost::function<void __cdecl(Ogre::SharedPtr<Ogre::Resource>, void*` | 3 |
+| `const boost::function<void __cdecl(Ogre::SharedPtr<Ogre::Resource>, void*` | 2 |
 | `const boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >&` | 4 |
 | `const hand&` | 1 |
 | `const hkArray<EdgePathNode, hkContainerHeapAllocator>&` | 1 |
@@ -124,9 +123,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const lektor<NavInstance*>&` | 1 |
 | `const lektor<NavMesh::BuildingInfo>&` | 2 |
 | `const lektor<Road*>&` | 1 |
-| `const ogre_unordered_map<itemType, GameData*>::type&` | 1 |
-| `const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >&` | 5 |
-| `const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >*` | 5 |
+| `const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >*` | 2 |
 | `const std::string&` | 3 |
 | `const type_info&` | 3 |
 | `const void*` | 1 |
@@ -176,7 +173,7 @@ Below are methods that were skipped during binding generation:
 
 | File | Method Name | Type / Return Type | Reason / Issue |
 | :--- | :--- | :--- | :--- |
-| Kenshi/AnimalInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
+| Kenshi/AnimalInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only AnimalInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/AppearanceBaseBinding.cpp | _NV_setupCharacterEntityTexture | `void` | unsupported arg type (Ogre::Entity*, const boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >&, Ogre::ColourValue*) |
 | Kenshi/AppearanceBaseBinding.cpp | addWound | `void` | unsupported arg type (Wound*) |
 | Kenshi/AppearanceBaseBinding.cpp | affectsPortrait | `bool` | unsupported arg type (AttachedEntity*) |
@@ -216,23 +213,25 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Building/BuildingBinding.cpp | setBuildingPartMaterial | `void` | static method |
 | Kenshi/Building/BuildingBinding.cpp | setPartVisible | `void` | unsupported arg type (PhysicalEntity*, bool) |
 | Kenshi/Building/BuildingBinding.cpp | updateWorldAABB | `void` | unsupported arg type (Ogre::MovableObject*) |
+| Kenshi/Building/BuildingContainerInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only BuildingContainerInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/Building/FootprintBinding.cpp | _NV_collisionTestOK | `bool` | unsupported arg type (const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >*) |
 | Kenshi/Building/FootprintBinding.cpp | _NV_getLocalAABB | `const Ogre::Aabb` | unsupported return type |
 | Kenshi/Building/FootprintBinding.cpp | _NV_getWorldAABB | `const Ogre::Aabb` | unsupported return type |
-| Kenshi/Building/FootprintBinding.cpp | blocksAnyBuildingTest | `bool` | unsupported arg type (const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >&) |
-| Kenshi/Building/FootprintBinding.cpp | collisionTestOK | `bool` | unsupported arg type (const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >*) |
+| Kenshi/Building/FootprintBinding.cpp | blocksAnyBuildingTest | `bool` | unavailable (KenshiLib.lib contains only PreviewBuilding_Footprint_blocksAnyBuildingTest_PLACEHOLDER); unsupported arg type |
+| Kenshi/Building/FootprintBinding.cpp | collisionTestOK | `bool` | virtual dispatch has an unsupported arg type; direct call unavailable (KenshiLib.lib contains only PreviewBuilding_Footprint_collisionTestOK_PLACEHOLDER) |
 | Kenshi/Building/FootprintBinding.cpp | getLocalAABB | `const Ogre::Aabb` | unsupported return type |
 | Kenshi/Building/FootprintBinding.cpp | getWorldAABB | `const Ogre::Aabb` | unsupported return type |
 | Kenshi/Building/FootprintNodeBinding.cpp | _NV_collisionTestOK | `bool` | unsupported arg type (const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >*) |
 | Kenshi/Building/FootprintNodeBinding.cpp | _NV_getLocalAABB | `const Ogre::Aabb` | unsupported return type |
 | Kenshi/Building/FootprintNodeBinding.cpp | _NV_getWorldAABB | `const Ogre::Aabb` | unsupported return type |
-| Kenshi/Building/FootprintNodeBinding.cpp | collisionTestOK | `bool` | unsupported arg type (const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >*) |
+| Kenshi/Building/FootprintNodeBinding.cpp | collisionTestOK | `bool` | virtual dispatch has an unsupported arg type; direct call unavailable (KenshiLib.lib contains only PreviewBuilding_FootprintNode_collisionTestOK_PLACEHOLDER) |
 | Kenshi/Building/FootprintNodeBinding.cpp | getLocalAABB | `const Ogre::Aabb` | unsupported return type |
 | Kenshi/Building/FootprintNodeBinding.cpp | getWorldAABB | `const Ogre::Aabb` | unsupported return type |
-| Kenshi/Building/FurnaceInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
+| Kenshi/Building/FurnaceInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only FurnaceInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/Building/PreviewBuildingBinding.cpp | _NV_buildingPlacementUpdate | `void` | non-string reference arg (physHit&, bool&, bool&) |
 | Kenshi/Building/PreviewBuildingBinding.cpp | buildingPlacementUpdate | `void` | non-string reference arg (physHit&, bool&, bool&) |
 | Kenshi/Building/PreviewBuildingBinding.cpp | getWorldAABB | `const Ogre::Aabb&` | reference return type |
+| Kenshi/Building/ResearchBuildingInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only ResearchBuildingInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/Building/WallBuildingBinding.cpp | runLinkingCheck | `void` | unsupported arg type (ZoneMapContent*) |
 | Kenshi/CameraClassBinding.cpp | intersectScreenEdge | `int` | non-string reference arg (const Ogre::Vector3&, const Ogre::Vector3&, float&) |
 | Kenshi/CharMovementBinding.cpp | _NV_create | `void` | unsupported arg type (AnimationClass*) |
@@ -245,7 +244,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/CharMovementBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
 | Kenshi/CharMovementBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
 | Kenshi/CharMovementBinding.cpp | setPatrolInput | `void` | unsupported arg type (PatrolInfo&) |
-| Kenshi/CharacterInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
+| Kenshi/CharacterInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only CharacterInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/CombatMovementControllerBinding.cpp | combatMovementAnimationUpdate | `void` | unsupported arg type (AnimationClass*) |
 | Kenshi/CombatMovementControllerBinding.cpp | combatMovementOffensive | `void` | non-string reference arg (const hand&) |
 | Kenshi/CrossbowBinding.cpp | _NV_createItemEntityCallback_Equipping | `void` | unsupported arg type (Ogre::Entity*, Ogre::SceneNode*) |
@@ -259,7 +258,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/FoliageSystemBinding.cpp | getNavmeshCarvers | `int` | unsupported arg type (lektor<Ogre::Vector4>&) |
 | Kenshi/FoliageSystemBinding.cpp | loadEnts | `void` | unsupported arg type (GameData*, lektor<FoliageSystem::EntData*>&, bool) |
 | Kenshi/FoliageSystemBinding.cpp | setupWind | `void` | unsupported arg type (Forests::PagedGeometry*) |
-| Kenshi/Gui/BackpackInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
+| Kenshi/Gui/BackpackInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only BackpackInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/Gui/CharacterEditWindowBinding.cpp | getCharacterEntity | `Ogre::Entity*` | unsupported arg type (unsigned __int64) |
 | Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAnimationIdle | `void` | unsupported arg type (MyGUI::Slider*, int) |
 | Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAppearanceList | `void` | unsupported arg type (MyGUI::ListScrollBar*, const std::string&, int) |
@@ -343,7 +342,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/MapMarkerTownBinding.cpp | update | `void` | unsupported arg type (const MyGUI::types::TPoint<int>&) |
 | Kenshi/Gui/MultiSliderBinding.cpp | isType | `bool` | unsupported arg type (const type_info&) |
 | Kenshi/Gui/NewGameOptionsWindowBinding.cpp | setOptions | `void` | non-string reference arg (const GameplayOptions&) |
-| Kenshi/Gui/OpenSaveFileDialogBinding.cpp | setRecentFolders | `void` | unsupported arg type (const Ogre::vector<std::string>::type&) |
+| Kenshi/Gui/OpenSaveFileDialogBinding.cpp | setRecentFolders | `void` | unavailable (KenshiLib.lib contains only OpenSaveFileDialog_setRecentFolders_PLACEHOLDER) |
 | Kenshi/Gui/OrderCellViewBinding.cpp | update | `void` | unsupported arg type (const MyGUI::IBDrawItemInfo&) |
 | Kenshi/Gui/OrdersPanelBinding.cpp | notifyRequestDropOrder | `void` | non-string reference arg (bool&) |
 | Kenshi/Gui/OrdersPanelBinding.cpp | notifyStartDropOrder | `void` | non-string reference arg (bool&) |
@@ -361,13 +360,13 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/SquadManagementScreenBinding.cpp | notifyStartDropPortrait | `void` | non-string reference arg (bool&) |
 | Kenshi/Gui/SquadManagementScreenBinding.cpp | notifyStartDropSquad | `void` | non-string reference arg (bool&) |
 | Kenshi/Gui/ToolTipBinding.cpp | notifyToolTip | `void` | MyGUI::ToolTipInfo& unsupported |
-| Kenshi/Gui/TraderInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
-| Kenshi/Gui/TraderInventoryLayoutBinding.cpp | resize | `void` | unexported in KenshiLib.lib (MASM identifier length limit) |
+| Kenshi/Gui/TraderInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only TraderInventoryLayout_setupSections_PLACEHOLDER) |
+| Kenshi/Gui/TraderInventoryLayoutBinding.cpp | resize | `void` | unavailable (KenshiLib.lib contains only TraderInventoryLayout_resize_PLACEHOLDER) |
 | Kenshi/Gui/TransformWindowBinding.cpp | show | `void` | unsupported arg type (Ogre::SceneNode*, Ogre::SceneNode*) |
 | Kenshi/Gui/TutorialGUIBinding.cpp | addTutorialsToList | `void` | unsupported arg type (const Ogre::vector<TutorialItem*>::type&) |
 | Kenshi/InputHandlerBinding.cpp | addKey | `void` | non-string reference arg (const std::string&, bool&) |
 | Kenshi/ItemBinding.cpp | createItemEntityCallback | `void` | unsupported arg type (Ogre::SharedPtr<Ogre::Resource>) |
-| Kenshi/LimbsInventoryLayoutBinding.cpp | _NV_setupSections | `void` | unexported in KenshiLib.lib |
+| Kenshi/LimbsInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only LimbsInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/ListenerBinding.cpp | weatherUpdated | `void` | unsupported arg type (WeatherInstance*) |
 | Kenshi/MedianFilterBinding.cpp | apply | `void` | non-string reference arg (float&) |
 | Kenshi/MeshDataLookupBinding.cpp | init | `void` | unsupported arg type (const Ogre::Entity*) |
@@ -457,7 +456,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/NxUserControllerHitReportBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
 | Kenshi/NxUserControllerHitReportBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
 | Kenshi/NxUserTriggerReportBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
-| Kenshi/ObjectInstanceBinding.cpp | updateInstancedObjectAttachedDatas | `void` | unsupported arg type (const ogre_unordered_map<itemType, GameData*>::type&) |
+| Kenshi/ObjectInstanceBinding.cpp | updateInstancedObjectAttachedDatas | `void` | unavailable (KenshiLib.lib contains only GameData_ObjectInstance_updateInstancedObjectAttachedDatas_PLACEHOLDER) |
 | Kenshi/ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type (Ogre::SceneNode*) |
 | Kenshi/PhysicsActualBinding.cpp | convertXMLToBin | `void` | non-string reference arg (std::string&, const Ogre::Vector3&) |
 | Kenshi/PhysicsActualBinding.cpp | loadPhysXFile | `NxActor*` | unsupported arg type (PhysFileParams&, lektor<NxActor*>*) |
@@ -493,10 +492,10 @@ Below are methods that were skipped during binding generation:
 | Kenshi/ResourceLoaderBinding.cpp | createLoadRequestMesh | `Ogre::Entity*` | unsupported arg type (const Ogre::SharedPtr<Ogre::Mesh>&, const boost::function<void __cdecl(Ogre::SharedPtr<Ogre::Resource>, void*) |
 | Kenshi/ResourceLoaderBinding.cpp | getSceneNode | `Ogre::SceneNode*` | unsupported arg type (Ogre::SceneNode*, Ogre::SceneMemoryMgrTypes) |
 | Kenshi/ResourceLoaderBinding.cpp | isTextureLoaded | `bool` | unsupported arg type (Ogre::Entity*) |
-| Kenshi/ResourceLoaderBinding.cpp | loadModelEntity | `Ogre::Entity*` | unsupported arg type (Ogre::SceneNode*, const boost::function<void __cdecl(Ogre::SharedPtr<Ogre::Resource>, void*) |
+| Kenshi/ResourceLoaderBinding.cpp | loadModelEntity | `Ogre::Entity*` | unavailable (KenshiLib.lib contains only ResourceLoader_loadModelEntity_PLACEHOLDER) |
 | Kenshi/ResourceLoaderBinding.cpp | loadModelEntityDetached | `Ogre::Entity*` | unsupported arg type (const boost::function<void __cdecl(Ogre::SharedPtr<Ogre::Resource>, void*) |
 | Kenshi/ResourceLoaderBinding.cpp | loadTextureUnit | `void` | unsupported arg type (const Ogre::SharedPtr<Ogre::Material>&, Ogre::TextureUnitState*) |
-| Kenshi/ResourceLoaderBinding.cpp | loadTextureUnitArray | `void` | unsupported arg type (const Ogre::vector<std::string>::type&, const Ogre::SharedPtr<Ogre::Material>&, Ogre::TextureUnitState*) |
+| Kenshi/ResourceLoaderBinding.cpp | loadTextureUnitArray | `void` | unavailable (KenshiLib.lib contains only ResourceLoader_loadTextureUnitArray_PLACEHOLDER) |
 | Kenshi/ResourceLoaderBinding.cpp | operationCompleted | `void` | unsupported arg type (const Ogre::BackgroundProcessResult&) |
 | Kenshi/ResourceLoaderBinding.cpp | releaseSceneNode | `void` | unsupported arg type (Ogre::SceneNode*) |
 | Kenshi/ResourceLoaderBinding.cpp | removeRequest | `void` | unsupported arg type (Ogre::Entity*) |
@@ -551,7 +550,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/ZoneMapBinding.cpp | _activate | `bool` | unsupported arg type (int, ZoneActivationType, float) |
 | Kenshi/ZoneMapBinding.cpp | createTextureArray | `Ogre::SharedPtr<Ogre::Texture>` | static method |
 | Kenshi/ZoneMapBinding.cpp | destroyMaterialCallback | `void` | static method |
-| Kenshi/ZoneMapBinding.cpp | getBiomeTextureArrayData | `std::string` | static method |
+| Kenshi/ZoneMapBinding.cpp | getBiomeTextureArrayData | `std::string` | unavailable (KenshiLib.lib contains only ZoneMap_getBiomeTextureArrayData_PLACEHOLDER) |
 | Kenshi/ZoneMapBinding.cpp | getBoundingBox | `const Ogre::Aabb&` | reference return type |
 | Kenshi/ZoneMapBinding.cpp | getMaterialValues | `void` | static method |
 | Kenshi/ZoneMapBinding.cpp | getTerrainMaterial_DX11 | `Ogre::SharedPtr<Ogre::Material>` | static method |

@@ -67,6 +67,11 @@ int BuildingContainerInventoryLayoutBinding::setupSections(lua_State* L)
     return 0;
 }
 
+/*
+Skipped methods needing manual binding:
+  line 17: void _NV_setupSections(...) - direct/non-virtual call unavailable (KenshiLib.lib contains only BuildingContainerInventoryLayout_setupSections_PLACEHOLDER)
+*/
+
 int BuildingContainerInventoryLayoutBinding::gc(lua_State* L)
 {
     // Implementation depends on ownership model

@@ -39,7 +39,7 @@ int BackpackInventoryLayoutBinding::setupSections(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 17: void _NV_setupSections(...) - unexported in KenshiLib.lib
+  line 17: void _NV_setupSections(...) - direct/non-virtual call unavailable (KenshiLib.lib contains only BackpackInventoryLayout_setupSections_PLACEHOLDER)
 */
 
 int BackpackInventoryLayoutBinding::gc(lua_State* L)

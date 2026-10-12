@@ -40,7 +40,7 @@ int FurnaceInventoryLayoutBinding::setupSections(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 18: void _NV_setupSections(...) - unexported in KenshiLib.lib
+  line 18: void _NV_setupSections(...) - direct/non-virtual call unavailable (KenshiLib.lib contains only FurnaceInventoryLayout_setupSections_PLACEHOLDER)
 */
 
 int FurnaceInventoryLayoutBinding::gc(lua_State* L)

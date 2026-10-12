@@ -33,7 +33,7 @@ int MessageBoxManagerBinding::hasModalMessage(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 30: MyGUI::Window* createMessageBox(...) - symbol too long in kenshilib MASM export (unexported in KenshiLib.lib)
+  line 30: MyGUI::Window* createMessageBox(...) - unavailable (KenshiLib.lib contains only MessageBoxManager_createMessageBox_PLACEHOLDER)
 */
 #if 0
 int MessageBoxManagerBinding::createMessageBox(lua_State* L)

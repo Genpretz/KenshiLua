@@ -271,7 +271,7 @@ int GameSaveStateBinding::getInstanceID(lua_State* L)
     return pushValue<InstanceID>(L, result, InstanceIDBinding::getMetatableName());
 }
 
-// Commented out as this method is not exported by kenshilib:
+// Unavailable: KenshiLib.lib contains only GameSaveState_getAllStates_PLACEHOLDER.
 /*
 int GameSaveStateBinding::getAllStates(lua_State* L)
 {
@@ -327,7 +327,7 @@ void GameSaveStateBinding::registerBinding(lua_State* L)
         { "createFromSerialisedInstanceData", GameSaveStateBinding::createFromSerialisedInstanceData },
         { "addState", GameSaveStateBinding::addState },
         { "getInstanceID", GameSaveStateBinding::getInstanceID },
-        // Commented out as this method is not exported by kenshilib:
+        // Unavailable: KenshiLib.lib contains only GameSaveState_getAllStates_PLACEHOLDER.
         // { "getAllStates", GameSaveStateBinding::getAllStates },
         { "operator_bool", GameSaveStateBinding::operator_bool },
         { 0, 0 }

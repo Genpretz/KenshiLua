@@ -15,6 +15,12 @@ static TextureArrayLoadData* getInstance(lua_State* L, int idx)
 
 // --- Getters for TextureArrayLoadData ---
 // --- Setters for TextureArrayLoadData ---
+
+/*
+Skipped constructors needing manual binding:
+  line 122: TextureArrayLoadData(...) - unavailable (KenshiLib.lib contains only ResourceLoader_TextureArrayLoadData_TextureArrayLoadData_PLACEHOLDER)
+*/
+
 int TextureArrayLoadDataBinding::loadImage(lua_State* L)
 {
     TextureArrayLoadData* instance = getInstance(L, 1);

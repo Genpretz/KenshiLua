@@ -317,6 +317,8 @@ int BuildInventoryLayoutBinding::setupSections(lua_State* L)
 
 int BuildInventoryLayoutBinding::_NV_setupSections(lua_State* L)
 {
+    // KenshiLib.lib contains only BuildInventoryLayout_setupSections_PLACEHOLDER.
+    // Preserve the published Lua alias by dispatching through the virtual method.
     BuildInventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 

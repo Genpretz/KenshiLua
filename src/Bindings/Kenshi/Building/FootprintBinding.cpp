@@ -334,9 +334,9 @@ Skipped methods needing manual binding:
   line 525: const Ogre::Aabb _NV_getWorldAABB(...) - unsupported return type
   line 526: const Ogre::Aabb getLocalAABB(...) - unsupported return type
   line 527: const Ogre::Aabb _NV_getLocalAABB(...) - unsupported return type
-  line 534: bool collisionTestOK(...) - unsupported arg type
+  line 534: bool collisionTestOK(...) - virtual dispatch has an unsupported arg type; direct call unavailable (KenshiLib.lib contains only PreviewBuilding_Footprint_collisionTestOK_PLACEHOLDER)
   line 535: bool _NV_collisionTestOK(...) - unsupported arg type
-  line 540: bool blocksAnyBuildingTest(...) - unsupported arg type
+  line 540: bool blocksAnyBuildingTest(...) - unavailable (KenshiLib.lib contains only PreviewBuilding_Footprint_blocksAnyBuildingTest_PLACEHOLDER); unsupported arg type
 */
 
 int FootprintBinding::operator_assign(lua_State* L)

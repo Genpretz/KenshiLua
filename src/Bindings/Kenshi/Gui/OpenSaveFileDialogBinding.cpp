@@ -320,7 +320,7 @@ int OpenSaveFileDialogBinding::closeWindow(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 24: void setRecentFolders(...) - unsupported arg type
+  line 24: void setRecentFolders(...) - unavailable (KenshiLib.lib contains only OpenSaveFileDialog_setRecentFolders_PLACEHOLDER)
 */
 
 int OpenSaveFileDialogBinding::gc(lua_State* L)
