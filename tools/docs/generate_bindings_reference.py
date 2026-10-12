@@ -37,6 +37,13 @@ def defines_class_or_struct(text: str, target_name: str) -> bool:
     return bool(pattern.search(text))
 
 _HEADERS_CACHE = None
+_REGISTERED_ENUM_TYPES_CACHE = None
+
+# Some SDK fields store a set of enum flags in an integer rather than one enum
+# value. Preserve that distinction in the generated Lua type description.
+FIELD_TYPE_OVERRIDES = {
+    ("Bounty", "crimes"): "integer (CrimeEnum bitmask)",
+}
 
 def get_headers_cache():
     global _HEADERS_CACHE
@@ -55,6 +62,21 @@ def get_headers_cache():
                         except Exception:
                             continue
     return _HEADERS_CACHE
+
+def get_registered_enum_types():
+    """Return C++ enum types whose values are registered with Lua."""
+    global _REGISTERED_ENUM_TYPES_CACHE
+    if _REGISTERED_ENUM_TYPES_CACHE is None:
+        enum_types = set()
+        for path in BINDINGS_DIR.rglob('*EnumBinding.cpp'):
+            content = path.read_text(encoding='utf-8', errors='ignore')
+            for match in re.finditer(
+                r'\bsetEnum\s*\(\s*L\s*,\s*"[^"]+"\s*,\s*([\w:]+)::\w+\s*\)',
+                content,
+            ):
+                enum_types.add(match.group(1))
+        _REGISTERED_ENUM_TYPES_CACHE = enum_types
+    return _REGISTERED_ENUM_TYPES_CACHE
 
 def header_matches_class(header_rel: str, class_name: str) -> bool:
     """Check if header_rel (e.g. kenshi/Building/FarmBuilding.h) defines class_name or its outer class."""
@@ -173,57 +195,115 @@ def extract_args_from_body(body: str):
     if not body:
         return []
     indices = {}
+
+    def record(idx, name, arg_type, priority):
+        if idx < 2:
+            return
+        current = indices.get(idx)
+        if current is None or priority > current["priority"]:
+            indices[idx] = {
+                "name": name,
+                "type": arg_type,
+                "priority": priority,
+            }
+
+    def lua_type(raw_type):
+        normalized = raw_type.lower()
+        return {
+            "integer": "integer",
+            "number": "number",
+            "string": "string",
+            "boolean": "boolean",
+            "userdata": "userdata",
+        }.get(normalized, normalized)
     
     # Pattern A: readVector2/readVector3/readVector4/readQuaternion(L, idx, var)
     for m in re.finditer(r"\bread(Vector2|Vector3|Vector4|Quaternion)\s*\(\s*L\s*,\s*(\d+)\s*,\s*([\w_]+)\)", body):
         type_name = m.group(1)
         idx = int(m.group(2))
         var = m.group(3)
-        if idx >= 2:
-            indices[idx] = {"name": var, "type": type_name}
-            
-    # Pattern B: var = ...checkObject/luaL_check...(L, idx)
-    for m in re.finditer(r"\b([\w_]+)\s*=\s*[^;]*?\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|[Hh]andBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
+        record(idx, var, type_name, 4)
+
+    # Pattern B: typed object checks assigned to a local variable.
+    for m in re.finditer(
+        r"\b([\w_]+)\s*=\s*[^;]*?\b(?:checkObject|testObject)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
         var = m.group(1)
-        check_type = m.group(2) or m.group(3)
-        check_obj_type = m.group(4)
-        idx = int(m.group(5))
-        
-        if idx >= 2:
-            if check_obj_type:
-                t = check_obj_type.strip()
-            elif check_type:
-                t = check_type.lower()
-                if t == "integer":
-                    t = "integer"
-                elif t == "number":
-                    t = "number"
-                elif t == "string":
-                    t = "string"
-                elif t == "boolean":
-                    t = "boolean"
-            else:
-                t = "hand"
-            indices[idx] = {"name": var, "type": t}
-            
-    # Pattern C: catch any other L usage with indices to know the max index
-    for m in re.finditer(r"\b(?:lua[lL]?_check(\w+)|lua[lL]?_to(\w+)|checkObject\s*<\s*([\w:*&\s<>]+)\s*>|readVector2|readVector3|readVector4|readQuaternion|[Hh]andBinding::read)\b[^;]*?\(\s*L\s*,\s*(\d+)", body):
-        check_type = m.group(1) or m.group(2)
-        check_obj_type = m.group(3)
-        idx = int(m.group(4))
-        
-        if idx >= 2 and idx not in indices:
-            if check_obj_type:
-                t = check_obj_type.strip()
-            elif check_type:
-                t = check_type.lower()
-            else:
-                t = "unknown"
-            indices[idx] = {"name": f"arg{idx - 1}", "type": t}
-            
+        arg_type = m.group(2).strip()
+        idx = int(m.group(3))
+        record(idx, var, arg_type, 4)
+
+    # MyGUI widget arguments use a polymorphic converter rather than checkObject.
+    for m in re.finditer(
+        r"\b([\w_]+)\s*=\s*[^;]*?\bMyGUIBindings::toWidget\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
+        record(int(m.group(2)), m.group(1), "MyGUI::Widget", 4)
+
+    # Pattern C: enum values read from Lua integers. Lua represents these as
+    # numbers at runtime, but the C++ declaration identifies the enum table
+    # callers should use.
+    enum_types = get_registered_enum_types()
+    for m in re.finditer(
+        r"\b([\w:]+)\s+([\w_]+)\s*=\s*\(\s*([\w:]+)\s*\)\s*luaL_checkinteger\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
+        declared_type = m.group(1)
+        cast_type = m.group(3)
+        if declared_type in enum_types and cast_type == declared_type:
+            record(int(m.group(4)), m.group(2), declared_type, 5)
+
+    # Pattern D: Lua scalar conversion/check helpers assigned to a local variable.
+    for m in re.finditer(
+        r"\b([\w_]+)\s*=\s*[^;]*?\blua[lL]?_(?:check|to|opt)(\w+)\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
+        var = m.group(1)
+        arg_type = lua_type(m.group(2))
+        idx = int(m.group(3))
+        record(idx, var, arg_type, 3)
+
+    # Pattern E: dedicated hand conversion assigned to a local variable.
+    for m in re.finditer(
+        r"\b([\w_]+)\s*=\s*[^;]*?\b[Hh]andBinding::read\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
+        record(int(m.group(2)), m.group(1), "hand", 4)
+
+    # Pattern F: container/value Binding::get helpers. Their concrete type is not
+    # reliably recoverable from an auto declaration, but the Lua argument is userdata.
+    for m in re.finditer(
+        r"\b([\w_]+)\s*=\s*[^;]*?\b[\w:]+Binding::get\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
+        record(int(m.group(2)), m.group(1), "userdata", 2)
+
+    # Pattern G: unassigned helper calls still establish an argument position.
+    for m in re.finditer(
+        r"\b(?:checkObject|testObject)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
+        idx = int(m.group(2))
+        record(idx, f"arg{idx - 1}", m.group(1).strip(), 1)
+
+    for m in re.finditer(
+        r"\blua[lL]?_(?:check|to|opt)(\w+)\s*\(\s*L\s*,\s*(\d+)",
+        body,
+    ):
+        idx = int(m.group(2))
+        record(idx, f"arg{idx - 1}", lua_type(m.group(1)), 1)
+
+    for m in re.finditer(r"\b[Hh]andBinding::read\s*\(\s*L\s*,\s*(\d+)", body):
+        idx = int(m.group(1))
+        record(idx, f"arg{idx - 1}", "hand", 1)
+
     sorted_args = []
     for idx in sorted(indices.keys()):
-        sorted_args.append(indices[idx])
+        sorted_args.append({
+            "name": indices[idx]["name"],
+            "type": indices[idx]["type"],
+        })
         
     return sorted_args
 
@@ -232,7 +312,7 @@ def extract_return_type_from_body(body: str) -> str:
     if not body:
         return "void"
         
-    m = re.search(r"return\s+pushObject(?:T)?\s*<\s*([\w:*&\s<>]+)\s*>\s*\(", body)
+    m = re.search(r"return\s+push(?:Object(?:T)?|Value)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(", body)
     if m:
         return m.group(1).strip()
         
@@ -243,7 +323,7 @@ def extract_return_type_from_body(body: str) -> str:
     if re.search(r"\bhand\s+\w+\s*=\s*[^;]+;\s*return\s+[Hh]andBinding::push\s*\(", body):
         return "hand"
         
-    m = re.search(r"pushObject(?:T)?\s*<\s*([\w:*&\s<>]+)\s*>\s*\(.*?\);\s*return\s+\d+", body)
+    m = re.search(r"push(?:Object(?:T)?|Value)\s*<\s*([\w:*&,\s<>]+)\s*>\s*\(.*?\);\s*return\s+\d+", body)
     if m:
         return m.group(1).strip()
         
@@ -255,6 +335,9 @@ def extract_return_type_from_body(body: str) -> str:
         return "Vector4"
     if re.search(r"pushQuaternion\s*\(", body):
         return "Quaternion"
+
+    if re.search(r"\bMyGUIBindings::pushWidget\s*\(", body):
+        return "MyGUI::Widget"
         
     pushes = set()
     for m in re.finditer(r"lua_push(\w+)\s*\(", body):
@@ -411,6 +494,31 @@ def extract_header_methods_for_class(header_rel: str, target_class: str):
             methods[method_name] = []
         methods[method_name].append({'args': args, 'ret_type': clean_ret})
     return methods
+
+def apply_header_enum_types(args, ret_type, header_overloads):
+    """Use an unambiguous SDK signature to label integer-backed Lua enums."""
+    if len(header_overloads) != 1:
+        return args, ret_type
+
+    header_signature = header_overloads[0]
+    header_args = header_signature['args']
+    enum_types = get_registered_enum_types()
+
+    if len(args) == len(header_args):
+        args = [dict(arg) for arg in args]
+        for index, header_arg in enumerate(header_args):
+            if header_arg['type'] in enum_types and args[index]['type'] == 'integer':
+                args[index]['type'] = header_arg['type']
+    elif not args and header_args and all(arg['type'] in enum_types for arg in header_args):
+        # Static wrappers sometimes choose stack index 1 or 2 at runtime, which
+        # prevents numeric-index extraction even though the SDK signature is clear.
+        args = [dict(arg) for arg in header_args]
+
+    header_ret_type = header_signature['ret_type']
+    if ret_type == 'integer' and header_ret_type in enum_types:
+        ret_type = header_ret_type
+
+    return args, ret_type
 
 def extract_overloads_from_body(body: str):
     """Extract multiple overload signatures from a method body with branching logic.
@@ -593,7 +701,7 @@ def parse_binding_file(filepath: pathlib.Path):
         h_text = ""
         if h_file and h_file.is_file():
             h_text = h_file.read_text(encoding='utf-8', errors='ignore')
-            h_includes = re.findall(r'#\s*include\s+["<](kenshi[/\\][^">]+)[">]', h_text)
+            h_includes = re.findall(r'#\s*include\s+["<]((?:kenshi|mygui)[/\\][^">]+)[">]', h_text, re.IGNORECASE)
             if h_includes:
                 for inc in h_includes:
                     rel_inc = inc.replace('\\', '/')
@@ -606,7 +714,7 @@ def parse_binding_file(filepath: pathlib.Path):
 
         # Step 2: Check .cpp file for #include ["<](kenshi[/\\][^">]+)[">]
         if not header:
-            cpp_includes = re.findall(r'#\s*include\s+["<](kenshi[/\\][^">]+)[">]', content)
+            cpp_includes = re.findall(r'#\s*include\s+["<]((?:kenshi|mygui)[/\\][^">]+)[">]', content, re.IGNORECASE)
             if cpp_includes:
                 for inc in cpp_includes:
                     rel_inc = inc.replace('\\', '/')
@@ -703,15 +811,21 @@ def parse_binding_file(filepath: pathlib.Path):
             
             if body:
                 push_match = re.search(
-                    r"(?:lua_push(\w+)|(pushObject(?:T)?)(?:\s*<\s*[\w:*&\s<>]+>\s*)?|(pushVector2)|(pushVector3)|(pushVector4)|(pushQuaternion)|([Hh]andBinding::push))\s*\(\s*L\s*,\s*([^;)]+)", 
+                    r"(?:lua_push(\w+)|(push(?:Object(?:T)?|Value))(?:\s*<\s*[\w:*&,\s<>]+>\s*)?|(pushVector2)|(pushVector3)|(pushVector4)|(pushQuaternion)|([Hh]andBinding::push))\s*\(\s*L\s*,\s*([^;)]+)",
                     body
                 )
                 if push_match:
                     if push_match.group(1):
                         push_type = push_match.group(1).lower()
                     elif push_match.group(2):
-                        template_match = re.search(r"pushObject(?:T)?\s*<\s*([\w:*&\s<>]+)\s*>", body)
+                        template_match = re.search(r"push(?:Object(?:T)?|Value)\s*<\s*([\w:*&,\s<>]+)\s*>", body)
                         push_type = template_match.group(1).strip() if template_match else "object"
+                        metatable_literal = re.search(
+                            r'push(?:Object(?:T)?|Value)\s*<[^;]+>\s*\(\s*L\s*,[^;]*,\s*"([^"]+)"\s*\)',
+                            body,
+                        )
+                        if metatable_literal:
+                            push_type = metatable_literal.group(1)
                     elif push_match.group(3):
                         push_type = "Vector2"
                     elif push_match.group(4):
@@ -728,14 +842,30 @@ def parse_binding_file(filepath: pathlib.Path):
                     if member_match:
                         member = member_match.group(1)
                     else:
-                        member = expr
+                        body_member_match = re.search(
+                            r"\b(?:lua_push\w+|push(?:Object(?:T)?|Value))[^;]*?->\s*([\w_]+)",
+                            body,
+                        )
+                        member = body_member_match.group(1) if body_member_match else expr
                         
+            if push_type == "unknown" and body:
+                widget_match = re.search(
+                    r"\bMyGUIBindings::pushWidget\s*\(\s*L\s*,\s*([^;)]+)",
+                    body,
+                )
+                if widget_match:
+                    push_type = "MyGUI::Widget"
+                    expr = widget_match.group(1).strip()
+                    member_match = re.search(r"\w+\s*->\s*([\w_]+)", expr)
+                    member = member_match.group(1) if member_match else expr
+
             if push_type == "unknown" and body:
                 unsupported_match = re.search(r"Unsupported type for\s+\w+\s+\(([^)]+)\)", body)
                 if unsupported_match:
                     push_type = unsupported_match.group(1).strip()
             
             setter_exists = False
+            setter_body = ""
             setter_name = f"{class_name}_set_{lua_name}"
             if setter_name in content:
                 setter_body = find_function_body(content, setter_name)
@@ -744,6 +874,16 @@ def parse_binding_file(filepath: pathlib.Path):
                     setter_exists = False
                 else:
                     setter_exists = True
+
+            if setter_body:
+                enum_cast = re.search(
+                    r"->\s*" + re.escape(member) + r"\s*=\s*\(\s*([\w:]+)\s*\)\s*luaL_checkinteger",
+                    setter_body,
+                )
+                if enum_cast and enum_cast.group(1) in get_registered_enum_types():
+                    push_type = enum_cast.group(1)
+
+            push_type = FIELD_TYPE_OVERRIDES.get((class_name, lua_name), push_type)
             rw = "RW" if setter_exists else "R"
             fields.append({"lua_name": lua_name, "member": member, "type": push_type, "rw": rw, "class": class_name, "header": header})
             
@@ -827,6 +967,7 @@ def parse_binding_file(filepath: pathlib.Path):
                     
                     args = extract_args_from_body(body)
                     ret_type = extract_return_type_from_body(body)
+                    args, ret_type = apply_header_enum_types(args, ret_type, unique_hdr_ovs)
                     methods.append({
                         "lua_name": lua_name,
                         "c_method": method_name,
@@ -878,6 +1019,7 @@ def generate_markdown(data_by_class, enums):
         "- **Instance Methods**: Called on userdata instances using colon syntax: `instance:methodName(args)`.",
         "- **Static Methods**: Functions that can be invoked statically via class table `ClassName.methodName(args)` or on an instance `instance:methodName(args)`.",
         "- **Overloaded Methods**: Methods supporting multiple argument counts or polymorphic parameter types are documented with explicit overload indexes (e.g. `[1]`, `[2]`), indicating each signature's parameter types and return type.",
+        "- **Enums**: Enum values are Lua integers. Enum type names identify the constant table documented in the [Enums Reference](EnumsReference.md); types marked as bitmasks may combine multiple enum flags.",
         "- **MyGUI User Interface**: For MyGUI widgets, dialogs, layouts, properties, and event callbacks, see the dedicated [MyGUI Reference](MyGUIReference.md).",
         "",
         "## Table of Contents",
@@ -1027,10 +1169,15 @@ def generate_markdown(data_by_class, enums):
 
     return "\n".join(lines)
 
-def main():
+def build_reference():
+    """Build the reference text without modifying the committed output."""
     data_by_class = {}
     for path in BINDINGS_DIR.rglob('*.cpp'):
-        if 'MyGUI' in path.parts or path.name.endswith('EnumBinding.cpp'):
+        if (
+            'MyGUI' in path.parts
+            or path.name == 'BaseLayoutBinding.cpp'
+            or path.name.endswith('EnumBinding.cpp')
+        ):
             continue
         parsed_classes = parse_binding_file(path)
         for cls, fields, methods, header, display_name, parent_class, metatable, has_constructor in parsed_classes:
@@ -1041,7 +1188,10 @@ def main():
             if path.name.endswith('EnumBinding.cpp') and 'MyGUI' not in path.parts:
                 file_enums = parse_enum_file(path)
                 enums.update(file_enums)
-    md = generate_markdown(data_by_class, enums)
+    return generate_markdown(data_by_class, enums)
+
+def main():
+    md = build_reference()
     out_path = DOCS_DIR / "BindingsReference.md"
     out_path.write_text(md, encoding='utf-8')
     print(f"Generated {out_path}")

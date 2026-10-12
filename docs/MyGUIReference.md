@@ -27,6 +27,8 @@ For KenshiLib game engine class bindings, see the [KenshiLua Bindings Reference]
   - [`FloatCoord`](#floatcoord)
   - [`FloatRect`](#floatrect)
   - [`Colour`](#colour)
+- [Layout Wrappers](#layout-wrappers)
+  - [`BaseLayout`](#baselayout)
 - [Base Widget Class](#base-widget-class)
   - [`Widget`](#widget)
 - [Widget Classes](#widget-classes)
@@ -297,6 +299,33 @@ Value structs used throughout MyGUI for coordinates, dimensions, bounds, and col
 |---|---|---|---|
 | `new` | `r: number, g: number, b: number, a: number` | `Colour` | `MyGUI.Colour.new(r, g, b, a)` |
 | `parse` | `str: string` | `Colour` | `MyGUI.Colour.parse(str)` |
+
+## Layout Wrappers
+
+MyGUI layout helper classes used as base classes by Kenshi interface bindings.
+
+### BaseLayout
+**Metatable:** `KenshiLua.BaseLayout`
+**Header:** `extern/KenshiLib/Include/mygui/common/baselayout/BaseLayout.h`
+
+> [!WARNING]
+> BaseLayout objects are borrowed from the engine. `initialise` mutates the layout's engine-owned widget hierarchy, so existing widget references may become invalid. `shutdown` is intentionally not exposed because the SDK implementation can leave `mMainWidget` dangling.
+
+#### Properties
+| Property | Type | R/W | Example |
+|---|---|---|---|
+| `mMainWidget` | `Widget` | R | `local value = layout.mMainWidget` |
+| `mPrefix` | `string` | RW | `layout.mPrefix = <value>` |
+| `mLayoutName` | `string` | RW | `layout.mLayoutName = <value>` |
+
+#### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| `assignWidget` | `name: string, doThrow: boolean (optional, default true), createFakeWidgets: boolean (optional, default true)` | `Widget` | `layout:assignWidget(name, doThrow, createFakeWidgets)` |
+| `initialise` | `layoutName: string, parent: Widget? (optional, default nil), doThrow: boolean (optional, default true), createFakeWidgets: boolean (optional, default true)` | `void` | `layout:initialise(layoutName, parent, doThrow, createFakeWidgets)` |
+| `FindParentPrefix` | `parent: Widget` | `string` | `layout:FindParentPrefix(parent)` |
+| `snapToParent` | `child: Widget` | `void` | `layout:snapToParent(child)` |
+| `_createFakeWidgetT` | `typeName: string, parent: Widget?` | `Widget` | `layout:_createFakeWidgetT(typeName, parent)` |
 
 ## Base Widget Class
 

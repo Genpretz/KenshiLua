@@ -20,6 +20,7 @@ import pathlib
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 MYGUI_DIR = PROJECT_ROOT / "src" / "Bindings" / "MyGUI"
+BASE_LAYOUT_BINDING = PROJECT_ROOT / "src" / "Bindings" / "Kenshi" / "Gui" / "BaseLayoutBinding.cpp"
 DOCS_DIR = PROJECT_ROOT / "docs"
 DOCS_DIR.mkdir(parents=True, exist_ok=True)
 
@@ -718,7 +719,58 @@ def append_plain_class(lines, c, var):
             lines.append(f"| `{meth['lua_name']}` | `{args_str}` | `{meth['ret_type']}` | {example} |")
         lines.append("")
 
-def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_classes, manager_classes, enumerator_classes, layer_classes):
+def parse_base_layout_class():
+    """Parse wraps::BaseLayout using the shared binding-reference parser."""
+    import generate_bindings_reference
+
+    parsed = generate_bindings_reference.parse_binding_file(BASE_LAYOUT_BINDING)
+    entry = next(item for item in parsed if item[0] == "BaseLayout")
+    _, fields, methods, header, _, _, metatable, _ = entry
+
+    field_list = []
+    for field in fields:
+        lua_name = field["lua_name"]
+        field_type = field["type"].replace("MyGUI::", "")
+        example = f"layout.{lua_name} = <value>" if field["rw"] == "RW" else f"local value = layout.{lua_name}"
+        field_list.append({
+            "lua_name": lua_name,
+            "type": field_type,
+            "rw": field["rw"],
+            "example": example,
+        })
+
+    method_list = []
+    for method in methods:
+        method_copy = dict(method)
+        method_copy["ret_type"] = method_copy["ret_type"].replace("MyGUI::", "")
+        method_copy["args"] = [dict(arg) for arg in method_copy["args"]]
+        for arg in method_copy["args"]:
+            arg["type"] = arg["type"].replace("MyGUI::", "")
+            if method_copy["lua_name"] == "assignWidget" and arg["name"] in (
+                "doThrow",
+                "createFakeWidgets",
+            ):
+                arg["type"] = "boolean (optional, default true)"
+            if method_copy["lua_name"] == "initialise":
+                if arg["name"] == "parent":
+                    arg["type"] = "Widget? (optional, default nil)"
+                elif arg["name"] in ("doThrow", "createFakeWidgets"):
+                    arg["type"] = "boolean (optional, default true)"
+            if method_copy["lua_name"] == "_createFakeWidgetT" and arg["name"] == "parent":
+                arg["type"] = "Widget?"
+        method_list.append(method_copy)
+
+    return {
+        "class_name": "BaseLayout",
+        "metatable": metatable,
+        "header": header,
+        "parent_class": None,
+        "fields": field_list,
+        "methods": method_list,
+        "static_methods": [],
+    }
+
+def generate_mygui_markdown(global_methods, global_enums, type_classes, layout_classes, widget_classes, manager_classes, enumerator_classes, layer_classes):
     lines = [
         "# MyGUI Lua API Reference",
         "",
@@ -744,6 +796,10 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
 
     for t in type_classes:
         lines.append(f"  - [`{t['class_name']}`](#{make_anchor(t['class_name'])})")
+
+    lines.append("- [Layout Wrappers](#layout-wrappers)")
+    for layout in layout_classes:
+        lines.append(f"  - [`{layout['class_name']}`](#{make_anchor(layout['class_name'])})")
 
     lines.append("- [Base Widget Class](#base-widget-class)")
     lines.append("  - [`Widget`](#widget)")
@@ -825,7 +881,46 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
                 lines.append(f"| `{m['lua_name']}` | `{args_str}` | `{m['ret_type']}` | {example} |")
             lines.append("")
 
-    # Section 3: Base Widget Class
+    # Section 3: MyGUI layout wrappers
+    lines.append("## Layout Wrappers")
+    lines.append("")
+    lines.append("MyGUI layout helper classes used as base classes by Kenshi interface bindings.")
+    lines.append("")
+
+    for layout in layout_classes:
+        lines.append(f"### {layout['class_name']}")
+        lines.append(f"**Metatable:** `{layout['metatable']}`")
+        lines.append(f"**Header:** `{layout['header']}`")
+        lines.append("")
+        lines.append("> [!WARNING]")
+        lines.append("> BaseLayout objects are borrowed from the engine. `initialise` mutates the layout's engine-owned widget hierarchy, so existing widget references may become invalid. `shutdown` is intentionally not exposed because the SDK implementation can leave `mMainWidget` dangling.")
+        lines.append("")
+
+        if layout['fields']:
+            lines.append("#### Properties")
+            lines.append("| Property | Type | R/W | Example |")
+            lines.append("|---|---|---|---|")
+            for field in layout['fields']:
+                lines.append(f"| `{field['lua_name']}` | `{field['type']}` | {field['rw']} | `{field['example']}` |")
+            lines.append("")
+
+        if layout['methods']:
+            lines.append("#### Methods")
+            lines.append("| Lua Name | Arguments | Return Type | Example |")
+            lines.append("|---|---|---|---|")
+            for method in layout['methods']:
+                args_str = ", ".join(
+                    f"{arg['name']}: {arg['type']}" for arg in method['args']
+                )
+                call_args = ", ".join(arg['name'] for arg in method['args'])
+                example = f"`layout:{method['lua_name']}({call_args})`"
+                lines.append(
+                    f"| `{method['lua_name']}` | `{args_str}` | "
+                    f"`{method['ret_type']}` | {example} |"
+                )
+            lines.append("")
+
+    # Section 4: Base Widget Class
     lines.append("## Base Widget Class")
     lines.append("")
     widget_class = next(w for w in widget_classes if w['class_name'] == "Widget")
@@ -856,7 +951,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
             lines.append(f"| `{m['lua_name']}` | `{args_str}` | `{m['ret_type']}` | {example} |")
         lines.append("")
 
-    # Section 4: Widget Classes
+    # Section 5: Widget Classes
     lines.append("## Widget Classes")
     lines.append("")
 
@@ -891,7 +986,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
                 lines.append(f"| `{m['lua_name']}` | `{args_str}` | `{m['ret_type']}` | {example} |")
             lines.append("")
 
-    # Section 5: Managers
+    # Section 6: Managers
     lines.append("## Managers (Singletons)")
     lines.append("")
     lines.append("Managers provide global control over input, cursor pointer, skins, layout templates, layers, clipboard, and rendering.")
@@ -926,7 +1021,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
                 lines.append(f"| `{meth['lua_name']}` | `{args_str}` | `{meth['ret_type']}` | {example} |")
             lines.append("")
 
-    # Section 6: Enumerators
+    # Section 7: Enumerators
     lines.append("## Enumerators")
     lines.append("")
     lines.append("`getEnumerator()` returns an enumerator over a copy of the items it lists, taken when `getEnumerator()` was called, so items created later are not included. As in MyGUI, the first `next()` moves to the first item, `next()` returns `false` once no items remain, and `current()` raises an error after that.")
@@ -954,7 +1049,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     for c in sorted(enumerator_classes, key=lambda x: x['class_name']):
         append_plain_class(lines, c, "e")
 
-    # Section 7: Layers
+    # Section 8: Layers
     lines.append("## Layers")
     lines.append("")
     lines.append("`LayerManager:getLayer(index)`, `LayerManager:getByName(name)`, and the [layer enumerator](#enumerators) return the layers MyGUI draws widgets on. Layers are borrowed from the `LayerManager`; look them up when you need them rather than keeping them, since a layer MyGUI has replaced is not detected.")
@@ -963,7 +1058,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
     for c in sorted(layer_classes, key=lambda x: x['class_name']):
         append_plain_class(lines, c, "layer")
 
-    # Section 8: Event Callbacks
+    # Section 9: Event Callbacks
     lines.append("## Event Callbacks Reference")
     lines.append("")
     lines.append("Event callbacks are attached to widgets using `widget:on(eventType, callbackFunction)` (returns a callback ID). Callbacks can be detached using `widget:off(callbackId)` or `widget:off(eventType)`.")
@@ -990,7 +1085,7 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
         lines.append(f"| **`{ev['event']}`** | `{ev['widgets']}` | `{ev['signature']}` | {ev['description']} |")
     lines.append("")
 
-    # Section 9: Enums
+    # Section 10: Enums
     lines.append("## Global Enums")
     lines.append("")
 
@@ -1004,13 +1099,15 @@ def generate_mygui_markdown(global_methods, global_enums, type_classes, widget_c
 
     return "\n".join(lines)
 
-def main():
+def build_reference():
+    """Build the MyGUI reference text without modifying the committed output."""
     mygui_cpp_path = MYGUI_DIR / "MyGUIBinding.cpp"
     types_cpp_path = MYGUI_DIR / "TypesBinding.cpp"
     
     global_methods = parse_global_methods(mygui_cpp_path)
     global_enums = parse_global_enums(mygui_cpp_path)
     type_classes = parse_types_file(types_cpp_path)
+    layout_classes = [parse_base_layout_class()]
     
     widget_classes = []
     manager_classes = []
@@ -1034,7 +1131,10 @@ def main():
         else:
             widget_classes.append(c_info)
 
-    md = generate_mygui_markdown(global_methods, global_enums, type_classes, widget_classes, manager_classes, enumerator_classes, layer_classes)
+    return generate_mygui_markdown(global_methods, global_enums, type_classes, layout_classes, widget_classes, manager_classes, enumerator_classes, layer_classes)
+
+def main():
+    md = build_reference()
     out_path = DOCS_DIR / "MyGUIReference.md"
     out_path.write_text(md, encoding='utf-8')
     print(f"Generated {out_path} ({len(md)} bytes)")
