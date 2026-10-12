@@ -5,4 +5,10 @@
 3. Enable the KenshiLua mod in the launcher.
 4. Launch the game.
 
-See the docs found within ./KenshiLua/docs/ or look online at the [KenshiLua GitHub](www.github.com/genpretz/kenshilua) for more scripting documentation.
+See the docs found within `./KenshiLua/docs/` or look online at the
+[KenshiLua GitHub](https://github.com/Genpretz/KenshiLua) for more scripting
+documentation.
+
+Native KenshiLib plugin authors can use `./KenshiLua/include/KenshiLua.h` and
+the contract in `./KenshiLua/docs/CppExtensionAPI.md` to discover KenshiLua at
+runtime without linking against KenshiLua or Lua.
