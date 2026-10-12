@@ -14,6 +14,8 @@ public:
 
     void* getDllModule() const { return m_dllModule; }
     bool isInitialized() const { return m_initialized; }
+    unsigned long getLuaThreadId() const { return m_luaThreadId; }
+    bool isLuaThread() const;
 
 private:
     Plugin();
@@ -24,6 +26,7 @@ private:
     void* m_dllModule;
     bool m_initialized;
     bool m_isInitialStartup;
+    unsigned long m_luaThreadId;
 };
 
 } // namespace KenshiLua

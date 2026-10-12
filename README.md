@@ -37,6 +37,17 @@ A large amount of KenshiLib has been exposed for use from Lua. This includes alm
 
 KenshiLib is a large and complex codebase, and while KenshiLua exposes a large portion of it, there are still many methods and properties that are not yet exposed to Lua. If you find that a method or property you need is not available, please open an issue on the KenshiLua GitHub repository.
 
+## Native C++ extensions
+
+Native KenshiLib plugins can discover KenshiLua at runtime through the
+header-only C++ Extension SDK. The SDK does not require linking against
+`KenshiLua.lib` or `lua51.lib`; it negotiates a versioned function table from
+the loaded `KenshiLua.dll`.
+
+See [CppExtensionAPI.md](docs/CppExtensionAPI.md) for the API contract and
+[Cpp_KenshiLib_Integration_Demo](examples/example_mods/Cpp_KenshiLib_Integration_Demo)
+for a buildable plugin example.
+
 ## Installation
 
 1. Ensure RE_Kenshi v0.3.3 or later is installed.
@@ -139,6 +150,9 @@ Events.on("InputHandler::keyDownEvent", on_key_down)
       - Add the following include, `#include "kenshi/gui/ContextMenu.h"` and remove the definition for `class ContextMenu`.
 
 3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib and are not functional).
+   To build against a separate checkout containing the required KenshiLib
+   compatibility changes, set the `KENSHILIB_DIR` MSBuild property to that
+   checkout's root directory.
 4. `KenshiLua.vcxproj` includes a post-build event that will copy the built `KenshiLua.dll` along with all the other files and directories required for KenshiLua to run to `$(ProjectDir)bin/KenshiLua/`
 
 #### Notes on Toolchain Constraints

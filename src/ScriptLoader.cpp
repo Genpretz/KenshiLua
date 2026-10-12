@@ -15,6 +15,7 @@
 #include <boost/system/error_code.hpp>
 
 #include <algorithm>
+#include <cctype>
 #include <cstring>
 
 #include "Lua/LuaState.h"
@@ -42,6 +43,42 @@ static void createSandboxEnv(lua_State* L)
     lua_setmetatable(L, -2);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "_ENV");
+}
+
+static char lowerPathCharacter(char value)
+{
+    return static_cast<char>(std::tolower(static_cast<unsigned char>(value)));
+}
+
+static std::string lowerPath(std::string value)
+{
+    normalizePathSlashes(value);
+    std::transform(value.begin(), value.end(), value.begin(), lowerPathCharacter);
+    return value;
+}
+
+static bool canonicalFileInside(const fs::path& root, const fs::path& candidate,
+    std::string& resolved)
+{
+    boost::system::error_code ec;
+    if (!fs::exists(candidate, ec) || ec || !fs::is_regular_file(candidate, ec) || ec)
+        return false;
+
+    fs::path canonicalRoot = fs::canonical(root, ec);
+    if (ec) return false;
+    fs::path canonicalCandidate = fs::canonical(candidate, ec);
+    if (ec) return false;
+
+    std::string rootString = lowerPath(canonicalRoot.string());
+    std::string candidateString = lowerPath(canonicalCandidate.string());
+    if (!rootString.empty() && rootString[rootString.size() - 1] != '/')
+        rootString += '/';
+    if (candidateString.size() <= rootString.size() ||
+        candidateString.compare(0, rootString.size(), rootString) != 0)
+        return false;
+
+    resolved = canonicalCandidate.string();
+    return true;
 }
 
 void ScriptLoader::updateScriptStatus(const std::string& absolutePath, bool loaded, const std::string& error)
@@ -150,8 +187,10 @@ void ScriptLoader::discover()
     }
 }
 
-bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absolutePath, const std::string& chunkName, std::string* outError)
+bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absolutePath,
+    const std::string& chunkName, std::string* outError, RunScriptStatus* outStatus)
 {
+    if (outStatus) *outStatus = RUN_SCRIPT_OK;
     int top = lua_gettop(L);
 
     fs::path path(absolutePath);
@@ -160,6 +199,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         std::string errStr = "could not open " + absolutePath;
         logToFileError("ScriptLoader: " + errStr);
         if (outError) *outError = errStr;
+        if (outStatus) *outStatus = RUN_SCRIPT_FILE_ERROR;
         updateScriptStatus(absolutePath, false, errStr);
         return false;
     }
@@ -172,6 +212,7 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
             std::string errStr = "failed to read " + absolutePath;
             logToFileError("ScriptLoader: " + errStr);
             if (outError) *outError = errStr;
+            if (outStatus) *outStatus = RUN_SCRIPT_FILE_ERROR;
             lua_settop(L, top);
             updateScriptStatus(absolutePath, false, errStr);
             return false;
@@ -184,6 +225,8 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
         std::string errStr = err ? err : "load error";
         logToFileError("ScriptLoader: load failed: " + chunkName + " : " + errStr);
         if (outError) *outError = errStr;
+        if (outStatus)
+            *outStatus = loadResult == LUA_ERRMEM ? RUN_SCRIPT_MEMORY_ERROR : RUN_SCRIPT_SYNTAX_ERROR;
         lua_settop(L, top);
         updateScriptStatus(absolutePath, false, errStr);
         return false;
@@ -199,9 +242,12 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
 #endif
 
     std::string pcallErr;
-    if (!LuaState::pcallWithTraceback(L, 0, 0, &pcallErr)) {
+    int pcallStatus = LUA_OK;
+    if (!LuaState::pcallWithTraceback(L, 0, 0, &pcallErr, &pcallStatus)) {
         logToFileError("ScriptLoader: runtime error in " + chunkName + " : " + pcallErr);
         if (outError) *outError = pcallErr;
+        if (outStatus)
+            *outStatus = pcallStatus == LUA_ERRMEM ? RUN_SCRIPT_MEMORY_ERROR : RUN_SCRIPT_RUNTIME_ERROR;
         lua_settop(L, top);
         updateScriptStatus(absolutePath, false, pcallErr);
         return false;
@@ -316,93 +362,121 @@ void ScriptLoader::reset()
 
 std::string ScriptLoader::resolveScriptPath(const std::string& filename)
 {
-    auto it = m_resolvedScriptPaths.find(filename);
-    if (it != m_resolvedScriptPaths.end())
-    {
-        return it->second;
-    }
-
     if (!::ou) return "";
 
-    std::string normFilename = filename;
-    normalizePathSlashes(normFilename);
-
-    if (normFilename.size() >= 2 && normFilename[0] == '.' && normFilename[1] == '/')
-    {
-        normFilename = normFilename.substr(2);
-    }
-
-    // Direct check relative to game CWD
-    fs::path directP(normFilename);
-    boost::system::error_code ec;
-    if (fs::exists(directP, ec) && fs::is_regular_file(directP, ec))
-    {
-        std::string absPath = fs::absolute(directP).string();
-        m_resolvedScriptPaths[filename] = absPath;
-        return absPath;
-    }
-
-    std::string suffix = normFilename;
-    size_t modsPos = normFilename.find("mods/");
-    if (modsPos != std::string::npos)
-    {
-        size_t nextSlash = normFilename.find('/', modsPos + 5);
-        if (nextSlash != std::string::npos)
-        {
-            suffix = normFilename.substr(nextSlash + 1);
-        }
-    }
-
     const auto& mods = ::ou->activeMods;
+    auto cached = m_resolvedScriptPaths.find(filename);
+    if (cached != m_resolvedScriptPaths.end())
+    {
+        for (int i = 0; i < static_cast<int>(mods.size()); ++i)
+        {
+            ModInfo* mod = mods[i];
+            if (!mod || mod->path.empty()) continue;
+            std::string revalidated;
+            if (canonicalFileInside(fs::path(mod->path), fs::path(cached->second),
+                    revalidated))
+            {
+                cached->second = revalidated;
+                return revalidated;
+            }
+        }
+        m_resolvedScriptPaths.erase(cached);
+    }
+
+    std::string normalized = filename;
+    normalizePathSlashes(normalized);
+
+    while (normalized.size() >= 2 && normalized[0] == '.' && normalized[1] == '/')
+        normalized.erase(0, 2);
+    if (normalized.empty()) return "";
+
+    // Absolute paths are allowed only when their canonical target remains
+    // inside one of the active mod roots.
+    fs::path requestedPath(filename);
+    if (requestedPath.is_absolute())
+    {
+        for (int i = 0; i < static_cast<int>(mods.size()); ++i)
+        {
+            ModInfo* mod = mods[i];
+            if (!mod || mod->path.empty()) continue;
+            std::string resolved;
+            if (canonicalFileInside(fs::path(mod->path), requestedPath, resolved))
+            {
+                m_resolvedScriptPaths[filename] = resolved;
+                return resolved;
+            }
+        }
+        return "";
+    }
+
+    std::string withoutModsPrefix = normalized;
+    bool hasModsPrefix = lowerPath(withoutModsPrefix).compare(0, 5, "mods/") == 0;
+    if (hasModsPrefix)
+        withoutModsPrefix.erase(0, 5);
+
+    int qualifiedModIndex = -1;
+    std::string qualifiedRelative;
     for (int i = 0; i < static_cast<int>(mods.size()); ++i)
     {
+        ModInfo* mod = mods[i];
+        if (!mod || mod->path.empty()) continue;
+
+        std::string modName = mod->name;
+        normalizePathSlashes(modName);
+        std::string directoryName = fs::path(mod->path).filename().string();
+        normalizePathSlashes(directoryName);
+
+        std::string loweredRequest = lowerPath(withoutModsPrefix);
+        std::string prefixes[2] = { lowerPath(modName) + "/", lowerPath(directoryName) + "/" };
+        std::string originals[2] = { modName, directoryName };
+        for (int prefixIndex = 0; prefixIndex < 2; ++prefixIndex)
+        {
+            if (loweredRequest.compare(0, prefixes[prefixIndex].size(),
+                    prefixes[prefixIndex]) != 0)
+                continue;
+
+            std::string remainder = withoutModsPrefix.substr(originals[prefixIndex].size() + 1);
+            if (!hasModsPrefix && lowerPath(remainder).compare(0, 8, "scripts/") != 0)
+                continue;
+
+            qualifiedModIndex = i;
+            qualifiedRelative = remainder;
+            break;
+        }
+        if (qualifiedModIndex >= 0)
+            break;
+    }
+
+    if (hasModsPrefix && qualifiedModIndex < 0)
+        return "";
+
+    for (int i = 0; i < static_cast<int>(mods.size()); ++i)
+    {
+        if (qualifiedModIndex >= 0 && i != qualifiedModIndex)
+            continue;
+
         ModInfo* mi = mods[i];
         if (!mi || mi->path.empty()) continue;
 
         fs::path modRoot(mi->path);
-        
-        // 1. Check direct path under modRoot
-        fs::path targetPathDirect = modRoot / suffix;
-        if (fs::exists(targetPathDirect, ec) && fs::is_regular_file(targetPathDirect, ec))
+        std::string relative = qualifiedModIndex >= 0 ? qualifiedRelative : withoutModsPrefix;
+
+        std::string resolved;
+        if (canonicalFileInside(modRoot, modRoot / fs::path(relative), resolved))
         {
-            std::string pathStr = fs::absolute(targetPathDirect).string();
-            m_resolvedScriptPaths[filename] = pathStr;
-            return pathStr;
+            m_resolvedScriptPaths[filename] = resolved;
+            return resolved;
         }
 
-        // 2. Check direct path under modRoot/scripts
-        fs::path scriptsDir = modRoot / "scripts";
-        fs::path targetPathScripts = scriptsDir / suffix;
-        if (fs::exists(targetPathScripts, ec) && fs::is_regular_file(targetPathScripts, ec))
+        if (lowerPath(relative).compare(0, 8, "scripts/") != 0 &&
+            canonicalFileInside(modRoot, modRoot / "scripts" / fs::path(relative), resolved))
         {
-            std::string pathStr = fs::absolute(targetPathScripts).string();
-            m_resolvedScriptPaths[filename] = pathStr;
-            return pathStr;
+            m_resolvedScriptPaths[filename] = resolved;
+            return resolved;
         }
 
-        // 3. Fallback: recursively scan only modRoot/scripts
-        if (fs::exists(scriptsDir, ec) && fs::is_directory(scriptsDir, ec))
-        {
-            fs::recursive_directory_iterator rit(scriptsDir, ec);
-            fs::recursive_directory_iterator end;
-            for (; !ec && rit != end; rit.increment(ec))
-            {
-                if (ec) break;
-                if (!fs::is_regular_file(rit->status())) continue;
-
-                std::string p = rit->path().string();
-                std::string normP = p;
-                normalizePathSlashes(normP);
-
-                std::string matchSuffix = "/" + suffix;
-                if (normP.size() >= matchSuffix.size() && normP.compare(normP.size() - matchSuffix.size(), matchSuffix.size(), matchSuffix) == 0)
-                {
-                    std::string absFoundPath = fs::absolute(rit->path()).string();
-                    m_resolvedScriptPaths[filename] = absFoundPath;
-                    return absFoundPath;
-                }
-            }
-        }
+        if (qualifiedModIndex >= 0)
+            return "";
     }
 
     return "";

@@ -127,6 +127,9 @@ copy /Y "$(ProjectDir)docs\EnumsReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\MyGUIReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\DialogueScriptingBridge.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\ContainersReference.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\CppExtensionAPI.md" "$(OutDir)..\docs\"
+if not exist "$(OutDir)..\include" mkdir "$(OutDir)..\include"
+copy /Y "$(ProjectDir)include\KenshiLua.h" "$(OutDir)..\include\"
 xcopy /Y /S /I "$(ProjectDir)assets\media\*" "$(OutDir)..\assets\media\"
 copy /Y "$(ProjectDir)LICENSE" "$(OutDir)..\"
 copy /Y "$(ProjectDir)README.md" "$(OutDir)..\"
@@ -989,6 +992,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
     <ClInclude Include="src\EventSystem.h" />
+    <ClInclude Include="include\KenshiLua.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\Gui\Gui.h" />
     <ClInclude Include="src\Gui\GuiHelpers.h" />
@@ -1448,6 +1452,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
+    <ClCompile Include="src\ExtensionApi.cpp" />
     <ClCompile Include="src\Gui\GuiHelpers.cpp" />
     <ClCompile Include="src\Gui\GuiManager.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_Console.cpp" />

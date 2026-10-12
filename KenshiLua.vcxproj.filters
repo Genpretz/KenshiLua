@@ -9,6 +9,7 @@
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
+    <ClCompile Include="src\ExtensionApi.cpp" />
     <ClCompile Include="src\Gui\GuiHelpers.cpp" />
     <ClCompile Include="src\Gui\GuiManager.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_Console.cpp" />
@@ -956,6 +957,7 @@
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
     <ClInclude Include="src\EventSystem.h" />
+    <ClInclude Include="include\KenshiLua.h" />
     <ClInclude Include="src\framework.h" />
     <ClInclude Include="src\Gui\Gui.h" />
     <ClInclude Include="src\Gui\GuiHelpers.h" />

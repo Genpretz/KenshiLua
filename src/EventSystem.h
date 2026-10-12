@@ -64,7 +64,8 @@ namespace KenshiLua
         // If pusher is non-NULL, pusher->push(L) is called before each pcall
         // to put event arguments on the stack.
         // Returns 0 normally, or -1 if any handler returned false (consumed).
-        int callHandlers(const char* eventName, IArgPusher* pusher = NULL);
+        int callHandlers(const char* eventName, IArgPusher* pusher = NULL,
+            std::string* outError = NULL);
         std::string callHandlersString(const char* eventName, IArgPusher* pusher = NULL);
         void* callHandlersObject(const char* eventName, const char* metatableName, IArgPusher* pusher = NULL);
         bool callHandlersBool(const char* eventName, IArgPusher* pusher = NULL, bool defaultVal = false);
@@ -86,7 +87,7 @@ namespace KenshiLua
         EventSystem();
         ~EventSystem();
 
-        bool executeHandler(const char* eventName, int nargs);
+        bool executeHandler(const char* eventName, int nargs, std::string* outError = NULL);
 
         // Non-copyable
         EventSystem(const EventSystem&);
