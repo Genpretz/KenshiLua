@@ -27,6 +27,15 @@ struct LoadedScript
 class ScriptLoader
 {
 public:
+    enum RunScriptStatus
+    {
+        RUN_SCRIPT_OK = 0,
+        RUN_SCRIPT_FILE_ERROR,
+        RUN_SCRIPT_SYNTAX_ERROR,
+        RUN_SCRIPT_MEMORY_ERROR,
+        RUN_SCRIPT_RUNTIME_ERROR
+    };
+
     ScriptLoader();
     ~ScriptLoader();
 
@@ -58,7 +67,9 @@ public:
     std::string resolveScriptPath(const std::string& filename);
 
     // Centralized sandboxed runner for Lua script files.
-    bool runScriptSandboxed(lua_State* L, const std::string& absolutePath, const std::string& chunkName, std::string* outError = NULL);
+    bool runScriptSandboxed(lua_State* L, const std::string& absolutePath,
+        const std::string& chunkName, std::string* outError = NULL,
+        RunScriptStatus* outStatus = NULL);
 
     void addStoppedScript(const std::string& path) { m_stoppedScripts.insert(path); }
     void removeStoppedScript(const std::string& path) { m_stoppedScripts.erase(path); }

@@ -98,6 +98,7 @@ Plugin::Plugin()
     : m_dllModule(0)
     , m_initialized(false)
     , m_isInitialStartup(true)
+    , m_luaThreadId(0)
 {
 }
 
@@ -110,6 +111,11 @@ Plugin& Plugin::get()
 {
     static Plugin instance;
     return instance;
+}
+
+bool Plugin::isLuaThread() const
+{
+    return m_luaThreadId != 0 && m_luaThreadId == GetCurrentThreadId();
 }
 
 bool Plugin::initialize(void* hModule)
@@ -147,6 +153,7 @@ bool Plugin::initialize(void* hModule)
     LegacyCompat::Initialize(g_luaState->getState());
     logToFile("Legacy compatibility initialized");
 
+    m_luaThreadId = GetCurrentThreadId();
     m_initialized = true;
     logToFile("KenshiLua initialization complete");
     return true;
@@ -157,6 +164,9 @@ void Plugin::shutdown()
     if (!m_initialized) return;
 
     logToFile("Shutting down KenshiLua...");
+    // Close the public API gate before any Lua-owned objects are torn down.
+    m_initialized = false;
+    m_luaThreadId = 0;
 
     MyGUIBinding::shutdown();
     ScriptLoader::get().reset();
@@ -170,7 +180,6 @@ void Plugin::shutdown()
     }
 
     shutdownLogger();
-    m_initialized = false;
 }
 
 void Plugin::start()

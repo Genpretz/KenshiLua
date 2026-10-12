@@ -13,6 +13,51 @@
 namespace KenshiLua
 {
 
+    namespace
+    {
+        class HandlerReferenceSnapshot
+        {
+        public:
+            explicit HandlerReferenceSnapshot(lua_State* state) : m_state(state) {}
+
+            ~HandlerReferenceSnapshot()
+            {
+                for (size_t i = 0; i < m_references.size(); ++i)
+                    luaL_unref(m_state, LUA_REGISTRYINDEX, m_references[i]);
+            }
+
+            void add(int reference)
+            {
+                // Reserve the vector slot before creating a Lua registry
+                // reference so a native allocation failure cannot leak it.
+                m_references.push_back(LUA_NOREF);
+                lua_rawgeti(m_state, LUA_REGISTRYINDEX, reference);
+                if (!lua_isfunction(m_state, -1))
+                {
+                    lua_pop(m_state, 1);
+                    m_references.pop_back();
+                    return;
+                }
+                m_references.back() = luaL_ref(m_state, LUA_REGISTRYINDEX);
+            }
+
+            size_t size() const { return m_references.size(); }
+            bool empty() const { return m_references.empty(); }
+
+            void push(size_t index) const
+            {
+                lua_rawgeti(m_state, LUA_REGISTRYINDEX, m_references[index]);
+            }
+
+        private:
+            HandlerReferenceSnapshot(const HandlerReferenceSnapshot&);
+            HandlerReferenceSnapshot& operator=(const HandlerReferenceSnapshot&);
+
+            lua_State* m_state;
+            std::vector<int> m_references;
+        };
+    }
+
     static EventSystem* g_eventSystem = NULL;
 
     EventSystem::EventSystem()
@@ -158,16 +203,18 @@ namespace KenshiLua
     // callHandlers
     // ---------------------------------------------------------------------------
 
-    int EventSystem::callHandlers(const char* eventName, IArgPusher* pusher)
+    int EventSystem::callHandlers(const char* eventName, IArgPusher* pusher,
+        std::string* outError)
     {
         // Snapshot the handler list so that handlers which call
         // unregisterHandler during their own execution don't corrupt iteration.
-        std::vector<HandlerInfo> snapshot;
+        HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
             if (m_handlers[i].first == eventName)
             {
-                snapshot = m_handlers[i].second;
+                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
+                    snapshot.add(m_handlers[i].second[j].luaRef);
                 break;
             }
         }
@@ -178,18 +225,13 @@ namespace KenshiLua
         int result = 0;
         for (size_t i = 0; i < snapshot.size(); ++i)
         {
-            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
-            if (!lua_isfunction(m_L, -1))
-            {
-                lua_pop(m_L, 1);
-                continue;
-            }
+            snapshot.push(i);
 
             int nargs = 0;
             if (pusher)
                 nargs = pusher->push(m_L);
 
-            if (executeHandler(eventName, nargs))
+            if (executeHandler(eventName, nargs, outError))
             {
                 // A handler returning false consumes the event and stops
                 // subsequent handlers from running.
@@ -207,12 +249,13 @@ namespace KenshiLua
 
     std::string EventSystem::callHandlersString(const char* eventName, IArgPusher* pusher)
     {
-        std::vector<HandlerInfo> snapshot;
+        HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
             if (m_handlers[i].first == eventName)
             {
-                snapshot = m_handlers[i].second;
+                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
+                    snapshot.add(m_handlers[i].second[j].luaRef);
                 break;
             }
         }
@@ -223,12 +266,7 @@ namespace KenshiLua
         std::string result = "";
         for (size_t i = 0; i < snapshot.size(); ++i)
         {
-            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
-            if (!lua_isfunction(m_L, -1))
-            {
-                lua_pop(m_L, 1);
-                continue;
-            }
+            snapshot.push(i);
 
             int nargs = 0;
             if (pusher)
@@ -252,12 +290,13 @@ namespace KenshiLua
 
     void* EventSystem::callHandlersObject(const char* eventName, const char* metatableName, IArgPusher* pusher)
     {
-        std::vector<HandlerInfo> snapshot;
+        HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
             if (m_handlers[i].first == eventName)
             {
-                snapshot = m_handlers[i].second;
+                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
+                    snapshot.add(m_handlers[i].second[j].luaRef);
                 break;
             }
         }
@@ -268,12 +307,7 @@ namespace KenshiLua
         void* result = NULL;
         for (size_t i = 0; i < snapshot.size(); ++i)
         {
-            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
-            if (!lua_isfunction(m_L, -1))
-            {
-                lua_pop(m_L, 1);
-                continue;
-            }
+            snapshot.push(i);
 
             int nargs = 0;
             if (pusher)
@@ -295,12 +329,13 @@ namespace KenshiLua
 
     bool EventSystem::callHandlersBool(const char* eventName, IArgPusher* pusher, bool defaultVal)
     {
-        std::vector<HandlerInfo> snapshot;
+        HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
             if (m_handlers[i].first == eventName)
             {
-                snapshot = m_handlers[i].second;
+                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
+                    snapshot.add(m_handlers[i].second[j].luaRef);
                 break;
             }
         }
@@ -312,12 +347,7 @@ namespace KenshiLua
         bool result = defaultVal;
         for (size_t i = 0; i < snapshot.size(); ++i)
         {
-            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
-            if (!lua_isfunction(m_L, -1))
-            {
-                lua_pop(m_L, 1);
-                continue;
-            }
+            snapshot.push(i);
 
             int nargs = 0;
             if (pusher)
@@ -342,12 +372,13 @@ namespace KenshiLua
 
     double EventSystem::callHandlersNumber(const char* eventName, IArgPusher* pusher, double defaultVal)
     {
-        std::vector<HandlerInfo> snapshot;
+        HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
             if (m_handlers[i].first == eventName)
             {
-                snapshot = m_handlers[i].second;
+                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
+                    snapshot.add(m_handlers[i].second[j].luaRef);
                 break;
             }
         }
@@ -359,12 +390,7 @@ namespace KenshiLua
         double result = defaultVal;
         for (size_t i = 0; i < snapshot.size(); ++i)
         {
-            lua_rawgeti(m_L, LUA_REGISTRYINDEX, snapshot[i].luaRef);
-            if (!lua_isfunction(m_L, -1))
-            {
-                lua_pop(m_L, 1);
-                continue;
-            }
+            snapshot.push(i);
 
             int nargs = 0;
             if (pusher)
@@ -387,7 +413,7 @@ namespace KenshiLua
         return result;
     }
 
-    bool EventSystem::executeHandler(const char* eventName, int nargs)
+    bool EventSystem::executeHandler(const char* eventName, int nargs, std::string* outError)
     {
         std::string pcallErr;
         if (LuaState::pcallWithTraceback(m_L, nargs, 1, &pcallErr))
@@ -396,6 +422,8 @@ namespace KenshiLua
         }
         else
         {
+            if (outError && outError->empty())
+                *outError = pcallErr;
             logToFileErrorf("Lua error in '%s' handler: %s",
                 eventName,
                 pcallErr.c_str());

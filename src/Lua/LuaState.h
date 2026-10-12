@@ -47,7 +47,8 @@ public:
     /// Safe lua_pcall wrapper that installs genericTraceback as the message handler.
     /// Returns true on LUA_OK. On error, pops the error value and writes it to
     /// *outError if non-null, then returns false.
-    static bool pcallWithTraceback(lua_State* L, int nargs, int nresults, std::string* outError = NULL);
+    static bool pcallWithTraceback(lua_State* L, int nargs, int nresults,
+        std::string* outError = NULL, int* outStatus = NULL);
 
 private:
     lua_State* m_L;

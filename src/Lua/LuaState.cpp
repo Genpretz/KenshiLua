@@ -131,7 +131,8 @@ int LuaState::genericTraceback(lua_State* L)
     return 1;
 }
 
-bool LuaState::pcallWithTraceback(lua_State* L, int nargs, int nresults, std::string* outError)
+bool LuaState::pcallWithTraceback(lua_State* L, int nargs, int nresults,
+    std::string* outError, int* outStatus)
 {
     // Insert traceback handler below the function + args already on the stack.
     int funcIndex = lua_gettop(L) - nargs;
@@ -142,6 +143,8 @@ bool LuaState::pcallWithTraceback(lua_State* L, int nargs, int nresults, std::st
     lua_insert(L, funcIndex);
 
     int status = lua_pcall(L, nargs, nresults, funcIndex);
+    if (outStatus)
+        *outStatus = status;
 
     if (status != LUA_OK) {
         if (outError) {
