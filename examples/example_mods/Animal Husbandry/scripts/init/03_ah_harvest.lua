@@ -50,6 +50,14 @@ AH.husbandryWindow = nil
 
 -- State of the open window: handles rather than characters, so a character that
 -- despawns while the window is open resolves to nil instead of a dangling pointer.
+---@class AnimalHusbandryWindowState
+---@field target hand
+---@field harvester hand|nil
+---@field rows table[]
+---@field infoPanel DatapanelGUI|nil
+---@field infoText string|nil
+---@field nameText MyGUI.Widget
+---@type AnimalHusbandryWindowState|nil
 local windowState = nil
 
 -- State of the context menu row currently shown.
@@ -135,6 +143,9 @@ local function harvest(entry, harvester, product)
     local name, data = productName(product)
     local inventory = harvester:getInventory()
     local factory = getRootObjectFactory()
+    if not factory then
+        return false, "object factory is unavailable"
+    end
     local given = 0
     for i = 1, math.max(1, product.amount or 1) do
         local item = factory:createItem(data, nil, nil, nil, -1, nil)
@@ -183,7 +194,11 @@ end
 
 -- Rebuilds the details datapanel only when its text changed, so it does not flicker.
 local function fillInfoPanel(lines)
-    local panel = windowState.infoPanel
+    local state = windowState
+    if not state then
+        return
+    end
+    local panel = state.infoPanel
     if not panel then
         return
     end
@@ -192,10 +207,10 @@ local function fillInfoPanel(lines)
         parts[#parts + 1] = lines[i][1] .. "=" .. lines[i][2]
     end
     local text = table.concat(parts, "\n")
-    if text == windowState.infoText then
+    if text == state.infoText then
         return
     end
-    windowState.infoText = text
+    state.infoText = text
     panel:clear()
     for i = 1, #lines do
         panel:setLine(lines[i][1], lines[i][2], 0, false, true)
@@ -229,7 +244,8 @@ local function refreshWindow()
 end
 
 local function createLabel(parent, x, y, w, h, name)
-    local lbl = parent:createWidget("TextBox", "Kenshi_TextboxStandardText", x, y, w, h, MyGUI.Align.Default, name)
+    local lbl = assert(parent:createWidget(
+        "TextBox", "Kenshi_TextboxStandardText", x, y, w, h, MyGUI.Align.Default, name))
     lbl:setProperty("TextAlign", "Left VCenter")
     return lbl
 end
@@ -238,9 +254,11 @@ local function destroyWindow()
     if windowState and windowState.infoPanel then
         -- The datapanel owns widgets inside the window, so destroy it first.
         local gui = getForgottenGUI()
-        local ok, err = pcall(gui.destroy, gui, windowState.infoPanel)
-        if not ok then
-            AH.log("Husbandry window: could not destroy the datapanel: " .. tostring(err))
+        if gui then
+            local ok, err = pcall(gui.destroy, gui, windowState.infoPanel)
+            if not ok then
+                AH.log("Husbandry window: could not destroy the datapanel: " .. tostring(err))
+            end
         end
         windowState.infoPanel = nil
     end
@@ -313,8 +331,9 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
     windowState = state
 
     -- Portrait, with the name across its bottom as in the vanilla trading window.
-    local portrait = client:createWidget("ImageBox", "ImageBox", MARGIN, 8, PORTRAIT_SIZE, PORTRAIT_SIZE,
-        align, "AH_Portrait")
+    local portrait = assert(client:createWidget(
+        "ImageBox", "ImageBox", MARGIN, 8, PORTRAIT_SIZE, PORTRAIT_SIZE, align, "AH_Portrait"))
+    ---@cast portrait MyGUI.ImageBox
     local portraits = PortraitManager.getInstance()
     if portraits then
         local ok, err = pcall(portraits.setImageWidget, portraits, targetHandle, portrait, true)
@@ -322,21 +341,24 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
             AH.log("Husbandry window: could not set the portrait: " .. tostring(err))
         end
     end
-    state.nameText = portrait:createWidget("TextBox", "Kenshi_TextboxStandardText", 0,
-        PORTRAIT_SIZE - NAME_HEIGHT, PORTRAIT_SIZE, NAME_HEIGHT, align, "AH_Name")
+    state.nameText = assert(portrait:createWidget("TextBox", "Kenshi_TextboxStandardText", 0,
+        PORTRAIT_SIZE - NAME_HEIGHT, PORTRAIT_SIZE, NAME_HEIGHT, align, "AH_Name"))
     state.nameText:setProperty("TextAlign", "Center")
 
     -- Framed box with the two columns.
     local frameLeft = MARGIN + PORTRAIT_SIZE + 10
-    local frame = client:createWidget("Widget", "Kenshi_GenericTextBox", frameLeft, 8, inner - PORTRAIT_SIZE - 10,
-        frameHeight, align, "AH_Frame")
+    local frame = assert(client:createWidget(
+        "Widget", "Kenshi_GenericTextBox", frameLeft, 8, inner - PORTRAIT_SIZE - 10,
+        frameHeight, align, "AH_Frame"))
     local _, _, frameWidth = frame:getCoord()
     local columnWidth = math.floor((frameWidth - 3 * FRAME_PADDING) / 2)
-    local infoArea = frame:createWidget("Widget", "PanelEmpty", FRAME_PADDING, FRAME_PADDING, columnWidth,
-        frameHeight - 2 * FRAME_PADDING, align, "AH_InfoArea")
+    local infoArea = assert(frame:createWidget(
+        "Widget", "PanelEmpty", FRAME_PADDING, FRAME_PADDING, columnWidth,
+        frameHeight - 2 * FRAME_PADDING, align, "AH_InfoArea"))
     local productLeft = 2 * FRAME_PADDING + columnWidth
 
-    state.infoPanel = getForgottenGUI():createDatapanel("AH_HusbandryInfo", infoArea, false)
+    local guiObj = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
+    state.infoPanel = guiObj:createDatapanel("AH_HusbandryInfo", infoArea, false)
     if not state.infoPanel then
         AH.log("Husbandry window: could not create the details datapanel")
     end
@@ -351,8 +373,9 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
         local rowTop = FRAME_PADDING + (i - 1) * ROW_STEP
         local status = createLabel(frame, productLeft, rowTop, columnWidth - BUTTON_WIDTH - 6, ROW_HEIGHT,
             "AH_ProductStatus" .. i)
-        local button = frame:createWidget("Button", "Kenshi_Button1", productLeft + columnWidth - BUTTON_WIDTH, rowTop,
-            BUTTON_WIDTH, ROW_HEIGHT, align, "AH_ProductHarvest" .. i)
+        local button = assert(frame:createWidget(
+            "Button", "Kenshi_Button1", productLeft + columnWidth - BUTTON_WIDTH, rowTop,
+            BUTTON_WIDTH, ROW_HEIGHT, align, "AH_ProductHarvest" .. i))
         button:setCaption("Harvest")
         button:on("eventMouseButtonClick", function()
             local a, h = resolveWindowCharacters()
@@ -458,7 +481,7 @@ local function onMenuShow(menuGUI, orders, name, offset)
             return
         end
         local harvester = AH.selectedCharacter()
-        if not isEligibleHarvester(harvester) then
+        if not harvester or not isEligibleHarvester(harvester) then
             return
         end
         addMenuRow(menuGUI, target.handle, harvester.handle)

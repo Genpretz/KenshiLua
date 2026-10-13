@@ -3351,11 +3351,6 @@
           "access": "readwrite",
           "name": "woundsList",
           "type": "OgreFastArray<lightuserdata>"
-        },
-        {
-          "access": "readwrite",
-          "name": "woundsListMutex",
-          "type": "lightuserdata"
         }
       ],
       "registered_from": [
@@ -5595,12 +5590,7 @@
       ],
       "parent_binding": null,
       "parent_metatable": "",
-      "properties": [
-        {
-          "access": "readwrite",
-          "name": "swapMutex"
-        }
-      ],
+      "properties": [],
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
@@ -5672,7 +5662,111 @@
       "kind": "class",
       "lua_type": "BaseLayout",
       "metatable": "KenshiLua.BaseLayout",
-      "methods": [],
+      "methods": [
+        {
+          "callback": "BaseLayout_assignWidget",
+          "name": "assignWidget",
+          "signature": {
+            "params": [
+              {
+                "name": "_name",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "_throw",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "_createFakeWidgets",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "MyGUI.Widget"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BaseLayout_initialise",
+          "name": "initialise",
+          "signature": {
+            "params": [
+              {
+                "name": "_layout",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "_parent",
+                "optional": true,
+                "type": "MyGUI.Widget"
+              },
+              {
+                "name": "_throw",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "_createFakeWidgets",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BaseLayout_FindParentPrefix",
+          "name": "FindParentPrefix",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BaseLayout_snapToParent",
+          "name": "snapToParent",
+          "signature": {
+            "params": [
+              {
+                "name": "_child",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BaseLayout_createFakeWidgetT",
+          "name": "_createFakeWidgetT",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "MyGUI.Widget"
+            ]
+          },
+          "static": false
+        }
+      ],
       "parent_binding": null,
       "parent_metatable": "",
       "properties": [

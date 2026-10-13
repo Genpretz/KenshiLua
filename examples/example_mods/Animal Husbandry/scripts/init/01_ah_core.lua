@@ -246,6 +246,9 @@ end
 function AH.playerCharacters()
     local out = {}
     local list = AH.playerInterface():getAllPlayerCharacters()
+    if not list then
+        return out
+    end
     for i = 1, list:size() do
         local c = list[i]
         if c then
@@ -383,6 +386,9 @@ end
 -- True if the character's squad and the player faction both have room for one more.
 function AH.squadHasRoom(c)
     local gc = getGlobalConstants()
+    if not gc then
+        return false
+    end
     local platoon = c:getPlatoon()
     if not platoon then
         return false

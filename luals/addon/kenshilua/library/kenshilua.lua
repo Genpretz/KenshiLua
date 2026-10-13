@@ -5739,6 +5739,16 @@ taskPriority = {
 ---@field mMainWidget MyGUI.Widget|nil
 ---@field mPrefix string
 ---@field mLayoutName string
+--- Finds a named widget in this layout and optionally creates a fake widget when it is missing.
+---@field assignWidget fun(self: BaseLayout, name: string, doThrow?: boolean, createFakeWidgets?: boolean): MyGUI.Widget|nil
+--- Loads a layout and optionally attaches it to a parent widget.
+---@field initialise fun(self: BaseLayout, layoutName: string, parent?: MyGUI.Widget, doThrow?: boolean, createFakeWidgets?: boolean)
+--- Returns the layout prefix associated with a parent widget.
+---@field FindParentPrefix fun(self: BaseLayout, parent: MyGUI.Widget): string
+--- Snaps a child widget to its parent layout.
+---@field snapToParent fun(self: BaseLayout, child: MyGUI.Widget)
+--- Creates a fake widget of the requested runtime type.
+---@field _createFakeWidgetT fun(self: BaseLayout, typeName: string, parent: MyGUI.Widget|nil): MyGUI.Widget|nil
 
 ---@class InventoryLayout : BaseLayout
 ---@field getWindow fun(self: InventoryLayout): MyGUI.Window|nil
@@ -6375,8 +6385,10 @@ taskPriority = {
 ---@field data GameData|nil
 ---@field val0 integer
 
---- Forward declaration. Its registered API remains tracked as incomplete in the coverage report.
+--- GUI data panel with lines grouped into categories.
 ---@class DatapanelGUI : GUIWindow
+--- Adds or updates a line using one of the runtime setLine overloads.
+---@field setLine fun(self: DatapanelGUI, s1: string, s2: string, valueOrSkin: integer|number|string, categoryOrSkin: boolean|integer|string, lastOrCategory?: boolean|integer|string, keyVisible?: boolean|integer): DataPanelLine
 ---@field setFrequentUpdateMode fun(self: DatapanelGUI)
 ---@field setPositionReal fun(self: DatapanelGUI, x: number, y: number)
 ---@field _NV_setPositionReal fun(self: DatapanelGUI, x: number, y: number)
@@ -6444,7 +6456,6 @@ taskPriority = {
 ---@field getNextVerticalPos fun(self: DatapanelGUI, category: integer): number
 ---@field dataExists fun(self: DatapanelGUI, cat: integer, name: string): boolean
 ---@field clearCategoryTabs fun(self: DatapanelGUI)
----@field setLine fun(self: DatapanelGUI, s1: string, s2: string, barValue: integer|number|string, category: boolean|integer|string, arg5: boolean|integer|string, arg6: boolean|integer): DataPanelLine
 ---@field setLineResearch fun(self: DatapanelGUI, s1: string, s2: string, category: integer|string, v1: integer|number, barColor: number|string, XButton: boolean|string, arg7?: boolean): DataPanelLine_Research
 ---@field setTabEnabled fun(self: DatapanelGUI, id: integer, enabled?: boolean)
 ---@field _NV_setTabEnabled fun(self: DatapanelGUI, id: integer, enabled?: boolean)
@@ -7625,8 +7636,6 @@ taskPriority = {
 ---@field waterline table
 --- Visual bleeding wound decal instances (`0x0A0`–`0x0B8`).
 ---@field woundsList OgreFastArray<lightuserdata>
---- Multi-threaded synchronization mutex for wounds array (`0x0B8`–`0x0D8`).
----@field woundsListMutex lightuserdata
 
 --- Creature appearance specialist governing age-based scaling (pup to elder), color palettes, horns/shells, and non-humanoid anatomical variations.
 ---@class AppearanceAnimal : AppearanceBase
@@ -10435,7 +10444,6 @@ taskPriority = {
 ---@class BackThreadMessagesToMainT
 ---@field flush fun(self: BackThreadMessagesToMainT): boolean
 ---@field _NV_flush fun(self: BackThreadMessagesToMainT)
----@field swapMutex any
 
 ---@class BinaryVersion
 ---@field operator_eq fun(self: BinaryVersion, arg1: BinaryVersion): boolean

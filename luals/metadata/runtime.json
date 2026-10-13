@@ -1354,7 +1354,12 @@
       "fields": [
         { "name": "mMainWidget", "type": "MyGUI.Widget|nil", "description": "The layout's main widget." },
         { "name": "mPrefix", "type": "string" },
-        { "name": "mLayoutName", "type": "string" }
+        { "name": "mLayoutName", "type": "string" },
+        { "name": "assignWidget", "type": "fun(self: BaseLayout, name: string, doThrow?: boolean, createFakeWidgets?: boolean): MyGUI.Widget|nil", "description": "Finds a named widget in this layout and optionally creates a fake widget when it is missing." },
+        { "name": "initialise", "type": "fun(self: BaseLayout, layoutName: string, parent?: MyGUI.Widget, doThrow?: boolean, createFakeWidgets?: boolean)", "description": "Loads a layout and optionally attaches it to a parent widget." },
+        { "name": "FindParentPrefix", "type": "fun(self: BaseLayout, parent: MyGUI.Widget): string", "description": "Returns the layout prefix associated with a parent widget." },
+        { "name": "snapToParent", "type": "fun(self: BaseLayout, child: MyGUI.Widget)", "description": "Snaps a child widget to its parent layout." },
+        { "name": "_createFakeWidgetT", "type": "fun(self: BaseLayout, typeName: string, parent: MyGUI.Widget|nil): MyGUI.Widget|nil", "description": "Creates a fake widget of the requested runtime type." }
       ]
     },
     {
@@ -1424,8 +1429,10 @@
     },
     {
       "name": "DatapanelGUI",
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
-      "fields": []
+      "description": "GUI data panel with lines grouped into categories.",
+      "fields": [
+        { "name": "setLine", "type": "fun(self: DatapanelGUI, s1: string, s2: string, valueOrSkin: integer|number|string, categoryOrSkin: boolean|integer|string, lastOrCategory?: boolean|integer|string, keyVisible?: boolean|integer): DataPanelLine", "description": "Adds or updates a line using one of the runtime setLine overloads." }
+      ]
     },
     {
       "name": "InventorySectionGUI",

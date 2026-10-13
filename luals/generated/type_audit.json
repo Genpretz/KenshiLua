@@ -593,15 +593,6 @@
       "member": "woundsList"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "AppearanceBase",
-      "expected": "?boost::shared_mutex",
-      "header": "boost::shared_mutex",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "woundsListMutex"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "AppearanceManager",
       "expected": "fun(GameData, Gender)",
@@ -1105,12 +1096,36 @@
     },
     {
       "category": "unmapped_header_type",
-      "class": "BackThreadMessagesToMainT",
-      "expected": "?boost::recursive_mutex",
-      "header": "boost::recursive_mutex",
-      "kind": "property",
-      "lua": "any",
-      "member": "swapMutex"
+      "class": "BaseLayout",
+      "expected": "fun(string, boolean, boolean): ?T*|nil",
+      "header": "void assignWidget(T * & _widget, const std::string& _name, bool _throw = true, bool _createFakeWidgets = true)",
+      "issues": [
+        {
+          "actual": "MyGUI.Widget|nil",
+          "category": "unmapped_header_type",
+          "expected": "?T*|nil",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: BaseLayout, name: string, doThrow?: boolean, createFakeWidgets?: boolean): MyGUI.Widget|nil",
+      "member": "assignWidget"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "BaseLayout",
+      "cpp": "wraps::BaseLayout::FindParentPrefix",
+      "kind": "method",
+      "lua": "fun(self: BaseLayout, parent: MyGUI.Widget): string",
+      "member": "FindParentPrefix"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "BaseLayout",
+      "cpp": "wraps::BaseLayout::_createFakeWidgetT",
+      "kind": "method",
+      "lua": "fun(self: BaseLayout, typeName: string, parent: MyGUI.Widget|nil): MyGUI.Widget|nil",
+      "member": "_createFakeWidgetT"
     },
     {
       "category": "enum_typed_as_integer",
@@ -18462,11 +18477,11 @@
     "container_methods_typed": 925,
     "enum_typed_as_integer": 430,
     "known_binding_bug": 13,
-    "methods": 7211,
-    "methods_matching_header": 5422,
-    "no_header_declaration": 270,
-    "properties": 3072,
+    "methods": 7216,
+    "methods_matching_header": 5424,
+    "no_header_declaration": 272,
+    "properties": 3070,
     "properties_matching_header": 2542,
-    "unmapped_header_type": 504
+    "unmapped_header_type": 503
   }
 }

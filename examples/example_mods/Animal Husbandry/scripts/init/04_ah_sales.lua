@@ -157,7 +157,7 @@ end
 -- ---------------------------------------------------------------------------
 
 local function destroyState(st)
-    local gui = getForgottenGUI()
+    local gui = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
     -- Datapanels own widgets inside the layout, so destroy them before the layout.
     for i = 1, #st.panels do
         local ok, err = pcall(gui.destroy, gui, st.panels[i])
@@ -299,10 +299,11 @@ local function confirmSale(st)
 end
 
 local function fillPanels(st, entry, prefix, box)
-    local gui = getForgottenGUI()
+    local gui = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
     local c = entry.char
 
-    local p1 = gui:createDatapanel(prefix .. "Panel1", box:findWidget(prefix .. "DataPanel1"), false)
+    local p1Widget = box:findWidget(prefix .. "DataPanel1")
+    local p1 = p1Widget and gui:createDatapanel(prefix .. "Panel1", p1Widget, false)
     if p1 then
         st.panels[#st.panels + 1] = p1
         p1:setLine("Strength", statText(c, StatsEnumerated.STAT_STRENGTH), 0, false, true)
@@ -311,7 +312,8 @@ local function fillPanels(st, entry, prefix, box)
         p1:show(true)
     end
 
-    local p2 = gui:createDatapanel(prefix .. "Panel2", box:findWidget(prefix .. "DataPanel2"), false)
+    local p2Widget = box:findWidget(prefix .. "DataPanel2")
+    local p2 = p2Widget and gui:createDatapanel(prefix .. "Panel2", p2Widget, false)
     if p2 then
         st.panels[#st.panels + 1] = p2
         p2:setLine(tostring(entry.raceName or "?"), "", 0, false, true)
@@ -323,19 +325,21 @@ end
 local function addRow(st, entry, index, scrollView, rowWidth, rowHeight)
     local prefix = st.prefix .. "Box" .. index .. "_"
     local widgets = MyGUI.LayoutManager.getInstance():loadLayout(BOX_LAYOUT, prefix, scrollView)
-    local box = widgets[1]
+    local box = assert(widgets[1], "sale row layout has no root widget")
     local rowTop = (index - 1) * (rowHeight + BOX_GAP)
     resizeLayoutRoot(box, prefix, 0, rowTop, rowWidth, rowHeight)
 
     local c = entry.char
+    local check = assert(box:findWidget(prefix .. "CheckBox"), "sale row has no checkbox")
+    ---@cast check MyGUI.Button
     local row = {
         handle = c.handle,
         price = S.priceOf(entry),
         selected = false,
-        check = box:findWidget(prefix .. "CheckBox"),
+        check = check,
     }
-    box:findWidget(prefix .. "NameTextBox"):setCaption(tostring(c:getName()))
-    box:findWidget(prefix .. "PriceTextBox"):setCaption(moneyText(row.price))
+    assert(box:findWidget(prefix .. "NameTextBox")):setCaption(tostring(c:getName()))
+    assert(box:findWidget(prefix .. "PriceTextBox")):setCaption(moneyText(row.price))
     row.check:setStateSelected(false)
     row.check:on("eventMouseButtonClick", function()
         toggleRow(st, row)
@@ -344,8 +348,10 @@ local function addRow(st, entry, index, scrollView, rowWidth, rowHeight)
         toggleRow(st, row)
     end)
     local portraits = PortraitManager.getInstance()
-    if portraits then
-        portraits:setImageWidget(c.handle, box:findWidget(prefix .. "Portrait"), true)
+    local portrait = box:findWidget(prefix .. "Portrait")
+    if portraits and portrait then
+        ---@cast portrait MyGUI.ImageBox
+        portraits:setImageWidget(c.handle, portrait, true)
     end
 
     -- A datapanel created outside the visible part of the scroll view never shows its
@@ -364,7 +370,7 @@ function S.open(dialogue)
         return false
     end
     local buyer, seller = participants(dialogue)
-    if not buyer then
+    if not buyer or not seller then
         AH.log("sale window: the conversation is not between the player and an NPC")
         return false
     end
@@ -381,6 +387,12 @@ function S.open(dialogue)
         return root:findWidget(prefix .. name)
     end
 
+    local totalText = assert(find("MoneyAmountTextBox"), "sale window has no total text")
+    ---@cast totalText MyGUI.TextBox
+    local countText = assert(find("SelectedTotalTextBox"), "sale window has no selection count")
+    local confirm = assert(find("ConfirmButton"), "sale window has no confirm button")
+    ---@cast confirm MyGUI.Button
+
     local st = {
         prefix = prefix,
         layout = layout,
@@ -391,9 +403,9 @@ function S.open(dialogue)
         seller = seller.handle,
         dialogueOwner = dialogue:getHandle(),
         buyerMoney = buyer:getMoney() or 0,
-        totalText = find("MoneyAmountTextBox"),
-        countText = find("SelectedTotalTextBox"),
-        confirm = find("ConfirmButton"),
+        totalText = totalText,
+        countText = countText,
+        confirm = confirm,
         closed = false,
     }
     S.state = st
@@ -413,7 +425,8 @@ function S.open(dialogue)
             S.close()
         end)
 
-        local scrollView = find("CharacterSelectionItemBox")
+        local scrollView = assert(find("CharacterSelectionItemBox"), "sale window has no item list")
+        ---@cast scrollView MyGUI.ScrollView
         scrollView:setVisibleHScroll(false)
         local _, _, _, screenH = root:getCoord()
         local _, _, viewW = scrollView:getViewCoord()

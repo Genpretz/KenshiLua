@@ -191,7 +191,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/AppearanceBaseBinding.cpp | setupCharacterEntityTexture | `void` | unsupported arg type (Ogre::Entity*, const boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >&, Ogre::ColourValue*) |
 | Kenshi/AppearanceBaseBinding.cpp | setupHairMaterial | `void` | unsupported arg type (AttachedEntity*) |
 | Kenshi/AppearanceBaseBinding.cpp | setupItemMaterial | `void` | unsupported arg type (AttachedEntity*) |
-| Kenshi/AppearanceBaseBinding.cpp | woundsListMutex | `boost::shared_mutex` | unsupported type |
 | Kenshi/AppearanceHumanBinding.cpp | _NV_setupCharacterEntityTexture | `void` | unsupported arg type (Ogre::Entity*, const boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >&, Ogre::ColourValue*) |
 | Kenshi/AppearanceHumanBinding.cpp | setupCharacterEntityTexture | `void` | unsupported arg type (Ogre::Entity*, const boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >&, Ogre::ColourValue*) |
 | Kenshi/Building/BuildingBinding.cpp | _NV_getAABB | `const Ogre::Aabb&` | overloaded method |
