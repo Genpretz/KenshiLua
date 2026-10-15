@@ -2,15 +2,27 @@
 animal husbandry:
 sterile:        True "is this animal capable of breeding"
 number of offspring: 1 "# of offspring when an animal gives birth"
-pregnancy period: 1.0 "# of in-days an animal is pregnant for before giving birth"
-chance of pregnancy: 1.0 "pecentage chance of an animal becoming pregnant"
+pregnancy period: 10.0 "# of in-days an animal is pregnant for before giving birth"
+chance of pregnancy: 10.0 "pecentage chance of an animal becoming pregnant"
 time between pregnancy: 1.0 "# of in-game days before an animal can become pregnant again"
-animal products: ITEM (1, 1, 0) "item(s) produced by this animal and able to be harvested by another player character.\nval0 = # of items produced at a time, val1 = # of days it takes for item to be produced, \nval2 = which sexes are capable of producing (0 = male, 1 = female, 2 = both)"
-base price: 14000 "base sale price in cats, as used by vanilla animal traders. The price is (age + 0.1) x base price, from 0.1x at birth to 1.2x at old age"
-species: ANIMAL_CHARACTER "animals of the same species(ANIMAL_CHARACTER) that are capable of becoming a mate (i.e. Domesticated Bull -> Wild Bull)"
-genus: RACE "animals of the same genus (RACE) are capable of becoming a mate."
+animal products: ITEM (1, 1, 0) "item(s) produced by this animal and able to be harvested by another player character.\nval0 = # of items produced at a time, val1 = # of days before an item can be harvested again, \nval2 = which sexes are capable of producing (0 = male, 1 = female, 2 = both)"
+base price: 14000 "base sale price in cats. Vanilla animal traders use 14000. The price is (age + 0.1) x base price, from 0.1x at birth to 1.2x at old age"
+mating group: "" "Define an alternative group of animals that can mate. \n\nBy default, only animals who share the same ANIMAL_CHARACTER or RACE can mate, but some animals (i.e. Domesticated Bull -> Wild Bull) do not share a RACE (Bulls/Bulls (Domesticated)) or ANIMAL_CHARACTER (Domesticated Bull/Wild Bull). If you want those animals to be able to mate add them to a mating group."
 CONDITIONS:
 condition "pregnancy period" if "sterile" is False
 condition "number of offspring" if "sterile" is False
 condition "time between pregnancy" if "sterile" is False
 condition "chance of pregnancy" if "sterile" is False
+condition "mating group" if "sterile" is False
+
+[CONSTANTS]
+animal husbandry:
+breeding.babyAge: 0.0 "Age of a newborn animal (0.0 to 1.1 scale, where 0.0 is Newborn)"
+breeding.checkIntervalHours: 1.0 "In hours, how often the mod rolls for pregnancy for eligible females with a nearby mate"
+breeding.maxPairDistance: 50.0 "Maximum distance in world units between potential parents for breeding to occur"
+breeding.minAge: 0.6 "Minimum age for both parents to breed (0.0 to 1.1 scale: 0.4 is Teen, 0.6 is Adult)"
+harvest.minAge: 0.6 "Minimum age of an animal before its products can be harvested (0.6 is Adult)"
+harvest.maxDistance: 50.0 "Maximum distance in world units between the harvester and the animal"
+harvest.maxVisibleProducts: 4 "Maximum number of product rows visible in the Husbandry window before scrolling"
+sales.defaultBasePrice: 14000 "Fallback base price in cats for animals without an FCS base price. Vanilla traders use 14000."
+sales.maxDistance: 250.0 "Maximum distance in world units between an animal and the buyer (or buyer's building) or seller"

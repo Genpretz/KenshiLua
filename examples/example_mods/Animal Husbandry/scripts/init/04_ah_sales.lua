@@ -363,6 +363,9 @@ end
 
 -- Opens the sale window for the conversation in dialogue. Returns true on success.
 function S.open(dialogue)
+    if AH.syncConstantsFromFCS then
+        AH.syncConstantsFromFCS()
+    end
     -- Replacing a window must not end the conversation that is opening the new one.
     discardWindow()
     if not dialogue then

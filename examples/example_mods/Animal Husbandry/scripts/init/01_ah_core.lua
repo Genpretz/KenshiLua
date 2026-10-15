@@ -63,6 +63,94 @@ function AH.currentDay()
 end
 
 -- ---------------------------------------------------------------------------
+-- Game constants from FCS
+--
+-- Constants defined in fcs.def under [CONSTANTS] are stored in the engine's Game
+-- Constants record (accessible via getGlobalConstants().settings). If set in FCS,
+-- they override the defaults in 00_ah_config.lua.
+-- ---------------------------------------------------------------------------
+
+local CONSTANT_MAP = {
+    { section = "breeding", field = "babyAge",            key = "breeding.babyAge" },
+    { section = "breeding", field = "checkIntervalHours",  key = "breeding.checkIntervalHours" },
+    { section = "breeding", field = "maxPairDistance",     key = "breeding.maxPairDistance" },
+    { section = "breeding", field = "minAge",              key = "breeding.minAge" },
+    { section = "harvest",  field = "minAge",              key = "harvest.minAge" },
+    { section = "harvest",  field = "maxDistance",         key = "harvest.maxDistance" },
+    { section = "harvest",  field = "maxVisibleProducts",  key = "harvest.maxVisibleProducts" },
+    { section = "sales",    field = "defaultBasePrice",    key = "sales.defaultBasePrice" },
+    { section = "sales",    field = "maxDistance",         key = "sales.maxDistance" },
+}
+
+local function getGameConstantsSettings()
+    local ok, gc = pcall(function()
+        return (getGlobalConstants and getGlobalConstants()) or _G.con
+    end)
+    if ok and gc and gc.settings then
+        return gc.settings
+    end
+    return nil
+end
+
+local function readConstantNum(settings, key)
+    if not settings then
+        return nil, nil
+    end
+    local ok, v
+    if settings.fdata then
+        ok, v = pcall(function() return settings.fdata[key] end)
+        if ok and type(v) == "number" then
+            return v, "fdata"
+        end
+    end
+    if settings.idata then
+        ok, v = pcall(function() return settings.idata[key] end)
+        if ok and type(v) == "number" then
+            return v, "idata"
+        end
+    end
+    return nil, nil
+end
+
+-- Reads game constants from the FCS Game Constants record and updates AH.config.
+function AH.syncConstantsFromFCS()
+    local settings = getGameConstantsSettings()
+    if not settings or not AH.config then
+        return false
+    end
+
+    local syncedCount = 0
+    for i = 1, #CONSTANT_MAP do
+        local def = CONSTANT_MAP[i]
+        local val = readConstantNum(settings, def.key)
+        if val ~= nil then
+            if not AH.config[def.section] then
+                AH.config[def.section] = {}
+            end
+            AH.config[def.section][def.field] = val
+            syncedCount = syncedCount + 1
+        end
+    end
+    return true, syncedCount
+end
+
+-- Console command: displays all Animal Husbandry constants, showing whether each is
+-- loaded from FCS or falling back to the 00_ah_config.lua default.
+function AH.printConstants()
+    AH.syncConstantsFromFCS()
+    local settings = getGameConstantsSettings()
+
+    AH.log("Animal Husbandry constants:")
+    for i = 1, #CONSTANT_MAP do
+        local def = CONSTANT_MAP[i]
+        local current = AH.config and AH.config[def.section] and AH.config[def.section][def.field]
+        local _, src = readConstantNum(settings, def.key)
+        local sourceLabel = src and ("FCS " .. src) or "default"
+        AH.log(string.format("  %-28s = %s (%s)", def.key, tostring(current), sourceLabel))
+    end
+end
+
+-- ---------------------------------------------------------------------------
 -- Animal definitions from game data
 --
 -- The fields that fcs.def adds to ANIMAL_CHARACTER records, read from an animal's
@@ -79,6 +167,7 @@ local FCS_DEFAULTS = {
     pregnancyPeriod = 1.0,
     pregnancyChance = 1.0,
     timeBetweenPregnancy = 1.0,
+    matingGroup = "",
 }
 
 -- val2 of an "animal products" reference.
@@ -113,16 +202,16 @@ end
 
 -- Returns the husbandry definition of an ANIMAL_CHARACTER record:
 --   { stringID, name, sterile, offspring, pregnancyPeriod, pregnancyChance,
---     timeBetweenPregnancy, basePrice (or nil), set = { field = true for fields set in FCS },
---     products = { { itemID, data, name, amount, days, sex }, ... },
---     mateTemplates = { [stringID] = true }, mateRaces = { [stringID] = true } }
+--     timeBetweenPregnancy, basePrice (or nil), matingGroup,
+--     set = { field = true for fields set in FCS },
+--     products = { { itemID, data, name, amount, days, sex }, ... } }
 function AH.defFromData(d)
     local sid = tostring(d.stringID)
     local cached = AH.defCache[sid]
     if cached then
         return cached
     end
-    local def = { stringID = sid, name = tostring(d.name), set = {}, products = {}, mateTemplates = {}, mateRaces = {} }
+    local def = { stringID = sid, name = tostring(d.name), set = {}, products = {} }
     local function read(map, key, field)
         local v, isSet = mapValue(map, key, FCS_DEFAULTS[field])
         def[field] = v
@@ -134,6 +223,7 @@ function AH.defFromData(d)
     read(d.fdata, "chance of pregnancy", "pregnancyChance")
     read(d.fdata, "time between pregnancy", "timeBetweenPregnancy")
     read(d.idata, "base price", "basePrice")
+    read(d.sdata, "mating group", "matingGroup")
 
     local products = referenceList(d, "animal products")
     for i = 1, #products do
@@ -146,14 +236,6 @@ function AH.defFromData(d)
             days = p.v1,
             sex = AH.PRODUCT_SEX[p.v2] or ("unknown " .. tostring(p.v2)),
         }
-    end
-    local species = referenceList(d, "species")
-    for i = 1, #species do
-        def.mateTemplates[species[i].sid] = true
-    end
-    local genus = referenceList(d, "genus")
-    for i = 1, #genus do
-        def.mateRaces[genus[i].sid] = true
     end
 
     AH.defCache[sid] = def
@@ -171,17 +253,7 @@ end
 
 function AH.clearDefCache()
     AH.defCache = {}
-end
-
-local function setNames(set)
-    local gamedata = getGameWorld().gamedata
-    local names = {}
-    for sid in pairs(set) do
-        local d = gamedata:getData(sid)
-        names[#names + 1] = (d and tostring(d.name) or "?") .. " (" .. sid .. ")"
-    end
-    table.sort(names)
-    return #names > 0 and table.concat(names, ", ") or "none"
+    AH.syncConstantsFromFCS()
 end
 
 -- Console command: logs the definition of every ANIMAL_CHARACTER record used by a
@@ -205,7 +277,8 @@ function AH.listDefs()
             AH.log("  sterile " .. show("sterile") .. " | offspring " .. show("offspring")
                 .. " | pregnancy period (days) " .. show("pregnancyPeriod")
                 .. " | chance per check (%) " .. show("pregnancyChance")
-                .. " | time between (days) " .. show("timeBetweenPregnancy"))
+                .. " | time between (days) " .. show("timeBetweenPregnancy")
+                .. " | mating group " .. (def.matingGroup ~= "" and ('"' .. def.matingGroup .. '"') or "none"))
             AH.log("  base price " .. (def.basePrice and tostring(def.basePrice)
                 or (tostring(AH.config.sales.defaultBasePrice) .. " (default)")))
             if #def.products == 0 then
@@ -216,8 +289,6 @@ function AH.listDefs()
                 AH.log(string.format("  product %s (%s): %d at a time, every %d day(s), %s%s", p.name, p.itemID,
                     p.amount, p.days, p.sex, p.data and "" or " [ITEM NOT FOUND]"))
             end
-            AH.log("  species: " .. setNames(def.mateTemplates))
-            AH.log("  genus: " .. setNames(def.mateRaces))
         end
     end
     if next(seen) == nil then
@@ -278,9 +349,8 @@ function AH.animalEntry(c)
     }
 end
 
--- True if two animal entries can mate: the same race or record, or either one lists
--- the other's record under "species" or the other's race under "genus". A link on
--- either animal is enough.
+-- True if two animal entries can mate: they share the same race or record, or both
+-- have a non-empty mating group whose names match (case-insensitively).
 function AH.canMate(a, b)
     if a.raceID and a.raceID == b.raceID then
         return true
@@ -288,11 +358,9 @@ function AH.canMate(a, b)
     if a.templateID and a.templateID == b.templateID then
         return true
     end
-    local da, db = a.def, b.def
-    if da and ((b.templateID and da.mateTemplates[b.templateID]) or (b.raceID and da.mateRaces[b.raceID])) then
-        return true
-    end
-    if db and ((a.templateID and db.mateTemplates[a.templateID]) or (a.raceID and db.mateRaces[a.raceID])) then
+    local ga = a.def and a.def.matingGroup or ""
+    local gb = b.def and b.def.matingGroup or ""
+    if ga ~= "" and gb ~= "" and string.lower(ga) == string.lower(gb) then
         return true
     end
     return false
@@ -446,11 +514,27 @@ end
 AH.tasks = AH.tasks or {}
 
 function AH.addTask(name, intervalHours, fn)
-    AH.tasks[name] = { intervalDays = intervalHours / 24, fn = fn, lastDay = nil }
+    AH.tasks[name] = { intervalHours = intervalHours, fn = fn, lastDay = nil }
 end
 
 function AH.removeTask(name)
     AH.tasks[name] = nil
+end
+
+local function taskIntervalDays(task)
+    local hours = task.intervalHours
+    if type(hours) == "function" then
+        local ok, res = pcall(hours)
+        if ok and type(res) == "number" then
+            hours = res
+        else
+            hours = 1
+        end
+    end
+    if type(hours) ~= "number" or hours <= 0 then
+        hours = 1
+    end
+    return hours / 24
 end
 
 local FRAMES_BETWEEN_CHECKS = 30
@@ -469,9 +553,10 @@ local function onCharsUpdate()
     end
 
     for name, task in pairs(AH.tasks) do
+        local intervalDays = taskIntervalDays(task)
         if task.lastDay == nil or now < task.lastDay then
             task.lastDay = now
-        elseif now - task.lastDay >= task.intervalDays then
+        elseif now - task.lastDay >= intervalDays then
             local elapsed = math.min(now - task.lastDay, 1)
             task.lastDay = now
             local okRun, err = pcall(task.fn, now, elapsed)
@@ -514,6 +599,7 @@ function AH.onEvent(key, eventName, fn)
 end
 
 function AH.rearmEvents()
+    AH.syncConstantsFromFCS()
     for key in pairs(AH.eventSpecs) do
         registerSpec(key)
     end
@@ -521,5 +607,6 @@ end
 
 AH.onEvent("scheduler", "GameWorld::charsUpdate", onCharsUpdate)
 AH.rearmEvents()
+AH.syncConstantsFromFCS()
 
 AH.log("core loaded")

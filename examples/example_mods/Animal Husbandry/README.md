@@ -26,7 +26,7 @@ Do not rename `Animal Husbandry.mod`. Kenshi builds each record's string ID from
 
 Once every in-game hour, each fertile female in your faction may become pregnant if a fertile male she can mate with is close by.
 
-- **Who can mate:** a male and a female of the same race. Animals with different races can be linked in FCS through the `species` and `genus` fields (see [Editing and adding animals](#editing-and-adding-animals)).
+- **Who can mate:** a male and a female of the same race or character record. Animals with different races or records can be grouped in FCS using the `mating group` field (see [Editing and adding animals](#editing-and-adding-animals)).
 - **Conditions:** both animals must be Adult or older, not sterile, and within 50 units of each other. Neither can be dead, unconscious, injured, very hungry or in combat.
 - **Pregnancy:** each check rolls the mother's `chance of pregnancy`. A pregnancy lasts her `pregnancy period` in days. The newborns, as many as her `number of offspring`, appear beside her in her squad.
 - **After a birth:** the mother cannot become pregnant again for her `time between pregnancy` in days.
@@ -57,6 +57,14 @@ Products included:
 | Wild Bull, Domesticated Bull, Pack Bull | Bull Milk (females) |
 | Beak Thing | Beak Thing Egg (females) |
 | Crab | Crab Egg (females) |
+| River Raptor | River Raptor Egg (females) |
+| Swamp Raptor | Swamp Raptor Egg (females) |
+| Landbat | Landbat Milk(?) |
+| Leviathan | Leviathan Milk (females) |
+| Skimmer | Skimmer Eggs (females) |
+| Blood Spider | Blood Spider Egg(?) |
+| Skin Spider | Skin Spider Egg(?) |
+| Gorillo | Gorillo Fur |
 
 ### Processing
 
@@ -83,6 +91,7 @@ Run these in the KenshiLua console.
 
 | Command | What it does |
 |---|---|
+| `AnimalHusbandry.printConstants()` | Displays active mod constants and indicates whether each is loaded from FCS or falls back to default. |
 | `AnimalHusbandry.listDefs()` | Prints the FCS values read for each type of animal in your faction. Values not set in FCS are marked "(default)". |
 | `AnimalHusbandry.status()` | Lists every animal in your faction with its race, record, sex, age, whether it can breed, and any pregnancy or cooldown. |
 | `AnimalHusbandry.debugPairs()` | Lists every female and male that can mate, with their distance and the reason a pair cannot breed. |
@@ -93,20 +102,21 @@ Run these in the KenshiLua console.
 
 ## Configuration
 
-Settings that apply to every animal are in `scripts/init/00_ah_config.lua`:
+Constants are defined in `fcs.def` under `[CONSTANTS]` and can be configured in FCS under **Game Constants** using dot notation. When defined in FCS, the scripts read those values automatically in-game. Fallback defaults are defined in `scripts/init/00_ah_config.lua`:
 
-| Setting | Default | Meaning |
+| Constant (FCS / Config) | Default | Meaning |
 |---|---|---|
-| `breeding.checkIntervalHours` | 1 | In-game hours between breeding checks |
+| `breeding.babyAge` | 0.0 | Age of a newborn animal (0.0 to 1.1 scale, where 0.0 is Newborn) |
+| `breeding.checkIntervalHours` | 1.0 | In-game hours between breeding checks |
+| `breeding.maxPairDistance` | 50.0 | Maximum distance between potential parents, in world units |
 | `breeding.minAge` | 0.6 | Minimum age for both parents (0.6 is Adult) |
-| `breeding.maxPairDistance` | 50 | Maximum distance between parents, in world units |
-| `breeding.babyAge` | 0 | Age of a newborn |
-| `harvest.minAge` | 0.6 | Minimum age to harvest from an animal |
-| `harvest.maxDistance` | 50 | Maximum distance between the harvester and the animal |
-| `sales.maxDistance` | 250 | Maximum distance between an animal and the buyer (or their building) or you |
-| `sales.defaultBasePrice` | 14000 | Base price for animals whose record has no `base price` |
+| `harvest.minAge` | 0.6 | Minimum age of an animal before its products can be harvested (0.6 is Adult) |
+| `harvest.maxDistance` | 50.0 | Maximum distance between the harvester and the animal, in world units |
+| `harvest.maxVisibleProducts` | 4 | Maximum product rows visible in the Husbandry window before scrolling |
+| `sales.defaultBasePrice` | 14000 | Fallback base price in cats for animals whose record has no `base price` |
+| `sales.maxDistance` | 250.0 | Maximum distance between an animal and the buyer (or their building) or seller |
 
-Ages are on the engine's 0 to 1.1 scale: Pup from 0, Teen from 0.4, Adult from 0.6, Elder at 1.1.
+Ages are on the engine's 0 to 1.1 scale: Pup from 0, Teen from 0.4, Adult from 0.6, Elder at 1.1. Run `AnimalHusbandry.printConstants()` in the console to inspect active values and verify their source (`FCS` or `default`).
 
 ## Editing and adding animals
 
@@ -122,14 +132,13 @@ Each animal's values are fields on its `ANIMAL_CHARACTER` record. The fields are
 | `pregnancy period` | 1.0 | Days from pregnancy to birth |
 | `chance of pregnancy` | 1.0 | Percent chance of pregnancy at each breeding check |
 | `time between pregnancy` | 1.0 | Days after a birth before the mother can become pregnant again |
-| `animal products` | | `ITEM` references the animal gives. val0 is items per harvest, val1 is days between harvests, val2 is which sex gives it (0 male, 1 female, 2 both). |
+| `animal products` | `ITEM`| References the animal products that can be harvested. val0 is items per harvest, val1 is days between harvests, val2 is which sex gives it (0 male, 1 female, 2 both). |
 | `base price` | 14000 | Base of the sale price, (age + 0.1) × base price |
-| `species` | | `ANIMAL_CHARACTER` records this animal can also mate with |
-| `genus` | | `RACE` records whose animals this animal can also mate with |
+| `mating group` | `""` | Optional group name allowing animals with different races or records to mate (e.g. "Bulls") |
 
 The game does not read `fcs.def`. A field you never set in FCS is missing from the record, and the scripts then use the default above. Note that `sterile` defaults to True, so an animal does not breed until you set it to False.
 
-Animals of the same race can always mate. Use `species` or `genus` for animals with different races, such as Domesticated Bull and Wild Bull, which use different races because they have different models. A link on either animal is enough; it works both ways.
+Animals of the same RACE or ANIMAL_CHARACTER can always mate. Use `mating group` for animals with different races or records that should be able to mate, such as Domesticated Bull and Wild Bull. Both animals must share the same non-empty mating group name (case-insensitive).
 
 ### Item icons
 

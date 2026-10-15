@@ -26,6 +26,11 @@ AH.config = {
     -- there and added to animals from other mods. Run AnimalHusbandry.listDefs() in the
     -- console to see the values read for the player's animals.
     --
+    -- The breeding, harvest, and sales constants below are fallback defaults.
+    -- They can be configured in FCS under Game Constants (fcs.def [CONSTANTS]) using dot
+    -- notation (e.g. breeding.minAge). When set in FCS, they override these values.
+    -- Run AnimalHusbandry.printConstants() in the console to inspect active values.
+    --
     -- A pair is a male and a female that can mate (see AnimalHusbandry.canMate) and are
     -- both not sterile. The mother's record sets the chance, pregnancy period, time
     -- between pregnancies, and number of offspring.
@@ -51,6 +56,8 @@ AH.config = {
         minAge = 0.6,
         -- Maximum distance between the harvester and the animal, in world units.
         maxDistance = 50,
+        -- Maximum number of product rows visible in the Husbandry window before scrolling.
+        maxVisibleProducts = 4,
     },
 
     -- The animal sale window, opened by scripts/dialogue/ah_open_animal_sale.lua when
@@ -70,6 +77,9 @@ AH.config = {
     },
 }
 
+if _G.AnimalHusbandry and _G.AnimalHusbandry.syncConstantsFromFCS then
+    _G.AnimalHusbandry.syncConstantsFromFCS()
+end
 if _G.AnimalHusbandry and _G.AnimalHusbandry.rearmEvents then
     _G.AnimalHusbandry.rearmEvents()
 end

@@ -127,6 +127,9 @@ end
 
 -- Gives birth for every pregnant female whose due time has passed.
 local function birthCheck(now)
+    if AH.syncConstantsFromFCS then
+        AH.syncConstantsFromFCS()
+    end
     local animals = AH.playerAnimals()
     for i = 1, #animals do
         local e = animals[i]
@@ -141,6 +144,9 @@ end
 
 -- Rolls for new pregnancies, once per check for each eligible female.
 local function breedingCheck(now)
+    if AH.syncConstantsFromFCS then
+        AH.syncConstantsFromFCS()
+    end
     local females, males = bySex()
     for i = 1, #females do
         local f = females[i]
@@ -176,23 +182,26 @@ function AH.describeBreeding(entry, now)
     local due = AH.getValue(c, KEY_DUE)
     if due then
         if now >= due then
-            return "Ready to give birth"
+            return "Due now"
         end
-        return string.format("Pregnant, due in %.1f days", due - now)
+        return string.format("Due in %.1f days", due - now)
     end
     local cooldown = AH.getValue(c, KEY_COOLDOWN)
     if cooldown and cooldown > now then
-        return string.format("Recovering from birth, %.1f days left", cooldown - now)
+        return string.format("Resting, %.1f days", cooldown - now)
     end
     local ok, reason = canBreed(entry)
-    if ok then
-        return "Can breed"
+    if not ok then
+        return "Cannot breed: " .. tostring(reason)
     end
-    return "Cannot breed: " .. tostring(reason)
+    if AH.isFemale(c) then
+        return "Not pregnant"
+    end
+    return "Can breed"
 end
 
 AH.addTask("births", BIRTH_CHECK_INTERVAL_HOURS, birthCheck)
-AH.addTask("breeding", cfg().checkIntervalHours, breedingCheck)
+AH.addTask("breeding", function() return cfg().checkIntervalHours end, breedingCheck)
 
 -- ---------------------------------------------------------------------------
 -- Console commands
@@ -203,6 +212,9 @@ local function fmtDays(v)
 end
 
 function AH.status()
+    if AH.syncConstantsFromFCS then
+        AH.syncConstantsFromFCS()
+    end
     local now = AH.currentDay()
     local animals = AH.playerAnimals()
     AH.log(string.format("day %.3f, %d player animals", now, #animals))
@@ -233,6 +245,9 @@ function AH.status()
 end
 
 function AH.debugPairs()
+    if AH.syncConstantsFromFCS then
+        AH.syncConstantsFromFCS()
+    end
     local females, males = bySex()
     local maxDistance = cfg().maxPairDistance
     AH.log("maxPairDistance = " .. tostring(maxDistance) .. "; " .. #females .. " female(s), " .. #males .. " male(s)")
