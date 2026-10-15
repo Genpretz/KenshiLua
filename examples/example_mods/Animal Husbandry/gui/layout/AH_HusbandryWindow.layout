@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <!-- Husbandry Window: Classic Wide Row Layout (680x240)
+         Modeled after Kenshi's character trading and inventory panels.
+         Features: Left-side 136x136 portrait with centered name banner, framed dual-column
+         content area with dedicated details datapanel (180px) and scrollable products list (292px). -->
+    <Widget type="Window" skin="Kenshi_WindowCX" position="220 160 680 240" align="Default" layer="MiddleFront" name="AH_HusbandryWindow">
+        <Property key="Caption" value="HUSBANDRY"/>
+        <Property key="Movable" value="true"/>
+        <Property key="Snap" value="true"/>
+
+        <!-- Animal Portrait and Name Banner -->
+        <Widget type="ImageBox" skin="ImageBox" position="14 8 136 136" align="Left Top" name="AH_Portrait">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position="0 114 136 22" align="HStretch Bottom" name="AH_Name">
+                <Property key="Caption" value="Animal Name"/>
+                <Property key="TextAlign" value="Center"/>
+                <Property key="FontName" value="Kenshi_StandardFont"/>
+            </Widget>
+        </Widget>
+
+        <!-- Main Details & Production Frame -->
+        <Widget type="Widget" skin="Kenshi_GenericTextBox" position="160 8 496 184" align="HStretch Top" name="AH_Frame">
+            <!-- Left Column: Datapanel Container for Race, Sex, Age, Breeding, Harvester -->
+            <Widget type="Widget" skin="PanelEmpty" position="8 8 180 168" align="Left VStretch" name="AH_InfoArea"/>
+
+            <!-- Right Column: Scrollable Products List Area -->
+            <Widget type="ScrollView" skin="Kenshi_ScrollViewEmpty" position="196 8 292 168" align="HStretch VStretch" name="AH_ProductsArea">
+                <Property key="NeedDragDrop" value="false"/>
+                <Property key="VisibleHScroll" value="false"/>
+                <Property key="VisibleVScroll" value="false"/>
+                <Property key="CanvasSize" value="292 168"/>
+            </Widget>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>
+

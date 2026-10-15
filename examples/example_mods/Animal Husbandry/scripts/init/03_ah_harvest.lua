@@ -22,22 +22,19 @@ local BUTTON_NAME = "AH_HusbandryButton"
 local WINDOW_NAME = "AH_HusbandryWindow"
 local NEXT_HARVEST_PREFIX = "NextHarvest_"
 
--- Window layout, in pixels, modelled on a row of the vanilla character trading window:
--- a portrait with the name across its bottom, then a framed box split into two
--- columns. The left column is a datapanel of the animal's details; the right column
--- lists its products, each with a Harvest button. The window's height is fitted to
--- its contents.
-local WINDOW_WIDTH = 680
-local MARGIN = 14
-local PORTRAIT_SIZE = 136
-local NAME_HEIGHT = 22
-local FRAME_PADDING = 8
-local INFO_LINES = 5
-local INFO_LINE_HEIGHT = 26
+-- Window layout: loaded from AH_HusbandryWindow.layout.
+-- The layout defines the window structure, portrait, name banner, datapanel info area,
+-- and products scroll view. The script populates the animal details into the datapanel
+-- and creates dynamic product rows in the products scroll view with their status and
+-- Harvest buttons.
+local LAYOUT_FILE = "AH_HusbandryWindow.layout"
 local ROW_HEIGHT = 30
 local ROW_STEP = 34
-local BUTTON_WIDTH = 110
+local BUTTON_WIDTH = 76
 local DEFAULT_LEFT, DEFAULT_TOP = 220, 160
+
+-- Serial counter for unique MyGUI layout widget prefixes
+AH.husbandrySerial = AH.husbandrySerial or 0
 
 local function hcfg()
     return AH.config.harvest
@@ -53,10 +50,14 @@ AH.husbandryWindow = nil
 ---@class AnimalHusbandryWindowState
 ---@field target hand
 ---@field harvester hand|nil
+---@field prefix string
+---@field layout MyGUI.Widget[]|nil
+---@field root MyGUI.Widget|nil
 ---@field rows table[]
 ---@field infoPanel DatapanelGUI|nil
 ---@field infoText string|nil
----@field nameText MyGUI.Widget
+---@field nameText MyGUI.Widget|nil
+---@field productsArea MyGUI.ScrollView|nil
 ---@type AnimalHusbandryWindowState|nil
 local windowState = nil
 
@@ -87,10 +88,17 @@ local function sexAllows(product, female)
     return true
 end
 
--- Animals cannot perform husbandry work. Skeletons and other non-animal player
--- characters remain valid because they use the same humanoid interaction model.
+-- Animals cannot perform husbandry work. Skeletons and other non-animal player characters remain valid
 local function isEligibleHarvester(c)
     return c and c:isPlayerCharacter() and not c:isAnimal()
+end
+
+local function formatHarvestCooldown(days)
+    if days < 0.96 then
+        local hrs = math.max(1, math.ceil(days * 24))
+        return hrs .. (hrs == 1 and " hr" or " hrs")
+    end
+    return string.format("%.1f days", days)
 end
 
 -- Returns true, or false and the reason the product cannot be harvested now.
@@ -100,10 +108,10 @@ local function canHarvest(entry, harvester, product, now)
         return false, "dead"
     end
     if c:isInCombatMode(true, true) then
-        return false, "animal is in combat"
+        return false, "in combat"
     end
     if not product.data then
-        return false, "item not available"
+        return false, "item unavailable"
     end
     if AH.age(entry.animal) < hcfg().minAge then
         return false, "too young"
@@ -114,19 +122,19 @@ local function canHarvest(entry, harvester, product, now)
     end
     local nextAt = AH.getValue(c, nextHarvestKey(product))
     if nextAt and now < nextAt then
-        return false, string.format("ready in %.1f days", nextAt - now)
+        return false, formatHarvestCooldown(nextAt - now)
     end
     if not harvester then
-        return false, "no one selected"
+        return false, "no person"
     end
     if not isEligibleHarvester(harvester) then
-        return false, "select a player humanoid"
+        return false, "need humanoid"
     end
     if harvester:isDead() or harvester:isUnconcious() then
-        return false, "harvester cannot act"
+        return false, "harvester down"
     end
     if AH.distance(harvester, c) > hcfg().maxDistance then
-        return false, "too far away"
+        return false, "too far"
     end
     return true
 end
@@ -183,13 +191,17 @@ local function infoLines(entry, animal, harvester, now)
     if not entry then
         return { { "Animal", "no longer available" } }
     end
-    return {
+    local lines = {
         { "Race", tostring(entry.raceName) },
         { "Sex", AH.isFemale(animal) and "Female" or "Male" },
         { "Age", AH.ageText(entry) },
-        { "Breeding", AH.describeBreeding and AH.describeBreeding(entry, now) or "" },
-        { "Harvester", harvester and tostring(harvester:getName()) or "select a person" },
     }
+    if entry.def and entry.def.matingGroup and entry.def.matingGroup ~= "" then
+        lines[#lines + 1] = { "Group", tostring(entry.def.matingGroup) }
+    end
+    lines[#lines + 1] = { "Breeding", AH.describeBreeding and AH.describeBreeding(entry, now) or "" }
+    lines[#lines + 1] = { "Harvester", harvester and tostring(harvester:getName()) or "select a person" }
+    return lines
 end
 
 -- Rebuilds the details datapanel only when its text changed, so it does not flicker.
@@ -227,7 +239,9 @@ local function refreshWindow()
     local entry = animal and AH.animalEntry(animal)
     local now = AH.currentDay()
 
-    windowState.nameText:setCaption(animal and tostring(animal:getName()) or "")
+    if windowState.nameText then
+        windowState.nameText:setCaption(animal and tostring(animal:getName()) or "")
+    end
     fillInfoPanel(infoLines(entry, animal, harvester, now))
 
     for i = 1, #windowState.rows do
@@ -251,6 +265,13 @@ local function createLabel(parent, x, y, w, h, name)
 end
 
 local function destroyWindow()
+    if windowState and windowState.root then
+        local l, t = windowState.root:getPosition()
+        AH.husbandryWindowPos = { left = l, top = t }
+    elseif AH.husbandryWindow then
+        local l, t = AH.husbandryWindow:getPosition()
+        AH.husbandryWindowPos = { left = l, top = t }
+    end
     if windowState and windowState.infoPanel then
         -- The datapanel owns widgets inside the window, so destroy it first.
         local gui = getForgottenGUI()
@@ -262,18 +283,27 @@ local function destroyWindow()
         end
         windowState.infoPanel = nil
     end
-    if AH.husbandryWindow then
-        local l, t = AH.husbandryWindow:getCoord()
-        AH.husbandryWindowPos = { left = l, top = t }
+    if windowState and windowState.layout then
+        local ok, err = pcall(function()
+            MyGUI.LayoutManager.getInstance():unloadLayout(windowState.layout)
+        end)
+        if not ok then
+            AH.log("Husbandry window: could not unload layout: " .. tostring(err))
+        end
+        windowState.layout = nil
+    elseif AH.husbandryWindow then
         pcall(function() AH.husbandryWindow:destroy() end)
-        AH.husbandryWindow = nil
     end
+    AH.husbandryWindow = nil
     windowState = nil
 end
 
 -- Opens the Husbandry window for an animal. targetHandle and harvesterHandle are hand
 -- values; harvesterHandle can be nil when no person is selected.
 function AH.openHusbandryWindow(targetHandle, harvesterHandle)
+    if AH.syncConstantsFromFCS then
+        AH.syncConstantsFromFCS()
+    end
     local animal = targetHandle and targetHandle:getCharacter()
     local entry = animal and AH.animalEntry(animal)
     if not entry then
@@ -283,29 +313,29 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
 
     destroyWindow()
 
-    local products = (entry.def and entry.def.products) or {}
-    local rowCount = math.max(1, #products)
-    local columnHeight = math.max(INFO_LINES * INFO_LINE_HEIGHT, rowCount * ROW_STEP)
-    local frameHeight = math.max(PORTRAIT_SIZE, columnHeight + 2 * FRAME_PADDING)
-    local contentHeight = 8 + frameHeight + MARGIN
-    local height = contentHeight + 80
-    local pos = AH.husbandryWindowPos or { left = DEFAULT_LEFT, top = DEFAULT_TOP }
+    AH.husbandrySerial = (AH.husbandrySerial or 0) + 1
+    local prefix = "AH_Husbandry_" .. AH.husbandrySerial .. "_"
 
-    -- MiddleFront is below the Esc menu's layer, so the menu's dark overlay covers this
-    -- window. Unlike the shared Middle layer, it is an overlapped layer, so this window
-    -- draws whole above windows on Middle, such as the character trading window,
-    -- instead of mixing with their text.
-    local w = MyGUI.createWidget("Window", "Kenshi_WindowCX", pos.left, pos.top, WINDOW_WIDTH, height, 0, "MiddleFront", WINDOW_NAME)
-    if not w then
-        AH.log("Husbandry window: could not create the window")
+    local layout = MyGUI.LayoutManager.getInstance():loadLayout(LAYOUT_FILE, prefix, nil)
+    local root = layout and layout[1]
+    if not root then
+        AH.log("Husbandry window: could not load layout " .. LAYOUT_FILE)
         return
     end
-    AH.husbandryWindow = w
-    w:setCaption("HUSBANDRY")
-    w:on("eventWindowButtonPressed", function(window, buttonName)
+
+    AH.husbandryWindow = root
+
+    local function find(name)
+        return root:findWidget(prefix .. name)
+    end
+
+    local pos = AH.husbandryWindowPos or { left = DEFAULT_LEFT, top = DEFAULT_TOP }
+    root:setPosition(pos.left, pos.top)
+
+    root:on("eventWindowButtonPressed", function(window, buttonName)
         if buttonName == "close" then
-            -- Hide rather than destroy inside the window's own event; the next window
-            -- that opens destroys this one.
+            local l, t = window:getPosition()
+            AH.husbandryWindowPos = { left = l, top = t }
             window:setVisible(false)
             local im = MyGUI.InputManager.getInstance()
             if im then
@@ -314,67 +344,86 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
         end
     end)
 
-    local client = w:getClientWidget() or w
-    -- Fit the window so its client area holds the contents; the frame and caption
-    -- take the difference between the window and client heights.
-    local _, _, clientWidth, clientHeight = client:getCoord()
-    if client ~= w and clientHeight ~= contentHeight then
-        w:setSize(WINDOW_WIDTH, height + contentHeight - clientHeight)
-    end
-    local inner = clientWidth - 2 * MARGIN
-    local align = MyGUI.Align.Default
     local state = {
         target = targetHandle,
         harvester = harvesterHandle,
+        prefix = prefix,
+        layout = layout,
+        root = root,
         rows = {},
     }
     windowState = state
 
-    -- Portrait, with the name across its bottom as in the vanilla trading window.
-    local portrait = assert(client:createWidget(
-        "ImageBox", "ImageBox", MARGIN, 8, PORTRAIT_SIZE, PORTRAIT_SIZE, align, "AH_Portrait"))
-    ---@cast portrait MyGUI.ImageBox
-    local portraits = PortraitManager.getInstance()
-    if portraits then
-        local ok, err = pcall(portraits.setImageWidget, portraits, targetHandle, portrait, true)
-        if not ok then
-            AH.log("Husbandry window: could not set the portrait: " .. tostring(err))
+    -- Animal Portrait
+    local portrait = find("AH_Portrait")
+    if portrait then
+        ---@cast portrait MyGUI.ImageBox
+        local portraits = PortraitManager.getInstance()
+        if portraits then
+            local ok, err = pcall(portraits.setImageWidget, portraits, targetHandle, portrait, true)
+            if not ok then
+                AH.log("Husbandry window: could not set the portrait: " .. tostring(err))
+            end
         end
     end
-    state.nameText = assert(portrait:createWidget("TextBox", "Kenshi_TextboxStandardText", 0,
-        PORTRAIT_SIZE - NAME_HEIGHT, PORTRAIT_SIZE, NAME_HEIGHT, align, "AH_Name"))
-    state.nameText:setProperty("TextAlign", "Center")
+    state.nameText = find("AH_Name")
 
-    -- Framed box with the two columns.
-    local frameLeft = MARGIN + PORTRAIT_SIZE + 10
-    local frame = assert(client:createWidget(
-        "Widget", "Kenshi_GenericTextBox", frameLeft, 8, inner - PORTRAIT_SIZE - 10,
-        frameHeight, align, "AH_Frame"))
-    local _, _, frameWidth = frame:getCoord()
-    local columnWidth = math.floor((frameWidth - 3 * FRAME_PADDING) / 2)
-    local infoArea = assert(frame:createWidget(
-        "Widget", "PanelEmpty", FRAME_PADDING, FRAME_PADDING, columnWidth,
-        frameHeight - 2 * FRAME_PADDING, align, "AH_InfoArea"))
-    local productLeft = 2 * FRAME_PADDING + columnWidth
-
-    local guiObj = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
-    state.infoPanel = guiObj:createDatapanel("AH_HusbandryInfo", infoArea, false)
-    if not state.infoPanel then
-        AH.log("Husbandry window: could not create the details datapanel")
+    -- Details Datapanel
+    local infoArea = find("AH_InfoArea")
+    if infoArea then
+        local guiObj = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
+        state.infoPanel = guiObj:createDatapanel(prefix .. "Info", infoArea, false)
+        if not state.infoPanel then
+            AH.log("Husbandry window: could not create the details datapanel")
+        end
     end
 
+    -- Products area (ScrollView or container Widget)
+    local productsArea = assert(find("AH_ProductsScrollView") or find("AH_ProductsArea"),
+        "Husbandry layout missing AH_ProductsScrollView or AH_ProductsArea")
+    state.productsArea = productsArea
+
+    -- Clear any static preview children present in the layout template
+    while productsArea:getChildCount() > 0 do
+        local child = productsArea:getChildAt(0)
+        pcall(function() child:destroy() end)
+    end
+
+    local products = (entry.def and entry.def.products) or {}
+    local maxVisible = (hcfg() and hcfg().maxVisibleProducts) or 4
+    local rowCount = #products
+
+    local _, _, productsWidth, viewHeight = productsArea:getCoord()
+    if productsWidth <= 0 then productsWidth = 292 end
+    if viewHeight <= 0 then viewHeight = 168 end
+
+    local needsScroll = (rowCount > maxVisible) or (rowCount * ROW_STEP > viewHeight)
+    local scrollbarMargin = needsScroll and 18 or 8
+    local buttonLeft = productsWidth - BUTTON_WIDTH - scrollbarMargin
+    local buttonGap = 8
+    local statusWidth = buttonLeft - buttonGap
+
+    local canvasHeight = math.max(viewHeight, rowCount * ROW_STEP)
+    if productsArea.setCanvasSize then
+        productsArea:setCanvasSize(productsWidth, canvasHeight)
+        productsArea:setVisibleHScroll(false)
+        productsArea:setVisibleVScroll(needsScroll)
+        productsArea:setViewOffset(0, 0)
+    end
+
+    local align = MyGUI.Align.Default
     if #products == 0 then
-        createLabel(frame, productLeft, FRAME_PADDING, columnWidth, ROW_HEIGHT, "AH_NoProducts")
+        createLabel(productsArea, 0, 0, productsWidth, ROW_HEIGHT, "AH_NoProducts")
             :setCaption("This animal gives no products.")
     end
     for i = 1, #products do
         local product = products[i]
         local name = productName(product)
-        local rowTop = FRAME_PADDING + (i - 1) * ROW_STEP
-        local status = createLabel(frame, productLeft, rowTop, columnWidth - BUTTON_WIDTH - 6, ROW_HEIGHT,
+        local rowTop = (i - 1) * ROW_STEP
+        local status = createLabel(productsArea, 0, rowTop, statusWidth, ROW_HEIGHT,
             "AH_ProductStatus" .. i)
-        local button = assert(frame:createWidget(
-            "Button", "Kenshi_Button1", productLeft + columnWidth - BUTTON_WIDTH, rowTop,
+        local button = assert(productsArea:createWidget(
+            "Button", "Kenshi_Button1", buttonLeft, rowTop,
             BUTTON_WIDTH, ROW_HEIGHT, align, "AH_ProductHarvest" .. i))
         button:setCaption("Harvest")
         button:on("eventMouseButtonClick", function()
@@ -394,8 +443,8 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
     end
 
     refreshWindow()
-    w:setVisible(true)
-    w:upLayerItem()
+    root:setVisible(true)
+    root:upLayerItem()
 end
 
 -- ---------------------------------------------------------------------------
