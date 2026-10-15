@@ -78,7 +78,7 @@ def parse_enums():
     for match in re.finditer(r"void\s+(register\w+)\s*\(lua_State\*\s*L\)", body_text):
         body = find_function_body(body_text, match.group(0))
         globals_set = re.findall(r'lua_setglobal\s*\(\s*L\s*,\s*"([A-Za-z_]\w*)"\s*\)', body)
-        nested_set = re.findall(r'setNestedClassTable\s*\(\s*L\s*,\s*"([A-Za-z_]\w*)"\s*,\s*"([A-Za-z_]\w*)"\s*\)', body)
+        nested_set = re.findall(r'setNestedClassTable\s*\(\s*L\s*,\s*"([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)"\s*,\s*"([A-Za-z_]\w*)"\s*\)', body)
         raw_entries = re.findall(r'setEnum\s*\(\s*L\s*,\s*"([A-Za-z_]\w*)"\s*,\s*([^)]+)\);', body)
 
         enum_dict = {}
@@ -89,8 +89,11 @@ def parse_enums():
                 val = header_values[cxx_sym]
             else:
                 parts = cxx_sym.split("::")
-                if len(parts) >= 2 and f"{parts[-2]}::{parts[-1]}" in header_values:
-                    val = header_values[f"{parts[-2]}::{parts[-1]}"]
+                for start in range(1, len(parts) - 1):
+                    candidate = "::".join(parts[start:])
+                    if candidate in header_values:
+                        val = header_values[candidate]
+                        break
             if val is None:
                 unmatched.append((key, cxx_sym))
                 continue
@@ -441,6 +444,18 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
     metadata = add_inventory_forward_declarations(metadata, global_enums, nested_enums)
     metadata = expand_inventory_fields(metadata)
     metadata = apply_description_overlays(metadata)
+
+    nested_table_fields = {
+        parent: {field: parent + "." + field for field in fields}
+        for parent, fields in nested_enums.items()
+    }
+    for parent in nested_enums:
+        parts = parent.split(".")
+        for index in range(1, len(parts)):
+            ancestor = ".".join(parts[:index])
+            child = parts[index]
+            nested_table_fields.setdefault(ancestor, {})[child] = ancestor + "." + child
+
     lines = [
         "---@meta",
         "",
@@ -474,32 +489,32 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         class_entry = dict(entry)
         fields = list(entry.get("fields", []))
         class_name = entry["name"]
-        if class_name in nested_enums:
-            for f in sorted(nested_enums[class_name].keys()):
+        if class_name in nested_table_fields:
+            for f in sorted(nested_table_fields[class_name].keys()):
                 fields.append({
                     "name": f,
-                    "type": class_name + "." + f,
+                    "type": nested_table_fields[class_name][f],
                 })
         for g in metadata.get("globals", []):
-            if g.get("type") == class_name and g.get("name") in nested_enums and g.get("name") != class_name:
+            if g.get("type") == class_name and g.get("name") in nested_table_fields and g.get("name") != class_name:
                 parent_name = g["name"]
-                for f in sorted(nested_enums[parent_name].keys()):
+                for f in sorted(nested_table_fields[parent_name].keys()):
                     fields.append({
                         "name": f,
-                        "type": parent_name + "." + f,
+                        "type": nested_table_fields[parent_name][f],
                     })
         class_entry["fields"] = fields
         emit_class(lines, class_entry)
 
     # Standalone parent classes for nested enums
-    for parent, fields in nested_enums.items():
+    for parent, fields in nested_table_fields.items():
         if parent not in classes_by_name and parent not in globals_by_name:
             parent_entry = {
                 "name": parent,
                 "fields": [
                     {
                         "name": f,
-                        "type": parent + "." + f,
+                        "type": fields[f],
                     }
                     for f in sorted(fields.keys())
                 ],
@@ -511,7 +526,7 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         emit_global(lines, entry)
 
     # Global tables for nested enum parents
-    for parent in nested_enums:
+    for parent in sorted(nested_table_fields, key=lambda value: (value.count("."), value)):
         if parent not in globals_by_name:
             lines.append("---@type " + parent)
             lines.append("---@diagnostic disable-next-line: missing-fields")

@@ -14,8 +14,8 @@ if character then
     local attachSlot = AttachSlot.ATTACH_WEAPON
 
     -- Nested enums
-    local appGender = AppearanceManager.Gender.FEMALE
-    local kenshiPlatform = BinaryVersion.KenshiPlatform.GOG
+    local appGender = AppearanceManager.Gender.Enum.FEMALE
+    local kenshiPlatform = KenshiLib.BinaryVersion.KenshiPlatform.GOG
     local charMessage = Character.CharMessage.CHARMESSAGE_NONE
     local meshDir = MeshDataLookup.Dir.FRONT
     local dialogueMsg = Dialogue.DT_MSG.DT_END_DIALOG
@@ -25,11 +25,11 @@ if character then
         KenshiLua.logDebug("Murder reported")
     end
 
-    if appGender == AppearanceManager.Gender.MALE then
+    if appGender == AppearanceManager.Gender.Enum.MALE then
         KenshiLua.logDebug("Male appearance")
     end
 
-    if kenshiPlatform == BinaryVersion.KenshiPlatform.STEAM then
+    if kenshiPlatform == KenshiLib.BinaryVersion.KenshiPlatform.STEAM then
         KenshiLua.logDebug("Steam platform")
     end
 
@@ -56,4 +56,23 @@ if character then
     if charMessage == Character.CharMessage.CHARMESSAGE_NONE then
         KenshiLua.logDebug("No char message")
     end
+
+    local water = WaterState.Enum.DEEP_WATER
+    local ragdoll = RagdollPart.Enum.HEAD
+    local statGroup = CharacterStatsWindow.StatGroup.Group.COMBAT
+    local effect = EffectType.Enum.CAMERA
+    local trade = InventoryGUI.TradeResult.Enum.OK
+    local attack = AttackDirection.Enum.FRONT
+    local bodyPart = MedicalSystem.HealthPartStatus.PartType.PART_HEAD
+    local physicsFile = NXU.NXU_FileType.FT_BINARY
+    local answer = YesNoMaybe.ynm.MAYBE
+    local mask = hkVector4ComparisonMask.Mask.MASK_XY
+    local result = hkResultEnum.HK_SUCCESS
+    local navMessage = NavMesh.MessageType.CREATE
+    local navTask = NavMeshGenerator.TaskType.GENERATE_ZONE
+    local memory = hkMemoryAllocator.MemoryState.MEMORY_STATE_OK
+    local vectorConstant = hkVectorConstant.HK_QUADREAL_PI
+
+    KenshiLua.logDebug(water, ragdoll, statGroup, effect, trade, attack, bodyPart,
+        physicsFile, answer, mask, result, navMessage, navTask, memory, vectorConstant)
 end

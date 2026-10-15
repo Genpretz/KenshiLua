@@ -18,10 +18,12 @@
 #include "kenshi/GameData.h"
 #include "kenshi/GameWorld.h"
 #include "kenshi/Gear.h"
+#include "kenshi/Havok.h"
 #include "kenshi/HavokCharacter.h"
 #include "kenshi/InputHandler.h"
 #include "kenshi/MedicalSystem.h"
 #include "kenshi/NavMesh.h"
+#include "kenshi/NavMeshGenerator.h"
 #include "kenshi/PhysicsActual.h"
 #include "kenshi/PhysicsCollection.h"
 #include "kenshi/Platoon.h"
@@ -76,12 +78,12 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 5);
 
-        setEnum(L, "None", AppearanceManager::DataCategory::None);
-        setEnum(L, "Face", AppearanceManager::DataCategory::Face);
-        setEnum(L, "Body", AppearanceManager::DataCategory::Body);
-        setEnum(L, "Hair", AppearanceManager::DataCategory::Hair);
-        setEnum(L, "Personality", AppearanceManager::DataCategory::Personality);
-        setNestedClassTable(L, "AppearanceManager", "DataCategory");
+        setEnum(L, "None", AppearanceManager::DataCategory::Enum::None);
+        setEnum(L, "Face", AppearanceManager::DataCategory::Enum::Face);
+        setEnum(L, "Body", AppearanceManager::DataCategory::Enum::Body);
+        setEnum(L, "Hair", AppearanceManager::DataCategory::Enum::Hair);
+        setEnum(L, "Personality", AppearanceManager::DataCategory::Enum::Personality);
+        setNestedClassTable(L, "AppearanceManager.DataCategory", "Enum");
         lua_pop(L, 1);
     }
 
@@ -89,9 +91,9 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 2);
 
-        setEnum(L, "MALE", AppearanceManager::Gender::MALE);
-        setEnum(L, "FEMALE", AppearanceManager::Gender::FEMALE);
-        setNestedClassTable(L, "AppearanceManager", "Gender");
+        setEnum(L, "MALE", AppearanceManager::Gender::Enum::MALE);
+        setEnum(L, "FEMALE", AppearanceManager::Gender::Enum::FEMALE);
+        setNestedClassTable(L, "AppearanceManager.Gender", "Enum");
         lua_pop(L, 1);
     }
 
@@ -306,7 +308,8 @@ namespace KenshiLua
         setEnum(L, "THIGH_DEEP_WATER", WaterState::Enum::THIGH_DEEP_WATER);
         setEnum(L, "DEEP_WATER", WaterState::Enum::DEEP_WATER);
 
-        lua_setglobal(L, "WaterState");
+        setNestedClassTable(L, "WaterState", "Enum");
+        lua_pop(L, 1);
     }
 
     void registerRagdollPart(lua_State* L)
@@ -325,7 +328,8 @@ namespace KenshiLua
         setEnum(L, "LEGS", RagdollPart::Enum::LEGS);
         setEnum(L, "ALL", RagdollPart::Enum::ALL);
 
-        lua_setglobal(L, "RagdollPart");
+        setNestedClassTable(L, "RagdollPart", "Enum");
+        lua_pop(L, 1);
     }
 
     void registerCharacterPerceptionTagsShortTerm(lua_State* L)
@@ -445,7 +449,7 @@ namespace KenshiLua
         setEnum(L, "SCIENCES", CharacterStatsWindow::StatGroup::Group::SCIENCES);
         setEnum(L, "TRADES", CharacterStatsWindow::StatGroup::Group::TRADES);
         setEnum(L, "RANGED", CharacterStatsWindow::StatGroup::Group::RANGED);
-        setNestedClassTable(L, "CharacterStatsWindow", "StatGroup");
+        setNestedClassTable(L, "CharacterStatsWindow.StatGroup", "Group");
         lua_pop(L, 1);
     }
 
@@ -1616,7 +1620,8 @@ namespace KenshiLua
         setEnum(L, "WANDERING_GAS", EffectType::Enum::WANDERING_GAS);
         setEnum(L, "GLOBAL_POINT", EffectType::Enum::GLOBAL_POINT);
 
-        lua_setglobal(L, "EffectType");
+        setNestedClassTable(L, "EffectType", "Enum");
+        lua_pop(L, 1);
     }
 
     void registerSquadType(lua_State* L)
@@ -1843,6 +1848,125 @@ namespace KenshiLua
     }
 
     // ------------------------------------------
+    // Havok.h
+    // ------------------------------------------
+
+    void registerHkVector4ComparisonMask(lua_State* L)
+    {
+        lua_createtable(L, 0, 20);
+
+        setEnum(L, "INDEX_W", hkVector4ComparisonMask::Mask::INDEX_W);
+        setEnum(L, "INDEX_Z", hkVector4ComparisonMask::Mask::INDEX_Z);
+        setEnum(L, "INDEX_Y", hkVector4ComparisonMask::Mask::INDEX_Y);
+        setEnum(L, "INDEX_X", hkVector4ComparisonMask::Mask::INDEX_X);
+        setEnum(L, "MASK_NONE", hkVector4ComparisonMask::Mask::MASK_NONE);
+        setEnum(L, "MASK_W", hkVector4ComparisonMask::Mask::MASK_W);
+        setEnum(L, "MASK_Z", hkVector4ComparisonMask::Mask::MASK_Z);
+        setEnum(L, "MASK_ZW", hkVector4ComparisonMask::Mask::MASK_ZW);
+        setEnum(L, "MASK_Y", hkVector4ComparisonMask::Mask::MASK_Y);
+        setEnum(L, "MASK_YW", hkVector4ComparisonMask::Mask::MASK_YW);
+        setEnum(L, "MASK_YZ", hkVector4ComparisonMask::Mask::MASK_YZ);
+        setEnum(L, "MASK_YZW", hkVector4ComparisonMask::Mask::MASK_YZW);
+        setEnum(L, "MASK_X", hkVector4ComparisonMask::Mask::MASK_X);
+        setEnum(L, "MASK_XW", hkVector4ComparisonMask::Mask::MASK_XW);
+        setEnum(L, "MASK_XZ", hkVector4ComparisonMask::Mask::MASK_XZ);
+        setEnum(L, "MASK_XZW", hkVector4ComparisonMask::Mask::MASK_XZW);
+        setEnum(L, "MASK_XY", hkVector4ComparisonMask::Mask::MASK_XY);
+        setEnum(L, "MASK_XYW", hkVector4ComparisonMask::Mask::MASK_XYW);
+        setEnum(L, "MASK_XYZ", hkVector4ComparisonMask::Mask::MASK_XYZ);
+        setEnum(L, "MASK_XYZW", hkVector4ComparisonMask::Mask::MASK_XYZW);
+        setNestedClassTable(L, "hkVector4ComparisonMask", "Mask");
+        lua_pop(L, 1);
+    }
+
+    void registerHkVectorConstant(lua_State* L)
+    {
+        lua_createtable(L, 0, 59);
+
+        setEnum(L, "HK_QUADREAL_BEGIN", hkVectorConstant::HK_QUADREAL_BEGIN);
+        setEnum(L, "HK_QUADREAL_MINUS1", hkVectorConstant::HK_QUADREAL_MINUS1);
+        setEnum(L, "HK_QUADREAL_0", hkVectorConstant::HK_QUADREAL_0);
+        setEnum(L, "HK_QUADREAL_1", hkVectorConstant::HK_QUADREAL_1);
+        setEnum(L, "HK_QUADREAL_2", hkVectorConstant::HK_QUADREAL_2);
+        setEnum(L, "HK_QUADREAL_3", hkVectorConstant::HK_QUADREAL_3);
+        setEnum(L, "HK_QUADREAL_4", hkVectorConstant::HK_QUADREAL_4);
+        setEnum(L, "HK_QUADREAL_5", hkVectorConstant::HK_QUADREAL_5);
+        setEnum(L, "HK_QUADREAL_6", hkVectorConstant::HK_QUADREAL_6);
+        setEnum(L, "HK_QUADREAL_7", hkVectorConstant::HK_QUADREAL_7);
+        setEnum(L, "HK_QUADREAL_8", hkVectorConstant::HK_QUADREAL_8);
+        setEnum(L, "HK_QUADREAL_15", hkVectorConstant::HK_QUADREAL_15);
+        setEnum(L, "HK_QUADREAL_16", hkVectorConstant::HK_QUADREAL_16);
+        setEnum(L, "HK_QUADREAL_255", hkVectorConstant::HK_QUADREAL_255);
+        setEnum(L, "HK_QUADREAL_256", hkVectorConstant::HK_QUADREAL_256);
+        setEnum(L, "HK_QUADREAL_2_POW_23", hkVectorConstant::HK_QUADREAL_2_POW_23);
+        setEnum(L, "HK_QUADREAL_INV_0", hkVectorConstant::HK_QUADREAL_INV_0);
+        setEnum(L, "HK_QUADREAL_INV_1", hkVectorConstant::HK_QUADREAL_INV_1);
+        setEnum(L, "HK_QUADREAL_INV_2", hkVectorConstant::HK_QUADREAL_INV_2);
+        setEnum(L, "HK_QUADREAL_INV_3", hkVectorConstant::HK_QUADREAL_INV_3);
+        setEnum(L, "HK_QUADREAL_INV_4", hkVectorConstant::HK_QUADREAL_INV_4);
+        setEnum(L, "HK_QUADREAL_INV_5", hkVectorConstant::HK_QUADREAL_INV_5);
+        setEnum(L, "HK_QUADREAL_INV_6", hkVectorConstant::HK_QUADREAL_INV_6);
+        setEnum(L, "HK_QUADREAL_INV_7", hkVectorConstant::HK_QUADREAL_INV_7);
+        setEnum(L, "HK_QUADREAL_INV_8", hkVectorConstant::HK_QUADREAL_INV_8);
+        setEnum(L, "HK_QUADREAL_INV_15", hkVectorConstant::HK_QUADREAL_INV_15);
+        setEnum(L, "HK_QUADREAL_INV_127", hkVectorConstant::HK_QUADREAL_INV_127);
+        setEnum(L, "HK_QUADREAL_INV_226", hkVectorConstant::HK_QUADREAL_INV_226);
+        setEnum(L, "HK_QUADREAL_INV_255", hkVectorConstant::HK_QUADREAL_INV_255);
+        setEnum(L, "HK_QUADREAL_1000", hkVectorConstant::HK_QUADREAL_1000);
+        setEnum(L, "HK_QUADREAL_0100", hkVectorConstant::HK_QUADREAL_0100);
+        setEnum(L, "HK_QUADREAL_0010", hkVectorConstant::HK_QUADREAL_0010);
+        setEnum(L, "HK_QUADREAL_0001", hkVectorConstant::HK_QUADREAL_0001);
+        setEnum(L, "HK_QUADREAL_MAX", hkVectorConstant::HK_QUADREAL_MAX);
+        setEnum(L, "HK_QUADREAL_HIGH", hkVectorConstant::HK_QUADREAL_HIGH);
+        setEnum(L, "HK_QUADREAL_EPS", hkVectorConstant::HK_QUADREAL_EPS);
+        setEnum(L, "HK_QUADREAL_EPS_SQRD", hkVectorConstant::HK_QUADREAL_EPS_SQRD);
+        setEnum(L, "HK_QUADREAL_MIN", hkVectorConstant::HK_QUADREAL_MIN);
+        setEnum(L, "HK_QUADREAL_MINUS_MAX", hkVectorConstant::HK_QUADREAL_MINUS_MAX);
+        setEnum(L, "HK_QUADREAL_MINUS_MIN", hkVectorConstant::HK_QUADREAL_MINUS_MIN);
+        setEnum(L, "HK_QUADREAL_m11m11", hkVectorConstant::HK_QUADREAL_m11m11);
+        setEnum(L, "HK_QUADREAL_1m11m1", hkVectorConstant::HK_QUADREAL_1m11m1);
+        setEnum(L, "HK_QUADREAL_1010", hkVectorConstant::HK_QUADREAL_1010);
+        setEnum(L, "HK_QUADREAL_1100", hkVectorConstant::HK_QUADREAL_1100);
+        setEnum(L, "HK_QUADREAL_0011", hkVectorConstant::HK_QUADREAL_0011);
+        setEnum(L, "HK_QUADREAL_1248", hkVectorConstant::HK_QUADREAL_1248);
+        setEnum(L, "HK_QUADREAL_8421", hkVectorConstant::HK_QUADREAL_8421);
+        setEnum(L, "HK_QUADREAL_PACK_HALF", hkVectorConstant::HK_QUADREAL_PACK_HALF);
+        setEnum(L, "HK_QUADREAL_PACK16_UNIT_VEC", hkVectorConstant::HK_QUADREAL_PACK16_UNIT_VEC);
+        setEnum(L, "HK_QUADREAL_UNPACK16_UNIT_VEC", hkVectorConstant::HK_QUADREAL_UNPACK16_UNIT_VEC);
+        setEnum(L, "HK_QUADREAL_PI", hkVectorConstant::HK_QUADREAL_PI);
+        setEnum(L, "HK_QUADREAL_PI_HALF", hkVectorConstant::HK_QUADREAL_PI_HALF);
+        setEnum(L, "HK_QUADREAL_PI_QUARTER", hkVectorConstant::HK_QUADREAL_PI_QUARTER);
+        setEnum(L, "HK_QUADREAL_FOUR_PI_THIRD", hkVectorConstant::HK_QUADREAL_FOUR_PI_THIRD);
+        setEnum(L, "HK_QUADREAL_TWO_PI", hkVectorConstant::HK_QUADREAL_TWO_PI);
+        setEnum(L, "HK_QUADREAL_FOUR_PI", hkVectorConstant::HK_QUADREAL_FOUR_PI);
+        setEnum(L, "HK_QUADREAL_DEG2RAD", hkVectorConstant::HK_QUADREAL_DEG2RAD);
+        setEnum(L, "HK_QUADREAL_RAD2DEG", hkVectorConstant::HK_QUADREAL_RAD2DEG);
+        setEnum(L, "HK_QUADREAL_END", hkVectorConstant::HK_QUADREAL_END);
+
+        lua_setglobal(L, "hkVectorConstant");
+    }
+
+    void registerHkResultEnum(lua_State* L)
+    {
+        lua_createtable(L, 0, 2);
+
+        setEnum(L, "HK_SUCCESS", hkResultEnum::HK_SUCCESS);
+        setEnum(L, "HK_FAILURE", hkResultEnum::HK_FAILURE);
+
+        lua_setglobal(L, "hkResultEnum");
+    }
+
+    void registerHkMemoryAllocatorMemoryState(lua_State* L)
+    {
+        lua_createtable(L, 0, 2);
+
+        setEnum(L, "MEMORY_STATE_OK", hkMemoryAllocator::MemoryState::MEMORY_STATE_OK);
+        setEnum(L, "MEMORY_STATE_OUT_OF_MEMORY", hkMemoryAllocator::MemoryState::MEMORY_STATE_OUT_OF_MEMORY);
+        setNestedClassTable(L, "hkMemoryAllocator", "MemoryState");
+        lua_pop(L, 1);
+    }
+
+    // ------------------------------------------
     // gui/InventoryGUI.h
     // ------------------------------------------
 
@@ -1868,7 +1992,7 @@ namespace KenshiLua
         setEnum(L, "ILLEGAL_GOODS", InventoryGUI::TradeResult::Enum::ILLEGAL_GOODS);
         setEnum(L, "UNIFORMS", InventoryGUI::TradeResult::Enum::UNIFORMS);
         setEnum(L, "CONTAINER_NOT_EMPTY", InventoryGUI::TradeResult::Enum::CONTAINER_NOT_EMPTY);
-        setNestedClassTable(L, "InventoryGUI", "TradeResult");
+        setNestedClassTable(L, "InventoryGUI.TradeResult", "Enum");
         lua_pop(L, 1);
     }
 
@@ -2003,7 +2127,8 @@ namespace KenshiLua
         setEnum(L, "TOP", AttackDirection::Enum::TOP);
         setEnum(L, "BOTTOM", AttackDirection::Enum::BOTTOM);
 
-        lua_setglobal(L, "AttackDirection");
+        setNestedClassTable(L, "AttackDirection", "Enum");
+        lua_pop(L, 1);
     }
 
     void registerHealthPartStatus(lua_State* L)
@@ -2014,7 +2139,7 @@ namespace KenshiLua
         setEnum(L, "PART_LEG", MedicalSystem::HealthPartStatus::PartType::PART_LEG);
         setEnum(L, "PART_ARM", MedicalSystem::HealthPartStatus::PartType::PART_ARM);
         setEnum(L, "PART_HEAD", MedicalSystem::HealthPartStatus::PartType::PART_HEAD);
-        setNestedClassTable(L, "MedicalSystem", "HealthPartStatus");
+        setNestedClassTable(L, "MedicalSystem.HealthPartStatus", "PartType");
         lua_pop(L, 1);
     }
 
@@ -2057,6 +2182,36 @@ namespace KenshiLua
         lua_pop(L, 1);
     }
 
+    void registerNavMeshMessageType(lua_State* L)
+    {
+        lua_createtable(L, 0, 5);
+
+        setEnum(L, "CREATE", NavMesh::MessageType::CREATE);
+        setEnum(L, "DESTROY", NavMesh::MessageType::DESTROY);
+        setEnum(L, "DESTROY_BUILDING", NavMesh::MessageType::DESTROY_BUILDING);
+        setEnum(L, "DOOR_OPEN", NavMesh::MessageType::DOOR_OPEN);
+        setEnum(L, "DOOR_CLOSE", NavMesh::MessageType::DOOR_CLOSE);
+        setNestedClassTable(L, "NavMesh", "MessageType");
+        lua_pop(L, 1);
+    }
+
+    // ------------------------------------------
+    // NavMeshGenerator.h
+    // ------------------------------------------
+
+    void registerNavMeshGeneratorTaskType(lua_State* L)
+    {
+        lua_createtable(L, 0, 5);
+
+        setEnum(L, "GENERATE_ZONE", NavMeshGenerator::TaskType::GENERATE_ZONE);
+        setEnum(L, "GENERATE_SPLICE", NavMeshGenerator::TaskType::GENERATE_SPLICE);
+        setEnum(L, "GENERATE_CARVE", NavMeshGenerator::TaskType::GENERATE_CARVE);
+        setEnum(L, "GENERATE_INTERIOR", NavMeshGenerator::TaskType::GENERATE_INTERIOR);
+        setEnum(L, "GENERATE_STITCH", NavMeshGenerator::TaskType::GENERATE_STITCH);
+        setNestedClassTable(L, "NavMeshGenerator", "TaskType");
+        lua_pop(L, 1);
+    }
+
     // ------------------------------------------
     // PhysicsActual.h
     // ------------------------------------------
@@ -2085,7 +2240,8 @@ namespace KenshiLua
         setEnum(L, "FT_XML", NXU::NXU_FileType::FT_XML);
         setEnum(L, "FT_COLLADA", NXU::NXU_FileType::FT_COLLADA);
 
-        lua_setglobal(L, "NXU_FileType");
+        setNestedClassTable(L, "NXU", "NXU_FileType");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2608,11 +2764,11 @@ namespace KenshiLua
     {
         lua_createtable(L, 0, 3);
 
-        setEnum(L, "NO", YesNoMaybe::NO);
-        setEnum(L, "YES", YesNoMaybe::YES);
-        setEnum(L, "MAYBE", YesNoMaybe::MAYBE);
-
-        lua_setglobal(L, "YesNoMaybe");
+        setEnum(L, "NO", YesNoMaybe::ynm::NO);
+        setEnum(L, "YES", YesNoMaybe::ynm::YES);
+        setEnum(L, "MAYBE", YesNoMaybe::ynm::MAYBE);
+        setNestedClassTable(L, "YesNoMaybe", "ynm");
+        lua_pop(L, 1);
     }
 
     // ------------------------------------------
@@ -2704,7 +2860,7 @@ namespace KenshiLua
         setEnum(L, "GOG", KenshiLib::BinaryVersion::KenshiPlatform::GOG);
         setEnum(L, "STEAM", KenshiLib::BinaryVersion::KenshiPlatform::STEAM);
         setEnum(L, "UNKNOWN", KenshiLib::BinaryVersion::KenshiPlatform::UNKNOWN);
-        setNestedClassTable(L, "BinaryVersion", "KenshiPlatform");
+        setNestedClassTable(L, "KenshiLib.BinaryVersion", "KenshiPlatform");
         lua_pop(L, 1);
     }
 
@@ -2756,6 +2912,10 @@ namespace KenshiLua
         registerGameDataDataType(L);
         registerGroundType(L);
         registerGroupType(L);
+        registerHkMemoryAllocatorMemoryState(L);
+        registerHkResultEnum(L);
+        registerHkVector4ComparisonMask(L);
+        registerHkVectorConstant(L);
         registerHavokCharacterState(L);
         registerHavokPathState(L);
         registerHealthPartStatus(L);
@@ -2776,6 +2936,8 @@ namespace KenshiLua
         registerMovementMode(L);
         registerNXU_FileType(L);
         registerNavMeshFileMode(L);
+        registerNavMeshGeneratorTaskType(L);
+        registerNavMeshMessageType(L);
         registerNavMeshState(L);
         registerNxShapeFlag(L);
         registerNxShapesType(L);

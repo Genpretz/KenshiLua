@@ -927,16 +927,6 @@ AttachSlot = {
     ATTACH_RIGHT_LEG = 53,
 }
 
----@enum AttackDirection
-AttackDirection = {
-    FRONT = 1,
-    BACK = 2,
-    LEFT = 4,
-    RIGHT = 8,
-    TOP = 16,
-    BOTTOM = 32,
-}
-
 ---@enum BuildingClassType
 BuildingClassType = {
     BCTYPE_FLUFF = 0,
@@ -1317,21 +1307,6 @@ DoorState = {
     DOORSTATE_CLOSING = 3,
 }
 
----@enum EffectType
-EffectType = {
-    NONE = 0,
-    CAMERA = 1,
-    POINT = 2,
-    WANDERING = 3,
-    GLOBAL = 4,
-    CAMERA_RAIN = 5,
-    CAMERA_ACID_RAIN = 6,
-    POINT_LIGHTING = 7,
-    WANDERING_STORM = 8,
-    WANDERING_GAS = 9,
-    GLOBAL_POINT = 10,
-}
-
 ---@enum EventTriggerEnum
 EventTriggerEnum = {
     EV_NONE = 0,
@@ -1516,13 +1491,6 @@ MovementMode = {
     MOVE_DIRECTION = 2,
 }
 
----@enum NXU_FileType
-NXU_FileType = {
-    FT_BINARY = 0,
-    FT_XML = 1,
-    FT_COLLADA = 2,
-}
-
 ---@enum NxControllerAction
 NxControllerAction = {
     NX_ACTION_NONE = 0,
@@ -1571,21 +1539,6 @@ ProneState = {
     PS_CRIPPLED = 2,
     PS_PLAYING_DEAD = 3,
     PS_KO = 4,
-}
-
----@enum RagdollPart
-RagdollPart = {
-    NONE = 0,
-    WHOLE = 1,
-    RIGHT_ARM = 2,
-    LEFT_ARM = 4,
-    HEAD = 8,
-    RIGHT_LEG = 16,
-    LEFT_LEG = 32,
-    CARRY_MODE = 2048,
-    ARMS = 6,
-    LEGS = 48,
-    ALL = 4294934528,
 }
 
 ---@enum SenseType
@@ -2248,14 +2201,6 @@ WallSectionLinkType = {
     WALLTYPE_SHORT = 4,
 }
 
----@enum WaterState
-WaterState = {
-    NO_WATER = 0,
-    VERY_SHALLOW_WATER = 1,
-    THIGH_DEEP_WATER = 2,
-    DEEP_WATER = 3,
-}
-
 ---@enum WeaponCategory
 WeaponCategory = {
     SKILL_KATANAS = 0,
@@ -2300,18 +2245,80 @@ WorldStateEnum = {
     IMPRISONED = 2,
 }
 
----@enum YesNoMaybe
-YesNoMaybe = {
-    NO = 0,
-    YES = 1,
-    MAYBE = 2,
-}
-
 ---@enum ZoneActivationType
 ZoneActivationType = {
     ACTIVATION_CAMERA = 0,
     ACTIVATION_PLAYER_CHARACTER = 1,
     ACTIVATION_TOWN = 2,
+}
+
+---@enum hkResultEnum
+hkResultEnum = {
+    HK_SUCCESS = 0,
+    HK_FAILURE = 1,
+}
+
+---@enum hkVectorConstant
+hkVectorConstant = {
+    HK_QUADREAL_BEGIN = 0,
+    HK_QUADREAL_MINUS1 = 1,
+    HK_QUADREAL_0 = 2,
+    HK_QUADREAL_1 = 3,
+    HK_QUADREAL_2 = 4,
+    HK_QUADREAL_3 = 5,
+    HK_QUADREAL_4 = 6,
+    HK_QUADREAL_5 = 7,
+    HK_QUADREAL_6 = 8,
+    HK_QUADREAL_7 = 9,
+    HK_QUADREAL_8 = 10,
+    HK_QUADREAL_15 = 11,
+    HK_QUADREAL_16 = 12,
+    HK_QUADREAL_255 = 13,
+    HK_QUADREAL_256 = 14,
+    HK_QUADREAL_2_POW_23 = 15,
+    HK_QUADREAL_INV_0 = 16,
+    HK_QUADREAL_INV_1 = 17,
+    HK_QUADREAL_INV_2 = 18,
+    HK_QUADREAL_INV_3 = 19,
+    HK_QUADREAL_INV_4 = 20,
+    HK_QUADREAL_INV_5 = 21,
+    HK_QUADREAL_INV_6 = 22,
+    HK_QUADREAL_INV_7 = 23,
+    HK_QUADREAL_INV_8 = 24,
+    HK_QUADREAL_INV_15 = 25,
+    HK_QUADREAL_INV_127 = 26,
+    HK_QUADREAL_INV_226 = 27,
+    HK_QUADREAL_INV_255 = 28,
+    HK_QUADREAL_1000 = 29,
+    HK_QUADREAL_0100 = 30,
+    HK_QUADREAL_0010 = 31,
+    HK_QUADREAL_0001 = 32,
+    HK_QUADREAL_MAX = 33,
+    HK_QUADREAL_HIGH = 34,
+    HK_QUADREAL_EPS = 35,
+    HK_QUADREAL_EPS_SQRD = 36,
+    HK_QUADREAL_MIN = 37,
+    HK_QUADREAL_MINUS_MAX = 38,
+    HK_QUADREAL_MINUS_MIN = 39,
+    HK_QUADREAL_m11m11 = 40,
+    HK_QUADREAL_1m11m1 = 41,
+    HK_QUADREAL_1010 = 42,
+    HK_QUADREAL_1100 = 43,
+    HK_QUADREAL_0011 = 44,
+    HK_QUADREAL_1248 = 45,
+    HK_QUADREAL_8421 = 46,
+    HK_QUADREAL_PACK_HALF = 47,
+    HK_QUADREAL_PACK16_UNIT_VEC = 48,
+    HK_QUADREAL_UNPACK16_UNIT_VEC = 49,
+    HK_QUADREAL_PI = 50,
+    HK_QUADREAL_PI_HALF = 51,
+    HK_QUADREAL_PI_QUARTER = 52,
+    HK_QUADREAL_FOUR_PI_THIRD = 53,
+    HK_QUADREAL_TWO_PI = 54,
+    HK_QUADREAL_FOUR_PI = 55,
+    HK_QUADREAL_DEG2RAD = 56,
+    HK_QUADREAL_RAD2DEG = 57,
+    HK_QUADREAL_END = 58,
 }
 
 ---@enum itemType
@@ -7249,6 +7256,7 @@ taskPriority = {
 ---@field _NV_resetPeakMemoryStatistics fun(self: hkMemoryAllocator)
 ---@field getExtendedInterface fun(self: hkMemoryAllocator): lightuserdata
 ---@field _NV_getExtendedInterface fun(self: hkMemoryAllocator): lightuserdata
+---@field MemoryState hkMemoryAllocator.MemoryState
 
 ---@class hkContainerHeapAllocator_Allocator : hkMemoryAllocator
 
@@ -10465,7 +10473,6 @@ taskPriority = {
 ---@field platform integer
 ---@field platformStr string
 ---@field version string
----@field KenshiPlatform BinaryVersion.KenshiPlatform
 
 --- Individual faction criminal bounty record. Tracks monetary reward, accumulated crime bitflags, claim status, and timestamp when the bounty was posted.
 ---@class Bounty
@@ -14368,6 +14375,7 @@ taskPriority = {
 --- Navmesh origin offset in Y dimension.
 ---@field worldY number
 ---@field FileMode NavMesh.FileMode
+---@field MessageType NavMesh.MessageType
 ---@field State NavMesh.State
 
 --- Background worker thread generating and carving NavMesh polygon meshes from raw terrain heightfields, static meshes, and dynamic building obstacle hulls. Integrates Havok AI (`hkaiNavMesh`, `hkaiNavMeshGenerationSettings`) with PhysX collision scenes, orchestrating multi-threaded task queues, building doorway connections, dynamic obstacle excision, and seamless adjacent zone edge stitching.
@@ -14420,6 +14428,7 @@ taskPriority = {
 ---@field taskMutex lightuserdata
 --- Worker thread running status flag.
 ---@field threadRunning boolean
+---@field TaskType NavMeshGenerator.TaskType
 
 ---@class NavMeshSeeds
 ---@field load fun(self: NavMeshSeeds)
@@ -18017,7 +18026,6 @@ taskPriority = {
 ---@field GetKenshiVersion fun(): BinaryVersion
 ---@field getKenshiVersion fun(): BinaryVersion
 ---@field new fun(arg1: integer, arg2: string): BinaryVersion
----@field KenshiPlatform BinaryVersion.KenshiPlatform
 
 --- Static functions registered on the `BuildModeWindow` global table.
 ---@class BuildModeWindowStatics
@@ -18140,6 +18148,7 @@ taskPriority = {
 --- Executes navigation engine lifecycle and thread coordination `getFilename`.
 ---@field getFilename fun(zone: ZoneMap, source: integer, write?: boolean): string
 ---@field FileMode NavMesh.FileMode
+---@field MessageType NavMesh.MessageType
 ---@field State NavMesh.State
 
 --- Static functions registered on the `OptionsWindow` global table.
@@ -18224,6 +18233,48 @@ taskPriority = {
 ---@class ZoneManagerStatics
 --- Manages biome classifications, terrain ground types, or environmental textures `getGroundSound`.
 ---@field getGroundSound fun(arg1: ZoneManager|integer, type: boolean|integer|table, barefoot?: boolean): string
+
+---@class AppearanceManager.DataCategory
+---@field Enum AppearanceManager.DataCategory.Enum
+
+---@class AppearanceManager.Gender
+---@field Enum AppearanceManager.Gender.Enum
+
+---@class AttackDirection
+---@field Enum AttackDirection.Enum
+
+---@class CharacterStatsWindow.StatGroup
+---@field Group CharacterStatsWindow.StatGroup.Group
+
+---@class EffectType
+---@field Enum EffectType.Enum
+
+---@class InventoryGUI.TradeResult
+---@field Enum InventoryGUI.TradeResult.Enum
+
+---@class KenshiLib.BinaryVersion
+---@field KenshiPlatform KenshiLib.BinaryVersion.KenshiPlatform
+
+---@class MedicalSystem.HealthPartStatus
+---@field PartType MedicalSystem.HealthPartStatus.PartType
+
+---@class NXU
+---@field NXU_FileType NXU.NXU_FileType
+
+---@class RagdollPart
+---@field Enum RagdollPart.Enum
+
+---@class WaterState
+---@field Enum WaterState.Enum
+
+---@class YesNoMaybe
+---@field ynm YesNoMaybe.ynm
+
+---@class hkVector4ComparisonMask
+---@field Mask hkVector4ComparisonMask.Mask
+
+---@class KenshiLib
+---@field BinaryVersion KenshiLib.BinaryVersion
 
 --- KenshiLua runtime API: script reloading, logging, profiling, and diagnostics.
 ---@type KenshiLua.Api
@@ -18556,6 +18607,10 @@ TransformWindow = {}
 ---@diagnostic disable-next-line: missing-fields
 ZoneManager = {}
 
+---@type AttackDirection
+---@diagnostic disable-next-line: missing-fields
+AttackDirection = {}
+
 ---@type BuildingPlacementGroundType
 ---@diagnostic disable-next-line: missing-fields
 BuildingPlacementGroundType = {}
@@ -18580,6 +18635,10 @@ Dialogue = {}
 ---@diagnostic disable-next-line: missing-fields
 DoorStuff = {}
 
+---@type EffectType
+---@diagnostic disable-next-line: missing-fields
+EffectType = {}
+
 ---@type FactionRelations
 ---@diagnostic disable-next-line: missing-fields
 FactionRelations = {}
@@ -18596,6 +18655,10 @@ GameWorld = {}
 ---@diagnostic disable-next-line: missing-fields
 InputHandler = {}
 
+---@type KenshiLib
+---@diagnostic disable-next-line: missing-fields
+KenshiLib = {}
+
 ---@type MedicalSystem
 ---@diagnostic disable-next-line: missing-fields
 MedicalSystem = {}
@@ -18604,6 +18667,14 @@ MedicalSystem = {}
 ---@diagnostic disable-next-line: missing-fields
 MeshDataLookup = {}
 
+---@type NXU
+---@diagnostic disable-next-line: missing-fields
+NXU = {}
+
+---@type NavMeshGenerator
+---@diagnostic disable-next-line: missing-fields
+NavMeshGenerator = {}
+
 ---@type PortraitData
 ---@diagnostic disable-next-line: missing-fields
 PortraitData = {}
@@ -18611,6 +18682,10 @@ PortraitData = {}
 ---@type ProductionBuilding
 ---@diagnostic disable-next-line: missing-fields
 ProductionBuilding = {}
+
+---@type RagdollPart
+---@diagnostic disable-next-line: missing-fields
+RagdollPart = {}
 
 ---@type RobotLimbs
 ---@diagnostic disable-next-line: missing-fields
@@ -18632,6 +18707,14 @@ TutorialGUI = {}
 ---@diagnostic disable-next-line: missing-fields
 TutorialItem = {}
 
+---@type WaterState
+---@diagnostic disable-next-line: missing-fields
+WaterState = {}
+
+---@type YesNoMaybe
+---@diagnostic disable-next-line: missing-fields
+YesNoMaybe = {}
+
 ---@type ZoneMap
 ---@diagnostic disable-next-line: missing-fields
 ZoneMap = {}
@@ -18640,8 +18723,40 @@ ZoneMap = {}
 ---@diagnostic disable-next-line: missing-fields
 ZoneSpacialGrid = {}
 
----@enum AppearanceManager.DataCategory
-AppearanceManager.DataCategory = {
+---@type hkMemoryAllocator
+---@diagnostic disable-next-line: missing-fields
+hkMemoryAllocator = {}
+
+---@type hkVector4ComparisonMask
+---@diagnostic disable-next-line: missing-fields
+hkVector4ComparisonMask = {}
+
+---@type AppearanceManager.DataCategory
+---@diagnostic disable-next-line: missing-fields
+AppearanceManager.DataCategory = {}
+
+---@type AppearanceManager.Gender
+---@diagnostic disable-next-line: missing-fields
+AppearanceManager.Gender = {}
+
+---@type CharacterStatsWindow.StatGroup
+---@diagnostic disable-next-line: missing-fields
+CharacterStatsWindow.StatGroup = {}
+
+---@type InventoryGUI.TradeResult
+---@diagnostic disable-next-line: missing-fields
+InventoryGUI.TradeResult = {}
+
+---@type KenshiLib.BinaryVersion
+---@diagnostic disable-next-line: missing-fields
+KenshiLib.BinaryVersion = {}
+
+---@type MedicalSystem.HealthPartStatus
+---@diagnostic disable-next-line: missing-fields
+MedicalSystem.HealthPartStatus = {}
+
+---@enum AppearanceManager.DataCategory.Enum
+AppearanceManager.DataCategory.Enum = {
     None = 0,
     Face = 1,
     Body = 2,
@@ -18649,17 +18764,20 @@ AppearanceManager.DataCategory = {
     Personality = 4,
 }
 
----@enum AppearanceManager.Gender
-AppearanceManager.Gender = {
+---@enum AppearanceManager.Gender.Enum
+AppearanceManager.Gender.Enum = {
     MALE = 0,
     FEMALE = 1,
 }
 
----@enum BinaryVersion.KenshiPlatform
-BinaryVersion.KenshiPlatform = {
-    GOG = 0,
-    STEAM = 1,
-    UNKNOWN = 2,
+---@enum AttackDirection.Enum
+AttackDirection.Enum = {
+    FRONT = 1,
+    BACK = 2,
+    LEFT = 4,
+    RIGHT = 8,
+    TOP = 16,
+    BOTTOM = 32,
 }
 
 ---@enum BuildingPlacementGroundType.Enum
@@ -18700,8 +18818,8 @@ Character.DisguiseGUIFeedback = {
     DGF_I_HATE_YOU = 2,
 }
 
----@enum CharacterStatsWindow.StatGroup
-CharacterStatsWindow.StatGroup = {
+---@enum CharacterStatsWindow.StatGroup.Group
+CharacterStatsWindow.StatGroup.Group = {
     NONE = 0,
     WEAPONS = 1,
     COMBAT = 2,
@@ -18756,6 +18874,21 @@ DoorStuff.DoorStateInitial = {
     OPEN = 1,
     LOCKED = 2,
     BROKEN = 3,
+}
+
+---@enum EffectType.Enum
+EffectType.Enum = {
+    NONE = 0,
+    CAMERA = 1,
+    POINT = 2,
+    WANDERING = 3,
+    GLOBAL = 4,
+    CAMERA_RAIN = 5,
+    CAMERA_ACID_RAIN = 6,
+    POINT_LIGHTING = 7,
+    WANDERING_STORM = 8,
+    WANDERING_GAS = 9,
+    GLOBAL_POINT = 10,
 }
 
 ---@enum FactionRelations.FactionEvent
@@ -18840,8 +18973,8 @@ InputHandler.Masks = {
     NONE_MASK = 0,
 }
 
----@enum InventoryGUI.TradeResult
-InventoryGUI.TradeResult = {
+---@enum InventoryGUI.TradeResult.Enum
+InventoryGUI.TradeResult.Enum = {
     OK = 0,
     OUT_OF_RANGE = 1,
     NO_ROOM = 2,
@@ -18862,6 +18995,13 @@ InventoryGUI.TradeResult = {
     CONTAINER_NOT_EMPTY = 17,
 }
 
+---@enum KenshiLib.BinaryVersion.KenshiPlatform
+KenshiLib.BinaryVersion.KenshiPlatform = {
+    GOG = 0,
+    STEAM = 1,
+    UNKNOWN = 2,
+}
+
 ---@enum Logger.Severity
 Logger.Severity = {
     Trace = 0,
@@ -18879,8 +19019,8 @@ MedicalSystem.CollapseStage = {
     COLLAPSE_KO = 2,
 }
 
----@enum MedicalSystem.HealthPartStatus
-MedicalSystem.HealthPartStatus = {
+---@enum MedicalSystem.HealthPartStatus.PartType
+MedicalSystem.HealthPartStatus.PartType = {
     PART_TORSO = 0,
     PART_LEG = 1,
     PART_ARM = 2,
@@ -18922,11 +19062,27 @@ MessageForB.StandingOrder = {
     M_SET_ORDER_RANGED = 17,
 }
 
+---@enum NXU.NXU_FileType
+NXU.NXU_FileType = {
+    FT_BINARY = 0,
+    FT_XML = 1,
+    FT_COLLADA = 2,
+}
+
 ---@enum NavMesh.FileMode
 NavMesh.FileMode = {
     AUTO = 0,
     BASE = 1,
     USER = 2,
+}
+
+---@enum NavMesh.MessageType
+NavMesh.MessageType = {
+    CREATE = 0,
+    DESTROY = 1,
+    DESTROY_BUILDING = 2,
+    DOOR_OPEN = 3,
+    DOOR_CLOSE = 4,
 }
 
 ---@enum NavMesh.State
@@ -18936,6 +19092,15 @@ NavMesh.State = {
     MODIFIED = 2,
     LOADING = 3,
     GENERATING = 4,
+}
+
+---@enum NavMeshGenerator.TaskType
+NavMeshGenerator.TaskType = {
+    GENERATE_ZONE = 0,
+    GENERATE_SPLICE = 1,
+    GENERATE_CARVE = 2,
+    GENERATE_INTERIOR = 3,
+    GENERATE_STITCH = 4,
 }
 
 ---@enum PortraitData.State
@@ -18970,6 +19135,21 @@ ProductionBuilding.ProductionState = {
     PRODUCTION_FULL = 1,
     PRODUCTION_NORMAL = 2,
     PRODUCTION_IMPOSSIBLE = 3,
+}
+
+---@enum RagdollPart.Enum
+RagdollPart.Enum = {
+    NONE = 0,
+    WHOLE = 1,
+    RIGHT_ARM = 2,
+    LEFT_ARM = 4,
+    HEAD = 8,
+    RIGHT_LEG = 16,
+    LEFT_LEG = 32,
+    CARRY_MODE = 2048,
+    ARMS = 6,
+    LEGS = 48,
+    ALL = 4294934528,
 }
 
 ---@enum RobotLimbs.Limb
@@ -19083,11 +19263,26 @@ TutorialItem.State = {
     ENDED = 2,
 }
 
+---@enum WaterState.Enum
+WaterState.Enum = {
+    NO_WATER = 0,
+    VERY_SHALLOW_WATER = 1,
+    THIGH_DEEP_WATER = 2,
+    DEEP_WATER = 3,
+}
+
 ---@enum WorldEventStateQuery.WarStateEnum
 WorldEventStateQuery.WarStateEnum = {
     PEACE = 0,
     WAR = 1,
     ALLIANCE = 2,
+}
+
+---@enum YesNoMaybe.ynm
+YesNoMaybe.ynm = {
+    NO = 0,
+    YES = 1,
+    MAYBE = 2,
 }
 
 ---@enum ZoneMap.ZONE_MESSAGE
@@ -19102,6 +19297,36 @@ ZoneSpacialGrid.Result = {
     CHANGED_CELL = 1,
     CHANGED_ZONE = 2,
     UNLOADED_ZONE = 3,
+}
+
+---@enum hkMemoryAllocator.MemoryState
+hkMemoryAllocator.MemoryState = {
+    MEMORY_STATE_OK = 0,
+    MEMORY_STATE_OUT_OF_MEMORY = 1,
+}
+
+---@enum hkVector4ComparisonMask.Mask
+hkVector4ComparisonMask.Mask = {
+    INDEX_W = 3,
+    INDEX_Z = 2,
+    INDEX_Y = 1,
+    INDEX_X = 0,
+    MASK_NONE = 0,
+    MASK_W = 8,
+    MASK_Z = 4,
+    MASK_ZW = 12,
+    MASK_Y = 2,
+    MASK_YW = 10,
+    MASK_YZ = 6,
+    MASK_YZW = 14,
+    MASK_X = 1,
+    MASK_XW = 9,
+    MASK_XZ = 5,
+    MASK_XZW = 13,
+    MASK_XY = 3,
+    MASK_XYW = 11,
+    MASK_XYZ = 7,
+    MASK_XYZW = 15,
 }
 
 --- Creates Lua-owned `lektor` lists; also callable as `lektor(typeName)`.

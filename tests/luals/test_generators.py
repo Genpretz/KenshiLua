@@ -53,6 +53,15 @@ class EnumExtractionTests(unittest.TestCase):
         registration_count = len(re.findall(r"\bsetEnum\s*\(", source))
         self.assertEqual(registration_count, resolved_count)
 
+    def test_exact_nested_enum_paths_and_values_are_preserved(self):
+        global_enums, nested_enums = generate_definitions.parse_enums()
+
+        self.assertEqual(0, nested_enums["AppearanceManager.DataCategory"]["Enum"]["None"])
+        self.assertEqual(2, nested_enums["KenshiLib.BinaryVersion"]["KenshiPlatform"]["UNKNOWN"])
+        self.assertEqual(15, nested_enums["hkVector4ComparisonMask"]["Mask"]["MASK_XYZW"])
+        self.assertEqual(58, global_enums["hkVectorConstant"]["HK_QUADREAL_END"])
+        self.assertEqual(4, nested_enums["NavMeshGenerator"]["TaskType"]["GENERATE_STITCH"])
+
 
 class DefinitionGenerationTests(unittest.TestCase):
     def test_generation_failure_does_not_modify_outputs(self):
@@ -82,6 +91,15 @@ class DefinitionGenerationTests(unittest.TestCase):
 
         self.assertEqual(generated, generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8"))
         self.assertEqual(generated, generate_definitions.ADDON_LIBRARY_PATH.read_text(encoding="utf-8"))
+
+    def test_deep_enum_parent_tables_are_declared_in_order(self):
+        generated = generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8")
+
+        root = generated.index("KenshiLib = {}")
+        parent = generated.index("KenshiLib.BinaryVersion = {}")
+        enum = generated.index("KenshiLib.BinaryVersion.KenshiPlatform = {")
+        self.assertLess(root, parent)
+        self.assertLess(parent, enum)
 
     def test_kenshilib_documentation_is_emitted(self):
         descriptions = json.loads(

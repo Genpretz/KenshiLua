@@ -428,6 +428,37 @@ namespace KenshiLua
         }
     }
 
+    // Pushes the table at a dotted global path, creating each missing table.
+    inline void pushGlobalTablePath(lua_State* L, const char* tablePath)
+    {
+        const char* segment = tablePath;
+        const char* separator = strchr(segment, '.');
+        std::string name(segment, separator ? separator - segment : strlen(segment));
+
+        lua_getglobal(L, name.c_str());
+        if (!lua_istable(L, -1)) {
+            lua_pop(L, 1);
+            lua_newtable(L);
+            lua_pushvalue(L, -1);
+            lua_setglobal(L, name.c_str());
+        }
+
+        while (separator) {
+            segment = separator + 1;
+            separator = strchr(segment, '.');
+            name.assign(segment, separator ? separator - segment : strlen(segment));
+
+            lua_getfield(L, -1, name.c_str());
+            if (!lua_istable(L, -1)) {
+                lua_pop(L, 1);
+                lua_newtable(L);
+                lua_pushvalue(L, -1);
+                lua_setfield(L, -3, name.c_str());
+            }
+            lua_remove(L, -2);
+        }
+    }
+
     inline void registerConstructor(lua_State* L, lua_CFunction constructor)
     {
         lua_newtable(L);
@@ -438,13 +469,7 @@ namespace KenshiLua
 
     inline void setNestedClassTable(lua_State* L, const char* parentClassName, const char* fieldName)
     {
-        lua_getglobal(L, parentClassName);
-        if (!lua_istable(L, -1)) {
-            lua_pop(L, 1);
-            lua_newtable(L);
-            lua_pushvalue(L, -1);
-            lua_setglobal(L, parentClassName);
-        }
+        pushGlobalTablePath(L, parentClassName);
         lua_pushvalue(L, -2);
         lua_setfield(L, -2, fieldName);
         lua_pop(L, 1);

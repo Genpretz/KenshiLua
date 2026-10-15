@@ -114,10 +114,15 @@ def match_enum_bindings():
         if cxx_sym in values:
             val = values[cxx_sym]
         else:
-            # Try stripping leading namespaces if any
             parts = cxx_sym.split("::")
-            if len(parts) >= 2 and f"{parts[-2]}::{parts[-1]}" in values:
-                val = values[f"{parts[-2]}::{parts[-1]}"]
+            # Try progressively shorter scopes while retaining the longest
+            # available owner path, avoiding collisions between common enum
+            # names such as Enum::None.
+            for start in range(1, len(parts) - 1):
+                candidate = "::".join(parts[start:])
+                if candidate in values:
+                    val = values[candidate]
+                    break
 
         if val is not None:
             matched += 1
