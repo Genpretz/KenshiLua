@@ -177,7 +177,7 @@ static int DataRangeVector_set_values(lua_State* L)
         inst->values.clear();
         return 0;
     }
-    auto* src = Vector3FastArrayBinding::get(L, 2);
+    auto* src = Vector3FastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set values must be Ogre::FastArray<Ogre::Vector3>");
     inst->values = *src;
     return 0;

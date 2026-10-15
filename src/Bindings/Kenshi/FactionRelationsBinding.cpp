@@ -124,7 +124,7 @@ static int FactionRelations_set__factionRelations(lua_State* L)
 {
     FactionRelations* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelations is nil");
-    auto* val = OgreUnorderedMapBinding<Faction*, FactionRelations::RelationData>::get(L, 2);
+    auto* val = OgreUnorderedMapBinding<Faction*, FactionRelations::RelationData>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set _factionRelations must be ogre_unordered_map<Faction*, FactionRelationData>");
     instance->_factionRelations = *val;
     return 0;
@@ -512,7 +512,7 @@ int FactionRelationsBinding::getRelationsData(lua_State* L)
 {
     FactionRelations* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionRelations is nil");
-    ogre_unordered_map<Faction*, float>::type* data = OgreUnorderedMapBinding<Faction*, float>::get(L, 2);
+    ogre_unordered_map<Faction*, float>::type* data = OgreUnorderedMapBinding<Faction*, float>::getInstance(L, 2);
     instance->getRelationsData(*data);
     return 0;
 }

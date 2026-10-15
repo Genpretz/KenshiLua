@@ -78,7 +78,7 @@ static int FarmBatch_set_plantSource(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    lektor<FarmBuilding::PlantSource*>* val = LektorPtrBinding<FarmBuilding::PlantSource*>::get(L, 2);
+    lektor<FarmBuilding::PlantSource*>* val = LektorPtrBinding<FarmBuilding::PlantSource*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'plantSource' must be lektor<FarmBuilding::PlantSource*>");
     instance->plantSource = *val;
     return 0;
@@ -88,7 +88,7 @@ static int FarmBatch_set_plantGroups(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    lektor<int>* val = LektorIntBinding<int>::get(L, 2);
+    lektor<int>* val = LektorIntBinding<int>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<int>");
     instance->plantGroups = *val;
     return 0;
@@ -129,7 +129,7 @@ static int FarmBatch_set_farms(lua_State* L)
 {
     FarmBuilding::FarmBatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBatch is nil");
-    lektor<FarmBuilding*>* val = LektorPtrBinding<FarmBuilding*>::get(L, 2);
+    lektor<FarmBuilding*>* val = LektorPtrBinding<FarmBuilding*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<FarmBuilding*>");
     instance->farms = *val;
     return 0;

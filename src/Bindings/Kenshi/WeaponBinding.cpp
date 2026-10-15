@@ -299,7 +299,7 @@ int WeaponBinding::getTooltipData1(lua_State* L)
 {
     Weapon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Weapon is nil");
-    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    auto* lines = OgreVectorValueBinding<StringPair>::getInstance(L, 2);
     if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be ogre_vector<StringPair>");
     instance->getTooltipData1(*lines);
     return 0;

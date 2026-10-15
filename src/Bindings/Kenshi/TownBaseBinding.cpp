@@ -2029,7 +2029,7 @@ static int TownBase_set_factionsResidentHere(lua_State* L)
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
     std::set<Faction*, std::less<Faction*>, Ogre::STLAllocator<Faction*, Ogre::GeneralAllocPolicy>>* val = 
-        StdSetBinding<Faction*>::get(L, 2);
+        StdSetBinding<Faction*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected std::set<Faction*>");
     instance->factionsResidentHere = *val;
     return 0;
@@ -2040,7 +2040,7 @@ static int TownBase_set_myZoneCoverage(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    ogre_unordered_set<ZoneMap*>::type* val = OgreUnorderedSetBinding<ZoneMap*>::get(L, 2);
+    ogre_unordered_set<ZoneMap*>::type* val = OgreUnorderedSetBinding<ZoneMap*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_set<ZoneMap*>");
     instance->myZoneCoverage = *val;
     return 0;
@@ -2061,7 +2061,7 @@ static int TownBase_set_occupiers(lua_State* L)
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
     std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>* val = 
-        StdSetBinding<hand>::get(L, 2);
+        StdSetBinding<hand>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected std::set<hand>");
     instance->occupiers = *val;
     return 0;
@@ -2072,7 +2072,7 @@ static int TownBase_set_populatedZones(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    ogre_unordered_map<ZoneMap*, bool>::type* val = OgreUnorderedMapBinding<ZoneMap*, bool>::get(L, 2);
+    ogre_unordered_map<ZoneMap*, bool>::type* val = OgreUnorderedMapBinding<ZoneMap*, bool>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_map<ZoneMap*, bool>");
     instance->populatedZones = *val;
     return 0;
@@ -2092,7 +2092,7 @@ static int TownBase_set_residentsSpawned(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::get(L, 2);
+    lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set 'residentsSpawned' must be lektor<ResidentData>");
     instance->residentsSpawned = *src;
     return 0;
@@ -2103,7 +2103,7 @@ static int TownBase_set_residentsSpawned_BarsOrSomething(lua_State* L)
 {
     TownBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBase is nil");
-    lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::get(L, 2);
+    lektor<TownBase::ResidentData>* src = LektorValueBinding<TownBase::ResidentData>::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set 'residentsSpawned_BarsOrSomething' must be lektor<ResidentData>");
     instance->residentsSpawned_BarsOrSomething = *src;
     return 0;

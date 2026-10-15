@@ -29,7 +29,7 @@ static int RaceLimiter_set_limits(lua_State* L)
 {
     RaceLimiter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceLimiter is nil");
-    auto* val = OgreUnorderedMapBinding<GameData*, RaceLimiter::Limiter>::get(L, 2);
+    auto* val = OgreUnorderedMapBinding<GameData*, RaceLimiter::Limiter>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'limits' must be ogre_unordered_map<GameData*, RaceLimiter::Limiter>");
     instance->limits = *val;
     return 0;

@@ -783,7 +783,7 @@ static int CombatClass_set_stateMap(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    auto* val = SwordStateMapBinding::get(L, 2);
+    auto* val = SwordStateMapBinding::getInstance(L, 2);
     if (val) instance->stateMap = *val;
     return 0;
 }

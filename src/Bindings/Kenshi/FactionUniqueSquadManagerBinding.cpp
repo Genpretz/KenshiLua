@@ -91,7 +91,7 @@ static int FactionUniqueSquadManager_set_squads(lua_State* L)
 {
     FactionUniqueSquadManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionUniqueSquadManager is nil");
-    lektor<FactionUniqueSquadManager::UniqueSpawnData*>* val = LektorPtrBinding<FactionUniqueSquadManager::UniqueSpawnData*>::get(L, 2);
+    lektor<FactionUniqueSquadManager::UniqueSpawnData*>* val = LektorPtrBinding<FactionUniqueSquadManager::UniqueSpawnData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set squads must be lektor<UniqueSpawnData*>");
     instance->squads = *val;
     return 0;

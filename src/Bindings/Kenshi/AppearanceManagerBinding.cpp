@@ -14,7 +14,7 @@ namespace KenshiLua
 typedef OgreFastArrayPtrBinding<GameData*> GameDataFastArrayBinding;
 typedef OgreFastArrayPtrBinding<AnimationData*> AnimationDataFastArrayBinding;
 
-static AppearanceManager* getInstanceSelf(lua_State* L, int idx)
+static AppearanceManager* getInstance(lua_State* L, int idx)
 {
     return checkObject<AppearanceManager>(L, idx, AppearanceManagerBinding::getMetatableName());
 }
@@ -30,7 +30,7 @@ static AppearanceManager::Gender extractGender(lua_State* L, int idx)
 }
 
 // --- Static Methods ---
-int AppearanceManagerBinding::getInstance(lua_State* L)
+int AppearanceManagerBinding::getInstanceMethod(lua_State* L)
 {
     return pushObject<AppearanceManager>(L, AppearanceManager::getInstance(), AppearanceManagerBinding::getMetatableName());
 }
@@ -38,7 +38,7 @@ int AppearanceManagerBinding::getInstance(lua_State* L)
 // --- Member Methods ---
 int AppearanceManagerBinding::createAppearanceData(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* race = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameDataCopyStandalone* result = inst->createAppearanceData(race);
@@ -47,7 +47,7 @@ int AppearanceManagerBinding::createAppearanceData(lua_State* L)
 
 int AppearanceManagerBinding::cleanValidateAppearanceData(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     inst->cleanValidateAppearanceData(appearanceData);
@@ -56,7 +56,7 @@ int AppearanceManagerBinding::cleanValidateAppearanceData(lua_State* L)
 
 int AppearanceManagerBinding::resetAll(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     bool clearAttachments = lua_toboolean(L, 3) != 0;
@@ -66,7 +66,7 @@ int AppearanceManagerBinding::resetAll(lua_State* L)
 
 int AppearanceManagerBinding::randomiseAll(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     inst->randomiseAll(appearanceData);
@@ -75,7 +75,7 @@ int AppearanceManagerBinding::randomiseAll(lua_State* L)
 
 int AppearanceManagerBinding::randomiseAllManual(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     float faceRandomnessMult = (float)luaL_checknumber(L, 3);
@@ -86,7 +86,7 @@ int AppearanceManagerBinding::randomiseAllManual(lua_State* L)
 
 int AppearanceManagerBinding::randomHair(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Faction* faction = lua_isnoneornil(L, 3) ? nullptr : checkObject<Faction>(L, 3, FactionBinding::getMetatableName());
@@ -96,7 +96,7 @@ int AppearanceManagerBinding::randomHair(lua_State* L)
 
 int AppearanceManagerBinding::randomFace(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     inst->randomFace(appearanceData);
@@ -105,7 +105,7 @@ int AppearanceManagerBinding::randomFace(lua_State* L)
 
 int AppearanceManagerBinding::randomFaceManual(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     float randomnessMult = (float)luaL_checknumber(L, 3);
@@ -115,7 +115,7 @@ int AppearanceManagerBinding::randomFaceManual(lua_State* L)
 
 int AppearanceManagerBinding::randomPoses(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     float deviation = (float)luaL_checknumber(L, 3);
@@ -125,7 +125,7 @@ int AppearanceManagerBinding::randomPoses(lua_State* L)
 
 int AppearanceManagerBinding::randomBody(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     bool isPlayer = lua_toboolean(L, 3) != 0;
@@ -135,7 +135,7 @@ int AppearanceManagerBinding::randomBody(lua_State* L)
 
 int AppearanceManagerBinding::randomBodyManual(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     float randomnessMult = (float)luaL_checknumber(L, 3);
@@ -145,7 +145,7 @@ int AppearanceManagerBinding::randomBodyManual(lua_State* L)
 
 int AppearanceManagerBinding::randomGender(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     float femaleChance = (float)luaL_checknumber(L, 3);
@@ -155,7 +155,7 @@ int AppearanceManagerBinding::randomGender(lua_State* L)
 
 int AppearanceManagerBinding::randomAnimations(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     Character* character = lua_isnoneornil(L, 3) ? nullptr : checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
@@ -165,7 +165,7 @@ int AppearanceManagerBinding::randomAnimations(lua_State* L)
 
 int AppearanceManagerBinding::getRaceData(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     int index = (int)luaL_checkinteger(L, 2);
     GameData* result = inst->getRaceData(index);
@@ -174,7 +174,7 @@ int AppearanceManagerBinding::getRaceData(lua_State* L)
 
 int AppearanceManagerBinding::getRaceIndex(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     int result = inst->getRaceIndex(data);
@@ -184,7 +184,7 @@ int AppearanceManagerBinding::getRaceIndex(lua_State* L)
 
 int AppearanceManagerBinding::getRacesCount(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     int result = inst->getRacesCount();
     lua_pushinteger(L, result);
@@ -193,7 +193,7 @@ int AppearanceManagerBinding::getRacesCount(lua_State* L)
 
 int AppearanceManagerBinding::isSingleGender(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* raceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     bool result = inst->isSingleGender(raceData);
@@ -203,7 +203,7 @@ int AppearanceManagerBinding::isSingleGender(lua_State* L)
 
 int AppearanceManagerBinding::setGender(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     AppearanceManager::Gender::Enum genderValue = (AppearanceManager::Gender::Enum)luaL_checkinteger(L, 3);
@@ -213,7 +213,7 @@ int AppearanceManagerBinding::setGender(lua_State* L)
 
 int AppearanceManagerBinding::setHead(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* headData = lua_isnoneornil(L, 3) ? nullptr : checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
@@ -223,7 +223,7 @@ int AppearanceManagerBinding::setHead(lua_State* L)
 
 int AppearanceManagerBinding::getHeadName(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     AppearanceManager::AppearanceData* appearance = checkObject<AppearanceManager::AppearanceData>(L, 3, AppearanceManager_AppearanceDataBinding::getMetatableName());
@@ -234,7 +234,7 @@ int AppearanceManagerBinding::getHeadName(lua_State* L)
 
 int AppearanceManagerBinding::setRandomHead(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* raceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* appearanceData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
@@ -244,7 +244,7 @@ int AppearanceManagerBinding::setRandomHead(lua_State* L)
 
 int AppearanceManagerBinding::getHeadIsValid(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* raceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* appearanceData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
@@ -256,7 +256,7 @@ int AppearanceManagerBinding::getHeadIsValid(lua_State* L)
 
 int AppearanceManagerBinding::setAttachment(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     AppearanceManager::AppearanceData* appearance = checkObject<AppearanceManager::AppearanceData>(L, 3, AppearanceManager_AppearanceDataBinding::getMetatableName());
@@ -268,7 +268,7 @@ int AppearanceManagerBinding::setAttachment(lua_State* L)
 
 int AppearanceManagerBinding::getAttachmentName(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     AppearanceManager::AppearanceData* appearance = checkObject<AppearanceManager::AppearanceData>(L, 3, AppearanceManager_AppearanceDataBinding::getMetatableName());
@@ -280,7 +280,7 @@ int AppearanceManagerBinding::getAttachmentName(lua_State* L)
 
 int AppearanceManagerBinding::updateModifiers(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* appearanceData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     GameData* raceData = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
@@ -291,7 +291,7 @@ int AppearanceManagerBinding::updateModifiers(lua_State* L)
 
 int AppearanceManagerBinding::getNormalMap_Plain(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* race = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     AppearanceManager::Gender gender = extractGender(L, 3);
@@ -302,7 +302,7 @@ int AppearanceManagerBinding::getNormalMap_Plain(lua_State* L)
 
 int AppearanceManagerBinding::getNormalMap_Muscle(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* race = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     AppearanceManager::Gender gender = extractGender(L, 3);
@@ -313,7 +313,7 @@ int AppearanceManagerBinding::getNormalMap_Muscle(lua_State* L)
 
 int AppearanceManagerBinding::getNormalMap_Starving(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     GameData* race = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     AppearanceManager::Gender gender = extractGender(L, 3);
@@ -324,7 +324,7 @@ int AppearanceManagerBinding::getNormalMap_Starving(lua_State* L)
 
 int AppearanceManagerBinding::getCharacterIdleAnimations(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     const Ogre::FastArray<AnimationData*>& result = inst->getCharacterIdleAnimations();
     return pushObject<AnimationDataFastArrayBinding::ArrayType>(L, const_cast<Ogre::FastArray<AnimationData*>*>(&result), "Ogre::FastArray<AnimationData*>");
@@ -333,14 +333,14 @@ int AppearanceManagerBinding::getCharacterIdleAnimations(lua_State* L)
 // --- Getters for AppearanceManager ---
 static int AppearanceManager_get_races(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     return pushObject<GameDataFastArrayBinding::ArrayType>(L, &inst->races, "Ogre::FastArray<GameData*>");
 }
 
 static int AppearanceManager_get_characterIdleAnimations(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     return pushObject<AnimationDataFastArrayBinding::ArrayType>(L, &inst->characterIdleAnimations, "Ogre::FastArray<AnimationData*>");
 }
@@ -348,14 +348,14 @@ static int AppearanceManager_get_characterIdleAnimations(lua_State* L)
 // --- Setters for AppearanceManager ---
 static int AppearanceManager_set_races(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     if (lua_isnoneornil(L, 2))
     {
         inst->races.clear();
         return 0;
     }
-    auto* src = GameDataFastArrayBinding::get(L, 2);
+    auto* src = GameDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set races must be Ogre::FastArray<GameData*>");
     inst->races = *src;
     return 0;
@@ -363,14 +363,14 @@ static int AppearanceManager_set_races(lua_State* L)
 
 static int AppearanceManager_set_characterIdleAnimations(lua_State* L)
 {
-    auto* inst = getInstanceSelf(L, 1);
+    auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "AppearanceManager is nil");
     if (lua_isnoneornil(L, 2))
     {
         inst->characterIdleAnimations.clear();
         return 0;
     }
-    auto* src = AnimationDataFastArrayBinding::get(L, 2);
+    auto* src = AnimationDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set characterIdleAnimations must be Ogre::FastArray<AnimationData*>");
     inst->characterIdleAnimations = *src;
     return 0;
@@ -405,7 +405,7 @@ void AppearanceManagerBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     static const luaL_Reg methods[] = {
-        { "getInstance",                    AppearanceManagerBinding::getInstance },
+        { "getInstance",                    AppearanceManagerBinding::getInstanceMethod },
         { "createAppearanceData",           AppearanceManagerBinding::createAppearanceData },
         { "cleanValidateAppearanceData",    AppearanceManagerBinding::cleanValidateAppearanceData },
         { "resetAll",                       AppearanceManagerBinding::resetAll },
@@ -458,7 +458,7 @@ void AppearanceManagerBinding::registerBinding(lua_State* L)
 
     // Register global class table for static methods
     pushGlobalTable(L, "AppearanceManager");
-    registerStaticMethod(L, "getInstance", AppearanceManagerBinding::getInstance);
+    registerStaticMethod(L, "getInstance", AppearanceManagerBinding::getInstanceMethod);
     lua_setglobal(L, "AppearanceManager");
 }
 

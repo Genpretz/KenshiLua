@@ -12,7 +12,7 @@
 namespace KenshiLua
 {
 
-static PortraitManager* get_instance(lua_State* L, int idx)
+static PortraitManager* getInstance(lua_State* L, int idx)
 {
     return checkObject<PortraitManager>(L, idx, PortraitManagerBinding::getMetatableName());
 }
@@ -20,14 +20,14 @@ static PortraitManager* get_instance(lua_State* L, int idx)
 // --- Getters for PortraitManager ---
 static int PortraitManager_get_textureSize(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     return pushObject<iVector2>(L, &instance->textureSize, iVector2Binding::getMetatableName());
 }
 
 static int PortraitManager_get_textureName(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     lua_pushstring(L, instance->textureName.c_str());
     return 1;
@@ -35,14 +35,14 @@ static int PortraitManager_get_textureName(lua_State* L)
 
 static int PortraitManager_get_texturePortraitSize(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     return pushObject<iVector2>(L, &instance->texturePortraitSize, iVector2Binding::getMetatableName());
 }
 
 static int PortraitManager_get_maxIndex(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     lua_pushinteger(L, instance->maxIndex);
     return 1;
@@ -50,7 +50,7 @@ static int PortraitManager_get_maxIndex(lua_State* L)
 
 static int PortraitManager_get_imagesIndices(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     lua_pushlightuserdata(L, (void*)instance->imagesIndices);
     return 1;
@@ -58,7 +58,7 @@ static int PortraitManager_get_imagesIndices(lua_State* L)
 
 static int PortraitManager_get_disableUpdate(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     lua_pushboolean(L, instance->disableUpdate ? 1 : 0);
     return 1;
@@ -67,7 +67,7 @@ static int PortraitManager_get_disableUpdate(lua_State* L)
 // --- Setters for PortraitManager ---
 static int PortraitManager_set_textureSize(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     instance->textureSize = *checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
     return 0;
@@ -75,7 +75,7 @@ static int PortraitManager_set_textureSize(lua_State* L)
 
 static int PortraitManager_set_textureName(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     instance->textureName = luaL_checkstring(L, 2);
     return 0;
@@ -83,7 +83,7 @@ static int PortraitManager_set_textureName(lua_State* L)
 
 static int PortraitManager_set_texturePortraitSize(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     instance->texturePortraitSize = *checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
     return 0;
@@ -91,7 +91,7 @@ static int PortraitManager_set_texturePortraitSize(lua_State* L)
 
 static int PortraitManager_set_maxIndex(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     instance->maxIndex = (unsigned short)luaL_checkinteger(L, 2);
     return 0;
@@ -99,7 +99,7 @@ static int PortraitManager_set_maxIndex(lua_State* L)
 
 static int PortraitManager_set_disableUpdate(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
     instance->disableUpdate = lua_toboolean(L, 2) != 0;
     return 0;
@@ -107,7 +107,7 @@ static int PortraitManager_set_disableUpdate(lua_State* L)
 
 int PortraitManagerBinding::init(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     instance->init();
@@ -116,7 +116,7 @@ int PortraitManagerBinding::init(lua_State* L)
 
 int PortraitManagerBinding::destroy(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     instance->destroy();
@@ -125,7 +125,7 @@ int PortraitManagerBinding::destroy(lua_State* L)
 
 int PortraitManagerBinding::setUpdateEnabled(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     bool enabled = lua_toboolean(L, 2) != 0;
@@ -135,7 +135,7 @@ int PortraitManagerBinding::setUpdateEnabled(lua_State* L)
 
 int PortraitManagerBinding::reloadPortraits(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     instance->reloadPortraits();
@@ -144,7 +144,7 @@ int PortraitManagerBinding::reloadPortraits(lua_State* L)
 
 int PortraitManagerBinding::reloadTexture(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     instance->reloadTexture();
@@ -153,7 +153,7 @@ int PortraitManagerBinding::reloadTexture(lua_State* L)
 
 int PortraitManagerBinding::saveTexture(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     instance->saveTexture();
@@ -162,7 +162,7 @@ int PortraitManagerBinding::saveTexture(lua_State* L)
 
 int PortraitManagerBinding::clearPortraits(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     bool loadTexture = lua_toboolean(L, 2) != 0;
@@ -172,7 +172,7 @@ int PortraitManagerBinding::clearPortraits(lua_State* L)
 
 int PortraitManagerBinding::getCharacterFlashing(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
@@ -183,7 +183,7 @@ int PortraitManagerBinding::getCharacterFlashing(lua_State* L)
 
 int PortraitManagerBinding::getCharacterInCombat(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
@@ -194,7 +194,7 @@ int PortraitManagerBinding::getCharacterInCombat(lua_State* L)
 
 int PortraitManagerBinding::getCharacterDown(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
@@ -205,7 +205,7 @@ int PortraitManagerBinding::getCharacterDown(lua_State* L)
 
 int PortraitManagerBinding::getSquadFlashing(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     ActivePlatoon* platoon = checkObject<ActivePlatoon>(L, 2, ActivePlatoonBinding::getMetatableName());
@@ -214,7 +214,7 @@ int PortraitManagerBinding::getSquadFlashing(lua_State* L)
     return 1;
 }
 
-int PortraitManagerBinding::getInstance(lua_State* L)
+int PortraitManagerBinding::getInstanceMethod(lua_State* L)
 {
     PortraitManager* result = PortraitManager::getInstance();
     return pushObject<PortraitManager>(L, result, PortraitManagerBinding::getMetatableName());
@@ -222,7 +222,7 @@ int PortraitManagerBinding::getInstance(lua_State* L)
 
 int PortraitManagerBinding::getPortrait(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     hand* characterHandle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
@@ -233,7 +233,7 @@ int PortraitManagerBinding::getPortrait(lua_State* L)
 
 int PortraitManagerBinding::updatePortrait(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     hand* oldHandle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
@@ -245,7 +245,7 @@ int PortraitManagerBinding::updatePortrait(lua_State* L)
 
 int PortraitManagerBinding::updatePortraitImage(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     hand* characterHandle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
@@ -257,7 +257,7 @@ int PortraitManagerBinding::updatePortraitImage(lua_State* L)
 
 int PortraitManagerBinding::setImageWidget(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     hand* characterHandle = checkObject<hand>(L, 2, HandBinding::getMetatableName());
@@ -270,7 +270,7 @@ int PortraitManagerBinding::setImageWidget(lua_State* L)
 
 int PortraitManagerBinding::setImageWidgetNPC(lua_State* L)
 {
-    PortraitManager* instance = get_instance(L, 1);
+    PortraitManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PortraitManager is nil");
 
     Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
@@ -336,7 +336,7 @@ void PortraitManagerBinding::registerBinding(lua_State* L)
         { "updatePortraitImage", PortraitManagerBinding::updatePortraitImage },
         { "setImageWidget", PortraitManagerBinding::setImageWidget },
         { "setImageWidgetNPC", PortraitManagerBinding::setImageWidgetNPC },
-        { "getInstance", PortraitManagerBinding::getInstance },
+        { "getInstance", PortraitManagerBinding::getInstanceMethod },
         { 0, 0 }
     };
 
@@ -371,7 +371,7 @@ void PortraitManagerBinding::registerBinding(lua_State* L)
 
     // Register global class table for static methods
     pushGlobalTable(L, "PortraitManager");
-    registerStaticMethod(L, "getInstance", PortraitManagerBinding::getInstance);
+    registerStaticMethod(L, "getInstance", PortraitManagerBinding::getInstanceMethod);
     lua_setglobal(L, "PortraitManager");
 }
 

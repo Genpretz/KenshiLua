@@ -115,7 +115,7 @@ static int BountyManager_set_bounties(lua_State* L)
 {
     BountyManager* instance = getInstance(L, 1);
     if (!instance ) return luaL_error(L, "BountyManager is nil");
-    auto* val = BountiesMapBinding::get(L, 2);
+    auto* val = BountiesMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'bounties' must be ogre_unordered_map<Faction*, Bounty>");
     instance->bounties = *val;
     return 0;

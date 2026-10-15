@@ -69,7 +69,7 @@ static int WallBuilding_set_othersSharingMyBuildState(lua_State* L)
 {
     WallBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WallBuilding is nil");
-    lektor<hand>* val = LektorValueBinding<hand>::get(L, 2);
+    lektor<hand>* val = LektorValueBinding<hand>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<hand>");
     instance->othersSharingMyBuildState = *val;
     return 0;

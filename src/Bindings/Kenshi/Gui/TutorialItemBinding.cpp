@@ -144,7 +144,7 @@ static int TutorialItem_set_subItems(lua_State* L)
         instance->subItems.clear();
         return 0;
     }
-    auto* src = TutorialSubItemFastArrayBinding::get(L, 2);
+    auto* src = TutorialSubItemFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set subItems must be Ogre::FastArray<TutorialSubItem*>");
     instance->subItems = *src;
     return 0;
@@ -159,7 +159,7 @@ static int TutorialItem_set_requiredTutorialsStr(lua_State* L)
         instance->requiredTutorialsStr.clear();
         return 0;
     }
-    auto* src = StringFastArrayBinding::get(L, 2);
+    auto* src = StringFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set requiredTutorialsStr must be Ogre::FastArray<std::string>");
     instance->requiredTutorialsStr = *src;
     return 0;
@@ -174,7 +174,7 @@ static int TutorialItem_set_requiredTutorials(lua_State* L)
         instance->requiredTutorials.clear();
         return 0;
     }
-    auto* src = TutorialItemFastArrayBinding::get(L, 2);
+    auto* src = TutorialItemFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set requiredTutorials must be Ogre::FastArray<TutorialItem*>");
     instance->requiredTutorials = *src;
     return 0;

@@ -73,7 +73,7 @@ static int ContextMenu_set_orders(lua_State* L)
 {
     ContextMenu* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContextMenu is nil");
-    auto* val = LektorIntBinding<int>::get(L, 2);
+    auto* val = LektorIntBinding<int>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'orders' must be lektor<int>");
     instance->orders = *val;
     return 0;

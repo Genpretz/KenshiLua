@@ -459,7 +459,7 @@ static int ContainerItem_set_racesExclude(lua_State* L)
 {
     ContainerItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContainerItem is nil");
-    auto* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    auto* val = OgreUnorderedSetBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'racesExclude' must be ogre_unordered_set<GameData*>");
     instance->racesExclude = *val;
     return 0;

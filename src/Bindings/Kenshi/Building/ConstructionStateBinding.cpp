@@ -140,7 +140,7 @@ static int ConstructionState_set_mats(lua_State* L)
 {
     ConstructionState* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ConstructionState is nil");
-    auto* val = LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::get(L, 2);
+    auto* val = LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set mats must be lektor<BuildMaterial*>");
     instance->mats = *val;
     return 0;
@@ -296,7 +296,7 @@ int ConstructionStateBinding::getNeededMats(lua_State* L)
         return 1;
     }
 
-    auto* out = LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::get(L, 2);
+    auto* out = LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getNeededMats must be lektor<BuildMaterial*>");
     instance->getNeededMats(*out);
     return 0;

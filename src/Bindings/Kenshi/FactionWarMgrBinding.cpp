@@ -136,7 +136,7 @@ static int FactionWarMgr_set_myTowns(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lektor<TownBase*>* val = LektorPtrBinding<TownBase*>::get(L, 2);
+    lektor<TownBase*>* val = LektorPtrBinding<TownBase*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<TownBase*>");
     instance->myTowns = *val;
     return 0;
@@ -186,7 +186,7 @@ static int FactionWarMgr_set_campaignRequests(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lektor<FactionWarMgr::CampaignRequest*>* val = LektorPtrBinding<FactionWarMgr::CampaignRequest*>::get(L, 2);
+    lektor<FactionWarMgr::CampaignRequest*>* val = LektorPtrBinding<FactionWarMgr::CampaignRequest*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set campaignRequests must be lektor<CampaignRequest*>");
     instance->campaignRequests = *val;
     return 0;
@@ -375,7 +375,7 @@ int FactionWarMgrBinding::triggerCampaign(lua_State* L)
     }
     else if (top == 6)
     {
-        FitnessSelector<CampaignTriggerData*>* randomTriggers = FitnessSelectorBinding<CampaignTriggerData*>::get(L, 2);
+        FitnessSelector<CampaignTriggerData*>* randomTriggers = FitnessSelectorBinding<CampaignTriggerData*>::getInstance(L, 2);
         if (!randomTriggers) return luaL_error(L, "Expected FitnessSelector<CampaignTriggerData*>");
         RootObjectBase* targetTown = checkObject<RootObjectBase>(L, 3, RootObjectBaseBinding::getMetatableName());
         TownBase* hometown = checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
@@ -446,7 +446,7 @@ int FactionWarMgrBinding::getTownsInBiome(lua_State* L)
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
 
-    lektor<TownBase*>* out = LektorPtrBinding<TownBase*>::get(L, 2);
+    lektor<TownBase*>* out = LektorPtrBinding<TownBase*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     AreaBiomeGroup* b = (AreaBiomeGroup*)lua_touserdata(L, 3);
     instance->getTownsInBiome(*out, b);
@@ -458,7 +458,7 @@ int FactionWarMgrBinding::getMyTownsWithEnoughFreePopulation(lua_State* L)
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
 
-    lektor<TownBase*>* out = LektorPtrBinding<TownBase*>::get(L, 2);
+    lektor<TownBase*>* out = LektorPtrBinding<TownBase*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     int popNeeded = (int)luaL_checkinteger(L, 3);
     instance->getMyTownsWithEnoughFreePopulation(*out, popNeeded);

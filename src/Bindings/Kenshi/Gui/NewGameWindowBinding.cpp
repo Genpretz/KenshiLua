@@ -66,7 +66,7 @@ static int NewGameWindow_set_startsData(lua_State* L)
         instance->startsData.clear();
         return 0;
     }
-    auto* src = GameDataFastArrayBinding::get(L, 2);
+    auto* src = GameDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set startsData must be Ogre::FastArray<GameData*>");
     instance->startsData = *src;
     return 0;

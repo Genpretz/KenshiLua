@@ -372,7 +372,7 @@ static int UseableStuff_set_currentOperators(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    auto* val = StdSetBinding<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>::get(L, 2);
+    auto* val = StdSetBinding<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'currentOperators' must be std::set<hand>");
     instance->currentOperators = *val;
     return 0;
@@ -1493,7 +1493,7 @@ int UseableStuffBinding::getGUIToolTipForGroundResourceEfficiency(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
     instance->getGUIToolTipForGroundResourceEfficiency(*out);
     return 0;
@@ -1503,7 +1503,7 @@ int UseableStuffBinding::_NV_getGUIToolTipForGroundResourceEfficiency(lua_State*
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
     instance->_NV_getGUIToolTipForGroundResourceEfficiency(*out);
     return 0;

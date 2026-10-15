@@ -20,7 +20,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static TagsType* get(lua_State* L, int idx)
+        static TagsType* getInstance(lua_State* L, int idx)
         {
             return checkObject<TagsType>(L, idx, metaName);
         }
@@ -35,7 +35,7 @@ namespace KenshiLua
 
         static int get_flags(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             lua_pushinteger(L, instance->flags);
             return 1;
@@ -43,7 +43,7 @@ namespace KenshiLua
 
         static int set_flags(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             instance->flags = (unsigned int)luaL_checkinteger(L, 2);
             return 0;
@@ -51,7 +51,7 @@ namespace KenshiLua
 
         static int clearAll(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             instance->clearAll();
             return 0;
@@ -59,7 +59,7 @@ namespace KenshiLua
 
         static int hasNONEOfTheseBitsSet(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             unsigned int flagsToTest = (unsigned int)luaL_checkinteger(L, 2);
             lua_pushboolean(L, instance->hasNONEOfTheseBitsSet(flagsToTest) ? 1 : 0);
@@ -68,7 +68,7 @@ namespace KenshiLua
 
         static int hasANYOfTheseBitsSet(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             unsigned int flagsToTest = (unsigned int)luaL_checkinteger(L, 2);
             lua_pushboolean(L, instance->hasANYOfTheseBitsSet(flagsToTest) ? 1 : 0);
@@ -77,7 +77,7 @@ namespace KenshiLua
 
         static int setTag(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             T tag = static_cast<T>(luaL_checkinteger(L, 2));
             instance->setTag(tag);
@@ -86,7 +86,7 @@ namespace KenshiLua
 
         static int _NV_setTag(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             T tag = static_cast<T>(luaL_checkinteger(L, 2));
             instance->_NV_setTag(tag);
@@ -95,7 +95,7 @@ namespace KenshiLua
 
         static int getTag(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             T tag = static_cast<T>(luaL_checkinteger(L, 2));
             lua_pushboolean(L, instance->getTag(tag) ? 1 : 0);
@@ -104,7 +104,7 @@ namespace KenshiLua
 
         static int _NV_getTag(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             T tag = static_cast<T>(luaL_checkinteger(L, 2));
             lua_pushboolean(L, instance->_NV_getTag(tag) ? 1 : 0);
@@ -113,7 +113,7 @@ namespace KenshiLua
 
         static int has(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             T tag = static_cast<T>(luaL_checkinteger(L, 2));
             lua_pushboolean(L, instance->has(tag) ? 1 : 0);
@@ -122,7 +122,7 @@ namespace KenshiLua
 
         static int clearTag(lua_State* L)
         {
-            TagsType* instance = get(L, 1);
+            TagsType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "TagsClass is nil");
             T tag = static_cast<T>(luaL_checkinteger(L, 2));
             instance->clearTag(tag);

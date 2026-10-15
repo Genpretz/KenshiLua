@@ -321,7 +321,7 @@ static int MainBarGUI_set_speedButtons(lua_State* L)
         instance->speedButtons.clear();
         return 0;
     }
-    auto* src = SpeedButtonsFastArrayBinding::get(L, 2);
+    auto* src = SpeedButtonsFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set speedButtons must be Ogre::FastArray<MyGUI::Button*>");
     instance->speedButtons = *src;
     return 0;
@@ -336,7 +336,7 @@ static int MainBarGUI_set_tabPortraits(lua_State* L)
         instance->tabPortraits.clear();
         return 0;
     }
-    auto* src = TabPortraitsFastArrayBinding::get(L, 2);
+    auto* src = TabPortraitsFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set tabPortraits must be Ogre::FastArray<MainTabPortraitPlatoon>");
     instance->tabPortraits = *src;
     return 0;

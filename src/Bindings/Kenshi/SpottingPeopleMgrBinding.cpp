@@ -27,7 +27,7 @@ static int SpottingPeopleMgr_set_spottedPeople(lua_State* L)
 {
     SpottingPeopleMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SpottingPeopleMgr is nil");
-    auto* val = StdMapBinding<hand, SensoryData::SpottingPeopleMgr::Spot>::get(L, 2);
+    auto* val = StdMapBinding<hand, SensoryData::SpottingPeopleMgr::Spot>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'spottedPeople' must be std::map<hand, SensoryData::SpottingPeopleMgr::Spot>");
     instance->spottedPeople = *val;
     return 0;

@@ -72,7 +72,7 @@ static int WorldEventStateQueryList_set_statesList(lua_State* L)
     WorldEventStateQueryList* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQueryList is nil");
     ogre_unordered_map<WorldEventStateQuery*, bool>::type* val = 
-        OgreUnorderedMapBinding<WorldEventStateQuery*, bool>::get(L, 2);
+        OgreUnorderedMapBinding<WorldEventStateQuery*, bool>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_map<WorldEventStateQuery*, bool>");
     instance->statesList = *val;
     return 0;

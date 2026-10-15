@@ -17,7 +17,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static ArrayType* get(lua_State* L, int idx)
+        static ArrayType* getInstance(lua_State* L, int idx)
         {
             return checkObject<ArrayType>(L, idx, metaName);
         }
@@ -31,7 +31,7 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             lua_pushinteger(L, arr ? (lua_Integer)arr->size() : 0);
             return 1;
         }
@@ -40,14 +40,14 @@ namespace KenshiLua
 
         static int empty(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             lua_pushboolean(L, (!arr || arr->empty()) ? 1 : 0);
             return 1;
         }
 
         static int reserve(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             size_t amount = (size_t)luaL_checkinteger(L, 2);
             arr->reserve(amount);
@@ -56,7 +56,7 @@ namespace KenshiLua
 
         static int front(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             T val = arr->front();
             if (!val) { lua_pushnil(L); return 1; }
@@ -71,7 +71,7 @@ namespace KenshiLua
 
         static int back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             T val = arr->back();
             if (!val) { lua_pushnil(L); return 1; }
@@ -86,7 +86,7 @@ namespace KenshiLua
 
         static int index(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) { lua_pushnil(L); return 1; }
 
             if (lua_isnumber(L, 2))
@@ -111,7 +111,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             if (!lua_isnumber(L, 2)) return luaL_error(L, "FastArray: index must be numeric");
 
@@ -146,7 +146,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
@@ -162,7 +162,7 @@ namespace KenshiLua
 
         static int pop_back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             if (arr->empty()) return luaL_error(L, "FastArray: pop called on empty container");
             T val = arr->back();
@@ -179,7 +179,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > arr->size()) return luaL_error(L, "FastArray: removeAt index out of range");
@@ -189,14 +189,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (arr) arr->clear();
             return 0;
         }
 
         static int toTable(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)arr->size(), 0);
             for (size_t i = 0; i < arr->size(); ++i)
@@ -218,7 +218,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return 0;
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > arr->size()) return 0;
@@ -295,7 +295,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static ArrayType* get(lua_State* L, int idx)
+        static ArrayType* getInstance(lua_State* L, int idx)
         {
             return checkObject<ArrayType>(L, idx, metaName);
         }
@@ -309,7 +309,7 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             lua_pushinteger(L, arr ? (lua_Integer)arr->size() : 0);
             return 1;
         }
@@ -318,14 +318,14 @@ namespace KenshiLua
 
         static int empty(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             lua_pushboolean(L, (!arr || arr->empty()) ? 1 : 0);
             return 1;
         }
 
         static int reserve(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             size_t amount = (size_t)luaL_checkinteger(L, 2);
             arr->reserve(amount);
@@ -334,7 +334,7 @@ namespace KenshiLua
 
         static int front(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             if (elemMetaName)
                 return pushObject<T>(L, &arr->front(), elemMetaName);
@@ -347,7 +347,7 @@ namespace KenshiLua
 
         static int back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             if (elemMetaName)
                 return pushObject<T>(L, &arr->back(), elemMetaName);
@@ -360,7 +360,7 @@ namespace KenshiLua
 
         static int index(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) { lua_pushnil(L); return 1; }
 
             if (lua_isnumber(L, 2))
@@ -383,7 +383,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             if (!lua_isnumber(L, 2)) return luaL_error(L, "FastArray: index must be numeric");
 
@@ -430,7 +430,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             if (elemMetaName)
             {
@@ -447,7 +447,7 @@ namespace KenshiLua
 
         static int pop_back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             if (arr->empty()) return luaL_error(L, "FastArray: pop called on empty container");
             T val = arr->back();
@@ -463,7 +463,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > arr->size()) return luaL_error(L, "FastArray: removeAt index out of range");
@@ -473,14 +473,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (arr) arr->clear();
             return 0;
         }
 
         static int toTable(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)arr->size(), 0);
             for (size_t i = 0; i < arr->size(); ++i)
@@ -496,7 +496,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return 0;
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > arr->size()) return 0;
@@ -566,7 +566,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static ArrayType* get(lua_State* L, int idx)
+        static ArrayType* getInstance(lua_State* L, int idx)
         {
             return checkObject<ArrayType>(L, idx, metaName);
         }
@@ -580,7 +580,7 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             lua_pushinteger(L, arr ? (lua_Integer)arr->size() : 0);
             return 1;
         }
@@ -589,14 +589,14 @@ namespace KenshiLua
 
         static int empty(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             lua_pushboolean(L, (!arr || arr->empty()) ? 1 : 0);
             return 1;
         }
 
         static int reserve(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             size_t amount = (size_t)luaL_checkinteger(L, 2);
             arr->reserve(amount);
@@ -605,7 +605,7 @@ namespace KenshiLua
 
         static int front(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             LuaCodec<T>::push(L, arr->front(), nullptr);
             return 1;
@@ -613,7 +613,7 @@ namespace KenshiLua
 
         static int back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             LuaCodec<T>::push(L, arr->back(), nullptr);
             return 1;
@@ -621,7 +621,7 @@ namespace KenshiLua
 
         static int index(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) { lua_pushnil(L); return 1; }
 
             if (lua_isnumber(L, 2))
@@ -639,7 +639,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             if (!lua_isnumber(L, 2)) return luaL_error(L, "FastArray: index must be numeric");
 
@@ -664,7 +664,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             arr->push_back(LuaCodec<T>::read(L, 2, nullptr));
             return 0;
@@ -672,7 +672,7 @@ namespace KenshiLua
 
         static int pop_back(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             if (arr->empty()) return luaL_error(L, "FastArray: pop called on empty container");
             T val = arr->back();
@@ -683,7 +683,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > arr->size()) return luaL_error(L, "FastArray: removeAt index out of range");
@@ -693,14 +693,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (arr) arr->clear();
             return 0;
         }
 
         static int toTable(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)arr->size(), 0);
             for (size_t i = 0; i < arr->size(); ++i)
@@ -713,7 +713,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            ArrayType* arr = get(L, 1);
+            ArrayType* arr = getInstance(L, 1);
             if (!arr) return 0;
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > arr->size()) return 0;

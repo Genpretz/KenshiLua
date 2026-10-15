@@ -807,7 +807,7 @@ static int Inventory_set__allItems(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<Item*>* list = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* list = LektorPtrBinding<Item*>::getInstance(L, 2);
     if (!list) return luaL_error(L, "Argument 2 to set '_allItems' must be lektor<Item*>");
     instance->_allItems = *list;
     return 0;
@@ -828,7 +828,7 @@ static int Inventory_set_sections(lua_State* L)
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
     typedef BoostUnorderedMapBinding<std::string, InventorySection*>::MapType SectionsMap;
-    SectionsMap* val = BoostUnorderedMapBinding<std::string, InventorySection*>::get(L, 2);
+    SectionsMap* val = BoostUnorderedMapBinding<std::string, InventorySection*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'sections' must be boost::unordered_map<string, InventorySection*>");
     instance->sections = *val;
     return 0;
@@ -839,7 +839,7 @@ static int Inventory_set_sectionsInSearchOrder(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<InventorySection*>* list = LektorPtrBinding<InventorySection*>::get(L, 2);
+    lektor<InventorySection*>* list = LektorPtrBinding<InventorySection*>::getInstance(L, 2);
     if (!list) return luaL_error(L, "Argument 2 to set 'sectionsInSearchOrder' must be lektor<InventorySection*>");
     instance->sectionsInSearchOrder = *list;
     return 0;
@@ -860,7 +860,7 @@ int InventoryBinding::fillFromVendorList(lua_State* L)
             GameData* vendorData = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
             instance->fillFromVendorList(vendorData, f);
         } else {
-            lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2);
+            lektor<GameData*>* list = LektorPtrBinding<GameData*>::getInstance(L, 2);
             instance->fillFromVendorList(*list, f);
         }
     }
@@ -881,7 +881,7 @@ int InventoryBinding::getAllItemsOfType(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* all = LektorPtrBinding<Item*>::getInstance(L, 2);
     itemType ty = (itemType)luaL_checkinteger(L, 3);
     bool skipEquipped = lua_toboolean(L, 4) != 0;
     instance->getAllItemsOfType(*all, ty, skipEquipped);
@@ -893,7 +893,7 @@ int InventoryBinding::getAllItemsWithFunction(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<Item*>* out = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* out = LektorPtrBinding<Item*>::getInstance(L, 2);
     ItemFunction type = (ItemFunction)luaL_checkinteger(L, 3);
     instance->getAllItemsWithFunction(*out, type);
     return 0;
@@ -913,7 +913,7 @@ int InventoryBinding::getAllSectionsOfType(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<InventorySection*>* out = LektorPtrBinding<InventorySection*>::get(L, 2);
+    lektor<InventorySection*>* out = LektorPtrBinding<InventorySection*>::getInstance(L, 2);
     AttachSlot type = (AttachSlot)luaL_checkinteger(L, 3);
     instance->getAllSectionsOfType(*out, type);
     return 0;
@@ -924,7 +924,7 @@ int InventoryBinding::getAllStolenItems(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* all = LektorPtrBinding<Item*>::getInstance(L, 2);
     bool includeUnknown = lua_toboolean(L, 3) != 0;
     instance->getAllStolenItems(*all, includeUnknown);
     return 0;
@@ -956,7 +956,7 @@ int InventoryBinding::getEquippedArmour(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* all = LektorPtrBinding<Item*>::getInstance(L, 2);
     instance->getEquippedArmour(*all);
     return 0;
 }
@@ -966,7 +966,7 @@ int InventoryBinding::getEquippedWeapons(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    lektor<Item*>* all = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* all = LektorPtrBinding<Item*>::getInstance(L, 2);
     instance->getEquippedWeapons(*all);
     return 0;
 }
@@ -977,7 +977,7 @@ int InventoryBinding::getExcessLoot(lua_State* L)
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
     hand* me = checkObject<hand>(L, 2, HandBinding::getMetatableName());
-    lektor<Item*>* out = LektorPtrBinding<Item*>::get(L, 3);
+    lektor<Item*>* out = LektorPtrBinding<Item*>::getInstance(L, 3);
     bool justAsking = lua_toboolean(L, 4) != 0;
     bool result = instance->getExcessLoot(*me, *out, justAsking);
     lua_pushboolean(L, result ? 1 : 0);
@@ -1015,7 +1015,7 @@ int InventoryBinding::getResourceItems(lua_State* L)
 {
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
-    ogre_unordered_set<GameData*>::type* out = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    ogre_unordered_set<GameData*>::type* out = OgreUnorderedSetBinding<GameData*>::getInstance(L, 2);
     bool buildingMatsToo = lua_toboolean(L, 3) != 0;
     instance->getResourceItems(*out, buildingMatsToo);
     return 0;

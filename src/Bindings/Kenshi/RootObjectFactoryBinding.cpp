@@ -59,7 +59,7 @@ static int RootObjectFactory_set_todoList(lua_State* L)
         instance->todoList.clear();
         return 0;
     }
-    auto* src = CreatelistItemDequeBinding::get(L, 2);
+    auto* src = CreatelistItemDequeBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set todoList must be std::deque<CreatelistItem*>");
     instance->todoList = *src;
     return 0;

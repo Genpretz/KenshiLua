@@ -21,7 +21,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static SetType* get(lua_State* L, int idx)
+        static SetType* getInstance(lua_State* L, int idx)
         {
             return checkObject<SetType>(L, idx, metaName);
         }
@@ -30,7 +30,7 @@ namespace KenshiLua
 
         static int index(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) { lua_pushnil(L); return 1; }
 
             // Route to metatable methods if key is string matching a method
@@ -50,7 +50,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
 
             T elem = LuaCodec<T>::read(L, 2, elemMetaName);
@@ -69,14 +69,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             lua_pushinteger(L, s ? (lua_Integer)s->size() : 0);
             return 1;
         }
 
         static int has(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) { lua_pushboolean(L, 0); return 1; }
             T elem = LuaCodec<T>::read(L, 2, elemMetaName);
             lua_pushboolean(L, s->find(elem) != s->end() ? 1 : 0);
@@ -85,7 +85,7 @@ namespace KenshiLua
 
         static int insert(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
             T elem = LuaCodec<T>::read(L, 2, elemMetaName);
             s->insert(elem);
@@ -94,7 +94,7 @@ namespace KenshiLua
 
         static int remove(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
             T elem = LuaCodec<T>::read(L, 2, elemMetaName);
             lua_pushboolean(L, s->erase(elem) > 0 ? 1 : 0);
@@ -103,14 +103,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (s) s->clear();
             return 0;
         }
 
         static int toTable(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)s->size(), 0);
             int idx = 1;
@@ -126,7 +126,7 @@ namespace KenshiLua
         // ContainerIteration.h for why the container is not walked step by step.
         static int pairs(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             int count = 0;
             lua_createtable(L, s ? (int)s->size() * 2 : 0, 0);
             if (s)

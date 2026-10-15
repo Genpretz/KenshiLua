@@ -14,7 +14,7 @@ namespace KenshiLua
         static const char* listMetaName;
         static const char* itemsScoresMetaName;
 
-        static SelectorType* get(lua_State* L, int idx)
+        static SelectorType* getInstance(lua_State* L, int idx)
         {
             return checkObject<SelectorType>(L, idx, metaName);
         }
@@ -23,7 +23,7 @@ namespace KenshiLua
 
         static int get_totalScore(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             lua_pushnumber(L, s->totalScore);
             return 1;
@@ -31,7 +31,7 @@ namespace KenshiLua
 
         static int set_totalScore(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             s->totalScore = (float)lua_tonumber(L, 3);
             return 0;
@@ -39,7 +39,7 @@ namespace KenshiLua
 
         static int get_highestScore(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             lua_pushnumber(L, s->highestScore);
             return 1;
@@ -47,7 +47,7 @@ namespace KenshiLua
 
         static int set_highestScore(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             s->highestScore = (float)lua_tonumber(L, 3);
             return 0;
@@ -55,7 +55,7 @@ namespace KenshiLua
 
         static int get_highestItem(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             if (elemMetaName) return pushObject<T>(L, &s->highestItem, elemMetaName);
             LuaCodec<T>::push(L, s->highestItem, nullptr);
@@ -64,7 +64,7 @@ namespace KenshiLua
 
         static int set_highestItem(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             if (elemMetaName) {
                 T* ptr = checkObject<T>(L, 3, elemMetaName);
@@ -77,7 +77,7 @@ namespace KenshiLua
 
         static int get_list(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             if (listMetaName) return pushObject(L, &s->list, listMetaName);
             lua_pushnil(L);
@@ -86,7 +86,7 @@ namespace KenshiLua
 
         static int get_itemsScores(lua_State* L)
         {
-            SelectorType* s = get(L, 1);
+            SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
             if (itemsScoresMetaName) return pushObject(L, &s->itemsScores, itemsScoresMetaName);
             lua_pushnil(L);

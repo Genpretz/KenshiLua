@@ -171,7 +171,7 @@ int RootObjectContainerBinding::addActiveObject(lua_State* L)
     {
         RootObjectContainer* instance = getInstance(L, 1);
         if (!instance) return luaL_error(L, "RootObjectContainer is nil");
-        auto* val = LektorPtrBinding<RootObject*>::get(L, 2);
+        auto* val = LektorPtrBinding<RootObject*>::getInstance(L, 2);
         if (!val) return luaL_error(L, "Argument 2 to set 'things' must be lektor<RootObject*>");
         instance->things = *val;
         return 0;
@@ -182,7 +182,7 @@ int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
         RootObjectContainer* instance = getInstance(L, 1);
         if (!instance) return luaL_error(L, "RootObjectContainer is nil");
 
-        lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+        lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
         if (!out) return luaL_error(L, "Argument 2 must be a lektor<RootObject*>");
 
         itemType type = (itemType)luaL_checkinteger(L, 3);
@@ -216,7 +216,7 @@ int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
         RootObjectContainer* instance = getInstance(L, 1);
         if (!instance) return luaL_error(L, "RootObjectContainer is nil");
 
-        lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+        lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
         if (!out) return luaL_error(L, "Argument 2 must be a lektor<RootObject*>");
 
         itemType type = (itemType)luaL_checkinteger(L, 3);
@@ -252,7 +252,7 @@ int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
 
         if (testObject<lektor<RootObject*>>(L, 2, LektorPtrBinding<RootObject*>::metaName) != nullptr)
         {
-            lektor<RootObject*>* _things = LektorPtrBinding<RootObject*>::get(L, 2);
+            lektor<RootObject*>* _things = LektorPtrBinding<RootObject*>::getInstance(L, 2);
             GameData* gd = lua_isnoneornil(L, 3) ? nullptr : checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
             GameDataContainer* source = lua_isnoneornil(L, 4) ? nullptr : checkObject<GameDataContainer>(L, 4, GameDataContainerBinding::getMetatableName());
             PosRotPair* offset = lua_isnoneornil(L, 5) ? nullptr : (PosRotPair*)lua_touserdata(L, 5);

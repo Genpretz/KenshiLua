@@ -45,7 +45,7 @@ static int LoadSaveWindow_set_games(lua_State* L)
 {
     LoadSaveWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
-    lektor<SaveInfo>* val = LektorValueBinding<SaveInfo>::get(L, 2);
+    lektor<SaveInfo>* val = LektorValueBinding<SaveInfo>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<SaveInfo>");
     instance->games = *val;
     return 0;

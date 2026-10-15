@@ -82,7 +82,7 @@ static int HasRoomCache_set_itemStates(lua_State* L)
 {
     HasRoomCache* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "HasRoomCache is nil");
-    GameDataBoolStdMapBinding::MapType* val = GameDataBoolStdMapBinding::get(L, 2);
+    GameDataBoolStdMapBinding::MapType* val = GameDataBoolStdMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected std::map<GameData*, bool>");
     instance->itemStates = *val;
     return 0;

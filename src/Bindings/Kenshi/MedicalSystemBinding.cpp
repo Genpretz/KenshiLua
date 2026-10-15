@@ -373,7 +373,7 @@ static int MedicalSystem_set_wounds(lua_State* L)
         instance->wounds.clear();
         return 0;
     }
-    auto* src = WoundFastArrayBinding::get(L, 2);
+    auto* src = WoundFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set wounds must be Ogre::FastArray<Wound*>");
     instance->wounds = *src;
     return 0;
@@ -383,7 +383,7 @@ static int MedicalSystem_set_status(lua_State* L)
 {
     MedicalSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MedicalSystem is nil");
-    auto* val = HealthStatusMapBinding::get(L, 2);
+    auto* val = HealthStatusMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'status' must be ogre_unordered_map<GameData*, HealthPartStatus>");
     instance->status = *val;
     return 0;
@@ -393,7 +393,7 @@ static int MedicalSystem_set_armourList(lua_State* L)
 {
     MedicalSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MedicalSystem is nil");
-    auto* val = LektorPtrBinding<Armour*>::get(L, 2);
+    auto* val = LektorPtrBinding<Armour*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'armourList' must be lektor<Armour*>");
     instance->armourList = *val;
     return 0;
@@ -710,7 +710,7 @@ static int MedicalSystem_set_anatomy(lua_State* L)
 {
     MedicalSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MedicalSystem is nil");
-    auto* val = LektorPtrBinding<MedicalSystem::HealthPartStatus*>::get(L, 2);
+    auto* val = LektorPtrBinding<MedicalSystem::HealthPartStatus*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'anatomy' must be lektor<HealthPartStatus*>");
     instance->anatomy = *val;
     return 0;

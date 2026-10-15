@@ -632,7 +632,7 @@ int CameraClassBinding::restrictPosition(lua_State* L)
     CameraClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CameraClass is nil");
 
-    lektor<Character*>* objects = LektorPtrBinding<Character*>::get(L, 2);
+    lektor<Character*>* objects = LektorPtrBinding<Character*>::getInstance(L, 2);
     if (!objects) return luaL_error(L, "Argument 2 to restrictPosition must be lektor<Character*>");
     instance->restrictPosition(*objects);
     return 0;

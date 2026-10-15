@@ -84,7 +84,7 @@ static int ProductionBuilding_set_consumptionItems(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    auto* val = LektorValueBinding<StorageBuilding::ConsumptionItem>::get(L, 2);
+    auto* val = LektorValueBinding<StorageBuilding::ConsumptionItem>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'consumptionItems' must be lektor<Building::ConsumptionItem>");
     instance->consumptionItems = *val;
     return 0;
@@ -598,7 +598,7 @@ int ProductionBuildingBinding::getGUIToolTipForGroundResourceEfficiency(lua_Stat
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 must be lektor<StringPair>");
     instance->getGUIToolTipForGroundResourceEfficiency(*out);
     return 0;
@@ -608,7 +608,7 @@ int ProductionBuildingBinding::_NV_getGUIToolTipForGroundResourceEfficiency(lua_
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 must be lektor<StringPair>");
     instance->_NV_getGUIToolTipForGroundResourceEfficiency(*out);
     return 0;
@@ -656,7 +656,7 @@ int ProductionBuildingBinding::getResourcesNeededBecauseEmpty(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseEmpty must be lektor<GameData*>");
     instance->getResourcesNeededBecauseEmpty(*out);
     return 0;
@@ -666,7 +666,7 @@ int ProductionBuildingBinding::_NV_getResourcesNeededBecauseEmpty(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseEmpty must be lektor<GameData*>");
     instance->_NV_getResourcesNeededBecauseEmpty(*out);
     return 0;
@@ -676,7 +676,7 @@ int ProductionBuildingBinding::getResourcesNeededBecauseNotFull(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseNotFull must be lektor<GameData*>");
     instance->getResourcesNeededBecauseNotFull(*out);
     return 0;
@@ -686,7 +686,7 @@ int ProductionBuildingBinding::_NV_getResourcesNeededBecauseNotFull(lua_State* L
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseNotFull must be lektor<GameData*>");
     instance->_NV_getResourcesNeededBecauseNotFull(*out);
     return 0;
@@ -716,7 +716,7 @@ int ProductionBuildingBinding::getItemsWeWantRidOf(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getItemsWeWantRidOf must be lektor<GameData*>");
     bool loot = lua_toboolean(L, 3) != 0;
     instance->getItemsWeWantRidOf(*out, loot);
@@ -727,7 +727,7 @@ int ProductionBuildingBinding::_NV_getItemsWeWantRidOf(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getItemsWeWantRidOf must be lektor<GameData*>");
     bool loot = lua_toboolean(L, 3) != 0;
     instance->_NV_getItemsWeWantRidOf(*out, loot);

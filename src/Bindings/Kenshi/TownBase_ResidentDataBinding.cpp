@@ -73,7 +73,7 @@ static int ResidentData_set_buildingsBad(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "TownBase::ResidentData is nil");
-    auto* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    auto* val = OgreUnorderedSetBinding<GameData*>::getInstance(L, 2);
     if (val) inst->buildingsBad = *val;
     return 0;
 }
@@ -82,7 +82,7 @@ static int ResidentData_set_buildingsGood(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
     if (!inst) return luaL_error(L, "TownBase::ResidentData is nil");
-    auto* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    auto* val = OgreUnorderedSetBinding<GameData*>::getInstance(L, 2);
     if (val) inst->buildingsGood = *val;
     return 0;
 }

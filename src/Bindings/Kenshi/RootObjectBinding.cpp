@@ -995,7 +995,7 @@ int RootObjectBinding::_NV_getGUIDataCategories(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "lektor<StringPair> is nil or invalid");
     instance->_NV_getGUIDataCategories(*out);
     return 0;
@@ -1016,7 +1016,7 @@ int RootObjectBinding::_NV_getOrders(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    lektor<std::string>* out = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!out) return luaL_error(L, "lektor<string> is nil or invalid");
     instance->_NV_getOrders(*out);
     return 0;
@@ -1088,7 +1088,7 @@ int RootObjectBinding::getGUIDataCategories(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "lektor<StringPair> is nil or invalid");
     instance->getGUIDataCategories(*out);
     return 0;
@@ -1109,7 +1109,7 @@ int RootObjectBinding::getOrders(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    lektor<std::string>* out = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!out) return luaL_error(L, "lektor<string> is nil or invalid");
     instance->getOrders(*out);
     return 0;

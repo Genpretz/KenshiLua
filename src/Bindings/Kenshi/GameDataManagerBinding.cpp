@@ -77,7 +77,7 @@ int GameDataManagerBinding::getBuildings(lua_State* L)
     GameDataManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataManager is nil");
 
-    lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* list = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!list) return luaL_error(L, "Argument 2 to getBuildings must be lektor<GameData*>");
     std::string category = luaL_checkstring(L, 3);
     instance->getBuildings(*list, category);

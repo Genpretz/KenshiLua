@@ -8,7 +8,7 @@ namespace KenshiLua
 {
 typedef OgreFastArrayPtrBinding<ResourceLoader::TextureLoadData*> TextureLoadDataFastArrayBinding;
 
-static ResourceLoader* getResourceLoaderInstance(lua_State* L, int idx)
+static ResourceLoader* getInstance(lua_State* L, int idx)
 {
     return checkObject<ResourceLoader>(L, idx, ResourceLoaderBinding::getMetatableName());
 }
@@ -16,7 +16,7 @@ static ResourceLoader* getResourceLoaderInstance(lua_State* L, int idx)
 // --- Getters for ResourceLoader ---
 static int ResourceLoader_get_running(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushboolean(L, instance->running ? 1 : 0);
     return 1;
@@ -24,7 +24,7 @@ static int ResourceLoader_get_running(lua_State* L)
 
 static int ResourceLoader_get_sceneManager(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)instance->sceneManager);
     return 1;
@@ -32,7 +32,7 @@ static int ResourceLoader_get_sceneManager(lua_State* L)
 
 static int ResourceLoader_get_loadingMeshQueueMutex(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)&instance->loadingMeshQueueMutex);
     return 1;
@@ -40,7 +40,7 @@ static int ResourceLoader_get_loadingMeshQueueMutex(lua_State* L)
 
 static int ResourceLoader_get_texturesLoadingMutex(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)&instance->texturesLoadingMutex);
     return 1;
@@ -48,7 +48,7 @@ static int ResourceLoader_get_texturesLoadingMutex(lua_State* L)
 
 static int ResourceLoader_get_texturesLoadedMutex(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     lua_pushlightuserdata(L, (void*)&instance->texturesLoadedMutex);
     return 1;
@@ -56,14 +56,14 @@ static int ResourceLoader_get_texturesLoadedMutex(lua_State* L)
 
 static int ResourceLoader_get_texturesLoading(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     return pushObject<TextureLoadDataFastArrayBinding::ArrayType>(L, &instance->texturesLoading, "Ogre::FastArray<TextureLoadData*>");
 }
 
 static int ResourceLoader_get_texturesLoaded(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     return pushObject<TextureLoadDataFastArrayBinding::ArrayType>(L, &instance->texturesLoaded, "Ogre::FastArray<TextureLoadData*>");
 }
@@ -71,7 +71,7 @@ static int ResourceLoader_get_texturesLoaded(lua_State* L)
 // --- Setters for ResourceLoader ---
 static int ResourceLoader_set_running(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     instance->running = lua_toboolean(L, 2) != 0;
     return 0;
@@ -94,14 +94,14 @@ static int ResourceLoader_set_texturesLoadedMutex(lua_State* L)
 
 static int ResourceLoader_set_texturesLoading(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     if (lua_isnoneornil(L, 2))
     {
         instance->texturesLoading.clear();
         return 0;
     }
-    auto* src = TextureLoadDataFastArrayBinding::get(L, 2);
+    auto* src = TextureLoadDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set texturesLoading must be Ogre::FastArray<TextureLoadData*>");
     instance->texturesLoading = *src;
     return 0;
@@ -109,14 +109,14 @@ static int ResourceLoader_set_texturesLoading(lua_State* L)
 
 static int ResourceLoader_set_texturesLoaded(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
     if (lua_isnoneornil(L, 2))
     {
         instance->texturesLoaded.clear();
         return 0;
     }
-    auto* src = TextureLoadDataFastArrayBinding::get(L, 2);
+    auto* src = TextureLoadDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set texturesLoaded must be Ogre::FastArray<TextureLoadData*>");
     instance->texturesLoaded = *src;
     return 0;
@@ -124,7 +124,7 @@ static int ResourceLoader_set_texturesLoaded(lua_State* L)
 
 int ResourceLoaderBinding::updateMT(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     instance->updateMT();
@@ -133,7 +133,7 @@ int ResourceLoaderBinding::updateMT(lua_State* L)
 
 int ResourceLoaderBinding::updateBT(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     bool result = instance->updateBT();
@@ -143,7 +143,7 @@ int ResourceLoaderBinding::updateBT(lua_State* L)
 
 int ResourceLoaderBinding::isLoading(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     bool result = instance->isLoading();
@@ -153,7 +153,7 @@ int ResourceLoaderBinding::isLoading(lua_State* L)
 
 int ResourceLoaderBinding::init(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     instance->init();
@@ -162,7 +162,7 @@ int ResourceLoaderBinding::init(lua_State* L)
 
 int ResourceLoaderBinding::threadProc(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     unsigned long result = instance->threadProc();
@@ -172,7 +172,7 @@ int ResourceLoaderBinding::threadProc(lua_State* L)
 
 int ResourceLoaderBinding::_NV_threadProc(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     unsigned long result = instance->_NV_threadProc();
@@ -180,7 +180,7 @@ int ResourceLoaderBinding::_NV_threadProc(lua_State* L)
     return 1;
 }
 
-int ResourceLoaderBinding::getInstance(lua_State* L)
+int ResourceLoaderBinding::getInstanceMethod(lua_State* L)
 {
     ResourceLoader* result = ResourceLoader::getInstance();
     return pushObject(L, result, ResourceLoaderBinding::getMetatableName());
@@ -188,7 +188,7 @@ int ResourceLoaderBinding::getInstance(lua_State* L)
 
 int ResourceLoaderBinding::destroy(lua_State* L)
 {
-    ResourceLoader* instance = getResourceLoaderInstance(L, 1);
+    ResourceLoader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ResourceLoader is nil");
 
     instance->destroy();
@@ -261,7 +261,7 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
         { "init", ResourceLoaderBinding::init },
         { "threadProc", ResourceLoaderBinding::threadProc },
         { "_NV_threadProc", ResourceLoaderBinding::_NV_threadProc },
-        { "getInstance", ResourceLoaderBinding::getInstance },
+        { "getInstance", ResourceLoaderBinding::getInstanceMethod },
         { "destroy", ResourceLoaderBinding::destroy },
         { 0, 0 }
     };
@@ -304,7 +304,7 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
 
     // Register global class table for static methods
     pushGlobalTable(L, "ResourceLoader");
-    registerStaticMethod(L, "getInstance", ResourceLoaderBinding::getInstance);
+    registerStaticMethod(L, "getInstance", ResourceLoaderBinding::getInstanceMethod);
     lua_setglobal(L, "ResourceLoader");
 }
 

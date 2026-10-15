@@ -1210,7 +1210,7 @@ int GameWorldBinding::getObjectsWithinSphere(lua_State* L)
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
 
-    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!results) return luaL_error(L, "Argument 2 to getObjectsWithinSphere must be lektor<RootObject*>");
 
     Ogre::Vector3 spherePos;
@@ -1229,7 +1229,7 @@ int GameWorldBinding::getCharactersWithinSphere(lua_State* L)
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
 
-    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!results) return luaL_error(L, "Argument 2 to getCharactersWithinSphere must be lektor<RootObject*>");
 
     Ogre::Vector3 spherePos;
@@ -1250,7 +1250,7 @@ int GameWorldBinding::getObjectsWithinBox(lua_State* L)
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
 
-    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* results = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!results) return luaL_error(L, "Argument 2 to getObjectsWithinBox must be lektor<RootObject*>");
 
     Ogre::Vector3 pos;
@@ -1333,7 +1333,7 @@ static int GameWorld_set_baseMods(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = LektorValueReadOnlyBinding<ModInfo>::get(L, 2);
+    auto* val = LektorValueReadOnlyBinding<ModInfo>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set baseMods must be lektor<ModInfo>");
     instance->baseMods = *val;
     return 0;
@@ -1350,7 +1350,7 @@ static int GameWorld_set_baseModsNames(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = LektorStringBinding<std::string>::get(L, 2);
+    auto* val = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set baseModsNames must be lektor<std::string>");
     instance->baseModsNames = *val;
     return 0;
@@ -1367,7 +1367,7 @@ static int GameWorld_set_activeMods(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = LektorPtrBinding<ModInfo*>::get(L, 2);
+    auto* val = LektorPtrBinding<ModInfo*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set activeMods must be lektor<ModInfo*>");
     instance->activeMods = *val;
     return 0;
@@ -1384,7 +1384,7 @@ static int GameWorld_set_availableModsByName(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = AvailableModsMapBinding::get(L, 2);
+    auto* val = AvailableModsMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set availableModsByName must be std::map<std::string, ModInfo>");
     instance->availableModsByName = *val;
     return 0;
@@ -1401,7 +1401,7 @@ static int GameWorld_set_availabelModsOrderedList(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = LektorPtrBinding<ModInfo*>::get(L, 2);
+    auto* val = LektorPtrBinding<ModInfo*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set availabelModsOrderedList must be lektor<ModInfo*>");
     instance->availabelModsOrderedList = *val;
     return 0;
@@ -1508,7 +1508,7 @@ static int GameWorld_set_killListPhase2(lua_State* L)
         instance->killListPhase2.clear();
         return 0;
     }
-    auto* src = KillListPhase2DequeBinding::get(L, 2);
+    auto* src = KillListPhase2DequeBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set killListPhase2 must be std::deque<RootObject*>");
     instance->killListPhase2 = *src;
     return 0;
@@ -1530,7 +1530,7 @@ static int GameWorld_set_nestBatcherKillList(lua_State* L)
         instance->nestBatcherKillList.clear();
         return 0;
     }
-    auto* src = NestBatcherKillListDequeBinding::get(L, 2);
+    auto* src = NestBatcherKillListDequeBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set nestBatcherKillList must be std::deque<NestBatcher*>");
     instance->nestBatcherKillList = *src;
     return 0;
@@ -1548,7 +1548,7 @@ static int GameWorld_set_mainUpdateListRemovalQueue(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = LektorPtrBinding<Character*>::get(L, 2);
+    auto* val = LektorPtrBinding<Character*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set mainUpdateListRemovalQueue must be lektor<Character*>");
     instance->mainUpdateListRemovalQueue = *val;
     return 0;

@@ -73,7 +73,7 @@ int ZoneManagerInterfaceTBinding::getAllActiveZonesT(lua_State* L)
     ZoneManagerInterfaceT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManagerInterfaceT is nil");
 
-    lektor<iVector2>* out = LektorValueBinding<iVector2>::get(L, 2);
+    lektor<iVector2>* out = LektorValueBinding<iVector2>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getAllActiveZonesT must be lektor<iVector2>");
     instance->getAllActiveZonesT(*out);
     return 0;

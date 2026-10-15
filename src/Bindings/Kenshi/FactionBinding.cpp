@@ -301,7 +301,7 @@ static int Faction_set_ranks(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lektor<std::string>* val = LektorStringBinding<std::string>::get(L, 2);
+    lektor<std::string>* val = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<string> object");
     instance->ranks = *val;
     return 0;
@@ -383,7 +383,7 @@ static int Faction_set_raceSelector(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    FitnessSelector<GameData*>* val = FitnessSelectorBinding<GameData*>::get(L, 2);
+    FitnessSelector<GameData*>* val = FitnessSelectorBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected FitnessSelector<GameData*>");
     instance->raceSelector = *val;
     return 0;
@@ -418,7 +418,7 @@ static int Faction_set_platoonKillList(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::get(L, 2);
+    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<Platoon*>");
     instance->platoonKillList = *val;
     return 0;
@@ -428,7 +428,7 @@ static int Faction_set_platoonRemoveList(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::get(L, 2);
+    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<Platoon*>");
     instance->platoonRemoveList = *val;
     return 0;
@@ -438,7 +438,7 @@ static int Faction_set_activePlatoons(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::get(L, 2);
+    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<Platoon*>");
     instance->activePlatoons = *val;
     return 0;
@@ -448,7 +448,7 @@ static int Faction_set_unloadedPlatoons(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::get(L, 2);
+    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<Platoon*>");
     instance->unloadedPlatoons = *val;
     return 0;
@@ -538,7 +538,7 @@ static int Faction_set_buildingSwaps(lua_State* L)
 {
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
-    lektor<Faction::BuildingSwaps>* val = LektorValueBinding<Faction::BuildingSwaps>::get(L, 2);
+    lektor<Faction::BuildingSwaps>* val = LektorValueBinding<Faction::BuildingSwaps>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<BuildingSwaps>");
     instance->buildingSwaps = *val;
     return 0;
@@ -672,7 +672,7 @@ int FactionBinding::createPlatoonsAuto(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
 
-    lektor<GameData*>* platoons = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* platoons = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!platoons) return luaL_error(L, "platoons is nil");
     instance->createPlatoonsAuto(*platoons);
     return 0;
@@ -838,7 +838,7 @@ int FactionBinding::getCharactersInArea(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
 
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     Ogre::Vector3 pos;
     readVector3(L, 3, pos);
@@ -853,7 +853,7 @@ int FactionBinding::_NV_getCharactersInArea(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
 
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     Ogre::Vector3 pos;
     readVector3(L, 3, pos);
@@ -868,7 +868,7 @@ int FactionBinding::getSelectedObjects(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
 
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     itemType type = (itemType)luaL_checkinteger(L, 3);
     bool selectedOnly = lua_toboolean(L, 4) != 0;
@@ -881,7 +881,7 @@ int FactionBinding::_NV_getSelectedObjects(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
 
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     itemType type = (itemType)luaL_checkinteger(L, 3);
     bool selectedOnly = lua_toboolean(L, 4) != 0;
@@ -1098,7 +1098,7 @@ int FactionBinding::getAllSquadsThatOwn(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
 
-    lektor<Platoon*>* out = LektorPtrBinding<Platoon*>::get(L, 2);
+    lektor<Platoon*>* out = LektorPtrBinding<Platoon*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     Building* what = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
     instance->getAllSquadsThatOwn(*out, what);

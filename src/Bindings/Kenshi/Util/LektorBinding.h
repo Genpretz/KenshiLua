@@ -302,7 +302,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static lektor<T>* get(lua_State* L, int idx)
+        static lektor<T>* getInstance(lua_State* L, int idx)
         {
             return checkObject<lektor<T> >(L, idx, metaName);
         }
@@ -354,7 +354,7 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            lektor<T>* lek = get(L, 1);
+            lektor<T>* lek = getInstance(L, 1);
             lua_pushinteger(L, lek ? lek->count : 0);
             return 1;
         }
@@ -366,7 +366,7 @@ namespace KenshiLua
 
         static int index(lua_State* L)
         {
-            lektor<T>* lek = get(L, 1);
+            lektor<T>* lek = getInstance(L, 1);
             if (!lek) { lua_pushnil(L); return 1; }
 
             // numeric index -> element access (1-based)
@@ -395,7 +395,7 @@ namespace KenshiLua
 
         static int toTable(lua_State* L)
         {
-            lektor<T>* lek = get(L, 1);
+            lektor<T>* lek = getInstance(L, 1);
             if (!lek) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)lek->count, 0);
             for (uint32_t i = 0; i < lek->count; ++i)
@@ -408,7 +408,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            lektor<T>* lek = get(L, 1);
+            lektor<T>* lek = getInstance(L, 1);
             if (!lek) return 0;
             uint32_t i = (uint32_t)lua_tointeger(L, 2) + 1;
             if (i > lek->count) return 0;
@@ -480,7 +480,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            lektor<T>* lek = Base::get(L, 1);
+            lektor<T>* lek = Base::getInstance(L, 1);
             if (!lek) return luaL_error(L, "lektor is nil");
 
             if (!lua_isnumber(L, 2))
@@ -505,7 +505,7 @@ namespace KenshiLua
 
         static int pushMethod(lua_State* L)
         {
-            lektor<T>* lek = Base::get(L, 1);
+            lektor<T>* lek = Base::getInstance(L, 1);
             if (!lek) return luaL_error(L, "lektor is nil");
             T val = Policy::readElement(L, 2, Base::elemMetaName);
             lektor_push_back(*lek, val);
@@ -514,7 +514,7 @@ namespace KenshiLua
 
         static int pop(lua_State* L)
         {
-            lektor<T>* lek = Base::get(L, 1);
+            lektor<T>* lek = Base::getInstance(L, 1);
             if (!lek) return luaL_error(L, "lektor is nil");
             if (lek->count == 0) return luaL_error(L, "lektor:pop container is empty");
             T val = lektor_pop_back_val(*lek);
@@ -523,7 +523,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            lektor<T>* lek = Base::get(L, 1);
+            lektor<T>* lek = Base::getInstance(L, 1);
             if (!lek) return luaL_error(L, "lektor is nil");
             uint32_t i = (uint32_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > lek->count) return luaL_error(L, "lektor:removeAt index out of range");
@@ -534,7 +534,7 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            lektor<T>* lek = Base::get(L, 1);
+            lektor<T>* lek = Base::getInstance(L, 1);
             if (lek)
             {
                 for (uint32_t i = 0; i < lek->count; ++i)

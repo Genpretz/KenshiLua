@@ -43,7 +43,7 @@ int LimbsInventoryLayoutBinding::setupSections(lua_State* L)
 
     InventoryGUI* gui = checkObject<InventoryGUI>(L, 2, InventoryGUIBinding::getMetatableName());
     if (!gui) return luaL_error(L, "Argument 2 to setupSections must be InventoryGUI");
-    auto* sections = InventorySectionsMapBinding::get(L, 3);
+    auto* sections = InventorySectionsMapBinding::getInstance(L, 3);
     if (!sections) return luaL_error(L, "Argument 3 to setupSections must be std::map<std::string, InventorySectionGUI*>");
     Inventory* inv = checkObject<Inventory>(L, 4, InventoryBinding::getMetatableName());
     if (!inv) return luaL_error(L, "Argument 4 to setupSections must be Inventory");

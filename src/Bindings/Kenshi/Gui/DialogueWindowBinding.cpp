@@ -160,7 +160,7 @@ static int DialogueWindow_set_replyTexts(lua_State* L)
         instance->replyTexts.clear();
         return 0;
     }
-    auto* src = EditBoxFastArrayBinding::get(L, 2);
+    auto* src = EditBoxFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set replyTexts must be Ogre::FastArray<MyGUI::EditBox*>");
     instance->replyTexts = *src;
     return 0;

@@ -94,7 +94,7 @@ static int AppearanceData_set_headsData(lua_State* L)
         inst->headsData.clear();
         return 0;
     }
-    auto* src = GameDataFastArrayBinding::get(L, 2);
+    auto* src = GameDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set headsData must be Ogre::FastArray<GameData*>");
     inst->headsData = *src;
     return 0;
@@ -109,7 +109,7 @@ static int AppearanceData_set_headsDataProb(lua_State* L)
         inst->headsDataProb.clear();
         return 0;
     }
-    auto* src = FloatFastArrayBinding::get(L, 2);
+    auto* src = FloatFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set headsDataProb must be Ogre::FastArray<float>");
     inst->headsDataProb = *src;
     return 0;

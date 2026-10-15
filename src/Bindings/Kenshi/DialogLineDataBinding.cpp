@@ -435,7 +435,7 @@ static int DialogLineData_set_campaignTriggers(lua_State* L)
 {
     DialogLineData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogLineData is nil");
-    FitnessSelector<CampaignTriggerData*>* val = FitnessSelectorBinding<CampaignTriggerData*>::get(L, 2);
+    FitnessSelector<CampaignTriggerData*>* val = FitnessSelectorBinding<CampaignTriggerData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected FitnessSelector_CampaignTriggerData");
     instance->campaignTriggers = *val;
     return 0;
@@ -815,7 +815,7 @@ static int DialogLineData_set_factionRelationEffects(lua_State* L)
 {
     DialogLineData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DialogLineData is nil");
-    ogre_unordered_map<GameData*, int>::type* val = FactionRelationEffectsMapBinding::get(L, 2);
+    ogre_unordered_map<GameData*, int>::type* val = FactionRelationEffectsMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'factionRelationEffects' must be ogre_unordered_map<GameData*, int>");
     instance->factionRelationEffects = *val;
     return 0;

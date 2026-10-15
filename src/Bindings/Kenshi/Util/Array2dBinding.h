@@ -21,7 +21,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static ArrayType* get(lua_State* L, int idx)
+        static ArrayType* getInstance(lua_State* L, int idx)
         {
             return checkObject<ArrayType>(L, idx, metaName);
         }
@@ -36,7 +36,7 @@ namespace KenshiLua
 
         static int get_nRows(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             lua_pushinteger(L, instance->nRows);
             return 1;
@@ -44,7 +44,7 @@ namespace KenshiLua
 
         static int get_nCols(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             lua_pushinteger(L, instance->nCols);
             return 1;
@@ -52,7 +52,7 @@ namespace KenshiLua
 
         static int set_nRows(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             instance->nRows = (unsigned int)luaL_checkinteger(L, 2);
             return 0;
@@ -60,7 +60,7 @@ namespace KenshiLua
 
         static int set_nCols(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             instance->nCols = (unsigned int)luaL_checkinteger(L, 2);
             return 0;
@@ -70,7 +70,7 @@ namespace KenshiLua
         // Missing exported funvtions in KenshiLib:
         static int resize(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             unsigned int nrows = (unsigned int)luaL_checkinteger(L, 2);
             unsigned int ncols = (unsigned int)luaL_checkinteger(L, 3);
@@ -84,7 +84,7 @@ namespace KenshiLua
 
         static int setToZeros(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             instance->setToZeros();
             typedef void (*SetZerosFn)(void*);
@@ -95,7 +95,7 @@ namespace KenshiLua
 
         static int getElement(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             int row = (int)luaL_checkinteger(L, 2);
             int col = (int)luaL_checkinteger(L, 3);
@@ -120,7 +120,7 @@ namespace KenshiLua
 
         static int setElement(lua_State* L)
         {
-            ArrayType* instance = get(L, 1);
+            ArrayType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "Array2d is nil");
             int row = (int)luaL_checkinteger(L, 2);
             int col = (int)luaL_checkinteger(L, 3);

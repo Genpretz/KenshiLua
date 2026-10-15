@@ -271,10 +271,10 @@ def extract_args_from_body(body: str):
     ):
         record(int(m.group(2)), m.group(1), "hand", 4)
 
-    # Pattern F: container/value Binding::get helpers. Their concrete type is not
+    # Pattern F: container/value Binding::getInstance helpers. Their concrete type is not
     # reliably recoverable from an auto declaration, but the Lua argument is userdata.
     for m in re.finditer(
-        r"\b([\w_]+)\s*=\s*[^;]*?\b[\w:]+Binding::get\s*\(\s*L\s*,\s*(\d+)",
+        r"\b([\w_]+)\s*=\s*[^;]*?\b[\w:]+Binding::(?:getInstance|get)\s*\(\s*L\s*,\s*(\d+)",
         body,
     ):
         record(int(m.group(2)), m.group(1), "userdata", 2)

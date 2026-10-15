@@ -17,7 +17,7 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
-    static int getInstance(lua_State* L);
+    static int getInstanceMethod(lua_State* L);
     static int createAppearanceData(lua_State* L);
     static int cleanValidateAppearanceData(lua_State* L);
     static int resetAll(lua_State* L);

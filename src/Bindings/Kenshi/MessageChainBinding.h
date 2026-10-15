@@ -21,7 +21,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static ChainType* get(lua_State* L, int idx)
+        static ChainType* getInstance(lua_State* L, int idx)
         {
             return checkObject<ChainType>(L, idx, metaName);
         }
@@ -91,7 +91,7 @@ namespace KenshiLua
         {
             ChainType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "MessageChain is nil");
-            auto* val = LektorPtrBinding<T>::get(L, 2);
+            auto* val = LektorPtrBinding<T>::getInstance(L, 2);
             if (!val) return luaL_error(L, "Expected lektor container object");
             instance->mainThreadData = *val;
             return 0;
@@ -108,7 +108,7 @@ namespace KenshiLua
         {
             ChainType* instance = getInstance(L, 1);
             if (!instance) return luaL_error(L, "MessageChain is nil");
-            auto* val = LektorPtrBinding<T>::get(L, 2);
+            auto* val = LektorPtrBinding<T>::getInstance(L, 2);
             if (!val) return luaL_error(L, "Expected lektor container object");
             instance->backThreadData = *val;
             return 0;

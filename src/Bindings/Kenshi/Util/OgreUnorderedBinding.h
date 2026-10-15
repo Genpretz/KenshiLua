@@ -48,7 +48,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static SetType* get(lua_State* L, int idx)
+        static SetType* getInstance(lua_State* L, int idx)
         {
             return checkObject<SetType>(L, idx, metaName);
         }
@@ -80,7 +80,7 @@ namespace KenshiLua
 
         static int index(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) { lua_pushnil(L); return 1; }
 
             if (lua_isstring(L, 2))
@@ -103,7 +103,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
 
             K key = LuaCodec<K>::read(L, 2, elemMetaName);
@@ -121,14 +121,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             lua_pushinteger(L, s ? (lua_Integer)s->size() : 0);
             return 1;
         }
 
         static int has(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) { lua_pushboolean(L, 0); return 1; }
             K key = LuaCodec<K>::read(L, 2, elemMetaName);
             lua_pushboolean(L, s->find(key) != s->end() ? 1 : 0);
@@ -137,7 +137,7 @@ namespace KenshiLua
 
         static int add(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
             K key = LuaCodec<K>::read(L, 2, elemMetaName);
             auto res = s->insert(key);
@@ -147,7 +147,7 @@ namespace KenshiLua
 
         static int remove(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
             K key = LuaCodec<K>::read(L, 2, elemMetaName);
             lua_pushboolean(L, s->erase(key) > 0 ? 1 : 0);
@@ -156,14 +156,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (s) s->clear();
             return 0;
         }
 
         static int toTable(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             if (!s) { lua_pushnil(L); return 1; }
             lua_createtable(L, 0, (int)s->size());
             for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
@@ -179,7 +179,7 @@ namespace KenshiLua
         // ContainerIteration.h for why the container is not walked step by step.
         static int pairs(lua_State* L)
         {
-            SetType* s = get(L, 1);
+            SetType* s = getInstance(L, 1);
             int count = 0;
             lua_createtable(L, s ? (int)s->size() * 2 : 0, 0);
             if (s)
@@ -251,7 +251,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static MapType* get(lua_State* L, int idx)
+        static MapType* getInstance(lua_State* L, int idx)
         {
             return checkObject<MapType>(L, idx, metaName);
         }
@@ -283,7 +283,7 @@ namespace KenshiLua
 
         static int index(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             if (!m) { lua_pushnil(L); return 1; }
 
             if (lua_isstring(L, 2))
@@ -315,7 +315,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             if (!m) return luaL_error(L, "map is nil");
 
             K key = LuaCodec<K>::read(L, 2, keyMetaName);
@@ -344,14 +344,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             lua_pushinteger(L, m ? (lua_Integer)m->size() : 0);
             return 1;
         }
 
         static int has(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             if (!m) { lua_pushboolean(L, 0); return 1; }
             K key = LuaCodec<K>::read(L, 2, keyMetaName);
             lua_pushboolean(L, m->find(key) != m->end() ? 1 : 0);
@@ -360,7 +360,7 @@ namespace KenshiLua
 
         static int remove(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             if (!m) return luaL_error(L, "map is nil");
             K key = LuaCodec<K>::read(L, 2, keyMetaName);
             lua_pushboolean(L, m->erase(key) > 0 ? 1 : 0);
@@ -369,14 +369,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             if (m) m->clear();
             return 0;
         }
 
         static int toTable(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             if (!m) { lua_pushnil(L); return 1; }
             lua_createtable(L, 0, (int)m->size());
             for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
@@ -399,7 +399,7 @@ namespace KenshiLua
         // ContainerIteration.h for why the container is not walked step by step.
         static int pairs(lua_State* L)
         {
-            MapType* m = get(L, 1);
+            MapType* m = getInstance(L, 1);
             int count = 0;
             lua_createtable(L, m ? (int)m->size() * 2 : 0, 0);
             if (m)

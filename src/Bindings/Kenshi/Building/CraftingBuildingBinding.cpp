@@ -134,7 +134,7 @@ static int CraftingBuilding_set_crafting(lua_State* L)
         instance->crafting.clear();
         return 0;
     }
-    auto* src = CraftingItemDequeBinding::get(L, 2);
+    auto* src = CraftingItemDequeBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set crafting must be std::deque<CraftingItem>");
     instance->crafting = *src;
     return 0;
@@ -201,7 +201,7 @@ static int CraftingBuilding_set_inItems(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    lektor<Item*>* val = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* val = LektorPtrBinding<Item*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'inItems' must be lektor<Item*>");
     instance->inItems = *val;
     return 0;
@@ -211,7 +211,7 @@ static int CraftingBuilding_set_partialItems(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    ogre_unordered_map<GameData*, float>::type* val = OgreUnorderedMapBinding<GameData*, float>::get(L, 2);
+    ogre_unordered_map<GameData*, float>::type* val = OgreUnorderedMapBinding<GameData*, float>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'partialItems' must be ogre_unordered_map<GameData*, float>");
     instance->partialItems = *val;
     return 0;
@@ -533,7 +533,7 @@ int CraftingBuildingBinding::getAvailableCrafts(lua_State* L)
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    lektor<GameDataGroup>* out = LektorValueReadOnlyBinding<GameDataGroup>::get(L, 2);
+    lektor<GameDataGroup>* out = LektorValueReadOnlyBinding<GameDataGroup>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getAvailableCrafts must be lektor<GameDataGroup>");
     instance->getAvailableCrafts(*out);
     return 0;
@@ -629,7 +629,7 @@ int CraftingBuildingBinding::getItemsWeWantRidOf(lua_State* L)
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getItemsWeWantRidOf must be lektor<GameData*>");
     bool looting = lua_toboolean(L, 3) != 0;
     instance->getItemsWeWantRidOf(*out, looting);
@@ -641,7 +641,7 @@ int CraftingBuildingBinding::_NV_getItemsWeWantRidOf(lua_State* L)
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
 
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getItemsWeWantRidOf must be lektor<GameData*>");
     bool looting = lua_toboolean(L, 3) != 0;
     instance->_NV_getItemsWeWantRidOf(*out, looting);

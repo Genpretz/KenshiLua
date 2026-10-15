@@ -54,7 +54,7 @@ static int FactionManager_set_participants(lua_State* L)
 {
     FactionManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionManager is nil");
-    lektor<Faction*>* val = LektorPtrBinding<Faction*>::get(L, 2);
+    lektor<Faction*>* val = LektorPtrBinding<Faction*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<Faction*>");
     instance->participants = *val;
     return 0;
@@ -64,7 +64,7 @@ static int FactionManager_set_toAddList(lua_State* L)
 {
     FactionManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionManager is nil");
-    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::get(L, 2);
+    lektor<Platoon*>* val = LektorPtrBinding<Platoon*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<Platoon*>");
     instance->toAddList = *val;
     return 0;

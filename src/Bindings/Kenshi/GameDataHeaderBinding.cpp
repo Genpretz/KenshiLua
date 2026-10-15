@@ -96,7 +96,7 @@ static int GameDataHeader_set_dependencies(lua_State* L)
 {
     GameDataHeader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataHeader is nil");
-    auto* val = LektorStringBinding<std::string>::get(L, 2);
+    auto* val = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set dependencies must be lektor<std::string>");
     instance->dependencies = *val;
     return 0;
@@ -106,7 +106,7 @@ static int GameDataHeader_set_references(lua_State* L)
 {
     GameDataHeader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataHeader is nil");
-    auto* val = LektorStringBinding<std::string>::get(L, 2);
+    auto* val = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set references must be lektor<std::string>");
     instance->references = *val;
     return 0;

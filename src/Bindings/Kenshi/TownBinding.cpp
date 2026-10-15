@@ -1582,7 +1582,7 @@ static int Town_set_powerInList(lua_State* L)
         instance->powerInList.clear();
         return 0;
     }
-    auto* src = HandFastArrayBinding::get(L, 2);
+    auto* src = HandFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set powerInList must be Ogre::FastArray<hand>");
     instance->powerInList = *src;
     return 0;
@@ -1611,7 +1611,7 @@ int TownBinding::chooseBuildingForResident(lua_State* L)
 {
     Town* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Town is nil");
-    lektor<Building*>* buildings = LektorPtrBinding<Building*>::get(L, 2);
+    lektor<Building*>* buildings = LektorPtrBinding<Building*>::getInstance(L, 2);
     TownBase::ResidentData* resident = checkObject<TownBase::ResidentData>(L, 3, "KenshiLua.ResidentData");
     Building* result = instance->chooseBuildingForResident(*buildings, resident);
     return pushObject<Building>(L, result, BuildingBinding::getMetatableName());
@@ -1622,7 +1622,7 @@ int TownBinding::chooseResidents(lua_State* L)
 {
     Town* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Town is nil");
-    lektor<Building*>* buildings = LektorPtrBinding<Building*>::get(L, 2);
+    lektor<Building*>* buildings = LektorPtrBinding<Building*>::getInstance(L, 2);
     instance->chooseResidents(*buildings);
     return 0;
 }

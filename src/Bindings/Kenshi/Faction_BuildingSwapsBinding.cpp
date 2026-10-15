@@ -36,7 +36,7 @@ static int BuildingSwaps_set_toReplace(lua_State* L)
 {
     Faction::BuildingSwaps* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildingSwaps is nil");
-    ogre_unordered_set<GameData*>::type* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    ogre_unordered_set<GameData*>::type* val = OgreUnorderedSetBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_set<GameData*>");
     instance->toReplace = *val;
     return 0;
@@ -46,7 +46,7 @@ static int BuildingSwaps_set_replaceWith(lua_State* L)
 {
     Faction::BuildingSwaps* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BuildingSwaps is nil");
-    FitnessSelector<GameData*>* val = FitnessSelectorBinding<GameData*>::get(L, 2);
+    FitnessSelector<GameData*>* val = FitnessSelectorBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected FitnessSelector_GameData");
     instance->replaceWith = *val;
     return 0;

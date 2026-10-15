@@ -264,7 +264,7 @@ static int DatapanelGUI_set_tabs(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-    lektor<MyGUI::Button*>* val = LektorPtrBinding<MyGUI::Button*>::get(L, 2);
+    lektor<MyGUI::Button*>* val = LektorPtrBinding<MyGUI::Button*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<MyGUI::Button*>");
     instance->tabs = *val;
     return 0;
@@ -1221,7 +1221,7 @@ int DatapanelGUIBinding::setLines(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-    lektor<StringPair>* data = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* data = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!data) return luaL_error(L, "Argument 2 to setLines must be lektor<StringPair>");
     int category = (int)luaL_checkinteger(L, 3);
     instance->setLines(*data, category);

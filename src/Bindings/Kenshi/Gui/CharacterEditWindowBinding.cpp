@@ -585,7 +585,7 @@ static int CharacterEditWindow_set_idleAnimations(lua_State* L)
         instance->idleAnimations.clear();
         return 0;
     }
-    auto* src = AnimationDataFastArrayBinding::get(L, 2);
+    auto* src = AnimationDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set idleAnimations must be Ogre::FastArray<AnimationData*>");
     instance->idleAnimations = *src;
     return 0;
@@ -600,7 +600,7 @@ static int CharacterEditWindow_set_characters(lua_State* L)
         instance->characters.clear();
         return 0;
     }
-    auto* src = CharacterFastArrayBinding::get(L, 2);
+    auto* src = CharacterFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set characters must be Ogre::FastArray<Character*>");
     instance->characters = *src;
     return 0;
@@ -615,7 +615,7 @@ static int CharacterEditWindow_set_racesGroups(lua_State* L)
         instance->racesGroups.clear();
         return 0;
     }
-    auto* src = RaceGroupDataFastArrayBinding::get(L, 2);
+    auto* src = RaceGroupDataFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set racesGroups must be Ogre::FastArray<RaceGroupData*>");
     instance->racesGroups = *src;
     return 0;
@@ -630,7 +630,7 @@ static int CharacterEditWindow_set_initialPositions(lua_State* L)
         instance->initialPositions.clear();
         return 0;
     }
-    auto* src = Vector3FastArrayBinding::get(L, 2);
+    auto* src = Vector3FastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set initialPositions must be Ogre::FastArray<Ogre::Vector3>");
     instance->initialPositions = *src;
     return 0;

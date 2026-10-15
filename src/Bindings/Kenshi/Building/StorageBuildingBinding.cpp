@@ -75,7 +75,7 @@ static int StorageBuilding_set_manyLimitItems(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    auto* val = LektorPtrBinding<StorageBuilding::ConsumptionItem*>::get(L, 2);
+    auto* val = LektorPtrBinding<StorageBuilding::ConsumptionItem*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'manyLimitItems' must be lektor<StorageBuilding::ConsumptionItem*>");
     instance->manyLimitItems = *val;
     return 0;
@@ -357,7 +357,7 @@ int StorageBuildingBinding::getItemsWeWantRidOf(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getItemsWeWantRidOf must be lektor<GameData*>");
     bool forceLooting = lua_toboolean(L, 3) != 0;
     instance->getItemsWeWantRidOf(*out, forceLooting);
@@ -368,7 +368,7 @@ int StorageBuildingBinding::_NV_getItemsWeWantRidOf(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getItemsWeWantRidOf must be lektor<GameData*>");
     bool forceLooting = lua_toboolean(L, 3) != 0;
     instance->_NV_getItemsWeWantRidOf(*out, forceLooting);
@@ -399,7 +399,7 @@ int StorageBuildingBinding::getResourcesNeededBecauseEmpty(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseEmpty must be lektor<GameData*>");
     instance->getResourcesNeededBecauseEmpty(*out);
     return 0;
@@ -409,7 +409,7 @@ int StorageBuildingBinding::_NV_getResourcesNeededBecauseEmpty(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseEmpty must be lektor<GameData*>");
     instance->_NV_getResourcesNeededBecauseEmpty(*out);
     return 0;
@@ -419,7 +419,7 @@ int StorageBuildingBinding::getResourcesNeededBecauseNotFull(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseNotFull must be lektor<GameData*>");
     instance->getResourcesNeededBecauseNotFull(*out);
     return 0;
@@ -429,7 +429,7 @@ int StorageBuildingBinding::_NV_getResourcesNeededBecauseNotFull(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseNotFull must be lektor<GameData*>");
     instance->_NV_getResourcesNeededBecauseNotFull(*out);
     return 0;
@@ -439,7 +439,7 @@ int StorageBuildingBinding::getConsumtionItems_inStock(lua_State* L)
 {
     StorageBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "StorageBuilding is nil");
-    auto* out = LektorPtrBinding<StorageBuilding::ConsumptionItem*>::get(L, 2);
+    auto* out = LektorPtrBinding<StorageBuilding::ConsumptionItem*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getConsumtionItems_inStock must be lektor<StorageBuilding::ConsumptionItem*>");
     instance->getConsumtionItems_inStock(*out);
     return 0;

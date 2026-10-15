@@ -228,7 +228,7 @@ static int TownBuildingsManager_set_buildingEntities(lua_State* L)
 {
     TownBuildingsManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TownBuildingsManager is nil");
-    auto* val = OgreUnorderedMapBinding<Building*, TownBuildingsManager::BuildingInfo>::get(L, 2);
+    auto* val = OgreUnorderedMapBinding<Building*, TownBuildingsManager::BuildingInfo>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'buildingEntities' must be ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>");
     instance->buildingEntities = *val;
     return 0;

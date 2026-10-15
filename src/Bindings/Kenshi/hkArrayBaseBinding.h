@@ -23,7 +23,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static ArrayType* get(lua_State* L, int idx)
+        static ArrayType* getInstance(lua_State* L, int idx)
         {
             return checkObject<ArrayType>(L, idx, metaName);
         }

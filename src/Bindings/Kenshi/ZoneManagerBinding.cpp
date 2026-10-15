@@ -336,7 +336,7 @@ int ZoneManagerBinding::levelEditorGetAllSelectedObjects(lua_State* L)
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to levelEditorGetAllSelectedObjects must be lektor<RootObject*>");
     itemType type = (itemType)luaL_checkinteger(L, 3);
     instance->levelEditorGetAllSelectedObjects(*out, type);
@@ -349,7 +349,7 @@ int ZoneManagerBinding::getIsland(lua_State* L)
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
     ZoneMap* zone = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
-    auto* out = LektorPtrBinding<ZoneMap*>::get(L, 3);
+    auto* out = LektorPtrBinding<ZoneMap*>::getInstance(L, 3);
     if (!out) return luaL_error(L, "Argument 3 to getIsland must be lektor<ZoneMap*>");
 
     instance->getIsland(zone, *out);
@@ -978,7 +978,7 @@ int ZoneManagerBinding::getAllActiveZonesT(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
-    lektor<iVector2>* out = LektorValueBinding<iVector2>::get(L, 2);
+    lektor<iVector2>* out = LektorValueBinding<iVector2>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getAllActiveZonesT must be lektor<iVector2>");
     instance->getAllActiveZonesT(*out);
     return 0;
@@ -988,7 +988,7 @@ int ZoneManagerBinding::_NV_getAllActiveZonesT(lua_State* L)
 {
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
-    lektor<iVector2>* out = LektorValueBinding<iVector2>::get(L, 2);
+    lektor<iVector2>* out = LektorValueBinding<iVector2>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getAllActiveZonesT must be lektor<iVector2>");
     instance->_NV_getAllActiveZonesT(*out);
     return 0;

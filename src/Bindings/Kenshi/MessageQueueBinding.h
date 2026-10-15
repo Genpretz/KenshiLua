@@ -20,7 +20,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static QueueType* get(lua_State* L, int idx)
+        static QueueType* getInstance(lua_State* L, int idx)
         {
             return checkObject<QueueType>(L, idx, metaName);
         }

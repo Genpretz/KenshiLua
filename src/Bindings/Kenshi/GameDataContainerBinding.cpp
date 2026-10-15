@@ -300,7 +300,7 @@ int GameDataContainerBinding::addNewData(lua_State* L)
         instance->addNewData(dat, forceID);
         return 0;
     }
-    else if (lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2))
+    else if (lektor<GameData*>* list = LektorPtrBinding<GameData*>::getInstance(L, 2))
     {
         instance->addNewData(*list);
         return 0;
@@ -339,7 +339,7 @@ int GameDataContainerBinding::getDataOfType(lua_State* L)
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
-    lektor<GameData*>* list = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* list = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!list) return luaL_error(L, "Argument 2 to getDataOfType must be lektor<GameData*>");
 
     itemType type = (itemType)luaL_checkinteger(L, 3);
@@ -415,7 +415,7 @@ int GameDataContainerBinding::findAllDataThatReferencesThis(lua_State* L)
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to findAllDataThatReferencesThis must be lektor<GameData*>");
 
     GameData* what = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());

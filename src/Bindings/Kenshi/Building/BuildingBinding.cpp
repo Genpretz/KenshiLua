@@ -3258,7 +3258,7 @@ static int Building_set_doors(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    lektor<Building*>* val = LektorPtrBinding<Building*>::get(L, 2);
+    lektor<Building*>* val = LektorPtrBinding<Building*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<Building*>");
     instance->doors = *val;
     return 0;
@@ -3269,7 +3269,7 @@ int BuildingBinding::getMountedBuildings(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
 
-    lektor<Building*>* out = lua_isnoneornil(L, 2) ? nullptr : LektorPtrBinding<Building*>::get(L, 2);
+    lektor<Building*>* out = lua_isnoneornil(L, 2) ? nullptr : LektorPtrBinding<Building*>::getInstance(L, 2);
     if (!lua_isnoneornil(L, 2) && !out) return luaL_error(L, "Argument 2 to getMountedBuildings must be lektor<Building*> or nil");
     int result = instance->getMountedBuildings(out);
     lua_pushinteger(L, result);
@@ -3281,7 +3281,7 @@ int BuildingBinding::findAllFurnitureWithFunction(lua_State* L)
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
 
-    auto* out = LektorPtrBinding<Building*>::get(L, 2);
+    auto* out = LektorPtrBinding<Building*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to findAllFurnitureWithFunction must be lektor<Building*>");
     BuildingFunction func = (BuildingFunction)luaL_checkinteger(L, 3);
 

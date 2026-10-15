@@ -13,7 +13,7 @@ namespace KenshiLua
         static const char* metaName;
         static const char* elemMetaName;
 
-        static VecType* get(lua_State* L, int idx)
+        static VecType* getInstance(lua_State* L, int idx)
         {
             return checkObject<VecType>(L, idx, metaName);
         }
@@ -22,14 +22,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             lua_pushinteger(L, vec ? (lua_Integer)vec->size() : 0);
             return 1;
         }
 
         static int index(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) { lua_pushnil(L); return 1; }
 
             // Check if key is numeric (1-based index)
@@ -58,7 +58,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
 
             if (!lua_isnumber(L, 2))
@@ -92,7 +92,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
 
             T val;
@@ -113,7 +113,7 @@ namespace KenshiLua
 
         static int pop(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
             if (vec->empty()) return luaL_error(L, "vector:pop container is empty");
             T val = vec->back();
@@ -131,7 +131,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > vec->size()) return luaL_error(L, "vector:removeAt index out of range");
@@ -141,7 +141,7 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (vec) vec->clear();
             return 0;
         }
@@ -153,7 +153,7 @@ namespace KenshiLua
 
         static int toTable(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)vec->size(), 0);
             for (size_t i = 0; i < vec->size(); ++i)
@@ -170,7 +170,7 @@ namespace KenshiLua
         // Stateless iterator for __pairs/__ipairs: upvalue=none, control=integer index
         static int iterNext(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return 0;
             size_t i = (size_t)lua_tointeger(L, 2); // current control (0-based previous)
             i += 1; // advance to next (1-based)
@@ -237,7 +237,7 @@ namespace KenshiLua
         static const char* metaName;
         static const char* elemMetaName;
 
-        static VecType* get(lua_State* L, int idx)
+        static VecType* getInstance(lua_State* L, int idx)
         {
             return checkObject<VecType>(L, idx, metaName);
         }
@@ -246,14 +246,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             lua_pushinteger(L, vec ? (lua_Integer)vec->size() : 0);
             return 1;
         }
 
         static int index(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) { lua_pushnil(L); return 1; }
 
             if (lua_isnumber(L, 2))
@@ -278,7 +278,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
             if (!lua_isnumber(L, 2)) return luaL_error(L, "vector: index must be numeric");
 
@@ -313,7 +313,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
@@ -329,7 +329,7 @@ namespace KenshiLua
 
         static int pop(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
             if (vec->empty()) return luaL_error(L, "vector:pop container is empty");
             T val = vec->back();
@@ -346,7 +346,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return luaL_error(L, "vector is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > vec->size()) return luaL_error(L, "vector:removeAt index out of range");
@@ -356,7 +356,7 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (vec) vec->clear();
             return 0;
         }
@@ -365,7 +365,7 @@ namespace KenshiLua
 
         static int toTable(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)vec->size(), 0);
             for (size_t i = 0; i < vec->size(); ++i)
@@ -384,7 +384,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            VecType* vec = get(L, 1);
+            VecType* vec = getInstance(L, 1);
             if (!vec) return 0;
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > vec->size()) return 0;

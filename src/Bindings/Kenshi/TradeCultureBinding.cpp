@@ -56,7 +56,7 @@ static int TradeCulture_set_forbiddenItems(lua_State* L)
 {
     TradeCulture* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TradeCulture is nil");
-    lektor<GameData*>* val = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* val = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<GameData*>");
     instance->forbiddenItems = *val;
     return 0;
@@ -66,7 +66,7 @@ static int TradeCulture_set_illegalBuildings(lua_State* L)
 {
     TradeCulture* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TradeCulture is nil");
-    StdSetBinding<GameData*>::SetType* val = StdSetBinding<GameData*>::get(L, 2);
+    StdSetBinding<GameData*>::SetType* val = StdSetBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected std::set<GameData*>");
     instance->illegalBuildings = *val;
     return 0;
@@ -76,7 +76,7 @@ static int TradeCulture_set_happyBuildings(lua_State* L)
 {
     TradeCulture* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TradeCulture is nil");
-    StdSetBinding<GameData*>::SetType* val = StdSetBinding<GameData*>::get(L, 2);
+    StdSetBinding<GameData*>::SetType* val = StdSetBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected std::set<GameData*>");
     instance->happyBuildings = *val;
     return 0;
@@ -86,7 +86,7 @@ static int TradeCulture_set_illegalItems(lua_State* L)
 {
     TradeCulture* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TradeCulture is nil");
-    StdSetBinding<GameData*>::SetType* val = StdSetBinding<GameData*>::get(L, 2);
+    StdSetBinding<GameData*>::SetType* val = StdSetBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected std::set<GameData*>");
     instance->illegalItems = *val;
     return 0;
@@ -96,7 +96,7 @@ static int TradeCulture_set_tradeGoodsMults(lua_State* L)
 {
     TradeCulture* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TradeCulture is nil");
-    StdMapBinding<GameData*, float>::MapType* val = StdMapBinding<GameData*, float>::get(L, 2);
+    StdMapBinding<GameData*, float>::MapType* val = StdMapBinding<GameData*, float>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected std::map<GameData*, float>");
     instance->tradeGoodsMults = *val;
     return 0;

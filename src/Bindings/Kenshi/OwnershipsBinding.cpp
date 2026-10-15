@@ -336,7 +336,7 @@ int OwnershipsBinding::getOwnedBuildingsH(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    lektor<hand>* out = LektorValueBinding<hand>::get(L, 2);
+    lektor<hand>* out = LektorValueBinding<hand>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getOwnedBuildingsH must be lektor<hand>");
     instance->getOwnedBuildingsH(*out);
     return 0;
@@ -346,7 +346,7 @@ int OwnershipsBinding::getOwnedBuildingPtrs(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    lektor<Building*>* out = LektorPtrBinding<Building*>::get(L, 2);
+    lektor<Building*>* out = LektorPtrBinding<Building*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getOwnedBuildingPtrs must be lektor<Building*>");
     TownBase* town = lua_isnoneornil(L, 3) ? nullptr : checkObject<TownBase>(L, 3, TownBaseBinding::getMetatableName());
     instance->getOwnedBuildingPtrs(*out, town);
@@ -357,7 +357,7 @@ int OwnershipsBinding::getHomeFurnitureOfType(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    lektor<Building*>* out = LektorPtrBinding<Building*>::get(L, 2);
+    lektor<Building*>* out = LektorPtrBinding<Building*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getHomeFurnitureOfType must be lektor<Building*>");
     BuildingFunction type = (BuildingFunction)luaL_checkinteger(L, 3);
     instance->getHomeFurnitureOfType(*out, type);
@@ -368,7 +368,7 @@ int OwnershipsBinding::getOwnedPtrs(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getOwnedPtrs must be lektor<RootObject*>");
     itemType type = (itemType)luaL_checkinteger(L, 3);
     int result = instance->getOwnedPtrs(*out, type);
@@ -380,7 +380,7 @@ int OwnershipsBinding::getBuildingsWithFunction(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    lektor<Building*>* out = LektorPtrBinding<Building*>::get(L, 2);
+    lektor<Building*>* out = LektorPtrBinding<Building*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getBuildingsWithFunction must be lektor<Building*>");
     BuildingFunction bf = (BuildingFunction)luaL_checkinteger(L, 3);
     instance->getBuildingsWithFunction(*out, bf);
@@ -424,7 +424,7 @@ static int Ownerships_set_slaves(lua_State* L)
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
     std::set<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>* src = 
-        StdSetBinding<hand>::get(L, 2);
+        StdSetBinding<hand>::getInstance(L, 2);
     if (!src) return luaL_error(L, "Expected std::set<hand>");
     instance->slaves = *src;
     return 0;
@@ -435,7 +435,7 @@ static int Ownerships_set_stuff(lua_State* L)
 {
     Ownerships* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Ownerships is nil");
-    lektor<hand>* src = LektorValueBinding<hand>::get(L, 2);
+    lektor<hand>* src = LektorValueBinding<hand>::getInstance(L, 2);
     if (!src) return luaL_error(L, "Expected lektor<hand>");
     instance->stuff = *src;
     return 0;

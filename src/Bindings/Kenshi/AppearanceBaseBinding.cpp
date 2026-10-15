@@ -269,7 +269,7 @@ static int AppearanceBase_set_attachedHarpoons(lua_State* L)
         instance->attachedHarpoons.clear();
         return 0;
     }
-    auto* src = HarpoonFastArrayBinding::get(L, 2);
+    auto* src = HarpoonFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set attachedHarpoons must be Ogre::FastArray<Harpoon*>");
     instance->attachedHarpoons = *src;
     return 0;
@@ -284,7 +284,7 @@ static int AppearanceBase_set_attachedEffects(lua_State* L)
         instance->attachedEffects.clear();
         return 0;
     }
-    auto* src = AttachedEffectFastArrayBinding::get(L, 2);
+    auto* src = AttachedEffectFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set attachedEffects must be Ogre::FastArray<AttachedEffect*>");
     instance->attachedEffects = *src;
     return 0;
@@ -299,7 +299,7 @@ static int AppearanceBase_set_attachedEffectsToRemove(lua_State* L)
         instance->attachedEffectsToRemove.clear();
         return 0;
     }
-    auto* src = AttachedEffectFastArrayBinding::get(L, 2);
+    auto* src = AttachedEffectFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set attachedEffectsToRemove must be Ogre::FastArray<AttachedEffect*>");
     instance->attachedEffectsToRemove = *src;
     return 0;
@@ -314,7 +314,7 @@ static int AppearanceBase_set_woundsList(lua_State* L)
         instance->woundsList.clear();
         return 0;
     }
-    auto* src = WoundFastArrayBinding::get(L, 2);
+    auto* src = WoundFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set woundsList must be Ogre::FastArray<Wound*>");
     instance->woundsList = *src;
     return 0;

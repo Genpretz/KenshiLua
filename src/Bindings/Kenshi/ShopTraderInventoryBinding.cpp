@@ -41,7 +41,7 @@ static int ShopTraderInventory_set_inventories(lua_State* L)
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
     ogre_unordered_map<hand, InventorySection*>::type* val = 
-        OgreUnorderedMapBinding<hand, InventorySection*>::get(L, 2);
+        OgreUnorderedMapBinding<hand, InventorySection*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'inventories' must be ogre_unordered_map<hand, InventorySection*>");
     instance->inventories = *val;
     return 0;

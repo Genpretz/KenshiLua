@@ -663,7 +663,7 @@ def object_reads(body):
         body,
     ):
         yield int(match.group(1)), "ref:binding:" + match.group(2)
-    for match in re.finditer(r"([A-Za-z_]\w*Binding)\s*<([^;]*?)>\s*::\s*get\s*\(\s*L\s*,\s*(\d+)", body):
+    for match in re.finditer(r"([A-Za-z_]\w*Binding)\s*<([^;]*?)>\s*::\s*(?:getInstance|get)\s*\(\s*L\s*,\s*(\d+)", body):
         yield int(match.group(3)), "ref:binding:" + template_binding_id(match.group(1), match.group(2))
     for match in re.finditer(r"\blua_rawgeti\s*\(\s*L\s*,\s*(\d+)\s*,", body):
         window = body[match.end():match.end() + 300]
@@ -1311,6 +1311,11 @@ def build_inventory():
         encoding="utf-8", errors="ignore"
     )
     enum_globals = set(re.findall(r'lua_setglobal\s*\(\s*L\s*,\s*"([A-Za-z_]\w*)"', enum_text))
+    if re.search(
+        r'setNestedClassTable\s*\(\s*L\s*,\s*"YesNoMaybe"\s*,\s*"ynm"\s*\)',
+        enum_text,
+    ):
+        enum_globals.add("YesNoMaybe")
     for entry in classes:
         if entry["kind"] == "class" and entry["lua_type"] in enum_globals:
             renamed = entry["lua_type"] + "Value"

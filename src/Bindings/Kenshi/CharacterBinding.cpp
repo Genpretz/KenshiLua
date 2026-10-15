@@ -5185,7 +5185,7 @@ static int Character_set_ragdollMessages(lua_State* L)
         instance->ragdollMessages.clear();
         return 0;
     }
-    auto* src = CharacterRagdollMsgDequeBinding::get(L, 2);
+    auto* src = CharacterRagdollMsgDequeBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set ragdollMessages must be std::deque<Character::RagdollMsg>");
     instance->ragdollMessages = *src;
     return 0;
@@ -5767,7 +5767,7 @@ int CharacterBinding::hasItemsFrom(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
     StorageBuilding* from = checkObject<StorageBuilding>(L, 2, StorageBuildingBinding::getMetatableName());
-    ogre_unordered_set<GameData*>::type* allTheOnesWeHave = OgreUnorderedSetBinding<GameData*>::get(L, 3);
+    ogre_unordered_set<GameData*>::type* allTheOnesWeHave = OgreUnorderedSetBinding<GameData*>::getInstance(L, 3);
     if (!allTheOnesWeHave) return luaL_error(L, "Argument 2 must be an OgreUnorderedSet");
     bool result = instance->hasItemsFrom(from, *allTheOnesWeHave);
     lua_pushboolean(L, result ? 1 : 0);
@@ -5779,7 +5779,7 @@ int CharacterBinding::_NV_hasItemsFrom(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
     StorageBuilding* from = checkObject<StorageBuilding>(L, 2, StorageBuildingBinding::getMetatableName());
-    ogre_unordered_set<GameData*>::type* allTheOnesWeHave = OgreUnorderedSetBinding<GameData*>::get(L, 3);
+    ogre_unordered_set<GameData*>::type* allTheOnesWeHave = OgreUnorderedSetBinding<GameData*>::getInstance(L, 3);
     if (!allTheOnesWeHave) return luaL_error(L, "Argument 2 must be an OgreUnorderedSet");
     bool result = instance->_NV_hasItemsFrom(from, *allTheOnesWeHave);
     lua_pushboolean(L, result ? 1 : 0);
@@ -5800,7 +5800,7 @@ int CharacterBinding::debugIndicateCharacters(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    lektor<Character*>* list = LektorPtrBinding<Character*>::get(L, 2);
+    lektor<Character*>* list = LektorPtrBinding<Character*>::getInstance(L, 2);
     if (!list) return luaL_error(L, "Argument 1 must be a lektor<Character*>");
     instance->debugIndicateCharacters(*list);
     return 0;

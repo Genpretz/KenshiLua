@@ -83,7 +83,7 @@ static int DataCategory_set_ranges(lua_State* L)
         inst->ranges.clear();
         return 0;
     }
-    auto* src = DataRangeFastArrayBinding::get(L, 2);
+    auto* src = DataRangeFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set ranges must be Ogre::FastArray<DataRange>");
     inst->ranges = *src;
     return 0;
@@ -98,7 +98,7 @@ static int DataCategory_set_posesRanges(lua_State* L)
         inst->posesRanges.clear();
         return 0;
     }
-    auto* src = DataRangePoseFastArrayBinding::get(L, 2);
+    auto* src = DataRangePoseFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set posesRanges must be Ogre::FastArray<DataRangePose>");
     inst->posesRanges = *src;
     return 0;
@@ -113,7 +113,7 @@ static int DataCategory_set_vectorRanges(lua_State* L)
         inst->vectorRanges.clear();
         return 0;
     }
-    auto* src = DataRangeVectorFastArrayBinding::get(L, 2);
+    auto* src = DataRangeVectorFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set vectorRanges must be Ogre::FastArray<DataRangeVector>");
     inst->vectorRanges = *src;
     return 0;

@@ -69,7 +69,7 @@ static int Limiter_set_racesExclude(lua_State* L)
 {
     Limiter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Limiter is nil");
-    auto* val = StdSetBinding<RaceData*>::get(L, 2);
+    auto* val = StdSetBinding<RaceData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'racesExclude' must be std::set<RaceData*>");
     instance->racesExclude = *val;
     return 0;
@@ -79,7 +79,7 @@ static int Limiter_set_racesInclude(lua_State* L)
 {
     Limiter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Limiter is nil");
-    auto* val = StdSetBinding<RaceData*>::get(L, 2);
+    auto* val = StdSetBinding<RaceData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'racesInclude' must be std::set<RaceData*>");
     instance->racesInclude = *val;
     return 0;

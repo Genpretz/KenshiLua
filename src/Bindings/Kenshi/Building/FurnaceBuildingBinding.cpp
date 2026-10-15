@@ -212,7 +212,7 @@ int FurnaceBuildingBinding::getResourcesNeededBecauseNotFull(lua_State* L)
 {
     FurnaceBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseNotFull must be lektor<GameData*>");
     instance->getResourcesNeededBecauseNotFull(*out);
     return 0;
@@ -222,7 +222,7 @@ int FurnaceBuildingBinding::_NV_getResourcesNeededBecauseNotFull(lua_State* L)
 {
     FurnaceBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseNotFull must be lektor<GameData*>");
     instance->_NV_getResourcesNeededBecauseNotFull(*out);
     return 0;
@@ -232,7 +232,7 @@ int FurnaceBuildingBinding::getResourcesNeededBecauseEmpty(lua_State* L)
 {
     FurnaceBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getResourcesNeededBecauseEmpty must be lektor<GameData*>");
     instance->getResourcesNeededBecauseEmpty(*out);
     return 0;
@@ -242,7 +242,7 @@ int FurnaceBuildingBinding::_NV_getResourcesNeededBecauseEmpty(lua_State* L)
 {
     FurnaceBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FurnaceBuilding is nil");
-    lektor<GameData*>* out = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* out = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getResourcesNeededBecauseEmpty must be lektor<GameData*>");
     instance->_NV_getResourcesNeededBecauseEmpty(*out);
     return 0;

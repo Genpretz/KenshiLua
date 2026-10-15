@@ -242,7 +242,7 @@ static int FarmBuilding_set_cropMultipliers(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    ogre_unordered_map<CropType, float>::type* val = OgreUnorderedMapBinding<CropType, float>::get(L, 2);
+    ogre_unordered_map<CropType, float>::type* val = OgreUnorderedMapBinding<CropType, float>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'cropMultipliers' must be ogre_unordered_map<CropType, float>");
     instance->cropMultipliers = *val;
     return 0;
@@ -267,7 +267,7 @@ static int FarmBuilding_set_plants(lua_State* L)
 {
     FarmBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FarmBuilding is nil");
-    lektor<FarmBuilding::Plant>* val = LektorValueBinding<FarmBuilding::Plant>::get(L, 2);
+    lektor<FarmBuilding::Plant>* val = LektorValueBinding<FarmBuilding::Plant>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'plants' must be lektor<FarmBuilding::Plant>");
     instance->plants = *val;
     return 0;

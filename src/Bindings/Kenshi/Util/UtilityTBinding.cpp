@@ -628,7 +628,7 @@ int UtilityTBinding::getFilesInDir(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    lektor<std::string>* out = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getFilesInDir must be lektor<std::string>");
 
     std::string dir = luaL_checkstring(L, 3);
@@ -643,7 +643,7 @@ int UtilityTBinding::getFilesInGameDir(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    lektor<std::string>* out = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getFilesInGameDir must be lektor<std::string>");
 
     std::string dir = luaL_checkstring(L, 3);
@@ -658,7 +658,7 @@ int UtilityTBinding::getDirsInDir(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    lektor<std::string>* out = LektorStringBinding<std::string>::get(L, 2);
+    lektor<std::string>* out = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getDirsInDir must be lektor<std::string>");
 
     std::string dir = luaL_checkstring(L, 3);

@@ -1416,7 +1416,7 @@ static int PlayerInterface_set_playerCharacters(lua_State* L)
 {
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
-    lektor<Character*>* src = LektorPtrBinding<Character*>::get(L, 2);
+    lektor<Character*>* src = LektorPtrBinding<Character*>::getInstance(L, 2);
     if (src) instance->playerCharacters = *src;
     return 0;
 }
@@ -1546,7 +1546,7 @@ int PlayerInterfaceBinding::recruit(lua_State* L)
     bool editor = lua_toboolean(L, 3) != 0;
     bool res = false;
     if (testObject<lektor<Character*>>(L, 2, "lektor<Character*>") != nullptr) {
-        lektor<Character*>* list = LektorPtrBinding<Character*>::get(L, 2);
+        lektor<Character*>* list = LektorPtrBinding<Character*>::getInstance(L, 2);
         res = instance->recruit(*list, editor);
     } else {
         Character* c = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());

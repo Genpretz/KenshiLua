@@ -60,7 +60,7 @@ static int FactionLeader_set_biomeTerritory(lua_State* L)
 {
     FactionLeader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionLeader is nil");
-    lektor<GameData*>* val = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* val = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<GameData*>");
     instance->biomeTerritory = *val;
     return 0;
@@ -81,7 +81,7 @@ int FactionLeaderBinding::getEnemyMissionTargetList(lua_State* L)
     FactionLeader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionLeader is nil");
 
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "out is nil");
     GameData* mission = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
     instance->getEnemyMissionTargetList(*out, mission);

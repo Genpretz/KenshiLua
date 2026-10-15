@@ -2986,7 +2986,7 @@ int CharStatsBinding::_chooseAttacks(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    FitnessSelector<CombatTechniqueData*>* possibleAttacks = FitnessSelectorBinding<CombatTechniqueData*>::get(L, 2);
+    FitnessSelector<CombatTechniqueData*>* possibleAttacks = FitnessSelectorBinding<CombatTechniqueData*>::getInstance(L, 2);
     if (!possibleAttacks) return luaL_error(L, "Expected FitnessSelector<CombatTechniqueData*>");
     float range = (float)luaL_checknumber(L, 3);
     float weaponReach = (float)luaL_checknumber(L, 4);
@@ -3075,7 +3075,7 @@ static int CharStats_set_attacks(lua_State* L)
         pAttacks->clear();
         return 0;
     }
-    lektor<CombatTechniqueData*>* val = CombatTechniqueDataLektorBinding::get(L, 2);
+    lektor<CombatTechniqueData*>* val = CombatTechniqueDataLektorBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'attacks' must be lektor<CombatTechniqueData*>");
     *pAttacks = *val;
     return 0;
@@ -3096,7 +3096,7 @@ static int CharStats_set_blocks(lua_State* L)
         pBlocks->clear();
         return 0;
     }
-    lektor<CombatTechniqueData*>* val = CombatTechniqueDataLektorBinding::get(L, 2);
+    lektor<CombatTechniqueData*>* val = CombatTechniqueDataLektorBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'blocks' must be lektor<CombatTechniqueData*>");
     *pBlocks = *val;
     return 0;

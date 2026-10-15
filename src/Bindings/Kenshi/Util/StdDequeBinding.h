@@ -17,7 +17,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static DequeType* get(lua_State* L, int idx)
+        static DequeType* getInstance(lua_State* L, int idx)
         {
             return checkObject<DequeType>(L, idx, metaName);
         }
@@ -26,14 +26,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             lua_pushinteger(L, d ? (lua_Integer)d->size() : 0);
             return 1;
         }
 
         static int index(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) { lua_pushnil(L); return 1; }
 
             if (lua_isnumber(L, 2))
@@ -50,7 +50,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (!lua_isnumber(L, 2)) return luaL_error(L, "deque: index must be numeric");
 
@@ -83,7 +83,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             T* ptr = checkObject<T>(L, 2, elemMetaName);
             if (!ptr) return luaL_error(L, "deque: expected valid object for push");
@@ -93,7 +93,7 @@ namespace KenshiLua
 
         static int push_front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             T* ptr = checkObject<T>(L, 2, elemMetaName);
             if (!ptr) return luaL_error(L, "deque: expected valid object for push_front");
@@ -103,7 +103,7 @@ namespace KenshiLua
 
         static int pop_back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->back();
@@ -113,7 +113,7 @@ namespace KenshiLua
 
         static int pop_front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->front();
@@ -123,21 +123,21 @@ namespace KenshiLua
 
         static int front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             return pushObject<T>(L, &d->front(), elemMetaName);
         }
 
         static int back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             return pushObject<T>(L, &d->back(), elemMetaName);
         }
 
         static int removeAt(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > d->size()) return luaL_error(L, "deque: removeAt index out of range");
@@ -147,14 +147,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (d) d->clear();
             return 0;
         }
 
         static int empty(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             lua_pushboolean(L, (!d || d->empty()) ? 1 : 0);
             return 1;
         }
@@ -163,7 +163,7 @@ namespace KenshiLua
 
         static int toTable(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)d->size(), 0);
             for (size_t i = 0; i < d->size(); ++i)
@@ -176,7 +176,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return 0;
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > d->size()) return 0;
@@ -244,7 +244,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static DequeType* get(lua_State* L, int idx)
+        static DequeType* getInstance(lua_State* L, int idx)
         {
             return checkObject<DequeType>(L, idx, metaName);
         }
@@ -253,14 +253,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             lua_pushinteger(L, d ? (lua_Integer)d->size() : 0);
             return 1;
         }
 
         static int index(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) { lua_pushnil(L); return 1; }
 
             if (lua_isnumber(L, 2))
@@ -278,7 +278,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (!lua_isnumber(L, 2)) return luaL_error(L, "deque: index must be numeric");
 
@@ -303,7 +303,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             d->push_back(LuaCodec<T>::read(L, 2, nullptr));
             return 0;
@@ -311,7 +311,7 @@ namespace KenshiLua
 
         static int push_front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             d->push_front(LuaCodec<T>::read(L, 2, nullptr));
             return 0;
@@ -319,7 +319,7 @@ namespace KenshiLua
 
         static int pop_back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->back();
@@ -330,7 +330,7 @@ namespace KenshiLua
 
         static int pop_front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->front();
@@ -341,7 +341,7 @@ namespace KenshiLua
 
         static int front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             LuaCodec<T>::push(L, d->front(), nullptr);
             return 1;
@@ -349,7 +349,7 @@ namespace KenshiLua
 
         static int back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             LuaCodec<T>::push(L, d->back(), nullptr);
             return 1;
@@ -357,7 +357,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > d->size()) return luaL_error(L, "deque: removeAt index out of range");
@@ -367,14 +367,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (d) d->clear();
             return 0;
         }
 
         static int empty(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             lua_pushboolean(L, (!d || d->empty()) ? 1 : 0);
             return 1;
         }
@@ -383,7 +383,7 @@ namespace KenshiLua
 
         static int toTable(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)d->size(), 0);
             for (size_t i = 0; i < d->size(); ++i)
@@ -396,7 +396,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return 0;
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > d->size()) return 0;
@@ -462,7 +462,7 @@ namespace KenshiLua
 
         static const char* getMetatableName() { return metaName; }
 
-        static DequeType* get(lua_State* L, int idx)
+        static DequeType* getInstance(lua_State* L, int idx)
         {
             return checkObject<DequeType>(L, idx, metaName);
         }
@@ -471,14 +471,14 @@ namespace KenshiLua
 
         static int len(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             lua_pushinteger(L, d ? (lua_Integer)d->size() : 0);
             return 1;
         }
 
         static int index(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) { lua_pushnil(L); return 1; }
 
             if (lua_isnumber(L, 2))
@@ -503,7 +503,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (!lua_isnumber(L, 2)) return luaL_error(L, "deque: index must be numeric");
 
@@ -538,7 +538,7 @@ namespace KenshiLua
 
         static int push_back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
@@ -554,7 +554,7 @@ namespace KenshiLua
 
         static int push_front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
@@ -570,7 +570,7 @@ namespace KenshiLua
 
         static int pop_back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->back();
@@ -587,7 +587,7 @@ namespace KenshiLua
 
         static int pop_front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->front();
@@ -604,7 +604,7 @@ namespace KenshiLua
 
         static int front(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             T val = d->front();
             if (!val) { lua_pushnil(L); return 1; }
@@ -619,7 +619,7 @@ namespace KenshiLua
 
         static int back(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             T val = d->back();
             if (!val) { lua_pushnil(L); return 1; }
@@ -634,7 +634,7 @@ namespace KenshiLua
 
         static int removeAt(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
             size_t i = (size_t)luaL_checkinteger(L, 2);
             if (i < 1 || i > d->size()) return luaL_error(L, "deque: removeAt index out of range");
@@ -644,14 +644,14 @@ namespace KenshiLua
 
         static int clear(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (d) d->clear();
             return 0;
         }
 
         static int empty(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             lua_pushboolean(L, (!d || d->empty()) ? 1 : 0);
             return 1;
         }
@@ -660,7 +660,7 @@ namespace KenshiLua
 
         static int toTable(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) { lua_pushnil(L); return 1; }
             lua_createtable(L, (int)d->size(), 0);
             for (size_t i = 0; i < d->size(); ++i)
@@ -682,7 +682,7 @@ namespace KenshiLua
 
         static int iterNext(lua_State* L)
         {
-            DequeType* d = get(L, 1);
+            DequeType* d = getInstance(L, 1);
             if (!d) return 0;
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > d->size()) return 0;

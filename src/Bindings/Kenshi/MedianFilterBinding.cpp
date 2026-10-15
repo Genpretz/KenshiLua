@@ -80,7 +80,7 @@ static int MedianFilter_set_mHistoryBufferX(lua_State* L)
         instance->mHistoryBufferX.clear();
         return 0;
     }
-    auto* src = FloatDequeBinding::get(L, 2);
+    auto* src = FloatDequeBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set mHistoryBufferX must be std::deque<float>");
     instance->mHistoryBufferX = *src;
     return 0;

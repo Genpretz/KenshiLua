@@ -492,7 +492,7 @@ int ArmourBinding::getTooltipData1(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    auto* lines = OgreVectorValueBinding<StringPair>::getInstance(L, 2);
     if (!lines) return luaL_error(L, "Argument 2 to getTooltipData1 must be ogre_vector<StringPair>");
     instance->getTooltipData1(*lines);
     return 0;
@@ -502,7 +502,7 @@ int ArmourBinding::_NV_getTooltipData1(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    auto* lines = OgreVectorValueBinding<StringPair>::getInstance(L, 2);
     if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData1 must be ogre_vector<StringPair>");
     instance->_NV_getTooltipData1(*lines);
     return 0;
@@ -512,7 +512,7 @@ int ArmourBinding::getTooltipData2(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    auto* lines = OgreVectorValueBinding<StringPair>::getInstance(L, 2);
     if (!lines) return luaL_error(L, "Argument 2 to getTooltipData2 must be ogre_vector<StringPair>");
     instance->getTooltipData2(*lines);
     return 0;
@@ -522,7 +522,7 @@ int ArmourBinding::_NV_getTooltipData2(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    auto* lines = OgreVectorValueBinding<StringPair>::get(L, 2);
+    auto* lines = OgreVectorValueBinding<StringPair>::getInstance(L, 2);
     if (!lines) return luaL_error(L, "Argument 2 to _NV_getTooltipData2 must be ogre_vector<StringPair>");
     instance->_NV_getTooltipData2(*lines);
     return 0;
@@ -596,7 +596,7 @@ static int Armour_set_bodypartCoverage(lua_State* L)
 {
     Armour* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Armour is nil");
-    ogre_unordered_map<GameData*, float>::type* val = OgreUnorderedMapBinding<GameData*, float>::get(L, 2);
+    ogre_unordered_map<GameData*, float>::type* val = OgreUnorderedMapBinding<GameData*, float>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'bodypartCoverage' must be ogre_unordered_map<GameData*, float>");
     instance->bodypartCoverage = *val;
     return 0;

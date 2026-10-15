@@ -588,7 +588,7 @@ static int RaceData_set_specialFoods(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    auto* val = OgreUnorderedSetBinding<GameData*>::get(L, 2);
+    auto* val = OgreUnorderedSetBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'specialFoods' must be ogre_unordered_set<GameData*>");
     instance->specialFoods = *val;
     return 0;
@@ -599,7 +599,7 @@ static int RaceData_set_statMods(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    auto* val = OgreUnorderedMapBinding<StatsEnumerated, float>::get(L, 2);
+    auto* val = OgreUnorderedMapBinding<StatsEnumerated, float>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'statMods' must be ogre_unordered_map<StatsEnumerated, float>");
     instance->statMods = *val;
     return 0;
@@ -610,7 +610,7 @@ static int RaceData_set_weatherImmunities(lua_State* L)
 {
     RaceData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RaceData is nil");
-    auto* val = OgreUnorderedSetBinding<WeatherAffecting>::get(L, 2);
+    auto* val = OgreUnorderedSetBinding<WeatherAffecting>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set 'weatherImmunities' must be ogre_unordered_set<WeatherAffecting>");
     instance->weatherImmunities = *val;
     return 0;

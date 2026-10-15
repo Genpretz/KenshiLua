@@ -882,7 +882,7 @@ static int ActivePlatoon_getCharactersInArea(lua_State* L)
     ActivePlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ActivePlatoon is nil");
 
-    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::get(L, 2);
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 must be a lektor<RootObject*>");
 
     Ogre::Vector3 pos;

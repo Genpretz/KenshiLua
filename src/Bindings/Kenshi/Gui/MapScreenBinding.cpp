@@ -308,7 +308,7 @@ static int MapScreen_set_mapMarkersTownsNew(lua_State* L)
         instance->mapMarkersTownsNew.clear();
         return 0;
     }
-    auto* src = HandFastArrayBinding::get(L, 2);
+    auto* src = HandFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set mapMarkersTownsNew must be Ogre::FastArray<hand>");
     instance->mapMarkersTownsNew = *src;
     return 0;

@@ -695,7 +695,7 @@ static int InventorySection_set_content(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    Array2d<Item>* val = Array2dBinding<Item>::get(L, 2);
+    Array2d<Item>* val = Array2dBinding<Item>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected Array2d<Item>");
     instance->content = *val;
     return 0;
@@ -706,7 +706,7 @@ static int InventorySection_set_items(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    auto* val = InventorySectionItemsVectorBinding::get(L, 2);
+    auto* val = InventorySectionItemsVectorBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_vector<InventorySection::SectionItem>");
     instance->items = *val;
     return 0;
@@ -717,7 +717,7 @@ static int InventorySection_set_veryLimitedSlot(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    lektor<GameData*>* val = LektorPtrBinding<GameData*>::get(L, 2);
+    lektor<GameData*>* val = LektorPtrBinding<GameData*>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected lektor<GameData*>");
     instance->veryLimitedSlot = *val;
     return 0;
@@ -791,7 +791,7 @@ int InventorySectionBinding::getAllItemsOfType(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    lektor<Item*>* list = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* list = LektorPtrBinding<Item*>::getInstance(L, 2);
     if (!list) return luaL_error(L, "Argument 2 to getAllItemsOfType must be lektor<Item*>");
 
     if (Item* item = testObject<Item>(L, 3, ItemBinding::getMetatableName()))
@@ -812,7 +812,7 @@ int InventorySectionBinding::getAllItemsOfName(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    lektor<Item*>* list = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* list = LektorPtrBinding<Item*>::getInstance(L, 2);
     if (!list) return luaL_error(L, "Argument 2 to getAllItemsOfName must be lektor<Item*>");
     const std::string itemName = luaL_checkstring(L, 3);
     instance->getAllItemsOfName(*list, itemName);
@@ -837,7 +837,7 @@ int InventorySectionBinding::getItemsInFootprint(lua_State* L)
 {
     InventorySection* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventorySection is nil");
-    lektor<Item*>* out = LektorPtrBinding<Item*>::get(L, 2);
+    lektor<Item*>* out = LektorPtrBinding<Item*>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getItemsInFootprint must be lektor<Item*>");
 
     if (Item* item = testObject<Item>(L, 3, ItemBinding::getMetatableName()))

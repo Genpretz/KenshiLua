@@ -70,7 +70,7 @@ static int CharacterTradingWindow_set_tradingBoxes(lua_State* L)
         instance->tradingBoxes.clear();
         return 0;
     }
-    auto* src = CharacterTradingBoxFastArrayBinding::get(L, 2);
+    auto* src = CharacterTradingBoxFastArrayBinding::getInstance(L, 2);
     if (!src) return luaL_error(L, "Argument 2 to set tradingBoxes must be Ogre::FastArray<CharacterTradingBox*>");
     instance->tradingBoxes = *src;
     return 0;

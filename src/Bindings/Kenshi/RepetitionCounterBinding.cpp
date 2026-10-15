@@ -30,7 +30,7 @@ static int RepetitionCounter_set_states(lua_State* L)
 {
     RepetitionCounter* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RepetitionCounter is nil");
-    auto* val = RepetitionStatesMapBinding::get(L, 2);
+    auto* val = RepetitionStatesMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected RepetitionStates map object");
     instance->states = *val;
     return 0;

@@ -72,7 +72,7 @@ int RainCollectorBuildingBinding::getGUIToolTipForGroundResourceEfficiency(lua_S
 {
     RainCollectorBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
     instance->getGUIToolTipForGroundResourceEfficiency(*out);
     return 0;
@@ -82,7 +82,7 @@ int RainCollectorBuildingBinding::_NV_getGUIToolTipForGroundResourceEfficiency(l
 {
     RainCollectorBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RainCollectorBuilding is nil");
-    lektor<StringPair>* out = LektorValueBinding<StringPair>::get(L, 2);
+    lektor<StringPair>* out = LektorValueBinding<StringPair>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to _NV_getGUIToolTipForGroundResourceEfficiency must be lektor<StringPair>");
     instance->_NV_getGUIToolTipForGroundResourceEfficiency(*out);
     return 0;

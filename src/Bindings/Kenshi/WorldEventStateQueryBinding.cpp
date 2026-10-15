@@ -126,7 +126,7 @@ static int WorldEventStateQuery_set_isAllyOf(lua_State* L)
 {
     WorldEventStateQuery* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQuery is nil");
-    ogre_unordered_map<Faction*, bool>::type* val = OgreUnorderedMapBinding<Faction*, bool>::get(L, 2);
+    ogre_unordered_map<Faction*, bool>::type* val = OgreUnorderedMapBinding<Faction*, bool>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_map<Faction*, bool>");
     instance->isAllyOf = *val;
     return 0;
@@ -137,7 +137,7 @@ static int WorldEventStateQuery_set_isEnemyOf(lua_State* L)
 {
     WorldEventStateQuery* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQuery is nil");
-    ogre_unordered_map<Faction*, bool>::type* val = OgreUnorderedMapBinding<Faction*, bool>::get(L, 2);
+    ogre_unordered_map<Faction*, bool>::type* val = OgreUnorderedMapBinding<Faction*, bool>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_map<Faction*, bool>");
     instance->isEnemyOf = *val;
     return 0;
@@ -148,7 +148,7 @@ static int WorldEventStateQuery_set_towns(lua_State* L)
 {
     WorldEventStateQuery* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQuery is nil");
-    ogre_unordered_map<GameData*, WorldStateEnum>::type* val = OgreUnorderedMapBinding<GameData*, WorldStateEnum>::get(L, 2);
+    ogre_unordered_map<GameData*, WorldStateEnum>::type* val = OgreUnorderedMapBinding<GameData*, WorldStateEnum>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_map<GameData*, WorldStateEnum>");
     instance->towns = *val;
     return 0;
@@ -159,7 +159,7 @@ static int WorldEventStateQuery_set_uniqueNPCsAre(lua_State* L)
 {
     WorldEventStateQuery* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQuery is nil");
-    ogre_unordered_map<GameData*, WorldStateEnum>::type* val = OgreUnorderedMapBinding<GameData*, WorldStateEnum>::get(L, 2);
+    ogre_unordered_map<GameData*, WorldStateEnum>::type* val = OgreUnorderedMapBinding<GameData*, WorldStateEnum>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_map<GameData*, WorldStateEnum>");
     instance->uniqueNPCsAre = *val;
     return 0;
@@ -170,7 +170,7 @@ static int WorldEventStateQuery_set_uniqueNPCsAreNot(lua_State* L)
 {
     WorldEventStateQuery* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WorldEventStateQuery is nil");
-    ogre_unordered_map<GameData*, WorldStateEnum>::type* val = OgreUnorderedMapBinding<GameData*, WorldStateEnum>::get(L, 2);
+    ogre_unordered_map<GameData*, WorldStateEnum>::type* val = OgreUnorderedMapBinding<GameData*, WorldStateEnum>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ogre_unordered_map<GameData*, WorldStateEnum>");
     instance->uniqueNPCsAreNot = *val;
     return 0;

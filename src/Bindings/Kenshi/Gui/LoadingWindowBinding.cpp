@@ -8,7 +8,7 @@
 namespace KenshiLua
 {
 
-static LoadingWindow* get_instance(lua_State* L, int idx)
+static LoadingWindow* getInstance(lua_State* L, int idx)
 {
     return checkObject<LoadingWindow>(L, idx, LoadingWindowBinding::getMetatableName());
 }
@@ -16,7 +16,7 @@ static LoadingWindow* get_instance(lua_State* L, int idx)
 // --- Getters for LoadingWindow ---
 static int LoadingWindow_get_currentIndex(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
     lua_pushinteger(L, instance->currentIndex);
     return 1;
@@ -24,7 +24,7 @@ static int LoadingWindow_get_currentIndex(lua_State* L)
 
 static int LoadingWindow_get_currentTime(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
     lua_pushnumber(L, instance->currentTime);
     return 1;
@@ -32,21 +32,21 @@ static int LoadingWindow_get_currentTime(lua_State* L)
 
 static int LoadingWindow_get_loadingText(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
     return MyGUIBindings::pushWidget(L, instance->loadingText);
 }
 
 static int LoadingWindow_get_messageText(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
     return MyGUIBindings::pushWidget(L, instance->messageText);
 }
 
 static int LoadingWindow_get_backgroundImage(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
     return MyGUIBindings::pushWidget(L, instance->backgroundImage);
 }
@@ -54,7 +54,7 @@ static int LoadingWindow_get_backgroundImage(lua_State* L)
 // --- Setters for LoadingWindow ---
 static int LoadingWindow_set_currentIndex(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
     instance->currentIndex = (unsigned char)luaL_checkinteger(L, 2);
     return 0;
@@ -62,7 +62,7 @@ static int LoadingWindow_set_currentIndex(lua_State* L)
 
 static int LoadingWindow_set_currentTime(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
     instance->currentTime = (float)luaL_checknumber(L, 2);
     return 0;
@@ -70,7 +70,7 @@ static int LoadingWindow_set_currentTime(lua_State* L)
 
 int LoadingWindowBinding::reload(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     instance->reload();
@@ -79,7 +79,7 @@ int LoadingWindowBinding::reload(lua_State* L)
 
 int LoadingWindowBinding::setVisible(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     bool visible = lua_toboolean(L, 2) != 0;
@@ -89,7 +89,7 @@ int LoadingWindowBinding::setVisible(lua_State* L)
 
 int LoadingWindowBinding::getVisible(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     bool result = instance->getVisible();
@@ -99,7 +99,7 @@ int LoadingWindowBinding::getVisible(lua_State* L)
 
 int LoadingWindowBinding::show(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     instance->show();
@@ -108,7 +108,7 @@ int LoadingWindowBinding::show(lua_State* L)
 
 int LoadingWindowBinding::hide(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     instance->hide();
@@ -117,7 +117,7 @@ int LoadingWindowBinding::hide(lua_State* L)
 
 int LoadingWindowBinding::frameEntered(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     float _frame = (float)luaL_checknumber(L, 2);
@@ -127,7 +127,7 @@ int LoadingWindowBinding::frameEntered(lua_State* L)
 
 int LoadingWindowBinding::setRandomBackground(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     instance->setRandomBackground();
@@ -136,14 +136,14 @@ int LoadingWindowBinding::setRandomBackground(lua_State* L)
 
 int LoadingWindowBinding::setRandomTip(lua_State* L)
 {
-    LoadingWindow* instance = get_instance(L, 1);
+    LoadingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "LoadingWindow is nil");
 
     instance->setRandomTip();
     return 0;
 }
 
-int LoadingWindowBinding::getInstance(lua_State* L)
+int LoadingWindowBinding::getInstanceMethod(lua_State* L)
 {
     LoadingWindow* result = LoadingWindow::getInstance();
     return pushObject<LoadingWindow>(L, result, LoadingWindowBinding::getMetatableName());
@@ -191,7 +191,7 @@ void LoadingWindowBinding::registerBinding(lua_State* L)
         { "frameEntered", LoadingWindowBinding::frameEntered },
         { "setRandomBackground", LoadingWindowBinding::setRandomBackground },
         { "setRandomTip", LoadingWindowBinding::setRandomTip },
-        { "getInstance", LoadingWindowBinding::getInstance },
+        { "getInstance", LoadingWindowBinding::getInstanceMethod },
         { 0, 0 }
     };
 
@@ -222,7 +222,7 @@ void LoadingWindowBinding::registerBinding(lua_State* L)
 
     // Register global class table for static methods
     pushGlobalTable(L, "LoadingWindow");
-    registerStaticMethod(L, "getInstance", LoadingWindowBinding::getInstance);
+    registerStaticMethod(L, "getInstance", LoadingWindowBinding::getInstanceMethod);
     lua_setglobal(L, "LoadingWindow");
 }
 

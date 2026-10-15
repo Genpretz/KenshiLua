@@ -488,7 +488,7 @@ int SaveManagerBinding::scanGames(lua_State* L)
     if (lua_isstring(L, 2) && !lua_isuserdata(L, 2))
     {
         std::string location = luaL_checkstring(L, 2);
-        lektor<SaveInfo>* list = LektorValueBinding<SaveInfo>::get(L, 3);
+        lektor<SaveInfo>* list = LektorValueBinding<SaveInfo>::getInstance(L, 3);
         if (!list) return luaL_error(L, "Argument 2 must be lektor<SaveInfo>");
         bool loadDetails = lua_toboolean(L, 4) != 0;
         int count = instance->scanGames(location, *list, loadDetails);
@@ -497,7 +497,7 @@ int SaveManagerBinding::scanGames(lua_State* L)
     }
     else
     {
-        lektor<SaveInfo>* list = LektorValueBinding<SaveInfo>::get(L, 2);
+        lektor<SaveInfo>* list = LektorValueBinding<SaveInfo>::getInstance(L, 2);
         if (!list) return luaL_error(L, "Argument 1 must be lektor<SaveInfo>");
         bool loadDetails = lua_toboolean(L, 3) != 0;
         int count = instance->scanGames(*list, loadDetails);

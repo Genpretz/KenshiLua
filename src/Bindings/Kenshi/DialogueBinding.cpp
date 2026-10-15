@@ -318,7 +318,7 @@ static int Dialogue_set_locked(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    auto* val = DialogLineDataBoolMapBinding::get(L, 2);
+    auto* val = DialogLineDataBoolMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected DialogLineDataBoolMap object");
     instance->locked = *val;
     return 0;
@@ -328,7 +328,7 @@ static int Dialogue_set__hasChanceLines(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    auto* val = DialogLineDataBoolMapBinding::get(L, 2);
+    auto* val = DialogLineDataBoolMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected DialogLineDataBoolMap object");
     instance->_hasChanceLines = *val;
     return 0;
@@ -338,7 +338,7 @@ static int Dialogue_set_eventRepeatTimers(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    auto* val = EventRepeatTimersMapBinding::get(L, 2);
+    auto* val = EventRepeatTimersMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected EventRepeatTimersMap object");
     instance->eventRepeatTimers = *val;
     return 0;
@@ -348,7 +348,7 @@ static int Dialogue_set_eventDeliveredStates(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    auto* val = EventDeliveredStatesMapBinding::get(L, 2);
+    auto* val = EventDeliveredStatesMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected EventDeliveredStatesMap object");
     instance->eventDeliveredStates = *val;
     return 0;
@@ -358,7 +358,7 @@ static int Dialogue_set_conversationsMain(lua_State* L)
 {
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
-    auto* val = ConversationsMainMapBinding::get(L, 2);
+    auto* val = ConversationsMainMapBinding::getInstance(L, 2);
     if (!val) return luaL_error(L, "Expected ConversationsMainMap object");
     instance->conversationsMain = *val;
     return 0;
