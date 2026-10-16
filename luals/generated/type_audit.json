@@ -593,23 +593,6 @@
       "member": "woundsList"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "AppearanceManager",
-      "expected": "fun(GameData, Gender)",
-      "header": "void setGender(GameData* appearanceData, Gender::Enum genderValue)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "Gender",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AppearanceManager, appearanceData: GameData, genderValue: integer)",
-      "member": "setGender"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "AppearanceManager",
       "expected": "fun(GameData, ?AppearanceData*): string",
@@ -781,23 +764,6 @@
       "member": "gender"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "AppearanceManager_DataCategory",
-      "expected": "fun(): DataCategory",
-      "header": "DataCategory::Enum getValue() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "DataCategory",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AppearanceManager_DataCategory): integer",
-      "member": "getValue"
-    },
-    {
       "category": "no_header_declaration",
       "class": "AppearanceManager_DataCategory",
       "cpp": "AppearanceManager::DataCategory::operator==",
@@ -827,15 +793,6 @@
       "kind": "method",
       "lua": "fun(self: AppearanceManager_DataCategory, arg1: AppearanceManager_DataCategory): AppearanceManager_DataCategory",
       "member": "operator_assign"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AppearanceManager_DataCategory",
-      "expected": "DataCategory",
-      "header": "DataCategory::Enum",
-      "kind": "property",
-      "lua": "integer",
-      "member": "value"
     },
     {
       "category": "no_header_declaration",
@@ -929,32 +886,6 @@
       "kind": "method",
       "lua": "fun(self: AppearanceManager_DataRangeVector, arg1: AppearanceManager_DataRangeVector): AppearanceManager_DataRangeVector",
       "member": "operator_assign"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AppearanceManager_Gender",
-      "expected": "fun(): Gender",
-      "header": "Gender::Enum getValue() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "Gender",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AppearanceManager_Gender): integer",
-      "member": "getValue"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AppearanceManager_Gender",
-      "expected": "Gender",
-      "header": "Gender::Enum",
-      "kind": "property",
-      "lua": "integer",
-      "member": "value"
     },
     {
       "category": "enum_typed_as_integer",
@@ -1424,7 +1355,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Building, out: Lektor<Building>, func: integer)",
+      "lua": "fun(self: Building, out: Building|Lektor<Building>, func: integer)",
       "member": "findAllFurnitureWithFunction"
     },
     {
@@ -1702,15 +1633,9 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Building",
-      "expected": "fun(EffectType, WeatherAffecting, number)",
+      "expected": "fun(integer, WeatherAffecting, number)",
       "header": "void notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength) override",
       "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "EffectType",
-          "position": "param 1"
-        },
         {
           "actual": "integer",
           "category": "enum_typed_as_integer",
@@ -1725,15 +1650,9 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Building",
-      "expected": "fun(EffectType, WeatherAffecting, number)",
+      "expected": "fun(integer, WeatherAffecting, number)",
       "header": "void _NV_notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength)",
       "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "EffectType",
-          "position": "param 1"
-        },
         {
           "actual": "integer",
           "category": "enum_typed_as_integer",
@@ -2600,7 +2519,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: CharStats, possibleAttacks: CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)",
+      "lua": "fun(self: CharStats, possibleAttacks: CharStats|CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)",
       "member": "chooseAttacks"
     },
     {
@@ -2833,23 +2752,6 @@
       "kind": "method",
       "lua": "fun(self: Character): integer",
       "member": "getCurrentWeatherAffectStatus"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(): WaterState",
-      "header": "WaterState::Enum getWaterLevel()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "WaterState",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): integer",
-      "member": "getWaterLevel"
     },
     {
       "category": "enum_typed_as_integer",
@@ -3122,23 +3024,6 @@
       "kind": "method",
       "lua": "fun(self: Character, dest: Building, t: integer, subject: RootObject, location: table)",
       "member": "_NV_updateLastTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(boolean, RagdollPart)",
-      "header": "void ragdollMode(bool on, RagdollPart::Enum part)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "RagdollPart",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, on?: boolean, part: integer)",
-      "member": "ragdollMode"
     },
     {
       "category": "enum_typed_as_integer",
@@ -3432,15 +3317,9 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Character",
-      "expected": "fun(EffectType, WeatherAffecting, number)",
+      "expected": "fun(integer, WeatherAffecting, number)",
       "header": "void notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength) override",
       "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "EffectType",
-          "position": "param 1"
-        },
         {
           "actual": "integer",
           "category": "enum_typed_as_integer",
@@ -3455,15 +3334,9 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Character",
-      "expected": "fun(EffectType, WeatherAffecting, number)",
+      "expected": "fun(integer, WeatherAffecting, number)",
       "header": "void _NV_notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength)",
       "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "EffectType",
-          "position": "param 1"
-        },
         {
           "actual": "integer",
           "category": "enum_typed_as_integer",
@@ -3474,40 +3347,6 @@
       "kind": "method",
       "lua": "fun(self: Character, type: integer, what: integer, strength: number)",
       "member": "_NV_notifyEffect"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(boolean, RagdollPart)",
-      "header": "void postRagdollCallback(bool on, RagdollPart::Enum part)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "RagdollPart",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, on?: boolean, part: integer)",
-      "member": "postRagdollCallback"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(boolean, RagdollPart)",
-      "header": "void _NV_postRagdollCallback(bool on, RagdollPart::Enum part)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "RagdollPart",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, on?: boolean, part: integer)",
-      "member": "_NV_postRagdollCallback"
     },
     {
       "category": "binding_shape_differs",
@@ -4104,40 +3943,6 @@
       "member": "workspace"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "CharacterHuman",
-      "expected": "fun(boolean, RagdollPart)",
-      "header": "void postRagdollCallback(bool on, RagdollPart::Enum part) override",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "RagdollPart",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharacterHuman, on?: boolean, part: integer)",
-      "member": "postRagdollCallback"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "CharacterHuman",
-      "expected": "fun(boolean, RagdollPart)",
-      "header": "void _NV_postRagdollCallback(bool on, RagdollPart::Enum part)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "RagdollPart",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharacterHuman, on?: boolean, part: integer)",
-      "member": "_NV_postRagdollCallback"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "CharacterHuman",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
@@ -4170,6 +3975,23 @@
       "kind": "method",
       "lua": "fun(self: CharacterHuman, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "_NV_serialise"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CharacterStatsWindow",
+      "expected": "fun(Group): DatapanelGUI|nil",
+      "header": "DatapanelGUI* getStatsPanel(CharacterStatsWindow::StatGroup::Group group)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Group",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CharacterStatsWindow, group: integer): DatapanelGUI",
+      "member": "getStatsPanel"
     },
     {
       "category": "enum_typed_as_integer",
@@ -4254,15 +4076,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "tradingHandler"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character_RagdollMsg",
-      "expected": "RagdollPart",
-      "header": "RagdollPart::Enum",
-      "kind": "property",
-      "lua": "integer",
-      "member": "part"
     },
     {
       "category": "enum_typed_as_integer",
@@ -4595,7 +4408,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: ConstructionState, out?: Lektor<BuildMaterial>): BuildMaterial[]|nil",
+      "lua": "fun(self: ConstructionState, out?: ConstructionState|Lektor<BuildMaterial>): BuildMaterial[]|nil",
       "member": "getNeededMats"
     },
     {
@@ -5952,7 +5765,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Faction, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
+      "lua": "fun(self: Faction, out: Faction|Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
       "member": "getSelectedObjects"
     },
     {
@@ -5969,7 +5782,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Faction, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
+      "lua": "fun(self: Faction, out: Faction|Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
       "member": "_NV_getSelectedObjects"
     },
     {
@@ -6129,7 +5942,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: FactionWarMgr, targetTown: FitnessSelectorCampaignTriggerData|RootObjectBase, data: GameData|RootObjectBase|lightuserdata, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): lightuserdata|nil",
+      "lua": "fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: GameData|RootObjectBase|lightuserdata, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): lightuserdata|nil",
       "member": "triggerCampaign"
     },
     {
@@ -6197,7 +6010,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: FactionWarMgr, out: Lektor<TownBase>, b: lightuserdata)",
+      "lua": "fun(self: FactionWarMgr, out: FactionWarMgr|Lektor<TownBase>, b: lightuserdata)",
       "member": "getTownsInBiome"
     },
     {
@@ -7189,7 +7002,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: GameWorld, results: Lektor<RootObject>, spherePos: table, radius: number, type: integer, maxNumber: integer, skip?: RootObject)",
+      "lua": "fun(self: GameWorld, results: GameWorld|Lektor<RootObject>, spherePos: table, radius: number, type: integer, maxNumber: integer, skip?: RootObject)",
       "member": "getObjectsWithinSphere"
     },
     {
@@ -7206,7 +7019,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: GameWorld, results: Lektor<RootObject>, pos: table, size: table, rot: table, type: integer, maxNumber: integer, skip?: RootObject)",
+      "lua": "fun(self: GameWorld, results: GameWorld|Lektor<RootObject>, pos: table, size: table, rot: table, type: integer, maxNumber: integer, skip?: RootObject)",
       "member": "getObjectsWithinBox"
     },
     {
@@ -7906,7 +7719,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Inventory, out: Lektor<InventorySection>, type: integer)",
+      "lua": "fun(self: Inventory, out: Inventory|Lektor<InventorySection>, type: integer)",
       "member": "getAllSectionsOfType"
     },
     {
@@ -7923,7 +7736,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Inventory, all: Lektor<Item>, ty: integer, skipEquipped?: boolean)",
+      "lua": "fun(self: Inventory, all: Inventory|Lektor<Item>, ty: integer, skipEquipped?: boolean)",
       "member": "getAllItemsOfType"
     },
     {
@@ -7940,7 +7753,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Inventory, out: Lektor<Item>, type: integer)",
+      "lua": "fun(self: Inventory, out: Inventory|Lektor<Item>, type: integer)",
       "member": "getAllItemsWithFunction"
     },
     {
@@ -9281,6 +9094,15 @@
       "kind": "property",
       "lua": "integer",
       "member": "side"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "MedicalSystem_HealthPartStatus",
+      "expected": "PartType",
+      "header": "MedicalSystem::HealthPartStatus::PartType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "whatAmI"
     },
     {
       "category": "unmapped_header_type",
@@ -12491,7 +12313,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Ownerships, out: Lektor<Building>, type: integer)",
+      "lua": "fun(self: Ownerships, out: Lektor<Building>|Ownerships, type: integer)",
       "member": "getHomeFurnitureOfType"
     },
     {
@@ -12508,7 +12330,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Ownerships, out: Lektor<RootObject>, type: integer): integer",
+      "lua": "fun(self: Ownerships, out: Lektor<RootObject>|Ownerships, type: integer): integer",
       "member": "getOwnedPtrs"
     },
     {
@@ -12525,7 +12347,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Ownerships, out: Lektor<Building>, bf: integer)",
+      "lua": "fun(self: Ownerships, out: Lektor<Building>|Ownerships, bf: integer)",
       "member": "getBuildingsWithFunction"
     },
     {
@@ -14272,15 +14094,9 @@
     {
       "category": "enum_typed_as_integer",
       "class": "RootObject",
-      "expected": "fun(EffectType, WeatherAffecting, number)",
+      "expected": "fun(integer, WeatherAffecting, number)",
       "header": "void notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength)",
       "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "EffectType",
-          "position": "param 1"
-        },
         {
           "actual": "integer",
           "category": "enum_typed_as_integer",
@@ -14295,15 +14111,9 @@
     {
       "category": "enum_typed_as_integer",
       "class": "RootObject",
-      "expected": "fun(EffectType, WeatherAffecting, number)",
+      "expected": "fun(integer, WeatherAffecting, number)",
       "header": "void _NV_notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength)",
       "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "EffectType",
-          "position": "param 1"
-        },
         {
           "actual": "integer",
           "category": "enum_typed_as_integer",
@@ -14494,7 +14304,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
+      "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>|RootObjectContainer, type: integer, selectedOnly?: boolean)",
       "member": "getSelectedObjects"
     },
     {
@@ -14511,7 +14321,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
+      "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>|RootObjectContainer, type: integer, selectedOnly?: boolean)",
       "member": "_NV_getSelectedObjects"
     },
     {
@@ -14521,7 +14331,7 @@
       "header": "void serialiseThings(const lektor<RootObject*>& _things, GameData* outputToInstanceCollectionOfSomeKind, GameDataContainer* source, PosRotPair* offsetPosToSubtract, const std::string& mod)",
       "issues": [
         {
-          "actual": "GameData",
+          "actual": "GameData|RootObjectContainer",
           "category": "binding_converts",
           "expected": "Lektor<RootObject>",
           "position": "param 1"
@@ -14534,7 +14344,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: RootObjectContainer, _things?: GameData, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod: string)",
+      "lua": "fun(self: RootObjectContainer, _things?: GameData|RootObjectContainer, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod: string)",
       "member": "serialiseThings"
     },
     {
@@ -15288,6 +15098,15 @@
       "kind": "property",
       "lua": "integer",
       "member": "type"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "StatGroup",
+      "expected": "Group",
+      "header": "CharacterStatsWindow::StatGroup::Group",
+      "kind": "property",
+      "lua": "integer",
+      "member": "group"
     },
     {
       "audited_categories": [
@@ -16158,7 +15977,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Town, buildings: Lektor<Building>, resident: any): Building",
+      "lua": "fun(self: Town, buildings: Lektor<Building>|Town, resident: any): Building",
       "member": "chooseBuildingForResident"
     },
     {
@@ -16772,32 +16591,6 @@
       "kind": "method",
       "lua": "fun(self: Town_NestSpot, arg1: Town_NestSpot): Town_NestSpot",
       "member": "operator_assign"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "TradeResult",
-      "expected": "fun(TradeResult)",
-      "header": "void ShowMessage(TradeResult::Enum value)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TradeResult",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(value: integer)",
-      "member": "ShowMessage"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "TradeResult",
-      "expected": "DataCategory",
-      "header": "Enum",
-      "kind": "property",
-      "lua": "integer",
-      "member": "value"
     },
     {
       "category": "unmapped_header_type",
@@ -17573,23 +17366,6 @@
       "member": "removeListener"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "WeatherRegion",
-      "expected": "fun(EffectType)",
-      "header": "void addGlobalEffect(EffectType::Enum type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "EffectType",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: WeatherRegion, type: integer)",
-      "member": "addGlobalEffect"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "WeatherRegion",
       "expected": "?AreaBiomeGroup*",
@@ -17644,6 +17420,23 @@
       "member": "uniqueNPCsAreNot"
     },
     {
+      "category": "binding_converts",
+      "class": "YesNoMaybeValue",
+      "expected": "fun(ynm): boolean",
+      "header": "bool operator==(YesNoMaybe::ynm a) const",
+      "issues": [
+        {
+          "actual": "YesNoMaybe|YesNoMaybeValue|integer",
+          "category": "binding_converts",
+          "expected": "ynm",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: YesNoMaybeValue, arg1: YesNoMaybe|YesNoMaybeValue|integer): boolean",
+      "member": "operator_eq"
+    },
+    {
       "category": "no_header_declaration",
       "class": "YesNoMaybeValue",
       "cpp": "YesNoMaybe::operator_bool",
@@ -17658,6 +17451,15 @@
       "kind": "method",
       "lua": "fun(self: YesNoMaybeValue): integer",
       "member": "operator_ynm"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "YesNoMaybeValue",
+      "expected": "ynm",
+      "header": "YesNoMaybe::ynm",
+      "kind": "property",
+      "lua": "integer",
+      "member": "key"
     },
     {
       "category": "enum_typed_as_integer",
@@ -17690,7 +17492,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: ZoneManager, out: Lektor<RootObject>, type: integer)",
+      "lua": "fun(self: ZoneManager, out: Lektor<RootObject>|ZoneManager, type: integer)",
       "member": "levelEditorGetAllSelectedObjects"
     },
     {
@@ -18360,6 +18162,49 @@
     },
     {
       "category": "binding_converts",
+      "class": "hkResult",
+      "expected": "fun(hkResultEnum): boolean",
+      "header": "bool operator==(hkResultEnum e) const",
+      "issues": [
+        {
+          "actual": "hkResult|integer",
+          "category": "binding_converts",
+          "expected": "hkResultEnum",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: hkResult, other: hkResult|integer): boolean",
+      "member": "operator_eq"
+    },
+    {
+      "category": "binding_converts",
+      "class": "hkResult",
+      "expected": "fun(hkResultEnum): boolean",
+      "header": "bool operator!=(hkResultEnum e) const",
+      "issues": [
+        {
+          "actual": "hkResult|integer",
+          "category": "binding_converts",
+          "expected": "hkResultEnum",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: hkResult, other: hkResult|integer): boolean",
+      "member": "operator_ne"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "hkResult",
+      "expected": "hkResultEnum",
+      "header": "hkResultEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "m_enum"
+    },
+    {
+      "category": "binding_converts",
       "class": "hkVector4f",
       "expected": "fun(hkVector4f, number): integer",
       "header": "unsigned int equals3(const hkVector4f& v, float epsilon) const",
@@ -18451,6 +18296,80 @@
       "member": "operator_call"
     },
     {
+      "category": "binding_shape_differs",
+      "class": "hkVector4fComparison",
+      "expected": "fun(): integer",
+      "header": "unsigned int anyIsSet() const",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 0,
+          "position": null
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: hkVector4fComparison, m?: integer): integer",
+      "member": "anyIsSet"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "hkVector4fComparison",
+      "expected": "fun(Mask): Mask",
+      "header": "Mask getMask(Mask m) const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Mask",
+          "position": "param 1"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Mask",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: hkVector4fComparison, m?: integer): integer",
+      "member": "getMask"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "hkVector4fComparison",
+      "expected": "fun(integer): Mask",
+      "header": "Mask getMaskForComponent(int i)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Mask",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: hkVector4fComparison, component: integer): integer",
+      "member": "getMaskForComponent"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "hkVector4fComparison",
+      "expected": "fun(Mask)",
+      "header": "void set(Mask m)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Mask",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: hkVector4fComparison, mask: integer)",
+      "member": "set"
+    },
+    {
       "category": "no_header_declaration",
       "class": "physHit",
       "cpp": "physHit::operator_bool",
@@ -18470,15 +18389,15 @@
   ],
   "schema_version": 1,
   "summary": {
-    "binding_converts": 48,
+    "binding_converts": 51,
     "binding_pushes_raw_pointer": 42,
-    "binding_shape_differs": 105,
+    "binding_shape_differs": 106,
     "blocking_issues": 0,
     "container_methods_typed": 925,
-    "enum_typed_as_integer": 430,
+    "enum_typed_as_integer": 423,
     "known_binding_bug": 13,
     "methods": 7216,
-    "methods_matching_header": 5424,
+    "methods_matching_header": 5427,
     "no_header_declaration": 272,
     "properties": 3070,
     "properties_matching_header": 2542,

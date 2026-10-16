@@ -13751,7 +13751,7 @@
   "metadata_only_functions": [
     "pcall"
   ],
-  "runtime_version": "0.3.8-alpha",
+  "runtime_version": "0.3.9-alpha",
   "schema_version": 2,
   "scope": "runtime bindings represented by binding_inventory.json",
   "summary": {
@@ -13769,7 +13769,7 @@
     "covered_methods": 7216,
     "covered_properties": 3070,
     "declared_bindings": 550,
-    "declared_runtime_globals": 158,
+    "declared_runtime_globals": 154,
     "engine_methods": 6278,
     "function_percent": 100.0,
     "functions": 11,
@@ -13793,7 +13793,7 @@
     "properties_with_inferred_types": 2963,
     "properties_with_kenshilib_descriptions": 1044,
     "property_percent": 100.0,
-    "runtime_globals": 158,
+    "runtime_globals": 154,
     "signature_methods": 7216,
     "signature_percent": 100.0,
     "unresolved_registration_calls": 0

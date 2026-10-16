@@ -1848,7 +1848,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "ActivePlatoon|Lektor<RootObject>"
               },
               {
                 "name": "pos",
@@ -2128,7 +2128,7 @@
               {
                 "name": "inventorySections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>"
+                "type": "AnimalInventoryLayout"
               },
               {
                 "name": "inventory",
@@ -3711,7 +3711,7 @@
       "metatable": "KenshiLua.AppearanceManager",
       "methods": [
         {
-          "callback": "AppearanceManagerBinding::getInstance",
+          "callback": "AppearanceManagerBinding::getInstanceMethod",
           "name": "getInstance",
           "signature": {
             "params": [],
@@ -5158,7 +5158,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Armour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -5174,7 +5174,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Armour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -5190,7 +5190,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Armour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -5206,7 +5206,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Armour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -5617,7 +5617,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>"
+                "type": "BackpackInventoryLayout"
               },
               {
                 "name": "inventory",
@@ -7566,7 +7566,7 @@
               {
                 "name": "out",
                 "optional": true,
-                "type": "Lektor<Building>"
+                "type": "Building|Lektor<Building>"
               }
             ],
             "returns": [
@@ -7584,7 +7584,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<Building>"
+                "type": "Building|Lektor<Building>"
               },
               {
                 "name": "func",
@@ -12174,7 +12174,7 @@
               {
                 "name": "objects",
                 "optional": false,
-                "type": "Lektor<Character>"
+                "type": "CameraClass|Lektor<Character>"
               }
             ],
             "returns": [],
@@ -16412,7 +16412,7 @@
               {
                 "name": "possibleAttacks",
                 "optional": false,
-                "type": "CombatTechniqueDataFitnessSelector"
+                "type": "CharStats|CombatTechniqueDataFitnessSelector"
               },
               {
                 "name": "range",
@@ -24104,7 +24104,7 @@
               {
                 "name": "allTheOnesWeHave",
                 "optional": false,
-                "type": "OgreUnorderedSet<GameData>"
+                "type": "Character|OgreUnorderedSet<GameData>"
               }
             ],
             "returns": [
@@ -24127,7 +24127,7 @@
               {
                 "name": "allTheOnesWeHave",
                 "optional": false,
-                "type": "OgreUnorderedSet<GameData>"
+                "type": "Character|OgreUnorderedSet<GameData>"
               }
             ],
             "returns": [
@@ -24163,7 +24163,7 @@
               {
                 "name": "list",
                 "optional": false,
-                "type": "Lektor<Character>"
+                "type": "Character|Lektor<Character>"
               }
             ],
             "returns": [],
@@ -26226,7 +26226,7 @@
               {
                 "name": "inventorySections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>"
+                "type": "CharacterInventoryLayout"
               },
               {
                 "name": "inventory",
@@ -29841,7 +29841,7 @@
               {
                 "name": "out",
                 "optional": true,
-                "type": "Lektor<BuildMaterial>"
+                "type": "ConstructionState|Lektor<BuildMaterial>"
               }
             ],
             "returns": [
@@ -31248,7 +31248,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "LektorReadOnly<GameDataGroup>"
+                "type": "CraftingBuilding|LektorReadOnly<GameDataGroup>"
               }
             ],
             "returns": [],
@@ -31401,7 +31401,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "CraftingBuilding|Lektor<GameData>"
               },
               {
                 "name": "looting",
@@ -31422,7 +31422,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "CraftingBuilding|Lektor<GameData>"
               },
               {
                 "name": "looting",
@@ -32098,7 +32098,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Crossbow|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -32114,7 +32114,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Crossbow|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -32130,7 +32130,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Crossbow|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -32146,7 +32146,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "Crossbow|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -35768,7 +35768,7 @@
               {
                 "name": "data",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "DatapanelGUI|Lektor<StringPair>"
               },
               {
                 "name": "category",
@@ -41167,7 +41167,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Faction|Lektor<RootObject>"
               },
               {
                 "name": "pos",
@@ -41198,7 +41198,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Faction|Lektor<RootObject>"
               },
               {
                 "name": "pos",
@@ -41229,7 +41229,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Faction|Lektor<RootObject>"
               },
               {
                 "name": "type",
@@ -41255,7 +41255,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Faction|Lektor<RootObject>"
               },
               {
                 "name": "type",
@@ -42082,7 +42082,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "FactionLeader|Lektor<RootObject>"
               },
               {
                 "name": "mission",
@@ -43087,7 +43087,7 @@
               {
                 "name": "data",
                 "optional": false,
-                "type": "OgreUnorderedMap<Faction, number>"
+                "type": "FactionRelations|OgreUnorderedMap<Faction, number>"
               }
             ],
             "returns": [],
@@ -43670,7 +43670,7 @@
               {
                 "name": "targetTown",
                 "optional": false,
-                "type": "FitnessSelectorCampaignTriggerData|RootObjectBase"
+                "type": "FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase"
               },
               {
                 "name": "data",
@@ -43809,7 +43809,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<TownBase>"
+                "type": "FactionWarMgr|Lektor<TownBase>"
               },
               {
                 "name": "b",
@@ -43830,7 +43830,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<TownBase>"
+                "type": "FactionWarMgr|Lektor<TownBase>"
               },
               {
                 "name": "popNeeded",
@@ -49824,7 +49824,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "FurnaceBuilding|Lektor<GameData>"
               }
             ],
             "returns": [],
@@ -49840,7 +49840,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "FurnaceBuilding|Lektor<GameData>"
               }
             ],
             "returns": [],
@@ -49856,7 +49856,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "FurnaceBuilding|Lektor<GameData>"
               }
             ],
             "returns": [],
@@ -49872,7 +49872,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "FurnaceBuilding|Lektor<GameData>"
               }
             ],
             "returns": [],
@@ -50027,7 +50027,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>"
+                "type": "FurnaceInventoryLayout"
               },
               {
                 "name": "inventory",
@@ -50516,7 +50516,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "Lektor<hand>"
+                "type": "GameData|Lektor<hand>"
               },
               {
                 "name": "arg2",
@@ -50979,7 +50979,7 @@
               {
                 "name": "list",
                 "optional": false,
-                "type": "Lektor<string>"
+                "type": "GameData|Lektor<string>"
               }
             ],
             "returns": [],
@@ -51525,7 +51525,7 @@
               {
                 "name": "dat",
                 "optional": false,
-                "type": "GameData|Lektor<GameData>"
+                "type": "GameData|GameDataContainer|Lektor<GameData>"
               },
               {
                 "name": "forceID",
@@ -51568,7 +51568,7 @@
               {
                 "name": "list",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "GameDataContainer|Lektor<GameData>"
               },
               {
                 "name": "type",
@@ -51720,7 +51720,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "GameDataContainer|Lektor<GameData>"
               },
               {
                 "name": "what",
@@ -52122,7 +52122,7 @@
               {
                 "name": "list",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "GameDataManager|Lektor<GameData>"
               },
               {
                 "name": "_category",
@@ -52832,7 +52832,7 @@
               {
                 "name": "results",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "GameWorld|Lektor<RootObject>"
               },
               {
                 "name": "spherePos",
@@ -52873,7 +52873,7 @@
               {
                 "name": "results",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "GameWorld|Lektor<RootObject>"
               },
               {
                 "name": "spherePos",
@@ -52924,7 +52924,7 @@
               {
                 "name": "results",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "GameWorld|Lektor<RootObject>"
               },
               {
                 "name": "pos",
@@ -55851,7 +55851,13 @@
           "callback": "HandBinding::operator_lt",
           "name": "operator_lt",
           "signature": {
-            "params": [],
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
             "returns": [
               "boolean"
             ]
@@ -60347,7 +60353,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "GameData|Lektor<GameData>"
+                "type": "GameData|Inventory|Lektor<GameData>"
               },
               {
                 "name": "arg2",
@@ -60367,7 +60373,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<InventorySection>"
+                "type": "Inventory|Lektor<InventorySection>"
               },
               {
                 "name": "type",
@@ -60404,7 +60410,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "Inventory|Lektor<Item>"
               },
               {
                 "name": "justAsking",
@@ -60427,7 +60433,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "OgreUnorderedSet<GameData>"
+                "type": "Inventory|OgreUnorderedSet<GameData>"
               },
               {
                 "name": "buildingMatsToo",
@@ -60489,7 +60495,7 @@
               {
                 "name": "all",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "Inventory|Lektor<Item>"
               },
               {
                 "name": "includeUnknown",
@@ -60510,7 +60516,7 @@
               {
                 "name": "all",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "Inventory|Lektor<Item>"
               },
               {
                 "name": "ty",
@@ -60536,7 +60542,7 @@
               {
                 "name": "all",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "Inventory|Lektor<Item>"
               }
             ],
             "returns": [],
@@ -60552,7 +60558,7 @@
               {
                 "name": "all",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "Inventory|Lektor<Item>"
               }
             ],
             "returns": [],
@@ -60587,7 +60593,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "Inventory|Lektor<Item>"
               },
               {
                 "name": "type",
@@ -62672,7 +62678,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "InventoryItemBase|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -62688,7 +62694,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "InventoryItemBase|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -62731,7 +62737,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "InventoryItemBase|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -62747,7 +62753,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "InventoryItemBase|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -62763,7 +62769,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "InventoryItemBase|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -62779,7 +62785,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "InventoryItemBase|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -62877,7 +62883,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "InventoryItemBase|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -63209,7 +63215,7 @@
               {
                 "name": "arg2",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>"
+                "type": "InventoryLayout"
               },
               {
                 "name": "arg3",
@@ -63217,8 +63223,7 @@
                 "type": "Inventory"
               }
             ],
-            "returns": [],
-            "type_source": "header"
+            "returns": []
           },
           "static": false
         }
@@ -63931,7 +63936,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "InventorySection|Lektor<Item>"
               },
               {
                 "name": "arg2",
@@ -63951,7 +63956,7 @@
               {
                 "name": "list",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "InventorySection|Lektor<Item>"
               },
               {
                 "name": "itemName",
@@ -63993,7 +63998,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<Item>"
+                "type": "InventorySection|Lektor<Item>"
               },
               {
                 "name": "item",
@@ -67611,7 +67616,7 @@
               {
                 "name": "inventorySections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>"
+                "type": "LimbsInventoryLayout"
               },
               {
                 "name": "inventory",
@@ -68544,7 +68549,7 @@
           "static": false
         },
         {
-          "callback": "LoadingWindowBinding::getInstance",
+          "callback": "LoadingWindowBinding::getInstanceMethod",
           "name": "getInstance",
           "signature": {
             "params": [],
@@ -68738,7 +68743,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "LockedArmour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -68754,7 +68759,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "LockedArmour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -68770,7 +68775,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "LockedArmour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -68786,7 +68791,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "LockedArmour|OgreVector<StringPair>"
               }
             ],
             "returns": [],
@@ -79497,7 +79502,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<hand>"
+                "type": "Lektor<hand>|Ownerships"
               }
             ],
             "returns": [],
@@ -79513,7 +79518,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<Building>"
+                "type": "Lektor<Building>|Ownerships"
               },
               {
                 "name": "town",
@@ -79534,7 +79539,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<Building>"
+                "type": "Lektor<Building>|Ownerships"
               },
               {
                 "name": "type",
@@ -79555,7 +79560,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Lektor<RootObject>|Ownerships"
               },
               {
                 "name": "type",
@@ -79578,7 +79583,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<Building>"
+                "type": "Lektor<Building>|Ownerships"
               },
               {
                 "name": "bf",
@@ -82927,7 +82932,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "Character|Lektor<Character>"
+                "type": "Character|Lektor<Character>|PlayerInterface"
               },
               {
                 "name": "arg2",
@@ -84041,7 +84046,7 @@
           "static": false
         },
         {
-          "callback": "PortraitManagerBinding::getInstance",
+          "callback": "PortraitManagerBinding::getInstanceMethod",
           "name": "getInstance",
           "signature": {
             "params": [],
@@ -86195,7 +86200,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|ProductionBuilding"
               }
             ],
             "returns": [],
@@ -86211,7 +86216,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|ProductionBuilding"
               }
             ],
             "returns": [],
@@ -86295,7 +86300,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|ProductionBuilding"
               }
             ],
             "returns": [],
@@ -86311,7 +86316,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|ProductionBuilding"
               }
             ],
             "returns": [],
@@ -86327,7 +86332,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|ProductionBuilding"
               }
             ],
             "returns": [],
@@ -86343,7 +86348,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|ProductionBuilding"
               }
             ],
             "returns": [],
@@ -86395,7 +86400,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|ProductionBuilding"
               },
               {
                 "name": "loot",
@@ -86416,7 +86421,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|ProductionBuilding"
               },
               {
                 "name": "loot",
@@ -87730,7 +87735,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|RainCollectorBuilding"
               }
             ],
             "returns": [],
@@ -87746,7 +87751,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|RainCollectorBuilding"
               }
             ],
             "returns": [],
@@ -88511,7 +88516,7 @@
           "static": false
         },
         {
-          "callback": "ResourceLoaderBinding::getInstance",
+          "callback": "ResourceLoaderBinding::getInstanceMethod",
           "name": "getInstance",
           "signature": {
             "params": [],
@@ -90601,7 +90606,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|RootObject"
               }
             ],
             "returns": [],
@@ -90617,7 +90622,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|RootObject"
               }
             ],
             "returns": [],
@@ -90633,7 +90638,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "Lektor<string>"
+                "type": "Lektor<string>|RootObject"
               }
             ],
             "returns": []
@@ -90648,7 +90653,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "Lektor<string>"
+                "type": "Lektor<string>|RootObject"
               }
             ],
             "returns": []
@@ -91050,7 +91055,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Lektor<RootObject>|RootObjectContainer"
               },
               {
                 "name": "type",
@@ -91076,7 +91081,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Lektor<RootObject>|RootObjectContainer"
               },
               {
                 "name": "type",
@@ -91102,7 +91107,7 @@
               {
                 "name": "_things",
                 "optional": true,
-                "type": "GameData"
+                "type": "GameData|RootObjectContainer"
               },
               {
                 "name": "outputToInstanceCollectionOfSomeKind",
@@ -93131,12 +93136,12 @@
               {
                 "name": "location",
                 "optional": false,
-                "type": "Lektor<SaveInfo>|string"
+                "type": "Lektor<SaveInfo>|SaveManager|string"
               },
               {
                 "name": "list",
                 "optional": true,
-                "type": "Lektor<SaveInfo>|boolean"
+                "type": "Lektor<SaveInfo>|SaveManager|boolean"
               },
               {
                 "name": "loadDetails",
@@ -98158,7 +98163,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|StorageBuilding"
               },
               {
                 "name": "forceLooting",
@@ -98179,7 +98184,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|StorageBuilding"
               },
               {
                 "name": "forceLooting",
@@ -98236,7 +98241,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|StorageBuilding"
               }
             ],
             "returns": [],
@@ -98252,7 +98257,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|StorageBuilding"
               }
             ],
             "returns": [],
@@ -98268,7 +98273,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|StorageBuilding"
               }
             ],
             "returns": [],
@@ -98284,7 +98289,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<GameData>"
+                "type": "Lektor<GameData>|StorageBuilding"
               }
             ],
             "returns": [],
@@ -98300,7 +98305,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<ConsumptionItem>"
+                "type": "Lektor<ConsumptionItem>|StorageBuilding"
               }
             ],
             "returns": [],
@@ -98501,7 +98506,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "OgreVector<StringPair>|Sword"
               }
             ],
             "returns": [],
@@ -98517,7 +98522,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "OgreVector<StringPair>|Sword"
               }
             ],
             "returns": [],
@@ -98533,7 +98538,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "OgreVector<StringPair>|Sword"
               }
             ],
             "returns": [],
@@ -98549,7 +98554,7 @@
               {
                 "name": "lines",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "OgreVector<StringPair>|Sword"
               }
             ],
             "returns": [],
@@ -101782,7 +101787,7 @@
               {
                 "name": "arg2",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|ToolTip"
               }
             ],
             "returns": []
@@ -106518,7 +106523,7 @@
               {
                 "name": "buildings",
                 "optional": false,
-                "type": "Lektor<Building>"
+                "type": "Lektor<Building>|Town"
               }
             ],
             "returns": [],
@@ -106534,7 +106539,7 @@
               {
                 "name": "buildings",
                 "optional": false,
-                "type": "Lektor<Building>"
+                "type": "Lektor<Building>|Town"
               },
               {
                 "name": "resident",
@@ -107457,7 +107462,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>"
+                "type": "TraderInventoryLayout"
               },
               {
                 "name": "inventory",
@@ -111133,7 +111138,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|UseableStuff"
               }
             ],
             "returns": [],
@@ -111149,7 +111154,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<StringPair>"
+                "type": "Lektor<StringPair>|UseableStuff"
               }
             ],
             "returns": [],
@@ -112668,7 +112673,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<string>"
+                "type": "Lektor<string>|UtilityT"
               },
               {
                 "name": "dir",
@@ -112696,7 +112701,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<string>"
+                "type": "Lektor<string>|UtilityT"
               },
               {
                 "name": "dir",
@@ -112724,7 +112729,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<string>"
+                "type": "Lektor<string>|UtilityT"
               },
               {
                 "name": "dir",
@@ -113721,7 +113726,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "OgreVector<StringPair>"
+                "type": "OgreVector<StringPair>|Weapon"
               }
             ],
             "returns": []
@@ -116111,7 +116116,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<RootObject>"
+                "type": "Lektor<RootObject>|ZoneManager"
               },
               {
                 "name": "type",
@@ -116137,7 +116142,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<ZoneMap>"
+                "type": "Lektor<ZoneMap>|ZoneManager"
               }
             ],
             "returns": [],
@@ -117071,7 +117076,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<iVector2>"
+                "type": "Lektor<iVector2>|ZoneManager"
               }
             ],
             "returns": [],
@@ -117087,7 +117092,7 @@
               {
                 "name": "out",
                 "optional": false,
-                "type": "Lektor<iVector2>"
+                "type": "Lektor<iVector2>|ZoneManager"
               }
             ],
             "returns": [],
@@ -117232,7 +117237,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "Lektor<iVector2>"
+                "type": "Lektor<iVector2>|ZoneManagerInterfaceT"
               }
             ],
             "returns": []
@@ -137684,7 +137689,7 @@
       ]
     }
   ],
-  "runtime_version": "0.3.8-alpha",
+  "runtime_version": "0.3.9-alpha",
   "schema_version": 4,
   "sources": {
     "binding_sources": "src/Bindings",

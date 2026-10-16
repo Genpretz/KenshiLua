@@ -779,7 +779,7 @@
 | getRaceIndex | `data: GameData` | `integer` | `obj:getRaceIndex(data)` |
 | getRacesCount | `` | `integer` | `obj:getRacesCount()` |
 | isSingleGender | `raceData: GameData` | `boolean` | `obj:isSingleGender(raceData)` |
-| setGender | `appearanceData: GameData, genderValue: integer` | `void` | `obj:setGender(appearanceData, genderValue)` |
+| setGender | `appearanceData: GameData, genderValue: AppearanceManager::Gender::Enum` | `void` | `obj:setGender(appearanceData, genderValue)` |
 | setHead | `appearanceData: GameData, headData: GameData` | `void` | `obj:setHead(appearanceData, headData)` |
 | getHeadName | `appearanceData: GameData, appearance: AppearanceManager::AppearanceData` | `void` | `obj:getHeadName(appearanceData, appearance)` |
 | setRandomHead | `raceData: GameData, appearanceData: GameData` | `void` | `obj:setRandomHead(raceData, appearanceData)` |
@@ -2140,7 +2140,7 @@
 | prevSubRace | `sender: MyGUI::Widget` | `void` | `obj:prevSubRace(sender)` |
 | nextSubRace | `sender: MyGUI::Widget` | `void` | `obj:nextSubRace(sender)` |
 | changeGender | `sender: MyGUI::Widget` | `void` | `obj:changeGender(sender)` |
-| changeAppearanceData | `prevRace: GameData, genderVal: AppearanceManager::Gender` | `void` | `obj:changeAppearanceData(prevRace, genderVal)` |
+| changeAppearanceData | `prevRace: GameData, genderVal: integer` | `void` | `obj:changeAppearanceData(prevRace, genderVal)` |
 | prevCharacter | `sender: MyGUI::Widget` | `void` | `obj:prevCharacter(sender)` |
 | nextCharacter | `sender: MyGUI::Widget` | `void` | `obj:nextCharacter(sender)` |
 | changeCategory | `sender: MyGUI::Widget` | `void` | `obj:changeCategory(sender)` |
@@ -3132,7 +3132,7 @@
 | notifyCraftFailiure | `` | `void` | `obj:notifyCraftFailiure()` |
 | tryOperate | `h: hand` | `boolean` | `obj:tryOperate(h)` |
 | getAvailableCrafts | `` | `void` | `obj:getAvailableCrafts()` |
-| _addCraft | `basedata: GameData, matdata: GameData, progress: number, crit: YesNoMaybe` | `lightuserdata` | `obj:_addCraft(basedata, matdata, progress, crit)` |
+| _addCraft | `basedata: GameData, matdata: GameData, progress: number, crit: integer` | `lightuserdata` | `obj:_addCraft(basedata, matdata, progress, crit)` |
 | _removeCraft | `index: integer` | `void` | `obj:_removeCraft(index)` |
 | getCraft | `id: integer` | `lightuserdata` | `obj:getCraft(id)` |
 | destroyProductionItem | `` | `void` | `obj:destroyProductionItem()` |
@@ -5873,7 +5873,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| m_enum | `integer` | RW | `obj.m_enum = <value>` |
+| m_enum | `hkResultEnum` | RW | `obj.m_enum = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -11989,16 +11989,16 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| key | `integer` | RW | `obj.key = <value>` |
+| key | `YesNoMaybe::ynm` | RW | `obj.key = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | operator_eq [1] | `` | `boolean` | `obj:operator_eq()` |
-| operator_eq [2] | `val: integer` | `boolean` | `obj:operator_eq(val)` |
+| operator_eq [2] | `val: YesNoMaybe::ynm` | `boolean` | `obj:operator_eq(val)` |
 | operator_ne [1] | `` | `boolean` | `obj:operator_ne()` |
 | operator_ne [2] | `b: boolean` | `boolean` | `obj:operator_ne(b)` |
-| operator_ne [3] | `val: integer` | `boolean` | `obj:operator_ne(val)` |
+| operator_ne [3] | `val: YesNoMaybe::ynm` | `boolean` | `obj:operator_ne(val)` |
 | toInt | `` | `integer` | `obj:toInt()` |
 | operator_bool | `` | `boolean` | `obj:operator_bool()` |
 | operator_ynm | `` | `integer` | `obj:operator_ynm()` |
