@@ -12,10 +12,8 @@
         <Widget type="EditBox" skin="Kenshi_EditBox" position_real="0.0972818 0.0101266 0.678112 0.0886076" align="HStretch Top" name="LogViewer_FilterBox">
             <Property key="Pointer" value="beam"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.799714 0.0101266 0.168813 0.0886076" align="Right Top" name="LogViewer_ClearButton">
+        <Widget type="Button" skin="Kenshi_Button2" position_real="0.799714 0.0101266 0.168813 0.0886076" align="Right Top" name="LogViewer_ClearButton">
             <Property key="Caption" value="CLEAR LOG"/>
-            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
-            <Property key="TextAlign" value="Center"/>
         </Widget>
         <Widget type="EditBox" skin="Kenshi_ScriptEditor_EditBox" position_real="0.018598 0.124051 0.957082 0.744304" align="Stretch" name="LogViewer_OutputBox">
             <Property key="MultiLine" value="true"/>
@@ -26,10 +24,8 @@
             <Property key="VisibleHScroll" value="true"/>
             <Property key="Pointer" value="beam"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.74392 0.886076 0.227468 0.0886076" align="Right Bottom" name="LogViewer_SaveLogButton">
+        <Widget type="Button" skin="Kenshi_Button2" position_real="0.74392 0.886076 0.227468 0.0886076" align="Right Bottom" name="LogViewer_SaveLogButton">
             <Property key="Caption" value="SAVE A COPY"/>
-            <Property key="FontName" value="Kenshi_StandardFont_Medium"/>
-            <Property key="TextAlign" value="Center"/>
         </Widget>
     </Widget>
     <CodeGeneratorSettings/>

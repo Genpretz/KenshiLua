@@ -9,10 +9,8 @@
             <Property key="FontName" value="Kenshi_StandardFont_Small"/>
             <Property key="TextAlign" value="Left VCenter"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.779685 0.0106952 0.198856 0.0909091" align="Right Top" name="Console_ClearButton">
+        <Widget type="Button" skin="Kenshi_Button2" position_real="0.779685 0.0106952 0.198856 0.0909091" align="Right Top" name="Console_ClearButton">
             <Property key="Caption" value="CLEAR OUTPUT"/>
-            <Property key="FontName" value="Default"/>
-            <Property key="TextAlign" value="Center"/>
         </Widget>
         <Widget type="EditBox" skin="Kenshi_ScriptEditor_EditBox" position_real="0.0128755 0.112299 0.971388 0.697861" align="HStretch VStretch" name="Console_OutputBox">
             <Property key="MultiLine" value="true"/>
@@ -30,10 +28,8 @@
         <Widget type="EditBox" skin="Kenshi_EditBox" position_real="0.0701001 0.839572 0.749642 0.106952" align="HStretch Bottom" name="Console_InputBox">
             <Property key="Pointer" value="beam"/>
         </Widget>
-        <Widget type="Button" skin="Kenshi_Button1Skin" position_real="0.835479 0.826203 0.141631 0.13369" align="Right Bottom" name="Console_RunButton">
+        <Widget type="Button" skin="Kenshi_Button2" position_real="0.835479 0.826203 0.141631 0.13369" align="Right Bottom" name="Console_RunButton">
             <Property key="Caption" value="RUN"/>
-            <Property key="FontName" value="Kenshi_PaintedTextFont_Medium"/>
-            <Property key="TextAlign" value="Center"/>
         </Widget>
     </Widget>
     <CodeGeneratorSettings/>
