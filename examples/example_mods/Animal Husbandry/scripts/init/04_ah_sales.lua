@@ -43,7 +43,7 @@ S.serial = S.serial or 0
 -- ---------------------------------------------------------------------------
 
 local function moneyText(n)
-    return "c." .. tostring(math.floor(n))
+    return AH.moneyText and AH.moneyText(n) or ("c." .. tostring(math.floor(n)))
 end
 
 -- Returns the price of an animal, using the vanilla animal trader's formula so the
@@ -53,6 +53,9 @@ end
 -- the base is the "base price" from the animal's ANIMAL_CHARACTER record in FCS, or
 -- sales.defaultBasePrice. Ages stop at 1.1, so elders cost 1.2 x base.
 function S.priceOf(entry)
+    if AH.priceOf then
+        return AH.priceOf(entry)
+    end
     local base = (entry.def and entry.def.basePrice) or scfg().defaultBasePrice
     return math.floor((AH.age(entry.animal) + 0.1) * base)
 end

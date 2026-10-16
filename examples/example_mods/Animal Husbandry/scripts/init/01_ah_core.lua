@@ -420,6 +420,24 @@ function AH.ageText(entry)
     return string.format("%s (%d)", tostring(label), math.floor(age * 100))
 end
 
+function AH.moneyText(n)
+    return "c." .. tostring(math.floor(n))
+end
+
+-- Returns the price of an animal in cats, using the vanilla animal trader's formula:
+-- (getAge0to1() + 0.1) x base, truncated. The engine's CharacterTrading_AnimalBuying
+-- uses a 14000 base unless the CHOOSE_ANIMALS_BUYING dialogue action sets one. Here
+-- the base is the "base price" from the animal's ANIMAL_CHARACTER record in FCS, or
+-- sales.defaultBasePrice. Ages stop at 1.1, so elders cost 1.2 x base.
+function AH.priceOf(entry)
+    if not entry or not entry.animal then
+        return 0
+    end
+    local defaultBase = (AH.config and AH.config.sales and AH.config.sales.defaultBasePrice) or 14000
+    local base = (entry.def and entry.def.basePrice) or defaultBase
+    return math.floor((AH.age(entry.animal) + 0.1) * base)
+end
+
 function AH.isFemale(c)
     return c:isFemale() and true or false
 end

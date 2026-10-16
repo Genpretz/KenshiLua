@@ -31,6 +31,9 @@ local LAYOUT_FILE = "AH_HusbandryWindow.layout"
 local ROW_HEIGHT = 30
 local ROW_STEP = 34
 local BUTTON_WIDTH = 76
+local SCROLLBAR_WIDTH = 20
+local BUTTON_MARGIN = 8
+local BUTTON_GAP = 8
 local DEFAULT_LEFT, DEFAULT_TOP = 220, 160
 
 -- Serial counter for unique MyGUI layout widget prefixes
@@ -191,10 +194,16 @@ local function infoLines(entry, animal, harvester, now)
     if not entry then
         return { { "Animal", "no longer available" } }
     end
+    local price = (AH.priceOf and AH.priceOf(entry))
+        or (AH.sales and AH.sales.priceOf and AH.sales.priceOf(entry))
+        or 0
+    local valText = (AH.moneyText and AH.moneyText(price))
+        or ("c." .. tostring(math.floor(price)))
     local lines = {
         { "Race", tostring(entry.raceName) },
         { "Sex", AH.isFemale(animal) and "Female" or "Male" },
         { "Age", AH.ageText(entry) },
+        { "Value", valText },
     }
     if entry.def and entry.def.matingGroup and entry.def.matingGroup ~= "" then
         lines[#lines + 1] = { "Group", tostring(entry.def.matingGroup) }
@@ -398,14 +407,14 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
     if viewHeight <= 0 then viewHeight = 168 end
 
     local needsScroll = (rowCount > maxVisible) or (rowCount * ROW_STEP > viewHeight)
-    local scrollbarMargin = needsScroll and 18 or 8
+    local scrollbarMargin = needsScroll and (SCROLLBAR_WIDTH + BUTTON_MARGIN) or BUTTON_MARGIN
     local buttonLeft = productsWidth - BUTTON_WIDTH - scrollbarMargin
-    local buttonGap = 8
-    local statusWidth = buttonLeft - buttonGap
+    local statusWidth = buttonLeft - BUTTON_GAP
 
+    local canvasWidth = needsScroll and (productsWidth - SCROLLBAR_WIDTH) or productsWidth
     local canvasHeight = math.max(viewHeight, rowCount * ROW_STEP)
     if productsArea.setCanvasSize then
-        productsArea:setCanvasSize(productsWidth, canvasHeight)
+        productsArea:setCanvasSize(canvasWidth, canvasHeight)
         productsArea:setVisibleHScroll(false)
         productsArea:setVisibleVScroll(needsScroll)
         productsArea:setViewOffset(0, 0)
@@ -413,7 +422,7 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
 
     local align = MyGUI.Align.Default
     if #products == 0 then
-        createLabel(productsArea, 0, 0, productsWidth, ROW_HEIGHT, "AH_NoProducts")
+        createLabel(productsArea, 0, 0, canvasWidth, ROW_HEIGHT, "AH_NoProducts")
             :setCaption("This animal gives no products.")
     end
     for i = 1, #products do

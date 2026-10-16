@@ -38,7 +38,7 @@ The engine assigns each newborn's sex and ages it like any other animal. Pregnan
 
 1. Select one of your own characters, not an animal.
 2. Right-click an animal in your faction and choose **Husbandry**.
-3. The window shows the animal's sex, life stage and breeding state, and lists the products it gives, each with a **Harvest** button.
+3. The window shows the animal's sex, life stage, value in cats, and breeding state, and lists the products it gives, each with a **Harvest** button.
 
 Harvesting needs:
 
