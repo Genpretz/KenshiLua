@@ -1,0 +1,6 @@
+{
+    "PreloadPlugins": [
+        "plugin/KenshiLuaTestPreload.dll"
+    ]
+}
+

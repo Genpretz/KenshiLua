@@ -1,0 +1,65 @@
+{
+  "fixture_name": "kltest_vanilla_1065",
+  "source_save": "@newgame",
+  "created_on_platform": "gog",
+  "kenshi_version": "1.0.65",
+  "file_count": 11,
+  "total_bytes": 2615068,
+  "files": [
+    {
+      "path": "platoon/Drifters_1.platoon",
+      "size": 7360,
+      "sha256": "0F7AE4244B9C984A2096C710049F187515537A024B44BE6CDD463DC8A681FCDB"
+    },
+    {
+      "path": "platoon/Drifters_2.platoon",
+      "size": 5969,
+      "sha256": "7AFC244967932FC69892A9608C5FA98F60298C0301F1532E1DC5E69BD727A0F0"
+    },
+    {
+      "path": "platoon/Hounds_0.platoon",
+      "size": 8416,
+      "sha256": "846C7AA130B297C2F5F99B54B76BD5B307DAC34D8C3076CAA4420DA9291C5D0A"
+    },
+    {
+      "path": "platoon/Nameless_0.platoon",
+      "size": 6116,
+      "sha256": "E2354AC303F73AA16091E44C4940BEAF4DFE16CE4F25F146890FC622B0BDD28B"
+    },
+    {
+      "path": "platoon/Vagrants_0.platoon",
+      "size": 8532,
+      "sha256": "874DFF4B54CAFE1D1254C1F1DAF6D88185B255130542E71D028D0F9F8D89862C"
+    },
+    {
+      "path": "portraits_texture.png",
+      "size": 16408,
+      "sha256": "FCC43F7BEB10DB90C6B7B96BB72652E6BD00E76D5CF7165030D6C9AA41BD1CC6"
+    },
+    {
+      "path": "quick.save",
+      "size": 2168299,
+      "sha256": "BC81C5B30B8AAF45ABC5A0FE0A787FA8AD3043CDE67AF69A16D9CD2F15597E5C"
+    },
+    {
+      "path": "zone/zone.20.32.zone",
+      "size": 199649,
+      "sha256": "EEAC2AC5AA9A7BF33DD6F1BDBDC97AB5835F615088B3B59542C34826706744E7"
+    },
+    {
+      "path": "zone/zone.20.33.zone",
+      "size": 104079,
+      "sha256": "E6CE60324A810604D8A1C1E443524CEB41C6CF9A583FBB62F385A4D0386C70C6"
+    },
+    {
+      "path": "zone/zone.21.31.zone",
+      "size": 75926,
+      "sha256": "7AFD10897E27BDB044AD6F5A6710B4762013A08B8460211FDCDE671D0E3C3133"
+    },
+    {
+      "path": "zone/zone.21.32.zone",
+      "size": 14314,
+      "sha256": "B37FCC5EAFA9DED6743828A5588B92D5F3AFB2E3A029DC47B9BF9D4C04C0DD93"
+    }
+  ]
+}

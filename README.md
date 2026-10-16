@@ -106,8 +106,11 @@ Events.on("InputHandler::keyDownEvent", on_key_down)
 
 #### Loaded On Start
    - When the game starts, KenshiLua will check whether any **active** mods contain any `.lua` files inside of their `./scripts/init/` directory, and if found will automatically load them.
+   - On Steam, active mods are resolved from both `Kenshi/mods/` and `steamapps/workshop/content/233860/<workshop-id>/`. Workshop items are matched to the active mod's `.mod` file; inactive Workshop items are not loaded.
    - So to clarify for a mod named `MyMod`, if you have a script at `./mods/MyMod/scripts/init/my_script.lua`, it will be loaded automatically when the game starts.
    - Scripts found in other directories within `./mods/MyMod/scripts/` (e.g. `./mods/MyMod/scripts/world_scripts.lua`) will not be loaded automatically.
+   - Startup and on-demand scripts can load additional files from their own mod. All relative paths start at the mod's `scripts/` directory: `require("config.settings")` checks `scripts/config/settings.lua` and then `scripts/config/settings/init.lua`, while `dofile("config/settings.lua")` and `loadfile("config/settings.lua")` check that exact path. Mod-local `require` results are cached per script sandbox, so another mod can use the same internal module name safely.
+   - Use ordinary `require`, such as `require("mygui.layout")`, for modules shipped in KenshiLua's `lib/` directory. Explicit dependencies on another active mod use `KenshiLua.requireFromMod("Shared Framework.mod", "api.shared")`; exact cross-mod files can be loaded with `KenshiLua.dofileFromMod` or `KenshiLua.loadfileFromMod`.
 
 #### Dialogue Scripting Bridge
    - Using FCS Extended ([Github](https://github.com/BFrizzleFoShizzle/FCS_extended) | [Nexus](https://www.nexusmods.com/kenshi/mods/1825)) with KenshiLua enabled, you'll find a new `run lua script` option available for DIALOGUE, DIALOGUE_LINE, or WORD_SWAP. When the given dialogue plays, the script runs.
@@ -150,9 +153,6 @@ Events.on("InputHandler::keyDownEvent", on_key_down)
       - Add the following include, `#include "kenshi/gui/ContextMenu.h"` and remove the definition for `class ContextMenu`.
 
 3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib and are not functional).
-   To build against a separate checkout containing the required KenshiLib
-   compatibility changes, set the `KENSHILIB_DIR` MSBuild property to that
-   checkout's root directory.
 4. `KenshiLua.vcxproj` includes a post-build event that will copy the built `KenshiLua.dll` along with all the other files and directories required for KenshiLua to run to `$(ProjectDir)bin/KenshiLua/`
 
 #### Notes on Toolchain Constraints

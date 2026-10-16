@@ -75,6 +75,60 @@ python tools/release/package_mod.py --force
 python tools/release/package_luals_addon.py --force
 ```
 
+## In-game automated testing
+
+`testing/run_kenshi_tests.py` executes automated, non-interactive in-game integration test suites against supported Kenshi v1.0.65 installations (GOG and Steam).
+
+| Script | Purpose | Output |
+| --- | --- | --- |
+| `testing/run_kenshi_tests.py` | Launches Kenshi, handles launcher dismissal, drives test suites via Lua coroutine harness, and records JUnit XML and event streams. | `scratch/kenshi-tests/<run_id>/` |
+
+### Basic usage
+
+Run all default suites across both supported installations sequentially:
+
+```powershell
+python tools/testing/run_kenshi_tests.py --platform all --suite harness-self-test,script-loading,world-smoke,binding-smoke
+```
+
+Run on a specific platform:
+
+```powershell
+python tools/testing/run_kenshi_tests.py --platform gog
+python tools/testing/run_kenshi_tests.py --platform steam
+```
+
+Filter test cases by name:
+
+```powershell
+python tools/testing/run_kenshi_tests.py --platform gog --filter "cross-mod"
+```
+
+Preview staging actions without modifying any game files:
+
+```powershell
+python tools/testing/run_kenshi_tests.py --platform gog --dry-run
+```
+
+Bootstrap or refresh the deterministic vanilla save fixture (`kltest_vanilla_1065`):
+
+```powershell
+python tools/testing/run_kenshi_tests.py --platform gog --prepare-save-fixture
+```
+
+Recover or replay a staging journal manually if an external process abort occurred:
+
+```powershell
+python tools/testing/run_kenshi_tests.py --recover-journal scratch/kenshi-tests/<run_id>/journal.json
+```
+
+### Safety and isolation
+
+- **Transactional staging**: Every staged file (`mods.cfg`, `RE_Kenshi.json`, consumer mod scripts) is backed up before modification and tracked in a `journal.json` transaction. On run completion, timeout, or crash, files are verified against their pre-run SHA-256 hashes and restored.
+- **Preload plugin neutralization**: Third-party `PreloadPlugins` in `mods/**/RE_Kenshi.json` are temporarily neutralized during the test run to prevent modal dialog crashes, and restored on exit.
+- **Save isolation**: User saves are never modified. Staged save fixtures are copied into isolated paths and cleaned up on teardown.
+- **Crash and stall detection**: The runner monitors `RE_Kenshi_log.txt` for crash signatures to terminate failed runs immediately without waiting for timeouts.
+
 ## Generated files
 
 `tools/generated/` is a scratch area for generated binding scaffolds and is ignored by Git. Move reviewed files into their final source locations deliberately.

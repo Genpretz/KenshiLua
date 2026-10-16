@@ -420,7 +420,9 @@ tools/generated/**
 docs/ChangeLogs/**
 docs/in_progress/**
 .editorconfig
+scratch/
 /scratch
+tests/scratch/
 /docs/ideas
 AGENTS.md
 .agents/skills/code-review/SKILL.md
