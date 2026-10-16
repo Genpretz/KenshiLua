@@ -77,6 +77,27 @@ static int lua_reloadMods(lua_State* L)
     return 1;
 }
 
+static int lua_requireFromMod(lua_State* L)
+{
+    const char* modName = luaL_checkstring(L, 1);
+    const char* moduleName = luaL_checkstring(L, 2);
+    return ScriptLoader::get().requireFromMod(L, modName, moduleName);
+}
+
+static int lua_dofileFromMod(lua_State* L)
+{
+    const char* modName = luaL_checkstring(L, 1);
+    const char* filename = luaL_checkstring(L, 2);
+    return ScriptLoader::get().dofileFromMod(L, modName, filename);
+}
+
+static int lua_loadfileFromMod(lua_State* L)
+{
+    const char* modName = luaL_checkstring(L, 1);
+    const char* filename = luaL_checkstring(L, 2);
+    return ScriptLoader::get().loadfileFromMod(L, modName, filename);
+}
+
 // ---------------------------------------------------------------------------
 // Logging Helpers
 // ---------------------------------------------------------------------------
@@ -170,6 +191,15 @@ void installKenshiLuaTable(lua_State* L)
 
     lua_pushcfunction(L, lua_reloadScript);
     lua_setfield(L, -2, "reloadScript");
+
+    lua_pushcfunction(L, lua_requireFromMod);
+    lua_setfield(L, -2, "requireFromMod");
+
+    lua_pushcfunction(L, lua_dofileFromMod);
+    lua_setfield(L, -2, "dofileFromMod");
+
+    lua_pushcfunction(L, lua_loadfileFromMod);
+    lua_setfield(L, -2, "loadfileFromMod");
 
     lua_pushcfunction(L, lua_enableHotReload);
     lua_setfield(L, -2, "enableHotReload");

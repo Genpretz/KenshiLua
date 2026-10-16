@@ -98,6 +98,8 @@ Kenshi organizes mod files under the standard path:
 
 When using KenshiLua, all Lua scripts **must** reside inside the `scripts` subdirectory of your mod:
 
+KenshiLua resolves active Steam mods from both the game's `mods/` directory and Steam's `steamapps/workshop/content/233860/<workshop-id>/` directory. It matches each directory to an active mod by its `.mod` descriptor instead of loading every subscribed Workshop item.
+
 ```text
 ./Kenshi/mods/<mod_name>/scripts/
 ```
@@ -121,6 +123,36 @@ When using KenshiLua, all Lua scripts **must** reside inside the `scripts` subdi
   - Each script runs in its own sandbox environment. Reading a name falls through to the shared globals, but a plain assignment such as `MyMod = {}` creates the name only inside that script's sandbox. Other scripts, dialogue scripts, and the KenshiLua console cannot see it.
   - To share state, assign it to the global table explicitly: `_G.MyMod = _G.MyMod or {}`. See the [shared global example](../examples/example_mods/Simple_Shared_Global_Demo-Lua/README.md).
 - **`scripts/dialogue/*.lua`**: Recommended directory for scripts triggered via `run lua script` in dialogue. They run dynamically whenever the linked dialogue line is executed in-game.
+
+### Loading Other Lua Files
+
+Scripts can load another file from the same mod without knowing the Kenshi installation path or mod directory name:
+
+```lua
+local settings = require("config.settings") -- scripts/config/settings.lua
+local values = dofile("config/values.lua")   -- scripts/config/values.lua
+local chunk = assert(loadfile("config/tasks.lua"))
+chunk()
+```
+
+All relative paths start at the calling mod's `scripts/` directory. `require` accepts a Lua module name and checks `<module>.lua` before `<module>/init.lua`; it does not scan directories recursively. `dofile` and `loadfile` accept an exact path relative to `scripts/`. Required mod modules execute in the calling script's sandbox and are cached within that sandbox.
+
+Modules shipped in KenshiLua's `lib/` directory use ordinary `require`:
+
+```lua
+local Layout = require("mygui.layout")
+```
+
+Cross-mod dependencies must name the provider explicitly. Both its active mod name and `.mod` descriptor filename are accepted:
+
+```lua
+local api = KenshiLua.requireFromMod("Shared Framework.mod", "api.shared")
+local values = KenshiLua.dofileFromMod("Shared Framework.mod", "api/values.lua")
+local task = assert(KenshiLua.loadfileFromMod("Shared Framework.mod", "api/task.lua"))
+task()
+```
+
+Cross-mod paths are confined to the provider's `scripts/` directory and never search active mods by load order. Provider modules run in a shared provider environment, so their nested `require("internal.helper")` calls resolve against the provider mod. `requireFromMod` caches modules by provider and module name; script reloads clear this provider cache. A missing or inactive provider produces an explicit error, while `loadfileFromMod` follows `loadfile` convention by returning `nil, error`.
 
 ---
 

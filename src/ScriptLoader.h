@@ -15,8 +15,8 @@ namespace KenshiLua
 // Information about a single Lua script we found inside an active mod.
 struct LoadedScript
 {
-    std::string modName;       // ModInfo::name, e.g. "RimWorld - Kenshi.mod"
-    std::string modPath;       // ModInfo::path
+    std::string modName;       // ModInfo::name, e.g. "RimWorld - Kenshi"
+    std::string modPath;       // resolved local or Steam Workshop mod root
     std::string absolutePath;  // full path to the .lua file
     std::string relativePath;  // path relative to modPath
     std::string chunkName;     // "@<mod>/<relative>"
@@ -66,6 +66,16 @@ public:
     // Caches the results to prevent performance hitching during game frames.
     std::string resolveScriptPath(const std::string& filename);
 
+    // Explicit cross-mod loading APIs. The requested name accepts either the
+    // active ModInfo::name or its .mod descriptor filename. Relative paths
+    // are confined to that mod's scripts directory.
+    int requireFromMod(lua_State* L, const std::string& modName,
+        const std::string& moduleName);
+    int dofileFromMod(lua_State* L, const std::string& modName,
+        const std::string& filename);
+    int loadfileFromMod(lua_State* L, const std::string& modName,
+        const std::string& filename);
+
     // Centralized sandboxed runner for Lua script files.
     bool runScriptSandboxed(lua_State* L, const std::string& absolutePath,
         const std::string& chunkName, std::string* outError = NULL,
@@ -85,6 +95,7 @@ private:
 
     bool runScript(lua_State* L, LoadedScript& s);
     void updateScriptStatus(const std::string& absolutePath, bool loaded, const std::string& error = "");
+    void clearProviderEnvironments(lua_State* L);
 
     std::vector<LoadedScript>  m_scripts;
     std::vector<std::string>   m_activeModNames;

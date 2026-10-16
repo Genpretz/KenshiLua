@@ -2506,6 +2506,12 @@ taskPriority = {
 ---@field reloadMods fun(): integer
 --- Reruns one script, given a path relative to the game directory or to an active mod's folder, such as `scripts/init/main.lua`. The event handlers and MyGUI widgets it created are removed first. Returns false if the script is not found, is stopped, or raises an error.
 ---@field reloadScript fun(path: string): boolean
+--- Requires a module from the `scripts/` directory of the named active mod. The name may be its active ModInfo name or `.mod` descriptor filename. The module runs in a shared environment rooted at the provider mod and is cached by provider and module name.
+---@field requireFromMod fun(modName: string, moduleName: string): any
+--- Executes an exact relative path under the named active mod's `scripts/` directory and returns the file's results. The file runs in the provider mod's shared environment.
+---@field dofileFromMod fun(modName: string, path: string): any
+--- Compiles an exact relative path under the named active mod's `scripts/` directory. Returns a function using the provider mod's shared environment, or nil and an error message.
+---@field loadfileFromMod fun(modName: string, path: string): function|nil, string?
 --- Turns on hot reload, which reruns script files when they change on disk.
 ---@field enableHotReload fun()
 --- Turns off hot reload.

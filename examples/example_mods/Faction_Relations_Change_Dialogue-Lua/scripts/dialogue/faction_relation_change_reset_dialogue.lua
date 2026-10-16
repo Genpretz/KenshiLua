@@ -1,6 +1,6 @@
 -- faction_relation_change_reset.lua
 -- Sandboxed LUA_SCRIPT dialogue action to set speaker faction's relationship level.
--- Set as "run script" reference on a dialogue line in FCS.
+-- Set as "run lua script" reference on a dialogue line in FCS.
 
 KenshiLua.log("=== Running: set_speaker_faction_relation.lua ===")
 
