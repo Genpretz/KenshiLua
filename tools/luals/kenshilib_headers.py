@@ -170,7 +170,7 @@ class HeaderIndex:
                 self.enums.add(self.qualify(stack, match.group(1)))
             return ("enum", "")
         match = re.match(
-            r"^(?:typedef\s+)?(class|struct|union)\s+(?:__declspec\([^)]*\)\s+|[A-Z][A-Z0-9_]+\s+|alignas\([^)]*\)\s+)*(\w+)"
+            r"^(?:__declspec\([^)]*\)\s+)?(?:typedef\s+)?(class|struct|union)\s+(?:__declspec\([^)]*\)\s+|[A-Z][A-Z0-9_]+\s+|alignas\([^)]*\)\s+)*(\w+)"
             r"(?:\s+final)?(?:\s*:\s*(.+))?$",
             statement,
         )
