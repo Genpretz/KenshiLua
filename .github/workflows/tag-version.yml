@@ -1,0 +1,46 @@
+name: Auto-tag version bump
+
+on:
+  push:
+    branches: [main, master]
+    paths:
+      - "src/Version.h"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: auto-tag-version
+  cancel-in-progress: false
+
+jobs:
+  auto-tag:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Tag version bump commit
+        run: |
+          VERSION=$(python -c 'import sys; sys.path.insert(0, "tools/release"); from sync_version import parse_version_h, DEFAULT_VERSION_H; print("v" + parse_version_h(DEFAULT_VERSION_H)["version_str"])')
+          echo "Detected version: ${VERSION}"
+
+          git fetch --tags --force
+
+          if git rev-parse -q --verify "refs/tags/${VERSION}" >/dev/null; then
+            echo "Tag ${VERSION} already exists. Skipping."
+          else
+            echo "Creating tag ${VERSION} at ${GITHUB_SHA}..."
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git tag -a "${VERSION}" "${GITHUB_SHA}" -m "chore: version bump to ${VERSION}"
+            git push origin "${VERSION}"
+          fi
