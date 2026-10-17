@@ -122,11 +122,11 @@ class DefinitionGenerationTests(unittest.TestCase):
             generated,
         )
         self.assertIn(
-            "Performs internal character operation `takeMoney`, synchronizing actor state",
+            "Deducts the specified amount of Cats from this character's money",
             generated,
         )
         self.assertIn(
-            "Override dispatch for `takeMoney`. Performs internal character operation",
+            "Override dispatch for `takeMoney`. Deducts the specified amount of Cats",
             generated,
         )
         self.assertIn(

@@ -16,12 +16,12 @@
       "lua_type": "AABB2D",
       "method_count": 7,
       "methods_with_inferred_returns": 7,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 7,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -40,12 +40,12 @@
       "lua_type": "AIOptions",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 11,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 11,
       "property_count": 11
     },
     {
@@ -64,12 +64,12 @@
       "lua_type": "AbstractMovementBase",
       "method_count": 56,
       "methods_with_inferred_returns": 56,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 56,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 16,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 16,
       "property_count": 16
     },
     {
@@ -88,12 +88,12 @@
       "lua_type": "ActivePlatoon",
       "method_count": 53,
       "methods_with_inferred_returns": 53,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 53,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 17,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 17,
       "property_count": 17
     },
     {
@@ -117,7 +117,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -141,7 +141,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -160,7 +160,7 @@
       "lua_type": "AnimalInventoryLayout",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -208,7 +208,7 @@
       "lua_type": "AppearanceBase",
       "method_count": 71,
       "methods_with_inferred_returns": 71,
-      "methods_with_kenshilib_descriptions": 69,
+      "methods_with_kenshilib_descriptions": 71,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -237,7 +237,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -262,12 +262,12 @@
       "lua_type": "AppearanceManager",
       "method_count": 30,
       "methods_with_inferred_returns": 30,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 30,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -286,12 +286,12 @@
       "lua_type": "AppearanceManager_AppearanceData",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -310,12 +310,12 @@
       "lua_type": "AppearanceManager_DataCategory",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -334,12 +334,12 @@
       "lua_type": "AppearanceManager_DataRange",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -358,12 +358,12 @@
       "lua_type": "AppearanceManager_DataRangePose",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -382,12 +382,12 @@
       "lua_type": "AppearanceManager_DataRangeVector",
       "method_count": 7,
       "methods_with_inferred_returns": 7,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 7,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -406,12 +406,12 @@
       "lua_type": "AppearanceManager_Gender",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -435,7 +435,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 25,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 25,
       "property_count": 25
     },
     {
@@ -454,12 +454,12 @@
       "lua_type": "AttachedArrowManager",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -502,7 +502,7 @@
       "lua_type": "BackThreadMessagesToMainT",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -526,7 +526,7 @@
       "lua_type": "BackpackInventoryLayout",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -574,12 +574,12 @@
       "lua_type": "BaseLayout",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -604,12 +604,12 @@
       "lua_type": "BinaryVersion",
       "method_count": 15,
       "methods_with_inferred_returns": 15,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 15,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -700,12 +700,12 @@
       "lua_type": "Box",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -724,12 +724,12 @@
       "lua_type": "BuildInventoryLayout",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 18,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 18,
       "property_count": 18
     },
     {
@@ -748,12 +748,12 @@
       "lua_type": "BuildMaterial",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -832,12 +832,12 @@
       "lua_type": "BuildingCategory",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -856,12 +856,12 @@
       "lua_type": "BuildingContainerInventoryLayout",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -880,12 +880,12 @@
       "lua_type": "BuildingGroup",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -928,12 +928,12 @@
       "lua_type": "BuildingSwaps",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -976,7 +976,7 @@
       "lua_type": "CPerfTimer",
       "method_count": 19,
       "methods_with_inferred_returns": 19,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 19,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -1024,12 +1024,12 @@
       "lua_type": "CameraClass",
       "method_count": 29,
       "methods_with_inferred_returns": 29,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 29,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 22,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 22,
       "property_count": 22
     },
     {
@@ -1048,12 +1048,12 @@
       "lua_type": "CampaignRequest",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -1077,7 +1077,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -1144,12 +1144,12 @@
       "lua_type": "CharMovement",
       "method_count": 66,
       "methods_with_inferred_returns": 66,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 66,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 27,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 27,
       "property_count": 27
     },
     {
@@ -1174,12 +1174,12 @@
       "lua_type": "CharStats",
       "method_count": 136,
       "methods_with_inferred_returns": 136,
-      "methods_with_kenshilib_descriptions": 125,
+      "methods_with_kenshilib_descriptions": 136,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 108,
-      "properties_with_kenshilib_descriptions": 106,
+      "properties_with_kenshilib_descriptions": 108,
       "property_count": 108
     },
     {
@@ -1198,12 +1198,12 @@
       "lua_type": "CharacterAnimal",
       "method_count": 50,
       "methods_with_inferred_returns": 50,
-      "methods_with_kenshilib_descriptions": 34,
+      "methods_with_kenshilib_descriptions": 50,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 12,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 12,
       "property_count": 12
     },
     {
@@ -1222,7 +1222,7 @@
       "lua_type": "Character",
       "method_count": 435,
       "methods_with_inferred_returns": 435,
-      "methods_with_kenshilib_descriptions": 429,
+      "methods_with_kenshilib_descriptions": 435,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -1270,12 +1270,12 @@
       "lua_type": "CharacterHuman",
       "method_count": 42,
       "methods_with_inferred_returns": 42,
-      "methods_with_kenshilib_descriptions": 30,
+      "methods_with_kenshilib_descriptions": 42,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -1294,7 +1294,7 @@
       "lua_type": "CharacterInventoryLayout",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -1324,12 +1324,12 @@
       "lua_type": "CharacterStatsWindow",
       "method_count": 22,
       "methods_with_inferred_returns": 22,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 22,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 13,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 13,
       "property_count": 13
     },
     {
@@ -1348,12 +1348,12 @@
       "lua_type": "CharacterTradingWindow",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -1377,7 +1377,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -1396,12 +1396,12 @@
       "lua_type": "Character_RagdollMsg",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -1486,7 +1486,7 @@
       "lua_type": "CombatClass",
       "method_count": 82,
       "methods_with_inferred_returns": 82,
-      "methods_with_kenshilib_descriptions": 81,
+      "methods_with_kenshilib_descriptions": 82,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -1515,7 +1515,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -1534,12 +1534,12 @@
       "lua_type": "CombatClass_EffectData",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -1558,12 +1558,12 @@
       "lua_type": "CombatMovementController",
       "method_count": 14,
       "methods_with_inferred_returns": 14,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 14,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 33,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 33,
       "property_count": 33
     },
     {
@@ -1636,12 +1636,12 @@
       "lua_type": "ConstructionState",
       "method_count": 15,
       "methods_with_inferred_returns": 15,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 15,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 10,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 10,
       "property_count": 10
     },
     {
@@ -1660,12 +1660,12 @@
       "lua_type": "ConsumptionItem",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -1708,12 +1708,12 @@
       "lua_type": "ContextMenu",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -1732,12 +1732,12 @@
       "lua_type": "ContextMenuGUI",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -1786,12 +1786,12 @@
       "lua_type": "CraftingInventoryLayout",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -1815,7 +1815,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 10,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 10,
       "property_count": 10
     },
     {
@@ -1906,12 +1906,12 @@
       "lua_type": "DataObjectContainer",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -1930,12 +1930,12 @@
       "lua_type": "DataPanelLine",
       "method_count": 17,
       "methods_with_inferred_returns": 17,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 17,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 11,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 11,
       "property_count": 11
     },
     {
@@ -1954,12 +1954,12 @@
       "lua_type": "DataPanelLine_Button",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -1978,12 +1978,12 @@
       "lua_type": "DataPanelLine_CheckBox",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -2002,12 +2002,12 @@
       "lua_type": "DataPanelLine_DropBox",
       "method_count": 10,
       "methods_with_inferred_returns": 10,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 10,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -2026,12 +2026,12 @@
       "lua_type": "DataPanelLine_Faction",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -2050,12 +2050,12 @@
       "lua_type": "DataPanelLine_KeyConfig",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -2074,12 +2074,12 @@
       "lua_type": "DataPanelLine_Progress",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -2098,12 +2098,12 @@
       "lua_type": "DataPanelLine_Research",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -2122,12 +2122,12 @@
       "lua_type": "DataPanelLine_Slider",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -2146,12 +2146,12 @@
       "lua_type": "DataPanelLine_SliderEditable",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -2170,12 +2170,12 @@
       "lua_type": "DataPanelLine_Text",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -2194,12 +2194,12 @@
       "lua_type": "DataPanelLine_TextEditable",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -2218,12 +2218,12 @@
       "lua_type": "DatapanelGUI",
       "method_count": 79,
       "methods_with_inferred_returns": 79,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 79,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 22,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 22,
       "property_count": 22
     },
     {
@@ -2247,7 +2247,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -2271,7 +2271,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -2290,12 +2290,12 @@
       "lua_type": "DialogChoiceList",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -2319,7 +2319,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -2338,7 +2338,7 @@
       "lua_type": "DialogDataManager",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -2362,12 +2362,12 @@
       "lua_type": "DialogLineData",
       "method_count": 26,
       "methods_with_inferred_returns": 26,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 26,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 46,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 46,
       "property_count": 46
     },
     {
@@ -2391,7 +2391,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -2410,12 +2410,12 @@
       "lua_type": "Dialogue",
       "method_count": 64,
       "methods_with_inferred_returns": 64,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 64,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 32,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 32,
       "property_count": 32
     },
     {
@@ -2434,12 +2434,12 @@
       "lua_type": "DialogueSpeechBubble",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -2458,12 +2458,12 @@
       "lua_type": "DialogueWindow",
       "method_count": 16,
       "methods_with_inferred_returns": 16,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 16,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 18,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 18,
       "property_count": 18
     },
     {
@@ -2482,12 +2482,12 @@
       "lua_type": "DoorStuff",
       "method_count": 71,
       "methods_with_inferred_returns": 71,
-      "methods_with_kenshilib_descriptions": 38,
+      "methods_with_kenshilib_descriptions": 71,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 19,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 19,
       "property_count": 19
     },
     {
@@ -2511,7 +2511,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -2535,7 +2535,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -2554,12 +2554,12 @@
       "lua_type": "EdgePathNode",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -2602,12 +2602,12 @@
       "lua_type": "EntData",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 36,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 36,
       "property_count": 36
     },
     {
@@ -2698,12 +2698,12 @@
       "lua_type": "FactionLeader",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -2722,7 +2722,7 @@
       "lua_type": "FactionListWindow",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -2746,12 +2746,12 @@
       "lua_type": "FactionManager",
       "method_count": 17,
       "methods_with_inferred_returns": 17,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 17,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -2775,7 +2775,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -2794,12 +2794,12 @@
       "lua_type": "FactionRelationsLine",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -2818,12 +2818,12 @@
       "lua_type": "FactionUniqueSquadManager",
       "method_count": 10,
       "methods_with_inferred_returns": 10,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 10,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -2847,7 +2847,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 11,
-      "properties_with_kenshilib_descriptions": 1,
+      "properties_with_kenshilib_descriptions": 11,
       "property_count": 11
     },
     {
@@ -2871,7 +2871,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -2890,12 +2890,12 @@
       "lua_type": "FactionsScreen",
       "method_count": 10,
       "methods_with_inferred_returns": 10,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 10,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -2938,7 +2938,7 @@
       "lua_type": "FactoryCallbackInterface",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -2962,12 +2962,12 @@
       "lua_type": "FarmBatch",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -2991,7 +2991,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 25,
-      "properties_with_kenshilib_descriptions": 20,
+      "properties_with_kenshilib_descriptions": 25,
       "property_count": 25
     },
     {
@@ -3010,12 +3010,12 @@
       "lua_type": "FarmBuilding_Plant",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -3039,7 +3039,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 12,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 12,
       "property_count": 12
     },
     {
@@ -3063,7 +3063,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -3087,7 +3087,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -3226,12 +3226,12 @@
       "lua_type": "FloatingProgressBar",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -3250,12 +3250,12 @@
       "lua_type": "FlockingTools",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -3274,12 +3274,12 @@
       "lua_type": "FogEditor",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 14,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 14,
       "property_count": 14
     },
     {
@@ -3309,7 +3309,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 1,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -3328,12 +3328,12 @@
       "lua_type": "Footprint",
       "method_count": 16,
       "methods_with_inferred_returns": 16,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 16,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 10,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 10,
       "property_count": 10
     },
     {
@@ -3352,12 +3352,12 @@
       "lua_type": "FootprintNode",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -3406,12 +3406,12 @@
       "lua_type": "FormationMover",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -3430,12 +3430,12 @@
       "lua_type": "FurnaceBuilding",
       "method_count": 27,
       "methods_with_inferred_returns": 27,
-      "methods_with_kenshilib_descriptions": 24,
+      "methods_with_kenshilib_descriptions": 27,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -3454,7 +3454,7 @@
       "lua_type": "FurnaceInventoryLayout",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -3478,12 +3478,12 @@
       "lua_type": "GUIWindow",
       "method_count": 24,
       "methods_with_inferred_returns": 24,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 24,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -3574,12 +3574,12 @@
       "lua_type": "GameDataEditorWindow",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -3603,7 +3603,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -3627,7 +3627,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -3646,12 +3646,12 @@
       "lua_type": "GameDataHeader",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -3694,12 +3694,12 @@
       "lua_type": "GameDataReference",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -3723,7 +3723,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -3742,12 +3742,12 @@
       "lua_type": "GameSaveState",
       "method_count": 13,
       "methods_with_inferred_returns": 13,
-      "methods_with_kenshilib_descriptions": 12,
+      "methods_with_kenshilib_descriptions": 13,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -3790,12 +3790,12 @@
       "lua_type": "GamedataSelectionList",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -3814,12 +3814,12 @@
       "lua_type": "GameplayOptions",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 11,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 11,
       "property_count": 11
     },
     {
@@ -3867,7 +3867,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -3910,7 +3910,7 @@
       "lua_type": "GenericFixedInventoryLayout",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -3934,12 +3934,12 @@
       "lua_type": "GenericInventoryLayout",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -3958,12 +3958,12 @@
       "lua_type": "GlobalConstants",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 99,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 99,
       "property_count": 99
     },
     {
@@ -4012,12 +4012,12 @@
       "lua_type": "hand",
       "method_count": 21,
       "methods_with_inferred_returns": 21,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 21,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -4042,7 +4042,7 @@
       "lua_type": "HavokCharacter",
       "method_count": 29,
       "methods_with_inferred_returns": 29,
-      "methods_with_kenshilib_descriptions": 27,
+      "methods_with_kenshilib_descriptions": 29,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -4114,12 +4114,12 @@
       "lua_type": "ImpactPoint",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -4138,12 +4138,12 @@
       "lua_type": "ImportGameMenu",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -4167,7 +4167,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 48,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 48,
       "property_count": 48
     },
     {
@@ -4186,12 +4186,12 @@
       "lua_type": "InputHandler_Command",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -4246,12 +4246,12 @@
       "lua_type": "InstanceID",
       "method_count": 11,
       "methods_with_inferred_returns": 11,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 11,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -4396,12 +4396,12 @@
       "lua_type": "InteriorModeButtonWindow",
       "method_count": 30,
       "methods_with_inferred_returns": 30,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 30,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 20,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 20,
       "property_count": 20
     },
     {
@@ -4479,7 +4479,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -4504,12 +4504,12 @@
       "lua_type": "InventoryIcon",
       "method_count": 7,
       "methods_with_inferred_returns": 7,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 7,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -4528,12 +4528,12 @@
       "lua_type": "InventoryItemBase",
       "method_count": 49,
       "methods_with_inferred_returns": 49,
-      "methods_with_kenshilib_descriptions": 4,
+      "methods_with_kenshilib_descriptions": 49,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 24,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 24,
       "property_count": 24
     },
     {
@@ -4558,12 +4558,12 @@
       "lua_type": "InventoryLayout",
       "method_count": 11,
       "methods_with_inferred_returns": 11,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 11,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -4606,12 +4606,12 @@
       "lua_type": "InventorySectionGUI",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -4630,12 +4630,12 @@
       "lua_type": "InventoryTradeData",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -4659,7 +4659,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -4678,12 +4678,12 @@
       "lua_type": "Inventory_HasRoomCache",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -4755,7 +4755,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -4774,7 +4774,7 @@
       "lua_type": "ItemListWindow",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -4858,12 +4858,12 @@
       "lua_type": "LevelEditor",
       "method_count": 51,
       "methods_with_inferred_returns": 51,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 51,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 24,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 24,
       "property_count": 24
     },
     {
@@ -4882,12 +4882,12 @@
       "lua_type": "LightBuilding",
       "method_count": 15,
       "methods_with_inferred_returns": 15,
-      "methods_with_kenshilib_descriptions": 14,
+      "methods_with_kenshilib_descriptions": 15,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -4906,12 +4906,12 @@
       "lua_type": "LightEnt",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -4930,12 +4930,12 @@
       "lua_type": "LimbsInventoryLayout",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -4954,12 +4954,12 @@
       "lua_type": "Limiter",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5002,12 +5002,12 @@
       "lua_type": "ListScrollBar",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -5050,12 +5050,12 @@
       "lua_type": "LoadSaveWindow",
       "method_count": 13,
       "methods_with_inferred_returns": 13,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 13,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -5080,12 +5080,12 @@
       "lua_type": "LoadingWindow",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -5109,7 +5109,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -5134,7 +5134,7 @@
       "lua_type": "Logger",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -5182,12 +5182,12 @@
       "lua_type": "MainTabPortraitPlatoon",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -5206,12 +5206,12 @@
       "lua_type": "MainthreadStateReaderT",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 0,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -5236,12 +5236,12 @@
       "lua_type": "ManagementScreen",
       "method_count": 32,
       "methods_with_inferred_returns": 32,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 32,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 25,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 25,
       "property_count": 25
     },
     {
@@ -5265,7 +5265,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -5284,12 +5284,12 @@
       "lua_type": "MapMarkerCharacter",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5308,12 +5308,12 @@
       "lua_type": "MapMarkerTown",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -5367,7 +5367,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -5386,12 +5386,12 @@
       "lua_type": "MedianFilter2DVector",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -5410,12 +5410,12 @@
       "lua_type": "MedianFilter",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -5458,12 +5458,12 @@
       "lua_type": "MedicalSystem_HealthPartStatus",
       "method_count": 15,
       "methods_with_inferred_returns": 15,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 15,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 21,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 21,
       "property_count": 21
     },
     {
@@ -5559,7 +5559,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5583,7 +5583,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -5608,7 +5608,7 @@
       "lua_type": "MessageBoxManager",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -5638,12 +5638,12 @@
       "lua_type": "MessageForB",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5667,7 +5667,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5686,12 +5686,12 @@
       "lua_type": "ModInfo",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -5710,12 +5710,12 @@
       "lua_type": "MotionFilter",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5758,12 +5758,12 @@
       "lua_type": "MultiSlider",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5919,7 +5919,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -5943,7 +5943,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -5962,7 +5962,7 @@
       "lua_type": "NavMeshSeeds",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -5986,12 +5986,12 @@
       "lua_type": "NavMesh_BuildingInfo",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -6015,7 +6015,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -6034,12 +6034,12 @@
       "lua_type": "NewGameOptionsWindow",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -6058,12 +6058,12 @@
       "lua_type": "NewGameWindow",
       "method_count": 17,
       "methods_with_inferred_returns": 17,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 17,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -6082,7 +6082,7 @@
       "lua_type": "NpcListWindow",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -6135,7 +6135,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -6154,7 +6154,7 @@
       "lua_type": "NxBox",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -6184,7 +6184,7 @@
       "lua_type": "NxMat33",
       "method_count": 19,
       "methods_with_inferred_returns": 19,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 19,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -6262,12 +6262,12 @@
       "lua_type": "NxVec3",
       "method_count": 27,
       "methods_with_inferred_returns": 27,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 27,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -6286,12 +6286,12 @@
       "lua_type": "ObjectInstance",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -6310,12 +6310,12 @@
       "lua_type": "OpenSaveFileDialog",
       "method_count": 18,
       "methods_with_inferred_returns": 18,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 18,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -6339,7 +6339,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 62,
-      "properties_with_kenshilib_descriptions": 2,
+      "properties_with_kenshilib_descriptions": 62,
       "property_count": 62
     },
     {
@@ -6364,12 +6364,12 @@
       "lua_type": "OptionsWindow",
       "method_count": 23,
       "methods_with_inferred_returns": 23,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 23,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 10,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 10,
       "property_count": 10
     },
     {
@@ -6394,12 +6394,12 @@
       "lua_type": "OrderCellView",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -6418,12 +6418,12 @@
       "lua_type": "OrderData",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -6490,12 +6490,12 @@
       "lua_type": "Ownerships",
       "method_count": 26,
       "methods_with_inferred_returns": 26,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 26,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -6514,12 +6514,12 @@
       "lua_type": "ParticlePool",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -6543,7 +6543,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -6567,7 +6567,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -6597,7 +6597,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 10,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 10,
       "property_count": 10
     },
     {
@@ -6640,7 +6640,7 @@
       "lua_type": "PhysicsCollection",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -6664,12 +6664,12 @@
       "lua_type": "PhysicsInterface",
       "method_count": 10,
       "methods_with_inferred_returns": 10,
-      "methods_with_kenshilib_descriptions": 8,
+      "methods_with_kenshilib_descriptions": 10,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -6712,12 +6712,12 @@
       "lua_type": "PlayerInterface",
       "method_count": 89,
       "methods_with_inferred_returns": 89,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 89,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 36,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 36,
       "property_count": 36
     },
     {
@@ -6790,12 +6790,12 @@
       "lua_type": "PortraitData",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -6814,12 +6814,12 @@
       "lua_type": "PortraitImage",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -6844,12 +6844,12 @@
       "lua_type": "PortraitMainCellView",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -6904,12 +6904,12 @@
       "lua_type": "PortraitSquadCellView",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -6928,12 +6928,12 @@
       "lua_type": "PortraitSquadItemBox",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -6958,12 +6958,12 @@
       "lua_type": "PreviewBuilding",
       "method_count": 86,
       "methods_with_inferred_returns": 86,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 86,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 33,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 33,
       "property_count": 33
     },
     {
@@ -7054,12 +7054,12 @@
       "lua_type": "ProgressBarWidget",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -7084,12 +7084,12 @@
       "lua_type": "ProspectingWindow",
       "method_count": 12,
       "methods_with_inferred_returns": 12,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 12,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 12,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 12,
       "property_count": 12
     },
     {
@@ -7108,12 +7108,12 @@
       "lua_type": "ProsperityManager",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -7137,7 +7137,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 30,
-      "properties_with_kenshilib_descriptions": 1,
+      "properties_with_kenshilib_descriptions": 30,
       "property_count": 30
     },
     {
@@ -7162,12 +7162,12 @@
       "lua_type": "RaceLimiter",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7186,7 +7186,7 @@
       "lua_type": "RainCollectorBuilding",
       "method_count": 7,
       "methods_with_inferred_returns": 7,
-      "methods_with_kenshilib_descriptions": 6,
+      "methods_with_kenshilib_descriptions": 7,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -7210,12 +7210,12 @@
       "lua_type": "RelationData",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -7264,7 +7264,7 @@
       "lua_type": "RepetitionCounter",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -7288,7 +7288,7 @@
       "lua_type": "ResearchBuilding",
       "method_count": 17,
       "methods_with_inferred_returns": 17,
-      "methods_with_kenshilib_descriptions": 14,
+      "methods_with_kenshilib_descriptions": 17,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -7312,12 +7312,12 @@
       "lua_type": "ResearchBuildingInventoryLayout",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7336,12 +7336,12 @@
       "lua_type": "ResourceLinePanel",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7360,12 +7360,12 @@
       "lua_type": "ResourceLoadRequestMesh",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7384,12 +7384,12 @@
       "lua_type": "ResourceLoadRequestTexture",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7414,12 +7414,12 @@
       "lua_type": "ResourceLoader",
       "method_count": 8,
       "methods_with_inferred_returns": 8,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 8,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 7,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 7,
       "property_count": 7
     },
     {
@@ -7467,7 +7467,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -7486,12 +7486,12 @@
       "lua_type": "RootObjectBase",
       "method_count": 41,
       "methods_with_inferred_returns": 41,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 41,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -7510,7 +7510,7 @@
       "lua_type": "RootObject",
       "method_count": 96,
       "methods_with_inferred_returns": 96,
-      "methods_with_kenshilib_descriptions": 92,
+      "methods_with_kenshilib_descriptions": 96,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -7534,12 +7534,12 @@
       "lua_type": "RootObjectContainer",
       "method_count": 16,
       "methods_with_inferred_returns": 16,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 16,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7564,12 +7564,12 @@
       "lua_type": "RootObjectFactory",
       "method_count": 18,
       "methods_with_inferred_returns": 18,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 18,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7588,12 +7588,12 @@
       "lua_type": "RotatingEnt",
       "method_count": 7,
       "methods_with_inferred_returns": 7,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 7,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 14,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 14,
       "property_count": 14
     },
     {
@@ -7623,7 +7623,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -7642,12 +7642,12 @@
       "lua_type": "SaveFileSystem_FileMessage",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -7666,12 +7666,12 @@
       "lua_type": "SaveInfo",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 10,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 10,
       "property_count": 10
     },
     {
@@ -7720,12 +7720,12 @@
       "lua_type": "ScreenLabel",
       "method_count": 13,
       "methods_with_inferred_returns": 13,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 13,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -7744,12 +7744,12 @@
       "lua_type": "ScreenLabelDebug",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -7768,12 +7768,12 @@
       "lua_type": "ScreenLabelInterface",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -7845,7 +7845,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -7864,12 +7864,12 @@
       "lua_type": "SeenSomeone",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -7888,12 +7888,12 @@
       "lua_type": "SelectionBox",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -7912,12 +7912,12 @@
       "lua_type": "SenseItr",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -7936,12 +7936,12 @@
       "lua_type": "SensoryData",
       "method_count": 44,
       "methods_with_inferred_returns": 44,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 44,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 24,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 24,
       "property_count": 24
     },
     {
@@ -7984,12 +7984,12 @@
       "lua_type": "ShopTraderInventory",
       "method_count": 18,
       "methods_with_inferred_returns": 18,
-      "methods_with_kenshilib_descriptions": 12,
+      "methods_with_kenshilib_descriptions": 18,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -8032,12 +8032,12 @@
       "lua_type": "SimpleTimeStamper",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -8086,12 +8086,12 @@
       "lua_type": "Slider",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -8110,12 +8110,12 @@
       "lua_type": "SpecificItemLoadFirst",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -8134,12 +8134,12 @@
       "lua_type": "SpeedGroup",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -8158,12 +8158,12 @@
       "lua_type": "SplashScreen",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -8187,7 +8187,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -8206,12 +8206,12 @@
       "lua_type": "SpottingPeopleMgr",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -8236,12 +8236,12 @@
       "lua_type": "SquadCellView",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -8260,12 +8260,12 @@
       "lua_type": "SquadData",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -8284,7 +8284,7 @@
       "lua_type": "SquadItemBox",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -8308,7 +8308,7 @@
       "lua_type": "SquadListWindow",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -8332,12 +8332,12 @@
       "lua_type": "SquadManagementScreen",
       "method_count": 10,
       "methods_with_inferred_returns": 10,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 10,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -8356,12 +8356,12 @@
       "lua_type": "Stat",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -8385,7 +8385,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -8409,7 +8409,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -8428,7 +8428,7 @@
       "lua_type": "StaticEnt",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -8476,12 +8476,12 @@
       "lua_type": "StringPair",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -8505,7 +8505,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -8524,12 +8524,12 @@
       "lua_type": "SysMessage",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -8596,12 +8596,12 @@
       "lua_type": "TaskData",
       "method_count": 18,
       "methods_with_inferred_returns": 18,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 18,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 36,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 36,
       "property_count": 36
     },
     {
@@ -8625,7 +8625,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -8644,7 +8644,7 @@
       "lua_type": "Tasker",
       "method_count": 27,
       "methods_with_inferred_returns": 27,
-      "methods_with_kenshilib_descriptions": 26,
+      "methods_with_kenshilib_descriptions": 27,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -8668,12 +8668,12 @@
       "lua_type": "Terrain",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 22,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 22,
       "property_count": 22
     },
     {
@@ -8697,7 +8697,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -8721,7 +8721,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -8745,7 +8745,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -8769,7 +8769,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -8812,7 +8812,7 @@
       "lua_type": "TextureArrayLoadData",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -8836,12 +8836,12 @@
       "lua_type": "TextureLoadData",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -8860,12 +8860,12 @@
       "lua_type": "ThreadClass",
       "method_count": 11,
       "methods_with_inferred_returns": 11,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 11,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -8884,12 +8884,12 @@
       "lua_type": "ThreadWannabe",
       "method_count": 7,
       "methods_with_inferred_returns": 7,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 7,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -8908,12 +8908,12 @@
       "lua_type": "TimeOfDay",
       "method_count": 26,
       "methods_with_inferred_returns": 26,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 26,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -8962,12 +8962,12 @@
       "lua_type": "TitleScreen",
       "method_count": 16,
       "methods_with_inferred_returns": 16,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 16,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -8986,12 +8986,12 @@
       "lua_type": "ToolTip",
       "method_count": 29,
       "methods_with_inferred_returns": 29,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 29,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -9010,7 +9010,7 @@
       "lua_type": "ToolTipDynamic",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -9034,12 +9034,12 @@
       "lua_type": "ToolTipFixed",
       "method_count": 12,
       "methods_with_inferred_returns": 12,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 12,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -9058,12 +9058,12 @@
       "lua_type": "ToolTipInventory",
       "method_count": 15,
       "methods_with_inferred_returns": 15,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 15,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -9087,7 +9087,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -9106,7 +9106,7 @@
       "lua_type": "ToolTipStatic",
       "method_count": 11,
       "methods_with_inferred_returns": 11,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 11,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -9160,12 +9160,12 @@
       "lua_type": "TownBase",
       "method_count": 139,
       "methods_with_inferred_returns": 139,
-      "methods_with_kenshilib_descriptions": 138,
+      "methods_with_kenshilib_descriptions": 139,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 33,
-      "properties_with_kenshilib_descriptions": 27,
+      "properties_with_kenshilib_descriptions": 34,
       "property_count": 34
     },
     {
@@ -9184,12 +9184,12 @@
       "lua_type": "TownBase_ResidentData",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -9261,7 +9261,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -9280,7 +9280,7 @@
       "lua_type": "TownListWindow",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -9304,12 +9304,12 @@
       "lua_type": "TownPositionCacher",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -9328,12 +9328,12 @@
       "lua_type": "Town_NestSpot",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -9382,12 +9382,12 @@
       "lua_type": "TradeResult",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -9406,12 +9406,12 @@
       "lua_type": "TraderInventoryLayout",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -9460,12 +9460,12 @@
       "lua_type": "TransformWindow",
       "method_count": 21,
       "methods_with_inferred_returns": 21,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 21,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 19,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 19,
       "property_count": 19
     },
     {
@@ -9484,12 +9484,12 @@
       "lua_type": "TreeData",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -9508,7 +9508,7 @@
       "lua_type": "TriggerCallback",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -9532,12 +9532,12 @@
       "lua_type": "TripleInt",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -9580,12 +9580,12 @@
       "lua_type": "TutorialGUI",
       "method_count": 22,
       "methods_with_inferred_returns": 22,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 22,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 16,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 16,
       "property_count": 16
     },
     {
@@ -9604,12 +9604,12 @@
       "lua_type": "TutorialGUILine",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -9628,12 +9628,12 @@
       "lua_type": "TutorialItem",
       "method_count": 25,
       "methods_with_inferred_returns": 25,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 25,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 9,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 9,
       "property_count": 9
     },
     {
@@ -9652,12 +9652,12 @@
       "lua_type": "TutorialSubItem",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -9676,12 +9676,12 @@
       "lua_type": "TutorialpediaGUI",
       "method_count": 13,
       "methods_with_inferred_returns": 13,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 13,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -9700,12 +9700,12 @@
       "lua_type": "UniqueSpawnData",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 4
     },
     {
@@ -9748,12 +9748,12 @@
       "lua_type": "UtilityT",
       "method_count": 59,
       "methods_with_inferred_returns": 59,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 59,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -9772,12 +9772,12 @@
       "lua_type": "VisibleObjectInfo",
       "method_count": 1,
       "methods_with_inferred_returns": 1,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 1,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -9820,12 +9820,12 @@
       "lua_type": "Weapon",
       "method_count": 21,
       "methods_with_inferred_returns": 21,
-      "methods_with_kenshilib_descriptions": 20,
+      "methods_with_kenshilib_descriptions": 21,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -9844,12 +9844,12 @@
       "lua_type": "WeatherRegion",
       "method_count": 14,
       "methods_with_inferred_returns": 14,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 14,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 12,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 12,
       "property_count": 12
     },
     {
@@ -9873,7 +9873,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -9970,12 +9970,12 @@
       "lua_type": "WorldEventStateQuery",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -9994,12 +9994,12 @@
       "lua_type": "WorldEventStateQueryList",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -10018,12 +10018,12 @@
       "lua_type": "YesNoMaybeValue",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -10072,7 +10072,7 @@
       "lua_type": "ZoneManagerInterfaceT",
       "method_count": 4,
       "methods_with_inferred_returns": 4,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 4,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -10101,7 +10101,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -10144,12 +10144,12 @@
       "lua_type": "ZoneSpacialGrid",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 4,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -10173,7 +10173,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -10192,12 +10192,12 @@
       "lua_type": "hkBool",
       "method_count": 3,
       "methods_with_inferred_returns": 3,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 3,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -10264,7 +10264,7 @@
       "lua_type": "hkMemoryAllocator",
       "method_count": 5,
       "methods_with_inferred_returns": 5,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 5,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -10317,7 +10317,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -10336,12 +10336,12 @@
       "lua_type": "hkResult",
       "method_count": 2,
       "methods_with_inferred_returns": 2,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 2,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -10366,7 +10366,7 @@
       "lua_type": "hkVector4f",
       "method_count": 57,
       "methods_with_inferred_returns": 57,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 57,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -10396,7 +10396,7 @@
       "lua_type": "hkVector4fComparison",
       "method_count": 13,
       "methods_with_inferred_returns": 13,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 13,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -10420,12 +10420,12 @@
       "lua_type": "iVector2",
       "method_count": 6,
       "methods_with_inferred_returns": 6,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 6,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -10444,12 +10444,12 @@
       "lua_type": "physHit",
       "method_count": 7,
       "methods_with_inferred_returns": 7,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 7,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 12,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 12,
       "property_count": 12
     },
     {
@@ -10473,7 +10473,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -10545,7 +10545,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -13516,12 +13516,12 @@
       "lua_type": "TownFacilitiesTags",
       "method_count": 9,
       "methods_with_inferred_returns": 9,
-      "methods_with_kenshilib_descriptions": 0,
+      "methods_with_kenshilib_descriptions": 9,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -13779,19 +13779,19 @@
     "inferred_return_percent": 99.9,
     "inheritance_links": 154,
     "inheritance_percent": 100.0,
-    "kenshilib_method_description_percent": 55.9,
-    "kenshilib_property_description_percent": 34.0,
+    "kenshilib_method_description_percent": 93.0,
+    "kenshilib_property_description_percent": 96.7,
     "metadata_classes": 587,
     "metadata_functions": 12,
     "metadata_globals": 77,
     "method_percent": 100.0,
     "methods": 7216,
     "methods_with_inferred_returns": 7208,
-    "methods_with_kenshilib_descriptions": 3511,
+    "methods_with_kenshilib_descriptions": 5841,
     "methods_with_signatures": 7216,
     "properties": 3070,
     "properties_with_inferred_types": 2963,
-    "properties_with_kenshilib_descriptions": 1044,
+    "properties_with_kenshilib_descriptions": 2969,
     "property_percent": 100.0,
     "runtime_globals": 154,
     "signature_methods": 7216,

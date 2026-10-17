@@ -26,7 +26,11 @@ fixtures fail if LuaLS stops typing elements through these forms.
 import re
 
 
-ITERATOR_ALIAS = {"name": "ContainerIterator<K, V>", "definition": "fun(): K, V"}
+ITERATOR_ALIAS = {
+    "name": "ContainerIterator<K, V>",
+    "definition": "fun(): K, V",
+    "description": "Stateless iterator function yielding `(key, value)` pairs on each invocation.",
+}
 
 # template -> (kind, generic class, C++ spellings of the container type)
 FAMILIES = {

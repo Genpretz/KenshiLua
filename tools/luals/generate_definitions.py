@@ -147,7 +147,10 @@ def emit_class(lines, entry):
 
 
 def emit_global(lines, entry):
-    emit_comment(lines, entry.get("description"))
+    description = entry.get("description")
+    if not description and entry.get("type", "").endswith("Statics"):
+        description = "Global table of static functions for `{0}`.".format(entry["name"])
+    emit_comment(lines, description)
     lines.append("---@type " + entry["type"])
     if entry["initialValue"] == "{}":
         lines.append("---@diagnostic disable-next-line: missing-fields")
@@ -327,16 +330,22 @@ def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
         for entry in inventory.get("classes", [])
         if entry.get("metatable")
     }
+    descriptions_map = {}
+    if DESCRIPTION_PATH.exists():
+        descriptions_map = json.loads(DESCRIPTION_PATH.read_text(encoding="utf-8")).get("classes", {})
     for entry in inventory.get("classes", []):
         lua_type = entry["lua_type"]
         if lua_type not in declared and re.match(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", lua_type):
+            desc = None
+            if entry.get("kind") == "template_instance":
+                desc = "Lua view of the `{0}` container.".format(entry["metatable"])
+            elif lua_type in descriptions_map and descriptions_map[lua_type].get("description"):
+                desc = descriptions_map[lua_type]["description"]
+            if not desc:
+                desc = "Engine class `{0}`.".format(lua_type)
             metadata.setdefault("classes", []).append({
                 "name": lua_type,
-                "description": (
-                    "Lua view of the `{0}` container.".format(entry["metatable"])
-                    if entry.get("kind") == "template_instance"
-                    else None
-                ),
+                "description": desc,
                 "fields": [],
             })
             declared.add(lua_type)
@@ -465,15 +474,23 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         "",
     ]
     for alias in metadata.get("aliases", []):
+        emit_comment(lines, alias.get("description"))
         lines.append("---@alias {0} {1}".format(alias["name"], alias["definition"]))
     lines.append("")
+    emit_comment(lines, "Engine event names supported by `KenshiLua.on`.")
     lines.append("---@alias KenshiLua.EventName")
     for event_name in event_names:
         lines.append('---| "' + event_name + '"')
     lines.append("")
 
+    enum_descriptions = {}
+    if DESCRIPTION_PATH.exists():
+        enum_descriptions = json.loads(DESCRIPTION_PATH.read_text(encoding="utf-8")).get("enums", {})
+
     # Global enums
     for name, entries in global_enums.items():
+        desc = enum_descriptions.get(name, "Engine enum `{0}`.".format(name))
+        emit_comment(lines, desc)
         lines.append("---@enum " + name)
         lines.append(name + " = {")
         for key, val in entries.items():
@@ -491,17 +508,21 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         class_name = entry["name"]
         if class_name in nested_table_fields:
             for f in sorted(nested_table_fields[class_name].keys()):
+                target_type = nested_table_fields[class_name][f]
                 fields.append({
                     "name": f,
-                    "type": nested_table_fields[class_name][f],
+                    "type": target_type,
+                    "description": "Nested enum table `{0}`.".format(target_type),
                 })
         for g in metadata.get("globals", []):
             if g.get("type") == class_name and g.get("name") in nested_table_fields and g.get("name") != class_name:
                 parent_name = g["name"]
                 for f in sorted(nested_table_fields[parent_name].keys()):
+                    target_type = nested_table_fields[parent_name][f]
                     fields.append({
                         "name": f,
-                        "type": nested_table_fields[parent_name][f],
+                        "type": target_type,
+                        "description": "Nested enum table `{0}`.".format(target_type),
                     })
         class_entry["fields"] = fields
         emit_class(lines, class_entry)
@@ -511,10 +532,12 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         if parent not in classes_by_name and parent not in globals_by_name:
             parent_entry = {
                 "name": parent,
+                "description": "Namespace table enclosing nested `{0}` enums.".format(parent),
                 "fields": [
                     {
                         "name": f,
                         "type": fields[f],
+                        "description": "Nested enum table `{0}`.".format(fields[f]),
                     }
                     for f in sorted(fields.keys())
                 ],
@@ -528,6 +551,7 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
     # Global tables for nested enum parents
     for parent in sorted(nested_table_fields, key=lambda value: (value.count("."), value)):
         if parent not in globals_by_name:
+            emit_comment(lines, "Namespace table enclosing nested `{0}` enums.".format(parent))
             lines.append("---@type " + parent)
             lines.append("---@diagnostic disable-next-line: missing-fields")
             lines.append(parent + " = {}")
@@ -536,8 +560,11 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
     # Nested enums
     for parent, fields in nested_enums.items():
         for field, entries in fields.items():
-            lines.append("---@enum " + parent + "." + field)
-            lines.append(parent + "." + field + " = {")
+            full_name = parent + "." + field
+            desc = enum_descriptions.get(full_name, enum_descriptions.get(field, "Engine enum `{0}`.".format(full_name)))
+            emit_comment(lines, desc)
+            lines.append("---@enum " + full_name)
+            lines.append(full_name + " = {")
             for key, val in entries.items():
                 lines.append("    {0} = {1},".format(key, val))
             lines.append("}")
