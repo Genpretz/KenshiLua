@@ -7,12 +7,15 @@ runner.register_game_suite("world-smoke", function(ctx)
         local sfs = SaveFileSystem.getSingleton()
 
         t.assert_not_nil(gw, "getGameWorld()")
+        ---@cast gw -nil
         t.assert_equal(gw.initialized, true, "gw.initialized")
         t.assert_equal(gw.gameResetting, false, "gw.gameResetting")
         t.assert_equal(gw:isLoadingFromASaveGame(), false, "gw:isLoadingFromASaveGame()")
 
         t.assert_not_nil(sm, "SaveManager.getSingleton()")
+        ---@cast sm -nil
         t.assert_not_nil(sfs, "SaveFileSystem.getSingleton()")
+        ---@cast sfs -nil
         t.assert_equal(sfs:busy(), false, "SaveFileSystem:busy()")
 
         local current_game = sm:getCurrentGame()
@@ -23,6 +26,8 @@ runner.register_game_suite("world-smoke", function(ctx)
 
     ctx.test("GameWorld core subsystems and active mods are accessible", function(t)
         local gw = getGameWorld()
+        t.assert_not_nil(gw, "getGameWorld()")
+        ---@cast gw -nil
         t.assert_not_nil(gw.gamedata, "gw.gamedata")
         t.assert_not_nil(gw.savedata, "gw.savedata")
         t.assert_not_nil(gw.theFactory, "gw.theFactory")
@@ -31,28 +36,33 @@ runner.register_game_suite("world-smoke", function(ctx)
 
         local active_mods = gw.activeMods
         t.assert_not_nil(active_mods, "gw.activeMods")
+        ---@cast active_mods -nil
         t.assert_true(active_mods:size() >= 2, "at least provider and consumer mods active")
     end)
 
     ctx.test("PlayerInterface, player faction, and player characters are populated", function(t)
         local player = getPlayerInterface()
         t.assert_not_nil(player, "getPlayerInterface()")
-
+        ---@cast player -nil
         local faction = player:getFaction() or player.participant
         t.assert_not_nil(faction, "player faction")
+        ---@cast faction -nil
         t.assert_true(type(faction.name) == "string" and #faction.name > 0, "player faction name")
 
         local chars = player.playerCharacters
         t.assert_not_nil(chars, "player.playerCharacters")
+        ---@cast chars -nil
         t.assert_true(chars:size() >= 1, "at least one player character in save fixture")
 
         local first_char = chars[1] or player:getAnyPlayerCharacter()
         t.assert_not_nil(first_char, "first player character")
+        ---@cast first_char -nil
         local char_name = first_char:getName()
         t.assert_true(type(char_name) == "string" and #char_name > 0, "character name is non-empty")
 
         local pos = first_char:getPosition()
         t.assert_not_nil(pos, "character position")
+        ---@cast pos -nil
         t.assert_true(type(pos.x) == "number" and type(pos.y) == "number" and type(pos.z) == "number", "position coordinates")
         KenshiLua.log(string.format(
             "[KLTest][world-smoke] faction=%q chars=%d first_char=%q pos=(%.1f, %.1f, %.1f)",
