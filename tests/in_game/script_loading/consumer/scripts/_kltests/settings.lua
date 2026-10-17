@@ -1,6 +1,6 @@
 local moduleName = ...
-localSettingsLoadCount = (localSettingsLoadCount or 0) + 1
+LocalSettingsLoadCount = (LocalSettingsLoadCount or 0) + 1
 return {
     moduleName = moduleName,
-    loadCount = localSettingsLoadCount,
+    loadCount = LocalSettingsLoadCount,
 }

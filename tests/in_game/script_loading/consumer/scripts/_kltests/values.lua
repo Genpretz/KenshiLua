@@ -1,2 +1,2 @@
-localDofileCount = (localDofileCount or 0) + 1
-return "local-dofile", localDofileCount
+LocalDofileCount = (LocalDofileCount or 0) + 1
+return "local-dofile", LocalDofileCount
