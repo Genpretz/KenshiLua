@@ -390,11 +390,15 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
     -- Products area (ScrollView or container Widget)
     local productsArea = assert(find("AH_ProductsScrollView") or find("AH_ProductsArea"),
         "Husbandry layout missing AH_ProductsScrollView or AH_ProductsArea")
+    -- AH_HusbandryWindow.layout declares this widget as a ScrollView.
+    ---@cast productsArea MyGUI.ScrollView
     state.productsArea = productsArea
 
     -- Clear any static preview children present in the layout template
     while productsArea:getChildCount() > 0 do
         local child = productsArea:getChildAt(0)
+        -- The child count above guarantees that index 0 exists.
+        ---@cast child -nil
         pcall(function() child:destroy() end)
     end
 

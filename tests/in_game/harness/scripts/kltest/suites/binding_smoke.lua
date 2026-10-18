@@ -161,6 +161,7 @@ runner.register_game_suite("binding-smoke", function(ctx)
     ctx.test("borrowed engine lektors preserve container identity and safe GC", function(t)
         local gw = getGameWorld()
         t.assert_not_nil(gw, "getGameWorld()")
+        ---@cast gw -nil
 
         local mods = gw.activeMods
         t.assert_not_nil(mods, "gw.activeMods")
@@ -169,6 +170,7 @@ runner.register_game_suite("binding-smoke", function(ctx)
 
         local first_mod = mods[1]
         t.assert_not_nil(first_mod, "first_mod is non-nil")
+        ---@cast first_mod -nil
         t.assert_true(type(first_mod.name) == "string" and #first_mod.name > 0, "first_mod.name is non-empty")
 
         -- Convert to table
@@ -184,6 +186,7 @@ runner.register_game_suite("binding-smoke", function(ctx)
     ctx.test("Vector3 coordinate table marshaling and character position reading", function(t)
         local player = getPlayerInterface()
         t.assert_not_nil(player, "getPlayerInterface()")
+        ---@cast player -nil
 
         local chars = player.playerCharacters
         t.assert_not_nil(chars, "player.playerCharacters")
@@ -191,6 +194,7 @@ runner.register_game_suite("binding-smoke", function(ctx)
 
         local char = chars[1]
         t.assert_not_nil(char, "first player character")
+        ---@cast char -nil
 
         local pos0 = char:getPosition()
         t.assert_not_nil(pos0, "char:getPosition()")
@@ -227,8 +231,12 @@ runner.register_game_suite("binding-smoke", function(ctx)
 
     ctx.test("hand entity handle operators and strict 1:1 SDK method fidelity", function(t)
         local player = getPlayerInterface()
+        t.assert_not_nil(player, "getPlayerInterface()")
+        ---@cast player -nil
         local chars = player.playerCharacters
         local char = chars[1]
+        t.assert_not_nil(char, "first player character")
+        ---@cast char -nil
 
         local h = char.handle
         t.assert_not_nil(h, "char.handle")
@@ -257,6 +265,7 @@ runner.register_game_suite("binding-smoke", function(ctx)
         -- Entity resolution
         local resolved = h:getCharacter()
         t.assert_not_nil(resolved, "h:getCharacter()")
+        ---@cast resolved -nil
         t.assert_equal(resolved:getName(), char:getName(), "resolved character matches name")
 
         -- Strict 1:1 rule check:
@@ -264,15 +273,21 @@ runner.register_game_suite("binding-smoke", function(ctx)
         t.assert_true(type(char.isValid) == "function", "char:isValid is function (inherited from RootObjectBase)")
         t.assert_true(char:isValid(), "char:isValid() returns true")
         -- Neither Character nor RootObjectBase declares operator_bool in C++
+        ---@diagnostic disable-next-line: undefined-field
         t.assert_nil(char.operator_bool, "char.operator_bool must be nil (1:1 SDK rule)")
     end)
 
     ctx.test("GameData query by enum and record string ID verification", function(t)
         local gw = getGameWorld()
-        t.assert_not_nil(gw.gamedata, "gw.gamedata")
+        t.assert_not_nil(gw, "getGameWorld()")
+        ---@cast gw -nil
+        local gamedata = gw.gamedata
+        t.assert_not_nil(gamedata, "gw.gamedata")
+        ---@cast gamedata -nil
 
-        local start_obj = gw.gamedata:getDataByName("Wanderer", itemType.NEW_GAME_STARTOFF)
+        local start_obj = gamedata:getDataByName("Wanderer", itemType.NEW_GAME_STARTOFF)
         t.assert_not_nil(start_obj, "gw.gamedata:getDataByName('Wanderer', NEW_GAME_STARTOFF)")
+        ---@cast start_obj -nil
         t.assert_equal(start_obj.name, "Wanderer", "record name matches")
         t.assert_equal(start_obj.stringID, "1980-gamedata.base", "record stringID matches 1980-gamedata.base")
         t.assert_equal(start_obj.type, itemType.NEW_GAME_STARTOFF, "record type matches enum")

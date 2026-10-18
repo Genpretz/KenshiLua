@@ -16,6 +16,7 @@ TOOLS_DIR = PROJECT_ROOT / "tools" / "luals"
 sys.path.insert(0, str(TOOLS_DIR))
 
 import container_contracts
+import check_fixtures
 import extract_enum_values
 import generate_binding_inventory
 import generate_coverage_report
@@ -881,6 +882,32 @@ class CoverageReportTests(unittest.TestCase):
         bindings = {entry["lua_type"]: entry for entry in report["bindings"]}
         for name in ("Character", "Building", "TownBase", "CharStats"):
             self.assertTrue(bindings[name]["complete"])
+
+
+class FixtureDiagnosticsTests(unittest.TestCase):
+    def test_reported_diagnostics_resolves_posix_and_windows_uris(self):
+        fixture = "tests/luals/invalid/example file.lua"
+        for root, uri_root in (
+            ("/home/runner/work/KenshiLua", "file:///home/runner/work/KenshiLua"),
+            ("C:/work/KenshiLua", "file:///C:/work/KenshiLua"),
+        ):
+            with self.subTest(root=root), tempfile.TemporaryDirectory() as temporary:
+                results = pathlib.Path(temporary) / "check.json"
+                results.write_text(json.dumps({
+                    uri_root + "/tests/luals/invalid/example%20file.lua": [
+                        {"code": "undefined-field"}, {"code": "need-check-nil"},
+                    ],
+                    uri_root + "-other/tests/luals/invalid/example%20file.lua": [
+                        {"code": "outside-repository"},
+                    ],
+                    uri_root + "/unrelated.lua": [{"code": "not-a-fixture"}],
+                }), encoding="utf-8")
+                with mock.patch.object(check_fixtures, "PROJECT_ROOT") as project_root:
+                    project_root.resolve.return_value.as_posix.return_value = root
+                    reported = check_fixtures.reported_diagnostics(results, {fixture: None})
+                self.assertEqual(
+                    {fixture: ["undefined-field", "need-check-nil"]}, reported,
+                )
 
 
 class TypeAuditTests(unittest.TestCase):

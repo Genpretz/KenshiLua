@@ -88,6 +88,7 @@ runner.register_menu_suite("harness-self-test", function(ctx)
         local outcome = ctx.run_isolated("deliberate_lua_error", function(inner)
             inner.wait_frames(1)
             local nil_table = nil
+            ---@diagnostic disable-next-line: need-check-nil, undefined-field
             return nil_table.non_existent_field
         end, {
             cleanup = function()

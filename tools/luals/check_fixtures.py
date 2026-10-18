@@ -69,7 +69,8 @@ def reported_diagnostics(results_path, paths):
     results = json.loads(results_path.read_text(encoding="utf-8") or "{}")
     reported = {}
     normalized_paths = {relative.lower(): relative for relative in paths}
-    root = PROJECT_ROOT.resolve().as_posix().lower() + "/"
+    # Normalize the root like URI paths: POSIX roots also start with a slash.
+    root = PROJECT_ROOT.resolve().as_posix().lstrip("/").lower() + "/"
     for uri, diagnostics in results.items():
         path = urllib.parse.unquote(urllib.parse.urlparse(uri).path).lstrip("/").replace("\\", "/").lower()
         if not path.startswith(root):
