@@ -884,6 +884,29 @@ class CoverageReportTests(unittest.TestCase):
 
 
 class TypeAuditTests(unittest.TestCase):
+    def test_header_class_with_leading_declspec(self):
+        headers = generate_type_audit.HeaderIndex()
+        with tempfile.TemporaryDirectory() as temporary:
+            header = pathlib.Path(temporary) / "BaseLayout.h"
+            header.write_text(
+                "namespace wraps\n{\n"
+                "__declspec(dllimport) class BaseLayout\n{\npublic:\n"
+                "    MyGUI::Widget* getMainWidget() const;\n"
+                "    MyGUI::Widget* mMainWidget;\n};\n}\n",
+                encoding="utf-8",
+            )
+            headers.parse_file(header)
+        self.assertEqual("wraps::BaseLayout", headers.resolve_class("wraps::BaseLayout"))
+        owner, methods = headers.find_methods("wraps::BaseLayout", "getMainWidget")
+        self.assertEqual("wraps::BaseLayout", owner)
+        self.assertEqual(1, len(methods))
+        self.assertEqual("MyGUI::Widget*", methods[0]["returns"])
+        self.assertTrue(methods[0]["const"])
+        self.assertEqual(
+            ("wraps::BaseLayout", "MyGUI::Widget*"),
+            headers.find_member("wraps::BaseLayout", "mMainWidget"),
+        )
+
     def test_header_declaration_maps_out_params_to_returns(self):
         headers = generate_type_audit.HeaderIndex()
         with tempfile.TemporaryDirectory() as temporary:
