@@ -9142,8 +9142,8 @@
     {
       "category": "unmapped_header_type",
       "class": "MessageQueue_Node",
-      "expected": "?Node*",
-      "header": "Node*",
+      "expected": "?MessageQueue<T>::Node*",
+      "header": "MessageQueue<T>::Node*",
       "kind": "property",
       "lua": "MessageQueue_Node|nil",
       "member": "next"
@@ -10162,13 +10162,13 @@
     {
       "category": "binding_shape_differs",
       "class": "MyGUI.ItemBox",
-      "expected": "fun(integer, ?Any, boolean)",
-      "header": "void insertItemAt(size_t _index, Any _data = Any::Null, bool update = true)",
+      "expected": "fun(integer, ?Any)",
+      "header": "void insertItemAt(size_t _index, Any _data = Any::Null)",
       "issues": [
         {
           "actual": 1,
           "category": "binding_shape_differs",
-          "expected": 3,
+          "expected": 2,
           "position": null
         }
       ],
@@ -10179,36 +10179,19 @@
     {
       "category": "binding_shape_differs",
       "class": "MyGUI.ItemBox",
-      "expected": "fun(?Any, boolean)",
-      "header": "void addItem(Any _data = Any::Null, bool update = true)",
+      "expected": "fun(?Any)",
+      "header": "void addItem(Any _data = Any::Null)",
       "issues": [
         {
           "actual": 0,
           "category": "binding_shape_differs",
-          "expected": 2,
+          "expected": 1,
           "position": null
         }
       ],
       "kind": "method",
       "lua": "fun(self: MyGUI.ItemBox)",
       "member": "addItem"
-    },
-    {
-      "category": "binding_shape_differs",
-      "class": "MyGUI.ItemBox",
-      "expected": "fun(integer, boolean)",
-      "header": "void removeItemAt(size_t _index, bool update = true)",
-      "issues": [
-        {
-          "actual": 1,
-          "category": "binding_shape_differs",
-          "expected": 2,
-          "position": null
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: MyGUI.ItemBox, index: integer)",
-      "member": "removeItemAt"
     },
     {
       "category": "no_header_declaration",
@@ -18391,13 +18374,13 @@
   "summary": {
     "binding_converts": 51,
     "binding_pushes_raw_pointer": 42,
-    "binding_shape_differs": 106,
+    "binding_shape_differs": 105,
     "blocking_issues": 0,
     "container_methods_typed": 925,
     "enum_typed_as_integer": 423,
     "known_binding_bug": 13,
     "methods": 7216,
-    "methods_matching_header": 5427,
+    "methods_matching_header": 5428,
     "no_header_declaration": 272,
     "properties": 3070,
     "properties_matching_header": 2542,
