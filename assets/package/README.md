@@ -1,14 +1,10 @@
 # KenshiLua Installation
 
 1. Install RE_Kenshi.
-2. Copy the contents of this archive into your Kenshi mods folder.
-3. Enable the KenshiLua mod in the launcher.
+2. Extract the contents of this archive into your Kenshi `mods/` directory.
+3. Enable the `KenshiLua` mod in the Kenshi launcher.
 4. Launch the game.
 
-See the docs found within `./KenshiLua/docs/` or look online at the
-[KenshiLua GitHub](https://github.com/Genpretz/KenshiLua) for more scripting
-documentation.
+For scripting guides and API references, see the [KenshiLua GitHub repository](https://github.com/Genpretz/KenshiLua).
 
-Native KenshiLib plugin authors can use `./KenshiLua/include/KenshiLua.h` and
-the contract in `./KenshiLua/docs/CppExtensionAPI.md` to discover KenshiLua at
-runtime without linking against KenshiLua or Lua.
+Native KenshiLib plugin authors can use `include/KenshiLua.h` and the contract in `docs/CppExtensionAPI.md` from the repository to discover KenshiLua at runtime without linking against KenshiLua or Lua.

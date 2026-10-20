@@ -48,7 +48,7 @@ If applicable, attach screenshots or videos that help demonstrate the problem.
 
 Please complete the following information:
 * **Kenshi Version:** [e.g. Steam 1.0.65 / GOG 1.0.65]
-* **KenshiLua Version:** [e.g. v0.3.0-alpha]
+* **KenshiLua Version:** [e.g. v0.3.9-alpha]
 * **RE_Kenshi Version:** [e.g. v0.3.4]
 * **OS:** [e.g. Windows 10 / Windows 11 or a Linux Distribution]
 
