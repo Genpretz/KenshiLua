@@ -4,11 +4,11 @@
 
 ## Overview
 
-KenshiLua exposes **1677** bound enum values across **119** enum tables from **46** SDK header files.
+KenshiLua exposes **1678** bound enum values across **119** enum tables from **46** SDK header files.
 
 ## Lua Usage & Syntax
 
-All enums in KenshiLua use their exact literal C++ names and are exposed as global tables or nested class tables (e.g. `CrimeEnum.CRIME_STEALING` or `MeshDataLookup.Dir.FRONT`).
+All enums in KenshiLua use their exact literal C++ names and are exposed as global tables or nested class tables (e.g. `CrimeEnum.CRIME_STEALING` or `MeshDataLookup.Dir.FRONT`). Each entry maps to its underlying integer value defined in the KenshiLib headers.
 
 ```lua
 -- Accessing enum constants directly:
@@ -19,6 +19,11 @@ local dir   = MeshDataLookup.Dir.FRONT
 -- Passing to a method or setting a property:
 character.proneState = ProneState.PS_NORMAL
 character:setProneState(ProneState.PS_NORMAL)
+
+-- Enums evaluate to their bound integer values:
+assert(ProneState.PS_NORMAL == 0)
+assert(AttachSlot.ATTACH_LEFT_ARM == 50)
+assert(itemType.LUA_SCRIPT == 322)
 ```
 
 ### Creating Convenient Local Aliases
@@ -91,11 +96,11 @@ end
 
 ### Table: `MeshDataLookup.Dir`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MeshDataLookup.Dir.FRONT` | `MeshDataLookup::Dir::FRONT` |
-| `MeshDataLookup.Dir.BACK` | `MeshDataLookup::Dir::BACK` |
-| `MeshDataLookup.Dir.NUM_DIRS` | `MeshDataLookup::Dir::NUM_DIRS` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MeshDataLookup.Dir.FRONT` | `0` | `MeshDataLookup::Dir::FRONT` |
+| `MeshDataLookup.Dir.BACK` | `1` | `MeshDataLookup::Dir::BACK` |
+| `MeshDataLookup.Dir.NUM_DIRS` | `2` | `MeshDataLookup::Dir::NUM_DIRS` |
 
 ---
 
@@ -103,20 +108,20 @@ end
 
 ### Table: `AppearanceManager.DataCategory.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `AppearanceManager.DataCategory.Enum.None` | `AppearanceManager::DataCategory::Enum::None` |
-| `AppearanceManager.DataCategory.Enum.Face` | `AppearanceManager::DataCategory::Enum::Face` |
-| `AppearanceManager.DataCategory.Enum.Body` | `AppearanceManager::DataCategory::Enum::Body` |
-| `AppearanceManager.DataCategory.Enum.Hair` | `AppearanceManager::DataCategory::Enum::Hair` |
-| `AppearanceManager.DataCategory.Enum.Personality` | `AppearanceManager::DataCategory::Enum::Personality` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `AppearanceManager.DataCategory.Enum.None` | `0` | `AppearanceManager::DataCategory::Enum::None` |
+| `AppearanceManager.DataCategory.Enum.Face` | `1` | `AppearanceManager::DataCategory::Enum::Face` |
+| `AppearanceManager.DataCategory.Enum.Body` | `2` | `AppearanceManager::DataCategory::Enum::Body` |
+| `AppearanceManager.DataCategory.Enum.Hair` | `3` | `AppearanceManager::DataCategory::Enum::Hair` |
+| `AppearanceManager.DataCategory.Enum.Personality` | `4` | `AppearanceManager::DataCategory::Enum::Personality` |
 
 ### Table: `AppearanceManager.Gender.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `AppearanceManager.Gender.Enum.MALE` | `AppearanceManager::Gender::Enum::MALE` |
-| `AppearanceManager.Gender.Enum.FEMALE` | `AppearanceManager::Gender::Enum::FEMALE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `AppearanceManager.Gender.Enum.MALE` | `0` | `AppearanceManager::Gender::Enum::MALE` |
+| `AppearanceManager.Gender.Enum.FEMALE` | `1` | `AppearanceManager::Gender::Enum::FEMALE` |
 
 ---
 
@@ -124,26 +129,26 @@ end
 
 ### Table: `CrimeEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CrimeEnum.CRIME_NONE` | `CrimeEnum::CRIME_NONE` |
-| `CrimeEnum.CRIME_ENSLAVING` | `CrimeEnum::CRIME_ENSLAVING` |
-| `CrimeEnum.CRIME_LOCKPICKING` | `CrimeEnum::CRIME_LOCKPICKING` |
-| `CrimeEnum.CRIME_STEALING` | `CrimeEnum::CRIME_STEALING` |
-| `CrimeEnum.CRIME_MURDER` | `CrimeEnum::CRIME_MURDER` |
-| `CrimeEnum.CRIME_ASSAULT` | `CrimeEnum::CRIME_ASSAULT` |
-| `CrimeEnum.CRIME_ASSAULT_VIP` | `CrimeEnum::CRIME_ASSAULT_VIP` |
-| `CrimeEnum.CRIME_SLAVE_FREEING` | `CrimeEnum::CRIME_SLAVE_FREEING` |
-| `CrimeEnum.CRIME_SMUGGLING` | `CrimeEnum::CRIME_SMUGGLING` |
-| `CrimeEnum.CRIME_TERRORISM` | `CrimeEnum::CRIME_TERRORISM` |
-| `CrimeEnum.CRIME_LOOTING` | `CrimeEnum::CRIME_LOOTING` |
-| `CrimeEnum.CRIME_TRESSPASSING` | `CrimeEnum::CRIME_TRESSPASSING` |
-| `CrimeEnum.CRIME_ESCAPE_PRISON` | `CrimeEnum::CRIME_ESCAPE_PRISON` |
-| `CrimeEnum.CRIME_FENCING` | `CrimeEnum::CRIME_FENCING` |
-| `CrimeEnum.CRIME_FARM_EATING` | `CrimeEnum::CRIME_FARM_EATING` |
-| `CrimeEnum.CRIME_KIDNAPPING` | `CrimeEnum::CRIME_KIDNAPPING` |
-| `CrimeEnum.CRIME_UNIFORM_THEFT` | `CrimeEnum::CRIME_UNIFORM_THEFT` |
-| `CrimeEnum.CRIME_END` | `CrimeEnum::CRIME_END` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CrimeEnum.CRIME_NONE` | `0` | `CrimeEnum::CRIME_NONE` |
+| `CrimeEnum.CRIME_ENSLAVING` | `1` | `CrimeEnum::CRIME_ENSLAVING` |
+| `CrimeEnum.CRIME_LOCKPICKING` | `2` | `CrimeEnum::CRIME_LOCKPICKING` |
+| `CrimeEnum.CRIME_STEALING` | `3` | `CrimeEnum::CRIME_STEALING` |
+| `CrimeEnum.CRIME_MURDER` | `4` | `CrimeEnum::CRIME_MURDER` |
+| `CrimeEnum.CRIME_ASSAULT` | `5` | `CrimeEnum::CRIME_ASSAULT` |
+| `CrimeEnum.CRIME_ASSAULT_VIP` | `6` | `CrimeEnum::CRIME_ASSAULT_VIP` |
+| `CrimeEnum.CRIME_SLAVE_FREEING` | `7` | `CrimeEnum::CRIME_SLAVE_FREEING` |
+| `CrimeEnum.CRIME_SMUGGLING` | `8` | `CrimeEnum::CRIME_SMUGGLING` |
+| `CrimeEnum.CRIME_TERRORISM` | `9` | `CrimeEnum::CRIME_TERRORISM` |
+| `CrimeEnum.CRIME_LOOTING` | `10` | `CrimeEnum::CRIME_LOOTING` |
+| `CrimeEnum.CRIME_TRESSPASSING` | `11` | `CrimeEnum::CRIME_TRESSPASSING` |
+| `CrimeEnum.CRIME_ESCAPE_PRISON` | `12` | `CrimeEnum::CRIME_ESCAPE_PRISON` |
+| `CrimeEnum.CRIME_FENCING` | `13` | `CrimeEnum::CRIME_FENCING` |
+| `CrimeEnum.CRIME_FARM_EATING` | `14` | `CrimeEnum::CRIME_FARM_EATING` |
+| `CrimeEnum.CRIME_KIDNAPPING` | `15` | `CrimeEnum::CRIME_KIDNAPPING` |
+| `CrimeEnum.CRIME_UNIFORM_THEFT` | `16` | `CrimeEnum::CRIME_UNIFORM_THEFT` |
+| `CrimeEnum.CRIME_END` | `17` | `CrimeEnum::CRIME_END` |
 
 ---
 
@@ -151,62 +156,62 @@ end
 
 ### Table: `BuildingDesignation`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `BuildingDesignation.BD_NONE` | `BuildingDesignation::BD_NONE` |
-| `BuildingDesignation.BD_SHOP` | `BuildingDesignation::BD_SHOP` |
-| `BuildingDesignation.BD_BARRACKS` | `BuildingDesignation::BD_BARRACKS` |
-| `BuildingDesignation.BD_BAR` | `BuildingDesignation::BD_BAR` |
-| `BuildingDesignation.BD_HOSPITAL` | `BuildingDesignation::BD_HOSPITAL` |
-| `BuildingDesignation.BD_ARMOURY` | `BuildingDesignation::BD_ARMOURY` |
-| `BuildingDesignation.BD_TREASURE` | `BuildingDesignation::BD_TREASURE` |
-| `BuildingDesignation.BD_PRISON` | `BuildingDesignation::BD_PRISON` |
-| `BuildingDesignation.BD_HQ` | `BuildingDesignation::BD_HQ` |
-| `BuildingDesignation.BD_RESIDENTIAL` | `BuildingDesignation::BD_RESIDENTIAL` |
-| `BuildingDesignation.BD_SLAVE_STORAGE` | `BuildingDesignation::BD_SLAVE_STORAGE` |
-| `BuildingDesignation.BD_RESIDENTIAL_SMALL` | `BuildingDesignation::BD_RESIDENTIAL_SMALL` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `BuildingDesignation.BD_NONE` | `0` | `BuildingDesignation::BD_NONE` |
+| `BuildingDesignation.BD_SHOP` | `1` | `BuildingDesignation::BD_SHOP` |
+| `BuildingDesignation.BD_BARRACKS` | `2` | `BuildingDesignation::BD_BARRACKS` |
+| `BuildingDesignation.BD_BAR` | `3` | `BuildingDesignation::BD_BAR` |
+| `BuildingDesignation.BD_HOSPITAL` | `4` | `BuildingDesignation::BD_HOSPITAL` |
+| `BuildingDesignation.BD_ARMOURY` | `5` | `BuildingDesignation::BD_ARMOURY` |
+| `BuildingDesignation.BD_TREASURE` | `6` | `BuildingDesignation::BD_TREASURE` |
+| `BuildingDesignation.BD_PRISON` | `7` | `BuildingDesignation::BD_PRISON` |
+| `BuildingDesignation.BD_HQ` | `8` | `BuildingDesignation::BD_HQ` |
+| `BuildingDesignation.BD_RESIDENTIAL` | `9` | `BuildingDesignation::BD_RESIDENTIAL` |
+| `BuildingDesignation.BD_SLAVE_STORAGE` | `10` | `BuildingDesignation::BD_SLAVE_STORAGE` |
+| `BuildingDesignation.BD_RESIDENTIAL_SMALL` | `11` | `BuildingDesignation::BD_RESIDENTIAL_SMALL` |
 
 ### Table: `BuildingClassType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `BuildingClassType.BCTYPE_FLUFF` | `BuildingClassType::BCTYPE_FLUFF` |
-| `BuildingClassType.BCTYPE_DOOR` | `BuildingClassType::BCTYPE_DOOR` |
-| `BuildingClassType.BCTYPE_USABLE` | `BuildingClassType::BCTYPE_USABLE` |
-| `BuildingClassType.BCTYPE_STORAGE` | `BuildingClassType::BCTYPE_STORAGE` |
-| `BuildingClassType.BCTYPE_PRODUCTION` | `BuildingClassType::BCTYPE_PRODUCTION` |
-| `BuildingClassType.BCTYPE_RESEARCH` | `BuildingClassType::BCTYPE_RESEARCH` |
-| `BuildingClassType.BCTYPE_CRAFTING` | `BuildingClassType::BCTYPE_CRAFTING` |
-| `BuildingClassType.BCTYPE_GATEWAY` | `BuildingClassType::BCTYPE_GATEWAY` |
-| `BuildingClassType.BCTYPE_TURRET` | `BuildingClassType::BCTYPE_TURRET` |
-| `BuildingClassType.BCTYPE_WALL` | `BuildingClassType::BCTYPE_WALL` |
-| `BuildingClassType.BCTYPE_ITEM_FURNACE` | `BuildingClassType::BCTYPE_ITEM_FURNACE` |
-| `BuildingClassType.BCTYPE_LIGHT` | `BuildingClassType::BCTYPE_LIGHT` |
-| `BuildingClassType.BCTYPE_SHELL_WITH_INTERIOR` | `BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR` |
-| `BuildingClassType.BCTYPE_FARM` | `BuildingClassType::BCTYPE_FARM` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `BuildingClassType.BCTYPE_FLUFF` | `0` | `BuildingClassType::BCTYPE_FLUFF` |
+| `BuildingClassType.BCTYPE_DOOR` | `1` | `BuildingClassType::BCTYPE_DOOR` |
+| `BuildingClassType.BCTYPE_USABLE` | `2` | `BuildingClassType::BCTYPE_USABLE` |
+| `BuildingClassType.BCTYPE_STORAGE` | `3` | `BuildingClassType::BCTYPE_STORAGE` |
+| `BuildingClassType.BCTYPE_PRODUCTION` | `4` | `BuildingClassType::BCTYPE_PRODUCTION` |
+| `BuildingClassType.BCTYPE_RESEARCH` | `5` | `BuildingClassType::BCTYPE_RESEARCH` |
+| `BuildingClassType.BCTYPE_CRAFTING` | `6` | `BuildingClassType::BCTYPE_CRAFTING` |
+| `BuildingClassType.BCTYPE_GATEWAY` | `7` | `BuildingClassType::BCTYPE_GATEWAY` |
+| `BuildingClassType.BCTYPE_TURRET` | `8` | `BuildingClassType::BCTYPE_TURRET` |
+| `BuildingClassType.BCTYPE_WALL` | `9` | `BuildingClassType::BCTYPE_WALL` |
+| `BuildingClassType.BCTYPE_ITEM_FURNACE` | `10` | `BuildingClassType::BCTYPE_ITEM_FURNACE` |
+| `BuildingClassType.BCTYPE_LIGHT` | `11` | `BuildingClassType::BCTYPE_LIGHT` |
+| `BuildingClassType.BCTYPE_SHELL_WITH_INTERIOR` | `12` | `BuildingClassType::BCTYPE_SHELL_WITH_INTERIOR` |
+| `BuildingClassType.BCTYPE_FARM` | `13` | `BuildingClassType::BCTYPE_FARM` |
 
 ### Table: `BuildingPlacementGroundType.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `BuildingPlacementGroundType.Enum.ANY` | `BuildingPlacementGroundType::Enum::ANY` |
-| `BuildingPlacementGroundType.Enum.LAND` | `BuildingPlacementGroundType::Enum::LAND` |
-| `BuildingPlacementGroundType.Enum.WATER` | `BuildingPlacementGroundType::Enum::WATER` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `BuildingPlacementGroundType.Enum.ANY` | `0` | `BuildingPlacementGroundType::Enum::ANY` |
+| `BuildingPlacementGroundType.Enum.LAND` | `1` | `BuildingPlacementGroundType::Enum::LAND` |
+| `BuildingPlacementGroundType.Enum.WATER` | `2` | `BuildingPlacementGroundType::Enum::WATER` |
 
 ### Table: `PreviewBuilding.PlacementResult`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `PreviewBuilding.PlacementResult.PLACEMENT_VALID` | `PreviewBuilding::PlacementResult::PLACEMENT_VALID` |
-| `PreviewBuilding.PlacementResult.PLACEMENT_OUTSIDE` | `PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE` |
-| `PreviewBuilding.PlacementResult.PLACEMENT_INVALID` | `PreviewBuilding::PlacementResult::PLACEMENT_INVALID` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `PreviewBuilding.PlacementResult.PLACEMENT_VALID` | `0` | `PreviewBuilding::PlacementResult::PLACEMENT_VALID` |
+| `PreviewBuilding.PlacementResult.PLACEMENT_OUTSIDE` | `1` | `PreviewBuilding::PlacementResult::PLACEMENT_OUTSIDE` |
+| `PreviewBuilding.PlacementResult.PLACEMENT_INVALID` | `2` | `PreviewBuilding::PlacementResult::PLACEMENT_INVALID` |
 
 ### Table: `PreviewBuilding.PreviewBuildingClassType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `PreviewBuilding.PreviewBuildingClassType.PREVIEW_NORMAL` | `PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL` |
-| `PreviewBuilding.PreviewBuildingClassType.PREVIEW_WALL` | `PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `PreviewBuilding.PreviewBuildingClassType.PREVIEW_NORMAL` | `0` | `PreviewBuilding::PreviewBuildingClassType::PREVIEW_NORMAL` |
+| `PreviewBuilding.PreviewBuildingClassType.PREVIEW_WALL` | `1` | `PreviewBuilding::PreviewBuildingClassType::PREVIEW_WALL` |
 
 ---
 
@@ -214,21 +219,21 @@ end
 
 ### Table: `DoorState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `DoorState.DOORSTATE_CLOSED` | `DoorState::DOORSTATE_CLOSED` |
-| `DoorState.DOORSTATE_OPEN` | `DoorState::DOORSTATE_OPEN` |
-| `DoorState.DOORSTATE_OPENING` | `DoorState::DOORSTATE_OPENING` |
-| `DoorState.DOORSTATE_CLOSING` | `DoorState::DOORSTATE_CLOSING` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `DoorState.DOORSTATE_CLOSED` | `0` | `DoorState::DOORSTATE_CLOSED` |
+| `DoorState.DOORSTATE_OPEN` | `1` | `DoorState::DOORSTATE_OPEN` |
+| `DoorState.DOORSTATE_OPENING` | `2` | `DoorState::DOORSTATE_OPENING` |
+| `DoorState.DOORSTATE_CLOSING` | `3` | `DoorState::DOORSTATE_CLOSING` |
 
 ### Table: `DoorStuff.DoorStateInitial`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `DoorStuff.DoorStateInitial.CLOSED` | `DoorStuff::DoorStateInitial::CLOSED` |
-| `DoorStuff.DoorStateInitial.OPEN` | `DoorStuff::DoorStateInitial::OPEN` |
-| `DoorStuff.DoorStateInitial.LOCKED` | `DoorStuff::DoorStateInitial::LOCKED` |
-| `DoorStuff.DoorStateInitial.BROKEN` | `DoorStuff::DoorStateInitial::BROKEN` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `DoorStuff.DoorStateInitial.CLOSED` | `0` | `DoorStuff::DoorStateInitial::CLOSED` |
+| `DoorStuff.DoorStateInitial.OPEN` | `1` | `DoorStuff::DoorStateInitial::OPEN` |
+| `DoorStuff.DoorStateInitial.LOCKED` | `2` | `DoorStuff::DoorStateInitial::LOCKED` |
+| `DoorStuff.DoorStateInitial.BROKEN` | `3` | `DoorStuff::DoorStateInitial::BROKEN` |
 
 ---
 
@@ -236,12 +241,12 @@ end
 
 ### Table: `CropType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CropType.CROP_NULL` | `CropType::CROP_NULL` |
-| `CropType.CROP_GREEN` | `CropType::CROP_GREEN` |
-| `CropType.CROP_ARID` | `CropType::CROP_ARID` |
-| `CropType.CROP_SWAMP` | `CropType::CROP_SWAMP` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CropType.CROP_NULL` | `0` | `CropType::CROP_NULL` |
+| `CropType.CROP_GREEN` | `1` | `CropType::CROP_GREEN` |
+| `CropType.CROP_ARID` | `2` | `CropType::CROP_ARID` |
+| `CropType.CROP_SWAMP` | `3` | `CropType::CROP_SWAMP` |
 
 ---
 
@@ -249,12 +254,12 @@ end
 
 ### Table: `ProductionBuilding.ProductionState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ProductionBuilding.ProductionState.PRODUCTION_STARVED` | `ProductionBuilding::ProductionState::PRODUCTION_STARVED` |
-| `ProductionBuilding.ProductionState.PRODUCTION_FULL` | `ProductionBuilding::ProductionState::PRODUCTION_FULL` |
-| `ProductionBuilding.ProductionState.PRODUCTION_NORMAL` | `ProductionBuilding::ProductionState::PRODUCTION_NORMAL` |
-| `ProductionBuilding.ProductionState.PRODUCTION_IMPOSSIBLE` | `ProductionBuilding::ProductionState::PRODUCTION_IMPOSSIBLE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ProductionBuilding.ProductionState.PRODUCTION_STARVED` | `0` | `ProductionBuilding::ProductionState::PRODUCTION_STARVED` |
+| `ProductionBuilding.ProductionState.PRODUCTION_FULL` | `1` | `ProductionBuilding::ProductionState::PRODUCTION_FULL` |
+| `ProductionBuilding.ProductionState.PRODUCTION_NORMAL` | `2` | `ProductionBuilding::ProductionState::PRODUCTION_NORMAL` |
+| `ProductionBuilding.ProductionState.PRODUCTION_IMPOSSIBLE` | `3` | `ProductionBuilding::ProductionState::PRODUCTION_IMPOSSIBLE` |
 
 ---
 
@@ -262,13 +267,13 @@ end
 
 ### Table: `WallSectionLinkType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `WallSectionLinkType.WALLTYPE_NORMAL` | `WallSectionLinkType::WALLTYPE_NORMAL` |
-| `WallSectionLinkType.WALLTYPE_CONNECTOR` | `WallSectionLinkType::WALLTYPE_CONNECTOR` |
-| `WallSectionLinkType.WALLTYPE_LOWER_WEDGE` | `WallSectionLinkType::WALLTYPE_LOWER_WEDGE` |
-| `WallSectionLinkType.WALLTYPE_SINGLE` | `WallSectionLinkType::WALLTYPE_SINGLE` |
-| `WallSectionLinkType.WALLTYPE_SHORT` | `WallSectionLinkType::WALLTYPE_SHORT` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `WallSectionLinkType.WALLTYPE_NORMAL` | `0` | `WallSectionLinkType::WALLTYPE_NORMAL` |
+| `WallSectionLinkType.WALLTYPE_CONNECTOR` | `1` | `WallSectionLinkType::WALLTYPE_CONNECTOR` |
+| `WallSectionLinkType.WALLTYPE_LOWER_WEDGE` | `2` | `WallSectionLinkType::WALLTYPE_LOWER_WEDGE` |
+| `WallSectionLinkType.WALLTYPE_SINGLE` | `3` | `WallSectionLinkType::WALLTYPE_SINGLE` |
+| `WallSectionLinkType.WALLTYPE_SHORT` | `4` | `WallSectionLinkType::WALLTYPE_SHORT` |
 
 ---
 
@@ -276,116 +281,116 @@ end
 
 ### Table: `ProneState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ProneState.PS_NORMAL` | `ProneState::PS_NORMAL` |
-| `ProneState.PS_STAYING_LOW` | `ProneState::PS_STAYING_LOW` |
-| `ProneState.PS_CRIPPLED` | `ProneState::PS_CRIPPLED` |
-| `ProneState.PS_PLAYING_DEAD` | `ProneState::PS_PLAYING_DEAD` |
-| `ProneState.PS_KO` | `ProneState::PS_KO` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ProneState.PS_NORMAL` | `0` | `ProneState::PS_NORMAL` |
+| `ProneState.PS_STAYING_LOW` | `1` | `ProneState::PS_STAYING_LOW` |
+| `ProneState.PS_CRIPPLED` | `2` | `ProneState::PS_CRIPPLED` |
+| `ProneState.PS_PLAYING_DEAD` | `3` | `ProneState::PS_PLAYING_DEAD` |
+| `ProneState.PS_KO` | `4` | `ProneState::PS_KO` |
 
 ### Table: `WaterState.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `WaterState.Enum.NO_WATER` | `WaterState::Enum::NO_WATER` |
-| `WaterState.Enum.VERY_SHALLOW_WATER` | `WaterState::Enum::VERY_SHALLOW_WATER` |
-| `WaterState.Enum.THIGH_DEEP_WATER` | `WaterState::Enum::THIGH_DEEP_WATER` |
-| `WaterState.Enum.DEEP_WATER` | `WaterState::Enum::DEEP_WATER` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `WaterState.Enum.NO_WATER` | `0` | `WaterState::Enum::NO_WATER` |
+| `WaterState.Enum.VERY_SHALLOW_WATER` | `1` | `WaterState::Enum::VERY_SHALLOW_WATER` |
+| `WaterState.Enum.THIGH_DEEP_WATER` | `2` | `WaterState::Enum::THIGH_DEEP_WATER` |
+| `WaterState.Enum.DEEP_WATER` | `3` | `WaterState::Enum::DEEP_WATER` |
 
 ### Table: `RagdollPart.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `RagdollPart.Enum.NONE` | `RagdollPart::Enum::NONE` |
-| `RagdollPart.Enum.WHOLE` | `RagdollPart::Enum::WHOLE` |
-| `RagdollPart.Enum.RIGHT_ARM` | `RagdollPart::Enum::RIGHT_ARM` |
-| `RagdollPart.Enum.LEFT_ARM` | `RagdollPart::Enum::LEFT_ARM` |
-| `RagdollPart.Enum.HEAD` | `RagdollPart::Enum::HEAD` |
-| `RagdollPart.Enum.RIGHT_LEG` | `RagdollPart::Enum::RIGHT_LEG` |
-| `RagdollPart.Enum.LEFT_LEG` | `RagdollPart::Enum::LEFT_LEG` |
-| `RagdollPart.Enum.CARRY_MODE` | `RagdollPart::Enum::CARRY_MODE` |
-| `RagdollPart.Enum.ARMS` | `RagdollPart::Enum::ARMS` |
-| `RagdollPart.Enum.LEGS` | `RagdollPart::Enum::LEGS` |
-| `RagdollPart.Enum.ALL` | `RagdollPart::Enum::ALL` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `RagdollPart.Enum.NONE` | `0` | `RagdollPart::Enum::NONE` |
+| `RagdollPart.Enum.WHOLE` | `1` | `RagdollPart::Enum::WHOLE` |
+| `RagdollPart.Enum.RIGHT_ARM` | `2` | `RagdollPart::Enum::RIGHT_ARM` |
+| `RagdollPart.Enum.LEFT_ARM` | `4` | `RagdollPart::Enum::LEFT_ARM` |
+| `RagdollPart.Enum.HEAD` | `8` | `RagdollPart::Enum::HEAD` |
+| `RagdollPart.Enum.RIGHT_LEG` | `16` | `RagdollPart::Enum::RIGHT_LEG` |
+| `RagdollPart.Enum.LEFT_LEG` | `32` | `RagdollPart::Enum::LEFT_LEG` |
+| `RagdollPart.Enum.CARRY_MODE` | `2048` | `RagdollPart::Enum::CARRY_MODE` |
+| `RagdollPart.Enum.ARMS` | `6` | `RagdollPart::Enum::ARMS` |
+| `RagdollPart.Enum.LEGS` | `48` | `RagdollPart::Enum::LEGS` |
+| `RagdollPart.Enum.ALL` | `4294934528` | `RagdollPart::Enum::ALL` |
 
 ### Table: `CharacterPerceptionTags_ShortTerm`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharacterPerceptionTags_ShortTerm.ST_NONE` | `CharacterPerceptionTags_ShortTerm::ST_NONE` |
-| `CharacterPerceptionTags_ShortTerm.ST_INTRUDER` | `CharacterPerceptionTags_ShortTerm::ST_INTRUDER` |
-| `CharacterPerceptionTags_ShortTerm.ST_AGGRESSOR` | `CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR` |
-| `CharacterPerceptionTags_ShortTerm.ST_TEMPORARY_ALLY` | `CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ALLY` |
-| `CharacterPerceptionTags_ShortTerm.ST_TEMPORARY_ENEMY` | `CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ENEMY` |
-| `CharacterPerceptionTags_ShortTerm.ST_PRISONER` | `CharacterPerceptionTags_ShortTerm::ST_PRISONER` |
-| `CharacterPerceptionTags_ShortTerm.ST_HAS_BEEN_LOOTED` | `CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED` |
-| `CharacterPerceptionTags_ShortTerm.ST_CRIMINAL` | `CharacterPerceptionTags_ShortTerm::ST_CRIMINAL` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharacterPerceptionTags_ShortTerm.ST_NONE` | `0` | `CharacterPerceptionTags_ShortTerm::ST_NONE` |
+| `CharacterPerceptionTags_ShortTerm.ST_INTRUDER` | `1` | `CharacterPerceptionTags_ShortTerm::ST_INTRUDER` |
+| `CharacterPerceptionTags_ShortTerm.ST_AGGRESSOR` | `2` | `CharacterPerceptionTags_ShortTerm::ST_AGGRESSOR` |
+| `CharacterPerceptionTags_ShortTerm.ST_TEMPORARY_ALLY` | `3` | `CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ALLY` |
+| `CharacterPerceptionTags_ShortTerm.ST_TEMPORARY_ENEMY` | `4` | `CharacterPerceptionTags_ShortTerm::ST_TEMPORARY_ENEMY` |
+| `CharacterPerceptionTags_ShortTerm.ST_PRISONER` | `5` | `CharacterPerceptionTags_ShortTerm::ST_PRISONER` |
+| `CharacterPerceptionTags_ShortTerm.ST_HAS_BEEN_LOOTED` | `6` | `CharacterPerceptionTags_ShortTerm::ST_HAS_BEEN_LOOTED` |
+| `CharacterPerceptionTags_ShortTerm.ST_CRIMINAL` | `7` | `CharacterPerceptionTags_ShortTerm::ST_CRIMINAL` |
 
 ### Table: `CharacterPerceptionTags_LongTerm`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharacterPerceptionTags_LongTerm.LT_NONE` | `CharacterPerceptionTags_LongTerm::LT_NONE` |
-| `CharacterPerceptionTags_LongTerm.LT_MY_INTRUDER` | `CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER` |
-| `CharacterPerceptionTags_LongTerm.LT_MY_LIFESAVER` | `CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER` |
-| `CharacterPerceptionTags_LongTerm.LT_FREED_ME` | `CharacterPerceptionTags_LongTerm::LT_FREED_ME` |
-| `CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME` | `CharacterPerceptionTags_LongTerm::LT_STOLE_FROM_ME` |
-| `CharacterPerceptionTags_LongTerm.LT_MY_CAPTOR` | `CharacterPerceptionTags_LongTerm::LT_MY_CAPTOR` |
-| `CharacterPerceptionTags_LongTerm.LT_FRIENDLY_AQUAINTANCE` | `CharacterPerceptionTags_LongTerm::LT_FRIENDLY_AQUAINTANCE` |
-| `CharacterPerceptionTags_LongTerm.LT_DEFEATED_MY_SQUAD_ONCE` | `CharacterPerceptionTags_LongTerm::LT_DEFEATED_MY_SQUAD_ONCE` |
-| `CharacterPerceptionTags_LongTerm.LT_SQUAD_LOST_TO_ME_ONCE` | `CharacterPerceptionTags_LongTerm::LT_SQUAD_LOST_TO_ME_ONCE` |
-| `CharacterPerceptionTags_LongTerm.LT_KILLED_MY_FRIEND` | `CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND` |
-| `CharacterPerceptionTags_LongTerm.LT_I_SCREWED_THIS_GUY` | `CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY` |
-| `CharacterPerceptionTags_LongTerm.LT_MAX` | `CharacterPerceptionTags_LongTerm::LT_MAX` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharacterPerceptionTags_LongTerm.LT_NONE` | `0` | `CharacterPerceptionTags_LongTerm::LT_NONE` |
+| `CharacterPerceptionTags_LongTerm.LT_MY_INTRUDER` | `1` | `CharacterPerceptionTags_LongTerm::LT_MY_INTRUDER` |
+| `CharacterPerceptionTags_LongTerm.LT_MY_LIFESAVER` | `2` | `CharacterPerceptionTags_LongTerm::LT_MY_LIFESAVER` |
+| `CharacterPerceptionTags_LongTerm.LT_FREED_ME` | `3` | `CharacterPerceptionTags_LongTerm::LT_FREED_ME` |
+| `CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME` | `4` | `CharacterPerceptionTags_LongTerm::LT_STOLE_FROM_ME` |
+| `CharacterPerceptionTags_LongTerm.LT_MY_CAPTOR` | `5` | `CharacterPerceptionTags_LongTerm::LT_MY_CAPTOR` |
+| `CharacterPerceptionTags_LongTerm.LT_FRIENDLY_AQUAINTANCE` | `6` | `CharacterPerceptionTags_LongTerm::LT_FRIENDLY_AQUAINTANCE` |
+| `CharacterPerceptionTags_LongTerm.LT_DEFEATED_MY_SQUAD_ONCE` | `7` | `CharacterPerceptionTags_LongTerm::LT_DEFEATED_MY_SQUAD_ONCE` |
+| `CharacterPerceptionTags_LongTerm.LT_SQUAD_LOST_TO_ME_ONCE` | `8` | `CharacterPerceptionTags_LongTerm::LT_SQUAD_LOST_TO_ME_ONCE` |
+| `CharacterPerceptionTags_LongTerm.LT_KILLED_MY_FRIEND` | `9` | `CharacterPerceptionTags_LongTerm::LT_KILLED_MY_FRIEND` |
+| `CharacterPerceptionTags_LongTerm.LT_I_SCREWED_THIS_GUY` | `10` | `CharacterPerceptionTags_LongTerm::LT_I_SCREWED_THIS_GUY` |
+| `CharacterPerceptionTags_LongTerm.LT_MAX` | `11` | `CharacterPerceptionTags_LongTerm::LT_MAX` |
 
 ### Table: `SoundRange`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SoundRange.SOUNDRANGE_SHORT` | `SoundRange::SOUNDRANGE_SHORT` |
-| `SoundRange.SOUNDRANGE_LONG` | `SoundRange::SOUNDRANGE_LONG` |
-| `SoundRange.SOUNDRANGE_ALWAYS` | `SoundRange::SOUNDRANGE_ALWAYS` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SoundRange.SOUNDRANGE_SHORT` | `4294941760` | `SoundRange::SOUNDRANGE_SHORT` |
+| `SoundRange.SOUNDRANGE_LONG` | `1000000` | `SoundRange::SOUNDRANGE_LONG` |
+| `SoundRange.SOUNDRANGE_ALWAYS` | `0` | `SoundRange::SOUNDRANGE_ALWAYS` |
 
 ### Table: `SquadMemberType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SquadMemberType.SQUAD_1` | `SquadMemberType::SQUAD_1` |
-| `SquadMemberType.SQUAD_2` | `SquadMemberType::SQUAD_2` |
-| `SquadMemberType.SQUAD_LEADER` | `SquadMemberType::SQUAD_LEADER` |
-| `SquadMemberType.SQUAD_SIGNALS_PLAN` | `SquadMemberType::SQUAD_SIGNALS_PLAN` |
-| `SquadMemberType.SQUAD_SLAVE` | `SquadMemberType::SQUAD_SLAVE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SquadMemberType.SQUAD_1` | `0` | `SquadMemberType::SQUAD_1` |
+| `SquadMemberType.SQUAD_2` | `1` | `SquadMemberType::SQUAD_2` |
+| `SquadMemberType.SQUAD_LEADER` | `2` | `SquadMemberType::SQUAD_LEADER` |
+| `SquadMemberType.SQUAD_SIGNALS_PLAN` | `3` | `SquadMemberType::SQUAD_SIGNALS_PLAN` |
+| `SquadMemberType.SQUAD_SLAVE` | `4` | `SquadMemberType::SQUAD_SLAVE` |
 
 ### Table: `CharacterMessage`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharacterMessage.ATTACKING_MELEE` | `ATTACKING_MELEE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharacterMessage.ATTACKING_MELEE` | `0` | `ATTACKING_MELEE` |
 
 ### Table: `UseStuffState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `UseStuffState.IN_NOTHING` | `UseStuffState::IN_NOTHING` |
-| `UseStuffState.IN_BED` | `UseStuffState::IN_BED` |
-| `UseStuffState.IN_PRISON` | `UseStuffState::IN_PRISON` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `UseStuffState.IN_NOTHING` | `0` | `UseStuffState::IN_NOTHING` |
+| `UseStuffState.IN_BED` | `1` | `UseStuffState::IN_BED` |
+| `UseStuffState.IN_PRISON` | `2` | `UseStuffState::IN_PRISON` |
 
 ### Table: `Character.DisguiseGUIFeedback`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `Character.DisguiseGUIFeedback.DGF_SAME_FACTION` | `Character::DisguiseGUIFeedback::DGF_SAME_FACTION` |
-| `Character.DisguiseGUIFeedback.DGF_MY_SLAVE` | `Character::DisguiseGUIFeedback::DGF_MY_SLAVE` |
-| `Character.DisguiseGUIFeedback.DGF_I_HATE_YOU` | `Character::DisguiseGUIFeedback::DGF_I_HATE_YOU` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `Character.DisguiseGUIFeedback.DGF_SAME_FACTION` | `0` | `Character::DisguiseGUIFeedback::DGF_SAME_FACTION` |
+| `Character.DisguiseGUIFeedback.DGF_MY_SLAVE` | `1` | `Character::DisguiseGUIFeedback::DGF_MY_SLAVE` |
+| `Character.DisguiseGUIFeedback.DGF_I_HATE_YOU` | `2` | `Character::DisguiseGUIFeedback::DGF_I_HATE_YOU` |
 
 ### Table: `Character.CharMessage`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `Character.CharMessage.CHARMESSAGE_NONE` | `Character::CharMessage::CHARMESSAGE_NONE` |
-| `Character.CharMessage.CHARMESSAGE_CARRY` | `Character::CharMessage::CHARMESSAGE_CARRY` |
-| `Character.CharMessage.CHARMESSAGE_CAGE` | `Character::CharMessage::CHARMESSAGE_CAGE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `Character.CharMessage.CHARMESSAGE_NONE` | `0` | `Character::CharMessage::CHARMESSAGE_NONE` |
+| `Character.CharMessage.CHARMESSAGE_CARRY` | `1` | `Character::CharMessage::CHARMESSAGE_CARRY` |
+| `Character.CharMessage.CHARMESSAGE_CAGE` | `2` | `Character::CharMessage::CHARMESSAGE_CAGE` |
 
 ---
 
@@ -393,16 +398,16 @@ end
 
 ### Table: `CharacterStatsWindow.StatGroup.Group`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharacterStatsWindow.StatGroup.Group.NONE` | `CharacterStatsWindow::StatGroup::Group::NONE` |
-| `CharacterStatsWindow.StatGroup.Group.WEAPONS` | `CharacterStatsWindow::StatGroup::Group::WEAPONS` |
-| `CharacterStatsWindow.StatGroup.Group.COMBAT` | `CharacterStatsWindow::StatGroup::Group::COMBAT` |
-| `CharacterStatsWindow.StatGroup.Group.THIEVERY` | `CharacterStatsWindow::StatGroup::Group::THIEVERY` |
-| `CharacterStatsWindow.StatGroup.Group.ATHLETICS` | `CharacterStatsWindow::StatGroup::Group::ATHLETICS` |
-| `CharacterStatsWindow.StatGroup.Group.SCIENCES` | `CharacterStatsWindow::StatGroup::Group::SCIENCES` |
-| `CharacterStatsWindow.StatGroup.Group.TRADES` | `CharacterStatsWindow::StatGroup::Group::TRADES` |
-| `CharacterStatsWindow.StatGroup.Group.RANGED` | `CharacterStatsWindow::StatGroup::Group::RANGED` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharacterStatsWindow.StatGroup.Group.NONE` | `0` | `CharacterStatsWindow::StatGroup::Group::NONE` |
+| `CharacterStatsWindow.StatGroup.Group.WEAPONS` | `1` | `CharacterStatsWindow::StatGroup::Group::WEAPONS` |
+| `CharacterStatsWindow.StatGroup.Group.COMBAT` | `2` | `CharacterStatsWindow::StatGroup::Group::COMBAT` |
+| `CharacterStatsWindow.StatGroup.Group.THIEVERY` | `3` | `CharacterStatsWindow::StatGroup::Group::THIEVERY` |
+| `CharacterStatsWindow.StatGroup.Group.ATHLETICS` | `4` | `CharacterStatsWindow::StatGroup::Group::ATHLETICS` |
+| `CharacterStatsWindow.StatGroup.Group.SCIENCES` | `5` | `CharacterStatsWindow::StatGroup::Group::SCIENCES` |
+| `CharacterStatsWindow.StatGroup.Group.TRADES` | `6` | `CharacterStatsWindow::StatGroup::Group::TRADES` |
+| `CharacterStatsWindow.StatGroup.Group.RANGED` | `7` | `CharacterStatsWindow::StatGroup::Group::RANGED` |
 
 ---
 
@@ -410,18 +415,18 @@ end
 
 ### Table: `UpdatePriority`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `UpdatePriority.LOW_PRIORITY` | `UpdatePriority::LOW_PRIORITY` |
-| `UpdatePriority.MED_PRIORITY` | `UpdatePriority::MED_PRIORITY` |
-| `UpdatePriority.HIGH_PRIORITY` | `UpdatePriority::HIGH_PRIORITY` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `UpdatePriority.LOW_PRIORITY` | `0` | `UpdatePriority::LOW_PRIORITY` |
+| `UpdatePriority.MED_PRIORITY` | `1` | `UpdatePriority::MED_PRIORITY` |
+| `UpdatePriority.HIGH_PRIORITY` | `2` | `UpdatePriority::HIGH_PRIORITY` |
 
 ### Table: `NxControllerAction`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NxControllerAction.NX_ACTION_NONE` | `NxControllerAction::NX_ACTION_NONE` |
-| `NxControllerAction.NX_ACTION_PUSH` | `NxControllerAction::NX_ACTION_PUSH` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NxControllerAction.NX_ACTION_NONE` | `0` | `NxControllerAction::NX_ACTION_NONE` |
+| `NxControllerAction.NX_ACTION_PUSH` | `1` | `NxControllerAction::NX_ACTION_PUSH` |
 
 ---
 
@@ -429,21 +434,21 @@ end
 
 ### Table: `DataPanelLine.LineType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `DataPanelLine.LineType.DPL_BASE` | `DataPanelLine::LineType::DPL_BASE` |
-| `DataPanelLine.LineType.DPL_MEDICAL` | `DataPanelLine::LineType::DPL_MEDICAL` |
-| `DataPanelLine.LineType.DPL_FACTION` | `DataPanelLine::LineType::DPL_FACTION` |
-| `DataPanelLine.LineType.DPL_RESEARCH` | `DataPanelLine::LineType::DPL_RESEARCH` |
-| `DataPanelLine.LineType.DPL_BUTTON` | `DataPanelLine::LineType::DPL_BUTTON` |
-| `DataPanelLine.LineType.DPL_EDIT` | `DataPanelLine::LineType::DPL_EDIT` |
-| `DataPanelLine.LineType.DPL_CHECK` | `DataPanelLine::LineType::DPL_CHECK` |
-| `DataPanelLine.LineType.DPL_DROPBOX` | `DataPanelLine::LineType::DPL_DROPBOX` |
-| `DataPanelLine.LineType.DPL_TEXT` | `DataPanelLine::LineType::DPL_TEXT` |
-| `DataPanelLine.LineType.DPL_TEXT_EDIT` | `DataPanelLine::LineType::DPL_TEXT_EDIT` |
-| `DataPanelLine.LineType.DPL_SLIDER` | `DataPanelLine::LineType::DPL_SLIDER` |
-| `DataPanelLine.LineType.DPL_PROGRESS` | `DataPanelLine::LineType::DPL_PROGRESS` |
-| `DataPanelLine.LineType.DPL_CUSTOM` | `DataPanelLine::LineType::DPL_CUSTOM` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `DataPanelLine.LineType.DPL_BASE` | `0` | `DataPanelLine::LineType::DPL_BASE` |
+| `DataPanelLine.LineType.DPL_MEDICAL` | `1` | `DataPanelLine::LineType::DPL_MEDICAL` |
+| `DataPanelLine.LineType.DPL_FACTION` | `2` | `DataPanelLine::LineType::DPL_FACTION` |
+| `DataPanelLine.LineType.DPL_RESEARCH` | `3` | `DataPanelLine::LineType::DPL_RESEARCH` |
+| `DataPanelLine.LineType.DPL_BUTTON` | `4` | `DataPanelLine::LineType::DPL_BUTTON` |
+| `DataPanelLine.LineType.DPL_EDIT` | `5` | `DataPanelLine::LineType::DPL_EDIT` |
+| `DataPanelLine.LineType.DPL_CHECK` | `6` | `DataPanelLine::LineType::DPL_CHECK` |
+| `DataPanelLine.LineType.DPL_DROPBOX` | `7` | `DataPanelLine::LineType::DPL_DROPBOX` |
+| `DataPanelLine.LineType.DPL_TEXT` | `8` | `DataPanelLine::LineType::DPL_TEXT` |
+| `DataPanelLine.LineType.DPL_TEXT_EDIT` | `9` | `DataPanelLine::LineType::DPL_TEXT_EDIT` |
+| `DataPanelLine.LineType.DPL_SLIDER` | `10` | `DataPanelLine::LineType::DPL_SLIDER` |
+| `DataPanelLine.LineType.DPL_PROGRESS` | `11` | `DataPanelLine::LineType::DPL_PROGRESS` |
+| `DataPanelLine.LineType.DPL_CUSTOM` | `12` | `DataPanelLine::LineType::DPL_CUSTOM` |
 
 ---
 
@@ -451,93 +456,93 @@ end
 
 ### Table: `TalkerEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `TalkerEnum.T_ME` | `TalkerEnum::T_ME` |
-| `TalkerEnum.T_TARGET` | `TalkerEnum::T_TARGET` |
-| `TalkerEnum.T_TARGET_IF_PLAYER` | `TalkerEnum::T_TARGET_IF_PLAYER` |
-| `TalkerEnum.T_INTERJECTOR1` | `TalkerEnum::T_INTERJECTOR1` |
-| `TalkerEnum.T_INTERJECTOR2` | `TalkerEnum::T_INTERJECTOR2` |
-| `TalkerEnum.T_INTERJECTOR3` | `TalkerEnum::T_INTERJECTOR3` |
-| `TalkerEnum.T_WHOLE_SQUAD` | `TalkerEnum::T_WHOLE_SQUAD` |
-| `TalkerEnum.T_TARGET_WITH_RACE` | `TalkerEnum::T_TARGET_WITH_RACE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TalkerEnum.T_ME` | `0` | `TalkerEnum::T_ME` |
+| `TalkerEnum.T_TARGET` | `1` | `TalkerEnum::T_TARGET` |
+| `TalkerEnum.T_TARGET_IF_PLAYER` | `2` | `TalkerEnum::T_TARGET_IF_PLAYER` |
+| `TalkerEnum.T_INTERJECTOR1` | `3` | `TalkerEnum::T_INTERJECTOR1` |
+| `TalkerEnum.T_INTERJECTOR2` | `4` | `TalkerEnum::T_INTERJECTOR2` |
+| `TalkerEnum.T_INTERJECTOR3` | `5` | `TalkerEnum::T_INTERJECTOR3` |
+| `TalkerEnum.T_WHOLE_SQUAD` | `6` | `TalkerEnum::T_WHOLE_SQUAD` |
+| `TalkerEnum.T_TARGET_WITH_RACE` | `7` | `TalkerEnum::T_TARGET_WITH_RACE` |
 
 ### Table: `Dialogue.DT_MSG`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `Dialogue.DT_MSG.DT_NONE` | `Dialogue::DT_MSG::DT_NONE` |
-| `Dialogue.DT_MSG.DT_END_DIALOG` | `Dialogue::DT_MSG::DT_END_DIALOG` |
-| `Dialogue.DT_MSG.DT_OPENWINDOW` | `Dialogue::DT_MSG::DT_OPENWINDOW` |
-| `Dialogue.DT_MSG.DT_CLOSEWINDOW` | `Dialogue::DT_MSG::DT_CLOSEWINDOW` |
-| `Dialogue.DT_MSG.DT_CLEAR_RESPONSES` | `Dialogue::DT_MSG::DT_CLEAR_RESPONSES` |
-| `Dialogue.DT_MSG.DT_SET_RESPONSES` | `Dialogue::DT_MSG::DT_SET_RESPONSES` |
-| `Dialogue.DT_MSG.DT_SET_NPC_REPLY` | `Dialogue::DT_MSG::DT_SET_NPC_REPLY` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `Dialogue.DT_MSG.DT_NONE` | `0` | `Dialogue::DT_MSG::DT_NONE` |
+| `Dialogue.DT_MSG.DT_END_DIALOG` | `1` | `Dialogue::DT_MSG::DT_END_DIALOG` |
+| `Dialogue.DT_MSG.DT_OPENWINDOW` | `2` | `Dialogue::DT_MSG::DT_OPENWINDOW` |
+| `Dialogue.DT_MSG.DT_CLOSEWINDOW` | `3` | `Dialogue::DT_MSG::DT_CLOSEWINDOW` |
+| `Dialogue.DT_MSG.DT_CLEAR_RESPONSES` | `4` | `Dialogue::DT_MSG::DT_CLEAR_RESPONSES` |
+| `Dialogue.DT_MSG.DT_SET_RESPONSES` | `5` | `Dialogue::DT_MSG::DT_SET_RESPONSES` |
+| `Dialogue.DT_MSG.DT_SET_NPC_REPLY` | `6` | `Dialogue::DT_MSG::DT_SET_NPC_REPLY` |
 
 ### Table: `DialogActionEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `DialogActionEnum.DA_NONE` | `DialogActionEnum::DA_NONE` |
-| `DialogActionEnum.DA_TRADE` | `DialogActionEnum::DA_TRADE` |
-| `DialogActionEnum.DA_TALK_TO_LEADER` | `DialogActionEnum::DA_TALK_TO_LEADER` |
-| `DialogActionEnum.DA_JOIN_SQUAD_WITH_EDIT` | `DialogActionEnum::DA_JOIN_SQUAD_WITH_EDIT` |
-| `DialogActionEnum.DA_AFFECT_RELATIONS` | `DialogActionEnum::DA_AFFECT_RELATIONS` |
-| `DialogActionEnum.DA_AFFECT_REPUTATION` | `DialogActionEnum::DA_AFFECT_REPUTATION` |
-| `DialogActionEnum.DA_ATTACK_CHASE_FOREVER` | `DialogActionEnum::DA_ATTACK_CHASE_FOREVER` |
-| `DialogActionEnum.DA_GO_HOME` | `DialogActionEnum::DA_GO_HOME` |
-| `DialogActionEnum.DA_TAKE_MONEY` | `DialogActionEnum::DA_TAKE_MONEY` |
-| `DialogActionEnum.DA_GIVE_MONEY` | `DialogActionEnum::DA_GIVE_MONEY` |
-| `DialogActionEnum.DA_PAY_BOUNTY` | `DialogActionEnum::DA_PAY_BOUNTY` |
-| `DialogActionEnum.DA_CHARACTER_EDITOR` | `DialogActionEnum::DA_CHARACTER_EDITOR` |
-| `DialogActionEnum.DA_FORCE_SPEECH_TIMER` | `DialogActionEnum::DA_FORCE_SPEECH_TIMER` |
-| `DialogActionEnum.DA_DECLARE_WAR` | `DialogActionEnum::DA_DECLARE_WAR` |
-| `DialogActionEnum.DA_END_WAR` | `DialogActionEnum::DA_END_WAR` |
-| `DialogActionEnum.DA_CLEAR_AI` | `DialogActionEnum::DA_CLEAR_AI` |
-| `DialogActionEnum.DA_FOLLOW_WHILE_TALKING` | `DialogActionEnum::DA_FOLLOW_WHILE_TALKING` |
-| `DialogActionEnum.DA_THUG_HUNTER` | `DialogActionEnum::DA_THUG_HUNTER` |
-| `DialogActionEnum.DA_JOIN_SQUAD_FAST` | `DialogActionEnum::DA_JOIN_SQUAD_FAST` |
-| `DialogActionEnum.DA_REMEMBER_CHARACTER` | `DialogActionEnum::DA_REMEMBER_CHARACTER` |
-| `DialogActionEnum.DA_FLAG_TEMP_ALLY` | `DialogActionEnum::DA_FLAG_TEMP_ALLY` |
-| `DialogActionEnum.DA_FLAG_TEMP_ENEMY` | `DialogActionEnum::DA_FLAG_TEMP_ENEMY` |
-| `DialogActionEnum.DA_MATES_KILL_ME` | `DialogActionEnum::DA_MATES_KILL_ME` |
-| `DialogActionEnum.DA_MAKE_TARGET_RUN_FASTER` | `DialogActionEnum::DA_MAKE_TARGET_RUN_FASTER` |
-| `DialogActionEnum.DA_GIVE_TARGET_MY_SLAVES` | `DialogActionEnum::DA_GIVE_TARGET_MY_SLAVES` |
-| `DialogActionEnum.DA_TAG_ESCAPED_SLAVE` | `DialogActionEnum::DA_TAG_ESCAPED_SLAVE` |
-| `DialogActionEnum.DA_FREE_TARGET_SLAVE` | `DialogActionEnum::DA_FREE_TARGET_SLAVE` |
-| `DialogActionEnum.DA_MERGE_WITH_SIMILAR_SQUADS` | `DialogActionEnum::DA_MERGE_WITH_SIMILAR_SQUADS` |
-| `DialogActionEnum.DA_SEPARATE_TO_MY_OWN_SQUAD` | `DialogActionEnum::DA_SEPARATE_TO_MY_OWN_SQUAD` |
-| `DialogActionEnum.DA_ARREST_TARGET` | `DialogActionEnum::DA_ARREST_TARGET` |
-| `DialogActionEnum.DA_ARREST_TARGETS_CARRIED_PERSON` | `DialogActionEnum::DA_ARREST_TARGETS_CARRIED_PERSON` |
-| `DialogActionEnum.DA_ATTACK_TOWN` | `DialogActionEnum::DA_ATTACK_TOWN` |
-| `DialogActionEnum.DA_ASSIGN_BOUNTY` | `DialogActionEnum::DA_ASSIGN_BOUNTY` |
-| `DialogActionEnum.DA_CRIME_ALARM` | `DialogActionEnum::DA_CRIME_ALARM` |
-| `DialogActionEnum.DA_RUN_AWAY` | `DialogActionEnum::DA_RUN_AWAY` |
-| `DialogActionEnum.DA_INCREASE_FACTION_RANK` | `DialogActionEnum::DA_INCREASE_FACTION_RANK` |
-| `DialogActionEnum.DA_LOCK_THIS_DIALOG` | `DialogActionEnum::DA_LOCK_THIS_DIALOG` |
-| `DialogActionEnum.DA_ASSAULT_PHASE` | `DialogActionEnum::DA_ASSAULT_PHASE` |
-| `DialogActionEnum.DA_RETREAT_PHASE` | `DialogActionEnum::DA_RETREAT_PHASE` |
-| `DialogActionEnum.DA_VICTORY_PHASE` | `DialogActionEnum::DA_VICTORY_PHASE` |
-| `DialogActionEnum.DA_ENSLAVE_TARGETS_CARRIED_PERSON` | `DialogActionEnum::DA_ENSLAVE_TARGETS_CARRIED_PERSON` |
-| `DialogActionEnum.CHOOSE_SLAVES_SELLING` | `DialogActionEnum::CHOOSE_SLAVES_SELLING` |
-| `DialogActionEnum.CHOOSE_SLAVES_BUYING` | `DialogActionEnum::CHOOSE_SLAVES_BUYING` |
-| `DialogActionEnum.CHOOSE_PRISONER_BAIL` | `DialogActionEnum::CHOOSE_PRISONER_BAIL` |
-| `DialogActionEnum.CHOOSE_CONSCRIPTION` | `DialogActionEnum::CHOOSE_CONSCRIPTION` |
-| `DialogActionEnum.CHOOSE_RECRUITING` | `DialogActionEnum::CHOOSE_RECRUITING` |
-| `DialogActionEnum.CHOOSE_HIRING_CONTRACT` | `DialogActionEnum::CHOOSE_HIRING_CONTRACT` |
-| `DialogActionEnum.SURRENDER_NON_HUMANS` | `DialogActionEnum::SURRENDER_NON_HUMANS` |
-| `DialogActionEnum.CHOOSE_ANIMALS_BUYING` | `DialogActionEnum::CHOOSE_ANIMALS_BUYING` |
-| `DialogActionEnum.DA_CLEAR_BOUNTY` | `DialogActionEnum::DA_CLEAR_BOUNTY` |
-| `DialogActionEnum.DA_PLAYER_SELL_PRISONERS` | `DialogActionEnum::DA_PLAYER_SELL_PRISONERS` |
-| `DialogActionEnum.DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE` | `DialogActionEnum::DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE` |
-| `DialogActionEnum.DA_SUMMON_MY_SQUAD` | `DialogActionEnum::DA_SUMMON_MY_SQUAD` |
-| `DialogActionEnum.DA_REMOVE_SLAVE_STATUS` | `DialogActionEnum::DA_REMOVE_SLAVE_STATUS` |
-| `DialogActionEnum.DA_OPEN_NEAREST_GATE` | `DialogActionEnum::DA_OPEN_NEAREST_GATE` |
-| `DialogActionEnum.DA_ATTACK_STAY_NEAR_HOME` | `DialogActionEnum::DA_ATTACK_STAY_NEAR_HOME` |
-| `DialogActionEnum.DA_MASSIVE_ALARM` | `DialogActionEnum::DA_MASSIVE_ALARM` |
-| `DialogActionEnum.DA_ATTACK_IF_NO_COEXIST` | `DialogActionEnum::DA_ATTACK_IF_NO_COEXIST` |
-| `DialogActionEnum.DA_KNOCKOUT` | `DialogActionEnum::DA_KNOCKOUT` |
-| `DialogActionEnum.DA_END` | `DialogActionEnum::DA_END` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `DialogActionEnum.DA_NONE` | `0` | `DialogActionEnum::DA_NONE` |
+| `DialogActionEnum.DA_TRADE` | `1` | `DialogActionEnum::DA_TRADE` |
+| `DialogActionEnum.DA_TALK_TO_LEADER` | `2` | `DialogActionEnum::DA_TALK_TO_LEADER` |
+| `DialogActionEnum.DA_JOIN_SQUAD_WITH_EDIT` | `3` | `DialogActionEnum::DA_JOIN_SQUAD_WITH_EDIT` |
+| `DialogActionEnum.DA_AFFECT_RELATIONS` | `4` | `DialogActionEnum::DA_AFFECT_RELATIONS` |
+| `DialogActionEnum.DA_AFFECT_REPUTATION` | `5` | `DialogActionEnum::DA_AFFECT_REPUTATION` |
+| `DialogActionEnum.DA_ATTACK_CHASE_FOREVER` | `6` | `DialogActionEnum::DA_ATTACK_CHASE_FOREVER` |
+| `DialogActionEnum.DA_GO_HOME` | `7` | `DialogActionEnum::DA_GO_HOME` |
+| `DialogActionEnum.DA_TAKE_MONEY` | `8` | `DialogActionEnum::DA_TAKE_MONEY` |
+| `DialogActionEnum.DA_GIVE_MONEY` | `9` | `DialogActionEnum::DA_GIVE_MONEY` |
+| `DialogActionEnum.DA_PAY_BOUNTY` | `10` | `DialogActionEnum::DA_PAY_BOUNTY` |
+| `DialogActionEnum.DA_CHARACTER_EDITOR` | `11` | `DialogActionEnum::DA_CHARACTER_EDITOR` |
+| `DialogActionEnum.DA_FORCE_SPEECH_TIMER` | `12` | `DialogActionEnum::DA_FORCE_SPEECH_TIMER` |
+| `DialogActionEnum.DA_DECLARE_WAR` | `13` | `DialogActionEnum::DA_DECLARE_WAR` |
+| `DialogActionEnum.DA_END_WAR` | `14` | `DialogActionEnum::DA_END_WAR` |
+| `DialogActionEnum.DA_CLEAR_AI` | `15` | `DialogActionEnum::DA_CLEAR_AI` |
+| `DialogActionEnum.DA_FOLLOW_WHILE_TALKING` | `16` | `DialogActionEnum::DA_FOLLOW_WHILE_TALKING` |
+| `DialogActionEnum.DA_THUG_HUNTER` | `17` | `DialogActionEnum::DA_THUG_HUNTER` |
+| `DialogActionEnum.DA_JOIN_SQUAD_FAST` | `18` | `DialogActionEnum::DA_JOIN_SQUAD_FAST` |
+| `DialogActionEnum.DA_REMEMBER_CHARACTER` | `19` | `DialogActionEnum::DA_REMEMBER_CHARACTER` |
+| `DialogActionEnum.DA_FLAG_TEMP_ALLY` | `20` | `DialogActionEnum::DA_FLAG_TEMP_ALLY` |
+| `DialogActionEnum.DA_FLAG_TEMP_ENEMY` | `21` | `DialogActionEnum::DA_FLAG_TEMP_ENEMY` |
+| `DialogActionEnum.DA_MATES_KILL_ME` | `22` | `DialogActionEnum::DA_MATES_KILL_ME` |
+| `DialogActionEnum.DA_MAKE_TARGET_RUN_FASTER` | `23` | `DialogActionEnum::DA_MAKE_TARGET_RUN_FASTER` |
+| `DialogActionEnum.DA_GIVE_TARGET_MY_SLAVES` | `24` | `DialogActionEnum::DA_GIVE_TARGET_MY_SLAVES` |
+| `DialogActionEnum.DA_TAG_ESCAPED_SLAVE` | `25` | `DialogActionEnum::DA_TAG_ESCAPED_SLAVE` |
+| `DialogActionEnum.DA_FREE_TARGET_SLAVE` | `26` | `DialogActionEnum::DA_FREE_TARGET_SLAVE` |
+| `DialogActionEnum.DA_MERGE_WITH_SIMILAR_SQUADS` | `27` | `DialogActionEnum::DA_MERGE_WITH_SIMILAR_SQUADS` |
+| `DialogActionEnum.DA_SEPARATE_TO_MY_OWN_SQUAD` | `28` | `DialogActionEnum::DA_SEPARATE_TO_MY_OWN_SQUAD` |
+| `DialogActionEnum.DA_ARREST_TARGET` | `29` | `DialogActionEnum::DA_ARREST_TARGET` |
+| `DialogActionEnum.DA_ARREST_TARGETS_CARRIED_PERSON` | `30` | `DialogActionEnum::DA_ARREST_TARGETS_CARRIED_PERSON` |
+| `DialogActionEnum.DA_ATTACK_TOWN` | `31` | `DialogActionEnum::DA_ATTACK_TOWN` |
+| `DialogActionEnum.DA_ASSIGN_BOUNTY` | `32` | `DialogActionEnum::DA_ASSIGN_BOUNTY` |
+| `DialogActionEnum.DA_CRIME_ALARM` | `33` | `DialogActionEnum::DA_CRIME_ALARM` |
+| `DialogActionEnum.DA_RUN_AWAY` | `34` | `DialogActionEnum::DA_RUN_AWAY` |
+| `DialogActionEnum.DA_INCREASE_FACTION_RANK` | `35` | `DialogActionEnum::DA_INCREASE_FACTION_RANK` |
+| `DialogActionEnum.DA_LOCK_THIS_DIALOG` | `36` | `DialogActionEnum::DA_LOCK_THIS_DIALOG` |
+| `DialogActionEnum.DA_ASSAULT_PHASE` | `37` | `DialogActionEnum::DA_ASSAULT_PHASE` |
+| `DialogActionEnum.DA_RETREAT_PHASE` | `38` | `DialogActionEnum::DA_RETREAT_PHASE` |
+| `DialogActionEnum.DA_VICTORY_PHASE` | `39` | `DialogActionEnum::DA_VICTORY_PHASE` |
+| `DialogActionEnum.DA_ENSLAVE_TARGETS_CARRIED_PERSON` | `40` | `DialogActionEnum::DA_ENSLAVE_TARGETS_CARRIED_PERSON` |
+| `DialogActionEnum.CHOOSE_SLAVES_SELLING` | `41` | `DialogActionEnum::CHOOSE_SLAVES_SELLING` |
+| `DialogActionEnum.CHOOSE_SLAVES_BUYING` | `42` | `DialogActionEnum::CHOOSE_SLAVES_BUYING` |
+| `DialogActionEnum.CHOOSE_PRISONER_BAIL` | `43` | `DialogActionEnum::CHOOSE_PRISONER_BAIL` |
+| `DialogActionEnum.CHOOSE_CONSCRIPTION` | `44` | `DialogActionEnum::CHOOSE_CONSCRIPTION` |
+| `DialogActionEnum.CHOOSE_RECRUITING` | `45` | `DialogActionEnum::CHOOSE_RECRUITING` |
+| `DialogActionEnum.CHOOSE_HIRING_CONTRACT` | `46` | `DialogActionEnum::CHOOSE_HIRING_CONTRACT` |
+| `DialogActionEnum.SURRENDER_NON_HUMANS` | `47` | `DialogActionEnum::SURRENDER_NON_HUMANS` |
+| `DialogActionEnum.CHOOSE_ANIMALS_BUYING` | `48` | `DialogActionEnum::CHOOSE_ANIMALS_BUYING` |
+| `DialogActionEnum.DA_CLEAR_BOUNTY` | `49` | `DialogActionEnum::DA_CLEAR_BOUNTY` |
+| `DialogActionEnum.DA_PLAYER_SELL_PRISONERS` | `50` | `DialogActionEnum::DA_PLAYER_SELL_PRISONERS` |
+| `DialogActionEnum.DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE` | `51` | `DialogActionEnum::DA_PLAYER_SURRENDER_MEMBER_DIFFERENT_RACE` |
+| `DialogActionEnum.DA_SUMMON_MY_SQUAD` | `52` | `DialogActionEnum::DA_SUMMON_MY_SQUAD` |
+| `DialogActionEnum.DA_REMOVE_SLAVE_STATUS` | `53` | `DialogActionEnum::DA_REMOVE_SLAVE_STATUS` |
+| `DialogActionEnum.DA_OPEN_NEAREST_GATE` | `54` | `DialogActionEnum::DA_OPEN_NEAREST_GATE` |
+| `DialogActionEnum.DA_ATTACK_STAY_NEAR_HOME` | `55` | `DialogActionEnum::DA_ATTACK_STAY_NEAR_HOME` |
+| `DialogActionEnum.DA_MASSIVE_ALARM` | `56` | `DialogActionEnum::DA_MASSIVE_ALARM` |
+| `DialogActionEnum.DA_ATTACK_IF_NO_COEXIST` | `57` | `DialogActionEnum::DA_ATTACK_IF_NO_COEXIST` |
+| `DialogActionEnum.DA_KNOCKOUT` | `58` | `DialogActionEnum::DA_KNOCKOUT` |
+| `DialogActionEnum.DA_END` | `59` | `DialogActionEnum::DA_END` |
 
 ---
 
@@ -545,1031 +550,1032 @@ end
 
 ### Table: `itemType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `itemType.BUILDING` | `itemType::BUILDING` |
-| `itemType.CHARACTER` | `itemType::CHARACTER` |
-| `itemType.WEAPON` | `itemType::WEAPON` |
-| `itemType.ARMOUR` | `itemType::ARMOUR` |
-| `itemType.ITEM` | `itemType::ITEM` |
-| `itemType.ANIMAL_ANIMATION` | `itemType::ANIMAL_ANIMATION` |
-| `itemType.ATTACHMENT` | `itemType::ATTACHMENT` |
-| `itemType.RACE` | `itemType::RACE` |
-| `itemType.LOCATION` | `itemType::LOCATION` |
-| `itemType.WAR_SAVESTATE` | `itemType::WAR_SAVESTATE` |
-| `itemType.FACTION` | `itemType::FACTION` |
-| `itemType.NULL_ITEM` | `itemType::NULL_ITEM` |
-| `itemType.ZONE_MAP` | `itemType::ZONE_MAP` |
-| `itemType.TOWN` | `itemType::TOWN` |
-| `itemType.WORLDMAP_CHARACTER` | `itemType::WORLDMAP_CHARACTER` |
-| `itemType.CHARACTER_APPEARANCE_OLD` | `itemType::CHARACTER_APPEARANCE_OLD` |
-| `itemType.LOCATIONAL_DAMAGE` | `itemType::LOCATIONAL_DAMAGE` |
-| `itemType.COMBAT_TECHNIQUE` | `itemType::COMBAT_TECHNIQUE` |
-| `itemType.DIALOGUE` | `itemType::DIALOGUE` |
-| `itemType.DIALOGUE_LINE` | `itemType::DIALOGUE_LINE` |
-| `itemType.TECHTREE` | `itemType::TECHTREE` |
-| `itemType.RESEARCH` | `itemType::RESEARCH` |
-| `itemType.AI_TASK` | `itemType::AI_TASK` |
-| `itemType.AI_STATE` | `itemType::AI_STATE` |
-| `itemType.ANIMATION` | `itemType::ANIMATION` |
-| `itemType.STATS` | `itemType::STATS` |
-| `itemType.PERSONALITY` | `itemType::PERSONALITY` |
-| `itemType.CONSTANTS` | `itemType::CONSTANTS` |
-| `itemType.BIOMES` | `itemType::BIOMES` |
-| `itemType.BUILDING_PART` | `itemType::BUILDING_PART` |
-| `itemType.INSTANCE_COLLECTION` | `itemType::INSTANCE_COLLECTION` |
-| `itemType.DIALOG_ACTION` | `itemType::DIALOG_ACTION` |
-| `itemType.TEMPORARY_INFO` | `itemType::TEMPORARY_INFO` |
-| `itemType.MOD_FILENAME` | `itemType::MOD_FILENAME` |
-| `itemType.PLATOON` | `itemType::PLATOON` |
-| `itemType.GAMESTATE_BUILDING` | `itemType::GAMESTATE_BUILDING` |
-| `itemType.GAMESTATE_CHARACTER` | `itemType::GAMESTATE_CHARACTER` |
-| `itemType.GAMESTATE_FACTION` | `itemType::GAMESTATE_FACTION` |
-| `itemType.GAMESTATE_TOWN_INSTANCE_LIST` | `itemType::GAMESTATE_TOWN_INSTANCE_LIST` |
-| `itemType.STATE` | `itemType::STATE` |
-| `itemType.SAVED_STATE` | `itemType::SAVED_STATE` |
-| `itemType.INVENTORY_STATE` | `itemType::INVENTORY_STATE` |
-| `itemType.INVENTORY_ITEM_STATE` | `itemType::INVENTORY_ITEM_STATE` |
-| `itemType.REPEATABLE_BUILDING_PART_SLOT` | `itemType::REPEATABLE_BUILDING_PART_SLOT` |
-| `itemType.MATERIAL_SPEC` | `itemType::MATERIAL_SPEC` |
-| `itemType.MATERIAL_SPECS_COLLECTION` | `itemType::MATERIAL_SPECS_COLLECTION` |
-| `itemType.CONTAINER` | `itemType::CONTAINER` |
-| `itemType.MATERIAL_SPECS_CLOTHING` | `itemType::MATERIAL_SPECS_CLOTHING` |
-| `itemType.GAMESTATE_BUILDING_INTERIOR` | `itemType::GAMESTATE_BUILDING_INTERIOR` |
-| `itemType.VENDOR_LIST` | `itemType::VENDOR_LIST` |
-| `itemType.MATERIAL_SPECS_WEAPON` | `itemType::MATERIAL_SPECS_WEAPON` |
-| `itemType.WEAPON_MANUFACTURER` | `itemType::WEAPON_MANUFACTURER` |
-| `itemType.SQUAD_TEMPLATE` | `itemType::SQUAD_TEMPLATE` |
-| `itemType.ROAD` | `itemType::ROAD` |
-| `itemType.LOCATION_NODE` | `itemType::LOCATION_NODE` |
-| `itemType.COLOR_DATA` | `itemType::COLOR_DATA` |
-| `itemType.CAMERA` | `itemType::CAMERA` |
-| `itemType.MEDICAL_STATE` | `itemType::MEDICAL_STATE` |
-| `itemType.MEDICAL_PART_STATE` | `itemType::MEDICAL_PART_STATE` |
-| `itemType.FOLIAGE_LAYER` | `itemType::FOLIAGE_LAYER` |
-| `itemType.FOLIAGE_MESH` | `itemType::FOLIAGE_MESH` |
-| `itemType.GRASS` | `itemType::GRASS` |
-| `itemType.BUILDING_FUNCTIONALITY` | `itemType::BUILDING_FUNCTIONALITY` |
-| `itemType.DAY_SCHEDULE` | `itemType::DAY_SCHEDULE` |
-| `itemType.NEW_GAME_STARTOFF` | `itemType::NEW_GAME_STARTOFF` |
-| `itemType.GAMESTATE_CRAFTING` | `itemType::GAMESTATE_CRAFTING` |
-| `itemType.CHARACTER_APPEARANCE` | `itemType::CHARACTER_APPEARANCE` |
-| `itemType.GAMESTATE_AI` | `itemType::GAMESTATE_AI` |
-| `itemType.WILDLIFE_BIRDS` | `itemType::WILDLIFE_BIRDS` |
-| `itemType.MAP_FEATURES` | `itemType::MAP_FEATURES` |
-| `itemType.DIPLOMATIC_ASSAULTS` | `itemType::DIPLOMATIC_ASSAULTS` |
-| `itemType.SINGLE_DIPLOMATIC_ASSAULT` | `itemType::SINGLE_DIPLOMATIC_ASSAULT` |
-| `itemType.AI_PACKAGE` | `itemType::AI_PACKAGE` |
-| `itemType.DIALOGUE_PACKAGE` | `itemType::DIALOGUE_PACKAGE` |
-| `itemType.GUN_DATA` | `itemType::GUN_DATA` |
-| `itemType.HUMAN_CHARACTER` | `itemType::HUMAN_CHARACTER` |
-| `itemType.ANIMAL_CHARACTER` | `itemType::ANIMAL_CHARACTER` |
-| `itemType.UNIQUE_SQUAD_TEMPLATE` | `itemType::UNIQUE_SQUAD_TEMPLATE` |
-| `itemType.FACTION_TEMPLATE` | `itemType::FACTION_TEMPLATE` |
-| `itemType.AI_SCHEDULE` | `itemType::AI_SCHEDULE` |
-| `itemType.WEATHER` | `itemType::WEATHER` |
-| `itemType.SEASON` | `itemType::SEASON` |
-| `itemType.EFFECT` | `itemType::EFFECT` |
-| `itemType.ITEM_PLACEMENT_GROUP` | `itemType::ITEM_PLACEMENT_GROUP` |
-| `itemType.WORD_SWAPS` | `itemType::WORD_SWAPS` |
-| `itemType.NEST` | `itemType::NEST` |
-| `itemType.NEST_ITEM` | `itemType::NEST_ITEM` |
-| `itemType.CHARACTER_PHYSICS_ATTACHMENT` | `itemType::CHARACTER_PHYSICS_ATTACHMENT` |
-| `itemType.LIGHT` | `itemType::LIGHT` |
-| `itemType.HEAD` | `itemType::HEAD` |
-| `itemType.BLUEPRINT` | `itemType::BLUEPRINT` |
-| `itemType.SHOP_TRADER_CLASS` | `itemType::SHOP_TRADER_CLASS` |
-| `itemType.FOLIAGE_BUILDING` | `itemType::FOLIAGE_BUILDING` |
-| `itemType.FACTION_CAMPAIGN` | `itemType::FACTION_CAMPAIGN` |
-| `itemType.GAMESTATE_TOWN` | `itemType::GAMESTATE_TOWN` |
-| `itemType.BIOME_GROUP` | `itemType::BIOME_GROUP` |
-| `itemType.EFFECT_FOG_VOLUME` | `itemType::EFFECT_FOG_VOLUME` |
-| `itemType.FARM_DATA` | `itemType::FARM_DATA` |
-| `itemType.FARM_PART` | `itemType::FARM_PART` |
-| `itemType.ENVIRONMENT_RESOURCES` | `itemType::ENVIRONMENT_RESOURCES` |
-| `itemType.RACE_GROUP` | `itemType::RACE_GROUP` |
-| `itemType.ARTIFACTS` | `itemType::ARTIFACTS` |
-| `itemType.MAP_ITEM` | `itemType::MAP_ITEM` |
-| `itemType.BUILDINGS_SWAP` | `itemType::BUILDINGS_SWAP` |
-| `itemType.ITEMS_CULTURE` | `itemType::ITEMS_CULTURE` |
-| `itemType.ANIMATION_EVENT` | `itemType::ANIMATION_EVENT` |
-| `itemType.TUTORIAL` | `itemType::TUTORIAL` |
-| `itemType.CROSSBOW` | `itemType::CROSSBOW` |
-| `itemType.TERRAIN_DECALS` | `itemType::TERRAIN_DECALS` |
-| `itemType.AMBIENT_SOUND` | `itemType::AMBIENT_SOUND` |
-| `itemType.WORLD_EVENT_STATE` | `itemType::WORLD_EVENT_STATE` |
-| `itemType.LIMB_REPLACEMENT` | `itemType::LIMB_REPLACEMENT` |
-| `itemType.ANIMATION_FILE` | `itemType::ANIMATION_FILE` |
-| `itemType.____XXX___` | `itemType::____XXX___` |
-| `itemType.OBJECT_TYPE_MAX` | `itemType::OBJECT_TYPE_MAX` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `itemType.BUILDING` | `0` | `itemType::BUILDING` |
+| `itemType.CHARACTER` | `1` | `itemType::CHARACTER` |
+| `itemType.WEAPON` | `2` | `itemType::WEAPON` |
+| `itemType.ARMOUR` | `3` | `itemType::ARMOUR` |
+| `itemType.ITEM` | `4` | `itemType::ITEM` |
+| `itemType.ANIMAL_ANIMATION` | `5` | `itemType::ANIMAL_ANIMATION` |
+| `itemType.ATTACHMENT` | `6` | `itemType::ATTACHMENT` |
+| `itemType.RACE` | `7` | `itemType::RACE` |
+| `itemType.LOCATION` | `8` | `itemType::LOCATION` |
+| `itemType.WAR_SAVESTATE` | `9` | `itemType::WAR_SAVESTATE` |
+| `itemType.FACTION` | `10` | `itemType::FACTION` |
+| `itemType.NULL_ITEM` | `11` | `itemType::NULL_ITEM` |
+| `itemType.ZONE_MAP` | `12` | `itemType::ZONE_MAP` |
+| `itemType.TOWN` | `13` | `itemType::TOWN` |
+| `itemType.WORLDMAP_CHARACTER` | `14` | `itemType::WORLDMAP_CHARACTER` |
+| `itemType.CHARACTER_APPEARANCE_OLD` | `15` | `itemType::CHARACTER_APPEARANCE_OLD` |
+| `itemType.LOCATIONAL_DAMAGE` | `16` | `itemType::LOCATIONAL_DAMAGE` |
+| `itemType.COMBAT_TECHNIQUE` | `17` | `itemType::COMBAT_TECHNIQUE` |
+| `itemType.DIALOGUE` | `18` | `itemType::DIALOGUE` |
+| `itemType.DIALOGUE_LINE` | `19` | `itemType::DIALOGUE_LINE` |
+| `itemType.TECHTREE` | `20` | `itemType::TECHTREE` |
+| `itemType.RESEARCH` | `21` | `itemType::RESEARCH` |
+| `itemType.AI_TASK` | `22` | `itemType::AI_TASK` |
+| `itemType.AI_STATE` | `23` | `itemType::AI_STATE` |
+| `itemType.ANIMATION` | `24` | `itemType::ANIMATION` |
+| `itemType.STATS` | `25` | `itemType::STATS` |
+| `itemType.PERSONALITY` | `26` | `itemType::PERSONALITY` |
+| `itemType.CONSTANTS` | `27` | `itemType::CONSTANTS` |
+| `itemType.BIOMES` | `28` | `itemType::BIOMES` |
+| `itemType.BUILDING_PART` | `29` | `itemType::BUILDING_PART` |
+| `itemType.INSTANCE_COLLECTION` | `30` | `itemType::INSTANCE_COLLECTION` |
+| `itemType.DIALOG_ACTION` | `31` | `itemType::DIALOG_ACTION` |
+| `itemType.TEMPORARY_INFO` | `32` | `itemType::TEMPORARY_INFO` |
+| `itemType.MOD_FILENAME` | `33` | `itemType::MOD_FILENAME` |
+| `itemType.PLATOON` | `34` | `itemType::PLATOON` |
+| `itemType.GAMESTATE_BUILDING` | `35` | `itemType::GAMESTATE_BUILDING` |
+| `itemType.GAMESTATE_CHARACTER` | `36` | `itemType::GAMESTATE_CHARACTER` |
+| `itemType.GAMESTATE_FACTION` | `37` | `itemType::GAMESTATE_FACTION` |
+| `itemType.GAMESTATE_TOWN_INSTANCE_LIST` | `38` | `itemType::GAMESTATE_TOWN_INSTANCE_LIST` |
+| `itemType.STATE` | `39` | `itemType::STATE` |
+| `itemType.SAVED_STATE` | `40` | `itemType::SAVED_STATE` |
+| `itemType.INVENTORY_STATE` | `41` | `itemType::INVENTORY_STATE` |
+| `itemType.INVENTORY_ITEM_STATE` | `42` | `itemType::INVENTORY_ITEM_STATE` |
+| `itemType.REPEATABLE_BUILDING_PART_SLOT` | `43` | `itemType::REPEATABLE_BUILDING_PART_SLOT` |
+| `itemType.MATERIAL_SPEC` | `44` | `itemType::MATERIAL_SPEC` |
+| `itemType.MATERIAL_SPECS_COLLECTION` | `45` | `itemType::MATERIAL_SPECS_COLLECTION` |
+| `itemType.CONTAINER` | `46` | `itemType::CONTAINER` |
+| `itemType.MATERIAL_SPECS_CLOTHING` | `47` | `itemType::MATERIAL_SPECS_CLOTHING` |
+| `itemType.GAMESTATE_BUILDING_INTERIOR` | `48` | `itemType::GAMESTATE_BUILDING_INTERIOR` |
+| `itemType.VENDOR_LIST` | `49` | `itemType::VENDOR_LIST` |
+| `itemType.MATERIAL_SPECS_WEAPON` | `50` | `itemType::MATERIAL_SPECS_WEAPON` |
+| `itemType.WEAPON_MANUFACTURER` | `51` | `itemType::WEAPON_MANUFACTURER` |
+| `itemType.SQUAD_TEMPLATE` | `52` | `itemType::SQUAD_TEMPLATE` |
+| `itemType.ROAD` | `53` | `itemType::ROAD` |
+| `itemType.LOCATION_NODE` | `54` | `itemType::LOCATION_NODE` |
+| `itemType.COLOR_DATA` | `55` | `itemType::COLOR_DATA` |
+| `itemType.CAMERA` | `56` | `itemType::CAMERA` |
+| `itemType.MEDICAL_STATE` | `57` | `itemType::MEDICAL_STATE` |
+| `itemType.MEDICAL_PART_STATE` | `58` | `itemType::MEDICAL_PART_STATE` |
+| `itemType.FOLIAGE_LAYER` | `59` | `itemType::FOLIAGE_LAYER` |
+| `itemType.FOLIAGE_MESH` | `60` | `itemType::FOLIAGE_MESH` |
+| `itemType.GRASS` | `61` | `itemType::GRASS` |
+| `itemType.BUILDING_FUNCTIONALITY` | `62` | `itemType::BUILDING_FUNCTIONALITY` |
+| `itemType.DAY_SCHEDULE` | `63` | `itemType::DAY_SCHEDULE` |
+| `itemType.NEW_GAME_STARTOFF` | `64` | `itemType::NEW_GAME_STARTOFF` |
+| `itemType.GAMESTATE_CRAFTING` | `65` | `itemType::GAMESTATE_CRAFTING` |
+| `itemType.CHARACTER_APPEARANCE` | `66` | `itemType::CHARACTER_APPEARANCE` |
+| `itemType.GAMESTATE_AI` | `67` | `itemType::GAMESTATE_AI` |
+| `itemType.WILDLIFE_BIRDS` | `68` | `itemType::WILDLIFE_BIRDS` |
+| `itemType.MAP_FEATURES` | `69` | `itemType::MAP_FEATURES` |
+| `itemType.DIPLOMATIC_ASSAULTS` | `70` | `itemType::DIPLOMATIC_ASSAULTS` |
+| `itemType.SINGLE_DIPLOMATIC_ASSAULT` | `71` | `itemType::SINGLE_DIPLOMATIC_ASSAULT` |
+| `itemType.AI_PACKAGE` | `72` | `itemType::AI_PACKAGE` |
+| `itemType.DIALOGUE_PACKAGE` | `73` | `itemType::DIALOGUE_PACKAGE` |
+| `itemType.GUN_DATA` | `74` | `itemType::GUN_DATA` |
+| `itemType.HUMAN_CHARACTER` | `75` | `itemType::HUMAN_CHARACTER` |
+| `itemType.ANIMAL_CHARACTER` | `76` | `itemType::ANIMAL_CHARACTER` |
+| `itemType.UNIQUE_SQUAD_TEMPLATE` | `77` | `itemType::UNIQUE_SQUAD_TEMPLATE` |
+| `itemType.FACTION_TEMPLATE` | `78` | `itemType::FACTION_TEMPLATE` |
+| `itemType.AI_SCHEDULE` | `79` | `itemType::AI_SCHEDULE` |
+| `itemType.WEATHER` | `80` | `itemType::WEATHER` |
+| `itemType.SEASON` | `81` | `itemType::SEASON` |
+| `itemType.EFFECT` | `82` | `itemType::EFFECT` |
+| `itemType.ITEM_PLACEMENT_GROUP` | `83` | `itemType::ITEM_PLACEMENT_GROUP` |
+| `itemType.WORD_SWAPS` | `84` | `itemType::WORD_SWAPS` |
+| `itemType.NEST` | `85` | `itemType::NEST` |
+| `itemType.NEST_ITEM` | `86` | `itemType::NEST_ITEM` |
+| `itemType.CHARACTER_PHYSICS_ATTACHMENT` | `87` | `itemType::CHARACTER_PHYSICS_ATTACHMENT` |
+| `itemType.LIGHT` | `88` | `itemType::LIGHT` |
+| `itemType.HEAD` | `89` | `itemType::HEAD` |
+| `itemType.BLUEPRINT` | `90` | `itemType::BLUEPRINT` |
+| `itemType.SHOP_TRADER_CLASS` | `91` | `itemType::SHOP_TRADER_CLASS` |
+| `itemType.FOLIAGE_BUILDING` | `92` | `itemType::FOLIAGE_BUILDING` |
+| `itemType.FACTION_CAMPAIGN` | `93` | `itemType::FACTION_CAMPAIGN` |
+| `itemType.GAMESTATE_TOWN` | `94` | `itemType::GAMESTATE_TOWN` |
+| `itemType.BIOME_GROUP` | `95` | `itemType::BIOME_GROUP` |
+| `itemType.EFFECT_FOG_VOLUME` | `96` | `itemType::EFFECT_FOG_VOLUME` |
+| `itemType.FARM_DATA` | `97` | `itemType::FARM_DATA` |
+| `itemType.FARM_PART` | `98` | `itemType::FARM_PART` |
+| `itemType.ENVIRONMENT_RESOURCES` | `99` | `itemType::ENVIRONMENT_RESOURCES` |
+| `itemType.RACE_GROUP` | `100` | `itemType::RACE_GROUP` |
+| `itemType.ARTIFACTS` | `101` | `itemType::ARTIFACTS` |
+| `itemType.MAP_ITEM` | `102` | `itemType::MAP_ITEM` |
+| `itemType.BUILDINGS_SWAP` | `103` | `itemType::BUILDINGS_SWAP` |
+| `itemType.ITEMS_CULTURE` | `104` | `itemType::ITEMS_CULTURE` |
+| `itemType.ANIMATION_EVENT` | `105` | `itemType::ANIMATION_EVENT` |
+| `itemType.TUTORIAL` | `106` | `itemType::TUTORIAL` |
+| `itemType.CROSSBOW` | `107` | `itemType::CROSSBOW` |
+| `itemType.TERRAIN_DECALS` | `108` | `itemType::TERRAIN_DECALS` |
+| `itemType.AMBIENT_SOUND` | `109` | `itemType::AMBIENT_SOUND` |
+| `itemType.WORLD_EVENT_STATE` | `110` | `itemType::WORLD_EVENT_STATE` |
+| `itemType.LIMB_REPLACEMENT` | `111` | `itemType::LIMB_REPLACEMENT` |
+| `itemType.ANIMATION_FILE` | `112` | `itemType::ANIMATION_FILE` |
+| `itemType.____XXX___` | `113` | `itemType::____XXX___` |
+| `itemType.OBJECT_TYPE_MAX` | `114` | `itemType::OBJECT_TYPE_MAX` |
+| `itemType.LUA_SCRIPT` | `322` | `itemType::LUA_SCRIPT` *(Added by KenshiLua)* |
 
 ### Table: `BuildingFunction`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `BuildingFunction.BF_ANY` | `BuildingFunction::BF_ANY` |
-| `BuildingFunction.BF_MINE` | `BuildingFunction::BF_MINE` |
-| `BuildingFunction.BF_RESOURCE_STORAGE` | `BuildingFunction::BF_RESOURCE_STORAGE` |
-| `BuildingFunction.BF_RESEARCH` | `BuildingFunction::BF_RESEARCH` |
-| `BuildingFunction.BF_REFINERY` | `BuildingFunction::BF_REFINERY` |
-| `BuildingFunction.BF_GENERATOR` | `BuildingFunction::BF_GENERATOR` |
-| `BuildingFunction.BF_BED` | `BuildingFunction::BF_BED` |
-| `BuildingFunction.BF_TRAINING` | `BuildingFunction::BF_TRAINING` |
-| `BuildingFunction.BF_CAGE` | `BuildingFunction::BF_CAGE` |
-| `BuildingFunction.BF_SHOP` | `BuildingFunction::BF_SHOP` |
-| `BuildingFunction.BF_CRAFTING` | `BuildingFunction::BF_CRAFTING` |
-| `BuildingFunction.BF_CORPSE_DISPOSAL` | `BuildingFunction::BF_CORPSE_DISPOSAL` |
-| `BuildingFunction.BF_TURRET` | `BuildingFunction::BF_TURRET` |
-| `BuildingFunction.BF_GENERAL_STORAGE` | `BuildingFunction::BF_GENERAL_STORAGE` |
-| `BuildingFunction.BF_ITEM_FURNACE` | `BuildingFunction::BF_ITEM_FURNACE` |
-| `BuildingFunction.BF_LIGHT` | `BuildingFunction::BF_LIGHT` |
-| `BuildingFunction.BF_TABLE` | `BuildingFunction::BF_TABLE` |
-| `BuildingFunction.BF_CHAIR` | `BuildingFunction::BF_CHAIR` |
-| `BuildingFunction.BF_FLUFF` | `BuildingFunction::BF_FLUFF` |
-| `BuildingFunction.BF_SHELL_WITH_INTERIOR` | `BuildingFunction::BF_SHELL_WITH_INTERIOR` |
-| `BuildingFunction.BF_WALL` | `BuildingFunction::BF_WALL` |
-| `BuildingFunction.BF_GATE` | `BuildingFunction::BF_GATE` |
-| `BuildingFunction.BF_DOOR` | `BuildingFunction::BF_DOOR` |
-| `BuildingFunction.BF_BATTERY` | `BuildingFunction::BF_BATTERY` |
-| `BuildingFunction.BF_THRONE` | `BuildingFunction::BF_THRONE` |
-| `BuildingFunction.BF_SKELETON_BED` | `BuildingFunction::BF_SKELETON_BED` |
-| `BuildingFunction.BF_RAIN_COLLECTOR` | `BuildingFunction::BF_RAIN_COLLECTOR` |
-| `BuildingFunction.BF_MINE_NATURAL` | `BuildingFunction::BF_MINE_NATURAL` |
-| `BuildingFunction.BF_STEERING` | `BuildingFunction::BF_STEERING` |
-| `BuildingFunction.BF_ENGINE` | `BuildingFunction::BF_ENGINE` |
-| `BuildingFunction.BF_LIQUID_TANK` | `BuildingFunction::BF_LIQUID_TANK` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `BuildingFunction.BF_ANY` | `0` | `BuildingFunction::BF_ANY` |
+| `BuildingFunction.BF_MINE` | `1` | `BuildingFunction::BF_MINE` |
+| `BuildingFunction.BF_RESOURCE_STORAGE` | `2` | `BuildingFunction::BF_RESOURCE_STORAGE` |
+| `BuildingFunction.BF_RESEARCH` | `3` | `BuildingFunction::BF_RESEARCH` |
+| `BuildingFunction.BF_REFINERY` | `4` | `BuildingFunction::BF_REFINERY` |
+| `BuildingFunction.BF_GENERATOR` | `5` | `BuildingFunction::BF_GENERATOR` |
+| `BuildingFunction.BF_BED` | `6` | `BuildingFunction::BF_BED` |
+| `BuildingFunction.BF_TRAINING` | `7` | `BuildingFunction::BF_TRAINING` |
+| `BuildingFunction.BF_CAGE` | `8` | `BuildingFunction::BF_CAGE` |
+| `BuildingFunction.BF_SHOP` | `9` | `BuildingFunction::BF_SHOP` |
+| `BuildingFunction.BF_CRAFTING` | `10` | `BuildingFunction::BF_CRAFTING` |
+| `BuildingFunction.BF_CORPSE_DISPOSAL` | `11` | `BuildingFunction::BF_CORPSE_DISPOSAL` |
+| `BuildingFunction.BF_TURRET` | `12` | `BuildingFunction::BF_TURRET` |
+| `BuildingFunction.BF_GENERAL_STORAGE` | `13` | `BuildingFunction::BF_GENERAL_STORAGE` |
+| `BuildingFunction.BF_ITEM_FURNACE` | `14` | `BuildingFunction::BF_ITEM_FURNACE` |
+| `BuildingFunction.BF_LIGHT` | `15` | `BuildingFunction::BF_LIGHT` |
+| `BuildingFunction.BF_TABLE` | `16` | `BuildingFunction::BF_TABLE` |
+| `BuildingFunction.BF_CHAIR` | `17` | `BuildingFunction::BF_CHAIR` |
+| `BuildingFunction.BF_FLUFF` | `18` | `BuildingFunction::BF_FLUFF` |
+| `BuildingFunction.BF_SHELL_WITH_INTERIOR` | `19` | `BuildingFunction::BF_SHELL_WITH_INTERIOR` |
+| `BuildingFunction.BF_WALL` | `20` | `BuildingFunction::BF_WALL` |
+| `BuildingFunction.BF_GATE` | `21` | `BuildingFunction::BF_GATE` |
+| `BuildingFunction.BF_DOOR` | `22` | `BuildingFunction::BF_DOOR` |
+| `BuildingFunction.BF_BATTERY` | `23` | `BuildingFunction::BF_BATTERY` |
+| `BuildingFunction.BF_THRONE` | `24` | `BuildingFunction::BF_THRONE` |
+| `BuildingFunction.BF_SKELETON_BED` | `25` | `BuildingFunction::BF_SKELETON_BED` |
+| `BuildingFunction.BF_RAIN_COLLECTOR` | `26` | `BuildingFunction::BF_RAIN_COLLECTOR` |
+| `BuildingFunction.BF_MINE_NATURAL` | `27` | `BuildingFunction::BF_MINE_NATURAL` |
+| `BuildingFunction.BF_STEERING` | `28` | `BuildingFunction::BF_STEERING` |
+| `BuildingFunction.BF_ENGINE` | `29` | `BuildingFunction::BF_ENGINE` |
+| `BuildingFunction.BF_LIQUID_TANK` | `30` | `BuildingFunction::BF_LIQUID_TANK` |
 
 ### Table: `CutDirection`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CutDirection.CUT_DEFAULT` | `CutDirection::CUT_DEFAULT` |
-| `CutDirection.CUT_DOWNWARD` | `CutDirection::CUT_DOWNWARD` |
-| `CutDirection.CUT_LEFT` | `CutDirection::CUT_LEFT` |
-| `CutDirection.CUT_RIGHT` | `CutDirection::CUT_RIGHT` |
-| `CutDirection.CUT_THRUST` | `CutDirection::CUT_THRUST` |
-| `CutDirection.CUT_UPWARDS` | `CutDirection::CUT_UPWARDS` |
-| `CutDirection.CUT_PIERCED` | `CutDirection::CUT_PIERCED` |
-| `CutDirection.CUT_REAR_DOWNWARD` | `CutDirection::CUT_REAR_DOWNWARD` |
-| `CutDirection.CUT_REAR_LEFT` | `CutDirection::CUT_REAR_LEFT` |
-| `CutDirection.CUT_REAR_RIGHT` | `CutDirection::CUT_REAR_RIGHT` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CutDirection.CUT_DEFAULT` | `0` | `CutDirection::CUT_DEFAULT` |
+| `CutDirection.CUT_DOWNWARD` | `1` | `CutDirection::CUT_DOWNWARD` |
+| `CutDirection.CUT_LEFT` | `2` | `CutDirection::CUT_LEFT` |
+| `CutDirection.CUT_RIGHT` | `3` | `CutDirection::CUT_RIGHT` |
+| `CutDirection.CUT_THRUST` | `4` | `CutDirection::CUT_THRUST` |
+| `CutDirection.CUT_UPWARDS` | `5` | `CutDirection::CUT_UPWARDS` |
+| `CutDirection.CUT_PIERCED` | `6` | `CutDirection::CUT_PIERCED` |
+| `CutDirection.CUT_REAR_DOWNWARD` | `7` | `CutDirection::CUT_REAR_DOWNWARD` |
+| `CutDirection.CUT_REAR_LEFT` | `8` | `CutDirection::CUT_REAR_LEFT` |
+| `CutDirection.CUT_REAR_RIGHT` | `9` | `CutDirection::CUT_REAR_RIGHT` |
 
 ### Table: `CutOrigination`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CutOrigination.FRONT` | `CutOrigination::FRONT` |
-| `CutOrigination.REAR` | `CutOrigination::REAR` |
-| `CutOrigination.LEFTSIDE` | `CutOrigination::LEFTSIDE` |
-| `CutOrigination.RIGHTSIDE` | `CutOrigination::RIGHTSIDE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CutOrigination.FRONT` | `0` | `CutOrigination::FRONT` |
+| `CutOrigination.REAR` | `1` | `CutOrigination::REAR` |
+| `CutOrigination.LEFTSIDE` | `2` | `CutOrigination::LEFTSIDE` |
+| `CutOrigination.RIGHTSIDE` | `3` | `CutOrigination::RIGHTSIDE` |
 
 ### Table: `HitMaterialType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `HitMaterialType.HIT_MISSED` | `HitMaterialType::HIT_MISSED` |
-| `HitMaterialType.HIT_METAL` | `HitMaterialType::HIT_METAL` |
-| `HitMaterialType.HIT_FLESH` | `HitMaterialType::HIT_FLESH` |
-| `HitMaterialType.HIT_SAND` | `HitMaterialType::HIT_SAND` |
-| `HitMaterialType.HIT_WOOD` | `HitMaterialType::HIT_WOOD` |
-| `HitMaterialType.HIT_SWORD` | `HitMaterialType::HIT_SWORD` |
-| `HitMaterialType.HIT_CHAIN` | `HitMaterialType::HIT_CHAIN` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `HitMaterialType.HIT_MISSED` | `0` | `HitMaterialType::HIT_MISSED` |
+| `HitMaterialType.HIT_METAL` | `1` | `HitMaterialType::HIT_METAL` |
+| `HitMaterialType.HIT_FLESH` | `2` | `HitMaterialType::HIT_FLESH` |
+| `HitMaterialType.HIT_SAND` | `3` | `HitMaterialType::HIT_SAND` |
+| `HitMaterialType.HIT_WOOD` | `4` | `HitMaterialType::HIT_WOOD` |
+| `HitMaterialType.HIT_SWORD` | `5` | `HitMaterialType::HIT_SWORD` |
+| `HitMaterialType.HIT_CHAIN` | `6` | `HitMaterialType::HIT_CHAIN` |
 
 ### Table: `WeatherAffecting`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `WeatherAffecting.WA_NONE` | `WeatherAffecting::WA_NONE` |
-| `WeatherAffecting.WA_DUSTSTORM` | `WeatherAffecting::WA_DUSTSTORM` |
-| `WeatherAffecting.WA_ACID` | `WeatherAffecting::WA_ACID` |
-| `WeatherAffecting.WA_BURNING` | `WeatherAffecting::WA_BURNING` |
-| `WeatherAffecting.WA_GAS` | `WeatherAffecting::WA_GAS` |
-| `WeatherAffecting.WA_RAIN` | `WeatherAffecting::WA_RAIN` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `WeatherAffecting.WA_NONE` | `0` | `WeatherAffecting::WA_NONE` |
+| `WeatherAffecting.WA_DUSTSTORM` | `1` | `WeatherAffecting::WA_DUSTSTORM` |
+| `WeatherAffecting.WA_ACID` | `2` | `WeatherAffecting::WA_ACID` |
+| `WeatherAffecting.WA_BURNING` | `3` | `WeatherAffecting::WA_BURNING` |
+| `WeatherAffecting.WA_GAS` | `4` | `WeatherAffecting::WA_GAS` |
+| `WeatherAffecting.WA_RAIN` | `5` | `WeatherAffecting::WA_RAIN` |
 
 ### Table: `AttachSlot`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `AttachSlot.ATTACH_WEAPON` | `AttachSlot::ATTACH_WEAPON` |
-| `AttachSlot.ATTACH_BACK` | `AttachSlot::ATTACH_BACK` |
-| `AttachSlot.ATTACH_HAIR` | `AttachSlot::ATTACH_HAIR` |
-| `AttachSlot.ATTACH_HAT` | `AttachSlot::ATTACH_HAT` |
-| `AttachSlot.ATTACH_EYES` | `AttachSlot::ATTACH_EYES` |
-| `AttachSlot.ATTACH_BODY` | `AttachSlot::ATTACH_BODY` |
-| `AttachSlot.ATTACH_LEGS` | `AttachSlot::ATTACH_LEGS` |
-| `AttachSlot.ATTACH_NONE` | `AttachSlot::ATTACH_NONE` |
-| `AttachSlot.ATTACH_SHIRT` | `AttachSlot::ATTACH_SHIRT` |
-| `AttachSlot.ATTACH_BOOTS` | `AttachSlot::ATTACH_BOOTS` |
-| `AttachSlot.ATTACH_GLOVES` | `AttachSlot::ATTACH_GLOVES` |
-| `AttachSlot.ATTACH_NECK` | `AttachSlot::ATTACH_NECK` |
-| `AttachSlot.ATTACH_BACKPACK` | `AttachSlot::ATTACH_BACKPACK` |
-| `AttachSlot.ATTACH_BEARD` | `AttachSlot::ATTACH_BEARD` |
-| `AttachSlot.ATTACH_BELT` | `AttachSlot::ATTACH_BELT` |
-| `AttachSlot.ATTACH_LEFT_ARM` | `AttachSlot::ATTACH_LEFT_ARM` |
-| `AttachSlot.ATTACH_RIGHT_ARM` | `AttachSlot::ATTACH_RIGHT_ARM` |
-| `AttachSlot.ATTACH_LEFT_LEG` | `AttachSlot::ATTACH_LEFT_LEG` |
-| `AttachSlot.ATTACH_RIGHT_LEG` | `AttachSlot::ATTACH_RIGHT_LEG` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `AttachSlot.ATTACH_WEAPON` | `0` | `AttachSlot::ATTACH_WEAPON` |
+| `AttachSlot.ATTACH_BACK` | `1` | `AttachSlot::ATTACH_BACK` |
+| `AttachSlot.ATTACH_HAIR` | `2` | `AttachSlot::ATTACH_HAIR` |
+| `AttachSlot.ATTACH_HAT` | `3` | `AttachSlot::ATTACH_HAT` |
+| `AttachSlot.ATTACH_EYES` | `4` | `AttachSlot::ATTACH_EYES` |
+| `AttachSlot.ATTACH_BODY` | `5` | `AttachSlot::ATTACH_BODY` |
+| `AttachSlot.ATTACH_LEGS` | `6` | `AttachSlot::ATTACH_LEGS` |
+| `AttachSlot.ATTACH_NONE` | `7` | `AttachSlot::ATTACH_NONE` |
+| `AttachSlot.ATTACH_SHIRT` | `8` | `AttachSlot::ATTACH_SHIRT` |
+| `AttachSlot.ATTACH_BOOTS` | `9` | `AttachSlot::ATTACH_BOOTS` |
+| `AttachSlot.ATTACH_GLOVES` | `10` | `AttachSlot::ATTACH_GLOVES` |
+| `AttachSlot.ATTACH_NECK` | `11` | `AttachSlot::ATTACH_NECK` |
+| `AttachSlot.ATTACH_BACKPACK` | `12` | `AttachSlot::ATTACH_BACKPACK` |
+| `AttachSlot.ATTACH_BEARD` | `13` | `AttachSlot::ATTACH_BEARD` |
+| `AttachSlot.ATTACH_BELT` | `14` | `AttachSlot::ATTACH_BELT` |
+| `AttachSlot.ATTACH_LEFT_ARM` | `50` | `AttachSlot::ATTACH_LEFT_ARM` |
+| `AttachSlot.ATTACH_RIGHT_ARM` | `51` | `AttachSlot::ATTACH_RIGHT_ARM` |
+| `AttachSlot.ATTACH_LEFT_LEG` | `52` | `AttachSlot::ATTACH_LEFT_LEG` |
+| `AttachSlot.ATTACH_RIGHT_LEG` | `53` | `AttachSlot::ATTACH_RIGHT_LEG` |
 
 ### Table: `ItemFunction`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ItemFunction.ITEM_NO_FUNCTION` | `ItemFunction::ITEM_NO_FUNCTION` |
-| `ItemFunction.ITEM_FIRSTAID` | `ItemFunction::ITEM_FIRSTAID` |
-| `ItemFunction.ITEM_MEDRIGGING` | `ItemFunction::ITEM_MEDRIGGING` |
-| `ItemFunction.ITEM_FOOD` | `ItemFunction::ITEM_FOOD` |
-| `ItemFunction.ITEM_CONTAINER` | `ItemFunction::ITEM_CONTAINER` |
-| `ItemFunction.ITEM_WEAPON` | `ItemFunction::ITEM_WEAPON` |
-| `ItemFunction.ITEM_CLOTHING` | `ItemFunction::ITEM_CLOTHING` |
-| `ItemFunction.ITEM____` | `ItemFunction::ITEM____` |
-| `ItemFunction.ITEM_NARCOTIC` | `ItemFunction::ITEM_NARCOTIC` |
-| `ItemFunction.ITEM_TOOL` | `ItemFunction::ITEM_TOOL` |
-| `ItemFunction.ITEM_ANYTHING` | `ItemFunction::ITEM_ANYTHING` |
-| `ItemFunction.ITEM_BLUEPRINT` | `ItemFunction::ITEM_BLUEPRINT` |
-| `ItemFunction.ITEM_ROBOTREPAIR` | `ItemFunction::ITEM_ROBOTREPAIR` |
-| `ItemFunction.ITEM_BOOK` | `ItemFunction::ITEM_BOOK` |
-| `ItemFunction.ITEM_MONEY` | `ItemFunction::ITEM_MONEY` |
-| `ItemFunction.ITEM_FOOD_RESTRICTED` | `ItemFunction::ITEM_FOOD_RESTRICTED` |
-| `ItemFunction.ITEM_AMMO` | `ItemFunction::ITEM_AMMO` |
-| `ItemFunction.ITEM_SEVERED_LIMB` | `ItemFunction::ITEM_SEVERED_LIMB` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ItemFunction.ITEM_NO_FUNCTION` | `0` | `ItemFunction::ITEM_NO_FUNCTION` |
+| `ItemFunction.ITEM_FIRSTAID` | `1` | `ItemFunction::ITEM_FIRSTAID` |
+| `ItemFunction.ITEM_MEDRIGGING` | `2` | `ItemFunction::ITEM_MEDRIGGING` |
+| `ItemFunction.ITEM_FOOD` | `3` | `ItemFunction::ITEM_FOOD` |
+| `ItemFunction.ITEM_CONTAINER` | `4` | `ItemFunction::ITEM_CONTAINER` |
+| `ItemFunction.ITEM_WEAPON` | `5` | `ItemFunction::ITEM_WEAPON` |
+| `ItemFunction.ITEM_CLOTHING` | `6` | `ItemFunction::ITEM_CLOTHING` |
+| `ItemFunction.ITEM____` | `7` | `ItemFunction::ITEM____` |
+| `ItemFunction.ITEM_NARCOTIC` | `8` | `ItemFunction::ITEM_NARCOTIC` |
+| `ItemFunction.ITEM_TOOL` | `9` | `ItemFunction::ITEM_TOOL` |
+| `ItemFunction.ITEM_ANYTHING` | `10` | `ItemFunction::ITEM_ANYTHING` |
+| `ItemFunction.ITEM_BLUEPRINT` | `11` | `ItemFunction::ITEM_BLUEPRINT` |
+| `ItemFunction.ITEM_ROBOTREPAIR` | `12` | `ItemFunction::ITEM_ROBOTREPAIR` |
+| `ItemFunction.ITEM_BOOK` | `13` | `ItemFunction::ITEM_BOOK` |
+| `ItemFunction.ITEM_MONEY` | `14` | `ItemFunction::ITEM_MONEY` |
+| `ItemFunction.ITEM_FOOD_RESTRICTED` | `15` | `ItemFunction::ITEM_FOOD_RESTRICTED` |
+| `ItemFunction.ITEM_AMMO` | `16` | `ItemFunction::ITEM_AMMO` |
+| `ItemFunction.ITEM_SEVERED_LIMB` | `17` | `ItemFunction::ITEM_SEVERED_LIMB` |
 
 ### Table: `ArmourType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ArmourType.CLOTH` | `ArmourType::CLOTH` |
-| `ArmourType.LEATHER` | `ArmourType::LEATHER` |
-| `ArmourType.CHAIN` | `ArmourType::CHAIN` |
-| `ArmourType.METAL_PLATE` | `ArmourType::METAL_PLATE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ArmourType.CLOTH` | `0` | `ArmourType::CLOTH` |
+| `ArmourType.LEATHER` | `1` | `ArmourType::LEATHER` |
+| `ArmourType.CHAIN` | `2` | `ArmourType::CHAIN` |
+| `ArmourType.METAL_PLATE` | `3` | `ArmourType::METAL_PLATE` |
 
 ### Table: `CharacterTypeEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharacterTypeEnum.OT_NONE` | `CharacterTypeEnum::OT_NONE` |
-| `CharacterTypeEnum.OT_LAW_ENFORCEMENT` | `CharacterTypeEnum::OT_LAW_ENFORCEMENT` |
-| `CharacterTypeEnum.OT_MILITARY` | `CharacterTypeEnum::OT_MILITARY` |
-| `CharacterTypeEnum.OT_TRADER` | `CharacterTypeEnum::OT_TRADER` |
-| `CharacterTypeEnum.OT_CIVILIAN` | `CharacterTypeEnum::OT_CIVILIAN` |
-| `CharacterTypeEnum.OT_DIPLOMAT` | `CharacterTypeEnum::OT_DIPLOMAT` |
-| `CharacterTypeEnum.OT_SLAVE` | `CharacterTypeEnum::OT_SLAVE` |
-| `CharacterTypeEnum.OT_SLAVER` | `CharacterTypeEnum::OT_SLAVER` |
-| `CharacterTypeEnum.OT_BANDIT` | `CharacterTypeEnum::OT_BANDIT` |
-| `CharacterTypeEnum.OT_ADVENTURER` | `CharacterTypeEnum::OT_ADVENTURER` |
-| `CharacterTypeEnum.OT_END` | `CharacterTypeEnum::OT_END` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharacterTypeEnum.OT_NONE` | `0` | `CharacterTypeEnum::OT_NONE` |
+| `CharacterTypeEnum.OT_LAW_ENFORCEMENT` | `1` | `CharacterTypeEnum::OT_LAW_ENFORCEMENT` |
+| `CharacterTypeEnum.OT_MILITARY` | `2` | `CharacterTypeEnum::OT_MILITARY` |
+| `CharacterTypeEnum.OT_TRADER` | `3` | `CharacterTypeEnum::OT_TRADER` |
+| `CharacterTypeEnum.OT_CIVILIAN` | `4` | `CharacterTypeEnum::OT_CIVILIAN` |
+| `CharacterTypeEnum.OT_DIPLOMAT` | `5` | `CharacterTypeEnum::OT_DIPLOMAT` |
+| `CharacterTypeEnum.OT_SLAVE` | `6` | `CharacterTypeEnum::OT_SLAVE` |
+| `CharacterTypeEnum.OT_SLAVER` | `7` | `CharacterTypeEnum::OT_SLAVER` |
+| `CharacterTypeEnum.OT_BANDIT` | `8` | `CharacterTypeEnum::OT_BANDIT` |
+| `CharacterTypeEnum.OT_ADVENTURER` | `9` | `CharacterTypeEnum::OT_ADVENTURER` |
+| `CharacterTypeEnum.OT_END` | `10` | `CharacterTypeEnum::OT_END` |
 
 ### Table: `SlaveStateEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SlaveStateEnum.NOT_SLAVE` | `SlaveStateEnum::NOT_SLAVE` |
-| `SlaveStateEnum.IS_SLAVE` | `SlaveStateEnum::IS_SLAVE` |
-| `SlaveStateEnum.ESCAPING_SLAVE` | `SlaveStateEnum::ESCAPING_SLAVE` |
-| `SlaveStateEnum.EX_SLAVE` | `SlaveStateEnum::EX_SLAVE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SlaveStateEnum.NOT_SLAVE` | `0` | `SlaveStateEnum::NOT_SLAVE` |
+| `SlaveStateEnum.IS_SLAVE` | `1` | `SlaveStateEnum::IS_SLAVE` |
+| `SlaveStateEnum.ESCAPING_SLAVE` | `2` | `SlaveStateEnum::ESCAPING_SLAVE` |
+| `SlaveStateEnum.EX_SLAVE` | `3` | `SlaveStateEnum::EX_SLAVE` |
 
 ### Table: `TaskType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `TaskType.NULL_TASK` | `TaskType::NULL_TASK` |
-| `TaskType.MOVE_ON_FREE_WILL` | `TaskType::MOVE_ON_FREE_WILL` |
-| `TaskType.BUILD` | `TaskType::BUILD` |
-| `TaskType.PICKUP` | `TaskType::PICKUP` |
-| `TaskType.MELEE_ATTACK` | `TaskType::MELEE_ATTACK` |
-| `TaskType.FOCUSED_MELEE_ATTACK` | `TaskType::FOCUSED_MELEE_ATTACK` |
-| `TaskType.EQUIP_WEAPON` | `TaskType::EQUIP_WEAPON` |
-| `TaskType.UNEQUIP_WEAPON` | `TaskType::UNEQUIP_WEAPON` |
-| `TaskType.FIND_WEAPON` | `TaskType::FIND_WEAPON` |
-| `TaskType.CHOOSE_ENEMY_AND_ATTACK` | `TaskType::CHOOSE_ENEMY_AND_ATTACK` |
-| `TaskType.CHOOSE_ATTACKER_OF_ALLY` | `TaskType::CHOOSE_ATTACKER_OF_ALLY` |
-| `TaskType.ATTACK_CHARACTERS_ATTACKER` | `TaskType::ATTACK_CHARACTERS_ATTACKER` |
-| `TaskType.PLAYER_TALK_TO` | `TaskType::PLAYER_TALK_TO` |
-| `TaskType.ATTACK_ATTACKERS_OF` | `TaskType::ATTACK_ATTACKERS_OF` |
-| `TaskType.IDLE` | `TaskType::IDLE` |
-| `TaskType.PROTECT_ALLIES` | `TaskType::PROTECT_ALLIES` |
-| `TaskType.ATTACK_ENEMIES` | `TaskType::ATTACK_ENEMIES` |
-| `TaskType.PROTECTION` | `TaskType::PROTECTION` |
-| `TaskType.RAID_TOWN` | `TaskType::RAID_TOWN` |
-| `TaskType.GO_HOMEBUILDING` | `TaskType::GO_HOMEBUILDING` |
-| `TaskType.STAND_AT_SHOPKEEPER_NODE` | `TaskType::STAND_AT_SHOPKEEPER_NODE` |
-| `TaskType.ATTACK_ENEMIES_AND_NEUTRALS` | `TaskType::ATTACK_ENEMIES_AND_NEUTRALS` |
-| `TaskType.PATROL` | `TaskType::PATROL` |
-| `TaskType.ATTACK_TOWN` | `TaskType::ATTACK_TOWN` |
-| `TaskType.WANDERER` | `TaskType::WANDERER` |
-| `TaskType.FIRST_AID_ORDER` | `TaskType::FIRST_AID_ORDER` |
-| `TaskType.LOOT_TARGET` | `TaskType::LOOT_TARGET` |
-| `TaskType.CROUCH` | `TaskType::CROUCH` |
-| `TaskType.STAND_UP` | `TaskType::STAND_UP` |
-| `TaskType.MOVE_CUS_ORDERED` | `TaskType::MOVE_CUS_ORDERED` |
-| `TaskType.HOLD_POSITION` | `TaskType::HOLD_POSITION` |
-| `TaskType.STAY_CLOSE_TO_TARGET` | `TaskType::STAY_CLOSE_TO_TARGET` |
-| `TaskType.SELF_PRESERVATION` | `TaskType::SELF_PRESERVATION` |
-| `TaskType.QUELL_AGGRESSION` | `TaskType::QUELL_AGGRESSION` |
-| `TaskType.ATTACK_TROUBLE_MAKERS` | `TaskType::ATTACK_TROUBLE_MAKERS` |
-| `TaskType.RUN_AWAY` | `TaskType::RUN_AWAY` |
-| `TaskType.PATROL_TOWN` | `TaskType::PATROL_TOWN` |
-| `TaskType.WANDER_TOWN` | `TaskType::WANDER_TOWN` |
-| `TaskType.STAND_AT_GUARD_NODE_HOMEBUILDING_IN_OUT` | `TaskType::STAND_AT_GUARD_NODE_HOMEBUILDING_IN_OUT` |
-| `TaskType.WANDERING_TRADER` | `TaskType::WANDERING_TRADER` |
-| `TaskType.GET_NEAR_TO` | `TaskType::GET_NEAR_TO` |
-| `TaskType.ATTACK_ENEMIES_OF_MY_SLAVEMASTER` | `TaskType::ATTACK_ENEMIES_OF_MY_SLAVEMASTER` |
-| `TaskType.NOT_BE_UNARMED` | `TaskType::NOT_BE_UNARMED` |
-| `TaskType.STAY_IN_HOME` | `TaskType::STAY_IN_HOME` |
-| `TaskType.FOLLOW_PLAYER_ORDER` | `TaskType::FOLLOW_PLAYER_ORDER` |
-| `TaskType.BODYGUARD` | `TaskType::BODYGUARD` |
-| `TaskType.CHASE` | `TaskType::CHASE` |
-| `TaskType.STAND_AT_GENERAL_NODE` | `TaskType::STAND_AT_GENERAL_NODE` |
-| `TaskType.STAND_AT_DEFENSIVE_NODE` | `TaskType::STAND_AT_DEFENSIVE_NODE` |
-| `TaskType.STAND_AT_BUILDING_GUARD_NODE` | `TaskType::STAND_AT_BUILDING_GUARD_NODE` |
-| `TaskType.STAND_AT_BUILDING_DEFENSIVE_NODE` | `TaskType::STAND_AT_BUILDING_DEFENSIVE_NODE` |
-| `TaskType.STAND_AT_NODE` | `TaskType::STAND_AT_NODE` |
-| `TaskType.GET_UP_STAY_DOWN_THOUGH` | `TaskType::GET_UP_STAY_DOWN_THOUGH` |
-| `TaskType.TRAVEL_TO_TARGET_TOWN` | `TaskType::TRAVEL_TO_TARGET_TOWN` |
-| `TaskType.REST` | `TaskType::REST` |
-| `TaskType.RECRUIT_AT_JOBCENTER` | `TaskType::RECRUIT_AT_JOBCENTER` |
-| `TaskType.SWITCH_FOLLOW_ME_MODE_ON` | `TaskType::SWITCH_FOLLOW_ME_MODE_ON` |
-| `TaskType.JOB_REPAIR_ROBOT` | `TaskType::JOB_REPAIR_ROBOT` |
-| `TaskType.JOB_MEDIC` | `TaskType::JOB_MEDIC` |
-| `TaskType.GET_READY_FOR_ACTION` | `TaskType::GET_READY_FOR_ACTION` |
-| `TaskType.FIRST_AID_ROBOT` | `TaskType::FIRST_AID_ROBOT` |
-| `TaskType.UNPROVOKED_FOCUSED_MELEE_ATTACK` | `TaskType::UNPROVOKED_FOCUSED_MELEE_ATTACK` |
-| `TaskType.STAND_STILL` | `TaskType::STAND_STILL` |
-| `TaskType.SQUAD_WAIT_FOR_ME` | `TaskType::SQUAD_WAIT_FOR_ME` |
-| `TaskType.MAKE_TARGET_STAND_STILL` | `TaskType::MAKE_TARGET_STAND_STILL` |
-| `TaskType.GET_UP_STAND_UP` | `TaskType::GET_UP_STAND_UP` |
-| `TaskType.FORCE_GET_UP` | `TaskType::FORCE_GET_UP` |
-| `TaskType.MOVE_ON_FREE_WILL_FAST` | `TaskType::MOVE_ON_FREE_WILL_FAST` |
-| `TaskType.LIFT_PERSON` | `TaskType::LIFT_PERSON` |
-| `TaskType.PUT_DOWN_OBJECT` | `TaskType::PUT_DOWN_OBJECT` |
-| `TaskType.PUT_DOWN_CHARACTER_IN_BED` | `TaskType::PUT_DOWN_CHARACTER_IN_BED` |
-| `TaskType.ADD_MATERIALS_TO_BUILDING` | `TaskType::ADD_MATERIALS_TO_BUILDING` |
-| `TaskType.OPEN_DOOR` | `TaskType::OPEN_DOOR` |
-| `TaskType.CLOSE_DOOR` | `TaskType::CLOSE_DOOR` |
-| `TaskType.OPEN_DOOR_HERE` | `TaskType::OPEN_DOOR_HERE` |
-| `TaskType.CLOSE_DOOR_HERE` | `TaskType::CLOSE_DOOR_HERE` |
-| `TaskType.PICK_LOCK` | `TaskType::PICK_LOCK` |
-| `TaskType.LOCK_DOOR` | `TaskType::LOCK_DOOR` |
-| `TaskType.UNLOCK_DOOR` | `TaskType::UNLOCK_DOOR` |
-| `TaskType.LOCK_DOOR_HERE` | `TaskType::LOCK_DOOR_HERE` |
-| `TaskType.UNLOCK_DOOR_HERE` | `TaskType::UNLOCK_DOOR_HERE` |
-| `TaskType.BASH_DOOR` | `TaskType::BASH_DOOR` |
-| `TaskType.MOVE_TO_BUILDING_DOOR` | `TaskType::MOVE_TO_BUILDING_DOOR` |
-| `TaskType.MOVE_TO_CURRENT_LOCATION_BUILDING_DOOR` | `TaskType::MOVE_TO_CURRENT_LOCATION_BUILDING_DOOR` |
-| `TaskType.OPEN_DOOR_FOR_CURRENT_LOCATION` | `TaskType::OPEN_DOOR_FOR_CURRENT_LOCATION` |
-| `TaskType.OPEN_DOOR_FOR_DESTINATION` | `TaskType::OPEN_DOOR_FOR_DESTINATION` |
-| `TaskType.OPEN_UP_SHOP_DOORS` | `TaskType::OPEN_UP_SHOP_DOORS` |
-| `TaskType.OPERATE_MACHINERY` | `TaskType::OPERATE_MACHINERY` |
-| `TaskType.DELIVER_RESOURCES` | `TaskType::DELIVER_RESOURCES` |
-| `TaskType.JOB_KEEP_EVERYTHING_RUNNING` | `TaskType::JOB_KEEP_EVERYTHING_RUNNING` |
-| `TaskType.UNJAM_ALL_MACHINES` | `TaskType::UNJAM_ALL_MACHINES` |
-| `TaskType.UNJAM_MACHINE` | `TaskType::UNJAM_MACHINE` |
-| `TaskType.COLLECT_OUTPUT_RESOURCE` | `TaskType::COLLECT_OUTPUT_RESOURCE` |
-| `TaskType.FILL_MACHINE` | `TaskType::FILL_MACHINE` |
-| `TaskType.WANT_TO_FILL_MACHINE` | `TaskType::WANT_TO_FILL_MACHINE` |
-| `TaskType.REPAIR` | `TaskType::REPAIR` |
-| `TaskType.DISMANTLE` | `TaskType::DISMANTLE` |
-| `TaskType.USE_TRAINING_DUMMY` | `TaskType::USE_TRAINING_DUMMY` |
-| `TaskType.USE_BED` | `TaskType::USE_BED` |
-| `TaskType.PUT_SOMEONE_IN_BED` | `TaskType::PUT_SOMEONE_IN_BED` |
-| `TaskType.GET_PUT_IN_BED` | `TaskType::GET_PUT_IN_BED` |
-| `TaskType.DEFEAT_SQUAD` | `TaskType::DEFEAT_SQUAD` |
-| `TaskType.SEEK_AND_TALK_AND_SEND_SIGNAL` | `TaskType::SEEK_AND_TALK_AND_SEND_SIGNAL` |
-| `TaskType.MAKE_ANNOUNCEMENT` | `TaskType::MAKE_ANNOUNCEMENT` |
-| `TaskType.ALWAYS_IMPOSSIBLE_TASK` | `TaskType::ALWAYS_IMPOSSIBLE_TASK` |
-| `TaskType.FIND_AND_RESCUE` | `TaskType::FIND_AND_RESCUE` |
-| `TaskType.FIND_BED_AND_PUT_IN` | `TaskType::FIND_BED_AND_PUT_IN` |
-| `TaskType.USE_CAGE` | `TaskType::USE_CAGE` |
-| `TaskType.PUT_IN_CAGE` | `TaskType::PUT_IN_CAGE` |
-| `TaskType.KNOCKOUT_PRISONER` | `TaskType::KNOCKOUT_PRISONER` |
-| `TaskType.RELEASE_PRISONER` | `TaskType::RELEASE_PRISONER` |
-| `TaskType.BREAKOUT_PRISONER` | `TaskType::BREAKOUT_PRISONER` |
-| `TaskType.FIND_CAGE_AND_PUT_IN` | `TaskType::FIND_CAGE_AND_PUT_IN` |
-| `TaskType.EMPTY_MACHINE_OUTPUTS` | `TaskType::EMPTY_MACHINE_OUTPUTS` |
-| `TaskType.GET_RID_OF_RESOURCES_IN_MY_INVENTORY` | `TaskType::GET_RID_OF_RESOURCES_IN_MY_INVENTORY` |
-| `TaskType.FIND_SOME_BUILDING_MATERIALS` | `TaskType::FIND_SOME_BUILDING_MATERIALS` |
-| `TaskType.GET_OUT_OF_BED` | `TaskType::GET_OUT_OF_BED` |
-| `TaskType.FIND_A_SHOP` | `TaskType::FIND_A_SHOP` |
-| `TaskType.SHOPPING` | `TaskType::SHOPPING` |
-| `TaskType.BUY_SHIT` | `TaskType::BUY_SHIT` |
-| `TaskType.MOVE_INSIDE_BUILDING` | `TaskType::MOVE_INSIDE_BUILDING` |
-| `TaskType.MOVE_TO_FORTIFICATION_GATE` | `TaskType::MOVE_TO_FORTIFICATION_GATE` |
-| `TaskType.OPEN_FORTIFICATION_GATE` | `TaskType::OPEN_FORTIFICATION_GATE` |
-| `TaskType.BASH_GATE` | `TaskType::BASH_GATE` |
-| `TaskType.OPERATE_STORAGE` | `TaskType::OPERATE_STORAGE` |
-| `TaskType.JOB_BUILDER` | `TaskType::JOB_BUILDER` |
-| `TaskType.TALKTO_NEAREST_PLAYER_CHARACTER` | `TaskType::TALKTO_NEAREST_PLAYER_CHARACTER` |
-| `TaskType.RUN_AWAY_HOMETOWN` | `TaskType::RUN_AWAY_HOMETOWN` |
-| `TaskType.RETREAT_HOMETOWN` | `TaskType::RETREAT_HOMETOWN` |
-| `TaskType.MAKE_ANNOUNCEMENT_FAST` | `TaskType::MAKE_ANNOUNCEMENT_FAST` |
-| `TaskType.TRAVEL_TO_TARGET_TOWN_FAST` | `TaskType::TRAVEL_TO_TARGET_TOWN_FAST` |
-| `TaskType.LOOT_FOOD_AND_STUFF` | `TaskType::LOOT_FOOD_AND_STUFF` |
-| `TaskType.FIND_AND_KIDNAP` | `TaskType::FIND_AND_KIDNAP` |
-| `TaskType.GET_OUT_OF_CAGE_LEGIT` | `TaskType::GET_OUT_OF_CAGE_LEGIT` |
-| `TaskType.KILL_CAGE_OCCUPANT` | `TaskType::KILL_CAGE_OCCUPANT` |
-| `TaskType.KILL_A_RANDOM_CAGE_OCCUPANT` | `TaskType::KILL_A_RANDOM_CAGE_OCCUPANT` |
-| `TaskType.FEED_CORPSE_INTO_MACHINE` | `TaskType::FEED_CORPSE_INTO_MACHINE` |
-| `TaskType.DEAD_GUYS_GO_IN_THE_POT` | `TaskType::DEAD_GUYS_GO_IN_THE_POT` |
-| `TaskType.FIND_A_DEAD_GUY` | `TaskType::FIND_A_DEAD_GUY` |
-| `TaskType.EAT_A_RANDOM_CAGE_OCCUPANT` | `TaskType::EAT_A_RANDOM_CAGE_OCCUPANT` |
-| `TaskType.UNLOCK_DOOR_PLAYER_ORDER` | `TaskType::UNLOCK_DOOR_PLAYER_ORDER` |
-| `TaskType.FOLLOW_SQUADLEADER` | `TaskType::FOLLOW_SQUADLEADER` |
-| `TaskType.FIND_AND_RESCUE_LEADER` | `TaskType::FIND_AND_RESCUE_LEADER` |
-| `TaskType.PROTECT_OWN_SQUAD` | `TaskType::PROTECT_OWN_SQUAD` |
-| `TaskType.TERRITORIAL_AGGRESSION_BUT_DONT_LEAVE_HOME` | `TaskType::TERRITORIAL_AGGRESSION_BUT_DONT_LEAVE_HOME` |
-| `TaskType.GET_RE_EQUIPPED` | `TaskType::GET_RE_EQUIPPED` |
-| `TaskType.USE_TURRET` | `TaskType::USE_TURRET` |
-| `TaskType.STUMBLE_TASK_FORCED` | `TaskType::STUMBLE_TASK_FORCED` |
-| `TaskType.FIND_AND_RESCUE_IF_THERES_BEDS` | `TaskType::FIND_AND_RESCUE_IF_THERES_BEDS` |
-| `TaskType.MAN_A_TURRET` | `TaskType::MAN_A_TURRET` |
-| `TaskType.PROSPECTING` | `TaskType::PROSPECTING` |
-| `TaskType.EMPTYING_MACHINE` | `TaskType::EMPTYING_MACHINE` |
-| `TaskType.OPERATE_AUTOMATIC_MACHINERY` | `TaskType::OPERATE_AUTOMATIC_MACHINERY` |
-| `TaskType.GO_HOME_AND_GO_TO_BED` | `TaskType::GO_HOME_AND_GO_TO_BED` |
-| `TaskType.GO_TO_THE_BAR_AND_DRINK` | `TaskType::GO_TO_THE_BAR_AND_DRINK` |
-| `TaskType.LOCK_ALL_MY_DOORS` | `TaskType::LOCK_ALL_MY_DOORS` |
-| `TaskType.ENTER_BUILDING` | `TaskType::ENTER_BUILDING` |
-| `TaskType.STAND_AT_GUARD_NODE_HOMETOWN_OUTSIDE` | `TaskType::STAND_AT_GUARD_NODE_HOMETOWN_OUTSIDE` |
-| `TaskType.SHOO_STRANGERS_OUT_OF_MY_BUILDING` | `TaskType::SHOO_STRANGERS_OUT_OF_MY_BUILDING` |
-| `TaskType.SEND_DIALOGUE_SIGNAL` | `TaskType::SEND_DIALOGUE_SIGNAL` |
-| `TaskType.SEND_DIALOGUE_SIGNAL_REPEAT` | `TaskType::SEND_DIALOGUE_SIGNAL_REPEAT` |
-| `TaskType.SEND_DIALOGUE_SIGNAL_WITHOUT_MOVING` | `TaskType::SEND_DIALOGUE_SIGNAL_WITHOUT_MOVING` |
-| `TaskType.LOCK_DOOR_FROM_INSIDE` | `TaskType::LOCK_DOOR_FROM_INSIDE` |
-| `TaskType.MOVE_TO_BUILDING_DOOR_INSIDEPOS` | `TaskType::MOVE_TO_BUILDING_DOOR_INSIDEPOS` |
-| `TaskType.FOLLOW_WHILE_TALKING` | `TaskType::FOLLOW_WHILE_TALKING` |
-| `TaskType.TOWN_STALKER` | `TaskType::TOWN_STALKER` |
-| `TaskType.CHAIN_TARGET` | `TaskType::CHAIN_TARGET` |
-| `TaskType.CAPTURE_NEW_SLAVES` | `TaskType::CAPTURE_NEW_SLAVES` |
-| `TaskType.CARRY_WOUNDED_SLAVES` | `TaskType::CARRY_WOUNDED_SLAVES` |
-| `TaskType.PUT_DOWN_CARRIED_DUDE_IF_THEY_CAN_WALK` | `TaskType::PUT_DOWN_CARRIED_DUDE_IF_THEY_CAN_WALK` |
-| `TaskType.LIFT_OBJECT_BUT_HEAL_FIRST` | `TaskType::LIFT_OBJECT_BUT_HEAL_FIRST` |
-| `TaskType.FOLLOW_SLAVEMASTER` | `TaskType::FOLLOW_SLAVEMASTER` |
-| `TaskType.SLAVE_GET_IN_MY_MASTERS_CAGE` | `TaskType::SLAVE_GET_IN_MY_MASTERS_CAGE` |
-| `TaskType.GATHER_SLAVES_FROM_CAGES` | `TaskType::GATHER_SLAVES_FROM_CAGES` |
-| `TaskType.GET_SLAVE` | `TaskType::GET_SLAVE` |
-| `TaskType.SLEEP_ON_FLOOR` | `TaskType::SLEEP_ON_FLOOR` |
-| `TaskType.HUNTING_BLOODSMELL` | `TaskType::HUNTING_BLOODSMELL` |
-| `TaskType.LOOT_THE_DEAD` | `TaskType::LOOT_THE_DEAD` |
-| `TaskType.LOOT_TO_REPLACE_MISSING_WEAPON` | `TaskType::LOOT_TO_REPLACE_MISSING_WEAPON` |
-| `TaskType.HUNT_MY_THIEF` | `TaskType::HUNT_MY_THIEF` |
-| `TaskType.MAN_THE_GATE` | `TaskType::MAN_THE_GATE` |
-| `TaskType.STRIP_TARGETS_WEAPONS` | `TaskType::STRIP_TARGETS_WEAPONS` |
-| `TaskType.PROCESS_AND_STRIP_NEW_SLAVE` | `TaskType::PROCESS_AND_STRIP_NEW_SLAVE` |
-| `TaskType.SLAVE_WATCHING` | `TaskType::SLAVE_WATCHING` |
-| `TaskType.PUT_LOOT_IN_STORAGE` | `TaskType::PUT_LOOT_IN_STORAGE` |
-| `TaskType.CUT_SHACKLES` | `TaskType::CUT_SHACKLES` |
-| `TaskType.BRUTE_FORCE_SHACKLES` | `TaskType::BRUTE_FORCE_SHACKLES` |
-| `TaskType._SLAVE_OBEDIENCE` | `TaskType::_SLAVE_OBEDIENCE` |
-| `TaskType.WORK_THE_SLAVES` | `TaskType::WORK_THE_SLAVES` |
-| `TaskType.AUTO_LABOURING_MINES` | `TaskType::AUTO_LABOURING_MINES` |
-| `TaskType.AUTO_LABOURING_MINES_PRETEND` | `TaskType::AUTO_LABOURING_MINES_PRETEND` |
-| `TaskType.GO_TO_NEAREST_HQ` | `TaskType::GO_TO_NEAREST_HQ` |
-| `TaskType.GO_TO_SOMEWHERE_FOR_DELIVERING_SLAVES` | `TaskType::GO_TO_SOMEWHERE_FOR_DELIVERING_SLAVES` |
-| `TaskType.CAPTURE_ESCAPING_SLAVES` | `TaskType::CAPTURE_ESCAPING_SLAVES` |
-| `TaskType.GIVE_ALL_MY_SLAVES_TO` | `TaskType::GIVE_ALL_MY_SLAVES_TO` |
-| `TaskType.LOCK_ALL_THE_CAGES` | `TaskType::LOCK_ALL_THE_CAGES` |
-| `TaskType.BEAT_CAGE_OCCUPANT` | `TaskType::BEAT_CAGE_OCCUPANT` |
-| `TaskType.LOCK_ALL_MY_DOORS_FROM_OUTSIDE` | `TaskType::LOCK_ALL_MY_DOORS_FROM_OUTSIDE` |
-| `TaskType.LOCK_DOOR_FROM_OUTSIDE` | `TaskType::LOCK_DOOR_FROM_OUTSIDE` |
-| `TaskType.MOVE_TO_BUILDING_DOOR_OUTSIDEPOS` | `TaskType::MOVE_TO_BUILDING_DOOR_OUTSIDEPOS` |
-| `TaskType.LEAVE_BUILDING` | `TaskType::LEAVE_BUILDING` |
-| `TaskType.PICK_LOCK_ON_SHACKLES` | `TaskType::PICK_LOCK_ON_SHACKLES` |
-| `TaskType.TOTAL_ESCAPE` | `TaskType::TOTAL_ESCAPE` |
-| `TaskType.ARREST_TARGET` | `TaskType::ARREST_TARGET` |
-| `TaskType.HUNT_BOUNTIES` | `TaskType::HUNT_BOUNTIES` |
-| `TaskType.ARREST_TARGETS_CARRIED_PERSON` | `TaskType::ARREST_TARGETS_CARRIED_PERSON` |
-| `TaskType.FIND_CAGE_AND_PUT_IN_IF_BOUNTY` | `TaskType::FIND_CAGE_AND_PUT_IN_IF_BOUNTY` |
-| `TaskType.GET_OUT_OF_CAGE_ESCAPE` | `TaskType::GET_OUT_OF_CAGE_ESCAPE` |
-| `TaskType.GET_OUT_OF_BED_IF_ITS_EMERGENCY` | `TaskType::GET_OUT_OF_BED_IF_ITS_EMERGENCY` |
-| `TaskType.INVESTIGATE_ALARMS` | `TaskType::INVESTIGATE_ALARMS` |
-| `TaskType.INVESTIGATE_ALARMS_ALLIES_ONLY` | `TaskType::INVESTIGATE_ALARMS_ALLIES_ONLY` |
-| `TaskType.POLICE_FREE_PRISONERS_WHEN_DONE` | `TaskType::POLICE_FREE_PRISONERS_WHEN_DONE` |
-| `TaskType.LOOT_STOLEN_GOODS` | `TaskType::LOOT_STOLEN_GOODS` |
-| `TaskType.LIFT_PERSON_SNATCHING_ALLOWED` | `TaskType::LIFT_PERSON_SNATCHING_ALLOWED` |
-| `TaskType.RELAX_IN_TOWN_PACKAGE` | `TaskType::RELAX_IN_TOWN_PACKAGE` |
-| `TaskType.TRAVEL_TO_TARGET_PACKAGE` | `TaskType::TRAVEL_TO_TARGET_PACKAGE` |
-| `TaskType.RUN_AROUND_TOWN_LOOKING_FOR_PEOPLE` | `TaskType::RUN_AROUND_TOWN_LOOKING_FOR_PEOPLE` |
-| `TaskType.GATHER_SLAVES_FROM_CAGES_IF_ITS_AN_EXPORT_TOWN` | `TaskType::GATHER_SLAVES_FROM_CAGES_IF_ITS_AN_EXPORT_TOWN` |
-| `TaskType.GIVE_ALL_MY_SLAVES_TO_IF_ITS_AN_IMPORT_TOWN` | `TaskType::GIVE_ALL_MY_SLAVES_TO_IF_ITS_AN_IMPORT_TOWN` |
-| `TaskType.TAKE_OFF_MY_SHACKLES` | `TaskType::TAKE_OFF_MY_SHACKLES` |
-| `TaskType.EAT_TARGET_ALIVE` | `TaskType::EAT_TARGET_ALIVE` |
-| `TaskType.PRETEND_TO_OPERATE_MACHINERY` | `TaskType::PRETEND_TO_OPERATE_MACHINERY` |
-| `TaskType.MAN_A_TURRET_ON_BUILDING` | `TaskType::MAN_A_TURRET_ON_BUILDING` |
-| `TaskType.PICKUP_INTRUDERS_BUILDING` | `TaskType::PICKUP_INTRUDERS_BUILDING` |
-| `TaskType.TAKE_INTRUDER_OUTSIDE` | `TaskType::TAKE_INTRUDER_OUTSIDE` |
-| `TaskType.LIFT_PERSON_PLAYER_ORDER` | `TaskType::LIFT_PERSON_PLAYER_ORDER` |
-| `TaskType.BASH_DOOR_PLAYER_ORDER` | `TaskType::BASH_DOOR_PLAYER_ORDER` |
-| `TaskType.MELEE_ATTACK_ANIMAL` | `TaskType::MELEE_ATTACK_ANIMAL` |
-| `TaskType.STEALTH_KNOCKOUT` | `TaskType::STEALTH_KNOCKOUT` |
-| `TaskType.STEALTH_KILL` | `TaskType::STEALTH_KILL` |
-| `TaskType.EAT_A_RANDOM_DEAD_BODY` | `TaskType::EAT_A_RANDOM_DEAD_BODY` |
-| `TaskType.EAT_CROPS` | `TaskType::EAT_CROPS` |
-| `TaskType.FIND_CROPS_TO_EAT` | `TaskType::FIND_CROPS_TO_EAT` |
-| `TaskType.EAT_A_RANDOM_KO_BODY` | `TaskType::EAT_A_RANDOM_KO_BODY` |
-| `TaskType.MAN_A_TURRET_PLAYER_JOB` | `TaskType::MAN_A_TURRET_PLAYER_JOB` |
-| `TaskType.SHOOT_AT_TARGET` | `TaskType::SHOOT_AT_TARGET` |
-| `TaskType.WORSHIP_TARGET` | `TaskType::WORSHIP_TARGET` |
-| `TaskType.FOGMAN_WORSHIP_VICTIM` | `TaskType::FOGMAN_WORSHIP_VICTIM` |
-| `TaskType.LOOT_ANIMALS_JOB` | `TaskType::LOOT_ANIMALS_JOB` |
-| `TaskType.GO_HOME_AND_GO_TO_BED_SECURE` | `TaskType::GO_HOME_AND_GO_TO_BED_SECURE` |
-| `TaskType.LIFT_PERSON_SNATCHING_ALLOWED_IN_TOWN_ONLY` | `TaskType::LIFT_PERSON_SNATCHING_ALLOWED_IN_TOWN_ONLY` |
-| `TaskType.LOOT_RESOURCE_ITEMS_WE_HAVE_STORAGE_FOR` | `TaskType::LOOT_RESOURCE_ITEMS_WE_HAVE_STORAGE_FOR` |
-| `TaskType.DITCH_ALL_RESOURCES` | `TaskType::DITCH_ALL_RESOURCES` |
-| `TaskType.AQUIRE_FOOD_AT_HOMEBASE` | `TaskType::AQUIRE_FOOD_AT_HOMEBASE` |
-| `TaskType.GRAB_ONE_FOOD` | `TaskType::GRAB_ONE_FOOD` |
-| `TaskType.GATHER_PRISONERS_FROM_CAGES_IF_FEMALE_OR_BEAST` | `TaskType::GATHER_PRISONERS_FROM_CAGES_IF_FEMALE_OR_BEAST` |
-| `TaskType.KIDNAP_ORDER` | `TaskType::KIDNAP_ORDER` |
-| `TaskType.COLLECT_OUTPUT_RESOURCE_BUILD_MATS` | `TaskType::COLLECT_OUTPUT_RESOURCE_BUILD_MATS` |
-| `TaskType.DEFEAT_SQUAD_LIMIT_CHASE_RANGE` | `TaskType::DEFEAT_SQUAD_LIMIT_CHASE_RANGE` |
-| `TaskType.SPLINT_ORDER` | `TaskType::SPLINT_ORDER` |
-| `TaskType.SPLINT_JOB` | `TaskType::SPLINT_JOB` |
-| `TaskType.ESCAPE_KIDNAP` | `TaskType::ESCAPE_KIDNAP` |
-| `TaskType.ESCAPE_KIDNAP_STR` | `TaskType::ESCAPE_KIDNAP_STR` |
-| `TaskType.FOLLOW_URGENT_ESCAPE` | `TaskType::FOLLOW_URGENT_ESCAPE` |
-| `TaskType.FINAL_KIDNAPPER_CAGE_JOB` | `TaskType::FINAL_KIDNAPPER_CAGE_JOB` |
-| `TaskType.SIT_ON_THRONE` | `TaskType::SIT_ON_THRONE` |
-| `TaskType.GET_OUT_OF_CAGE_OPPORTUNISTIC` | `TaskType::GET_OUT_OF_CAGE_OPPORTUNISTIC` |
-| `TaskType.GET_OUT_OF_BED_ONCE_HEALED` | `TaskType::GET_OUT_OF_BED_ONCE_HEALED` |
-| `TaskType.USE_BED_ORDER` | `TaskType::USE_BED_ORDER` |
-| `TaskType.EAT_FOOD_ON_GROUND` | `TaskType::EAT_FOOD_ON_GROUND` |
-| `TaskType.NEW_SLAVE_PROCESSING` | `TaskType::NEW_SLAVE_PROCESSING` |
-| `TaskType.SLEEP_ON_FLOOR_FAKE_AMBUSH` | `TaskType::SLEEP_ON_FLOOR_FAKE_AMBUSH` |
-| `TaskType.RANGED_ATTACK` | `TaskType::RANGED_ATTACK` |
-| `TaskType.RANGED_ATTACK_FOCUSED` | `TaskType::RANGED_ATTACK_FOCUSED` |
-| `TaskType.EQUIP_CROSSBOW` | `TaskType::EQUIP_CROSSBOW` |
-| `TaskType.UNEQUIP_CROSSBOW` | `TaskType::UNEQUIP_CROSSBOW` |
-| `TaskType.RANGED_ATTACK_FOCUSED_UNPROVOKED` | `TaskType::RANGED_ATTACK_FOCUSED_UNPROVOKED` |
-| `TaskType.MOVE_IN_BOW_RANGE` | `TaskType::MOVE_IN_BOW_RANGE` |
-| `TaskType.STAND_AT_GUARD_NODE_HOMEBUILDING_INDOORS_ONLY` | `TaskType::STAND_AT_GUARD_NODE_HOMEBUILDING_INDOORS_ONLY` |
-| `TaskType.HEAL_MY_LEGS` | `TaskType::HEAL_MY_LEGS` |
-| `TaskType.ASSAULT_FORTIFICATIONS_PREFER_GATES` | `TaskType::ASSAULT_FORTIFICATIONS_PREFER_GATES` |
-| `TaskType.ASSAULT_FORTIFICATIONS_PREFER_WALLS` | `TaskType::ASSAULT_FORTIFICATIONS_PREFER_WALLS` |
-| `TaskType.SMASH_BUILDING` | `TaskType::SMASH_BUILDING` |
-| `TaskType.PICKUP_INTRUDERS_TOWN` | `TaskType::PICKUP_INTRUDERS_TOWN` |
-| `TaskType.TAKE_INTRUDER_OUTSIDE_TOWN` | `TaskType::TAKE_INTRUDER_OUTSIDE_TOWN` |
-| `TaskType.SIT_AROUND` | `TaskType::SIT_AROUND` |
-| `TaskType.LIBERATE_ALL_THE_PRISONERS` | `TaskType::LIBERATE_ALL_THE_PRISONERS` |
-| `TaskType.ANIMAL_FETCH_A_LIMB` | `TaskType::ANIMAL_FETCH_A_LIMB` |
-| `TaskType.PLAY_BECAUSE_I_HAVE_A_LIMB_IN_MOUTH` | `TaskType::PLAY_BECAUSE_I_HAVE_A_LIMB_IN_MOUTH` |
-| `TaskType.CHASE_ALLY_DOGS_WITH_MOUTH_LIMBS` | `TaskType::CHASE_ALLY_DOGS_WITH_MOUTH_LIMBS` |
-| `TaskType.RUN_AWAY_FORCED` | `TaskType::RUN_AWAY_FORCED` |
-| `TaskType.FIND_CAGE_AND_PUT_DEADGUY_IN` | `TaskType::FIND_CAGE_AND_PUT_DEADGUY_IN` |
-| `TaskType.EAT_A_RANDOM_CAGE_OCCUPANT_MEASURED_RATE` | `TaskType::EAT_A_RANDOM_CAGE_OCCUPANT_MEASURED_RATE` |
-| `TaskType.SHOO_STRANGERS_OUT_OF_MY_BUILDING_IF_PRIVATE` | `TaskType::SHOO_STRANGERS_OUT_OF_MY_BUILDING_IF_PRIVATE` |
-| `TaskType.LOOT_CONTAINER` | `TaskType::LOOT_CONTAINER` |
-| `TaskType.CUT_LOCK` | `TaskType::CUT_LOCK` |
-| `TaskType.BRUTE_FORCE_LOCK` | `TaskType::BRUTE_FORCE_LOCK` |
-| `TaskType.BASH_DOOR_HERE` | `TaskType::BASH_DOOR_HERE` |
-| `TaskType.PROTECT_ALLIES_STAY_IN_TOWN` | `TaskType::PROTECT_ALLIES_STAY_IN_TOWN` |
-| `TaskType.STAY_CLOSE_TO_TARGET_ANIMAL` | `TaskType::STAY_CLOSE_TO_TARGET_ANIMAL` |
-| `TaskType.BASH_GATE_PLAYER_ORDER` | `TaskType::BASH_GATE_PLAYER_ORDER` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TaskType.NULL_TASK` | `0` | `TaskType::NULL_TASK` |
+| `TaskType.MOVE_ON_FREE_WILL` | `1` | `TaskType::MOVE_ON_FREE_WILL` |
+| `TaskType.BUILD` | `2` | `TaskType::BUILD` |
+| `TaskType.PICKUP` | `3` | `TaskType::PICKUP` |
+| `TaskType.MELEE_ATTACK` | `4` | `TaskType::MELEE_ATTACK` |
+| `TaskType.FOCUSED_MELEE_ATTACK` | `5` | `TaskType::FOCUSED_MELEE_ATTACK` |
+| `TaskType.EQUIP_WEAPON` | `6` | `TaskType::EQUIP_WEAPON` |
+| `TaskType.UNEQUIP_WEAPON` | `7` | `TaskType::UNEQUIP_WEAPON` |
+| `TaskType.FIND_WEAPON` | `8` | `TaskType::FIND_WEAPON` |
+| `TaskType.CHOOSE_ENEMY_AND_ATTACK` | `9` | `TaskType::CHOOSE_ENEMY_AND_ATTACK` |
+| `TaskType.CHOOSE_ATTACKER_OF_ALLY` | `10` | `TaskType::CHOOSE_ATTACKER_OF_ALLY` |
+| `TaskType.ATTACK_CHARACTERS_ATTACKER` | `11` | `TaskType::ATTACK_CHARACTERS_ATTACKER` |
+| `TaskType.PLAYER_TALK_TO` | `12` | `TaskType::PLAYER_TALK_TO` |
+| `TaskType.ATTACK_ATTACKERS_OF` | `13` | `TaskType::ATTACK_ATTACKERS_OF` |
+| `TaskType.IDLE` | `14` | `TaskType::IDLE` |
+| `TaskType.PROTECT_ALLIES` | `15` | `TaskType::PROTECT_ALLIES` |
+| `TaskType.ATTACK_ENEMIES` | `16` | `TaskType::ATTACK_ENEMIES` |
+| `TaskType.PROTECTION` | `17` | `TaskType::PROTECTION` |
+| `TaskType.RAID_TOWN` | `18` | `TaskType::RAID_TOWN` |
+| `TaskType.GO_HOMEBUILDING` | `19` | `TaskType::GO_HOMEBUILDING` |
+| `TaskType.STAND_AT_SHOPKEEPER_NODE` | `20` | `TaskType::STAND_AT_SHOPKEEPER_NODE` |
+| `TaskType.ATTACK_ENEMIES_AND_NEUTRALS` | `21` | `TaskType::ATTACK_ENEMIES_AND_NEUTRALS` |
+| `TaskType.PATROL` | `22` | `TaskType::PATROL` |
+| `TaskType.ATTACK_TOWN` | `23` | `TaskType::ATTACK_TOWN` |
+| `TaskType.WANDERER` | `24` | `TaskType::WANDERER` |
+| `TaskType.FIRST_AID_ORDER` | `25` | `TaskType::FIRST_AID_ORDER` |
+| `TaskType.LOOT_TARGET` | `26` | `TaskType::LOOT_TARGET` |
+| `TaskType.CROUCH` | `27` | `TaskType::CROUCH` |
+| `TaskType.STAND_UP` | `28` | `TaskType::STAND_UP` |
+| `TaskType.MOVE_CUS_ORDERED` | `29` | `TaskType::MOVE_CUS_ORDERED` |
+| `TaskType.HOLD_POSITION` | `30` | `TaskType::HOLD_POSITION` |
+| `TaskType.STAY_CLOSE_TO_TARGET` | `31` | `TaskType::STAY_CLOSE_TO_TARGET` |
+| `TaskType.SELF_PRESERVATION` | `32` | `TaskType::SELF_PRESERVATION` |
+| `TaskType.QUELL_AGGRESSION` | `33` | `TaskType::QUELL_AGGRESSION` |
+| `TaskType.ATTACK_TROUBLE_MAKERS` | `34` | `TaskType::ATTACK_TROUBLE_MAKERS` |
+| `TaskType.RUN_AWAY` | `35` | `TaskType::RUN_AWAY` |
+| `TaskType.PATROL_TOWN` | `36` | `TaskType::PATROL_TOWN` |
+| `TaskType.WANDER_TOWN` | `37` | `TaskType::WANDER_TOWN` |
+| `TaskType.STAND_AT_GUARD_NODE_HOMEBUILDING_IN_OUT` | `38` | `TaskType::STAND_AT_GUARD_NODE_HOMEBUILDING_IN_OUT` |
+| `TaskType.WANDERING_TRADER` | `39` | `TaskType::WANDERING_TRADER` |
+| `TaskType.GET_NEAR_TO` | `40` | `TaskType::GET_NEAR_TO` |
+| `TaskType.ATTACK_ENEMIES_OF_MY_SLAVEMASTER` | `41` | `TaskType::ATTACK_ENEMIES_OF_MY_SLAVEMASTER` |
+| `TaskType.NOT_BE_UNARMED` | `42` | `TaskType::NOT_BE_UNARMED` |
+| `TaskType.STAY_IN_HOME` | `43` | `TaskType::STAY_IN_HOME` |
+| `TaskType.FOLLOW_PLAYER_ORDER` | `44` | `TaskType::FOLLOW_PLAYER_ORDER` |
+| `TaskType.BODYGUARD` | `45` | `TaskType::BODYGUARD` |
+| `TaskType.CHASE` | `46` | `TaskType::CHASE` |
+| `TaskType.STAND_AT_GENERAL_NODE` | `47` | `TaskType::STAND_AT_GENERAL_NODE` |
+| `TaskType.STAND_AT_DEFENSIVE_NODE` | `48` | `TaskType::STAND_AT_DEFENSIVE_NODE` |
+| `TaskType.STAND_AT_BUILDING_GUARD_NODE` | `49` | `TaskType::STAND_AT_BUILDING_GUARD_NODE` |
+| `TaskType.STAND_AT_BUILDING_DEFENSIVE_NODE` | `50` | `TaskType::STAND_AT_BUILDING_DEFENSIVE_NODE` |
+| `TaskType.STAND_AT_NODE` | `51` | `TaskType::STAND_AT_NODE` |
+| `TaskType.GET_UP_STAY_DOWN_THOUGH` | `52` | `TaskType::GET_UP_STAY_DOWN_THOUGH` |
+| `TaskType.TRAVEL_TO_TARGET_TOWN` | `53` | `TaskType::TRAVEL_TO_TARGET_TOWN` |
+| `TaskType.REST` | `54` | `TaskType::REST` |
+| `TaskType.RECRUIT_AT_JOBCENTER` | `55` | `TaskType::RECRUIT_AT_JOBCENTER` |
+| `TaskType.SWITCH_FOLLOW_ME_MODE_ON` | `56` | `TaskType::SWITCH_FOLLOW_ME_MODE_ON` |
+| `TaskType.JOB_REPAIR_ROBOT` | `57` | `TaskType::JOB_REPAIR_ROBOT` |
+| `TaskType.JOB_MEDIC` | `58` | `TaskType::JOB_MEDIC` |
+| `TaskType.GET_READY_FOR_ACTION` | `59` | `TaskType::GET_READY_FOR_ACTION` |
+| `TaskType.FIRST_AID_ROBOT` | `60` | `TaskType::FIRST_AID_ROBOT` |
+| `TaskType.UNPROVOKED_FOCUSED_MELEE_ATTACK` | `61` | `TaskType::UNPROVOKED_FOCUSED_MELEE_ATTACK` |
+| `TaskType.STAND_STILL` | `62` | `TaskType::STAND_STILL` |
+| `TaskType.SQUAD_WAIT_FOR_ME` | `63` | `TaskType::SQUAD_WAIT_FOR_ME` |
+| `TaskType.MAKE_TARGET_STAND_STILL` | `64` | `TaskType::MAKE_TARGET_STAND_STILL` |
+| `TaskType.GET_UP_STAND_UP` | `65` | `TaskType::GET_UP_STAND_UP` |
+| `TaskType.FORCE_GET_UP` | `66` | `TaskType::FORCE_GET_UP` |
+| `TaskType.MOVE_ON_FREE_WILL_FAST` | `67` | `TaskType::MOVE_ON_FREE_WILL_FAST` |
+| `TaskType.LIFT_PERSON` | `68` | `TaskType::LIFT_PERSON` |
+| `TaskType.PUT_DOWN_OBJECT` | `69` | `TaskType::PUT_DOWN_OBJECT` |
+| `TaskType.PUT_DOWN_CHARACTER_IN_BED` | `70` | `TaskType::PUT_DOWN_CHARACTER_IN_BED` |
+| `TaskType.ADD_MATERIALS_TO_BUILDING` | `71` | `TaskType::ADD_MATERIALS_TO_BUILDING` |
+| `TaskType.OPEN_DOOR` | `72` | `TaskType::OPEN_DOOR` |
+| `TaskType.CLOSE_DOOR` | `73` | `TaskType::CLOSE_DOOR` |
+| `TaskType.OPEN_DOOR_HERE` | `74` | `TaskType::OPEN_DOOR_HERE` |
+| `TaskType.CLOSE_DOOR_HERE` | `75` | `TaskType::CLOSE_DOOR_HERE` |
+| `TaskType.PICK_LOCK` | `76` | `TaskType::PICK_LOCK` |
+| `TaskType.LOCK_DOOR` | `77` | `TaskType::LOCK_DOOR` |
+| `TaskType.UNLOCK_DOOR` | `78` | `TaskType::UNLOCK_DOOR` |
+| `TaskType.LOCK_DOOR_HERE` | `79` | `TaskType::LOCK_DOOR_HERE` |
+| `TaskType.UNLOCK_DOOR_HERE` | `80` | `TaskType::UNLOCK_DOOR_HERE` |
+| `TaskType.BASH_DOOR` | `81` | `TaskType::BASH_DOOR` |
+| `TaskType.MOVE_TO_BUILDING_DOOR` | `82` | `TaskType::MOVE_TO_BUILDING_DOOR` |
+| `TaskType.MOVE_TO_CURRENT_LOCATION_BUILDING_DOOR` | `83` | `TaskType::MOVE_TO_CURRENT_LOCATION_BUILDING_DOOR` |
+| `TaskType.OPEN_DOOR_FOR_CURRENT_LOCATION` | `84` | `TaskType::OPEN_DOOR_FOR_CURRENT_LOCATION` |
+| `TaskType.OPEN_DOOR_FOR_DESTINATION` | `85` | `TaskType::OPEN_DOOR_FOR_DESTINATION` |
+| `TaskType.OPEN_UP_SHOP_DOORS` | `86` | `TaskType::OPEN_UP_SHOP_DOORS` |
+| `TaskType.OPERATE_MACHINERY` | `87` | `TaskType::OPERATE_MACHINERY` |
+| `TaskType.DELIVER_RESOURCES` | `88` | `TaskType::DELIVER_RESOURCES` |
+| `TaskType.JOB_KEEP_EVERYTHING_RUNNING` | `89` | `TaskType::JOB_KEEP_EVERYTHING_RUNNING` |
+| `TaskType.UNJAM_ALL_MACHINES` | `90` | `TaskType::UNJAM_ALL_MACHINES` |
+| `TaskType.UNJAM_MACHINE` | `91` | `TaskType::UNJAM_MACHINE` |
+| `TaskType.COLLECT_OUTPUT_RESOURCE` | `92` | `TaskType::COLLECT_OUTPUT_RESOURCE` |
+| `TaskType.FILL_MACHINE` | `93` | `TaskType::FILL_MACHINE` |
+| `TaskType.WANT_TO_FILL_MACHINE` | `94` | `TaskType::WANT_TO_FILL_MACHINE` |
+| `TaskType.REPAIR` | `95` | `TaskType::REPAIR` |
+| `TaskType.DISMANTLE` | `96` | `TaskType::DISMANTLE` |
+| `TaskType.USE_TRAINING_DUMMY` | `97` | `TaskType::USE_TRAINING_DUMMY` |
+| `TaskType.USE_BED` | `98` | `TaskType::USE_BED` |
+| `TaskType.PUT_SOMEONE_IN_BED` | `99` | `TaskType::PUT_SOMEONE_IN_BED` |
+| `TaskType.GET_PUT_IN_BED` | `100` | `TaskType::GET_PUT_IN_BED` |
+| `TaskType.DEFEAT_SQUAD` | `101` | `TaskType::DEFEAT_SQUAD` |
+| `TaskType.SEEK_AND_TALK_AND_SEND_SIGNAL` | `102` | `TaskType::SEEK_AND_TALK_AND_SEND_SIGNAL` |
+| `TaskType.MAKE_ANNOUNCEMENT` | `103` | `TaskType::MAKE_ANNOUNCEMENT` |
+| `TaskType.ALWAYS_IMPOSSIBLE_TASK` | `104` | `TaskType::ALWAYS_IMPOSSIBLE_TASK` |
+| `TaskType.FIND_AND_RESCUE` | `105` | `TaskType::FIND_AND_RESCUE` |
+| `TaskType.FIND_BED_AND_PUT_IN` | `106` | `TaskType::FIND_BED_AND_PUT_IN` |
+| `TaskType.USE_CAGE` | `107` | `TaskType::USE_CAGE` |
+| `TaskType.PUT_IN_CAGE` | `108` | `TaskType::PUT_IN_CAGE` |
+| `TaskType.KNOCKOUT_PRISONER` | `109` | `TaskType::KNOCKOUT_PRISONER` |
+| `TaskType.RELEASE_PRISONER` | `110` | `TaskType::RELEASE_PRISONER` |
+| `TaskType.BREAKOUT_PRISONER` | `111` | `TaskType::BREAKOUT_PRISONER` |
+| `TaskType.FIND_CAGE_AND_PUT_IN` | `112` | `TaskType::FIND_CAGE_AND_PUT_IN` |
+| `TaskType.EMPTY_MACHINE_OUTPUTS` | `113` | `TaskType::EMPTY_MACHINE_OUTPUTS` |
+| `TaskType.GET_RID_OF_RESOURCES_IN_MY_INVENTORY` | `114` | `TaskType::GET_RID_OF_RESOURCES_IN_MY_INVENTORY` |
+| `TaskType.FIND_SOME_BUILDING_MATERIALS` | `115` | `TaskType::FIND_SOME_BUILDING_MATERIALS` |
+| `TaskType.GET_OUT_OF_BED` | `116` | `TaskType::GET_OUT_OF_BED` |
+| `TaskType.FIND_A_SHOP` | `117` | `TaskType::FIND_A_SHOP` |
+| `TaskType.SHOPPING` | `118` | `TaskType::SHOPPING` |
+| `TaskType.BUY_SHIT` | `119` | `TaskType::BUY_SHIT` |
+| `TaskType.MOVE_INSIDE_BUILDING` | `120` | `TaskType::MOVE_INSIDE_BUILDING` |
+| `TaskType.MOVE_TO_FORTIFICATION_GATE` | `121` | `TaskType::MOVE_TO_FORTIFICATION_GATE` |
+| `TaskType.OPEN_FORTIFICATION_GATE` | `122` | `TaskType::OPEN_FORTIFICATION_GATE` |
+| `TaskType.BASH_GATE` | `123` | `TaskType::BASH_GATE` |
+| `TaskType.OPERATE_STORAGE` | `124` | `TaskType::OPERATE_STORAGE` |
+| `TaskType.JOB_BUILDER` | `125` | `TaskType::JOB_BUILDER` |
+| `TaskType.TALKTO_NEAREST_PLAYER_CHARACTER` | `126` | `TaskType::TALKTO_NEAREST_PLAYER_CHARACTER` |
+| `TaskType.RUN_AWAY_HOMETOWN` | `127` | `TaskType::RUN_AWAY_HOMETOWN` |
+| `TaskType.RETREAT_HOMETOWN` | `128` | `TaskType::RETREAT_HOMETOWN` |
+| `TaskType.MAKE_ANNOUNCEMENT_FAST` | `129` | `TaskType::MAKE_ANNOUNCEMENT_FAST` |
+| `TaskType.TRAVEL_TO_TARGET_TOWN_FAST` | `130` | `TaskType::TRAVEL_TO_TARGET_TOWN_FAST` |
+| `TaskType.LOOT_FOOD_AND_STUFF` | `131` | `TaskType::LOOT_FOOD_AND_STUFF` |
+| `TaskType.FIND_AND_KIDNAP` | `132` | `TaskType::FIND_AND_KIDNAP` |
+| `TaskType.GET_OUT_OF_CAGE_LEGIT` | `133` | `TaskType::GET_OUT_OF_CAGE_LEGIT` |
+| `TaskType.KILL_CAGE_OCCUPANT` | `134` | `TaskType::KILL_CAGE_OCCUPANT` |
+| `TaskType.KILL_A_RANDOM_CAGE_OCCUPANT` | `135` | `TaskType::KILL_A_RANDOM_CAGE_OCCUPANT` |
+| `TaskType.FEED_CORPSE_INTO_MACHINE` | `136` | `TaskType::FEED_CORPSE_INTO_MACHINE` |
+| `TaskType.DEAD_GUYS_GO_IN_THE_POT` | `137` | `TaskType::DEAD_GUYS_GO_IN_THE_POT` |
+| `TaskType.FIND_A_DEAD_GUY` | `138` | `TaskType::FIND_A_DEAD_GUY` |
+| `TaskType.EAT_A_RANDOM_CAGE_OCCUPANT` | `139` | `TaskType::EAT_A_RANDOM_CAGE_OCCUPANT` |
+| `TaskType.UNLOCK_DOOR_PLAYER_ORDER` | `140` | `TaskType::UNLOCK_DOOR_PLAYER_ORDER` |
+| `TaskType.FOLLOW_SQUADLEADER` | `141` | `TaskType::FOLLOW_SQUADLEADER` |
+| `TaskType.FIND_AND_RESCUE_LEADER` | `142` | `TaskType::FIND_AND_RESCUE_LEADER` |
+| `TaskType.PROTECT_OWN_SQUAD` | `143` | `TaskType::PROTECT_OWN_SQUAD` |
+| `TaskType.TERRITORIAL_AGGRESSION_BUT_DONT_LEAVE_HOME` | `144` | `TaskType::TERRITORIAL_AGGRESSION_BUT_DONT_LEAVE_HOME` |
+| `TaskType.GET_RE_EQUIPPED` | `145` | `TaskType::GET_RE_EQUIPPED` |
+| `TaskType.USE_TURRET` | `146` | `TaskType::USE_TURRET` |
+| `TaskType.STUMBLE_TASK_FORCED` | `147` | `TaskType::STUMBLE_TASK_FORCED` |
+| `TaskType.FIND_AND_RESCUE_IF_THERES_BEDS` | `148` | `TaskType::FIND_AND_RESCUE_IF_THERES_BEDS` |
+| `TaskType.MAN_A_TURRET` | `149` | `TaskType::MAN_A_TURRET` |
+| `TaskType.PROSPECTING` | `150` | `TaskType::PROSPECTING` |
+| `TaskType.EMPTYING_MACHINE` | `151` | `TaskType::EMPTYING_MACHINE` |
+| `TaskType.OPERATE_AUTOMATIC_MACHINERY` | `152` | `TaskType::OPERATE_AUTOMATIC_MACHINERY` |
+| `TaskType.GO_HOME_AND_GO_TO_BED` | `153` | `TaskType::GO_HOME_AND_GO_TO_BED` |
+| `TaskType.GO_TO_THE_BAR_AND_DRINK` | `154` | `TaskType::GO_TO_THE_BAR_AND_DRINK` |
+| `TaskType.LOCK_ALL_MY_DOORS` | `155` | `TaskType::LOCK_ALL_MY_DOORS` |
+| `TaskType.ENTER_BUILDING` | `156` | `TaskType::ENTER_BUILDING` |
+| `TaskType.STAND_AT_GUARD_NODE_HOMETOWN_OUTSIDE` | `157` | `TaskType::STAND_AT_GUARD_NODE_HOMETOWN_OUTSIDE` |
+| `TaskType.SHOO_STRANGERS_OUT_OF_MY_BUILDING` | `158` | `TaskType::SHOO_STRANGERS_OUT_OF_MY_BUILDING` |
+| `TaskType.SEND_DIALOGUE_SIGNAL` | `159` | `TaskType::SEND_DIALOGUE_SIGNAL` |
+| `TaskType.SEND_DIALOGUE_SIGNAL_REPEAT` | `160` | `TaskType::SEND_DIALOGUE_SIGNAL_REPEAT` |
+| `TaskType.SEND_DIALOGUE_SIGNAL_WITHOUT_MOVING` | `161` | `TaskType::SEND_DIALOGUE_SIGNAL_WITHOUT_MOVING` |
+| `TaskType.LOCK_DOOR_FROM_INSIDE` | `162` | `TaskType::LOCK_DOOR_FROM_INSIDE` |
+| `TaskType.MOVE_TO_BUILDING_DOOR_INSIDEPOS` | `163` | `TaskType::MOVE_TO_BUILDING_DOOR_INSIDEPOS` |
+| `TaskType.FOLLOW_WHILE_TALKING` | `164` | `TaskType::FOLLOW_WHILE_TALKING` |
+| `TaskType.TOWN_STALKER` | `165` | `TaskType::TOWN_STALKER` |
+| `TaskType.CHAIN_TARGET` | `166` | `TaskType::CHAIN_TARGET` |
+| `TaskType.CAPTURE_NEW_SLAVES` | `167` | `TaskType::CAPTURE_NEW_SLAVES` |
+| `TaskType.CARRY_WOUNDED_SLAVES` | `168` | `TaskType::CARRY_WOUNDED_SLAVES` |
+| `TaskType.PUT_DOWN_CARRIED_DUDE_IF_THEY_CAN_WALK` | `169` | `TaskType::PUT_DOWN_CARRIED_DUDE_IF_THEY_CAN_WALK` |
+| `TaskType.LIFT_OBJECT_BUT_HEAL_FIRST` | `170` | `TaskType::LIFT_OBJECT_BUT_HEAL_FIRST` |
+| `TaskType.FOLLOW_SLAVEMASTER` | `171` | `TaskType::FOLLOW_SLAVEMASTER` |
+| `TaskType.SLAVE_GET_IN_MY_MASTERS_CAGE` | `172` | `TaskType::SLAVE_GET_IN_MY_MASTERS_CAGE` |
+| `TaskType.GATHER_SLAVES_FROM_CAGES` | `173` | `TaskType::GATHER_SLAVES_FROM_CAGES` |
+| `TaskType.GET_SLAVE` | `174` | `TaskType::GET_SLAVE` |
+| `TaskType.SLEEP_ON_FLOOR` | `175` | `TaskType::SLEEP_ON_FLOOR` |
+| `TaskType.HUNTING_BLOODSMELL` | `176` | `TaskType::HUNTING_BLOODSMELL` |
+| `TaskType.LOOT_THE_DEAD` | `177` | `TaskType::LOOT_THE_DEAD` |
+| `TaskType.LOOT_TO_REPLACE_MISSING_WEAPON` | `178` | `TaskType::LOOT_TO_REPLACE_MISSING_WEAPON` |
+| `TaskType.HUNT_MY_THIEF` | `179` | `TaskType::HUNT_MY_THIEF` |
+| `TaskType.MAN_THE_GATE` | `180` | `TaskType::MAN_THE_GATE` |
+| `TaskType.STRIP_TARGETS_WEAPONS` | `181` | `TaskType::STRIP_TARGETS_WEAPONS` |
+| `TaskType.PROCESS_AND_STRIP_NEW_SLAVE` | `182` | `TaskType::PROCESS_AND_STRIP_NEW_SLAVE` |
+| `TaskType.SLAVE_WATCHING` | `183` | `TaskType::SLAVE_WATCHING` |
+| `TaskType.PUT_LOOT_IN_STORAGE` | `184` | `TaskType::PUT_LOOT_IN_STORAGE` |
+| `TaskType.CUT_SHACKLES` | `185` | `TaskType::CUT_SHACKLES` |
+| `TaskType.BRUTE_FORCE_SHACKLES` | `186` | `TaskType::BRUTE_FORCE_SHACKLES` |
+| `TaskType._SLAVE_OBEDIENCE` | `187` | `TaskType::_SLAVE_OBEDIENCE` |
+| `TaskType.WORK_THE_SLAVES` | `188` | `TaskType::WORK_THE_SLAVES` |
+| `TaskType.AUTO_LABOURING_MINES` | `189` | `TaskType::AUTO_LABOURING_MINES` |
+| `TaskType.AUTO_LABOURING_MINES_PRETEND` | `190` | `TaskType::AUTO_LABOURING_MINES_PRETEND` |
+| `TaskType.GO_TO_NEAREST_HQ` | `191` | `TaskType::GO_TO_NEAREST_HQ` |
+| `TaskType.GO_TO_SOMEWHERE_FOR_DELIVERING_SLAVES` | `192` | `TaskType::GO_TO_SOMEWHERE_FOR_DELIVERING_SLAVES` |
+| `TaskType.CAPTURE_ESCAPING_SLAVES` | `193` | `TaskType::CAPTURE_ESCAPING_SLAVES` |
+| `TaskType.GIVE_ALL_MY_SLAVES_TO` | `194` | `TaskType::GIVE_ALL_MY_SLAVES_TO` |
+| `TaskType.LOCK_ALL_THE_CAGES` | `195` | `TaskType::LOCK_ALL_THE_CAGES` |
+| `TaskType.BEAT_CAGE_OCCUPANT` | `196` | `TaskType::BEAT_CAGE_OCCUPANT` |
+| `TaskType.LOCK_ALL_MY_DOORS_FROM_OUTSIDE` | `197` | `TaskType::LOCK_ALL_MY_DOORS_FROM_OUTSIDE` |
+| `TaskType.LOCK_DOOR_FROM_OUTSIDE` | `198` | `TaskType::LOCK_DOOR_FROM_OUTSIDE` |
+| `TaskType.MOVE_TO_BUILDING_DOOR_OUTSIDEPOS` | `199` | `TaskType::MOVE_TO_BUILDING_DOOR_OUTSIDEPOS` |
+| `TaskType.LEAVE_BUILDING` | `200` | `TaskType::LEAVE_BUILDING` |
+| `TaskType.PICK_LOCK_ON_SHACKLES` | `201` | `TaskType::PICK_LOCK_ON_SHACKLES` |
+| `TaskType.TOTAL_ESCAPE` | `202` | `TaskType::TOTAL_ESCAPE` |
+| `TaskType.ARREST_TARGET` | `203` | `TaskType::ARREST_TARGET` |
+| `TaskType.HUNT_BOUNTIES` | `204` | `TaskType::HUNT_BOUNTIES` |
+| `TaskType.ARREST_TARGETS_CARRIED_PERSON` | `205` | `TaskType::ARREST_TARGETS_CARRIED_PERSON` |
+| `TaskType.FIND_CAGE_AND_PUT_IN_IF_BOUNTY` | `206` | `TaskType::FIND_CAGE_AND_PUT_IN_IF_BOUNTY` |
+| `TaskType.GET_OUT_OF_CAGE_ESCAPE` | `207` | `TaskType::GET_OUT_OF_CAGE_ESCAPE` |
+| `TaskType.GET_OUT_OF_BED_IF_ITS_EMERGENCY` | `208` | `TaskType::GET_OUT_OF_BED_IF_ITS_EMERGENCY` |
+| `TaskType.INVESTIGATE_ALARMS` | `209` | `TaskType::INVESTIGATE_ALARMS` |
+| `TaskType.INVESTIGATE_ALARMS_ALLIES_ONLY` | `210` | `TaskType::INVESTIGATE_ALARMS_ALLIES_ONLY` |
+| `TaskType.POLICE_FREE_PRISONERS_WHEN_DONE` | `211` | `TaskType::POLICE_FREE_PRISONERS_WHEN_DONE` |
+| `TaskType.LOOT_STOLEN_GOODS` | `212` | `TaskType::LOOT_STOLEN_GOODS` |
+| `TaskType.LIFT_PERSON_SNATCHING_ALLOWED` | `213` | `TaskType::LIFT_PERSON_SNATCHING_ALLOWED` |
+| `TaskType.RELAX_IN_TOWN_PACKAGE` | `214` | `TaskType::RELAX_IN_TOWN_PACKAGE` |
+| `TaskType.TRAVEL_TO_TARGET_PACKAGE` | `215` | `TaskType::TRAVEL_TO_TARGET_PACKAGE` |
+| `TaskType.RUN_AROUND_TOWN_LOOKING_FOR_PEOPLE` | `216` | `TaskType::RUN_AROUND_TOWN_LOOKING_FOR_PEOPLE` |
+| `TaskType.GATHER_SLAVES_FROM_CAGES_IF_ITS_AN_EXPORT_TOWN` | `217` | `TaskType::GATHER_SLAVES_FROM_CAGES_IF_ITS_AN_EXPORT_TOWN` |
+| `TaskType.GIVE_ALL_MY_SLAVES_TO_IF_ITS_AN_IMPORT_TOWN` | `218` | `TaskType::GIVE_ALL_MY_SLAVES_TO_IF_ITS_AN_IMPORT_TOWN` |
+| `TaskType.TAKE_OFF_MY_SHACKLES` | `219` | `TaskType::TAKE_OFF_MY_SHACKLES` |
+| `TaskType.EAT_TARGET_ALIVE` | `220` | `TaskType::EAT_TARGET_ALIVE` |
+| `TaskType.PRETEND_TO_OPERATE_MACHINERY` | `221` | `TaskType::PRETEND_TO_OPERATE_MACHINERY` |
+| `TaskType.MAN_A_TURRET_ON_BUILDING` | `222` | `TaskType::MAN_A_TURRET_ON_BUILDING` |
+| `TaskType.PICKUP_INTRUDERS_BUILDING` | `223` | `TaskType::PICKUP_INTRUDERS_BUILDING` |
+| `TaskType.TAKE_INTRUDER_OUTSIDE` | `224` | `TaskType::TAKE_INTRUDER_OUTSIDE` |
+| `TaskType.LIFT_PERSON_PLAYER_ORDER` | `225` | `TaskType::LIFT_PERSON_PLAYER_ORDER` |
+| `TaskType.BASH_DOOR_PLAYER_ORDER` | `226` | `TaskType::BASH_DOOR_PLAYER_ORDER` |
+| `TaskType.MELEE_ATTACK_ANIMAL` | `227` | `TaskType::MELEE_ATTACK_ANIMAL` |
+| `TaskType.STEALTH_KNOCKOUT` | `228` | `TaskType::STEALTH_KNOCKOUT` |
+| `TaskType.STEALTH_KILL` | `229` | `TaskType::STEALTH_KILL` |
+| `TaskType.EAT_A_RANDOM_DEAD_BODY` | `230` | `TaskType::EAT_A_RANDOM_DEAD_BODY` |
+| `TaskType.EAT_CROPS` | `231` | `TaskType::EAT_CROPS` |
+| `TaskType.FIND_CROPS_TO_EAT` | `232` | `TaskType::FIND_CROPS_TO_EAT` |
+| `TaskType.EAT_A_RANDOM_KO_BODY` | `233` | `TaskType::EAT_A_RANDOM_KO_BODY` |
+| `TaskType.MAN_A_TURRET_PLAYER_JOB` | `234` | `TaskType::MAN_A_TURRET_PLAYER_JOB` |
+| `TaskType.SHOOT_AT_TARGET` | `235` | `TaskType::SHOOT_AT_TARGET` |
+| `TaskType.WORSHIP_TARGET` | `236` | `TaskType::WORSHIP_TARGET` |
+| `TaskType.FOGMAN_WORSHIP_VICTIM` | `237` | `TaskType::FOGMAN_WORSHIP_VICTIM` |
+| `TaskType.LOOT_ANIMALS_JOB` | `238` | `TaskType::LOOT_ANIMALS_JOB` |
+| `TaskType.GO_HOME_AND_GO_TO_BED_SECURE` | `239` | `TaskType::GO_HOME_AND_GO_TO_BED_SECURE` |
+| `TaskType.LIFT_PERSON_SNATCHING_ALLOWED_IN_TOWN_ONLY` | `240` | `TaskType::LIFT_PERSON_SNATCHING_ALLOWED_IN_TOWN_ONLY` |
+| `TaskType.LOOT_RESOURCE_ITEMS_WE_HAVE_STORAGE_FOR` | `241` | `TaskType::LOOT_RESOURCE_ITEMS_WE_HAVE_STORAGE_FOR` |
+| `TaskType.DITCH_ALL_RESOURCES` | `242` | `TaskType::DITCH_ALL_RESOURCES` |
+| `TaskType.AQUIRE_FOOD_AT_HOMEBASE` | `243` | `TaskType::AQUIRE_FOOD_AT_HOMEBASE` |
+| `TaskType.GRAB_ONE_FOOD` | `244` | `TaskType::GRAB_ONE_FOOD` |
+| `TaskType.GATHER_PRISONERS_FROM_CAGES_IF_FEMALE_OR_BEAST` | `245` | `TaskType::GATHER_PRISONERS_FROM_CAGES_IF_FEMALE_OR_BEAST` |
+| `TaskType.KIDNAP_ORDER` | `246` | `TaskType::KIDNAP_ORDER` |
+| `TaskType.COLLECT_OUTPUT_RESOURCE_BUILD_MATS` | `247` | `TaskType::COLLECT_OUTPUT_RESOURCE_BUILD_MATS` |
+| `TaskType.DEFEAT_SQUAD_LIMIT_CHASE_RANGE` | `248` | `TaskType::DEFEAT_SQUAD_LIMIT_CHASE_RANGE` |
+| `TaskType.SPLINT_ORDER` | `249` | `TaskType::SPLINT_ORDER` |
+| `TaskType.SPLINT_JOB` | `250` | `TaskType::SPLINT_JOB` |
+| `TaskType.ESCAPE_KIDNAP` | `251` | `TaskType::ESCAPE_KIDNAP` |
+| `TaskType.ESCAPE_KIDNAP_STR` | `252` | `TaskType::ESCAPE_KIDNAP_STR` |
+| `TaskType.FOLLOW_URGENT_ESCAPE` | `253` | `TaskType::FOLLOW_URGENT_ESCAPE` |
+| `TaskType.FINAL_KIDNAPPER_CAGE_JOB` | `254` | `TaskType::FINAL_KIDNAPPER_CAGE_JOB` |
+| `TaskType.SIT_ON_THRONE` | `255` | `TaskType::SIT_ON_THRONE` |
+| `TaskType.GET_OUT_OF_CAGE_OPPORTUNISTIC` | `256` | `TaskType::GET_OUT_OF_CAGE_OPPORTUNISTIC` |
+| `TaskType.GET_OUT_OF_BED_ONCE_HEALED` | `257` | `TaskType::GET_OUT_OF_BED_ONCE_HEALED` |
+| `TaskType.USE_BED_ORDER` | `258` | `TaskType::USE_BED_ORDER` |
+| `TaskType.EAT_FOOD_ON_GROUND` | `259` | `TaskType::EAT_FOOD_ON_GROUND` |
+| `TaskType.NEW_SLAVE_PROCESSING` | `260` | `TaskType::NEW_SLAVE_PROCESSING` |
+| `TaskType.SLEEP_ON_FLOOR_FAKE_AMBUSH` | `261` | `TaskType::SLEEP_ON_FLOOR_FAKE_AMBUSH` |
+| `TaskType.RANGED_ATTACK` | `262` | `TaskType::RANGED_ATTACK` |
+| `TaskType.RANGED_ATTACK_FOCUSED` | `263` | `TaskType::RANGED_ATTACK_FOCUSED` |
+| `TaskType.EQUIP_CROSSBOW` | `264` | `TaskType::EQUIP_CROSSBOW` |
+| `TaskType.UNEQUIP_CROSSBOW` | `265` | `TaskType::UNEQUIP_CROSSBOW` |
+| `TaskType.RANGED_ATTACK_FOCUSED_UNPROVOKED` | `266` | `TaskType::RANGED_ATTACK_FOCUSED_UNPROVOKED` |
+| `TaskType.MOVE_IN_BOW_RANGE` | `267` | `TaskType::MOVE_IN_BOW_RANGE` |
+| `TaskType.STAND_AT_GUARD_NODE_HOMEBUILDING_INDOORS_ONLY` | `268` | `TaskType::STAND_AT_GUARD_NODE_HOMEBUILDING_INDOORS_ONLY` |
+| `TaskType.HEAL_MY_LEGS` | `269` | `TaskType::HEAL_MY_LEGS` |
+| `TaskType.ASSAULT_FORTIFICATIONS_PREFER_GATES` | `270` | `TaskType::ASSAULT_FORTIFICATIONS_PREFER_GATES` |
+| `TaskType.ASSAULT_FORTIFICATIONS_PREFER_WALLS` | `271` | `TaskType::ASSAULT_FORTIFICATIONS_PREFER_WALLS` |
+| `TaskType.SMASH_BUILDING` | `272` | `TaskType::SMASH_BUILDING` |
+| `TaskType.PICKUP_INTRUDERS_TOWN` | `273` | `TaskType::PICKUP_INTRUDERS_TOWN` |
+| `TaskType.TAKE_INTRUDER_OUTSIDE_TOWN` | `274` | `TaskType::TAKE_INTRUDER_OUTSIDE_TOWN` |
+| `TaskType.SIT_AROUND` | `275` | `TaskType::SIT_AROUND` |
+| `TaskType.LIBERATE_ALL_THE_PRISONERS` | `276` | `TaskType::LIBERATE_ALL_THE_PRISONERS` |
+| `TaskType.ANIMAL_FETCH_A_LIMB` | `277` | `TaskType::ANIMAL_FETCH_A_LIMB` |
+| `TaskType.PLAY_BECAUSE_I_HAVE_A_LIMB_IN_MOUTH` | `278` | `TaskType::PLAY_BECAUSE_I_HAVE_A_LIMB_IN_MOUTH` |
+| `TaskType.CHASE_ALLY_DOGS_WITH_MOUTH_LIMBS` | `279` | `TaskType::CHASE_ALLY_DOGS_WITH_MOUTH_LIMBS` |
+| `TaskType.RUN_AWAY_FORCED` | `280` | `TaskType::RUN_AWAY_FORCED` |
+| `TaskType.FIND_CAGE_AND_PUT_DEADGUY_IN` | `281` | `TaskType::FIND_CAGE_AND_PUT_DEADGUY_IN` |
+| `TaskType.EAT_A_RANDOM_CAGE_OCCUPANT_MEASURED_RATE` | `282` | `TaskType::EAT_A_RANDOM_CAGE_OCCUPANT_MEASURED_RATE` |
+| `TaskType.SHOO_STRANGERS_OUT_OF_MY_BUILDING_IF_PRIVATE` | `283` | `TaskType::SHOO_STRANGERS_OUT_OF_MY_BUILDING_IF_PRIVATE` |
+| `TaskType.LOOT_CONTAINER` | `284` | `TaskType::LOOT_CONTAINER` |
+| `TaskType.CUT_LOCK` | `285` | `TaskType::CUT_LOCK` |
+| `TaskType.BRUTE_FORCE_LOCK` | `286` | `TaskType::BRUTE_FORCE_LOCK` |
+| `TaskType.BASH_DOOR_HERE` | `287` | `TaskType::BASH_DOOR_HERE` |
+| `TaskType.PROTECT_ALLIES_STAY_IN_TOWN` | `288` | `TaskType::PROTECT_ALLIES_STAY_IN_TOWN` |
+| `TaskType.STAY_CLOSE_TO_TARGET_ANIMAL` | `289` | `TaskType::STAY_CLOSE_TO_TARGET_ANIMAL` |
+| `TaskType.BASH_GATE_PLAYER_ORDER` | `290` | `TaskType::BASH_GATE_PLAYER_ORDER` |
 
 ### Table: `WeaponCategory`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `WeaponCategory.SKILL_KATANAS` | `WeaponCategory::SKILL_KATANAS` |
-| `WeaponCategory.SKILL_SABRES` | `WeaponCategory::SKILL_SABRES` |
-| `WeaponCategory.SKILL_BLUNT` | `WeaponCategory::SKILL_BLUNT` |
-| `WeaponCategory.SKILL_HEAVY` | `WeaponCategory::SKILL_HEAVY` |
-| `WeaponCategory.SKILL_HACKERS` | `WeaponCategory::SKILL_HACKERS` |
-| `WeaponCategory.SKILL_UNARMED` | `WeaponCategory::SKILL_UNARMED` |
-| `WeaponCategory.SKILL_BOW` | `WeaponCategory::SKILL_BOW` |
-| `WeaponCategory.SKILL_TURRET` | `WeaponCategory::SKILL_TURRET` |
-| `WeaponCategory.ATTACK_POLEARMS` | `WeaponCategory::ATTACK_POLEARMS` |
-| `WeaponCategory.ATTACK_ELEPHANT` | `WeaponCategory::ATTACK_ELEPHANT` |
-| `WeaponCategory.ATTACK_DOG` | `WeaponCategory::ATTACK_DOG` |
-| `WeaponCategory.ATTACK_BULL` | `WeaponCategory::ATTACK_BULL` |
-| `WeaponCategory.ATTACK_ROBOTSPIDER` | `WeaponCategory::ATTACK_ROBOTSPIDER` |
-| `WeaponCategory.ATTACK_SPIDER` | `WeaponCategory::ATTACK_SPIDER` |
-| `WeaponCategory.ATTACK_CAGEBEAST` | `WeaponCategory::ATTACK_CAGEBEAST` |
-| `WeaponCategory.ATTACK_DUCK` | `WeaponCategory::ATTACK_DUCK` |
-| `WeaponCategory.ATTACK_GORILLA` | `WeaponCategory::ATTACK_GORILLA` |
-| `WeaponCategory.ATTACK_GAR` | `WeaponCategory::ATTACK_GAR` |
-| `WeaponCategory.ATTACK_FROG` | `WeaponCategory::ATTACK_FROG` |
-| `WeaponCategory.ATTACK_GOAT` | `WeaponCategory::ATTACK_GOAT` |
-| `WeaponCategory.ATTACK_GIRAFFE` | `WeaponCategory::ATTACK_GIRAFFE` |
-| `WeaponCategory.ATTACK_NULL` | `WeaponCategory::ATTACK_NULL` |
-| `WeaponCategory.NUM_SKILL_TYPES` | `WeaponCategory::NUM_SKILL_TYPES` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `WeaponCategory.SKILL_KATANAS` | `0` | `WeaponCategory::SKILL_KATANAS` |
+| `WeaponCategory.SKILL_SABRES` | `1` | `WeaponCategory::SKILL_SABRES` |
+| `WeaponCategory.SKILL_BLUNT` | `2` | `WeaponCategory::SKILL_BLUNT` |
+| `WeaponCategory.SKILL_HEAVY` | `3` | `WeaponCategory::SKILL_HEAVY` |
+| `WeaponCategory.SKILL_HACKERS` | `4` | `WeaponCategory::SKILL_HACKERS` |
+| `WeaponCategory.SKILL_UNARMED` | `5` | `WeaponCategory::SKILL_UNARMED` |
+| `WeaponCategory.SKILL_BOW` | `6` | `WeaponCategory::SKILL_BOW` |
+| `WeaponCategory.SKILL_TURRET` | `7` | `WeaponCategory::SKILL_TURRET` |
+| `WeaponCategory.ATTACK_POLEARMS` | `8` | `WeaponCategory::ATTACK_POLEARMS` |
+| `WeaponCategory.ATTACK_ELEPHANT` | `9` | `WeaponCategory::ATTACK_ELEPHANT` |
+| `WeaponCategory.ATTACK_DOG` | `10` | `WeaponCategory::ATTACK_DOG` |
+| `WeaponCategory.ATTACK_BULL` | `11` | `WeaponCategory::ATTACK_BULL` |
+| `WeaponCategory.ATTACK_ROBOTSPIDER` | `12` | `WeaponCategory::ATTACK_ROBOTSPIDER` |
+| `WeaponCategory.ATTACK_SPIDER` | `13` | `WeaponCategory::ATTACK_SPIDER` |
+| `WeaponCategory.ATTACK_CAGEBEAST` | `14` | `WeaponCategory::ATTACK_CAGEBEAST` |
+| `WeaponCategory.ATTACK_DUCK` | `15` | `WeaponCategory::ATTACK_DUCK` |
+| `WeaponCategory.ATTACK_GORILLA` | `16` | `WeaponCategory::ATTACK_GORILLA` |
+| `WeaponCategory.ATTACK_GAR` | `17` | `WeaponCategory::ATTACK_GAR` |
+| `WeaponCategory.ATTACK_FROG` | `18` | `WeaponCategory::ATTACK_FROG` |
+| `WeaponCategory.ATTACK_GOAT` | `19` | `WeaponCategory::ATTACK_GOAT` |
+| `WeaponCategory.ATTACK_GIRAFFE` | `20` | `WeaponCategory::ATTACK_GIRAFFE` |
+| `WeaponCategory.ATTACK_NULL` | `21` | `WeaponCategory::ATTACK_NULL` |
+| `WeaponCategory.NUM_SKILL_TYPES` | `22` | `WeaponCategory::NUM_SKILL_TYPES` |
 
 ### Table: `LeftRight`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `LeftRight.SIDE_NEITHER` | `LeftRight::SIDE_NEITHER` |
-| `LeftRight.SIDE_LEFT` | `LeftRight::SIDE_LEFT` |
-| `LeftRight.SIDE_RIGHT` | `LeftRight::SIDE_RIGHT` |
-| `LeftRight.SIDE_BOTH` | `LeftRight::SIDE_BOTH` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `LeftRight.SIDE_NEITHER` | `0` | `LeftRight::SIDE_NEITHER` |
+| `LeftRight.SIDE_LEFT` | `1` | `LeftRight::SIDE_LEFT` |
+| `LeftRight.SIDE_RIGHT` | `2` | `LeftRight::SIDE_RIGHT` |
+| `LeftRight.SIDE_BOTH` | `3` | `LeftRight::SIDE_BOTH` |
 
 ### Table: `MessageForB.MessageType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MessageForB.MessageType.M_UNSELECT_ALL` | `MessageForB::MessageType::M_UNSELECT_ALL` |
-| `MessageForB.MessageType.M_GIVE_TASK` | `MessageForB::MessageType::M_GIVE_TASK` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MessageForB.MessageType.M_UNSELECT_ALL` | `0` | `MessageForB::MessageType::M_UNSELECT_ALL` |
+| `MessageForB.MessageType.M_GIVE_TASK` | `1` | `MessageForB::MessageType::M_GIVE_TASK` |
 
 ### Table: `MessageForB.StandingOrder`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MessageForB.StandingOrder.M_SET_ORDER_RUN` | `MessageForB::StandingOrder::M_SET_ORDER_RUN` |
-| `MessageForB.StandingOrder.M_SET_ORDER_JOG` | `MessageForB::StandingOrder::M_SET_ORDER_JOG` |
-| `MessageForB.StandingOrder.M_SET_ORDER_WALK` | `MessageForB::StandingOrder::M_SET_ORDER_WALK` |
-| `MessageForB.StandingOrder.M_SET_ORDER_STEALTH_ON` | `MessageForB::StandingOrder::M_SET_ORDER_STEALTH_ON` |
-| `MessageForB.StandingOrder.M_SET_ORDER_STEALTH_OFF` | `MessageForB::StandingOrder::M_SET_ORDER_STEALTH_OFF` |
-| `MessageForB.StandingOrder.M_SET_ORDER_AGG` | `MessageForB::StandingOrder::M_SET_ORDER_AGG` |
-| `MessageForB.StandingOrder.M_SET_ORDER_DEF` | `MessageForB::StandingOrder::M_SET_ORDER_DEF` |
-| `MessageForB.StandingOrder.M_SET_ORDER_EVADE` | `MessageForB::StandingOrder::M_SET_ORDER_EVADE` |
-| `MessageForB.StandingOrder.M_SET_ORDER_FAR` | `MessageForB::StandingOrder::M_SET_ORDER_FAR` |
-| `MessageForB.StandingOrder.M_SET_ORDER_NEAR` | `MessageForB::StandingOrder::M_SET_ORDER_NEAR` |
-| `MessageForB.StandingOrder.M__TOGGLEORDERS__AFTER__THIS_` | `MessageForB::StandingOrder::M__TOGGLEORDERS__AFTER__THIS_` |
-| `MessageForB.StandingOrder.M_SET_ORDER_DEFENSIVE_COMBAT` | `MessageForB::StandingOrder::M_SET_ORDER_DEFENSIVE_COMBAT` |
-| `MessageForB.StandingOrder.M_SET_ORDER_HOLD` | `MessageForB::StandingOrder::M_SET_ORDER_HOLD` |
-| `MessageForB.StandingOrder.M_SET_ORDER_PASSIVE` | `MessageForB::StandingOrder::M_SET_ORDER_PASSIVE` |
-| `MessageForB.StandingOrder.M_SET_ORDER_TAUNT` | `MessageForB::StandingOrder::M_SET_ORDER_TAUNT` |
-| `MessageForB.StandingOrder.M_SET_ORDER_CHASE` | `MessageForB::StandingOrder::M_SET_ORDER_CHASE` |
-| `MessageForB.StandingOrder.M_SET_ORDER_GROUP_SPEED` | `MessageForB::StandingOrder::M_SET_ORDER_GROUP_SPEED` |
-| `MessageForB.StandingOrder.M_SET_ORDER_RANGED` | `MessageForB::StandingOrder::M_SET_ORDER_RANGED` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MessageForB.StandingOrder.M_SET_ORDER_RUN` | `0` | `MessageForB::StandingOrder::M_SET_ORDER_RUN` |
+| `MessageForB.StandingOrder.M_SET_ORDER_JOG` | `1` | `MessageForB::StandingOrder::M_SET_ORDER_JOG` |
+| `MessageForB.StandingOrder.M_SET_ORDER_WALK` | `2` | `MessageForB::StandingOrder::M_SET_ORDER_WALK` |
+| `MessageForB.StandingOrder.M_SET_ORDER_STEALTH_ON` | `3` | `MessageForB::StandingOrder::M_SET_ORDER_STEALTH_ON` |
+| `MessageForB.StandingOrder.M_SET_ORDER_STEALTH_OFF` | `4` | `MessageForB::StandingOrder::M_SET_ORDER_STEALTH_OFF` |
+| `MessageForB.StandingOrder.M_SET_ORDER_AGG` | `5` | `MessageForB::StandingOrder::M_SET_ORDER_AGG` |
+| `MessageForB.StandingOrder.M_SET_ORDER_DEF` | `6` | `MessageForB::StandingOrder::M_SET_ORDER_DEF` |
+| `MessageForB.StandingOrder.M_SET_ORDER_EVADE` | `7` | `MessageForB::StandingOrder::M_SET_ORDER_EVADE` |
+| `MessageForB.StandingOrder.M_SET_ORDER_FAR` | `8` | `MessageForB::StandingOrder::M_SET_ORDER_FAR` |
+| `MessageForB.StandingOrder.M_SET_ORDER_NEAR` | `9` | `MessageForB::StandingOrder::M_SET_ORDER_NEAR` |
+| `MessageForB.StandingOrder.M__TOGGLEORDERS__AFTER__THIS_` | `10` | `MessageForB::StandingOrder::M__TOGGLEORDERS__AFTER__THIS_` |
+| `MessageForB.StandingOrder.M_SET_ORDER_DEFENSIVE_COMBAT` | `11` | `MessageForB::StandingOrder::M_SET_ORDER_DEFENSIVE_COMBAT` |
+| `MessageForB.StandingOrder.M_SET_ORDER_HOLD` | `12` | `MessageForB::StandingOrder::M_SET_ORDER_HOLD` |
+| `MessageForB.StandingOrder.M_SET_ORDER_PASSIVE` | `13` | `MessageForB::StandingOrder::M_SET_ORDER_PASSIVE` |
+| `MessageForB.StandingOrder.M_SET_ORDER_TAUNT` | `14` | `MessageForB::StandingOrder::M_SET_ORDER_TAUNT` |
+| `MessageForB.StandingOrder.M_SET_ORDER_CHASE` | `15` | `MessageForB::StandingOrder::M_SET_ORDER_CHASE` |
+| `MessageForB.StandingOrder.M_SET_ORDER_GROUP_SPEED` | `16` | `MessageForB::StandingOrder::M_SET_ORDER_GROUP_SPEED` |
+| `MessageForB.StandingOrder.M_SET_ORDER_RANGED` | `17` | `MessageForB::StandingOrder::M_SET_ORDER_RANGED` |
 
 ### Table: `CharStats.GUIStatsDisplayMode`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharStats.GUIStatsDisplayMode.GUI_STATS_NORMAL` | `CharStats::GUIStatsDisplayMode::GUI_STATS_NORMAL` |
-| `CharStats.GUIStatsDisplayMode.GUI_STATS_MARTIALARTIST` | `CharStats::GUIStatsDisplayMode::GUI_STATS_MARTIALARTIST` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharStats.GUIStatsDisplayMode.GUI_STATS_NORMAL` | `0` | `CharStats::GUIStatsDisplayMode::GUI_STATS_NORMAL` |
+| `CharStats.GUIStatsDisplayMode.GUI_STATS_MARTIALARTIST` | `1` | `CharStats::GUIStatsDisplayMode::GUI_STATS_MARTIALARTIST` |
 
 ### Table: `CharStats.DeadTimeState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharStats.DeadTimeState.ATTACK_HIT` | `CharStats::DeadTimeState::ATTACK_HIT` |
-| `CharStats.DeadTimeState.ATTACK_WAS_BLOCKED` | `CharStats::DeadTimeState::ATTACK_WAS_BLOCKED` |
-| `CharStats.DeadTimeState.BLOCKED_IT` | `CharStats::DeadTimeState::BLOCKED_IT` |
-| `CharStats.DeadTimeState.ATTACK_SLOT_OPEN` | `CharStats::DeadTimeState::ATTACK_SLOT_OPEN` |
-| `CharStats.DeadTimeState.WAS_HIT` | `CharStats::DeadTimeState::WAS_HIT` |
-| `CharStats.DeadTimeState.ATTACK_INTERRUPTED` | `CharStats::DeadTimeState::ATTACK_INTERRUPTED` |
-| `CharStats.DeadTimeState.ATTACK_MISSED` | `CharStats::DeadTimeState::ATTACK_MISSED` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharStats.DeadTimeState.ATTACK_HIT` | `0` | `CharStats::DeadTimeState::ATTACK_HIT` |
+| `CharStats.DeadTimeState.ATTACK_WAS_BLOCKED` | `1` | `CharStats::DeadTimeState::ATTACK_WAS_BLOCKED` |
+| `CharStats.DeadTimeState.BLOCKED_IT` | `2` | `CharStats::DeadTimeState::BLOCKED_IT` |
+| `CharStats.DeadTimeState.ATTACK_SLOT_OPEN` | `3` | `CharStats::DeadTimeState::ATTACK_SLOT_OPEN` |
+| `CharStats.DeadTimeState.WAS_HIT` | `4` | `CharStats::DeadTimeState::WAS_HIT` |
+| `CharStats.DeadTimeState.ATTACK_INTERRUPTED` | `5` | `CharStats::DeadTimeState::ATTACK_INTERRUPTED` |
+| `CharStats.DeadTimeState.ATTACK_MISSED` | `6` | `CharStats::DeadTimeState::ATTACK_MISSED` |
 
 ### Table: `StatsEnumerated`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `StatsEnumerated.STAT_NONE` | `StatsEnumerated::STAT_NONE` |
-| `StatsEnumerated.STAT_STRENGTH` | `StatsEnumerated::STAT_STRENGTH` |
-| `StatsEnumerated.STAT_MELEE_ATTACK` | `StatsEnumerated::STAT_MELEE_ATTACK` |
-| `StatsEnumerated.STAT_LABOURING` | `StatsEnumerated::STAT_LABOURING` |
-| `StatsEnumerated.STAT_SCIENCE` | `StatsEnumerated::STAT_SCIENCE` |
-| `StatsEnumerated.STAT_ENGINEERING` | `StatsEnumerated::STAT_ENGINEERING` |
-| `StatsEnumerated.STAT_ROBOTICS` | `StatsEnumerated::STAT_ROBOTICS` |
-| `StatsEnumerated.STAT_SMITHING_WEAPON` | `StatsEnumerated::STAT_SMITHING_WEAPON` |
-| `StatsEnumerated.STAT_SMITHING_ARMOUR` | `StatsEnumerated::STAT_SMITHING_ARMOUR` |
-| `StatsEnumerated.STAT_MEDIC` | `StatsEnumerated::STAT_MEDIC` |
-| `StatsEnumerated.STAT_THIEVING` | `StatsEnumerated::STAT_THIEVING` |
-| `StatsEnumerated.STAT_TURRETS` | `StatsEnumerated::STAT_TURRETS` |
-| `StatsEnumerated.STAT_FARMING` | `StatsEnumerated::STAT_FARMING` |
-| `StatsEnumerated.STAT_COOKING` | `StatsEnumerated::STAT_COOKING` |
-| `StatsEnumerated.STAT_HIVEMEDIC` | `StatsEnumerated::STAT_HIVEMEDIC` |
-| `StatsEnumerated.STAT_VET` | `StatsEnumerated::STAT_VET` |
-| `StatsEnumerated.STAT_STEALTH` | `StatsEnumerated::STAT_STEALTH` |
-| `StatsEnumerated.STAT_ATHLETICS` | `StatsEnumerated::STAT_ATHLETICS` |
-| `StatsEnumerated.STAT_DEXTERITY` | `StatsEnumerated::STAT_DEXTERITY` |
-| `StatsEnumerated.STAT_MELEE_DEFENCE` | `StatsEnumerated::STAT_MELEE_DEFENCE` |
-| `StatsEnumerated.STAT_WEAPONS` | `StatsEnumerated::STAT_WEAPONS` |
-| `StatsEnumerated.STAT_TOUGHNESS` | `StatsEnumerated::STAT_TOUGHNESS` |
-| `StatsEnumerated.STAT_ASSASSINATION` | `StatsEnumerated::STAT_ASSASSINATION` |
-| `StatsEnumerated.STAT_SWIMMING` | `StatsEnumerated::STAT_SWIMMING` |
-| `StatsEnumerated.STAT_PERCEPTION` | `StatsEnumerated::STAT_PERCEPTION` |
-| `StatsEnumerated.STAT_KATANAS` | `StatsEnumerated::STAT_KATANAS` |
-| `StatsEnumerated.STAT_SABRES` | `StatsEnumerated::STAT_SABRES` |
-| `StatsEnumerated.STAT_HACKERS` | `StatsEnumerated::STAT_HACKERS` |
-| `StatsEnumerated.STAT_HEAVYWEAPONS` | `StatsEnumerated::STAT_HEAVYWEAPONS` |
-| `StatsEnumerated.STAT_BLUNT` | `StatsEnumerated::STAT_BLUNT` |
-| `StatsEnumerated.STAT_MARTIALARTS` | `StatsEnumerated::STAT_MARTIALARTS` |
-| `StatsEnumerated.STAT_MASSCOMBAT` | `StatsEnumerated::STAT_MASSCOMBAT` |
-| `StatsEnumerated.STAT_DODGE` | `StatsEnumerated::STAT_DODGE` |
-| `StatsEnumerated.STAT_SURVIVAL` | `StatsEnumerated::STAT_SURVIVAL` |
-| `StatsEnumerated.STAT_POLEARMS` | `StatsEnumerated::STAT_POLEARMS` |
-| `StatsEnumerated.STAT_CROSSBOWS` | `StatsEnumerated::STAT_CROSSBOWS` |
-| `StatsEnumerated.STAT_FRIENDLY_FIRE` | `StatsEnumerated::STAT_FRIENDLY_FIRE` |
-| `StatsEnumerated.STAT_LOCKPICKING` | `StatsEnumerated::STAT_LOCKPICKING` |
-| `StatsEnumerated.STAT_SMITHING_BOW` | `StatsEnumerated::STAT_SMITHING_BOW` |
-| `StatsEnumerated.STAT_END` | `StatsEnumerated::STAT_END` |
-| `StatsEnumerated._PrimaryWeaponDamage` | `StatsEnumerated::_PrimaryWeaponDamage` |
-| `StatsEnumerated._PrimaryWeaponSpeed` | `StatsEnumerated::_PrimaryWeaponSpeed` |
-| `StatsEnumerated._SecondaryWeaponDamage` | `StatsEnumerated::_SecondaryWeaponDamage` |
-| `StatsEnumerated._SecondaryWeaponSpeed` | `StatsEnumerated::_SecondaryWeaponSpeed` |
-| `StatsEnumerated._MaxCarryWeight` | `StatsEnumerated::_MaxCarryWeight` |
-| `StatsEnumerated._StrengthXPRateWalk` | `StatsEnumerated::_StrengthXPRateWalk` |
-| `StatsEnumerated._StrengthXPRateCombat` | `StatsEnumerated::_StrengthXPRateCombat` |
-| `StatsEnumerated._AttackSpeedHeavyWeapons` | `StatsEnumerated::_AttackSpeedHeavyWeapons` |
-| `StatsEnumerated._DamageResistance` | `StatsEnumerated::_DamageResistance` |
-| `StatsEnumerated._ToughnessXPRate` | `StatsEnumerated::_ToughnessXPRate` |
-| `StatsEnumerated._KnockoutTime` | `StatsEnumerated::_KnockoutTime` |
-| `StatsEnumerated._ToughnessKnockoutPoint` | `StatsEnumerated::_ToughnessKnockoutPoint` |
-| `StatsEnumerated._WoundDeteriorationSpeed` | `StatsEnumerated::_WoundDeteriorationSpeed` |
-| `StatsEnumerated._MaxRunSpeed` | `StatsEnumerated::_MaxRunSpeed` |
-| `StatsEnumerated._CurrentRunSpeed` | `StatsEnumerated::_CurrentRunSpeed` |
-| `StatsEnumerated._AthleticsXPBonus` | `StatsEnumerated::_AthleticsXPBonus` |
-| `StatsEnumerated._TurretAccuracy` | `StatsEnumerated::_TurretAccuracy` |
-| `StatsEnumerated._TurretRateOfFire` | `StatsEnumerated::_TurretRateOfFire` |
-| `StatsEnumerated._TurretFriendlyFireAvoidance` | `StatsEnumerated::_TurretFriendlyFireAvoidance` |
-| `StatsEnumerated._BuildingRate` | `StatsEnumerated::_BuildingRate` |
-| `StatsEnumerated._RepairingRate` | `StatsEnumerated::_RepairingRate` |
-| `StatsEnumerated._Mining` | `StatsEnumerated::_Mining` |
-| `StatsEnumerated._Farming` | `StatsEnumerated::_Farming` |
-| `StatsEnumerated._UsingMachinery` | `StatsEnumerated::_UsingMachinery` |
-| `StatsEnumerated._encumbrance` | `StatsEnumerated::_encumbrance` |
-| `StatsEnumerated._combatSpeed` | `StatsEnumerated::_combatSpeed` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `StatsEnumerated.STAT_NONE` | `0` | `StatsEnumerated::STAT_NONE` |
+| `StatsEnumerated.STAT_STRENGTH` | `1` | `StatsEnumerated::STAT_STRENGTH` |
+| `StatsEnumerated.STAT_MELEE_ATTACK` | `2` | `StatsEnumerated::STAT_MELEE_ATTACK` |
+| `StatsEnumerated.STAT_LABOURING` | `3` | `StatsEnumerated::STAT_LABOURING` |
+| `StatsEnumerated.STAT_SCIENCE` | `4` | `StatsEnumerated::STAT_SCIENCE` |
+| `StatsEnumerated.STAT_ENGINEERING` | `5` | `StatsEnumerated::STAT_ENGINEERING` |
+| `StatsEnumerated.STAT_ROBOTICS` | `6` | `StatsEnumerated::STAT_ROBOTICS` |
+| `StatsEnumerated.STAT_SMITHING_WEAPON` | `7` | `StatsEnumerated::STAT_SMITHING_WEAPON` |
+| `StatsEnumerated.STAT_SMITHING_ARMOUR` | `8` | `StatsEnumerated::STAT_SMITHING_ARMOUR` |
+| `StatsEnumerated.STAT_MEDIC` | `9` | `StatsEnumerated::STAT_MEDIC` |
+| `StatsEnumerated.STAT_THIEVING` | `10` | `StatsEnumerated::STAT_THIEVING` |
+| `StatsEnumerated.STAT_TURRETS` | `11` | `StatsEnumerated::STAT_TURRETS` |
+| `StatsEnumerated.STAT_FARMING` | `12` | `StatsEnumerated::STAT_FARMING` |
+| `StatsEnumerated.STAT_COOKING` | `13` | `StatsEnumerated::STAT_COOKING` |
+| `StatsEnumerated.STAT_HIVEMEDIC` | `14` | `StatsEnumerated::STAT_HIVEMEDIC` |
+| `StatsEnumerated.STAT_VET` | `15` | `StatsEnumerated::STAT_VET` |
+| `StatsEnumerated.STAT_STEALTH` | `16` | `StatsEnumerated::STAT_STEALTH` |
+| `StatsEnumerated.STAT_ATHLETICS` | `17` | `StatsEnumerated::STAT_ATHLETICS` |
+| `StatsEnumerated.STAT_DEXTERITY` | `18` | `StatsEnumerated::STAT_DEXTERITY` |
+| `StatsEnumerated.STAT_MELEE_DEFENCE` | `19` | `StatsEnumerated::STAT_MELEE_DEFENCE` |
+| `StatsEnumerated.STAT_WEAPONS` | `20` | `StatsEnumerated::STAT_WEAPONS` |
+| `StatsEnumerated.STAT_TOUGHNESS` | `21` | `StatsEnumerated::STAT_TOUGHNESS` |
+| `StatsEnumerated.STAT_ASSASSINATION` | `22` | `StatsEnumerated::STAT_ASSASSINATION` |
+| `StatsEnumerated.STAT_SWIMMING` | `23` | `StatsEnumerated::STAT_SWIMMING` |
+| `StatsEnumerated.STAT_PERCEPTION` | `24` | `StatsEnumerated::STAT_PERCEPTION` |
+| `StatsEnumerated.STAT_KATANAS` | `25` | `StatsEnumerated::STAT_KATANAS` |
+| `StatsEnumerated.STAT_SABRES` | `26` | `StatsEnumerated::STAT_SABRES` |
+| `StatsEnumerated.STAT_HACKERS` | `27` | `StatsEnumerated::STAT_HACKERS` |
+| `StatsEnumerated.STAT_HEAVYWEAPONS` | `28` | `StatsEnumerated::STAT_HEAVYWEAPONS` |
+| `StatsEnumerated.STAT_BLUNT` | `29` | `StatsEnumerated::STAT_BLUNT` |
+| `StatsEnumerated.STAT_MARTIALARTS` | `30` | `StatsEnumerated::STAT_MARTIALARTS` |
+| `StatsEnumerated.STAT_MASSCOMBAT` | `31` | `StatsEnumerated::STAT_MASSCOMBAT` |
+| `StatsEnumerated.STAT_DODGE` | `32` | `StatsEnumerated::STAT_DODGE` |
+| `StatsEnumerated.STAT_SURVIVAL` | `33` | `StatsEnumerated::STAT_SURVIVAL` |
+| `StatsEnumerated.STAT_POLEARMS` | `34` | `StatsEnumerated::STAT_POLEARMS` |
+| `StatsEnumerated.STAT_CROSSBOWS` | `35` | `StatsEnumerated::STAT_CROSSBOWS` |
+| `StatsEnumerated.STAT_FRIENDLY_FIRE` | `36` | `StatsEnumerated::STAT_FRIENDLY_FIRE` |
+| `StatsEnumerated.STAT_LOCKPICKING` | `37` | `StatsEnumerated::STAT_LOCKPICKING` |
+| `StatsEnumerated.STAT_SMITHING_BOW` | `38` | `StatsEnumerated::STAT_SMITHING_BOW` |
+| `StatsEnumerated.STAT_END` | `39` | `StatsEnumerated::STAT_END` |
+| `StatsEnumerated._PrimaryWeaponDamage` | `40` | `StatsEnumerated::_PrimaryWeaponDamage` |
+| `StatsEnumerated._PrimaryWeaponSpeed` | `41` | `StatsEnumerated::_PrimaryWeaponSpeed` |
+| `StatsEnumerated._SecondaryWeaponDamage` | `42` | `StatsEnumerated::_SecondaryWeaponDamage` |
+| `StatsEnumerated._SecondaryWeaponSpeed` | `43` | `StatsEnumerated::_SecondaryWeaponSpeed` |
+| `StatsEnumerated._MaxCarryWeight` | `44` | `StatsEnumerated::_MaxCarryWeight` |
+| `StatsEnumerated._StrengthXPRateWalk` | `45` | `StatsEnumerated::_StrengthXPRateWalk` |
+| `StatsEnumerated._StrengthXPRateCombat` | `46` | `StatsEnumerated::_StrengthXPRateCombat` |
+| `StatsEnumerated._AttackSpeedHeavyWeapons` | `47` | `StatsEnumerated::_AttackSpeedHeavyWeapons` |
+| `StatsEnumerated._DamageResistance` | `48` | `StatsEnumerated::_DamageResistance` |
+| `StatsEnumerated._ToughnessXPRate` | `49` | `StatsEnumerated::_ToughnessXPRate` |
+| `StatsEnumerated._KnockoutTime` | `50` | `StatsEnumerated::_KnockoutTime` |
+| `StatsEnumerated._ToughnessKnockoutPoint` | `51` | `StatsEnumerated::_ToughnessKnockoutPoint` |
+| `StatsEnumerated._WoundDeteriorationSpeed` | `52` | `StatsEnumerated::_WoundDeteriorationSpeed` |
+| `StatsEnumerated._MaxRunSpeed` | `53` | `StatsEnumerated::_MaxRunSpeed` |
+| `StatsEnumerated._CurrentRunSpeed` | `54` | `StatsEnumerated::_CurrentRunSpeed` |
+| `StatsEnumerated._AthleticsXPBonus` | `55` | `StatsEnumerated::_AthleticsXPBonus` |
+| `StatsEnumerated._TurretAccuracy` | `56` | `StatsEnumerated::_TurretAccuracy` |
+| `StatsEnumerated._TurretRateOfFire` | `57` | `StatsEnumerated::_TurretRateOfFire` |
+| `StatsEnumerated._TurretFriendlyFireAvoidance` | `58` | `StatsEnumerated::_TurretFriendlyFireAvoidance` |
+| `StatsEnumerated._BuildingRate` | `59` | `StatsEnumerated::_BuildingRate` |
+| `StatsEnumerated._RepairingRate` | `60` | `StatsEnumerated::_RepairingRate` |
+| `StatsEnumerated._Mining` | `61` | `StatsEnumerated::_Mining` |
+| `StatsEnumerated._Farming` | `62` | `StatsEnumerated::_Farming` |
+| `StatsEnumerated._UsingMachinery` | `63` | `StatsEnumerated::_UsingMachinery` |
+| `StatsEnumerated._encumbrance` | `64` | `StatsEnumerated::_encumbrance` |
+| `StatsEnumerated._combatSpeed` | `65` | `StatsEnumerated::_combatSpeed` |
 
 ### Table: `EventTriggerEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `EventTriggerEnum.EV_NONE` | `EventTriggerEnum::EV_NONE` |
-| `EventTriggerEnum.EV_PLAYER_TALK_TO_ME` | `EventTriggerEnum::EV_PLAYER_TALK_TO_ME` |
-| `EventTriggerEnum.EV_ANNOUNCEMENT` | `EventTriggerEnum::EV_ANNOUNCEMENT` |
-| `EventTriggerEnum.EV_I_SEE_NEUTRAL_SQUAD` | `EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD` |
-| `EventTriggerEnum.EV_I_SEE_RAGDOLL` | `EventTriggerEnum::EV_I_SEE_RAGDOLL` |
-| `EventTriggerEnum.EV_______` | `EventTriggerEnum::EV_______` |
-| `EventTriggerEnum.EV_SOUND_THE_ALARM` | `EventTriggerEnum::EV_SOUND_THE_ALARM` |
-| `EventTriggerEnum.EV_I_________` | `EventTriggerEnum::EV_I_________` |
-| `EventTriggerEnum.EV_THIEF_CAUGHT_STEALING_FROM_ME` | `EventTriggerEnum::EV_THIEF_CAUGHT_STEALING_FROM_ME` |
-| `EventTriggerEnum.EV_SHOO_FROM_MY_BUILDING` | `EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING` |
-| `EventTriggerEnum.EV_MARKED_FOR_DEATH` | `EventTriggerEnum::EV_MARKED_FOR_DEATH` |
-| `EventTriggerEnum.EV_SCREAMING_TORTURE` | `EventTriggerEnum::EV_SCREAMING_TORTURE` |
-| `EventTriggerEnum.EV_BAR_TALK` | `EventTriggerEnum::EV_BAR_TALK` |
-| `EventTriggerEnum.EV_UNLOCK_MY_CAGE_OR_SHACKLES` | `EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES` |
-| `EventTriggerEnum.EV_UNLOCK_MY_CAGE_ATTEMPT` | `EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT` |
-| `EventTriggerEnum.EV_I_DEFEATED_SQUAD` | `EventTriggerEnum::EV_I_DEFEATED_SQUAD` |
-| `EventTriggerEnum.EV_LAUNCH_ATTACK` | `EventTriggerEnum::EV_LAUNCH_ATTACK` |
-| `EventTriggerEnum.EV_INTRUDER_FOUND` | `EventTriggerEnum::EV_INTRUDER_FOUND` |
-| `EventTriggerEnum.EV_HEALING_OTHER_START` | `EventTriggerEnum::EV_HEALING_OTHER_START` |
-| `EventTriggerEnum.EV_BEING_HEALED_START` | `EventTriggerEnum::EV_BEING_HEALED_START` |
-| `EventTriggerEnum.EV_HEALING_OTHER_FINISHED` | `EventTriggerEnum::EV_HEALING_OTHER_FINISHED` |
-| `EventTriggerEnum.EV_BEING_HEALED_FINISHED` | `EventTriggerEnum::EV_BEING_HEALED_FINISHED` |
-| `EventTriggerEnum.EV_FIRSTAID_KIT_EMPTY` | `EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY` |
-| `EventTriggerEnum.EV_GET_UP_PEACE` | `EventTriggerEnum::EV_GET_UP_PEACE` |
-| `EventTriggerEnum.EV_GET_UP_FIGHT` | `EventTriggerEnum::EV_GET_UP_FIGHT` |
-| `EventTriggerEnum.EV_GET_UP_UNNECCESSARY_FIGHT` | `EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT` |
-| `EventTriggerEnum.EV_HARRASSMENT_SHOUTS` | `EventTriggerEnum::EV_HARRASSMENT_SHOUTS` |
-| `EventTriggerEnum.EV_I_SEE_ANIMAL_SQUAD` | `EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD` |
-| `EventTriggerEnum.EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET` | `EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET` |
-| `EventTriggerEnum.EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS` | `EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS` |
-| `EventTriggerEnum.EV_CONTRACT_JOB_ENDED` | `EventTriggerEnum::EV_CONTRACT_JOB_ENDED` |
-| `EventTriggerEnum.EV_BETRAYAL` | `EventTriggerEnum::EV_BETRAYAL` |
-| `EventTriggerEnum.EV_LOOTING_WEAPON_ONLY` | `EventTriggerEnum::EV_LOOTING_WEAPON_ONLY` |
-| `EventTriggerEnum.EV_LOOTING_EVERYTHING` | `EventTriggerEnum::EV_LOOTING_EVERYTHING` |
-| `EventTriggerEnum.EV_I_SEE_UNIFORM_IMPOSTER` | `EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER` |
-| `EventTriggerEnum.EV_INTRODUCING_NEW_SLAVE` | `EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE` |
-| `EventTriggerEnum.EV_ESCAPING_SLAVE_SPOTTED` | `EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED` |
-| `EventTriggerEnum.EV_RECAPTURED_A_SLAVE` | `EventTriggerEnum::EV_RECAPTURED_A_SLAVE` |
-| `EventTriggerEnum.EV_SHOUT_AT_SLAVE_WORKER` | `EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER` |
-| `EventTriggerEnum.EV_SLAVE_DELIVERY` | `EventTriggerEnum::EV_SLAVE_DELIVERY` |
-| `EventTriggerEnum.EV_ESCAPED_EX_SLAVE_SPOTTED` | `EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED` |
-| `EventTriggerEnum.EV_WITNESS_GENERIC_ASSAULT` | `EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT` |
-| `EventTriggerEnum.EV_WITNESS_LOOTING_ALLY` | `EventTriggerEnum::EV_WITNESS_LOOTING_ALLY` |
-| `EventTriggerEnum.EV_WITNESS_THIEF_OR_LOCKPICK` | `EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK` |
-| `EventTriggerEnum.EV_BOUNTY_SPOTTED` | `EventTriggerEnum::EV_BOUNTY_SPOTTED` |
-| `EventTriggerEnum.EV_ESCAPED_PRISONER_SPOTTED` | `EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED` |
-| `EventTriggerEnum.EV_PRISONER_FREE_TO_GO` | `EventTriggerEnum::EV_PRISONER_FREE_TO_GO` |
-| `EventTriggerEnum.EV_ALMOST_WOKE_UP` | `EventTriggerEnum::EV_ALMOST_WOKE_UP` |
-| `EventTriggerEnum.EV_ENTER_BIOME` | `EventTriggerEnum::EV_ENTER_BIOME` |
-| `EventTriggerEnum.EV_ENTER_TOWN` | `EventTriggerEnum::EV_ENTER_TOWN` |
-| `EventTriggerEnum.EV_SQUAD_BROKEN` | `EventTriggerEnum::EV_SQUAD_BROKEN` |
-| `EventTriggerEnum.EV_BOUGHT_ME_FROM_SLAVERY` | `EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY` |
-| `EventTriggerEnum.EV_EATING_SOMETHING_SOUNDS` | `EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS` |
-| `EventTriggerEnum.EV_WORSHIPING_SOMETHING` | `EventTriggerEnum::EV_WORSHIPING_SOMETHING` |
-| `EventTriggerEnum.EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR` | `EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR` |
-| `EventTriggerEnum.EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE` | `EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE` |
-| `EventTriggerEnum.EV_ASSASSINATION_FAILED` | `EventTriggerEnum::EV_ASSASSINATION_FAILED` |
-| `EventTriggerEnum.EV_EATING_MY_CROPS` | `EventTriggerEnum::EV_EATING_MY_CROPS` |
-| `EventTriggerEnum.EV_KIDNAPPING_MY_ALLY` | `EventTriggerEnum::EV_KIDNAPPING_MY_ALLY` |
-| `EventTriggerEnum.EV_USING_MY_TRAINING_EQUIPMENT` | `EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT` |
-| `EventTriggerEnum.EV_GIVE_UP_CHASE` | `EventTriggerEnum::EV_GIVE_UP_CHASE` |
-| `EventTriggerEnum.EV_ACID_FEET` | `EventTriggerEnum::EV_ACID_FEET` |
-| `EventTriggerEnum.EV_ACID_RAIN` | `EventTriggerEnum::EV_ACID_RAIN` |
-| `EventTriggerEnum.EV_ACID_WATER` | `EventTriggerEnum::EV_ACID_WATER` |
-| `EventTriggerEnum.EV_WINDY` | `EventTriggerEnum::EV_WINDY` |
-| `EventTriggerEnum.EV_POISON_GAS` | `EventTriggerEnum::EV_POISON_GAS` |
-| `EventTriggerEnum.EV_I_SEE_ENEMY_PLAYER` | `EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER` |
-| `EventTriggerEnum.EV_I_SEE_ALLY_PLAYER` | `EventTriggerEnum::EV_I_SEE_ALLY_PLAYER` |
-| `EventTriggerEnum.EV_I_SEE_ILLEGAL_PLAYER_BUILDING` | `EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING` |
-| `EventTriggerEnum.EV_BURNING` | `EventTriggerEnum::EV_BURNING` |
-| `EventTriggerEnum.EV_LOST_LEG` | `EventTriggerEnum::EV_LOST_LEG` |
-| `EventTriggerEnum.EV_LOST_ARM` | `EventTriggerEnum::EV_LOST_ARM` |
-| `EventTriggerEnum.EV_I_SEE_PLAYER_NICE_BUILDING` | `EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING` |
-| `EventTriggerEnum.EV_TAKEN_OVER_PLAYER_TOWN` | `EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN` |
-| `EventTriggerEnum.EV_CROWD_TRIGGERED` | `EventTriggerEnum::EV_CROWD_TRIGGERED` |
-| `EventTriggerEnum.EV_MAX` | `EventTriggerEnum::EV_MAX` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `EventTriggerEnum.EV_NONE` | `0` | `EventTriggerEnum::EV_NONE` |
+| `EventTriggerEnum.EV_PLAYER_TALK_TO_ME` | `1` | `EventTriggerEnum::EV_PLAYER_TALK_TO_ME` |
+| `EventTriggerEnum.EV_ANNOUNCEMENT` | `2` | `EventTriggerEnum::EV_ANNOUNCEMENT` |
+| `EventTriggerEnum.EV_I_SEE_NEUTRAL_SQUAD` | `3` | `EventTriggerEnum::EV_I_SEE_NEUTRAL_SQUAD` |
+| `EventTriggerEnum.EV_I_SEE_RAGDOLL` | `4` | `EventTriggerEnum::EV_I_SEE_RAGDOLL` |
+| `EventTriggerEnum.EV_______` | `5` | `EventTriggerEnum::EV_______` |
+| `EventTriggerEnum.EV_SOUND_THE_ALARM` | `6` | `EventTriggerEnum::EV_SOUND_THE_ALARM` |
+| `EventTriggerEnum.EV_I_________` | `7` | `EventTriggerEnum::EV_I_________` |
+| `EventTriggerEnum.EV_THIEF_CAUGHT_STEALING_FROM_ME` | `8` | `EventTriggerEnum::EV_THIEF_CAUGHT_STEALING_FROM_ME` |
+| `EventTriggerEnum.EV_SHOO_FROM_MY_BUILDING` | `9` | `EventTriggerEnum::EV_SHOO_FROM_MY_BUILDING` |
+| `EventTriggerEnum.EV_MARKED_FOR_DEATH` | `10` | `EventTriggerEnum::EV_MARKED_FOR_DEATH` |
+| `EventTriggerEnum.EV_SCREAMING_TORTURE` | `11` | `EventTriggerEnum::EV_SCREAMING_TORTURE` |
+| `EventTriggerEnum.EV_BAR_TALK` | `12` | `EventTriggerEnum::EV_BAR_TALK` |
+| `EventTriggerEnum.EV_UNLOCK_MY_CAGE_OR_SHACKLES` | `13` | `EventTriggerEnum::EV_UNLOCK_MY_CAGE_OR_SHACKLES` |
+| `EventTriggerEnum.EV_UNLOCK_MY_CAGE_ATTEMPT` | `14` | `EventTriggerEnum::EV_UNLOCK_MY_CAGE_ATTEMPT` |
+| `EventTriggerEnum.EV_I_DEFEATED_SQUAD` | `15` | `EventTriggerEnum::EV_I_DEFEATED_SQUAD` |
+| `EventTriggerEnum.EV_LAUNCH_ATTACK` | `16` | `EventTriggerEnum::EV_LAUNCH_ATTACK` |
+| `EventTriggerEnum.EV_INTRUDER_FOUND` | `17` | `EventTriggerEnum::EV_INTRUDER_FOUND` |
+| `EventTriggerEnum.EV_HEALING_OTHER_START` | `18` | `EventTriggerEnum::EV_HEALING_OTHER_START` |
+| `EventTriggerEnum.EV_BEING_HEALED_START` | `19` | `EventTriggerEnum::EV_BEING_HEALED_START` |
+| `EventTriggerEnum.EV_HEALING_OTHER_FINISHED` | `20` | `EventTriggerEnum::EV_HEALING_OTHER_FINISHED` |
+| `EventTriggerEnum.EV_BEING_HEALED_FINISHED` | `21` | `EventTriggerEnum::EV_BEING_HEALED_FINISHED` |
+| `EventTriggerEnum.EV_FIRSTAID_KIT_EMPTY` | `22` | `EventTriggerEnum::EV_FIRSTAID_KIT_EMPTY` |
+| `EventTriggerEnum.EV_GET_UP_PEACE` | `23` | `EventTriggerEnum::EV_GET_UP_PEACE` |
+| `EventTriggerEnum.EV_GET_UP_FIGHT` | `24` | `EventTriggerEnum::EV_GET_UP_FIGHT` |
+| `EventTriggerEnum.EV_GET_UP_UNNECCESSARY_FIGHT` | `25` | `EventTriggerEnum::EV_GET_UP_UNNECCESSARY_FIGHT` |
+| `EventTriggerEnum.EV_HARRASSMENT_SHOUTS` | `26` | `EventTriggerEnum::EV_HARRASSMENT_SHOUTS` |
+| `EventTriggerEnum.EV_I_SEE_ANIMAL_SQUAD` | `27` | `EventTriggerEnum::EV_I_SEE_ANIMAL_SQUAD` |
+| `EventTriggerEnum.EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET` | `28` | `EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_TARGET` |
+| `EventTriggerEnum.EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS` | `29` | `EventTriggerEnum::EV_SPEECH_INTERRUPTED_ATTACKED_BY_STRANGERS` |
+| `EventTriggerEnum.EV_CONTRACT_JOB_ENDED` | `30` | `EventTriggerEnum::EV_CONTRACT_JOB_ENDED` |
+| `EventTriggerEnum.EV_BETRAYAL` | `31` | `EventTriggerEnum::EV_BETRAYAL` |
+| `EventTriggerEnum.EV_LOOTING_WEAPON_ONLY` | `32` | `EventTriggerEnum::EV_LOOTING_WEAPON_ONLY` |
+| `EventTriggerEnum.EV_LOOTING_EVERYTHING` | `33` | `EventTriggerEnum::EV_LOOTING_EVERYTHING` |
+| `EventTriggerEnum.EV_I_SEE_UNIFORM_IMPOSTER` | `34` | `EventTriggerEnum::EV_I_SEE_UNIFORM_IMPOSTER` |
+| `EventTriggerEnum.EV_INTRODUCING_NEW_SLAVE` | `35` | `EventTriggerEnum::EV_INTRODUCING_NEW_SLAVE` |
+| `EventTriggerEnum.EV_ESCAPING_SLAVE_SPOTTED` | `36` | `EventTriggerEnum::EV_ESCAPING_SLAVE_SPOTTED` |
+| `EventTriggerEnum.EV_RECAPTURED_A_SLAVE` | `37` | `EventTriggerEnum::EV_RECAPTURED_A_SLAVE` |
+| `EventTriggerEnum.EV_SHOUT_AT_SLAVE_WORKER` | `38` | `EventTriggerEnum::EV_SHOUT_AT_SLAVE_WORKER` |
+| `EventTriggerEnum.EV_SLAVE_DELIVERY` | `39` | `EventTriggerEnum::EV_SLAVE_DELIVERY` |
+| `EventTriggerEnum.EV_ESCAPED_EX_SLAVE_SPOTTED` | `40` | `EventTriggerEnum::EV_ESCAPED_EX_SLAVE_SPOTTED` |
+| `EventTriggerEnum.EV_WITNESS_GENERIC_ASSAULT` | `41` | `EventTriggerEnum::EV_WITNESS_GENERIC_ASSAULT` |
+| `EventTriggerEnum.EV_WITNESS_LOOTING_ALLY` | `42` | `EventTriggerEnum::EV_WITNESS_LOOTING_ALLY` |
+| `EventTriggerEnum.EV_WITNESS_THIEF_OR_LOCKPICK` | `43` | `EventTriggerEnum::EV_WITNESS_THIEF_OR_LOCKPICK` |
+| `EventTriggerEnum.EV_BOUNTY_SPOTTED` | `44` | `EventTriggerEnum::EV_BOUNTY_SPOTTED` |
+| `EventTriggerEnum.EV_ESCAPED_PRISONER_SPOTTED` | `45` | `EventTriggerEnum::EV_ESCAPED_PRISONER_SPOTTED` |
+| `EventTriggerEnum.EV_PRISONER_FREE_TO_GO` | `46` | `EventTriggerEnum::EV_PRISONER_FREE_TO_GO` |
+| `EventTriggerEnum.EV_ALMOST_WOKE_UP` | `47` | `EventTriggerEnum::EV_ALMOST_WOKE_UP` |
+| `EventTriggerEnum.EV_ENTER_BIOME` | `48` | `EventTriggerEnum::EV_ENTER_BIOME` |
+| `EventTriggerEnum.EV_ENTER_TOWN` | `49` | `EventTriggerEnum::EV_ENTER_TOWN` |
+| `EventTriggerEnum.EV_SQUAD_BROKEN` | `50` | `EventTriggerEnum::EV_SQUAD_BROKEN` |
+| `EventTriggerEnum.EV_BOUGHT_ME_FROM_SLAVERY` | `51` | `EventTriggerEnum::EV_BOUGHT_ME_FROM_SLAVERY` |
+| `EventTriggerEnum.EV_EATING_SOMETHING_SOUNDS` | `52` | `EventTriggerEnum::EV_EATING_SOMETHING_SOUNDS` |
+| `EventTriggerEnum.EV_WORSHIPING_SOMETHING` | `53` | `EventTriggerEnum::EV_WORSHIPING_SOMETHING` |
+| `EventTriggerEnum.EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR` | `54` | `EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_SAVIOR` |
+| `EventTriggerEnum.EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE` | `55` | `EventTriggerEnum::EV_SLAVE_ESCAPE_OPPORTUNITY_ALONE` |
+| `EventTriggerEnum.EV_ASSASSINATION_FAILED` | `56` | `EventTriggerEnum::EV_ASSASSINATION_FAILED` |
+| `EventTriggerEnum.EV_EATING_MY_CROPS` | `57` | `EventTriggerEnum::EV_EATING_MY_CROPS` |
+| `EventTriggerEnum.EV_KIDNAPPING_MY_ALLY` | `58` | `EventTriggerEnum::EV_KIDNAPPING_MY_ALLY` |
+| `EventTriggerEnum.EV_USING_MY_TRAINING_EQUIPMENT` | `59` | `EventTriggerEnum::EV_USING_MY_TRAINING_EQUIPMENT` |
+| `EventTriggerEnum.EV_GIVE_UP_CHASE` | `60` | `EventTriggerEnum::EV_GIVE_UP_CHASE` |
+| `EventTriggerEnum.EV_ACID_FEET` | `61` | `EventTriggerEnum::EV_ACID_FEET` |
+| `EventTriggerEnum.EV_ACID_RAIN` | `62` | `EventTriggerEnum::EV_ACID_RAIN` |
+| `EventTriggerEnum.EV_ACID_WATER` | `63` | `EventTriggerEnum::EV_ACID_WATER` |
+| `EventTriggerEnum.EV_WINDY` | `64` | `EventTriggerEnum::EV_WINDY` |
+| `EventTriggerEnum.EV_POISON_GAS` | `65` | `EventTriggerEnum::EV_POISON_GAS` |
+| `EventTriggerEnum.EV_I_SEE_ENEMY_PLAYER` | `66` | `EventTriggerEnum::EV_I_SEE_ENEMY_PLAYER` |
+| `EventTriggerEnum.EV_I_SEE_ALLY_PLAYER` | `67` | `EventTriggerEnum::EV_I_SEE_ALLY_PLAYER` |
+| `EventTriggerEnum.EV_I_SEE_ILLEGAL_PLAYER_BUILDING` | `68` | `EventTriggerEnum::EV_I_SEE_ILLEGAL_PLAYER_BUILDING` |
+| `EventTriggerEnum.EV_BURNING` | `69` | `EventTriggerEnum::EV_BURNING` |
+| `EventTriggerEnum.EV_LOST_LEG` | `70` | `EventTriggerEnum::EV_LOST_LEG` |
+| `EventTriggerEnum.EV_LOST_ARM` | `71` | `EventTriggerEnum::EV_LOST_ARM` |
+| `EventTriggerEnum.EV_I_SEE_PLAYER_NICE_BUILDING` | `72` | `EventTriggerEnum::EV_I_SEE_PLAYER_NICE_BUILDING` |
+| `EventTriggerEnum.EV_TAKEN_OVER_PLAYER_TOWN` | `73` | `EventTriggerEnum::EV_TAKEN_OVER_PLAYER_TOWN` |
+| `EventTriggerEnum.EV_CROWD_TRIGGERED` | `74` | `EventTriggerEnum::EV_CROWD_TRIGGERED` |
+| `EventTriggerEnum.EV_MAX` | `75` | `EventTriggerEnum::EV_MAX` |
 
 ### Table: `DialogConditionEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `DialogConditionEnum.DC_NONE` | `DialogConditionEnum::DC_NONE` |
-| `DialogConditionEnum.DC_RELATIONS` | `DialogConditionEnum::DC_RELATIONS` |
-| `DialogConditionEnum.DC_PLAYERMONEY` | `DialogConditionEnum::DC_PLAYERMONEY` |
-| `DialogConditionEnum.DC_REPUTATION` | `DialogConditionEnum::DC_REPUTATION` |
-| `DialogConditionEnum.DC_CARRYING_BOUNTY_ALIVE` | `DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE` |
-| `DialogConditionEnum.DC_CARRYING_BOUNTY_DEAD` | `DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD` |
-| `DialogConditionEnum.DC_FACTION_VARIABLE` | `DialogConditionEnum::DC_FACTION_VARIABLE` |
-| `DialogConditionEnum.DC_IMPRISONED_BY_TARGET` | `DialogConditionEnum::DC_IMPRISONED_BY_TARGET` |
-| `DialogConditionEnum.DC_IMPRISONED_BY_OTHER` | `DialogConditionEnum::DC_IMPRISONED_BY_OTHER` |
-| `DialogConditionEnum.DC_IS_A_TRADER` | `DialogConditionEnum::DC_IS_A_TRADER` |
-| `DialogConditionEnum.DC_FACTION_RANK` | `DialogConditionEnum::DC_FACTION_RANK` |
-| `DialogConditionEnum.DC_BUILDING_IS_CLOSED_AND_SECURED` | `DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED` |
-| `DialogConditionEnum.DC_PLAYER_TECH_LEVEL` | `DialogConditionEnum::DC_PLAYER_TECH_LEVEL` |
-| `DialogConditionEnum.DC_NUM_DIALOG_EVENT_REPEATS` | `DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS` |
-| `DialogConditionEnum.DC_IS_IMPRISONED` | `DialogConditionEnum::DC_IS_IMPRISONED` |
-| `DialogConditionEnum.DC_IMPRISONMENT_IS_DEATHROW` | `DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW` |
-| `DialogConditionEnum.DC_TARGET_IN_TALKING_RANGE` | `DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE` |
-| `DialogConditionEnum.DC_IN_MY_BUILDING` | `DialogConditionEnum::DC_IN_MY_BUILDING` |
-| `DialogConditionEnum.DC_TARGET_LAST_SEEN_X_HOURS_AGO` | `DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO` |
-| `DialogConditionEnum.DC_IS_LEADER` | `DialogConditionEnum::DC_IS_LEADER` |
-| `DialogConditionEnum.DC_MET_TARGET_BEFORE` | `DialogConditionEnum::DC_MET_TARGET_BEFORE` |
-| `DialogConditionEnum.DC_WEAKER_THAN_ME` | `DialogConditionEnum::DC_WEAKER_THAN_ME` |
-| `DialogConditionEnum.DC_STRONGER_THAN_ME` | `DialogConditionEnum::DC_STRONGER_THAN_ME` |
-| `DialogConditionEnum.DC_HAS_TAG` | `DialogConditionEnum::DC_HAS_TAG` |
-| `DialogConditionEnum.DC_IS_ALLY` | `DialogConditionEnum::DC_IS_ALLY` |
-| `DialogConditionEnum.DC_IS_ENEMY` | `DialogConditionEnum::DC_IS_ENEMY` |
-| `DialogConditionEnum.DC_PERSONALITY_TAG` | `DialogConditionEnum::DC_PERSONALITY_TAG` |
-| `DialogConditionEnum.DC_BROKEN_LEG` | `DialogConditionEnum::DC_BROKEN_LEG` |
-| `DialogConditionEnum.DC_BROKEN_ARM` | `DialogConditionEnum::DC_BROKEN_ARM` |
-| `DialogConditionEnum.DC_DAMAGED_HEAD` | `DialogConditionEnum::DC_DAMAGED_HEAD` |
-| `DialogConditionEnum.DC_NEARLY_KO` | `DialogConditionEnum::DC_NEARLY_KO` |
-| `DialogConditionEnum.DC_IN_A_NON_PLAYER_TOWN` | `DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN` |
-| `DialogConditionEnum.DC_IS_RUNNING` | `DialogConditionEnum::DC_IS_RUNNING` |
-| `DialogConditionEnum.DC_COPS_AROUND` | `DialogConditionEnum::DC_COPS_AROUND` |
-| `DialogConditionEnum.DC_SQUAD_SIZE` | `DialogConditionEnum::DC_SQUAD_SIZE` |
-| `DialogConditionEnum.DC_IS_PLAYER` | `DialogConditionEnum::DC_IS_PLAYER` |
-| `DialogConditionEnum.DC_NUM_BACKPACKS` | `DialogConditionEnum::DC_NUM_BACKPACKS` |
-| `DialogConditionEnum.DC_SQUAD_ONLY_ANIMALS` | `DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS` |
-| `DialogConditionEnum.DC_IS_OUTNUMBERED` | `DialogConditionEnum::DC_IS_OUTNUMBERED` |
-| `DialogConditionEnum.DC_BOUNTY_AMOUNT_PERCEIVED` | `DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED` |
-| `DialogConditionEnum.DC_IS_KO` | `DialogConditionEnum::DC_IS_KO` |
-| `DialogConditionEnum.DC_IS_NEARLY_KO` | `DialogConditionEnum::DC_IS_NEARLY_KO` |
-| `DialogConditionEnum.DC_SQUAD_IS_DOWN` | `DialogConditionEnum::DC_SQUAD_IS_DOWN` |
-| `DialogConditionEnum.DC_IS_DEAD` | `DialogConditionEnum::DC_IS_DEAD` |
-| `DialogConditionEnum.DC_IS_FEMALE` | `DialogConditionEnum::DC_IS_FEMALE` |
-| `DialogConditionEnum.DC_CARRYING_SOMEONE_TO_ENSLAVE` | `DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE` |
-| `DialogConditionEnum.DC_BOUNTY_AMOUNT_ACTUAL` | `DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL` |
-| `DialogConditionEnum.DC_IM_UNARMED` | `DialogConditionEnum::DC_IM_UNARMED` |
-| `DialogConditionEnum.DC_TOWN_HAS_FORTIFICATIONS_WALLS` | `DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS` |
-| `DialogConditionEnum.DC_TARGET_IS_MY_MISSION_TARGET` | `DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET` |
-| `DialogConditionEnum.DC_MY_MISSION_IS_FRIENDLY` | `DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY` |
-| `DialogConditionEnum.DC_I_LOVE_THIS_GUY` | `DialogConditionEnum::DC_I_LOVE_THIS_GUY` |
-| `DialogConditionEnum.DC_I_HATE_THIS_GUY` | `DialogConditionEnum::DC_I_HATE_THIS_GUY` |
-| `DialogConditionEnum.DC_I_SHOULD_SCREW_THIS_GUY_OVER` | `DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER` |
-| `DialogConditionEnum.DC_I_SHOULD_HELP_THIS_GUY` | `DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY` |
-| `DialogConditionEnum.DC_IN_COMBAT` | `DialogConditionEnum::DC_IN_COMBAT` |
-| `DialogConditionEnum.DC_WITHIN_TOWN_WALLS` | `DialogConditionEnum::DC_WITHIN_TOWN_WALLS` |
-| `DialogConditionEnum.DC_TOWN_WALLS_LOCKED_UP` | `DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP` |
-| `DialogConditionEnum.DC_IS_SLAVE` | `DialogConditionEnum::DC_IS_SLAVE` |
-| `DialogConditionEnum.DC_HAS_A_BASE_NEARBY` | `DialogConditionEnum::DC_HAS_A_BASE_NEARBY` |
-| `DialogConditionEnum.DC_TARGET_IS_SLAVE_OF_MY_FACTION` | `DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION` |
-| `DialogConditionEnum.DC_IS_ESCAPED_SLAVE` | `DialogConditionEnum::DC_IS_ESCAPED_SLAVE` |
-| `DialogConditionEnum.DC_IS_IN_LOCKED_CAGE` | `DialogConditionEnum::DC_IS_IN_LOCKED_CAGE` |
-| `DialogConditionEnum.DC_WEARING_LOCKED_SHACKLES` | `DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES` |
-| `DialogConditionEnum.DC_IS_SAME_RACE_AS_ME` | `DialogConditionEnum::DC_IS_SAME_RACE_AS_ME` |
-| `DialogConditionEnum.DC_CAN_AFFORD_BOUNTY` | `DialogConditionEnum::DC_CAN_AFFORD_BOUNTY` |
-| `DialogConditionEnum.DC_IS_SNEAKING` | `DialogConditionEnum::DC_IS_SNEAKING` |
-| `DialogConditionEnum.DC_IS_INDOORS` | `DialogConditionEnum::DC_IS_INDOORS` |
-| `DialogConditionEnum.DC_HAS_ILLEGAL_ITEM` | `DialogConditionEnum::DC_HAS_ILLEGAL_ITEM` |
-| `DialogConditionEnum.DC_USING_MY_TRAINING_EQUIPMENT` | `DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT` |
-| `DialogConditionEnum.DC_STARVING` | `DialogConditionEnum::DC_STARVING` |
-| `DialogConditionEnum.DC_MIXED_GENDER_GROUP` | `DialogConditionEnum::DC_MIXED_GENDER_GROUP` |
-| `DialogConditionEnum.DC_TOWN_LEVEL_CURRENT_LOCATION` | `DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION` |
-| `DialogConditionEnum.DC_PLAYERS_BEST_TOWN_LEVEL` | `DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL` |
-| `DialogConditionEnum.DC_IN_A_PLAYER_TOWN` | `DialogConditionEnum::DC_IN_A_PLAYER_TOWN` |
-| `DialogConditionEnum.DC_TARGET_CHARACTER_EXISTS` | `DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS` |
-| `DialogConditionEnum.DC_IS_RECRUITABLE` | `DialogConditionEnum::DC_IS_RECRUITABLE` |
-| `DialogConditionEnum.DC_HAS_AI_CONTRACT` | `DialogConditionEnum::DC_HAS_AI_CONTRACT` |
-| `DialogConditionEnum.DC_HAS_ROBOT_LIMBS` | `DialogConditionEnum::DC_HAS_ROBOT_LIMBS` |
-| `DialogConditionEnum.DC_END` | `DialogConditionEnum::DC_END` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `DialogConditionEnum.DC_NONE` | `0` | `DialogConditionEnum::DC_NONE` |
+| `DialogConditionEnum.DC_RELATIONS` | `1` | `DialogConditionEnum::DC_RELATIONS` |
+| `DialogConditionEnum.DC_PLAYERMONEY` | `2` | `DialogConditionEnum::DC_PLAYERMONEY` |
+| `DialogConditionEnum.DC_REPUTATION` | `3` | `DialogConditionEnum::DC_REPUTATION` |
+| `DialogConditionEnum.DC_CARRYING_BOUNTY_ALIVE` | `4` | `DialogConditionEnum::DC_CARRYING_BOUNTY_ALIVE` |
+| `DialogConditionEnum.DC_CARRYING_BOUNTY_DEAD` | `5` | `DialogConditionEnum::DC_CARRYING_BOUNTY_DEAD` |
+| `DialogConditionEnum.DC_FACTION_VARIABLE` | `6` | `DialogConditionEnum::DC_FACTION_VARIABLE` |
+| `DialogConditionEnum.DC_IMPRISONED_BY_TARGET` | `7` | `DialogConditionEnum::DC_IMPRISONED_BY_TARGET` |
+| `DialogConditionEnum.DC_IMPRISONED_BY_OTHER` | `8` | `DialogConditionEnum::DC_IMPRISONED_BY_OTHER` |
+| `DialogConditionEnum.DC_IS_A_TRADER` | `9` | `DialogConditionEnum::DC_IS_A_TRADER` |
+| `DialogConditionEnum.DC_FACTION_RANK` | `10` | `DialogConditionEnum::DC_FACTION_RANK` |
+| `DialogConditionEnum.DC_BUILDING_IS_CLOSED_AND_SECURED` | `11` | `DialogConditionEnum::DC_BUILDING_IS_CLOSED_AND_SECURED` |
+| `DialogConditionEnum.DC_PLAYER_TECH_LEVEL` | `12` | `DialogConditionEnum::DC_PLAYER_TECH_LEVEL` |
+| `DialogConditionEnum.DC_NUM_DIALOG_EVENT_REPEATS` | `13` | `DialogConditionEnum::DC_NUM_DIALOG_EVENT_REPEATS` |
+| `DialogConditionEnum.DC_IS_IMPRISONED` | `14` | `DialogConditionEnum::DC_IS_IMPRISONED` |
+| `DialogConditionEnum.DC_IMPRISONMENT_IS_DEATHROW` | `15` | `DialogConditionEnum::DC_IMPRISONMENT_IS_DEATHROW` |
+| `DialogConditionEnum.DC_TARGET_IN_TALKING_RANGE` | `16` | `DialogConditionEnum::DC_TARGET_IN_TALKING_RANGE` |
+| `DialogConditionEnum.DC_IN_MY_BUILDING` | `17` | `DialogConditionEnum::DC_IN_MY_BUILDING` |
+| `DialogConditionEnum.DC_TARGET_LAST_SEEN_X_HOURS_AGO` | `18` | `DialogConditionEnum::DC_TARGET_LAST_SEEN_X_HOURS_AGO` |
+| `DialogConditionEnum.DC_IS_LEADER` | `19` | `DialogConditionEnum::DC_IS_LEADER` |
+| `DialogConditionEnum.DC_MET_TARGET_BEFORE` | `20` | `DialogConditionEnum::DC_MET_TARGET_BEFORE` |
+| `DialogConditionEnum.DC_WEAKER_THAN_ME` | `21` | `DialogConditionEnum::DC_WEAKER_THAN_ME` |
+| `DialogConditionEnum.DC_STRONGER_THAN_ME` | `22` | `DialogConditionEnum::DC_STRONGER_THAN_ME` |
+| `DialogConditionEnum.DC_HAS_TAG` | `23` | `DialogConditionEnum::DC_HAS_TAG` |
+| `DialogConditionEnum.DC_IS_ALLY` | `24` | `DialogConditionEnum::DC_IS_ALLY` |
+| `DialogConditionEnum.DC_IS_ENEMY` | `25` | `DialogConditionEnum::DC_IS_ENEMY` |
+| `DialogConditionEnum.DC_PERSONALITY_TAG` | `26` | `DialogConditionEnum::DC_PERSONALITY_TAG` |
+| `DialogConditionEnum.DC_BROKEN_LEG` | `27` | `DialogConditionEnum::DC_BROKEN_LEG` |
+| `DialogConditionEnum.DC_BROKEN_ARM` | `28` | `DialogConditionEnum::DC_BROKEN_ARM` |
+| `DialogConditionEnum.DC_DAMAGED_HEAD` | `29` | `DialogConditionEnum::DC_DAMAGED_HEAD` |
+| `DialogConditionEnum.DC_NEARLY_KO` | `30` | `DialogConditionEnum::DC_NEARLY_KO` |
+| `DialogConditionEnum.DC_IN_A_NON_PLAYER_TOWN` | `31` | `DialogConditionEnum::DC_IN_A_NON_PLAYER_TOWN` |
+| `DialogConditionEnum.DC_IS_RUNNING` | `32` | `DialogConditionEnum::DC_IS_RUNNING` |
+| `DialogConditionEnum.DC_COPS_AROUND` | `33` | `DialogConditionEnum::DC_COPS_AROUND` |
+| `DialogConditionEnum.DC_SQUAD_SIZE` | `35` | `DialogConditionEnum::DC_SQUAD_SIZE` |
+| `DialogConditionEnum.DC_IS_PLAYER` | `36` | `DialogConditionEnum::DC_IS_PLAYER` |
+| `DialogConditionEnum.DC_NUM_BACKPACKS` | `37` | `DialogConditionEnum::DC_NUM_BACKPACKS` |
+| `DialogConditionEnum.DC_SQUAD_ONLY_ANIMALS` | `38` | `DialogConditionEnum::DC_SQUAD_ONLY_ANIMALS` |
+| `DialogConditionEnum.DC_IS_OUTNUMBERED` | `39` | `DialogConditionEnum::DC_IS_OUTNUMBERED` |
+| `DialogConditionEnum.DC_BOUNTY_AMOUNT_PERCEIVED` | `40` | `DialogConditionEnum::DC_BOUNTY_AMOUNT_PERCEIVED` |
+| `DialogConditionEnum.DC_IS_KO` | `41` | `DialogConditionEnum::DC_IS_KO` |
+| `DialogConditionEnum.DC_IS_NEARLY_KO` | `42` | `DialogConditionEnum::DC_IS_NEARLY_KO` |
+| `DialogConditionEnum.DC_SQUAD_IS_DOWN` | `43` | `DialogConditionEnum::DC_SQUAD_IS_DOWN` |
+| `DialogConditionEnum.DC_IS_DEAD` | `44` | `DialogConditionEnum::DC_IS_DEAD` |
+| `DialogConditionEnum.DC_IS_FEMALE` | `45` | `DialogConditionEnum::DC_IS_FEMALE` |
+| `DialogConditionEnum.DC_CARRYING_SOMEONE_TO_ENSLAVE` | `46` | `DialogConditionEnum::DC_CARRYING_SOMEONE_TO_ENSLAVE` |
+| `DialogConditionEnum.DC_BOUNTY_AMOUNT_ACTUAL` | `47` | `DialogConditionEnum::DC_BOUNTY_AMOUNT_ACTUAL` |
+| `DialogConditionEnum.DC_IM_UNARMED` | `48` | `DialogConditionEnum::DC_IM_UNARMED` |
+| `DialogConditionEnum.DC_TOWN_HAS_FORTIFICATIONS_WALLS` | `49` | `DialogConditionEnum::DC_TOWN_HAS_FORTIFICATIONS_WALLS` |
+| `DialogConditionEnum.DC_TARGET_IS_MY_MISSION_TARGET` | `50` | `DialogConditionEnum::DC_TARGET_IS_MY_MISSION_TARGET` |
+| `DialogConditionEnum.DC_MY_MISSION_IS_FRIENDLY` | `51` | `DialogConditionEnum::DC_MY_MISSION_IS_FRIENDLY` |
+| `DialogConditionEnum.DC_I_LOVE_THIS_GUY` | `52` | `DialogConditionEnum::DC_I_LOVE_THIS_GUY` |
+| `DialogConditionEnum.DC_I_HATE_THIS_GUY` | `53` | `DialogConditionEnum::DC_I_HATE_THIS_GUY` |
+| `DialogConditionEnum.DC_I_SHOULD_SCREW_THIS_GUY_OVER` | `54` | `DialogConditionEnum::DC_I_SHOULD_SCREW_THIS_GUY_OVER` |
+| `DialogConditionEnum.DC_I_SHOULD_HELP_THIS_GUY` | `55` | `DialogConditionEnum::DC_I_SHOULD_HELP_THIS_GUY` |
+| `DialogConditionEnum.DC_IN_COMBAT` | `56` | `DialogConditionEnum::DC_IN_COMBAT` |
+| `DialogConditionEnum.DC_WITHIN_TOWN_WALLS` | `57` | `DialogConditionEnum::DC_WITHIN_TOWN_WALLS` |
+| `DialogConditionEnum.DC_TOWN_WALLS_LOCKED_UP` | `58` | `DialogConditionEnum::DC_TOWN_WALLS_LOCKED_UP` |
+| `DialogConditionEnum.DC_IS_SLAVE` | `59` | `DialogConditionEnum::DC_IS_SLAVE` |
+| `DialogConditionEnum.DC_HAS_A_BASE_NEARBY` | `60` | `DialogConditionEnum::DC_HAS_A_BASE_NEARBY` |
+| `DialogConditionEnum.DC_TARGET_IS_SLAVE_OF_MY_FACTION` | `61` | `DialogConditionEnum::DC_TARGET_IS_SLAVE_OF_MY_FACTION` |
+| `DialogConditionEnum.DC_IS_ESCAPED_SLAVE` | `62` | `DialogConditionEnum::DC_IS_ESCAPED_SLAVE` |
+| `DialogConditionEnum.DC_IS_IN_LOCKED_CAGE` | `63` | `DialogConditionEnum::DC_IS_IN_LOCKED_CAGE` |
+| `DialogConditionEnum.DC_WEARING_LOCKED_SHACKLES` | `64` | `DialogConditionEnum::DC_WEARING_LOCKED_SHACKLES` |
+| `DialogConditionEnum.DC_IS_SAME_RACE_AS_ME` | `65` | `DialogConditionEnum::DC_IS_SAME_RACE_AS_ME` |
+| `DialogConditionEnum.DC_CAN_AFFORD_BOUNTY` | `66` | `DialogConditionEnum::DC_CAN_AFFORD_BOUNTY` |
+| `DialogConditionEnum.DC_IS_SNEAKING` | `67` | `DialogConditionEnum::DC_IS_SNEAKING` |
+| `DialogConditionEnum.DC_IS_INDOORS` | `68` | `DialogConditionEnum::DC_IS_INDOORS` |
+| `DialogConditionEnum.DC_HAS_ILLEGAL_ITEM` | `69` | `DialogConditionEnum::DC_HAS_ILLEGAL_ITEM` |
+| `DialogConditionEnum.DC_USING_MY_TRAINING_EQUIPMENT` | `70` | `DialogConditionEnum::DC_USING_MY_TRAINING_EQUIPMENT` |
+| `DialogConditionEnum.DC_STARVING` | `71` | `DialogConditionEnum::DC_STARVING` |
+| `DialogConditionEnum.DC_MIXED_GENDER_GROUP` | `72` | `DialogConditionEnum::DC_MIXED_GENDER_GROUP` |
+| `DialogConditionEnum.DC_TOWN_LEVEL_CURRENT_LOCATION` | `73` | `DialogConditionEnum::DC_TOWN_LEVEL_CURRENT_LOCATION` |
+| `DialogConditionEnum.DC_PLAYERS_BEST_TOWN_LEVEL` | `74` | `DialogConditionEnum::DC_PLAYERS_BEST_TOWN_LEVEL` |
+| `DialogConditionEnum.DC_IN_A_PLAYER_TOWN` | `75` | `DialogConditionEnum::DC_IN_A_PLAYER_TOWN` |
+| `DialogConditionEnum.DC_TARGET_CHARACTER_EXISTS` | `76` | `DialogConditionEnum::DC_TARGET_CHARACTER_EXISTS` |
+| `DialogConditionEnum.DC_IS_RECRUITABLE` | `77` | `DialogConditionEnum::DC_IS_RECRUITABLE` |
+| `DialogConditionEnum.DC_HAS_AI_CONTRACT` | `78` | `DialogConditionEnum::DC_HAS_AI_CONTRACT` |
+| `DialogConditionEnum.DC_HAS_ROBOT_LIMBS` | `79` | `DialogConditionEnum::DC_HAS_ROBOT_LIMBS` |
+| `DialogConditionEnum.DC_END` | `80` | `DialogConditionEnum::DC_END` |
 
 ### Table: `ComparisonEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ComparisonEnum.CE_EQUALS` | `ComparisonEnum::CE_EQUALS` |
-| `ComparisonEnum.CE_LESS_THAN` | `ComparisonEnum::CE_LESS_THAN` |
-| `ComparisonEnum.CE_MORE_THAN` | `ComparisonEnum::CE_MORE_THAN` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ComparisonEnum.CE_EQUALS` | `0` | `ComparisonEnum::CE_EQUALS` |
+| `ComparisonEnum.CE_LESS_THAN` | `1` | `ComparisonEnum::CE_LESS_THAN` |
+| `ComparisonEnum.CE_MORE_THAN` | `2` | `ComparisonEnum::CE_MORE_THAN` |
 
 ### Table: `GroundType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `GroundType.GROUND_SAND` | `GroundType::GROUND_SAND` |
-| `GroundType.GROUND_GRASS` | `GroundType::GROUND_GRASS` |
-| `GroundType.GROUND_CONCRETE` | `GroundType::GROUND_CONCRETE` |
-| `GroundType.GROUND_WOOD` | `GroundType::GROUND_WOOD` |
-| `GroundType.GROUND_METAL` | `GroundType::GROUND_METAL` |
-| `GroundType.GROUND_WATER` | `GroundType::GROUND_WATER` |
-| `GroundType.GROUND_MUD` | `GroundType::GROUND_MUD` |
-| `GroundType.GROUND_SNOW` | `GroundType::GROUND_SNOW` |
-| `GroundType.GROUND_DIRT` | `GroundType::GROUND_DIRT` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `GroundType.GROUND_SAND` | `0` | `GroundType::GROUND_SAND` |
+| `GroundType.GROUND_GRASS` | `1` | `GroundType::GROUND_GRASS` |
+| `GroundType.GROUND_CONCRETE` | `2` | `GroundType::GROUND_CONCRETE` |
+| `GroundType.GROUND_WOOD` | `3` | `GroundType::GROUND_WOOD` |
+| `GroundType.GROUND_METAL` | `4` | `GroundType::GROUND_METAL` |
+| `GroundType.GROUND_WATER` | `5` | `GroundType::GROUND_WATER` |
+| `GroundType.GROUND_MUD` | `6` | `GroundType::GROUND_MUD` |
+| `GroundType.GROUND_SNOW` | `7` | `GroundType::GROUND_SNOW` |
+| `GroundType.GROUND_DIRT` | `8` | `GroundType::GROUND_DIRT` |
 
 ### Table: `EffectType.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `EffectType.Enum.NONE` | `EffectType::Enum::NONE` |
-| `EffectType.Enum.CAMERA` | `EffectType::Enum::CAMERA` |
-| `EffectType.Enum.POINT` | `EffectType::Enum::POINT` |
-| `EffectType.Enum.WANDERING` | `EffectType::Enum::WANDERING` |
-| `EffectType.Enum.GLOBAL` | `EffectType::Enum::GLOBAL` |
-| `EffectType.Enum.CAMERA_RAIN` | `EffectType::Enum::CAMERA_RAIN` |
-| `EffectType.Enum.CAMERA_ACID_RAIN` | `EffectType::Enum::CAMERA_ACID_RAIN` |
-| `EffectType.Enum.POINT_LIGHTING` | `EffectType::Enum::POINT_LIGHTING` |
-| `EffectType.Enum.WANDERING_STORM` | `EffectType::Enum::WANDERING_STORM` |
-| `EffectType.Enum.WANDERING_GAS` | `EffectType::Enum::WANDERING_GAS` |
-| `EffectType.Enum.GLOBAL_POINT` | `EffectType::Enum::GLOBAL_POINT` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `EffectType.Enum.NONE` | `0` | `EffectType::Enum::NONE` |
+| `EffectType.Enum.CAMERA` | `1` | `EffectType::Enum::CAMERA` |
+| `EffectType.Enum.POINT` | `2` | `EffectType::Enum::POINT` |
+| `EffectType.Enum.WANDERING` | `3` | `EffectType::Enum::WANDERING` |
+| `EffectType.Enum.GLOBAL` | `4` | `EffectType::Enum::GLOBAL` |
+| `EffectType.Enum.CAMERA_RAIN` | `5` | `EffectType::Enum::CAMERA_RAIN` |
+| `EffectType.Enum.CAMERA_ACID_RAIN` | `6` | `EffectType::Enum::CAMERA_ACID_RAIN` |
+| `EffectType.Enum.POINT_LIGHTING` | `7` | `EffectType::Enum::POINT_LIGHTING` |
+| `EffectType.Enum.WANDERING_STORM` | `8` | `EffectType::Enum::WANDERING_STORM` |
+| `EffectType.Enum.WANDERING_GAS` | `9` | `EffectType::Enum::WANDERING_GAS` |
+| `EffectType.Enum.GLOBAL_POINT` | `10` | `EffectType::Enum::GLOBAL_POINT` |
 
 ### Table: `SquadType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SquadType.SQ_UNKNOWN` | `SquadType::SQ_UNKNOWN` |
-| `SquadType.SQ_RESIDENT` | `SquadType::SQ_RESIDENT` |
-| `SquadType.SQ_ROAMING` | `SquadType::SQ_ROAMING` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SquadType.SQ_UNKNOWN` | `0` | `SquadType::SQ_UNKNOWN` |
+| `SquadType.SQ_RESIDENT` | `1` | `SquadType::SQ_RESIDENT` |
+| `SquadType.SQ_ROAMING` | `2` | `SquadType::SQ_ROAMING` |
 
 ### Table: `MoveSpeed`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MoveSpeed.WALK` | `MoveSpeed::WALK` |
-| `MoveSpeed.JOG` | `MoveSpeed::JOG` |
-| `MoveSpeed.RUN` | `MoveSpeed::RUN` |
-| `MoveSpeed.GROUPED` | `MoveSpeed::GROUPED` |
-| `MoveSpeed.NO_SPEED_CHANGE` | `MoveSpeed::NO_SPEED_CHANGE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MoveSpeed.WALK` | `0` | `MoveSpeed::WALK` |
+| `MoveSpeed.JOG` | `1` | `MoveSpeed::JOG` |
+| `MoveSpeed.RUN` | `2` | `MoveSpeed::RUN` |
+| `MoveSpeed.GROUPED` | `3` | `MoveSpeed::GROUPED` |
+| `MoveSpeed.NO_SPEED_CHANGE` | `4` | `MoveSpeed::NO_SPEED_CHANGE` |
 
 ### Table: `swordStateEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `swordStateEnum.CHOP_WEAPON` | `swordStateEnum::CHOP_WEAPON` |
-| `swordStateEnum.BLOCK` | `swordStateEnum::BLOCK` |
-| `swordStateEnum.REACTION_BLOCK` | `swordStateEnum::REACTION_BLOCK` |
-| `swordStateEnum.STARTUP_STATE` | `swordStateEnum::STARTUP_STATE` |
-| `swordStateEnum.DECISION` | `swordStateEnum::DECISION` |
-| `swordStateEnum.CIRCLE_MENACINGLY` | `swordStateEnum::CIRCLE_MENACINGLY` |
-| `swordStateEnum.WAIT_MENACINGLY` | `swordStateEnum::WAIT_MENACINGLY` |
-| `swordStateEnum.HESITATE` | `swordStateEnum::HESITATE` |
-| `swordStateEnum.STUMBLE` | `swordStateEnum::STUMBLE` |
-| `swordStateEnum.COMBAT_FINISHED` | `swordStateEnum::COMBAT_FINISHED` |
-| `swordStateEnum.TARGET_PATHFINDING_STARTUP` | `swordStateEnum::TARGET_PATHFINDING_STARTUP` |
-| `swordStateEnum.TARGET_PATHFINDING` | `swordStateEnum::TARGET_PATHFINDING` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `swordStateEnum.CHOP_WEAPON` | `0` | `swordStateEnum::CHOP_WEAPON` |
+| `swordStateEnum.BLOCK` | `1` | `swordStateEnum::BLOCK` |
+| `swordStateEnum.REACTION_BLOCK` | `2` | `swordStateEnum::REACTION_BLOCK` |
+| `swordStateEnum.STARTUP_STATE` | `3` | `swordStateEnum::STARTUP_STATE` |
+| `swordStateEnum.DECISION` | `4` | `swordStateEnum::DECISION` |
+| `swordStateEnum.CIRCLE_MENACINGLY` | `5` | `swordStateEnum::CIRCLE_MENACINGLY` |
+| `swordStateEnum.WAIT_MENACINGLY` | `6` | `swordStateEnum::WAIT_MENACINGLY` |
+| `swordStateEnum.HESITATE` | `7` | `swordStateEnum::HESITATE` |
+| `swordStateEnum.STUMBLE` | `8` | `swordStateEnum::STUMBLE` |
+| `swordStateEnum.COMBAT_FINISHED` | `9` | `swordStateEnum::COMBAT_FINISHED` |
+| `swordStateEnum.TARGET_PATHFINDING_STARTUP` | `10` | `swordStateEnum::TARGET_PATHFINDING_STARTUP` |
+| `swordStateEnum.TARGET_PATHFINDING` | `11` | `swordStateEnum::TARGET_PATHFINDING` |
 
 ### Table: `MiningResource`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MiningResource.NONE` | `MiningResource::NONE` |
-| `MiningResource.IRON` | `MiningResource::IRON` |
-| `MiningResource.STONE` | `MiningResource::STONE` |
-| `MiningResource.COPPER` | `MiningResource::COPPER` |
-| `MiningResource.CARBON` | `MiningResource::CARBON` |
-| `MiningResource.WATER` | `MiningResource::WATER` |
-| `MiningResource.GROUND` | `MiningResource::GROUND` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MiningResource.NONE` | `0` | `MiningResource::NONE` |
+| `MiningResource.IRON` | `1` | `MiningResource::IRON` |
+| `MiningResource.STONE` | `2` | `MiningResource::STONE` |
+| `MiningResource.COPPER` | `3` | `MiningResource::COPPER` |
+| `MiningResource.CARBON` | `4` | `MiningResource::CARBON` |
+| `MiningResource.WATER` | `5` | `MiningResource::WATER` |
+| `MiningResource.GROUND` | `6` | `MiningResource::GROUND` |
 
 ### Table: `CursorType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CursorType.DEFAULT_CURSOR` | `CursorType::DEFAULT_CURSOR` |
-| `CursorType.MEDIC_CURSOR` | `CursorType::MEDIC_CURSOR` |
-| `CursorType.LOOT_CURSOR` | `CursorType::LOOT_CURSOR` |
-| `CursorType.LIFT_CURSOR` | `CursorType::LIFT_CURSOR` |
-| `CursorType.PICKUP_ITEM_CURSOR` | `CursorType::PICKUP_ITEM_CURSOR` |
-| `CursorType.ATTACK_CURSOR` | `CursorType::ATTACK_CURSOR` |
-| `CursorType.GUARD_CURSOR` | `CursorType::GUARD_CURSOR` |
-| `CursorType.TALK_CURSOR` | `CursorType::TALK_CURSOR` |
-| `CursorType.SPECIAL_TALK_CURSOR` | `CursorType::SPECIAL_TALK_CURSOR` |
-| `CursorType.USE_CURSOR` | `CursorType::USE_CURSOR` |
-| `CursorType.TRADER_CURSOR` | `CursorType::TRADER_CURSOR` |
-| `CursorType.BUILD_CURSOR` | `CursorType::BUILD_CURSOR` |
-| `CursorType.OPEN_DOOR_CURSOR` | `CursorType::OPEN_DOOR_CURSOR` |
-| `CursorType.DOOR_ESCAPE_CURSOR` | `CursorType::DOOR_ESCAPE_CURSOR` |
-| `CursorType.LOCKED_CURSOR` | `CursorType::LOCKED_CURSOR` |
-| `CursorType.PICK_LOCK_CURSOR` | `CursorType::PICK_LOCK_CURSOR` |
-| `CursorType.BUY_HOUSE_CURSOR` | `CursorType::BUY_HOUSE_CURSOR` |
-| `CursorType.GREEN_CURSOR` | `CursorType::GREEN_CURSOR` |
-| `CursorType.MINE_CURSOR` | `CursorType::MINE_CURSOR` |
-| `CursorType.REPAIR_CURSOR` | `CursorType::REPAIR_CURSOR` |
-| `CursorType.LIGHT_CURSOR` | `CursorType::LIGHT_CURSOR` |
-| `CursorType.STEAL_CURSOR` | `CursorType::STEAL_CURSOR` |
-| `CursorType.HAND_CURSOR` | `CursorType::HAND_CURSOR` |
-| `CursorType.INVALID_MOVEMENT_CURSOR` | `CursorType::INVALID_MOVEMENT_CURSOR` |
-| `CursorType.LOOT_CURSOR_RED` | `CursorType::LOOT_CURSOR_RED` |
-| `CursorType.KNOCKOUT_CURSOR` | `CursorType::KNOCKOUT_CURSOR` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CursorType.DEFAULT_CURSOR` | `0` | `CursorType::DEFAULT_CURSOR` |
+| `CursorType.MEDIC_CURSOR` | `1` | `CursorType::MEDIC_CURSOR` |
+| `CursorType.LOOT_CURSOR` | `2` | `CursorType::LOOT_CURSOR` |
+| `CursorType.LIFT_CURSOR` | `3` | `CursorType::LIFT_CURSOR` |
+| `CursorType.PICKUP_ITEM_CURSOR` | `4` | `CursorType::PICKUP_ITEM_CURSOR` |
+| `CursorType.ATTACK_CURSOR` | `5` | `CursorType::ATTACK_CURSOR` |
+| `CursorType.GUARD_CURSOR` | `6` | `CursorType::GUARD_CURSOR` |
+| `CursorType.TALK_CURSOR` | `7` | `CursorType::TALK_CURSOR` |
+| `CursorType.SPECIAL_TALK_CURSOR` | `8` | `CursorType::SPECIAL_TALK_CURSOR` |
+| `CursorType.USE_CURSOR` | `9` | `CursorType::USE_CURSOR` |
+| `CursorType.TRADER_CURSOR` | `10` | `CursorType::TRADER_CURSOR` |
+| `CursorType.BUILD_CURSOR` | `11` | `CursorType::BUILD_CURSOR` |
+| `CursorType.OPEN_DOOR_CURSOR` | `12` | `CursorType::OPEN_DOOR_CURSOR` |
+| `CursorType.DOOR_ESCAPE_CURSOR` | `13` | `CursorType::DOOR_ESCAPE_CURSOR` |
+| `CursorType.LOCKED_CURSOR` | `14` | `CursorType::LOCKED_CURSOR` |
+| `CursorType.PICK_LOCK_CURSOR` | `15` | `CursorType::PICK_LOCK_CURSOR` |
+| `CursorType.BUY_HOUSE_CURSOR` | `16` | `CursorType::BUY_HOUSE_CURSOR` |
+| `CursorType.GREEN_CURSOR` | `17` | `CursorType::GREEN_CURSOR` |
+| `CursorType.MINE_CURSOR` | `18` | `CursorType::MINE_CURSOR` |
+| `CursorType.REPAIR_CURSOR` | `19` | `CursorType::REPAIR_CURSOR` |
+| `CursorType.LIGHT_CURSOR` | `20` | `CursorType::LIGHT_CURSOR` |
+| `CursorType.STEAL_CURSOR` | `21` | `CursorType::STEAL_CURSOR` |
+| `CursorType.HAND_CURSOR` | `22` | `CursorType::HAND_CURSOR` |
+| `CursorType.INVALID_MOVEMENT_CURSOR` | `23` | `CursorType::INVALID_MOVEMENT_CURSOR` |
+| `CursorType.LOOT_CURSOR_RED` | `24` | `CursorType::LOOT_CURSOR_RED` |
+| `CursorType.KNOCKOUT_CURSOR` | `25` | `CursorType::KNOCKOUT_CURSOR` |
 
 ### Table: `MapZoomLevel`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MapZoomLevel.ZOOM_MIN` | `MapZoomLevel::ZOOM_MIN` |
-| `MapZoomLevel.ZOOM_MID` | `MapZoomLevel::ZOOM_MID` |
-| `MapZoomLevel.ZOOM_MAX` | `MapZoomLevel::ZOOM_MAX` |
-| `MapZoomLevel.ZOOM_CHARACTERS` | `MapZoomLevel::ZOOM_CHARACTERS` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MapZoomLevel.ZOOM_MIN` | `0` | `MapZoomLevel::ZOOM_MIN` |
+| `MapZoomLevel.ZOOM_MID` | `1` | `MapZoomLevel::ZOOM_MID` |
+| `MapZoomLevel.ZOOM_MAX` | `2` | `MapZoomLevel::ZOOM_MAX` |
+| `MapZoomLevel.ZOOM_CHARACTERS` | `3` | `MapZoomLevel::ZOOM_CHARACTERS` |
 
 ---
 
@@ -1577,21 +1583,21 @@ end
 
 ### Table: `FactionRelations.FactionEvent`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `FactionRelations.FactionEvent.ATTACKED_US_DEFENSIVELY` | `FactionRelations::FactionEvent::ATTACKED_US_DEFENSIVELY` |
-| `FactionRelations.FactionEvent.ATTACKED_US_AGGRESSIVELY` | `FactionRelations::FactionEvent::ATTACKED_US_AGGRESSIVELY` |
-| `FactionRelations.FactionEvent.DEFEATED_ONE_OF_US_DEFENSIVELY` | `FactionRelations::FactionEvent::DEFEATED_ONE_OF_US_DEFENSIVELY` |
-| `FactionRelations.FactionEvent.DEFEATED_ONE_OF_US_AGGRESSIVELY` | `FactionRelations::FactionEvent::DEFEATED_ONE_OF_US_AGGRESSIVELY` |
-| `FactionRelations.FactionEvent.KILLED_ONE_OF_US_DIRECTLY` | `FactionRelations::FactionEvent::KILLED_ONE_OF_US_DIRECTLY` |
-| `FactionRelations.FactionEvent.KILLED_ONE_OF_US_INDIRECTLY` | `FactionRelations::FactionEvent::KILLED_ONE_OF_US_INDIRECTLY` |
-| `FactionRelations.FactionEvent.EXECUTED_ONE_OF_US` | `FactionRelations::FactionEvent::EXECUTED_ONE_OF_US` |
-| `FactionRelations.FactionEvent.AIDED_US_IN_BATTLE` | `FactionRelations::FactionEvent::AIDED_US_IN_BATTLE` |
-| `FactionRelations.FactionEvent.FIRST_AIDED_US` | `FactionRelations::FactionEvent::FIRST_AIDED_US` |
-| `FactionRelations.FactionEvent.TAKEN_TO_BED` | `FactionRelations::FactionEvent::TAKEN_TO_BED` |
-| `FactionRelations.FactionEvent.DEFEATED_AN_ENEMY` | `FactionRelations::FactionEvent::DEFEATED_AN_ENEMY` |
-| `FactionRelations.FactionEvent.KILLED_AN_ENEMY` | `FactionRelations::FactionEvent::KILLED_AN_ENEMY` |
-| `FactionRelations.FactionEvent.CAPTURED_US` | `FactionRelations::FactionEvent::CAPTURED_US` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `FactionRelations.FactionEvent.ATTACKED_US_DEFENSIVELY` | `0` | `FactionRelations::FactionEvent::ATTACKED_US_DEFENSIVELY` |
+| `FactionRelations.FactionEvent.ATTACKED_US_AGGRESSIVELY` | `1` | `FactionRelations::FactionEvent::ATTACKED_US_AGGRESSIVELY` |
+| `FactionRelations.FactionEvent.DEFEATED_ONE_OF_US_DEFENSIVELY` | `2` | `FactionRelations::FactionEvent::DEFEATED_ONE_OF_US_DEFENSIVELY` |
+| `FactionRelations.FactionEvent.DEFEATED_ONE_OF_US_AGGRESSIVELY` | `3` | `FactionRelations::FactionEvent::DEFEATED_ONE_OF_US_AGGRESSIVELY` |
+| `FactionRelations.FactionEvent.KILLED_ONE_OF_US_DIRECTLY` | `4` | `FactionRelations::FactionEvent::KILLED_ONE_OF_US_DIRECTLY` |
+| `FactionRelations.FactionEvent.KILLED_ONE_OF_US_INDIRECTLY` | `5` | `FactionRelations::FactionEvent::KILLED_ONE_OF_US_INDIRECTLY` |
+| `FactionRelations.FactionEvent.EXECUTED_ONE_OF_US` | `6` | `FactionRelations::FactionEvent::EXECUTED_ONE_OF_US` |
+| `FactionRelations.FactionEvent.AIDED_US_IN_BATTLE` | `7` | `FactionRelations::FactionEvent::AIDED_US_IN_BATTLE` |
+| `FactionRelations.FactionEvent.FIRST_AIDED_US` | `8` | `FactionRelations::FactionEvent::FIRST_AIDED_US` |
+| `FactionRelations.FactionEvent.TAKEN_TO_BED` | `9` | `FactionRelations::FactionEvent::TAKEN_TO_BED` |
+| `FactionRelations.FactionEvent.DEFEATED_AN_ENEMY` | `10` | `FactionRelations::FactionEvent::DEFEATED_AN_ENEMY` |
+| `FactionRelations.FactionEvent.KILLED_AN_ENEMY` | `11` | `FactionRelations::FactionEvent::KILLED_AN_ENEMY` |
+| `FactionRelations.FactionEvent.CAPTURED_US` | `12` | `FactionRelations::FactionEvent::CAPTURED_US` |
 
 ---
 
@@ -1599,15 +1605,15 @@ end
 
 ### Table: `UnloadedPlatoonJob`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `UnloadedPlatoonJob.UPJOB_NONE` | `UnloadedPlatoonJob::UPJOB_NONE` |
-| `UnloadedPlatoonJob.UPJOB_PATROL_TOWN` | `UnloadedPlatoonJob::UPJOB_PATROL_TOWN` |
-| `UnloadedPlatoonJob.UPJOB_PATROL_SHORTRANGE` | `UnloadedPlatoonJob::UPJOB_PATROL_SHORTRANGE` |
-| `UnloadedPlatoonJob.UPJOB_PATROL_LONGRANGE` | `UnloadedPlatoonJob::UPJOB_PATROL_LONGRANGE` |
-| `UnloadedPlatoonJob.UPJOB_GOHOME` | `UnloadedPlatoonJob::UPJOB_GOHOME` |
-| `UnloadedPlatoonJob.UPJOB_TRAVEL_TARGET` | `UnloadedPlatoonJob::UPJOB_TRAVEL_TARGET` |
-| `UnloadedPlatoonJob.UPJOB_TRAVEL_TARGET_FAST` | `UnloadedPlatoonJob::UPJOB_TRAVEL_TARGET_FAST` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `UnloadedPlatoonJob.UPJOB_NONE` | `0` | `UnloadedPlatoonJob::UPJOB_NONE` |
+| `UnloadedPlatoonJob.UPJOB_PATROL_TOWN` | `1` | `UnloadedPlatoonJob::UPJOB_PATROL_TOWN` |
+| `UnloadedPlatoonJob.UPJOB_PATROL_SHORTRANGE` | `2` | `UnloadedPlatoonJob::UPJOB_PATROL_SHORTRANGE` |
+| `UnloadedPlatoonJob.UPJOB_PATROL_LONGRANGE` | `3` | `UnloadedPlatoonJob::UPJOB_PATROL_LONGRANGE` |
+| `UnloadedPlatoonJob.UPJOB_GOHOME` | `4` | `UnloadedPlatoonJob::UPJOB_GOHOME` |
+| `UnloadedPlatoonJob.UPJOB_TRAVEL_TARGET` | `5` | `UnloadedPlatoonJob::UPJOB_TRAVEL_TARGET` |
+| `UnloadedPlatoonJob.UPJOB_TRAVEL_TARGET_FAST` | `6` | `UnloadedPlatoonJob::UPJOB_TRAVEL_TARGET_FAST` |
 
 ---
 
@@ -1615,12 +1621,12 @@ end
 
 ### Table: `TradeWindowType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `TradeWindowType.TW_OFF` | `TradeWindowType::TW_OFF` |
-| `TradeWindowType.TW_MONEY_TRADING` | `TradeWindowType::TW_MONEY_TRADING` |
-| `TradeWindowType.TW_LOOTING` | `TradeWindowType::TW_LOOTING` |
-| `TradeWindowType.TW_AUTO` | `TradeWindowType::TW_AUTO` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TradeWindowType.TW_OFF` | `0` | `TradeWindowType::TW_OFF` |
+| `TradeWindowType.TW_MONEY_TRADING` | `1` | `TradeWindowType::TW_MONEY_TRADING` |
+| `TradeWindowType.TW_LOOTING` | `2` | `TradeWindowType::TW_LOOTING` |
+| `TradeWindowType.TW_AUTO` | `3` | `TradeWindowType::TW_AUTO` |
 
 ---
 
@@ -1628,14 +1634,14 @@ end
 
 ### Table: `GameData.DataType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `GameData.DataType.NONE` | `GameData::DataType::NONE` |
-| `GameData.DataType.INT` | `GameData::DataType::INT` |
-| `GameData.DataType.FLOAT` | `GameData::DataType::FLOAT` |
-| `GameData.DataType.BOOL` | `GameData::DataType::BOOL` |
-| `GameData.DataType.FILE` | `GameData::DataType::FILE` |
-| `GameData.DataType.STRING` | `GameData::DataType::STRING` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `GameData.DataType.NONE` | `0` | `GameData::DataType::NONE` |
+| `GameData.DataType.INT` | `1` | `GameData::DataType::INT` |
+| `GameData.DataType.FLOAT` | `2` | `GameData::DataType::FLOAT` |
+| `GameData.DataType.BOOL` | `3` | `GameData::DataType::BOOL` |
+| `GameData.DataType.FILE` | `4` | `GameData::DataType::FILE` |
+| `GameData.DataType.STRING` | `5` | `GameData::DataType::STRING` |
 
 ---
 
@@ -1643,33 +1649,33 @@ end
 
 ### Table: `NxShapesType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NxShapesType.NX_STATIC_SHAPES` | `NxShapesType::NX_STATIC_SHAPES` |
-| `NxShapesType.NX_DYNAMIC_SHAPES` | `NxShapesType::NX_DYNAMIC_SHAPES` |
-| `NxShapesType.NX_ALL_SHAPES` | `NxShapesType::NX_ALL_SHAPES` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NxShapesType.NX_STATIC_SHAPES` | `1` | `NxShapesType::NX_STATIC_SHAPES` |
+| `NxShapesType.NX_DYNAMIC_SHAPES` | `2` | `NxShapesType::NX_DYNAMIC_SHAPES` |
+| `NxShapesType.NX_ALL_SHAPES` | `3` | `NxShapesType::NX_ALL_SHAPES` |
 
 ### Table: `GameWorld.SysMessageEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `GameWorld.SysMessageEnum.SYS_NONE` | `GameWorld::SysMessageEnum::SYS_NONE` |
-| `GameWorld.SysMessageEnum.SYS_RESIDENT_CHANGE` | `GameWorld::SysMessageEnum::SYS_RESIDENT_CHANGE` |
-| `GameWorld.SysMessageEnum.SYS_SHOW_PROSPECTING_WINDOW` | `GameWorld::SysMessageEnum::SYS_SHOW_PROSPECTING_WINDOW` |
-| `GameWorld.SysMessageEnum.SYS_CREATE_PHYSICAL` | `GameWorld::SysMessageEnum::SYS_CREATE_PHYSICAL` |
-| `GameWorld.SysMessageEnum.SYS_DESTROY_PHYSICAL` | `GameWorld::SysMessageEnum::SYS_DESTROY_PHYSICAL` |
-| `GameWorld.SysMessageEnum.SYS_SET_CHAINED_MODE` | `GameWorld::SysMessageEnum::SYS_SET_CHAINED_MODE` |
-| `GameWorld.SysMessageEnum.SYS_UPDATE_ORDERS_PANEL` | `GameWorld::SysMessageEnum::SYS_UPDATE_ORDERS_PANEL` |
-| `GameWorld.SysMessageEnum.SYS_UPDATE_PORTRAIT` | `GameWorld::SysMessageEnum::SYS_UPDATE_PORTRAIT` |
-| `GameWorld.SysMessageEnum.SYS_RESEARCH_PROGRESS` | `GameWorld::SysMessageEnum::SYS_RESEARCH_PROGRESS` |
-| `GameWorld.SysMessageEnum.SYS_CLOSE_ALL_INVENTORIES` | `GameWorld::SysMessageEnum::SYS_CLOSE_ALL_INVENTORIES` |
-| `GameWorld.SysMessageEnum.SYS_CLOSE_INVENTORY` | `GameWorld::SysMessageEnum::SYS_CLOSE_INVENTORY` |
-| `GameWorld.SysMessageEnum.SYS_BUILDING_PROGRESS` | `GameWorld::SysMessageEnum::SYS_BUILDING_PROGRESS` |
-| `GameWorld.SysMessageEnum.SYS_DROP_ALL_GEAR` | `GameWorld::SysMessageEnum::SYS_DROP_ALL_GEAR` |
-| `GameWorld.SysMessageEnum.SYS_CHARACTER_PARTICLES` | `GameWorld::SysMessageEnum::SYS_CHARACTER_PARTICLES` |
-| `GameWorld.SysMessageEnum.SYS_RESTORE_SQUAD` | `GameWorld::SysMessageEnum::SYS_RESTORE_SQUAD` |
-| `GameWorld.SysMessageEnum.SYS_DESTROY_PLATOON` | `GameWorld::SysMessageEnum::SYS_DESTROY_PLATOON` |
-| `GameWorld.SysMessageEnum.SYS_BREAK_BUILDING` | `GameWorld::SysMessageEnum::SYS_BREAK_BUILDING` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `GameWorld.SysMessageEnum.SYS_NONE` | `0` | `GameWorld::SysMessageEnum::SYS_NONE` |
+| `GameWorld.SysMessageEnum.SYS_RESIDENT_CHANGE` | `1` | `GameWorld::SysMessageEnum::SYS_RESIDENT_CHANGE` |
+| `GameWorld.SysMessageEnum.SYS_SHOW_PROSPECTING_WINDOW` | `2` | `GameWorld::SysMessageEnum::SYS_SHOW_PROSPECTING_WINDOW` |
+| `GameWorld.SysMessageEnum.SYS_CREATE_PHYSICAL` | `3` | `GameWorld::SysMessageEnum::SYS_CREATE_PHYSICAL` |
+| `GameWorld.SysMessageEnum.SYS_DESTROY_PHYSICAL` | `4` | `GameWorld::SysMessageEnum::SYS_DESTROY_PHYSICAL` |
+| `GameWorld.SysMessageEnum.SYS_SET_CHAINED_MODE` | `5` | `GameWorld::SysMessageEnum::SYS_SET_CHAINED_MODE` |
+| `GameWorld.SysMessageEnum.SYS_UPDATE_ORDERS_PANEL` | `6` | `GameWorld::SysMessageEnum::SYS_UPDATE_ORDERS_PANEL` |
+| `GameWorld.SysMessageEnum.SYS_UPDATE_PORTRAIT` | `7` | `GameWorld::SysMessageEnum::SYS_UPDATE_PORTRAIT` |
+| `GameWorld.SysMessageEnum.SYS_RESEARCH_PROGRESS` | `8` | `GameWorld::SysMessageEnum::SYS_RESEARCH_PROGRESS` |
+| `GameWorld.SysMessageEnum.SYS_CLOSE_ALL_INVENTORIES` | `9` | `GameWorld::SysMessageEnum::SYS_CLOSE_ALL_INVENTORIES` |
+| `GameWorld.SysMessageEnum.SYS_CLOSE_INVENTORY` | `10` | `GameWorld::SysMessageEnum::SYS_CLOSE_INVENTORY` |
+| `GameWorld.SysMessageEnum.SYS_BUILDING_PROGRESS` | `11` | `GameWorld::SysMessageEnum::SYS_BUILDING_PROGRESS` |
+| `GameWorld.SysMessageEnum.SYS_DROP_ALL_GEAR` | `12` | `GameWorld::SysMessageEnum::SYS_DROP_ALL_GEAR` |
+| `GameWorld.SysMessageEnum.SYS_CHARACTER_PARTICLES` | `13` | `GameWorld::SysMessageEnum::SYS_CHARACTER_PARTICLES` |
+| `GameWorld.SysMessageEnum.SYS_RESTORE_SQUAD` | `14` | `GameWorld::SysMessageEnum::SYS_RESTORE_SQUAD` |
+| `GameWorld.SysMessageEnum.SYS_DESTROY_PLATOON` | `15` | `GameWorld::SysMessageEnum::SYS_DESTROY_PLATOON` |
+| `GameWorld.SysMessageEnum.SYS_BREAK_BUILDING` | `16` | `GameWorld::SysMessageEnum::SYS_BREAK_BUILDING` |
 
 ---
 
@@ -1677,106 +1683,106 @@ end
 
 ### Table: `hkVector4ComparisonMask.Mask`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `hkVector4ComparisonMask.Mask.INDEX_W` | `hkVector4ComparisonMask::Mask::INDEX_W` |
-| `hkVector4ComparisonMask.Mask.INDEX_Z` | `hkVector4ComparisonMask::Mask::INDEX_Z` |
-| `hkVector4ComparisonMask.Mask.INDEX_Y` | `hkVector4ComparisonMask::Mask::INDEX_Y` |
-| `hkVector4ComparisonMask.Mask.INDEX_X` | `hkVector4ComparisonMask::Mask::INDEX_X` |
-| `hkVector4ComparisonMask.Mask.MASK_NONE` | `hkVector4ComparisonMask::Mask::MASK_NONE` |
-| `hkVector4ComparisonMask.Mask.MASK_W` | `hkVector4ComparisonMask::Mask::MASK_W` |
-| `hkVector4ComparisonMask.Mask.MASK_Z` | `hkVector4ComparisonMask::Mask::MASK_Z` |
-| `hkVector4ComparisonMask.Mask.MASK_ZW` | `hkVector4ComparisonMask::Mask::MASK_ZW` |
-| `hkVector4ComparisonMask.Mask.MASK_Y` | `hkVector4ComparisonMask::Mask::MASK_Y` |
-| `hkVector4ComparisonMask.Mask.MASK_YW` | `hkVector4ComparisonMask::Mask::MASK_YW` |
-| `hkVector4ComparisonMask.Mask.MASK_YZ` | `hkVector4ComparisonMask::Mask::MASK_YZ` |
-| `hkVector4ComparisonMask.Mask.MASK_YZW` | `hkVector4ComparisonMask::Mask::MASK_YZW` |
-| `hkVector4ComparisonMask.Mask.MASK_X` | `hkVector4ComparisonMask::Mask::MASK_X` |
-| `hkVector4ComparisonMask.Mask.MASK_XW` | `hkVector4ComparisonMask::Mask::MASK_XW` |
-| `hkVector4ComparisonMask.Mask.MASK_XZ` | `hkVector4ComparisonMask::Mask::MASK_XZ` |
-| `hkVector4ComparisonMask.Mask.MASK_XZW` | `hkVector4ComparisonMask::Mask::MASK_XZW` |
-| `hkVector4ComparisonMask.Mask.MASK_XY` | `hkVector4ComparisonMask::Mask::MASK_XY` |
-| `hkVector4ComparisonMask.Mask.MASK_XYW` | `hkVector4ComparisonMask::Mask::MASK_XYW` |
-| `hkVector4ComparisonMask.Mask.MASK_XYZ` | `hkVector4ComparisonMask::Mask::MASK_XYZ` |
-| `hkVector4ComparisonMask.Mask.MASK_XYZW` | `hkVector4ComparisonMask::Mask::MASK_XYZW` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `hkVector4ComparisonMask.Mask.INDEX_W` | `3` | `hkVector4ComparisonMask::Mask::INDEX_W` |
+| `hkVector4ComparisonMask.Mask.INDEX_Z` | `2` | `hkVector4ComparisonMask::Mask::INDEX_Z` |
+| `hkVector4ComparisonMask.Mask.INDEX_Y` | `1` | `hkVector4ComparisonMask::Mask::INDEX_Y` |
+| `hkVector4ComparisonMask.Mask.INDEX_X` | `0` | `hkVector4ComparisonMask::Mask::INDEX_X` |
+| `hkVector4ComparisonMask.Mask.MASK_NONE` | `0` | `hkVector4ComparisonMask::Mask::MASK_NONE` |
+| `hkVector4ComparisonMask.Mask.MASK_W` | `8` | `hkVector4ComparisonMask::Mask::MASK_W` |
+| `hkVector4ComparisonMask.Mask.MASK_Z` | `4` | `hkVector4ComparisonMask::Mask::MASK_Z` |
+| `hkVector4ComparisonMask.Mask.MASK_ZW` | `12` | `hkVector4ComparisonMask::Mask::MASK_ZW` |
+| `hkVector4ComparisonMask.Mask.MASK_Y` | `2` | `hkVector4ComparisonMask::Mask::MASK_Y` |
+| `hkVector4ComparisonMask.Mask.MASK_YW` | `10` | `hkVector4ComparisonMask::Mask::MASK_YW` |
+| `hkVector4ComparisonMask.Mask.MASK_YZ` | `6` | `hkVector4ComparisonMask::Mask::MASK_YZ` |
+| `hkVector4ComparisonMask.Mask.MASK_YZW` | `14` | `hkVector4ComparisonMask::Mask::MASK_YZW` |
+| `hkVector4ComparisonMask.Mask.MASK_X` | `1` | `hkVector4ComparisonMask::Mask::MASK_X` |
+| `hkVector4ComparisonMask.Mask.MASK_XW` | `9` | `hkVector4ComparisonMask::Mask::MASK_XW` |
+| `hkVector4ComparisonMask.Mask.MASK_XZ` | `5` | `hkVector4ComparisonMask::Mask::MASK_XZ` |
+| `hkVector4ComparisonMask.Mask.MASK_XZW` | `13` | `hkVector4ComparisonMask::Mask::MASK_XZW` |
+| `hkVector4ComparisonMask.Mask.MASK_XY` | `3` | `hkVector4ComparisonMask::Mask::MASK_XY` |
+| `hkVector4ComparisonMask.Mask.MASK_XYW` | `11` | `hkVector4ComparisonMask::Mask::MASK_XYW` |
+| `hkVector4ComparisonMask.Mask.MASK_XYZ` | `7` | `hkVector4ComparisonMask::Mask::MASK_XYZ` |
+| `hkVector4ComparisonMask.Mask.MASK_XYZW` | `15` | `hkVector4ComparisonMask::Mask::MASK_XYZW` |
 
 ### Table: `hkVectorConstant`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `hkVectorConstant.HK_QUADREAL_BEGIN` | `hkVectorConstant::HK_QUADREAL_BEGIN` |
-| `hkVectorConstant.HK_QUADREAL_MINUS1` | `hkVectorConstant::HK_QUADREAL_MINUS1` |
-| `hkVectorConstant.HK_QUADREAL_0` | `hkVectorConstant::HK_QUADREAL_0` |
-| `hkVectorConstant.HK_QUADREAL_1` | `hkVectorConstant::HK_QUADREAL_1` |
-| `hkVectorConstant.HK_QUADREAL_2` | `hkVectorConstant::HK_QUADREAL_2` |
-| `hkVectorConstant.HK_QUADREAL_3` | `hkVectorConstant::HK_QUADREAL_3` |
-| `hkVectorConstant.HK_QUADREAL_4` | `hkVectorConstant::HK_QUADREAL_4` |
-| `hkVectorConstant.HK_QUADREAL_5` | `hkVectorConstant::HK_QUADREAL_5` |
-| `hkVectorConstant.HK_QUADREAL_6` | `hkVectorConstant::HK_QUADREAL_6` |
-| `hkVectorConstant.HK_QUADREAL_7` | `hkVectorConstant::HK_QUADREAL_7` |
-| `hkVectorConstant.HK_QUADREAL_8` | `hkVectorConstant::HK_QUADREAL_8` |
-| `hkVectorConstant.HK_QUADREAL_15` | `hkVectorConstant::HK_QUADREAL_15` |
-| `hkVectorConstant.HK_QUADREAL_16` | `hkVectorConstant::HK_QUADREAL_16` |
-| `hkVectorConstant.HK_QUADREAL_255` | `hkVectorConstant::HK_QUADREAL_255` |
-| `hkVectorConstant.HK_QUADREAL_256` | `hkVectorConstant::HK_QUADREAL_256` |
-| `hkVectorConstant.HK_QUADREAL_2_POW_23` | `hkVectorConstant::HK_QUADREAL_2_POW_23` |
-| `hkVectorConstant.HK_QUADREAL_INV_0` | `hkVectorConstant::HK_QUADREAL_INV_0` |
-| `hkVectorConstant.HK_QUADREAL_INV_1` | `hkVectorConstant::HK_QUADREAL_INV_1` |
-| `hkVectorConstant.HK_QUADREAL_INV_2` | `hkVectorConstant::HK_QUADREAL_INV_2` |
-| `hkVectorConstant.HK_QUADREAL_INV_3` | `hkVectorConstant::HK_QUADREAL_INV_3` |
-| `hkVectorConstant.HK_QUADREAL_INV_4` | `hkVectorConstant::HK_QUADREAL_INV_4` |
-| `hkVectorConstant.HK_QUADREAL_INV_5` | `hkVectorConstant::HK_QUADREAL_INV_5` |
-| `hkVectorConstant.HK_QUADREAL_INV_6` | `hkVectorConstant::HK_QUADREAL_INV_6` |
-| `hkVectorConstant.HK_QUADREAL_INV_7` | `hkVectorConstant::HK_QUADREAL_INV_7` |
-| `hkVectorConstant.HK_QUADREAL_INV_8` | `hkVectorConstant::HK_QUADREAL_INV_8` |
-| `hkVectorConstant.HK_QUADREAL_INV_15` | `hkVectorConstant::HK_QUADREAL_INV_15` |
-| `hkVectorConstant.HK_QUADREAL_INV_127` | `hkVectorConstant::HK_QUADREAL_INV_127` |
-| `hkVectorConstant.HK_QUADREAL_INV_226` | `hkVectorConstant::HK_QUADREAL_INV_226` |
-| `hkVectorConstant.HK_QUADREAL_INV_255` | `hkVectorConstant::HK_QUADREAL_INV_255` |
-| `hkVectorConstant.HK_QUADREAL_1000` | `hkVectorConstant::HK_QUADREAL_1000` |
-| `hkVectorConstant.HK_QUADREAL_0100` | `hkVectorConstant::HK_QUADREAL_0100` |
-| `hkVectorConstant.HK_QUADREAL_0010` | `hkVectorConstant::HK_QUADREAL_0010` |
-| `hkVectorConstant.HK_QUADREAL_0001` | `hkVectorConstant::HK_QUADREAL_0001` |
-| `hkVectorConstant.HK_QUADREAL_MAX` | `hkVectorConstant::HK_QUADREAL_MAX` |
-| `hkVectorConstant.HK_QUADREAL_HIGH` | `hkVectorConstant::HK_QUADREAL_HIGH` |
-| `hkVectorConstant.HK_QUADREAL_EPS` | `hkVectorConstant::HK_QUADREAL_EPS` |
-| `hkVectorConstant.HK_QUADREAL_EPS_SQRD` | `hkVectorConstant::HK_QUADREAL_EPS_SQRD` |
-| `hkVectorConstant.HK_QUADREAL_MIN` | `hkVectorConstant::HK_QUADREAL_MIN` |
-| `hkVectorConstant.HK_QUADREAL_MINUS_MAX` | `hkVectorConstant::HK_QUADREAL_MINUS_MAX` |
-| `hkVectorConstant.HK_QUADREAL_MINUS_MIN` | `hkVectorConstant::HK_QUADREAL_MINUS_MIN` |
-| `hkVectorConstant.HK_QUADREAL_m11m11` | `hkVectorConstant::HK_QUADREAL_m11m11` |
-| `hkVectorConstant.HK_QUADREAL_1m11m1` | `hkVectorConstant::HK_QUADREAL_1m11m1` |
-| `hkVectorConstant.HK_QUADREAL_1010` | `hkVectorConstant::HK_QUADREAL_1010` |
-| `hkVectorConstant.HK_QUADREAL_1100` | `hkVectorConstant::HK_QUADREAL_1100` |
-| `hkVectorConstant.HK_QUADREAL_0011` | `hkVectorConstant::HK_QUADREAL_0011` |
-| `hkVectorConstant.HK_QUADREAL_1248` | `hkVectorConstant::HK_QUADREAL_1248` |
-| `hkVectorConstant.HK_QUADREAL_8421` | `hkVectorConstant::HK_QUADREAL_8421` |
-| `hkVectorConstant.HK_QUADREAL_PACK_HALF` | `hkVectorConstant::HK_QUADREAL_PACK_HALF` |
-| `hkVectorConstant.HK_QUADREAL_PACK16_UNIT_VEC` | `hkVectorConstant::HK_QUADREAL_PACK16_UNIT_VEC` |
-| `hkVectorConstant.HK_QUADREAL_UNPACK16_UNIT_VEC` | `hkVectorConstant::HK_QUADREAL_UNPACK16_UNIT_VEC` |
-| `hkVectorConstant.HK_QUADREAL_PI` | `hkVectorConstant::HK_QUADREAL_PI` |
-| `hkVectorConstant.HK_QUADREAL_PI_HALF` | `hkVectorConstant::HK_QUADREAL_PI_HALF` |
-| `hkVectorConstant.HK_QUADREAL_PI_QUARTER` | `hkVectorConstant::HK_QUADREAL_PI_QUARTER` |
-| `hkVectorConstant.HK_QUADREAL_FOUR_PI_THIRD` | `hkVectorConstant::HK_QUADREAL_FOUR_PI_THIRD` |
-| `hkVectorConstant.HK_QUADREAL_TWO_PI` | `hkVectorConstant::HK_QUADREAL_TWO_PI` |
-| `hkVectorConstant.HK_QUADREAL_FOUR_PI` | `hkVectorConstant::HK_QUADREAL_FOUR_PI` |
-| `hkVectorConstant.HK_QUADREAL_DEG2RAD` | `hkVectorConstant::HK_QUADREAL_DEG2RAD` |
-| `hkVectorConstant.HK_QUADREAL_RAD2DEG` | `hkVectorConstant::HK_QUADREAL_RAD2DEG` |
-| `hkVectorConstant.HK_QUADREAL_END` | `hkVectorConstant::HK_QUADREAL_END` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `hkVectorConstant.HK_QUADREAL_BEGIN` | `0` | `hkVectorConstant::HK_QUADREAL_BEGIN` |
+| `hkVectorConstant.HK_QUADREAL_MINUS1` | `1` | `hkVectorConstant::HK_QUADREAL_MINUS1` |
+| `hkVectorConstant.HK_QUADREAL_0` | `2` | `hkVectorConstant::HK_QUADREAL_0` |
+| `hkVectorConstant.HK_QUADREAL_1` | `3` | `hkVectorConstant::HK_QUADREAL_1` |
+| `hkVectorConstant.HK_QUADREAL_2` | `4` | `hkVectorConstant::HK_QUADREAL_2` |
+| `hkVectorConstant.HK_QUADREAL_3` | `5` | `hkVectorConstant::HK_QUADREAL_3` |
+| `hkVectorConstant.HK_QUADREAL_4` | `6` | `hkVectorConstant::HK_QUADREAL_4` |
+| `hkVectorConstant.HK_QUADREAL_5` | `7` | `hkVectorConstant::HK_QUADREAL_5` |
+| `hkVectorConstant.HK_QUADREAL_6` | `8` | `hkVectorConstant::HK_QUADREAL_6` |
+| `hkVectorConstant.HK_QUADREAL_7` | `9` | `hkVectorConstant::HK_QUADREAL_7` |
+| `hkVectorConstant.HK_QUADREAL_8` | `10` | `hkVectorConstant::HK_QUADREAL_8` |
+| `hkVectorConstant.HK_QUADREAL_15` | `11` | `hkVectorConstant::HK_QUADREAL_15` |
+| `hkVectorConstant.HK_QUADREAL_16` | `12` | `hkVectorConstant::HK_QUADREAL_16` |
+| `hkVectorConstant.HK_QUADREAL_255` | `13` | `hkVectorConstant::HK_QUADREAL_255` |
+| `hkVectorConstant.HK_QUADREAL_256` | `14` | `hkVectorConstant::HK_QUADREAL_256` |
+| `hkVectorConstant.HK_QUADREAL_2_POW_23` | `15` | `hkVectorConstant::HK_QUADREAL_2_POW_23` |
+| `hkVectorConstant.HK_QUADREAL_INV_0` | `16` | `hkVectorConstant::HK_QUADREAL_INV_0` |
+| `hkVectorConstant.HK_QUADREAL_INV_1` | `17` | `hkVectorConstant::HK_QUADREAL_INV_1` |
+| `hkVectorConstant.HK_QUADREAL_INV_2` | `18` | `hkVectorConstant::HK_QUADREAL_INV_2` |
+| `hkVectorConstant.HK_QUADREAL_INV_3` | `19` | `hkVectorConstant::HK_QUADREAL_INV_3` |
+| `hkVectorConstant.HK_QUADREAL_INV_4` | `20` | `hkVectorConstant::HK_QUADREAL_INV_4` |
+| `hkVectorConstant.HK_QUADREAL_INV_5` | `21` | `hkVectorConstant::HK_QUADREAL_INV_5` |
+| `hkVectorConstant.HK_QUADREAL_INV_6` | `22` | `hkVectorConstant::HK_QUADREAL_INV_6` |
+| `hkVectorConstant.HK_QUADREAL_INV_7` | `23` | `hkVectorConstant::HK_QUADREAL_INV_7` |
+| `hkVectorConstant.HK_QUADREAL_INV_8` | `24` | `hkVectorConstant::HK_QUADREAL_INV_8` |
+| `hkVectorConstant.HK_QUADREAL_INV_15` | `25` | `hkVectorConstant::HK_QUADREAL_INV_15` |
+| `hkVectorConstant.HK_QUADREAL_INV_127` | `26` | `hkVectorConstant::HK_QUADREAL_INV_127` |
+| `hkVectorConstant.HK_QUADREAL_INV_226` | `27` | `hkVectorConstant::HK_QUADREAL_INV_226` |
+| `hkVectorConstant.HK_QUADREAL_INV_255` | `28` | `hkVectorConstant::HK_QUADREAL_INV_255` |
+| `hkVectorConstant.HK_QUADREAL_1000` | `29` | `hkVectorConstant::HK_QUADREAL_1000` |
+| `hkVectorConstant.HK_QUADREAL_0100` | `30` | `hkVectorConstant::HK_QUADREAL_0100` |
+| `hkVectorConstant.HK_QUADREAL_0010` | `31` | `hkVectorConstant::HK_QUADREAL_0010` |
+| `hkVectorConstant.HK_QUADREAL_0001` | `32` | `hkVectorConstant::HK_QUADREAL_0001` |
+| `hkVectorConstant.HK_QUADREAL_MAX` | `33` | `hkVectorConstant::HK_QUADREAL_MAX` |
+| `hkVectorConstant.HK_QUADREAL_HIGH` | `34` | `hkVectorConstant::HK_QUADREAL_HIGH` |
+| `hkVectorConstant.HK_QUADREAL_EPS` | `35` | `hkVectorConstant::HK_QUADREAL_EPS` |
+| `hkVectorConstant.HK_QUADREAL_EPS_SQRD` | `36` | `hkVectorConstant::HK_QUADREAL_EPS_SQRD` |
+| `hkVectorConstant.HK_QUADREAL_MIN` | `37` | `hkVectorConstant::HK_QUADREAL_MIN` |
+| `hkVectorConstant.HK_QUADREAL_MINUS_MAX` | `38` | `hkVectorConstant::HK_QUADREAL_MINUS_MAX` |
+| `hkVectorConstant.HK_QUADREAL_MINUS_MIN` | `39` | `hkVectorConstant::HK_QUADREAL_MINUS_MIN` |
+| `hkVectorConstant.HK_QUADREAL_m11m11` | `40` | `hkVectorConstant::HK_QUADREAL_m11m11` |
+| `hkVectorConstant.HK_QUADREAL_1m11m1` | `41` | `hkVectorConstant::HK_QUADREAL_1m11m1` |
+| `hkVectorConstant.HK_QUADREAL_1010` | `42` | `hkVectorConstant::HK_QUADREAL_1010` |
+| `hkVectorConstant.HK_QUADREAL_1100` | `43` | `hkVectorConstant::HK_QUADREAL_1100` |
+| `hkVectorConstant.HK_QUADREAL_0011` | `44` | `hkVectorConstant::HK_QUADREAL_0011` |
+| `hkVectorConstant.HK_QUADREAL_1248` | `45` | `hkVectorConstant::HK_QUADREAL_1248` |
+| `hkVectorConstant.HK_QUADREAL_8421` | `46` | `hkVectorConstant::HK_QUADREAL_8421` |
+| `hkVectorConstant.HK_QUADREAL_PACK_HALF` | `47` | `hkVectorConstant::HK_QUADREAL_PACK_HALF` |
+| `hkVectorConstant.HK_QUADREAL_PACK16_UNIT_VEC` | `48` | `hkVectorConstant::HK_QUADREAL_PACK16_UNIT_VEC` |
+| `hkVectorConstant.HK_QUADREAL_UNPACK16_UNIT_VEC` | `49` | `hkVectorConstant::HK_QUADREAL_UNPACK16_UNIT_VEC` |
+| `hkVectorConstant.HK_QUADREAL_PI` | `50` | `hkVectorConstant::HK_QUADREAL_PI` |
+| `hkVectorConstant.HK_QUADREAL_PI_HALF` | `51` | `hkVectorConstant::HK_QUADREAL_PI_HALF` |
+| `hkVectorConstant.HK_QUADREAL_PI_QUARTER` | `52` | `hkVectorConstant::HK_QUADREAL_PI_QUARTER` |
+| `hkVectorConstant.HK_QUADREAL_FOUR_PI_THIRD` | `53` | `hkVectorConstant::HK_QUADREAL_FOUR_PI_THIRD` |
+| `hkVectorConstant.HK_QUADREAL_TWO_PI` | `54` | `hkVectorConstant::HK_QUADREAL_TWO_PI` |
+| `hkVectorConstant.HK_QUADREAL_FOUR_PI` | `55` | `hkVectorConstant::HK_QUADREAL_FOUR_PI` |
+| `hkVectorConstant.HK_QUADREAL_DEG2RAD` | `56` | `hkVectorConstant::HK_QUADREAL_DEG2RAD` |
+| `hkVectorConstant.HK_QUADREAL_RAD2DEG` | `57` | `hkVectorConstant::HK_QUADREAL_RAD2DEG` |
+| `hkVectorConstant.HK_QUADREAL_END` | `58` | `hkVectorConstant::HK_QUADREAL_END` |
 
 ### Table: `hkResultEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `hkResultEnum.HK_SUCCESS` | `hkResultEnum::HK_SUCCESS` |
-| `hkResultEnum.HK_FAILURE` | `hkResultEnum::HK_FAILURE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `hkResultEnum.HK_SUCCESS` | `0` | `hkResultEnum::HK_SUCCESS` |
+| `hkResultEnum.HK_FAILURE` | `1` | `hkResultEnum::HK_FAILURE` |
 
 ### Table: `hkMemoryAllocator.MemoryState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `hkMemoryAllocator.MemoryState.MEMORY_STATE_OK` | `hkMemoryAllocator::MemoryState::MEMORY_STATE_OK` |
-| `hkMemoryAllocator.MemoryState.MEMORY_STATE_OUT_OF_MEMORY` | `hkMemoryAllocator::MemoryState::MEMORY_STATE_OUT_OF_MEMORY` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `hkMemoryAllocator.MemoryState.MEMORY_STATE_OK` | `0` | `hkMemoryAllocator::MemoryState::MEMORY_STATE_OK` |
+| `hkMemoryAllocator.MemoryState.MEMORY_STATE_OUT_OF_MEMORY` | `1` | `hkMemoryAllocator::MemoryState::MEMORY_STATE_OUT_OF_MEMORY` |
 
 ---
 
@@ -1784,26 +1790,26 @@ end
 
 ### Table: `InventoryGUI.TradeResult.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `InventoryGUI.TradeResult.Enum.OK` | `InventoryGUI::TradeResult::Enum::OK` |
-| `InventoryGUI.TradeResult.Enum.OUT_OF_RANGE` | `InventoryGUI::TradeResult::Enum::OUT_OF_RANGE` |
-| `InventoryGUI.TradeResult.Enum.NO_ROOM` | `InventoryGUI::TradeResult::Enum::NO_ROOM` |
-| `InventoryGUI.TradeResult.Enum.CANT_AFFORD` | `InventoryGUI::TradeResult::Enum::CANT_AFFORD` |
-| `InventoryGUI.TradeResult.Enum.CANT_AFFORD_SHOPKEPPER` | `InventoryGUI::TradeResult::Enum::CANT_AFFORD_SHOPKEPPER` |
-| `InventoryGUI.TradeResult.Enum.CANT_WEAR_ITEM` | `InventoryGUI::TradeResult::Enum::CANT_WEAR_ITEM` |
-| `InventoryGUI.TradeResult.Enum.INCOMPATIBLE_ITEM` | `InventoryGUI::TradeResult::Enum::INCOMPATIBLE_ITEM` |
-| `InventoryGUI.TradeResult.Enum.LOCKED` | `InventoryGUI::TradeResult::Enum::LOCKED` |
-| `InventoryGUI.TradeResult.Enum.THIEF_DETECTED` | `InventoryGUI::TradeResult::Enum::THIEF_DETECTED` |
-| `InventoryGUI.TradeResult.Enum.SELLING_STOLEN_ITEM_DETECTED` | `InventoryGUI::TradeResult::Enum::SELLING_STOLEN_ITEM_DETECTED` |
-| `InventoryGUI.TradeResult.Enum.ERROR_ITEM_POSITION` | `InventoryGUI::TradeResult::Enum::ERROR_ITEM_POSITION` |
-| `InventoryGUI.TradeResult.Enum.ERROR_INVALID` | `InventoryGUI::TradeResult::Enum::ERROR_INVALID` |
-| `InventoryGUI.TradeResult.Enum.ERROR_THATS_MINE` | `InventoryGUI::TradeResult::Enum::ERROR_THATS_MINE` |
-| `InventoryGUI.TradeResult.Enum.ERROR_TARGET_CONSCIOUS` | `InventoryGUI::TradeResult::Enum::ERROR_TARGET_CONSCIOUS` |
-| `InventoryGUI.TradeResult.Enum.SMUGGLING_ONLY` | `InventoryGUI::TradeResult::Enum::SMUGGLING_ONLY` |
-| `InventoryGUI.TradeResult.Enum.ILLEGAL_GOODS` | `InventoryGUI::TradeResult::Enum::ILLEGAL_GOODS` |
-| `InventoryGUI.TradeResult.Enum.UNIFORMS` | `InventoryGUI::TradeResult::Enum::UNIFORMS` |
-| `InventoryGUI.TradeResult.Enum.CONTAINER_NOT_EMPTY` | `InventoryGUI::TradeResult::Enum::CONTAINER_NOT_EMPTY` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `InventoryGUI.TradeResult.Enum.OK` | `0` | `InventoryGUI::TradeResult::Enum::OK` |
+| `InventoryGUI.TradeResult.Enum.OUT_OF_RANGE` | `1` | `InventoryGUI::TradeResult::Enum::OUT_OF_RANGE` |
+| `InventoryGUI.TradeResult.Enum.NO_ROOM` | `2` | `InventoryGUI::TradeResult::Enum::NO_ROOM` |
+| `InventoryGUI.TradeResult.Enum.CANT_AFFORD` | `3` | `InventoryGUI::TradeResult::Enum::CANT_AFFORD` |
+| `InventoryGUI.TradeResult.Enum.CANT_AFFORD_SHOPKEPPER` | `4` | `InventoryGUI::TradeResult::Enum::CANT_AFFORD_SHOPKEPPER` |
+| `InventoryGUI.TradeResult.Enum.CANT_WEAR_ITEM` | `5` | `InventoryGUI::TradeResult::Enum::CANT_WEAR_ITEM` |
+| `InventoryGUI.TradeResult.Enum.INCOMPATIBLE_ITEM` | `6` | `InventoryGUI::TradeResult::Enum::INCOMPATIBLE_ITEM` |
+| `InventoryGUI.TradeResult.Enum.LOCKED` | `7` | `InventoryGUI::TradeResult::Enum::LOCKED` |
+| `InventoryGUI.TradeResult.Enum.THIEF_DETECTED` | `8` | `InventoryGUI::TradeResult::Enum::THIEF_DETECTED` |
+| `InventoryGUI.TradeResult.Enum.SELLING_STOLEN_ITEM_DETECTED` | `9` | `InventoryGUI::TradeResult::Enum::SELLING_STOLEN_ITEM_DETECTED` |
+| `InventoryGUI.TradeResult.Enum.ERROR_ITEM_POSITION` | `10` | `InventoryGUI::TradeResult::Enum::ERROR_ITEM_POSITION` |
+| `InventoryGUI.TradeResult.Enum.ERROR_INVALID` | `11` | `InventoryGUI::TradeResult::Enum::ERROR_INVALID` |
+| `InventoryGUI.TradeResult.Enum.ERROR_THATS_MINE` | `12` | `InventoryGUI::TradeResult::Enum::ERROR_THATS_MINE` |
+| `InventoryGUI.TradeResult.Enum.ERROR_TARGET_CONSCIOUS` | `13` | `InventoryGUI::TradeResult::Enum::ERROR_TARGET_CONSCIOUS` |
+| `InventoryGUI.TradeResult.Enum.SMUGGLING_ONLY` | `14` | `InventoryGUI::TradeResult::Enum::SMUGGLING_ONLY` |
+| `InventoryGUI.TradeResult.Enum.ILLEGAL_GOODS` | `15` | `InventoryGUI::TradeResult::Enum::ILLEGAL_GOODS` |
+| `InventoryGUI.TradeResult.Enum.UNIFORMS` | `16` | `InventoryGUI::TradeResult::Enum::UNIFORMS` |
+| `InventoryGUI.TradeResult.Enum.CONTAINER_NOT_EMPTY` | `17` | `InventoryGUI::TradeResult::Enum::CONTAINER_NOT_EMPTY` |
 
 ---
 
@@ -1811,24 +1817,24 @@ end
 
 ### Table: `HavokCharacter.CharacterState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `HavokCharacter.CharacterState.IDLE` | `HavokCharacter::CharacterState::IDLE` |
-| `HavokCharacter.CharacterState.GOAL_REACHED` | `HavokCharacter::CharacterState::GOAL_REACHED` |
-| `HavokCharacter.CharacterState.FOLLOWING_PATH` | `HavokCharacter::CharacterState::FOLLOWING_PATH` |
-| `HavokCharacter.CharacterState.MANUAL` | `HavokCharacter::CharacterState::MANUAL` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `HavokCharacter.CharacterState.IDLE` | `0` | `HavokCharacter::CharacterState::IDLE` |
+| `HavokCharacter.CharacterState.GOAL_REACHED` | `1` | `HavokCharacter::CharacterState::GOAL_REACHED` |
+| `HavokCharacter.CharacterState.FOLLOWING_PATH` | `2` | `HavokCharacter::CharacterState::FOLLOWING_PATH` |
+| `HavokCharacter.CharacterState.MANUAL` | `3` | `HavokCharacter::CharacterState::MANUAL` |
 
 ### Table: `HavokCharacter.PathState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `HavokCharacter.PathState.NONE` | `HavokCharacter::PathState::NONE` |
-| `HavokCharacter.PathState.COMPLETE` | `HavokCharacter::PathState::COMPLETE` |
-| `HavokCharacter.PathState.INCOMPLETE` | `HavokCharacter::PathState::INCOMPLETE` |
-| `HavokCharacter.PathState.FAILED` | `HavokCharacter::PathState::FAILED` |
-| `HavokCharacter.PathState.WAITING` | `HavokCharacter::PathState::WAITING` |
-| `HavokCharacter.PathState.UPDATING` | `HavokCharacter::PathState::UPDATING` |
-| `HavokCharacter.PathState.BROKEN` | `HavokCharacter::PathState::BROKEN` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `HavokCharacter.PathState.NONE` | `0` | `HavokCharacter::PathState::NONE` |
+| `HavokCharacter.PathState.COMPLETE` | `1` | `HavokCharacter::PathState::COMPLETE` |
+| `HavokCharacter.PathState.INCOMPLETE` | `2` | `HavokCharacter::PathState::INCOMPLETE` |
+| `HavokCharacter.PathState.FAILED` | `3` | `HavokCharacter::PathState::FAILED` |
+| `HavokCharacter.PathState.WAITING` | `4` | `HavokCharacter::PathState::WAITING` |
+| `HavokCharacter.PathState.UPDATING` | `5` | `HavokCharacter::PathState::UPDATING` |
+| `HavokCharacter.PathState.BROKEN` | `6` | `HavokCharacter::PathState::BROKEN` |
 
 ---
 
@@ -1836,20 +1842,20 @@ end
 
 ### Table: `InputHandler.Masks`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `InputHandler.Masks.SHIFT_MASK` | `InputHandler::Masks::SHIFT_MASK` |
-| `InputHandler.Masks.CTRL_MASK` | `InputHandler::Masks::CTRL_MASK` |
-| `InputHandler.Masks.ALT_MASK` | `InputHandler::Masks::ALT_MASK` |
-| `InputHandler.Masks.ALL_MASK` | `InputHandler::Masks::ALL_MASK` |
-| `InputHandler.Masks.NONE_MASK` | `InputHandler::Masks::NONE_MASK` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `InputHandler.Masks.SHIFT_MASK` | `256` | `InputHandler::Masks::SHIFT_MASK` |
+| `InputHandler.Masks.CTRL_MASK` | `512` | `InputHandler::Masks::CTRL_MASK` |
+| `InputHandler.Masks.ALT_MASK` | `1024` | `InputHandler::Masks::ALT_MASK` |
+| `InputHandler.Masks.ALL_MASK` | `1792` | `InputHandler::Masks::ALL_MASK` |
+| `InputHandler.Masks.NONE_MASK` | `0` | `InputHandler::Masks::NONE_MASK` |
 
 ### Table: `InputHandler.GameMode`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `InputHandler.GameMode.GLOBAL` | `InputHandler::GameMode::GLOBAL` |
-| `InputHandler.GameMode.EDITOR` | `InputHandler::GameMode::EDITOR` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `InputHandler.GameMode.GLOBAL` | `0` | `InputHandler::GameMode::GLOBAL` |
+| `InputHandler.GameMode.EDITOR` | `1` | `InputHandler::GameMode::EDITOR` |
 
 ---
 
@@ -1857,14 +1863,14 @@ end
 
 ### Table: `Logger.Severity`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `Logger.Severity.Trace` | `Logger::Severity::Trace` |
-| `Logger.Severity.Debug` | `Logger::Severity::Debug` |
-| `Logger.Severity.Info` | `Logger::Severity::Info` |
-| `Logger.Severity.Warning` | `Logger::Severity::Warning` |
-| `Logger.Severity.Error` | `Logger::Severity::Error` |
-| `Logger.Severity.Fatal` | `Logger::Severity::Fatal` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `Logger.Severity.Trace` | `0` | `Logger::Severity::Trace` |
+| `Logger.Severity.Debug` | `1` | `Logger::Severity::Debug` |
+| `Logger.Severity.Info` | `2` | `Logger::Severity::Info` |
+| `Logger.Severity.Warning` | `3` | `Logger::Severity::Warning` |
+| `Logger.Severity.Error` | `4` | `Logger::Severity::Error` |
+| `Logger.Severity.Fatal` | `5` | `Logger::Severity::Fatal` |
 
 ---
 
@@ -1872,11 +1878,11 @@ end
 
 ### Table: `MessageLogColor`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MessageLogColor.ML_NORMAL` | `MessageLogColor::ML_NORMAL` |
-| `MessageLogColor.ML_PLAYER` | `MessageLogColor::ML_PLAYER` |
-| `MessageLogColor.ML_SYSTEM` | `MessageLogColor::ML_SYSTEM` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MessageLogColor.ML_NORMAL` | `0` | `MessageLogColor::ML_NORMAL` |
+| `MessageLogColor.ML_PLAYER` | `1` | `MessageLogColor::ML_PLAYER` |
+| `MessageLogColor.ML_SYSTEM` | `2` | `MessageLogColor::ML_SYSTEM` |
 
 ---
 
@@ -1884,50 +1890,50 @@ end
 
 ### Table: `LimbState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `LimbState.LIMB_ORIGINAL` | `LimbState::LIMB_ORIGINAL` |
-| `LimbState.LIMB_STUMP` | `LimbState::LIMB_STUMP` |
-| `LimbState.LIMB_REPLACED` | `LimbState::LIMB_REPLACED` |
-| `LimbState.LIMB_CRUSHED` | `LimbState::LIMB_CRUSHED` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `LimbState.LIMB_ORIGINAL` | `0` | `LimbState::LIMB_ORIGINAL` |
+| `LimbState.LIMB_STUMP` | `1` | `LimbState::LIMB_STUMP` |
+| `LimbState.LIMB_REPLACED` | `2` | `LimbState::LIMB_REPLACED` |
+| `LimbState.LIMB_CRUSHED` | `3` | `LimbState::LIMB_CRUSHED` |
 
 ### Table: `RobotLimbs.Limb`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `RobotLimbs.Limb.LEFT_ARM` | `RobotLimbs::Limb::LEFT_ARM` |
-| `RobotLimbs.Limb.RIGHT_ARM` | `RobotLimbs::Limb::RIGHT_ARM` |
-| `RobotLimbs.Limb.LEFT_LEG` | `RobotLimbs::Limb::LEFT_LEG` |
-| `RobotLimbs.Limb.RIGHT_LEG` | `RobotLimbs::Limb::RIGHT_LEG` |
-| `RobotLimbs.Limb.NULL_LIMB` | `RobotLimbs::Limb::NULL_LIMB` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `RobotLimbs.Limb.LEFT_ARM` | `0` | `RobotLimbs::Limb::LEFT_ARM` |
+| `RobotLimbs.Limb.RIGHT_ARM` | `1` | `RobotLimbs::Limb::RIGHT_ARM` |
+| `RobotLimbs.Limb.LEFT_LEG` | `2` | `RobotLimbs::Limb::LEFT_LEG` |
+| `RobotLimbs.Limb.RIGHT_LEG` | `3` | `RobotLimbs::Limb::RIGHT_LEG` |
+| `RobotLimbs.Limb.NULL_LIMB` | `4` | `RobotLimbs::Limb::NULL_LIMB` |
 
 ### Table: `AttackDirection.Enum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `AttackDirection.Enum.FRONT` | `AttackDirection::Enum::FRONT` |
-| `AttackDirection.Enum.BACK` | `AttackDirection::Enum::BACK` |
-| `AttackDirection.Enum.LEFT` | `AttackDirection::Enum::LEFT` |
-| `AttackDirection.Enum.RIGHT` | `AttackDirection::Enum::RIGHT` |
-| `AttackDirection.Enum.TOP` | `AttackDirection::Enum::TOP` |
-| `AttackDirection.Enum.BOTTOM` | `AttackDirection::Enum::BOTTOM` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `AttackDirection.Enum.FRONT` | `1` | `AttackDirection::Enum::FRONT` |
+| `AttackDirection.Enum.BACK` | `2` | `AttackDirection::Enum::BACK` |
+| `AttackDirection.Enum.LEFT` | `4` | `AttackDirection::Enum::LEFT` |
+| `AttackDirection.Enum.RIGHT` | `8` | `AttackDirection::Enum::RIGHT` |
+| `AttackDirection.Enum.TOP` | `16` | `AttackDirection::Enum::TOP` |
+| `AttackDirection.Enum.BOTTOM` | `32` | `AttackDirection::Enum::BOTTOM` |
 
 ### Table: `MedicalSystem.HealthPartStatus.PartType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MedicalSystem.HealthPartStatus.PartType.PART_TORSO` | `MedicalSystem::HealthPartStatus::PartType::PART_TORSO` |
-| `MedicalSystem.HealthPartStatus.PartType.PART_LEG` | `MedicalSystem::HealthPartStatus::PartType::PART_LEG` |
-| `MedicalSystem.HealthPartStatus.PartType.PART_ARM` | `MedicalSystem::HealthPartStatus::PartType::PART_ARM` |
-| `MedicalSystem.HealthPartStatus.PartType.PART_HEAD` | `MedicalSystem::HealthPartStatus::PartType::PART_HEAD` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MedicalSystem.HealthPartStatus.PartType.PART_TORSO` | `0` | `MedicalSystem::HealthPartStatus::PartType::PART_TORSO` |
+| `MedicalSystem.HealthPartStatus.PartType.PART_LEG` | `1` | `MedicalSystem::HealthPartStatus::PartType::PART_LEG` |
+| `MedicalSystem.HealthPartStatus.PartType.PART_ARM` | `2` | `MedicalSystem::HealthPartStatus::PartType::PART_ARM` |
+| `MedicalSystem.HealthPartStatus.PartType.PART_HEAD` | `3` | `MedicalSystem::HealthPartStatus::PartType::PART_HEAD` |
 
 ### Table: `MedicalSystem.CollapseStage`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MedicalSystem.CollapseStage.COLLAPSE_NONE` | `MedicalSystem::CollapseStage::COLLAPSE_NONE` |
-| `MedicalSystem.CollapseStage.COLLAPSE_BUT_NO_RAGDOLL` | `MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL` |
-| `MedicalSystem.CollapseStage.COLLAPSE_KO` | `MedicalSystem::CollapseStage::COLLAPSE_KO` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MedicalSystem.CollapseStage.COLLAPSE_NONE` | `0` | `MedicalSystem::CollapseStage::COLLAPSE_NONE` |
+| `MedicalSystem.CollapseStage.COLLAPSE_BUT_NO_RAGDOLL` | `1` | `MedicalSystem::CollapseStage::COLLAPSE_BUT_NO_RAGDOLL` |
+| `MedicalSystem.CollapseStage.COLLAPSE_KO` | `2` | `MedicalSystem::CollapseStage::COLLAPSE_KO` |
 
 ---
 
@@ -1935,31 +1941,31 @@ end
 
 ### Table: `NavMesh.State`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NavMesh.State.MISSING` | `NavMesh::State::MISSING` |
-| `NavMesh.State.ORIGINAL` | `NavMesh::State::ORIGINAL` |
-| `NavMesh.State.MODIFIED` | `NavMesh::State::MODIFIED` |
-| `NavMesh.State.LOADING` | `NavMesh::State::LOADING` |
-| `NavMesh.State.GENERATING` | `NavMesh::State::GENERATING` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NavMesh.State.MISSING` | `0` | `NavMesh::State::MISSING` |
+| `NavMesh.State.ORIGINAL` | `1` | `NavMesh::State::ORIGINAL` |
+| `NavMesh.State.MODIFIED` | `2` | `NavMesh::State::MODIFIED` |
+| `NavMesh.State.LOADING` | `3` | `NavMesh::State::LOADING` |
+| `NavMesh.State.GENERATING` | `4` | `NavMesh::State::GENERATING` |
 
 ### Table: `NavMesh.FileMode`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NavMesh.FileMode.AUTO` | `NavMesh::FileMode::AUTO` |
-| `NavMesh.FileMode.BASE` | `NavMesh::FileMode::BASE` |
-| `NavMesh.FileMode.USER` | `NavMesh::FileMode::USER` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NavMesh.FileMode.AUTO` | `0` | `NavMesh::FileMode::AUTO` |
+| `NavMesh.FileMode.BASE` | `1` | `NavMesh::FileMode::BASE` |
+| `NavMesh.FileMode.USER` | `2` | `NavMesh::FileMode::USER` |
 
 ### Table: `NavMesh.MessageType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NavMesh.MessageType.CREATE` | `NavMesh::MessageType::CREATE` |
-| `NavMesh.MessageType.DESTROY` | `NavMesh::MessageType::DESTROY` |
-| `NavMesh.MessageType.DESTROY_BUILDING` | `NavMesh::MessageType::DESTROY_BUILDING` |
-| `NavMesh.MessageType.DOOR_OPEN` | `NavMesh::MessageType::DOOR_OPEN` |
-| `NavMesh.MessageType.DOOR_CLOSE` | `NavMesh::MessageType::DOOR_CLOSE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NavMesh.MessageType.CREATE` | `0` | `NavMesh::MessageType::CREATE` |
+| `NavMesh.MessageType.DESTROY` | `1` | `NavMesh::MessageType::DESTROY` |
+| `NavMesh.MessageType.DESTROY_BUILDING` | `2` | `NavMesh::MessageType::DESTROY_BUILDING` |
+| `NavMesh.MessageType.DOOR_OPEN` | `3` | `NavMesh::MessageType::DOOR_OPEN` |
+| `NavMesh.MessageType.DOOR_CLOSE` | `4` | `NavMesh::MessageType::DOOR_CLOSE` |
 
 ---
 
@@ -1967,13 +1973,13 @@ end
 
 ### Table: `NavMeshGenerator.TaskType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NavMeshGenerator.TaskType.GENERATE_ZONE` | `NavMeshGenerator::TaskType::GENERATE_ZONE` |
-| `NavMeshGenerator.TaskType.GENERATE_SPLICE` | `NavMeshGenerator::TaskType::GENERATE_SPLICE` |
-| `NavMeshGenerator.TaskType.GENERATE_CARVE` | `NavMeshGenerator::TaskType::GENERATE_CARVE` |
-| `NavMeshGenerator.TaskType.GENERATE_INTERIOR` | `NavMeshGenerator::TaskType::GENERATE_INTERIOR` |
-| `NavMeshGenerator.TaskType.GENERATE_STITCH` | `NavMeshGenerator::TaskType::GENERATE_STITCH` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NavMeshGenerator.TaskType.GENERATE_ZONE` | `0` | `NavMeshGenerator::TaskType::GENERATE_ZONE` |
+| `NavMeshGenerator.TaskType.GENERATE_SPLICE` | `1` | `NavMeshGenerator::TaskType::GENERATE_SPLICE` |
+| `NavMeshGenerator.TaskType.GENERATE_CARVE` | `2` | `NavMeshGenerator::TaskType::GENERATE_CARVE` |
+| `NavMeshGenerator.TaskType.GENERATE_INTERIOR` | `3` | `NavMeshGenerator::TaskType::GENERATE_INTERIOR` |
+| `NavMeshGenerator.TaskType.GENERATE_STITCH` | `4` | `NavMeshGenerator::TaskType::GENERATE_STITCH` |
 
 ---
 
@@ -1981,24 +1987,24 @@ end
 
 ### Table: `NxShapeFlag`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NxShapeFlag.NX_TRIGGER_ON_ENTER` | `NxShapeFlag::NX_TRIGGER_ON_ENTER` |
-| `NxShapeFlag.NX_TRIGGER_ON_LEAVE` | `NxShapeFlag::NX_TRIGGER_ON_LEAVE` |
-| `NxShapeFlag.NX_TRIGGER_ON_STAY` | `NxShapeFlag::NX_TRIGGER_ON_STAY` |
-| `NxShapeFlag.NX_TRIGGER_ENABLE` | `NxShapeFlag::NX_TRIGGER_ENABLE` |
-| `NxShapeFlag.NX_SF_VISUALIZATION` | `NxShapeFlag::NX_SF_VISUALIZATION` |
-| `NxShapeFlag.NX_SF_DISABLE_COLLISION` | `NxShapeFlag::NX_SF_DISABLE_COLLISION` |
-| `NxShapeFlag.NX_SF_FEATURE_INDICES` | `NxShapeFlag::NX_SF_FEATURE_INDICES` |
-| `NxShapeFlag.NX_SF_DISABLE_RAYCASTING` | `NxShapeFlag::NX_SF_DISABLE_RAYCASTING` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NxShapeFlag.NX_TRIGGER_ON_ENTER` | `1` | `NxShapeFlag::NX_TRIGGER_ON_ENTER` |
+| `NxShapeFlag.NX_TRIGGER_ON_LEAVE` | `2` | `NxShapeFlag::NX_TRIGGER_ON_LEAVE` |
+| `NxShapeFlag.NX_TRIGGER_ON_STAY` | `4` | `NxShapeFlag::NX_TRIGGER_ON_STAY` |
+| `NxShapeFlag.NX_TRIGGER_ENABLE` | `7` | `NxShapeFlag::NX_TRIGGER_ENABLE` |
+| `NxShapeFlag.NX_SF_VISUALIZATION` | `8` | `NxShapeFlag::NX_SF_VISUALIZATION` |
+| `NxShapeFlag.NX_SF_DISABLE_COLLISION` | `16` | `NxShapeFlag::NX_SF_DISABLE_COLLISION` |
+| `NxShapeFlag.NX_SF_FEATURE_INDICES` | `32` | `NxShapeFlag::NX_SF_FEATURE_INDICES` |
+| `NxShapeFlag.NX_SF_DISABLE_RAYCASTING` | `64` | `NxShapeFlag::NX_SF_DISABLE_RAYCASTING` |
 
 ### Table: `NXU.NXU_FileType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `NXU.NXU_FileType.FT_BINARY` | `NXU::NXU_FileType::FT_BINARY` |
-| `NXU.NXU_FileType.FT_XML` | `NXU::NXU_FileType::FT_XML` |
-| `NXU.NXU_FileType.FT_COLLADA` | `NXU::NXU_FileType::FT_COLLADA` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NXU.NXU_FileType.FT_BINARY` | `0` | `NXU::NXU_FileType::FT_BINARY` |
+| `NXU.NXU_FileType.FT_XML` | `1` | `NXU::NXU_FileType::FT_XML` |
+| `NXU.NXU_FileType.FT_COLLADA` | `2` | `NXU::NXU_FileType::FT_COLLADA` |
 
 ---
 
@@ -2006,15 +2012,15 @@ end
 
 ### Table: `BuildingRotation`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `BuildingRotation.ROTATION_NONE` | `BuildingRotation::ROTATION_NONE` |
-| `BuildingRotation.ROTATION_CONSTANT` | `BuildingRotation::ROTATION_CONSTANT` |
-| `BuildingRotation.ROTATION_OUTPUT_BASED` | `BuildingRotation::ROTATION_OUTPUT_BASED` |
-| `BuildingRotation.ROTATION_WIND_SPEED` | `BuildingRotation::ROTATION_WIND_SPEED` |
-| `BuildingRotation.ROTATION_FACE_WIND_DIRECTION` | `BuildingRotation::ROTATION_FACE_WIND_DIRECTION` |
-| `BuildingRotation.ROTATION_TARGET` | `BuildingRotation::ROTATION_TARGET` |
-| `BuildingRotation.ROTATION_MATCH_PARENT` | `BuildingRotation::ROTATION_MATCH_PARENT` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `BuildingRotation.ROTATION_NONE` | `0` | `BuildingRotation::ROTATION_NONE` |
+| `BuildingRotation.ROTATION_CONSTANT` | `1` | `BuildingRotation::ROTATION_CONSTANT` |
+| `BuildingRotation.ROTATION_OUTPUT_BASED` | `2` | `BuildingRotation::ROTATION_OUTPUT_BASED` |
+| `BuildingRotation.ROTATION_WIND_SPEED` | `3` | `BuildingRotation::ROTATION_WIND_SPEED` |
+| `BuildingRotation.ROTATION_FACE_WIND_DIRECTION` | `4` | `BuildingRotation::ROTATION_FACE_WIND_DIRECTION` |
+| `BuildingRotation.ROTATION_TARGET` | `5` | `BuildingRotation::ROTATION_TARGET` |
+| `BuildingRotation.ROTATION_MATCH_PARENT` | `6` | `BuildingRotation::ROTATION_MATCH_PARENT` |
 
 ---
 
@@ -2022,13 +2028,13 @@ end
 
 ### Table: `PlatoonCreationMessage`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `PlatoonCreationMessage.CM_NO_MESSAGE` | `PlatoonCreationMessage::CM_NO_MESSAGE` |
-| `PlatoonCreationMessage.CM_REFRESH` | `PlatoonCreationMessage::CM_REFRESH` |
-| `PlatoonCreationMessage.CM_DECIMATE` | `PlatoonCreationMessage::CM_DECIMATE` |
-| `PlatoonCreationMessage.CM_DELETE` | `PlatoonCreationMessage::CM_DELETE` |
-| `PlatoonCreationMessage.CM_EMPTY` | `PlatoonCreationMessage::CM_EMPTY` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `PlatoonCreationMessage.CM_NO_MESSAGE` | `0` | `PlatoonCreationMessage::CM_NO_MESSAGE` |
+| `PlatoonCreationMessage.CM_REFRESH` | `1` | `PlatoonCreationMessage::CM_REFRESH` |
+| `PlatoonCreationMessage.CM_DECIMATE` | `2` | `PlatoonCreationMessage::CM_DECIMATE` |
+| `PlatoonCreationMessage.CM_DELETE` | `3` | `PlatoonCreationMessage::CM_DELETE` |
+| `PlatoonCreationMessage.CM_EMPTY` | `4` | `PlatoonCreationMessage::CM_EMPTY` |
 
 ---
 
@@ -2036,14 +2042,14 @@ end
 
 ### Table: `DataObjectContainer.GroupType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `DataObjectContainer.GroupType.TYPE_UNKNOWN` | `DataObjectContainer::GroupType::TYPE_UNKNOWN` |
-| `DataObjectContainer.GroupType.TYPE_PLATOON` | `DataObjectContainer::GroupType::TYPE_PLATOON` |
-| `DataObjectContainer.GroupType.TYPE_FACTION` | `DataObjectContainer::GroupType::TYPE_FACTION` |
-| `DataObjectContainer.GroupType.TYPE_TOWNLIST` | `DataObjectContainer::GroupType::TYPE_TOWNLIST` |
-| `DataObjectContainer.GroupType.TYPE_ZONEMAP` | `DataObjectContainer::GroupType::TYPE_ZONEMAP` |
-| `DataObjectContainer.GroupType.TYPE_BUILDING_INTERIOR` | `DataObjectContainer::GroupType::TYPE_BUILDING_INTERIOR` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `DataObjectContainer.GroupType.TYPE_UNKNOWN` | `0` | `DataObjectContainer::GroupType::TYPE_UNKNOWN` |
+| `DataObjectContainer.GroupType.TYPE_PLATOON` | `1` | `DataObjectContainer::GroupType::TYPE_PLATOON` |
+| `DataObjectContainer.GroupType.TYPE_FACTION` | `2` | `DataObjectContainer::GroupType::TYPE_FACTION` |
+| `DataObjectContainer.GroupType.TYPE_TOWNLIST` | `3` | `DataObjectContainer::GroupType::TYPE_TOWNLIST` |
+| `DataObjectContainer.GroupType.TYPE_ZONEMAP` | `4` | `DataObjectContainer::GroupType::TYPE_ZONEMAP` |
+| `DataObjectContainer.GroupType.TYPE_BUILDING_INTERIOR` | `5` | `DataObjectContainer::GroupType::TYPE_BUILDING_INTERIOR` |
 
 ---
 
@@ -2051,19 +2057,19 @@ end
 
 ### Table: `SaveFileSystem.State`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SaveFileSystem.State.NORMAL` | `SaveFileSystem::State::NORMAL` |
-| `SaveFileSystem.State.SAVING` | `SaveFileSystem::State::SAVING` |
-| `SaveFileSystem.State.COMPLETE` | `SaveFileSystem::State::COMPLETE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SaveFileSystem.State.NORMAL` | `0` | `SaveFileSystem::State::NORMAL` |
+| `SaveFileSystem.State.SAVING` | `1` | `SaveFileSystem::State::SAVING` |
+| `SaveFileSystem.State.COMPLETE` | `2` | `SaveFileSystem::State::COMPLETE` |
 
 ### Table: `SaveFileSystem.MessageType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SaveFileSystem.MessageType.MSG_COPY` | `SaveFileSystem::MessageType::MSG_COPY` |
-| `SaveFileSystem.MessageType.MSG_COPY_REPLACE` | `SaveFileSystem::MessageType::MSG_COPY_REPLACE` |
-| `SaveFileSystem.MessageType.MSG_DELETE` | `SaveFileSystem::MessageType::MSG_DELETE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SaveFileSystem.MessageType.MSG_COPY` | `0` | `SaveFileSystem::MessageType::MSG_COPY` |
+| `SaveFileSystem.MessageType.MSG_COPY_REPLACE` | `1` | `SaveFileSystem::MessageType::MSG_COPY_REPLACE` |
+| `SaveFileSystem.MessageType.MSG_DELETE` | `2` | `SaveFileSystem::MessageType::MSG_DELETE` |
 
 ---
 
@@ -2071,23 +2077,23 @@ end
 
 ### Table: `SaveManager.Flags`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SaveManager.Flags.RESET_POSITION` | `SaveManager::Flags::RESET_POSITION` |
-| `SaveManager.Flags.IMPORT_SQUAD` | `SaveManager::Flags::IMPORT_SQUAD` |
-| `SaveManager.Flags.IMPORT_BUILDINGS` | `SaveManager::Flags::IMPORT_BUILDINGS` |
-| `SaveManager.Flags.IMPORT_RESEARCH` | `SaveManager::Flags::IMPORT_RESEARCH` |
-| `SaveManager.Flags.IMPORT_NPC_STATES` | `SaveManager::Flags::IMPORT_NPC_STATES` |
-| `SaveManager.Flags.IMPORT_RELATIONS` | `SaveManager::Flags::IMPORT_RELATIONS` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SaveManager.Flags.RESET_POSITION` | `1` | `SaveManager::Flags::RESET_POSITION` |
+| `SaveManager.Flags.IMPORT_SQUAD` | `2` | `SaveManager::Flags::IMPORT_SQUAD` |
+| `SaveManager.Flags.IMPORT_BUILDINGS` | `4` | `SaveManager::Flags::IMPORT_BUILDINGS` |
+| `SaveManager.Flags.IMPORT_RESEARCH` | `8` | `SaveManager::Flags::IMPORT_RESEARCH` |
+| `SaveManager.Flags.IMPORT_NPC_STATES` | `16` | `SaveManager::Flags::IMPORT_NPC_STATES` |
+| `SaveManager.Flags.IMPORT_RELATIONS` | `32` | `SaveManager::Flags::IMPORT_RELATIONS` |
 
 ### Table: `SaveManager.Signal`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SaveManager.Signal.SAVEGAME` | `SaveManager::Signal::SAVEGAME` |
-| `SaveManager.Signal.LOADGAME` | `SaveManager::Signal::LOADGAME` |
-| `SaveManager.Signal.IMPORTGAME` | `SaveManager::Signal::IMPORTGAME` |
-| `SaveManager.Signal.NEWGAME` | `SaveManager::Signal::NEWGAME` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SaveManager.Signal.SAVEGAME` | `1` | `SaveManager::Signal::SAVEGAME` |
+| `SaveManager.Signal.LOADGAME` | `2` | `SaveManager::Signal::LOADGAME` |
+| `SaveManager.Signal.IMPORTGAME` | `3` | `SaveManager::Signal::IMPORTGAME` |
+| `SaveManager.Signal.NEWGAME` | `4` | `SaveManager::Signal::NEWGAME` |
 
 ---
 
@@ -2095,20 +2101,20 @@ end
 
 ### Table: `ScreenLabel.RisingSpeed`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ScreenLabel.RisingSpeed.RS_STOPPED` | `ScreenLabel::RisingSpeed::RS_STOPPED` |
-| `ScreenLabel.RisingSpeed.RS_SLOW` | `ScreenLabel::RisingSpeed::RS_SLOW` |
-| `ScreenLabel.RisingSpeed.RS_NORMAL` | `ScreenLabel::RisingSpeed::RS_NORMAL` |
-| `ScreenLabel.RisingSpeed.RS_FAST` | `ScreenLabel::RisingSpeed::RS_FAST` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ScreenLabel.RisingSpeed.RS_STOPPED` | `0` | `ScreenLabel::RisingSpeed::RS_STOPPED` |
+| `ScreenLabel.RisingSpeed.RS_SLOW` | `1` | `ScreenLabel::RisingSpeed::RS_SLOW` |
+| `ScreenLabel.RisingSpeed.RS_NORMAL` | `2` | `ScreenLabel::RisingSpeed::RS_NORMAL` |
+| `ScreenLabel.RisingSpeed.RS_FAST` | `3` | `ScreenLabel::RisingSpeed::RS_FAST` |
 
 ### Table: `ScreenLabel.LabelSize`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ScreenLabel.LabelSize.LS_SMALL` | `ScreenLabel::LabelSize::LS_SMALL` |
-| `ScreenLabel.LabelSize.LS_MEDIUM` | `ScreenLabel::LabelSize::LS_MEDIUM` |
-| `ScreenLabel.LabelSize.LS_LARGE` | `ScreenLabel::LabelSize::LS_LARGE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ScreenLabel.LabelSize.LS_SMALL` | `0` | `ScreenLabel::LabelSize::LS_SMALL` |
+| `ScreenLabel.LabelSize.LS_MEDIUM` | `1` | `ScreenLabel::LabelSize::LS_MEDIUM` |
+| `ScreenLabel.LabelSize.LS_LARGE` | `2` | `ScreenLabel::LabelSize::LS_LARGE` |
 
 ---
 
@@ -2116,24 +2122,24 @@ end
 
 ### Table: `SenseType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `SenseType.SENSE_ALLY` | `SenseType::SENSE_ALLY` |
-| `SenseType.SENSE_NEUTRAL` | `SenseType::SENSE_NEUTRAL` |
-| `SenseType.SENSE_ENEMY` | `SenseType::SENSE_ENEMY` |
-| `SenseType.SENSE_KO` | `SenseType::SENSE_KO` |
-| `SenseType.SENSE_DEAD` | `SenseType::SENSE_DEAD` |
-| `SenseType.SENSE_SLAVE` | `SenseType::SENSE_SLAVE` |
-| `SenseType.SENSE_ESCAPED_SLAVE` | `SenseType::SENSE_ESCAPED_SLAVE` |
-| `SenseType.SENSE_AUTHORITY_FIGURE` | `SenseType::SENSE_AUTHORITY_FIGURE` |
-| `SenseType.SENSE_CANT_SEE` | `SenseType::SENSE_CANT_SEE` |
-| `SenseType.SENSE_IN_CAGE` | `SenseType::SENSE_IN_CAGE` |
-| `SenseType.SENSE_SAME_FACTION` | `SenseType::SENSE_SAME_FACTION` |
-| `SenseType.SENSE_ROBOTS` | `SenseType::SENSE_ROBOTS` |
-| `SenseType.SENSE_ENEMY_OF_MY_SLAVEMASTER` | `SenseType::SENSE_ENEMY_OF_MY_SLAVEMASTER` |
-| `SenseType.SENSE_PLAYER` | `SenseType::SENSE_PLAYER` |
-| `SenseType.SENSE_CRAWLING` | `SenseType::SENSE_CRAWLING` |
-| `SenseType.SENSE_CARRIED` | `SenseType::SENSE_CARRIED` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SenseType.SENSE_ALLY` | `0` | `SenseType::SENSE_ALLY` |
+| `SenseType.SENSE_NEUTRAL` | `1` | `SenseType::SENSE_NEUTRAL` |
+| `SenseType.SENSE_ENEMY` | `2` | `SenseType::SENSE_ENEMY` |
+| `SenseType.SENSE_KO` | `3` | `SenseType::SENSE_KO` |
+| `SenseType.SENSE_DEAD` | `4` | `SenseType::SENSE_DEAD` |
+| `SenseType.SENSE_SLAVE` | `5` | `SenseType::SENSE_SLAVE` |
+| `SenseType.SENSE_ESCAPED_SLAVE` | `6` | `SenseType::SENSE_ESCAPED_SLAVE` |
+| `SenseType.SENSE_AUTHORITY_FIGURE` | `7` | `SenseType::SENSE_AUTHORITY_FIGURE` |
+| `SenseType.SENSE_CANT_SEE` | `8` | `SenseType::SENSE_CANT_SEE` |
+| `SenseType.SENSE_IN_CAGE` | `9` | `SenseType::SENSE_IN_CAGE` |
+| `SenseType.SENSE_SAME_FACTION` | `10` | `SenseType::SENSE_SAME_FACTION` |
+| `SenseType.SENSE_ROBOTS` | `11` | `SenseType::SENSE_ROBOTS` |
+| `SenseType.SENSE_ENEMY_OF_MY_SLAVEMASTER` | `12` | `SenseType::SENSE_ENEMY_OF_MY_SLAVEMASTER` |
+| `SenseType.SENSE_PLAYER` | `13` | `SenseType::SENSE_PLAYER` |
+| `SenseType.SENSE_CRAWLING` | `14` | `SenseType::SENSE_CRAWLING` |
+| `SenseType.SENSE_CARRIED` | `15` | `SenseType::SENSE_CARRIED` |
 
 ---
 
@@ -2141,17 +2147,17 @@ end
 
 ### Table: `PortraitData.State`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `PortraitData.State.NORMAL` | `PortraitData::State::NORMAL` |
-| `PortraitData.State.SELECTED` | `PortraitData::State::SELECTED` |
-| `PortraitData.State.HURT` | `PortraitData::State::HURT` |
-| `PortraitData.State.DOWN` | `PortraitData::State::DOWN` |
-| `PortraitData.State.COMBAT` | `PortraitData::State::COMBAT` |
-| `PortraitData.State.SLAVE` | `PortraitData::State::SLAVE` |
-| `PortraitData.State.PRISON` | `PortraitData::State::PRISON` |
-| `PortraitData.State.EATEN` | `PortraitData::State::EATEN` |
-| `PortraitData.State.HUNGER` | `PortraitData::State::HUNGER` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `PortraitData.State.NORMAL` | `0` | `PortraitData::State::NORMAL` |
+| `PortraitData.State.SELECTED` | `1` | `PortraitData::State::SELECTED` |
+| `PortraitData.State.HURT` | `2` | `PortraitData::State::HURT` |
+| `PortraitData.State.DOWN` | `4` | `PortraitData::State::DOWN` |
+| `PortraitData.State.COMBAT` | `8` | `PortraitData::State::COMBAT` |
+| `PortraitData.State.SLAVE` | `16` | `PortraitData::State::SLAVE` |
+| `PortraitData.State.PRISON` | `32` | `PortraitData::State::PRISON` |
+| `PortraitData.State.EATEN` | `64` | `PortraitData::State::EATEN` |
+| `PortraitData.State.HUNGER` | `128` | `PortraitData::State::HUNGER` |
 
 ---
 
@@ -2159,190 +2165,190 @@ end
 
 ### Table: `taskPriority`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `taskPriority.TP_JUST_ACTION` | `taskPriority::TP_JUST_ACTION` |
-| `taskPriority.TP_FLUFF` | `taskPriority::TP_FLUFF` |
-| `taskPriority.TP_NON_URGENT` | `taskPriority::TP_NON_URGENT` |
-| `taskPriority.TP_URGENT` | `taskPriority::TP_URGENT` |
-| `taskPriority.TP_OBEDIENCE` | `taskPriority::TP_OBEDIENCE` |
-| `taskPriority.TP_MAX_SIZE` | `taskPriority::TP_MAX_SIZE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `taskPriority.TP_JUST_ACTION` | `0` | `taskPriority::TP_JUST_ACTION` |
+| `taskPriority.TP_FLUFF` | `1` | `taskPriority::TP_FLUFF` |
+| `taskPriority.TP_NON_URGENT` | `2` | `taskPriority::TP_NON_URGENT` |
+| `taskPriority.TP_URGENT` | `3` | `taskPriority::TP_URGENT` |
+| `taskPriority.TP_OBEDIENCE` | `4` | `taskPriority::TP_OBEDIENCE` |
+| `taskPriority.TP_MAX_SIZE` | `5` | `taskPriority::TP_MAX_SIZE` |
 
 ### Table: `StateType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `StateType.NONE_RESULT` | `StateType::NONE_RESULT` |
-| `StateType.AT_LOCATION` | `StateType::AT_LOCATION` |
-| `StateType.BUILDING_COMPLETE` | `StateType::BUILDING_COMPLETE` |
-| `StateType.SUBJECT_IN_INVENTORY` | `StateType::SUBJECT_IN_INVENTORY` |
-| `StateType.HAS_WEAPON` | `StateType::HAS_WEAPON` |
-| `StateType.HAS_WEAPON_EQUIPPED` | `StateType::HAS_WEAPON_EQUIPPED` |
-| `StateType.NO_ENEMIES_IN_VICINITY` | `StateType::NO_ENEMIES_IN_VICINITY` |
-| `StateType.TARGET_DOWN` | `StateType::TARGET_DOWN` |
-| `StateType.WEAPON_AS_TARGET` | `StateType::WEAPON_AS_TARGET` |
-| `StateType.HOSTILE_APPROACHING` | `StateType::HOSTILE_APPROACHING` |
-| `StateType.UNDER_MELEE_ATTACK` | `StateType::UNDER_MELEE_ATTACK` |
-| `StateType.UNDER_RANGED_ATTACK` | `StateType::UNDER_RANGED_ATTACK` |
-| `StateType.ALLIES_UNDER_ATTACK` | `StateType::ALLIES_UNDER_ATTACK` |
-| `StateType.TARGETED_ENEMY` | `StateType::TARGETED_ENEMY` |
-| `StateType.TARGETED_ATTACKER_OF_ALLY` | `StateType::TARGETED_ATTACKER_OF_ALLY` |
-| `StateType.ITEM_IS_PHYSICALLY_LOOTABLE` | `StateType::ITEM_IS_PHYSICALLY_LOOTABLE` |
-| `StateType.AGGRESSION_TOWARDS_TARGET` | `StateType::AGGRESSION_TOWARDS_TARGET` |
-| `StateType.AM_IDLE` | `StateType::AM_IDLE` |
-| `StateType.AT_HOME_BUILDING` | `StateType::AT_HOME_BUILDING` |
-| `StateType.VILLAGE_RAZED` | `StateType::VILLAGE_RAZED` |
-| `StateType.NONE_REQUIREMENT` | `StateType::NONE_REQUIREMENT` |
-| `StateType.CHARACTER_HEALTH_IN_DANGER` | `StateType::CHARACTER_HEALTH_IN_DANGER` |
-| `StateType.NEEDS_FIRST_AID` | `StateType::NEEDS_FIRST_AID` |
-| `StateType.HAS_FIRST_AID_KIT` | `StateType::HAS_FIRST_AID_KIT` |
-| `StateType.IS_CROUCHING` | `StateType::IS_CROUCHING` |
-| `StateType.IS_LYING` | `StateType::IS_LYING` |
-| `StateType.IS_CROUCHING_OR_LYING` | `StateType::IS_CROUCHING_OR_LYING` |
-| `StateType.MOVEMENT_ALLOWED` | `StateType::MOVEMENT_ALLOWED` |
-| `StateType.NEAR_TO` | `StateType::NEAR_TO` |
-| `StateType.GENERAL_AGGRESSION_LEVEL` | `StateType::GENERAL_AGGRESSION_LEVEL` |
-| `StateType.NODE_UNOCCUPIED_BY_OTHERS` | `StateType::NODE_UNOCCUPIED_BY_OTHERS` |
-| `StateType.AT_NODE` | `StateType::AT_NODE` |
-| `StateType.HAS_VALID_TARGET_TOWN` | `StateType::HAS_VALID_TARGET_TOWN` |
-| `StateType.TIRED` | `StateType::TIRED` |
-| `StateType.FOLLOW_ME_MODE` | `StateType::FOLLOW_ME_MODE` |
-| `StateType.HAS_ENOUGH_GUARDS` | `StateType::HAS_ENOUGH_GUARDS` |
-| `StateType.AT_TARGET_TOWN` | `StateType::AT_TARGET_TOWN` |
-| `StateType.READY_FOR_MELEE_ACTION` | `StateType::READY_FOR_MELEE_ACTION` |
-| `StateType.HAS_ONE_WORKING_ARM` | `StateType::HAS_ONE_WORKING_ARM` |
-| `StateType.AGGRESSION_TOWARDS_ME` | `StateType::AGGRESSION_TOWARDS_ME` |
-| `StateType.WITHIN_10_METERS` | `StateType::WITHIN_10_METERS` |
-| `StateType.WITHIN_50_METERS` | `StateType::WITHIN_50_METERS` |
-| `StateType.TARGET_STANDING_STILL` | `StateType::TARGET_STANDING_STILL` |
-| `StateType.I_AM_DOWN` | `StateType::I_AM_DOWN` |
-| `StateType.WANTS_TO_GET_UP` | `StateType::WANTS_TO_GET_UP` |
-| `StateType.CAN_GET_UP` | `StateType::CAN_GET_UP` |
-| `StateType.AT_LOCATION_ASAP` | `StateType::AT_LOCATION_ASAP` |
-| `StateType.IS_CARRYING_SOMETHING` | `StateType::IS_CARRYING_SOMETHING` |
-| `StateType.IS_CARRYING_TARGET` | `StateType::IS_CARRYING_TARGET` |
-| `StateType.PLAYER_FORCES_GET_UP` | `StateType::PLAYER_FORCES_GET_UP` |
-| `StateType.HAS_SOME_BUILDING_MATERIALS` | `StateType::HAS_SOME_BUILDING_MATERIALS` |
-| `StateType.BUILDING_HAS_SOME_BUILDING_MATERIALS` | `StateType::BUILDING_HAS_SOME_BUILDING_MATERIALS` |
-| `StateType.DOOR_IS_OPEN` | `StateType::DOOR_IS_OPEN` |
-| `StateType.DOOR_IS_OPEN_HERE` | `StateType::DOOR_IS_OPEN_HERE` |
-| `StateType.DOOR_IS_LOCKED` | `StateType::DOOR_IS_LOCKED` |
-| `StateType.DOOR_IS_LOCKED_HERE` | `StateType::DOOR_IS_LOCKED_HERE` |
-| `StateType.DOOR_IS_BROKEN` | `StateType::DOOR_IS_BROKEN` |
-| `StateType.AT_LOCATION_BUILDING_DOOR` | `StateType::AT_LOCATION_BUILDING_DOOR` |
-| `StateType.AT_CURRENT_LOCATION_BUILDING_DOOR` | `StateType::AT_CURRENT_LOCATION_BUILDING_DOOR` |
-| `StateType.DESTINATION_IS_ACCESSIBLE` | `StateType::DESTINATION_IS_ACCESSIBLE` |
-| `StateType.LOCATION_IS_ACCESSIBLE` | `StateType::LOCATION_IS_ACCESSIBLE` |
-| `StateType.INVENTORY_FULL_OF_RESOURCES` | `StateType::INVENTORY_FULL_OF_RESOURCES` |
-| `StateType.MACHINES_INPUTS_EMPTY` | `StateType::MACHINES_INPUTS_EMPTY` |
-| `StateType.MACHINES_OUTPUTS_FULL` | `StateType::MACHINES_OUTPUTS_FULL` |
-| `StateType.MACHINE_IS_JAMMED` | `StateType::MACHINE_IS_JAMMED` |
-| `StateType.ANY_MACHINES_JAMMED` | `StateType::ANY_MACHINES_JAMMED` |
-| `StateType.HAVE_SOME_RESOURCES_FROM` | `StateType::HAVE_SOME_RESOURCES_FROM` |
-| `StateType.HAVE_SOME_RESOURCES_FOR` | `StateType::HAVE_SOME_RESOURCES_FOR` |
-| `StateType.HAVE_SOME_LOOT_FROM` | `StateType::HAVE_SOME_LOOT_FROM` |
-| `StateType.ROUTE_IS_BLOCKED` | `StateType::ROUTE_IS_BLOCKED` |
-| `StateType.I_OWN_OBJECT` | `StateType::I_OWN_OBJECT` |
-| `StateType.BUILDING_IS_DAMAGED` | `StateType::BUILDING_IS_DAMAGED` |
-| `StateType.IS_FULLY_RESTED` | `StateType::IS_FULLY_RESTED` |
-| `StateType.MACHINE_HAS_FREE_OPERATOR_SLOT` | `StateType::MACHINE_HAS_FREE_OPERATOR_SLOT` |
-| `StateType.ENEMY_FORCE_DEFEATED` | `StateType::ENEMY_FORCE_DEFEATED` |
-| `StateType.MY_FORCE_DEFEATED` | `StateType::MY_FORCE_DEFEATED` |
-| `StateType.MESSAGE_DELIVERED` | `StateType::MESSAGE_DELIVERED` |
-| `StateType.CARRIED_DUDE_NOW_IN_BED` | `StateType::CARRIED_DUDE_NOW_IN_BED` |
-| `StateType.TARGET_IS_IMPRISONED` | `StateType::TARGET_IS_IMPRISONED` |
-| `StateType.I_AM_IMPRISONED` | `StateType::I_AM_IMPRISONED` |
-| `StateType.CARRYING_ARM_IS_OK` | `StateType::CARRYING_ARM_IS_OK` |
-| `StateType.CARRIED_DUDE_NOW_IN_CAGE` | `StateType::CARRIED_DUDE_NOW_IN_CAGE` |
-| `StateType.GOT_INVENTORY_ROOM_FOR_RESOURCES` | `StateType::GOT_INVENTORY_ROOM_FOR_RESOURCES` |
-| `StateType.I_AM_IN_BED` | `StateType::I_AM_IN_BED` |
-| `StateType.AT_A_SHOP` | `StateType::AT_A_SHOP` |
-| `StateType.BOUGHT_SHIT` | `StateType::BOUGHT_SHIT` |
-| `StateType.AT_A_TOWN` | `StateType::AT_A_TOWN` |
-| `StateType.ALL_DOORS_LOCKED_UP` | `StateType::ALL_DOORS_LOCKED_UP` |
-| `StateType.INSIDE_BUILDING` | `StateType::INSIDE_BUILDING` |
-| `StateType.HAVE_SOME_RESOURCES_FROM_THIS_MACHINE_BUT_WANT_THEM_GONE_IF_POSSIBLE` | `StateType::HAVE_SOME_RESOURCES_FROM_THIS_MACHINE_BUT_WANT_THEM_GONE_IF_POSSIBLE` |
-| `StateType.DESTINATION_NOT_BLOCKED_BY_FORTIFICATIONS` | `StateType::DESTINATION_NOT_BLOCKED_BY_FORTIFICATIONS` |
-| `StateType.AT_LOCATION_FORTIFICATION_GATE` | `StateType::AT_LOCATION_FORTIFICATION_GATE` |
-| `StateType.IS_ENEMY` | `StateType::IS_ENEMY` |
-| `StateType.BUILDING_HAS_POWER` | `StateType::BUILDING_HAS_POWER` |
-| `StateType.AT_TARGET_TOWN_FAST` | `StateType::AT_TARGET_TOWN_FAST` |
-| `StateType.AT_HOME_TOWN` | `StateType::AT_HOME_TOWN` |
-| `StateType.TARGET_IS_FREE` | `StateType::TARGET_IS_FREE` |
-| `StateType.CAGES_ARE_ALL_FULL` | `StateType::CAGES_ARE_ALL_FULL` |
-| `StateType.MACHINE_OCCUPANT_IS_ALIVE` | `StateType::MACHINE_OCCUPANT_IS_ALIVE` |
-| `StateType.CARRYING_A_DEAD_GUY` | `StateType::CARRYING_A_DEAD_GUY` |
-| `StateType.CARRIED_DUDE_NOW_IN_DISPOSAL_MACHINE` | `StateType::CARRIED_DUDE_NOW_IN_DISPOSAL_MACHINE` |
-| `StateType.LEADER_IS_DOWN` | `StateType::LEADER_IS_DOWN` |
-| `StateType.SQUAD_UNDER_ATTACK` | `StateType::SQUAD_UNDER_ATTACK` |
-| `StateType.MY_LEGS_MESSED_UP` | `StateType::MY_LEGS_MESSED_UP` |
-| `StateType.USING_TARGET_TURRET` | `StateType::USING_TARGET_TURRET` |
-| `StateType.MACHINES_OUTPUTS_EMPTY` | `StateType::MACHINES_OUTPUTS_EMPTY` |
-| `StateType.MACHINES_INPUTS_FULL` | `StateType::MACHINES_INPUTS_FULL` |
-| `StateType.I_AM_INSIDE_TARGET_BUILDING` | `StateType::I_AM_INSIDE_TARGET_BUILDING` |
-| `StateType.STRANGERS_INSIDE_MY_BUILDING` | `StateType::STRANGERS_INSIDE_MY_BUILDING` |
-| `StateType.SPOKEN_TO` | `StateType::SPOKEN_TO` |
-| `StateType.SPOKEN_TO_WITHOUT_MOVING` | `StateType::SPOKEN_TO_WITHOUT_MOVING` |
-| `StateType.AT_LOCATION_BUILDING_DOOR_INSIDE` | `StateType::AT_LOCATION_BUILDING_DOOR_INSIDE` |
-| `StateType.DOOR_IS_LOCKED_AND_IM_INSIDE` | `StateType::DOOR_IS_LOCKED_AND_IM_INSIDE` |
-| `StateType.TARGET_IN_TOWN` | `StateType::TARGET_IN_TOWN` |
-| `StateType.TARGET_CUFFS_ARE_LOCKED` | `StateType::TARGET_CUFFS_ARE_LOCKED` |
-| `StateType.IS_CARRYING_TARGET_HEALTHY` | `StateType::IS_CARRYING_TARGET_HEALTHY` |
-| `StateType.TARGET_IS_MY_SLAVE` | `StateType::TARGET_IS_MY_SLAVE` |
-| `StateType.TARGET_HAS_BEEN_LOOTED` | `StateType::TARGET_HAS_BEEN_LOOTED` |
-| `StateType.TARGET_IS_UNARMED` | `StateType::TARGET_IS_UNARMED` |
-| `StateType.TARGET_IS_SURRENDERED` | `StateType::TARGET_IS_SURRENDERED` |
-| `StateType.TARGET_LOOKS_LIKE_A_SLAVE` | `StateType::TARGET_LOOKS_LIKE_A_SLAVE` |
-| `StateType.CARRYING_EXCESS_LOOT` | `StateType::CARRYING_EXCESS_LOOT` |
-| `StateType.HAS_TOOLS` | `StateType::HAS_TOOLS` |
-| `StateType.IS_WORKING` | `StateType::IS_WORKING` |
-| `StateType.TARGET_IS_ESCAPEE_OR_FREE` | `StateType::TARGET_IS_ESCAPEE_OR_FREE` |
-| `StateType.TARGET_IS_CONSCIOUS` | `StateType::TARGET_IS_CONSCIOUS` |
-| `StateType.AT_LOCATION_BUILDING_DOOR_OUTSIDE` | `StateType::AT_LOCATION_BUILDING_DOOR_OUTSIDE` |
-| `StateType.DOOR_IS_LOCKED_AND_IM_OUTSIDE` | `StateType::DOOR_IS_LOCKED_AND_IM_OUTSIDE` |
-| `StateType.IS_ALLY` | `StateType::IS_ALLY` |
-| `StateType.TARGET_IS_ARRESTED` | `StateType::TARGET_IS_ARRESTED` |
-| `StateType.ALARMS_IN_THE_VICINITY` | `StateType::ALARMS_IN_THE_VICINITY` |
-| `StateType.AT_PACKAGE_TARGET` | `StateType::AT_PACKAGE_TARGET` |
-| `StateType.HAS_REPAIR_KIT` | `StateType::HAS_REPAIR_KIT` |
-| `StateType.NEEDS_REPAIR_ROBOT` | `StateType::NEEDS_REPAIR_ROBOT` |
-| `StateType.TARGET_IS_WEARING_CUFFS` | `StateType::TARGET_IS_WEARING_CUFFS` |
-| `StateType.TARGET_IS_EATEN` | `StateType::TARGET_IS_EATEN` |
-| `StateType.IS_WORKING_PRETEND` | `StateType::IS_WORKING_PRETEND` |
-| `StateType.INTRUDER_IS_OUTSIDE_BUILDING` | `StateType::INTRUDER_IS_OUTSIDE_BUILDING` |
-| `StateType.AT_A_TOWN_FOR_SLAVE_SELLING` | `StateType::AT_A_TOWN_FOR_SLAVE_SELLING` |
-| `StateType.IM_SWIMMING` | `StateType::IM_SWIMMING` |
-| `StateType.TARGET_SWIMMING` | `StateType::TARGET_SWIMMING` |
-| `StateType.STRANGERS_INSIDE_MY_BUILDING_AND_ITS_PRIVATE` | `StateType::STRANGERS_INSIDE_MY_BUILDING_AND_ITS_PRIVATE` |
-| `StateType.TARGET_IS_RESTRAINED_OR_KO` | `StateType::TARGET_IS_RESTRAINED_OR_KO` |
-| `StateType.TARGET_FARM_HAS_FOOD` | `StateType::TARGET_FARM_HAS_FOOD` |
-| `StateType.AM_HUNGRY` | `StateType::AM_HUNGRY` |
-| `StateType.IS_USING_ANY_TURRET` | `StateType::IS_USING_ANY_TURRET` |
-| `StateType.TARGET_WORSHIPPED` | `StateType::TARGET_WORSHIPPED` |
-| `StateType.DITCHED_ALL_RESOURCES` | `StateType::DITCHED_ALL_RESOURCES` |
-| `StateType.LOOTED_STORABLE_ITEMS` | `StateType::LOOTED_STORABLE_ITEMS` |
-| `StateType.GOT_A_FOOD_ITEM` | `StateType::GOT_A_FOOD_ITEM` |
-| `StateType.HAVE_SOME_BUILD_MATS` | `StateType::HAVE_SOME_BUILD_MATS` |
-| `StateType.HAS_SPLINT_KIT` | `StateType::HAS_SPLINT_KIT` |
-| `StateType.NEEDS_SPLINT` | `StateType::NEEDS_SPLINT` |
-| `StateType.FINAL_GOT_A_KIDNAP_VICTIM` | `StateType::FINAL_GOT_A_KIDNAP_VICTIM` |
-| `StateType.FINAL_FOUND_AND_PUT_CARRIED_IN_A_CAGE` | `StateType::FINAL_FOUND_AND_PUT_CARRIED_IN_A_CAGE` |
-| `StateType.I_AM_PRONE` | `StateType::I_AM_PRONE` |
-| `StateType.BUILDING_IS_DESTROYED` | `StateType::BUILDING_IS_DESTROYED` |
-| `StateType.INTRUDER_IS_OUTSIDE_GATES` | `StateType::INTRUDER_IS_OUTSIDE_GATES` |
-| `StateType.CROWD_LIMIT_8_PEOPLE` | `StateType::CROWD_LIMIT_8_PEOPLE` |
-| `StateType.I_HAVE_SUFFICIENT_LOCK_SKILL` | `StateType::I_HAVE_SUFFICIENT_LOCK_SKILL` |
-| `StateType.I_HAVE_SUFFICIENT_LOCK_SKILL_FOR_SHACKLES` | `StateType::I_HAVE_SUFFICIENT_LOCK_SKILL_FOR_SHACKLES` |
-| `StateType.DESTINATION_IS_ACCESSIBLE_ANIMAL` | `StateType::DESTINATION_IS_ACCESSIBLE_ANIMAL` |
-| `StateType.MACHINE_HAS_INVALID_INPUTS` | `StateType::MACHINE_HAS_INVALID_INPUTS` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `StateType.NONE_RESULT` | `0` | `StateType::NONE_RESULT` |
+| `StateType.AT_LOCATION` | `1` | `StateType::AT_LOCATION` |
+| `StateType.BUILDING_COMPLETE` | `2` | `StateType::BUILDING_COMPLETE` |
+| `StateType.SUBJECT_IN_INVENTORY` | `3` | `StateType::SUBJECT_IN_INVENTORY` |
+| `StateType.HAS_WEAPON` | `4` | `StateType::HAS_WEAPON` |
+| `StateType.HAS_WEAPON_EQUIPPED` | `5` | `StateType::HAS_WEAPON_EQUIPPED` |
+| `StateType.NO_ENEMIES_IN_VICINITY` | `6` | `StateType::NO_ENEMIES_IN_VICINITY` |
+| `StateType.TARGET_DOWN` | `7` | `StateType::TARGET_DOWN` |
+| `StateType.WEAPON_AS_TARGET` | `8` | `StateType::WEAPON_AS_TARGET` |
+| `StateType.HOSTILE_APPROACHING` | `9` | `StateType::HOSTILE_APPROACHING` |
+| `StateType.UNDER_MELEE_ATTACK` | `10` | `StateType::UNDER_MELEE_ATTACK` |
+| `StateType.UNDER_RANGED_ATTACK` | `11` | `StateType::UNDER_RANGED_ATTACK` |
+| `StateType.ALLIES_UNDER_ATTACK` | `12` | `StateType::ALLIES_UNDER_ATTACK` |
+| `StateType.TARGETED_ENEMY` | `13` | `StateType::TARGETED_ENEMY` |
+| `StateType.TARGETED_ATTACKER_OF_ALLY` | `14` | `StateType::TARGETED_ATTACKER_OF_ALLY` |
+| `StateType.ITEM_IS_PHYSICALLY_LOOTABLE` | `15` | `StateType::ITEM_IS_PHYSICALLY_LOOTABLE` |
+| `StateType.AGGRESSION_TOWARDS_TARGET` | `16` | `StateType::AGGRESSION_TOWARDS_TARGET` |
+| `StateType.AM_IDLE` | `17` | `StateType::AM_IDLE` |
+| `StateType.AT_HOME_BUILDING` | `18` | `StateType::AT_HOME_BUILDING` |
+| `StateType.VILLAGE_RAZED` | `19` | `StateType::VILLAGE_RAZED` |
+| `StateType.NONE_REQUIREMENT` | `20` | `StateType::NONE_REQUIREMENT` |
+| `StateType.CHARACTER_HEALTH_IN_DANGER` | `21` | `StateType::CHARACTER_HEALTH_IN_DANGER` |
+| `StateType.NEEDS_FIRST_AID` | `22` | `StateType::NEEDS_FIRST_AID` |
+| `StateType.HAS_FIRST_AID_KIT` | `23` | `StateType::HAS_FIRST_AID_KIT` |
+| `StateType.IS_CROUCHING` | `24` | `StateType::IS_CROUCHING` |
+| `StateType.IS_LYING` | `25` | `StateType::IS_LYING` |
+| `StateType.IS_CROUCHING_OR_LYING` | `26` | `StateType::IS_CROUCHING_OR_LYING` |
+| `StateType.MOVEMENT_ALLOWED` | `27` | `StateType::MOVEMENT_ALLOWED` |
+| `StateType.NEAR_TO` | `28` | `StateType::NEAR_TO` |
+| `StateType.GENERAL_AGGRESSION_LEVEL` | `29` | `StateType::GENERAL_AGGRESSION_LEVEL` |
+| `StateType.NODE_UNOCCUPIED_BY_OTHERS` | `30` | `StateType::NODE_UNOCCUPIED_BY_OTHERS` |
+| `StateType.AT_NODE` | `31` | `StateType::AT_NODE` |
+| `StateType.HAS_VALID_TARGET_TOWN` | `32` | `StateType::HAS_VALID_TARGET_TOWN` |
+| `StateType.TIRED` | `33` | `StateType::TIRED` |
+| `StateType.FOLLOW_ME_MODE` | `34` | `StateType::FOLLOW_ME_MODE` |
+| `StateType.HAS_ENOUGH_GUARDS` | `35` | `StateType::HAS_ENOUGH_GUARDS` |
+| `StateType.AT_TARGET_TOWN` | `36` | `StateType::AT_TARGET_TOWN` |
+| `StateType.READY_FOR_MELEE_ACTION` | `37` | `StateType::READY_FOR_MELEE_ACTION` |
+| `StateType.HAS_ONE_WORKING_ARM` | `38` | `StateType::HAS_ONE_WORKING_ARM` |
+| `StateType.AGGRESSION_TOWARDS_ME` | `39` | `StateType::AGGRESSION_TOWARDS_ME` |
+| `StateType.WITHIN_10_METERS` | `40` | `StateType::WITHIN_10_METERS` |
+| `StateType.WITHIN_50_METERS` | `41` | `StateType::WITHIN_50_METERS` |
+| `StateType.TARGET_STANDING_STILL` | `42` | `StateType::TARGET_STANDING_STILL` |
+| `StateType.I_AM_DOWN` | `43` | `StateType::I_AM_DOWN` |
+| `StateType.WANTS_TO_GET_UP` | `44` | `StateType::WANTS_TO_GET_UP` |
+| `StateType.CAN_GET_UP` | `45` | `StateType::CAN_GET_UP` |
+| `StateType.AT_LOCATION_ASAP` | `46` | `StateType::AT_LOCATION_ASAP` |
+| `StateType.IS_CARRYING_SOMETHING` | `47` | `StateType::IS_CARRYING_SOMETHING` |
+| `StateType.IS_CARRYING_TARGET` | `48` | `StateType::IS_CARRYING_TARGET` |
+| `StateType.PLAYER_FORCES_GET_UP` | `49` | `StateType::PLAYER_FORCES_GET_UP` |
+| `StateType.HAS_SOME_BUILDING_MATERIALS` | `50` | `StateType::HAS_SOME_BUILDING_MATERIALS` |
+| `StateType.BUILDING_HAS_SOME_BUILDING_MATERIALS` | `51` | `StateType::BUILDING_HAS_SOME_BUILDING_MATERIALS` |
+| `StateType.DOOR_IS_OPEN` | `52` | `StateType::DOOR_IS_OPEN` |
+| `StateType.DOOR_IS_OPEN_HERE` | `53` | `StateType::DOOR_IS_OPEN_HERE` |
+| `StateType.DOOR_IS_LOCKED` | `54` | `StateType::DOOR_IS_LOCKED` |
+| `StateType.DOOR_IS_LOCKED_HERE` | `55` | `StateType::DOOR_IS_LOCKED_HERE` |
+| `StateType.DOOR_IS_BROKEN` | `56` | `StateType::DOOR_IS_BROKEN` |
+| `StateType.AT_LOCATION_BUILDING_DOOR` | `57` | `StateType::AT_LOCATION_BUILDING_DOOR` |
+| `StateType.AT_CURRENT_LOCATION_BUILDING_DOOR` | `58` | `StateType::AT_CURRENT_LOCATION_BUILDING_DOOR` |
+| `StateType.DESTINATION_IS_ACCESSIBLE` | `59` | `StateType::DESTINATION_IS_ACCESSIBLE` |
+| `StateType.LOCATION_IS_ACCESSIBLE` | `60` | `StateType::LOCATION_IS_ACCESSIBLE` |
+| `StateType.INVENTORY_FULL_OF_RESOURCES` | `61` | `StateType::INVENTORY_FULL_OF_RESOURCES` |
+| `StateType.MACHINES_INPUTS_EMPTY` | `62` | `StateType::MACHINES_INPUTS_EMPTY` |
+| `StateType.MACHINES_OUTPUTS_FULL` | `63` | `StateType::MACHINES_OUTPUTS_FULL` |
+| `StateType.MACHINE_IS_JAMMED` | `64` | `StateType::MACHINE_IS_JAMMED` |
+| `StateType.ANY_MACHINES_JAMMED` | `65` | `StateType::ANY_MACHINES_JAMMED` |
+| `StateType.HAVE_SOME_RESOURCES_FROM` | `66` | `StateType::HAVE_SOME_RESOURCES_FROM` |
+| `StateType.HAVE_SOME_RESOURCES_FOR` | `67` | `StateType::HAVE_SOME_RESOURCES_FOR` |
+| `StateType.HAVE_SOME_LOOT_FROM` | `68` | `StateType::HAVE_SOME_LOOT_FROM` |
+| `StateType.ROUTE_IS_BLOCKED` | `69` | `StateType::ROUTE_IS_BLOCKED` |
+| `StateType.I_OWN_OBJECT` | `70` | `StateType::I_OWN_OBJECT` |
+| `StateType.BUILDING_IS_DAMAGED` | `71` | `StateType::BUILDING_IS_DAMAGED` |
+| `StateType.IS_FULLY_RESTED` | `72` | `StateType::IS_FULLY_RESTED` |
+| `StateType.MACHINE_HAS_FREE_OPERATOR_SLOT` | `73` | `StateType::MACHINE_HAS_FREE_OPERATOR_SLOT` |
+| `StateType.ENEMY_FORCE_DEFEATED` | `74` | `StateType::ENEMY_FORCE_DEFEATED` |
+| `StateType.MY_FORCE_DEFEATED` | `75` | `StateType::MY_FORCE_DEFEATED` |
+| `StateType.MESSAGE_DELIVERED` | `76` | `StateType::MESSAGE_DELIVERED` |
+| `StateType.CARRIED_DUDE_NOW_IN_BED` | `77` | `StateType::CARRIED_DUDE_NOW_IN_BED` |
+| `StateType.TARGET_IS_IMPRISONED` | `78` | `StateType::TARGET_IS_IMPRISONED` |
+| `StateType.I_AM_IMPRISONED` | `79` | `StateType::I_AM_IMPRISONED` |
+| `StateType.CARRYING_ARM_IS_OK` | `80` | `StateType::CARRYING_ARM_IS_OK` |
+| `StateType.CARRIED_DUDE_NOW_IN_CAGE` | `81` | `StateType::CARRIED_DUDE_NOW_IN_CAGE` |
+| `StateType.GOT_INVENTORY_ROOM_FOR_RESOURCES` | `82` | `StateType::GOT_INVENTORY_ROOM_FOR_RESOURCES` |
+| `StateType.I_AM_IN_BED` | `83` | `StateType::I_AM_IN_BED` |
+| `StateType.AT_A_SHOP` | `84` | `StateType::AT_A_SHOP` |
+| `StateType.BOUGHT_SHIT` | `85` | `StateType::BOUGHT_SHIT` |
+| `StateType.AT_A_TOWN` | `86` | `StateType::AT_A_TOWN` |
+| `StateType.ALL_DOORS_LOCKED_UP` | `87` | `StateType::ALL_DOORS_LOCKED_UP` |
+| `StateType.INSIDE_BUILDING` | `88` | `StateType::INSIDE_BUILDING` |
+| `StateType.HAVE_SOME_RESOURCES_FROM_THIS_MACHINE_BUT_WANT_THEM_GONE_IF_POSSIBLE` | `89` | `StateType::HAVE_SOME_RESOURCES_FROM_THIS_MACHINE_BUT_WANT_THEM_GONE_IF_POSSIBLE` |
+| `StateType.DESTINATION_NOT_BLOCKED_BY_FORTIFICATIONS` | `90` | `StateType::DESTINATION_NOT_BLOCKED_BY_FORTIFICATIONS` |
+| `StateType.AT_LOCATION_FORTIFICATION_GATE` | `91` | `StateType::AT_LOCATION_FORTIFICATION_GATE` |
+| `StateType.IS_ENEMY` | `92` | `StateType::IS_ENEMY` |
+| `StateType.BUILDING_HAS_POWER` | `93` | `StateType::BUILDING_HAS_POWER` |
+| `StateType.AT_TARGET_TOWN_FAST` | `94` | `StateType::AT_TARGET_TOWN_FAST` |
+| `StateType.AT_HOME_TOWN` | `95` | `StateType::AT_HOME_TOWN` |
+| `StateType.TARGET_IS_FREE` | `96` | `StateType::TARGET_IS_FREE` |
+| `StateType.CAGES_ARE_ALL_FULL` | `97` | `StateType::CAGES_ARE_ALL_FULL` |
+| `StateType.MACHINE_OCCUPANT_IS_ALIVE` | `98` | `StateType::MACHINE_OCCUPANT_IS_ALIVE` |
+| `StateType.CARRYING_A_DEAD_GUY` | `99` | `StateType::CARRYING_A_DEAD_GUY` |
+| `StateType.CARRIED_DUDE_NOW_IN_DISPOSAL_MACHINE` | `100` | `StateType::CARRIED_DUDE_NOW_IN_DISPOSAL_MACHINE` |
+| `StateType.LEADER_IS_DOWN` | `101` | `StateType::LEADER_IS_DOWN` |
+| `StateType.SQUAD_UNDER_ATTACK` | `102` | `StateType::SQUAD_UNDER_ATTACK` |
+| `StateType.MY_LEGS_MESSED_UP` | `103` | `StateType::MY_LEGS_MESSED_UP` |
+| `StateType.USING_TARGET_TURRET` | `104` | `StateType::USING_TARGET_TURRET` |
+| `StateType.MACHINES_OUTPUTS_EMPTY` | `105` | `StateType::MACHINES_OUTPUTS_EMPTY` |
+| `StateType.MACHINES_INPUTS_FULL` | `106` | `StateType::MACHINES_INPUTS_FULL` |
+| `StateType.I_AM_INSIDE_TARGET_BUILDING` | `107` | `StateType::I_AM_INSIDE_TARGET_BUILDING` |
+| `StateType.STRANGERS_INSIDE_MY_BUILDING` | `108` | `StateType::STRANGERS_INSIDE_MY_BUILDING` |
+| `StateType.SPOKEN_TO` | `109` | `StateType::SPOKEN_TO` |
+| `StateType.SPOKEN_TO_WITHOUT_MOVING` | `110` | `StateType::SPOKEN_TO_WITHOUT_MOVING` |
+| `StateType.AT_LOCATION_BUILDING_DOOR_INSIDE` | `111` | `StateType::AT_LOCATION_BUILDING_DOOR_INSIDE` |
+| `StateType.DOOR_IS_LOCKED_AND_IM_INSIDE` | `112` | `StateType::DOOR_IS_LOCKED_AND_IM_INSIDE` |
+| `StateType.TARGET_IN_TOWN` | `113` | `StateType::TARGET_IN_TOWN` |
+| `StateType.TARGET_CUFFS_ARE_LOCKED` | `114` | `StateType::TARGET_CUFFS_ARE_LOCKED` |
+| `StateType.IS_CARRYING_TARGET_HEALTHY` | `115` | `StateType::IS_CARRYING_TARGET_HEALTHY` |
+| `StateType.TARGET_IS_MY_SLAVE` | `116` | `StateType::TARGET_IS_MY_SLAVE` |
+| `StateType.TARGET_HAS_BEEN_LOOTED` | `117` | `StateType::TARGET_HAS_BEEN_LOOTED` |
+| `StateType.TARGET_IS_UNARMED` | `118` | `StateType::TARGET_IS_UNARMED` |
+| `StateType.TARGET_IS_SURRENDERED` | `119` | `StateType::TARGET_IS_SURRENDERED` |
+| `StateType.TARGET_LOOKS_LIKE_A_SLAVE` | `120` | `StateType::TARGET_LOOKS_LIKE_A_SLAVE` |
+| `StateType.CARRYING_EXCESS_LOOT` | `121` | `StateType::CARRYING_EXCESS_LOOT` |
+| `StateType.HAS_TOOLS` | `122` | `StateType::HAS_TOOLS` |
+| `StateType.IS_WORKING` | `123` | `StateType::IS_WORKING` |
+| `StateType.TARGET_IS_ESCAPEE_OR_FREE` | `124` | `StateType::TARGET_IS_ESCAPEE_OR_FREE` |
+| `StateType.TARGET_IS_CONSCIOUS` | `125` | `StateType::TARGET_IS_CONSCIOUS` |
+| `StateType.AT_LOCATION_BUILDING_DOOR_OUTSIDE` | `126` | `StateType::AT_LOCATION_BUILDING_DOOR_OUTSIDE` |
+| `StateType.DOOR_IS_LOCKED_AND_IM_OUTSIDE` | `127` | `StateType::DOOR_IS_LOCKED_AND_IM_OUTSIDE` |
+| `StateType.IS_ALLY` | `128` | `StateType::IS_ALLY` |
+| `StateType.TARGET_IS_ARRESTED` | `129` | `StateType::TARGET_IS_ARRESTED` |
+| `StateType.ALARMS_IN_THE_VICINITY` | `130` | `StateType::ALARMS_IN_THE_VICINITY` |
+| `StateType.AT_PACKAGE_TARGET` | `131` | `StateType::AT_PACKAGE_TARGET` |
+| `StateType.HAS_REPAIR_KIT` | `132` | `StateType::HAS_REPAIR_KIT` |
+| `StateType.NEEDS_REPAIR_ROBOT` | `133` | `StateType::NEEDS_REPAIR_ROBOT` |
+| `StateType.TARGET_IS_WEARING_CUFFS` | `134` | `StateType::TARGET_IS_WEARING_CUFFS` |
+| `StateType.TARGET_IS_EATEN` | `135` | `StateType::TARGET_IS_EATEN` |
+| `StateType.IS_WORKING_PRETEND` | `136` | `StateType::IS_WORKING_PRETEND` |
+| `StateType.INTRUDER_IS_OUTSIDE_BUILDING` | `137` | `StateType::INTRUDER_IS_OUTSIDE_BUILDING` |
+| `StateType.AT_A_TOWN_FOR_SLAVE_SELLING` | `138` | `StateType::AT_A_TOWN_FOR_SLAVE_SELLING` |
+| `StateType.IM_SWIMMING` | `139` | `StateType::IM_SWIMMING` |
+| `StateType.TARGET_SWIMMING` | `140` | `StateType::TARGET_SWIMMING` |
+| `StateType.STRANGERS_INSIDE_MY_BUILDING_AND_ITS_PRIVATE` | `141` | `StateType::STRANGERS_INSIDE_MY_BUILDING_AND_ITS_PRIVATE` |
+| `StateType.TARGET_IS_RESTRAINED_OR_KO` | `142` | `StateType::TARGET_IS_RESTRAINED_OR_KO` |
+| `StateType.TARGET_FARM_HAS_FOOD` | `143` | `StateType::TARGET_FARM_HAS_FOOD` |
+| `StateType.AM_HUNGRY` | `144` | `StateType::AM_HUNGRY` |
+| `StateType.IS_USING_ANY_TURRET` | `145` | `StateType::IS_USING_ANY_TURRET` |
+| `StateType.TARGET_WORSHIPPED` | `146` | `StateType::TARGET_WORSHIPPED` |
+| `StateType.DITCHED_ALL_RESOURCES` | `147` | `StateType::DITCHED_ALL_RESOURCES` |
+| `StateType.LOOTED_STORABLE_ITEMS` | `148` | `StateType::LOOTED_STORABLE_ITEMS` |
+| `StateType.GOT_A_FOOD_ITEM` | `149` | `StateType::GOT_A_FOOD_ITEM` |
+| `StateType.HAVE_SOME_BUILD_MATS` | `150` | `StateType::HAVE_SOME_BUILD_MATS` |
+| `StateType.HAS_SPLINT_KIT` | `151` | `StateType::HAS_SPLINT_KIT` |
+| `StateType.NEEDS_SPLINT` | `152` | `StateType::NEEDS_SPLINT` |
+| `StateType.FINAL_GOT_A_KIDNAP_VICTIM` | `153` | `StateType::FINAL_GOT_A_KIDNAP_VICTIM` |
+| `StateType.FINAL_FOUND_AND_PUT_CARRIED_IN_A_CAGE` | `154` | `StateType::FINAL_FOUND_AND_PUT_CARRIED_IN_A_CAGE` |
+| `StateType.I_AM_PRONE` | `162` | `StateType::I_AM_PRONE` |
+| `StateType.BUILDING_IS_DESTROYED` | `163` | `StateType::BUILDING_IS_DESTROYED` |
+| `StateType.INTRUDER_IS_OUTSIDE_GATES` | `164` | `StateType::INTRUDER_IS_OUTSIDE_GATES` |
+| `StateType.CROWD_LIMIT_8_PEOPLE` | `165` | `StateType::CROWD_LIMIT_8_PEOPLE` |
+| `StateType.I_HAVE_SUFFICIENT_LOCK_SKILL` | `166` | `StateType::I_HAVE_SUFFICIENT_LOCK_SKILL` |
+| `StateType.I_HAVE_SUFFICIENT_LOCK_SKILL_FOR_SHACKLES` | `167` | `StateType::I_HAVE_SUFFICIENT_LOCK_SKILL_FOR_SHACKLES` |
+| `StateType.DESTINATION_IS_ACCESSIBLE_ANIMAL` | `168` | `StateType::DESTINATION_IS_ACCESSIBLE_ANIMAL` |
+| `StateType.MACHINE_HAS_INVALID_INPUTS` | `169` | `StateType::MACHINE_HAS_INVALID_INPUTS` |
 
 ### Table: `PermajobType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `PermajobType.NOT_A_PERMAJOB` | `PermajobType::NOT_A_PERMAJOB` |
-| `PermajobType.PERMAJOB_NORMAL` | `PermajobType::PERMAJOB_NORMAL` |
-| `PermajobType.PERMAJOB_HIGHCOMBAT` | `PermajobType::PERMAJOB_HIGHCOMBAT` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `PermajobType.NOT_A_PERMAJOB` | `0` | `PermajobType::NOT_A_PERMAJOB` |
+| `PermajobType.PERMAJOB_NORMAL` | `1` | `PermajobType::PERMAJOB_NORMAL` |
+| `PermajobType.PERMAJOB_HIGHCOMBAT` | `2` | `PermajobType::PERMAJOB_HIGHCOMBAT` |
 
 ---
 
@@ -2350,13 +2356,13 @@ end
 
 ### Table: `ToolTip.Type`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ToolTip.Type.TEXT` | `ToolTip::Type::TEXT` |
-| `ToolTip.Type.MULTILINE` | `ToolTip::Type::MULTILINE` |
-| `ToolTip.Type.GAMEDATA` | `ToolTip::Type::GAMEDATA` |
-| `ToolTip.Type.ITEM` | `ToolTip::Type::ITEM` |
-| `ToolTip.Type.HAND` | `ToolTip::Type::HAND` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ToolTip.Type.TEXT` | `0` | `ToolTip::Type::TEXT` |
+| `ToolTip.Type.MULTILINE` | `1` | `ToolTip::Type::MULTILINE` |
+| `ToolTip.Type.GAMEDATA` | `2` | `ToolTip::Type::GAMEDATA` |
+| `ToolTip.Type.ITEM` | `3` | `ToolTip::Type::ITEM` |
+| `ToolTip.Type.HAND` | `4` | `ToolTip::Type::HAND` |
 
 ---
 
@@ -2364,28 +2370,28 @@ end
 
 ### Table: `TownAlarmState`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `TownAlarmState.ALARM_NONE` | `TownAlarmState::ALARM_NONE` |
-| `TownAlarmState.ALARM_INTRUDER` | `TownAlarmState::ALARM_INTRUDER` |
-| `TownAlarmState.ALARM_ESCAPE` | `TownAlarmState::ALARM_ESCAPE` |
-| `TownAlarmState.ALARM_ATTACK` | `TownAlarmState::ALARM_ATTACK` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TownAlarmState.ALARM_NONE` | `0` | `TownAlarmState::ALARM_NONE` |
+| `TownAlarmState.ALARM_INTRUDER` | `1` | `TownAlarmState::ALARM_INTRUDER` |
+| `TownAlarmState.ALARM_ESCAPE` | `2` | `TownAlarmState::ALARM_ESCAPE` |
+| `TownAlarmState.ALARM_ATTACK` | `3` | `TownAlarmState::ALARM_ATTACK` |
 
 ### Table: `TownType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `TownType.TOWN_NEST` | `TownType::TOWN_NEST` |
-| `TownType.TOWN_OUTPOST` | `TownType::TOWN_OUTPOST` |
-| `TownType.TOWN_TOWN` | `TownType::TOWN_TOWN` |
-| `TownType.TOWN_VILLAGE` | `TownType::TOWN_VILLAGE` |
-| `TownType.TOWN_RUINS` | `TownType::TOWN_RUINS` |
-| `TownType.TOWN_SLAVE_CAMP` | `TownType::TOWN_SLAVE_CAMP` |
-| `TownType.TOWN_MILITARY` | `TownType::TOWN_MILITARY` |
-| `TownType.TOWN_PRISON` | `TownType::TOWN_PRISON` |
-| `TownType.TOWN_NEST_MARKER` | `TownType::TOWN_NEST_MARKER` |
-| `TownType.TOWN_POI` | `TownType::TOWN_POI` |
-| `TownType.TOWN_NULL` | `TownType::TOWN_NULL` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TownType.TOWN_NEST` | `0` | `TownType::TOWN_NEST` |
+| `TownType.TOWN_OUTPOST` | `1` | `TownType::TOWN_OUTPOST` |
+| `TownType.TOWN_TOWN` | `2` | `TownType::TOWN_TOWN` |
+| `TownType.TOWN_VILLAGE` | `3` | `TownType::TOWN_VILLAGE` |
+| `TownType.TOWN_RUINS` | `4` | `TownType::TOWN_RUINS` |
+| `TownType.TOWN_SLAVE_CAMP` | `5` | `TownType::TOWN_SLAVE_CAMP` |
+| `TownType.TOWN_MILITARY` | `6` | `TownType::TOWN_MILITARY` |
+| `TownType.TOWN_PRISON` | `7` | `TownType::TOWN_PRISON` |
+| `TownType.TOWN_NEST_MARKER` | `8` | `TownType::TOWN_NEST_MARKER` |
+| `TownType.TOWN_POI` | `9` | `TownType::TOWN_POI` |
+| `TownType.TOWN_NULL` | `10` | `TownType::TOWN_NULL` |
 
 ---
 
@@ -2393,69 +2399,69 @@ end
 
 ### Table: `TutorialItem.State`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `TutorialItem.State.INACTIVE` | `TutorialItem::State::INACTIVE` |
-| `TutorialItem.State.ACTIVE` | `TutorialItem::State::ACTIVE` |
-| `TutorialItem.State.ENDED` | `TutorialItem::State::ENDED` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TutorialItem.State.INACTIVE` | `0` | `TutorialItem::State::INACTIVE` |
+| `TutorialItem.State.ACTIVE` | `1` | `TutorialItem::State::ACTIVE` |
+| `TutorialItem.State.ENDED` | `2` | `TutorialItem::State::ENDED` |
 
 ### Table: `TutorialGUI.HighlightItem`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `TutorialGUI.HighlightItem.NONE` | `TutorialGUI::HighlightItem::NONE` |
-| `TutorialGUI.HighlightItem.PORTRAITS` | `TutorialGUI::HighlightItem::PORTRAITS` |
-| `TutorialGUI.HighlightItem.PANEL_STATS` | `TutorialGUI::HighlightItem::PANEL_STATS` |
-| `TutorialGUI.HighlightItem.PANEL_STATS_BOTTOM` | `TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM` |
-| `TutorialGUI.HighlightItem.PANEL_STATS_BOTTOM_POWER_BUTTON` | `TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM_POWER_BUTTON` |
-| `TutorialGUI.HighlightItem.PANEL_STATS_BOTTOM_WORKERS` | `TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM_WORKERS` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL` | `TutorialGUI::HighlightItem::PANEL_MEDICAL` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_STATUS` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_STATUS` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_BODY` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_BODY` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_LIMBS` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_LIMBS` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_BLOOD` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_BLOOD` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_POWER` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_POWER` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_MATERIALS` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_MATERIALS` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_MATERIALS_BUILDING` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_MATERIALS_BUILDING` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_CONDITION` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_CONDITION` |
-| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_CONDITION_BUILDING` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_CONDITION_BUILDING` |
-| `TutorialGUI.HighlightItem.PANEL_GAME_SPEED` | `TutorialGUI::HighlightItem::PANEL_GAME_SPEED` |
-| `TutorialGUI.HighlightItem.PANEL_TIME_MONEY` | `TutorialGUI::HighlightItem::PANEL_TIME_MONEY` |
-| `TutorialGUI.HighlightItem.BUTTON_BUILD` | `TutorialGUI::HighlightItem::BUTTON_BUILD` |
-| `TutorialGUI.HighlightItem.PANEL_BOUNTY` | `TutorialGUI::HighlightItem::PANEL_BOUNTY` |
-| `TutorialGUI.HighlightItem.PANEL_MENU_BAR` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR` |
-| `TutorialGUI.HighlightItem.PANEL_MENU_BAR_SQUAD` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR_SQUAD` |
-| `TutorialGUI.HighlightItem.PANEL_MENU_BAR_STATS` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR_STATS` |
-| `TutorialGUI.HighlightItem.PANEL_MENU_BAR_TECH` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR_TECH` |
-| `TutorialGUI.HighlightItem.PANEL_ORDERS` | `TutorialGUI::HighlightItem::PANEL_ORDERS` |
-| `TutorialGUI.HighlightItem.PANEL_ORDERS_COMMANDS` | `TutorialGUI::HighlightItem::PANEL_ORDERS_COMMANDS` |
-| `TutorialGUI.HighlightItem.PANEL_ORDERS_JOBS` | `TutorialGUI::HighlightItem::PANEL_ORDERS_JOBS` |
-| `TutorialGUI.HighlightItem.PANEL_ORDERS_JOB_REMOVE` | `TutorialGUI::HighlightItem::PANEL_ORDERS_JOB_REMOVE` |
-| `TutorialGUI.HighlightItem.PANEL_ORDERS_JOB_OBEDIENCE` | `TutorialGUI::HighlightItem::PANEL_ORDERS_JOB_OBEDIENCE` |
-| `TutorialGUI.HighlightItem.PANEL_ORDERS_MEDIC_BUTTON` | `TutorialGUI::HighlightItem::PANEL_ORDERS_MEDIC_BUTTON` |
-| `TutorialGUI.HighlightItem.PANEL_ORDERS_RESCUE_BUTTON` | `TutorialGUI::HighlightItem::PANEL_ORDERS_RESCUE_BUTTON` |
-| `TutorialGUI.HighlightItem.MAPSCREEN_CRAFT_TAB` | `TutorialGUI::HighlightItem::MAPSCREEN_CRAFT_TAB` |
-| `TutorialGUI.HighlightItem.MAPSCREEN_CRAFT_TAB_ITEMS` | `TutorialGUI::HighlightItem::MAPSCREEN_CRAFT_TAB_ITEMS` |
-| `TutorialGUI.HighlightItem.BUILDING_INVENTORY_INPUT` | `TutorialGUI::HighlightItem::BUILDING_INVENTORY_INPUT` |
-| `TutorialGUI.HighlightItem.BUILD_MODE_PANEL_BUILDINGS` | `TutorialGUI::HighlightItem::BUILD_MODE_PANEL_BUILDINGS` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TutorialGUI.HighlightItem.NONE` | `0` | `TutorialGUI::HighlightItem::NONE` |
+| `TutorialGUI.HighlightItem.PORTRAITS` | `1` | `TutorialGUI::HighlightItem::PORTRAITS` |
+| `TutorialGUI.HighlightItem.PANEL_STATS` | `2` | `TutorialGUI::HighlightItem::PANEL_STATS` |
+| `TutorialGUI.HighlightItem.PANEL_STATS_BOTTOM` | `3` | `TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM` |
+| `TutorialGUI.HighlightItem.PANEL_STATS_BOTTOM_POWER_BUTTON` | `4` | `TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM_POWER_BUTTON` |
+| `TutorialGUI.HighlightItem.PANEL_STATS_BOTTOM_WORKERS` | `5` | `TutorialGUI::HighlightItem::PANEL_STATS_BOTTOM_WORKERS` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL` | `6` | `TutorialGUI::HighlightItem::PANEL_MEDICAL` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_STATUS` | `7` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_STATUS` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_BODY` | `8` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_BODY` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_LIMBS` | `9` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_LIMBS` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_BLOOD` | `10` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_BLOOD` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_POWER` | `11` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_POWER` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_MATERIALS` | `12` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_MATERIALS` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_MATERIALS_BUILDING` | `13` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_MATERIALS_BUILDING` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_CONDITION` | `14` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_CONDITION` |
+| `TutorialGUI.HighlightItem.PANEL_MEDICAL_BAR_CONDITION_BUILDING` | `15` | `TutorialGUI::HighlightItem::PANEL_MEDICAL_BAR_CONDITION_BUILDING` |
+| `TutorialGUI.HighlightItem.PANEL_GAME_SPEED` | `16` | `TutorialGUI::HighlightItem::PANEL_GAME_SPEED` |
+| `TutorialGUI.HighlightItem.PANEL_TIME_MONEY` | `17` | `TutorialGUI::HighlightItem::PANEL_TIME_MONEY` |
+| `TutorialGUI.HighlightItem.BUTTON_BUILD` | `18` | `TutorialGUI::HighlightItem::BUTTON_BUILD` |
+| `TutorialGUI.HighlightItem.PANEL_BOUNTY` | `19` | `TutorialGUI::HighlightItem::PANEL_BOUNTY` |
+| `TutorialGUI.HighlightItem.PANEL_MENU_BAR` | `20` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR` |
+| `TutorialGUI.HighlightItem.PANEL_MENU_BAR_SQUAD` | `21` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR_SQUAD` |
+| `TutorialGUI.HighlightItem.PANEL_MENU_BAR_STATS` | `22` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR_STATS` |
+| `TutorialGUI.HighlightItem.PANEL_MENU_BAR_TECH` | `23` | `TutorialGUI::HighlightItem::PANEL_MENU_BAR_TECH` |
+| `TutorialGUI.HighlightItem.PANEL_ORDERS` | `24` | `TutorialGUI::HighlightItem::PANEL_ORDERS` |
+| `TutorialGUI.HighlightItem.PANEL_ORDERS_COMMANDS` | `25` | `TutorialGUI::HighlightItem::PANEL_ORDERS_COMMANDS` |
+| `TutorialGUI.HighlightItem.PANEL_ORDERS_JOBS` | `26` | `TutorialGUI::HighlightItem::PANEL_ORDERS_JOBS` |
+| `TutorialGUI.HighlightItem.PANEL_ORDERS_JOB_REMOVE` | `27` | `TutorialGUI::HighlightItem::PANEL_ORDERS_JOB_REMOVE` |
+| `TutorialGUI.HighlightItem.PANEL_ORDERS_JOB_OBEDIENCE` | `28` | `TutorialGUI::HighlightItem::PANEL_ORDERS_JOB_OBEDIENCE` |
+| `TutorialGUI.HighlightItem.PANEL_ORDERS_MEDIC_BUTTON` | `29` | `TutorialGUI::HighlightItem::PANEL_ORDERS_MEDIC_BUTTON` |
+| `TutorialGUI.HighlightItem.PANEL_ORDERS_RESCUE_BUTTON` | `30` | `TutorialGUI::HighlightItem::PANEL_ORDERS_RESCUE_BUTTON` |
+| `TutorialGUI.HighlightItem.MAPSCREEN_CRAFT_TAB` | `31` | `TutorialGUI::HighlightItem::MAPSCREEN_CRAFT_TAB` |
+| `TutorialGUI.HighlightItem.MAPSCREEN_CRAFT_TAB_ITEMS` | `32` | `TutorialGUI::HighlightItem::MAPSCREEN_CRAFT_TAB_ITEMS` |
+| `TutorialGUI.HighlightItem.BUILDING_INVENTORY_INPUT` | `33` | `TutorialGUI::HighlightItem::BUILDING_INVENTORY_INPUT` |
+| `TutorialGUI.HighlightItem.BUILD_MODE_PANEL_BUILDINGS` | `34` | `TutorialGUI::HighlightItem::BUILD_MODE_PANEL_BUILDINGS` |
 
 ### Table: `MovementMode`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `MovementMode.MOVE_NORMAL` | `MovementMode::MOVE_NORMAL` |
-| `MovementMode.MOVE_COMBAT` | `MovementMode::MOVE_COMBAT` |
-| `MovementMode.MOVE_DIRECTION` | `MovementMode::MOVE_DIRECTION` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `MovementMode.MOVE_NORMAL` | `0` | `MovementMode::MOVE_NORMAL` |
+| `MovementMode.MOVE_COMBAT` | `1` | `MovementMode::MOVE_COMBAT` |
+| `MovementMode.MOVE_DIRECTION` | `2` | `MovementMode::MOVE_DIRECTION` |
 
 ### Table: `ArmourClass`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ArmourClass.GEAR_CLOTH` | `ArmourClass::GEAR_CLOTH` |
-| `ArmourClass.GEAR_LIGHT` | `ArmourClass::GEAR_LIGHT` |
-| `ArmourClass.GEAR_MEDIUM` | `ArmourClass::GEAR_MEDIUM` |
-| `ArmourClass.GEAR_HEAVY` | `ArmourClass::GEAR_HEAVY` |
-| `ArmourClass.GEAR_MAX` | `ArmourClass::GEAR_MAX` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ArmourClass.GEAR_CLOTH` | `0` | `ArmourClass::GEAR_CLOTH` |
+| `ArmourClass.GEAR_LIGHT` | `1` | `ArmourClass::GEAR_LIGHT` |
+| `ArmourClass.GEAR_MEDIUM` | `2` | `ArmourClass::GEAR_MEDIUM` |
+| `ArmourClass.GEAR_HEAVY` | `3` | `ArmourClass::GEAR_HEAVY` |
+| `ArmourClass.GEAR_MAX` | `4` | `ArmourClass::GEAR_MAX` |
 
 ---
 
@@ -2463,11 +2469,11 @@ end
 
 ### Table: `YesNoMaybe.ynm`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `YesNoMaybe.ynm.NO` | `YesNoMaybe::ynm::NO` |
-| `YesNoMaybe.ynm.YES` | `YesNoMaybe::ynm::YES` |
-| `YesNoMaybe.ynm.MAYBE` | `YesNoMaybe::ynm::MAYBE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `YesNoMaybe.ynm.NO` | `0` | `YesNoMaybe::ynm::NO` |
+| `YesNoMaybe.ynm.YES` | `1` | `YesNoMaybe::ynm::YES` |
+| `YesNoMaybe.ynm.MAYBE` | `2` | `YesNoMaybe::ynm::MAYBE` |
 
 ---
 
@@ -2475,19 +2481,19 @@ end
 
 ### Table: `WorldStateEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `WorldStateEnum.DEAD` | `WorldStateEnum::DEAD` |
-| `WorldStateEnum.ALIVE` | `WorldStateEnum::ALIVE` |
-| `WorldStateEnum.IMPRISONED` | `WorldStateEnum::IMPRISONED` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `WorldStateEnum.DEAD` | `0` | `WorldStateEnum::DEAD` |
+| `WorldStateEnum.ALIVE` | `1` | `WorldStateEnum::ALIVE` |
+| `WorldStateEnum.IMPRISONED` | `2` | `WorldStateEnum::IMPRISONED` |
 
 ### Table: `WorldEventStateQuery.WarStateEnum`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `WorldEventStateQuery.WarStateEnum.PEACE` | `WorldEventStateQuery::WarStateEnum::PEACE` |
-| `WorldEventStateQuery.WarStateEnum.WAR` | `WorldEventStateQuery::WarStateEnum::WAR` |
-| `WorldEventStateQuery.WarStateEnum.ALLIANCE` | `WorldEventStateQuery::WarStateEnum::ALLIANCE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `WorldEventStateQuery.WarStateEnum.PEACE` | `0` | `WorldEventStateQuery::WarStateEnum::PEACE` |
+| `WorldEventStateQuery.WarStateEnum.WAR` | `1` | `WorldEventStateQuery::WarStateEnum::WAR` |
+| `WorldEventStateQuery.WarStateEnum.ALLIANCE` | `2` | `WorldEventStateQuery::WarStateEnum::ALLIANCE` |
 
 ---
 
@@ -2495,27 +2501,27 @@ end
 
 ### Table: `ZoneActivationType`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ZoneActivationType.ACTIVATION_CAMERA` | `ZoneActivationType::ACTIVATION_CAMERA` |
-| `ZoneActivationType.ACTIVATION_PLAYER_CHARACTER` | `ZoneActivationType::ACTIVATION_PLAYER_CHARACTER` |
-| `ZoneActivationType.ACTIVATION_TOWN` | `ZoneActivationType::ACTIVATION_TOWN` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ZoneActivationType.ACTIVATION_CAMERA` | `0` | `ZoneActivationType::ACTIVATION_CAMERA` |
+| `ZoneActivationType.ACTIVATION_PLAYER_CHARACTER` | `1` | `ZoneActivationType::ACTIVATION_PLAYER_CHARACTER` |
+| `ZoneActivationType.ACTIVATION_TOWN` | `2` | `ZoneActivationType::ACTIVATION_TOWN` |
 
 ### Table: `ZoneSpacialGrid.Result`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ZoneSpacialGrid.Result.UNCHANGED` | `ZoneSpacialGrid::Result::UNCHANGED` |
-| `ZoneSpacialGrid.Result.CHANGED_CELL` | `ZoneSpacialGrid::Result::CHANGED_CELL` |
-| `ZoneSpacialGrid.Result.CHANGED_ZONE` | `ZoneSpacialGrid::Result::CHANGED_ZONE` |
-| `ZoneSpacialGrid.Result.UNLOADED_ZONE` | `ZoneSpacialGrid::Result::UNLOADED_ZONE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ZoneSpacialGrid.Result.UNCHANGED` | `0` | `ZoneSpacialGrid::Result::UNCHANGED` |
+| `ZoneSpacialGrid.Result.CHANGED_CELL` | `1` | `ZoneSpacialGrid::Result::CHANGED_CELL` |
+| `ZoneSpacialGrid.Result.CHANGED_ZONE` | `2` | `ZoneSpacialGrid::Result::CHANGED_ZONE` |
+| `ZoneSpacialGrid.Result.UNLOADED_ZONE` | `3` | `ZoneSpacialGrid::Result::UNLOADED_ZONE` |
 
 ### Table: `ZoneMap.ZONE_MESSAGE`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `ZoneMap.ZONE_MESSAGE.BEING_LOADED_FALSE` | `ZoneMap::ZONE_MESSAGE::BEING_LOADED_FALSE` |
-| `ZoneMap.ZONE_MESSAGE.BEING_LOADED_TRUE` | `ZoneMap::ZONE_MESSAGE::BEING_LOADED_TRUE` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ZoneMap.ZONE_MESSAGE.BEING_LOADED_FALSE` | `0` | `ZoneMap::ZONE_MESSAGE::BEING_LOADED_FALSE` |
+| `ZoneMap.ZONE_MESSAGE.BEING_LOADED_TRUE` | `1` | `ZoneMap::ZONE_MESSAGE::BEING_LOADED_TRUE` |
 
 ---
 
@@ -2523,11 +2529,11 @@ end
 
 ### Table: `CharacterEditMode`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `CharacterEditMode.EDIT_NEWGAME` | `CharacterEditMode::EDIT_NEWGAME` |
-| `CharacterEditMode.EDIT_MIDGAME` | `CharacterEditMode::EDIT_MIDGAME` |
-| `CharacterEditMode.EDIT_DEBUG` | `CharacterEditMode::EDIT_DEBUG` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharacterEditMode.EDIT_NEWGAME` | `0` | `CharacterEditMode::EDIT_NEWGAME` |
+| `CharacterEditMode.EDIT_MIDGAME` | `1` | `CharacterEditMode::EDIT_MIDGAME` |
+| `CharacterEditMode.EDIT_DEBUG` | `2` | `CharacterEditMode::EDIT_DEBUG` |
 
 ---
 
@@ -2535,10 +2541,10 @@ end
 
 ### Table: `KenshiLib.BinaryVersion.KenshiPlatform`
 
-| Lua Syntax | C++ Value / Enumerator |
-| :--- | :--- |
-| `KenshiLib.BinaryVersion.KenshiPlatform.GOG` | `KenshiLib::BinaryVersion::KenshiPlatform::GOG` |
-| `KenshiLib.BinaryVersion.KenshiPlatform.STEAM` | `KenshiLib::BinaryVersion::KenshiPlatform::STEAM` |
-| `KenshiLib.BinaryVersion.KenshiPlatform.UNKNOWN` | `KenshiLib::BinaryVersion::KenshiPlatform::UNKNOWN` |
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `KenshiLib.BinaryVersion.KenshiPlatform.GOG` | `0` | `KenshiLib::BinaryVersion::KenshiPlatform::GOG` |
+| `KenshiLib.BinaryVersion.KenshiPlatform.STEAM` | `1` | `KenshiLib::BinaryVersion::KenshiPlatform::STEAM` |
+| `KenshiLib.BinaryVersion.KenshiPlatform.UNKNOWN` | `2` | `KenshiLib::BinaryVersion::KenshiPlatform::UNKNOWN` |
 
 ---

@@ -1,6 +1,7 @@
 """C++ enum value extractor for KenshiLib headers.
 
-Extracts accurate numeric values for enums declared in KenshiLib header files.
+Extracts accurate numeric values for enums declared in KenshiLib header files
+and extensions declared in assets/config/fcs.def.
 """
 
 import pathlib
@@ -8,6 +9,7 @@ import re
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 INCLUDE_DIR = PROJECT_ROOT / "extern" / "KenshiLib" / "Include"
+FCS_DEF = PROJECT_ROOT / "assets" / "config" / "fcs.def"
 ENUM_BINDING_CPP = PROJECT_ROOT / "src" / "Bindings" / "Kenshi" / "EnumBinding.cpp"
 
 
@@ -18,7 +20,7 @@ def strip_comments(text):
 
 
 def parse_header_enums(include_dir=INCLUDE_DIR):
-    """Parse all enum definitions from KenshiLib header files."""
+    """Parse all enum definitions from KenshiLib header files and fcs.def."""
     if not include_dir.is_dir():
         raise FileNotFoundError(
             "KenshiLib include directory not found: {0}. "
@@ -93,6 +95,30 @@ def parse_header_enums(include_dir=INCLUDE_DIR):
                         enum_values[f"{parent_class}::{key}"] = current_val
                     current_val += 1
 
+    # Ingest custom enum extensions defined in assets/config/fcs.def
+    if FCS_DEF.is_file():
+        content = FCS_DEF.read_text(encoding="utf-8", errors="ignore")
+        content = strip_comments(content)
+        for match in re.finditer(r'\benum\s+(?:class\s+)?(\w+)?\s*\{([^}]+)\}', content, re.MULTILINE):
+            enum_name = match.group(1) or ""
+            for item in match.group(2).split(','):
+                item = item.strip()
+                if not item:
+                    continue
+                if '=' in item:
+                    parts = item.split('=', 1)
+                    key = parts[0].strip()
+                    val_str = parts[1].strip()
+                    try:
+                        val_str_clean = re.sub(r'[uUlL]', '', val_str).strip()
+                        current_val = int(val_str_clean, 0)
+                        if key not in enum_values:
+                            enum_values[key] = current_val
+                        if enum_name:
+                            enum_values[f"{enum_name}::{key}"] = current_val
+                    except Exception:
+                        pass
+
     return enum_values
 
 
@@ -123,6 +149,15 @@ def match_enum_bindings():
                 if candidate in values:
                     val = values[candidate]
                     break
+
+        if val is None and key in values:
+            val = values[key]
+
+        if val is None:
+            try:
+                val = int(cxx_sym, 0)
+            except ValueError:
+                pass
 
         if val is not None:
             matched += 1

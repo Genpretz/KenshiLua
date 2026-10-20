@@ -612,7 +612,7 @@ namespace KenshiLua
 
     void registerItemType(lua_State* L)
     {
-        lua_createtable(L, 0, 115);
+        lua_createtable(L, 0, 116);
 
         setEnum(L, "BUILDING", itemType::BUILDING);
         setEnum(L, "CHARACTER", itemType::CHARACTER);
@@ -729,6 +729,7 @@ namespace KenshiLua
         setEnum(L, "ANIMATION_FILE", itemType::ANIMATION_FILE);
         setEnum(L, "____XXX___", itemType::____XXX___);
         setEnum(L, "OBJECT_TYPE_MAX", itemType::OBJECT_TYPE_MAX);
+        setEnum(L, "LUA_SCRIPT", 322);
 
         lua_setglobal(L, "itemType");
     }

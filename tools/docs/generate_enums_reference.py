@@ -1,6 +1,7 @@
 # generate_enums_reference.py
 """
-Generates docs/EnumsReference.md by scanning src/Bindings/Kenshi/EnumBinding.cpp.
+Generates docs/EnumsReference.md by scanning src/Bindings/Kenshi/EnumBinding.cpp
+and resolving underlying integer values from KenshiLib header declarations.
 
 Usage:
     python tools/docs/generate_enums_reference.py
@@ -8,17 +9,46 @@ Usage:
 
 import os
 import re
+import sys
 import pathlib
+from importlib import import_module
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 ENUM_BINDING_CPP = PROJECT_ROOT / "src" / "Bindings" / "Kenshi" / "EnumBinding.cpp"
 OUTPUT_MD = PROJECT_ROOT / "docs" / "EnumsReference.md"
+
+sys.path.insert(0, str(PROJECT_ROOT / "tools" / "luals"))
+parse_header_enums = import_module("extract_enum_values").parse_header_enums
+
+
+def resolve_enum_value(cxx_sym, key, header_values):
+    """Resolve an enum identifier or scoped symbol to its numeric value."""
+    if cxx_sym in header_values:
+        return header_values[cxx_sym]
+
+    parts = cxx_sym.split("::")
+    for start in range(1, len(parts) - 1):
+        candidate = "::".join(parts[start:])
+        if candidate in header_values:
+            return header_values[candidate]
+
+    if key in header_values:
+        return header_values[key]
+
+    try:
+        return int(cxx_sym, 0)
+    except ValueError:
+        pass
+
+    return None
+
 
 def parse_enum_bindings():
     if not ENUM_BINDING_CPP.exists():
         print(f"Error: {ENUM_BINDING_CPP} does not exist.")
         return []
 
+    header_values = parse_header_enums()
     content = ENUM_BINDING_CPP.read_text(encoding="utf-8", errors="ignore")
 
     ns_pos = content.find("namespace KenshiLua")
@@ -63,9 +93,11 @@ def parse_enum_bindings():
                 if m:
                     key = m.group(1).strip()
                     val = m.group(2).strip()
+                    int_val = resolve_enum_value(val, key, header_values)
                     set_enum_entries.append({
                         "key": key,
-                        "val": val
+                        "val": val,
+                        "int_val": int_val
                     })
 
             enum_tables.append({
@@ -82,7 +114,20 @@ def parse_enum_bindings():
 
         i += 2
 
+    unresolved = [
+        f"{e['key']} ({e['val']})"
+        for s in sections
+        for t in s["enums"]
+        for e in t["entries"]
+        if e.get("int_val") is None
+    ]
+    if unresolved:
+        raise ValueError(
+            f"Failed to resolve {len(unresolved)} enum values from KenshiLib headers: {', '.join(unresolved[:10])}"
+        )
+
     return sections
+
 
 def generate_markdown(sections):
     md = []
@@ -98,7 +143,7 @@ def generate_markdown(sections):
     md.append("")
     md.append("## Lua Usage & Syntax")
     md.append("")
-    md.append("All enums in KenshiLua use their exact literal C++ names and are exposed as global tables or nested class tables (e.g. `CrimeEnum.CRIME_STEALING` or `MeshDataLookup.Dir.FRONT`).")
+    md.append("All enums in KenshiLua use their exact literal C++ names and are exposed as global tables or nested class tables (e.g. `CrimeEnum.CRIME_STEALING` or `MeshDataLookup.Dir.FRONT`). Each entry maps to its underlying integer value defined in the KenshiLib headers.")
     md.append("")
     md.append("```lua")
     md.append("-- Accessing enum constants directly:")
@@ -109,6 +154,11 @@ def generate_markdown(sections):
     md.append("-- Passing to a method or setting a property:")
     md.append("character.proneState = ProneState.PS_NORMAL")
     md.append("character:setProneState(ProneState.PS_NORMAL)")
+    md.append("")
+    md.append("-- Enums evaluate to their bound integer values:")
+    md.append("assert(ProneState.PS_NORMAL == 0)")
+    md.append("assert(AttachSlot.ATTACH_LEFT_ARM == 50)")
+    md.append("assert(itemType.LUA_SCRIPT == 322)")
     md.append("```")
     md.append("")
     md.append("### Creating Convenient Local Aliases")
@@ -155,10 +205,16 @@ def generate_markdown(sections):
                 return f"`{key}`"
 
             if enum_info["entries"]:
-                md.append("| Lua Syntax | C++ Value / Enumerator |")
-                md.append("| :--- | :--- |")
+                md.append("| Lua Syntax | Integer Value | C++ Enumerator |")
+                md.append("| :--- | :--- | :--- |")
                 for entry in enum_info["entries"]:
-                    md.append(f"| {format_lua_syntax(entry['key'])} | `{entry['val']}` |")
+                    int_str = str(entry["int_val"]) if entry.get("int_val") is not None else ""
+                    if entry["key"] == "LUA_SCRIPT":
+                        prefix = enum_info["globals"][0] if enum_info.get("globals") else "itemType"
+                        cxx_col = f"`{prefix}::LUA_SCRIPT` *(Added by KenshiLua)*"
+                    else:
+                        cxx_col = f"`{entry['val']}`"
+                    md.append(f"| {format_lua_syntax(entry['key'])} | `{int_str}` | {cxx_col} |")
                 md.append("")
 
         md.append("---")
@@ -166,15 +222,17 @@ def generate_markdown(sections):
 
     return "\n".join(md)
 
+
 def main():
     print("Parsing EnumBinding.cpp...")
     sections = parse_enum_bindings()
     print(f"Parsed {len(sections)} header sections.")
-    
+
     markdown_content = generate_markdown(sections)
-    
+
     OUTPUT_MD.write_text(markdown_content, encoding="utf-8")
     print(f"Successfully generated {OUTPUT_MD}")
+
 
 if __name__ == "__main__":
     main()

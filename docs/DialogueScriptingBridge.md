@@ -55,9 +55,10 @@ To bind Lua scripts to dialogue lines in the Forgotten Construction Set (FCS), y
 - [FCS Extended on Nexus Mods](https://www.nexusmods.com/kenshi/mods/1825)
 
 ### `LUA_SCRIPT` Item Type Definition
+
 Using `fcs.def` with FCS Extended (with KenshiLua support enabled), a new item type is registered in FCS:
 - **Item Type Name**: `LUA_SCRIPT`
-- **Enum Value**: `322`
+- **Enum Value**: `322` (accessible in Lua as `itemType.LUA_SCRIPT`)
 
 ### Creating a `LUA_SCRIPT` Entry
 1. Open FCS Extended with your `.mod` file active.

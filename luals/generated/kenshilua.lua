@@ -2506,6 +2506,7 @@ itemType = {
     ANIMATION_FILE = 112,
     ____XXX___ = 113,
     OBJECT_TYPE_MAX = 114,
+    LUA_SCRIPT = 322,
 }
 
 --- Weapon swing and parry animation phase state during melee engagement.

@@ -94,6 +94,13 @@ def parse_enums():
                     if candidate in header_values:
                         val = header_values[candidate]
                         break
+            if val is None and key in header_values:
+                val = header_values[key]
+            if val is None:
+                try:
+                    val = int(cxx_sym, 0)
+                except ValueError:
+                    pass
             if val is None:
                 unmatched.append((key, cxx_sym))
                 continue
