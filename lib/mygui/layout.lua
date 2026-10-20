@@ -1,23 +1,17 @@
---- ============================================================================
---- KenshiLua MyGUI Layout Helpers Module
---- File: lib/mygui/layout.lua
---- ============================================================================
---- Provides high-level, declarative, and auto-stacking layout containers
---- (VBox, HBox, and Grid) on top of KenshiLua's 1-to-1 C++ MyGUI bindings.
----
---- Usage:
----   local Layout = require("mygui.layout")
----   local vbox = Layout.createVBox(myWindow, { padding = 10, spacing = 6 })
----   vbox:addLabel("Character Statistics:")
----   vbox:addButton("Heal Character", function(sender) ... end)
----   vbox:addRow("Name:", myEditBox)
---- ============================================================================
+-- layout.lua
+-- Declarative and auto-stacking layout containers (VBox, HBox, and Grid)
+-- on top of KenshiLua MyGUI bindings.
+--
+-- Usage:
+--   local Layout = require("mygui.layout")
+--   local vbox = Layout.createVBox(myWindow, { padding = 10, spacing = 6 })
+--   vbox:addLabel("Character Statistics:")
+--   vbox:addButton("Heal Character", function(sender) ... end)
+--   vbox:addRow("Name:", myEditBox)
 
 local Layout = {}
 
--- ----------------------------------------------------------------------------
 -- Helper utilities
--- ----------------------------------------------------------------------------
 local function mergeOptions(defaults, opts)
     local res = {}
     for k, v in pairs(defaults) do res[k] = v end
@@ -54,9 +48,7 @@ local function createWidget(parent, widgetType, skin, x, y, width, height, align
     return widget
 end
 
--- ============================================================================
 -- VBox (Vertical Stacking Box)
--- ============================================================================
 local VBox = {}
 VBox.__index = VBox
 
@@ -282,9 +274,7 @@ function VBox:reset()
     self.maxWidth = 0
 end
 
--- ============================================================================
 -- HBox (Horizontal Stacking Box)
--- ============================================================================
 local HBox = {}
 HBox.__index = HBox
 
@@ -391,9 +381,7 @@ function HBox:reset()
     self.maxHeight = 0
 end
 
--- ============================================================================
 -- Grid (Grid Table Layout)
--- ============================================================================
 local Grid = {}
 Grid.__index = Grid
 
@@ -467,9 +455,7 @@ function Grid:addRow(labelText, rightItem)
     end
 end
 
--- ============================================================================
 -- Module Export
--- ============================================================================
 Layout.VBox = VBox
 Layout.HBox = HBox
 Layout.Grid = Grid
