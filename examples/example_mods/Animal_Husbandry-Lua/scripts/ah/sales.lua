@@ -1,19 +1,7 @@
--- Animal Husbandry: animal sale window.
---
--- A dialogue line opens this window through the FCS "run lua script" reference to
--- scripts/dialogue/ah_open_animal_sale.lua, which calls AnimalHusbandry.sales.open().
--- The NPC in the conversation is the buyer. The window rebuilds the vanilla
--- character-selling window from the game's own layouts:
---   Kenshi_CharacterSelectionWindow.layout  the window, with a scroll view of rows
---   Kenshi_CharacterSelectionBox.layout     one row per animal
--- Each row shows the animal's name, price, a tick box, and two datapanels: Strength,
--- Melee Attack, and Gender; then race and age.
---
--- The total may exceed the buyer's money; Confirm is then disabled. Confirm moves the
--- money and puts each sold animal in the buyer's faction and squad. Confirm and Cancel
--- both end the conversation, so the player returns to the game.
+-- sales.lua
+-- Animal sale window opened by the FCS dialogue scripts.
 
-local AH = _G.AnimalHusbandry
+local AH = require("ah.core")
 AH.sales = AH.sales or {}
 local S = AH.sales
 
@@ -28,30 +16,15 @@ local function scfg()
     return AH.config.sales
 end
 
--- KenshiLua destroys the widgets this script created before reloading it, which also
--- destroys the widgets under any datapanels in an open window. Those datapanels can no
--- longer be destroyed safely, so they are left behind. Close the window before
--- reloading this script.
-if S.state then
-    AH.log("sale window was open while its script reloaded; reopen it from dialogue")
-    S.state = nil
-end
 S.serial = S.serial or 0
 
--- ---------------------------------------------------------------------------
 -- Rules
--- ---------------------------------------------------------------------------
 
 local function moneyText(n)
     return AH.moneyText and AH.moneyText(n) or ("c." .. tostring(math.floor(n)))
 end
 
--- Returns the price of an animal, using the vanilla animal trader's formula so the
--- player sells an animal for what a trader would charge for it:
--- (getAge0to1() + 0.1) x base, truncated. The engine's CharacterTrading_AnimalBuying
--- uses a 14000 base unless the CHOOSE_ANIMALS_BUYING dialogue action sets one. Here
--- the base is the "base price" from the animal's ANIMAL_CHARACTER record in FCS, or
--- sales.defaultBasePrice. Ages stop at 1.1, so elders cost 1.2 x base.
+-- Returns the animal price using Kenshi's (age + 0.1) x base price formula.
 function S.priceOf(entry)
     if AH.priceOf then
         return AH.priceOf(entry)
@@ -89,8 +62,8 @@ end
 
 -- Living player animals within sales.maxDistance of the buyer (or the buyer's
 -- building) or of the seller, sorted by name. Animals elsewhere, such as at a base
--- the seller left, are not offered.
-local function candidates(buyer, seller)
+-- the seller left, are not offered. An optional predicate further limits the list.
+local function candidates(buyer, seller, filter)
     local out = {}
     local maxDistance = scfg().maxDistance
     local anchor = buyerAnchor(buyer)
@@ -100,7 +73,7 @@ local function candidates(buyer, seller)
         if not e.char:isDead() then
             local d = math.min(AH.distance(e.char, anchor), AH.distance(e.char, seller))
             local near = d <= maxDistance
-            if near then
+            if near and (not filter or filter(e)) then
                 out[#out + 1] = e
             end
             AH.debugLog(string.format("sale candidate %s: distance %.1f of %s%s", tostring(e.char:getName()), d,
@@ -121,9 +94,7 @@ local function statText(c, stat)
     return tostring(math.floor(stats:getStat(stat, false)))
 end
 
--- ---------------------------------------------------------------------------
 -- Layout helpers
--- ---------------------------------------------------------------------------
 
 local function startsWith(s, prefix)
     return s and string.sub(s, 1, #prefix) == prefix
@@ -155,9 +126,7 @@ local function resizeLayoutRoot(root, prefix, left, top, width, height)
     end
 end
 
--- ---------------------------------------------------------------------------
 -- Window
--- ---------------------------------------------------------------------------
 
 local function destroyState(st)
     local gui = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
@@ -365,7 +334,9 @@ local function addRow(st, entry, index, scrollView, rowWidth, rowHeight)
 end
 
 -- Opens the sale window for the conversation in dialogue. Returns true on success.
-function S.open(dialogue)
+-- Optional filter(entry) returns true for animals this buyer accepts. Entries are
+-- described by animalEntry in ah/core.lua; omitting the filter accepts all animals.
+function S.open(dialogue, filter)
     if AH.syncConstantsFromFCS then
         AH.syncConstantsFromFCS()
     end
@@ -438,7 +409,7 @@ function S.open(dialogue)
         local _, _, viewW = scrollView:getViewCoord()
         local rowWidth = math.max(viewW, 1)
         local rowHeight = math.floor(BOX_REAL_HEIGHT * screenH)
-        local entries = candidates(buyer, seller)
+        local entries = candidates(buyer, seller, filter)
         -- Size the canvas first: the view can only scroll within it while rows are added.
         scrollView:setCanvasSize(rowWidth, math.max(#entries * (rowHeight + BOX_GAP), 1))
         for i = 1, #entries do
@@ -446,7 +417,7 @@ function S.open(dialogue)
         end
         scrollView:setViewOffset(0, 0)
         if #entries == 0 then
-            find("CaptionTextBox"):setCaption("No animals nearby to sell")
+            find("CaptionTextBox"):setCaption(filter and "No matching animals nearby to sell" or "No animals nearby to sell")
         end
         updateTotals(st)
         root:upLayerItem()
@@ -462,10 +433,6 @@ end
 
 AH.onEvent("sales_destroyClosed", "GameWorld::charsUpdate", destroyClosedWindow)
 
-AH.log("sales loaded")
+S.shutdown = discardWindow
 
--- Loading this file made KenshiLua remove the event handlers of every Animal
--- Husbandry script; register them again. See the note in 01_ah_core.lua.
-if _G.AnimalHusbandry and _G.AnimalHusbandry.rearmEvents then
-    _G.AnimalHusbandry.rearmEvents()
-end
+return S

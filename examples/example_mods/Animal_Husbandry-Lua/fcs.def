@@ -18,11 +18,11 @@ condition "mating group" if "sterile" is False
 [CONSTANTS]
 animal husbandry:
 breeding.babyAge: 0.0 "Age of a newborn animal (0.0 to 1.1 scale, where 0.0 is Newborn)"
-breeding.checkIntervalHours: 1.0 "In hours, how often the mod rolls for pregnancy for eligible females with a nearby mate"
-breeding.maxPairDistance: 50.0 "Maximum distance in world units between potential parents for breeding to occur"
+breeding.checkIntervalHours: 24.0 "In hours, how often the mod rolls for pregnancy for eligible females with a nearby mate"
+breeding.maxPairDistance: 200.0 "Maximum distance in world units between potential parents for breeding to occur"
 breeding.minAge: 0.6 "Minimum age for both parents to breed (0.0 to 1.1 scale: 0.4 is Teen, 0.6 is Adult)"
 harvest.minAge: 0.6 "Minimum age of an animal before its products can be harvested (0.6 is Adult)"
-harvest.maxDistance: 50.0 "Maximum distance in world units between the harvester and the animal"
-harvest.maxVisibleProducts: 4 "Maximum number of product rows visible in the Husbandry window before scrolling"
+harvest.maxDistance: 200.0 "Maximum distance in world units between the harvester and the animal"
+harvest.maxVisibleProducts: 2 "Maximum number of product rows visible in the Husbandry window before scrolling"
 sales.defaultBasePrice: 14000 "Fallback base price in cats for animals without an FCS base price. Vanilla traders use 14000."
-sales.maxDistance: 250.0 "Maximum distance in world units between an animal and the buyer (or buyer's building) or seller"
+sales.maxDistance: 200.0 "Maximum distance in world units between an animal and the buyer (or buyer's building) or seller"

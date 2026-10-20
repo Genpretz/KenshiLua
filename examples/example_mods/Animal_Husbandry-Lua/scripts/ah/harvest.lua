@@ -1,78 +1,61 @@
--- Animal Husbandry: Husbandry button and window.
---
--- When the right-click context menu opens on an animal in the player faction while a
--- non-animal character in the player faction is selected, a "Husbandry" row is added
--- to the bottom of the menu. The row is not available while the animal is in combat.
--- Clicking it, or releasing right-click over it, opens the Husbandry window. The
--- window shows the animal's sex, life stage, and breeding state, and lists the products
--- in its record's "animal products" list, each with a Harvest button. The selected
--- person harvests: they must stand near the animal, and the items go into their
--- inventory.
---
--- Each product reference sets the items per harvest (val0), the days between harvests
--- (val1), and which sex gives it (val2: 0 male, 1 female, 2 both); harvest.minAge in
--- the config applies to all. The time of the next allowed harvest is stored on the
--- animal as AH_NextHarvest_<item string ID>, so it survives saving and travels with a
--- sold animal.
+-- harvest.lua
+-- Husbandry context-menu action, product harvesting, and animal details window.
+-- Product references use val0 for quantity, val1 for cooldown days, and val2 for sex.
+-- Cooldowns are saved on each animal as AH_NextHarvest_<item string ID>.
+-- Incomplete harvests save remaining items as AH_RemainingHarvest_<item string ID>.
 
-local AH = _G.AnimalHusbandry
+local AH = require("ah.core")
 
 local ROW_NAME = "AH_HusbandryRow"
 local BUTTON_NAME = "AH_HusbandryButton"
 local WINDOW_NAME = "AH_HusbandryWindow"
 local NEXT_HARVEST_PREFIX = "NextHarvest_"
+local REMAINING_HARVEST_PREFIX = "RemainingHarvest_"
 
--- Window layout: loaded from AH_HusbandryWindow.layout.
--- The layout defines the window structure, portrait, name banner, datapanel info area,
--- and products scroll view. The script populates the animal details into the datapanel
--- and creates dynamic product rows in the products scroll view with their status and
--- Harvest buttons.
 local LAYOUT_FILE = "AH_HusbandryWindow.layout"
-local ROW_HEIGHT = 30
-local ROW_STEP = 34
-local BUTTON_WIDTH = 76
+local ROW_HEIGHT = 32
+local ROW_STEP = 36
+local BUTTON_WIDTH = 96
 local SCROLLBAR_WIDTH = 20
 local BUTTON_MARGIN = 8
 local BUTTON_GAP = 8
 local DEFAULT_LEFT, DEFAULT_TOP = 220, 160
 
--- Serial counter for unique MyGUI layout widget prefixes
 AH.husbandrySerial = AH.husbandrySerial or 0
 
 local function hcfg()
     return AH.config.harvest
 end
 
--- Reloading this script destroyed the window it had created. KenshiLua destroys the
--- window's widgets before the reload, including those under its datapanel, so the
--- datapanel itself is left behind; close the window before reloading this script.
-AH.husbandryWindow = nil
-
 -- State of the open window: handles rather than characters, so a character that
 -- despawns while the window is open resolves to nil instead of a dangling pointer.
----@class AnimalHusbandryWindowState
+---@class AnimalHusbandryLuaWindowState
 ---@field target hand
 ---@field harvester hand|nil
 ---@field prefix string
 ---@field layout MyGUI.Widget[]|nil
 ---@field root MyGUI.Widget|nil
 ---@field rows table[]
----@field infoPanel DatapanelGUI|nil
----@field infoText string|nil
+---@field generalPanel DatapanelGUI|nil
+---@field husbandryPanel DatapanelGUI|nil
+---@field infoPanels DatapanelGUI[]
+---@field infoText table<string, string>
+---@field portrait MyGUI.ImageBox|nil
 ---@field nameText MyGUI.Widget|nil
 ---@field productsArea MyGUI.ScrollView|nil
----@type AnimalHusbandryWindowState|nil
+---@type AnimalHusbandryLuaWindowState|nil
 local windowState = nil
 
--- State of the context menu row currently shown.
 local menuState = { target = nil, harvester = nil, focused = false }
 
--- ---------------------------------------------------------------------------
 -- Rules
--- ---------------------------------------------------------------------------
 
 local function nextHarvestKey(product)
     return NEXT_HARVEST_PREFIX .. tostring(product.itemID)
+end
+
+local function remainingHarvestKey(product)
+    return REMAINING_HARVEST_PREFIX .. tostring(product.itemID)
 end
 
 local function productName(product)
@@ -123,9 +106,12 @@ local function canHarvest(entry, harvester, product, now)
     if not sexOk then
         return false, sexReason
     end
-    local nextAt = AH.getValue(c, nextHarvestKey(product))
-    if nextAt and now < nextAt then
-        return false, formatHarvestCooldown(nextAt - now)
+    local remaining = AH.getValue(c, remainingHarvestKey(product))
+    if not (remaining and remaining > 0) then
+        local nextAt = AH.getValue(c, nextHarvestKey(product))
+        if nextAt and now < nextAt then
+            return false, formatHarvestCooldown(nextAt - now)
+        end
     end
     if not harvester then
         return false, "no person"
@@ -139,10 +125,13 @@ local function canHarvest(entry, harvester, product, now)
     if AH.distance(harvester, c) > hcfg().maxDistance then
         return false, "too far"
     end
+    if not harvester:hasRoomForItem(product.data) then
+        return false, "no inventory space"
+    end
     return true
 end
 
--- Creates the product's items in the harvester's inventory and starts its cooldown.
+-- Creates the product's items in the harvester's inventory or backpack and starts its cooldown.
 -- Returns true, or false and a reason.
 local function harvest(entry, harvester, product)
     local now = AH.currentDay()
@@ -152,34 +141,58 @@ local function harvest(entry, harvester, product)
     end
 
     local name, data = productName(product)
-    local inventory = harvester:getInventory()
     local factory = getRootObjectFactory()
     if not factory then
         return false, "object factory is unavailable"
     end
+
+    local rem = AH.getValue(entry.char, remainingHarvestKey(product))
+    local total = math.max(1, product.amount or 1)
+    local available = (rem and rem > 0) and math.min(math.floor(rem), total) or total
+
     local given = 0
-    for i = 1, math.max(1, product.amount or 1) do
-        local item = factory:createItem(data, nil, nil, nil, -1, nil)
-        if item then
-            -- dropOnFail puts the item on the ground beside the harvester if the
-            -- inventory is full.
-            inventory:addItem(item, 1, true, false)
-            given = given + 1
+    for i = 1, available do
+        if not harvester:hasRoomForItem(data) then
+            break
         end
-    end
-    if given == 0 then
-        return false, "could not create the item"
+        local item = factory:createItem(data, nil, nil, nil, -1, nil)
+        if not item then
+            break
+        end
+        -- giveItem attempts to place the item in the character's inventory first,
+        -- and if full, in their equipped backpack. destroyOnFail cleans up the
+        -- temporary item if neither has space.
+        local gave = harvester:giveItem(item, false, true)
+        if not gave then
+            break
+        end
+        given = given + 1
     end
 
-    AH.setValue(entry.char, nextHarvestKey(product), now + math.max(0, product.days or 1))
+    if given == 0 then
+        return false, "no inventory space"
+    end
+
+    local left = available - given
+    if left <= 0 then
+        AH.clearValue(entry.char, remainingHarvestKey(product))
+        AH.setValue(entry.char, nextHarvestKey(product), now + math.max(0, product.days or 1))
+    else
+        AH.setValue(entry.char, remainingHarvestKey(product), left)
+    end
+
     local count = given > 1 and (given .. " x ") or ""
-    AH.notify(string.format("%s harvested %s%s from %s.", harvester:getName(), count, name, entry.char:getName()))
+    if left > 0 then
+        AH.notify(string.format("%s harvested %s%s from %s (%d remaining - inventory full).",
+            harvester:getName(), count, name, entry.char:getName(), left))
+    else
+        AH.notify(string.format("%s harvested %s%s from %s.",
+            harvester:getName(), count, name, entry.char:getName()))
+    end
     return true
 end
 
--- ---------------------------------------------------------------------------
 -- Husbandry window
--- ---------------------------------------------------------------------------
 
 local function resolveWindowCharacters()
     if not windowState then
@@ -192,35 +205,32 @@ end
 
 local function infoLines(entry, animal, harvester, now)
     if not entry then
-        return { { "Animal", "no longer available" } }
+        return { { "Animal", "no longer available" } }, {}
     end
     local price = (AH.priceOf and AH.priceOf(entry))
         or (AH.sales and AH.sales.priceOf and AH.sales.priceOf(entry))
         or 0
     local valText = (AH.moneyText and AH.moneyText(price))
         or ("c." .. tostring(math.floor(price)))
-    local lines = {
+    local general = {
         { "Race", tostring(entry.raceName) },
         { "Sex", AH.isFemale(animal) and "Female" or "Male" },
         { "Age", AH.ageText(entry) },
         { "Value", valText },
     }
+    local husbandry = {}
     if entry.def and entry.def.matingGroup and entry.def.matingGroup ~= "" then
-        lines[#lines + 1] = { "Group", tostring(entry.def.matingGroup) }
+        husbandry[#husbandry + 1] = { "Group", tostring(entry.def.matingGroup) }
     end
-    lines[#lines + 1] = { "Breeding", AH.describeBreeding and AH.describeBreeding(entry, now) or "" }
-    lines[#lines + 1] = { "Harvester", harvester and tostring(harvester:getName()) or "select a person" }
-    return lines
+    husbandry[#husbandry + 1] = { "Breeding", AH.describeBreeding and AH.describeBreeding(entry, now) or "" }
+    husbandry[#husbandry + 1] = { "Harvester", harvester and tostring(harvester:getName()) or "unavailable" }
+    return general, husbandry
 end
 
 -- Rebuilds the details datapanel only when its text changed, so it does not flicker.
-local function fillInfoPanel(lines)
+local function fillInfoPanel(panel, cacheKey, lines)
     local state = windowState
-    if not state then
-        return
-    end
-    local panel = state.infoPanel
-    if not panel then
+    if not state or not panel then
         return
     end
     local parts = {}
@@ -228,10 +238,10 @@ local function fillInfoPanel(lines)
         parts[#parts + 1] = lines[i][1] .. "=" .. lines[i][2]
     end
     local text = table.concat(parts, "\n")
-    if text == state.infoText then
+    if text == state.infoText[cacheKey] then
         return
     end
-    state.infoText = text
+    state.infoText[cacheKey] = text
     panel:clear()
     for i = 1, #lines do
         panel:setLine(lines[i][1], lines[i][2], 0, false, true)
@@ -251,26 +261,26 @@ local function refreshWindow()
     if windowState.nameText then
         windowState.nameText:setCaption(animal and tostring(animal:getName()) or "")
     end
-    fillInfoPanel(infoLines(entry, animal, harvester, now))
+    local general, husbandry = infoLines(entry, animal, harvester, now)
+    fillInfoPanel(windowState.generalPanel, "general", general)
+    fillInfoPanel(windowState.husbandryPanel, "husbandry", husbandry)
 
     for i = 1, #windowState.rows do
         local row = windowState.rows[i]
         if entry then
             local ok, reason = canHarvest(entry, harvester, row.product, now)
-            row.status:setCaption(row.name .. ": " .. (ok and "ready" or reason))
+            local rem = AH.getValue(entry.char, remainingHarvestKey(row.product))
+            local label = row.name
+            if rem and rem > 0 then
+                label = string.format("%s (%d left)", row.name, math.floor(rem))
+            end
+            row.status:setCaption(label .. ": " .. (ok and "ready" or reason))
             row.button:setEnabled(ok and true or false)
         else
             row.status:setCaption(row.name)
             row.button:setEnabled(false)
         end
     end
-end
-
-local function createLabel(parent, x, y, w, h, name)
-    local lbl = assert(parent:createWidget(
-        "TextBox", "Kenshi_TextboxStandardText", x, y, w, h, MyGUI.Align.Default, name))
-    lbl:setProperty("TextAlign", "Left VCenter")
-    return lbl
 end
 
 local function destroyWindow()
@@ -281,16 +291,17 @@ local function destroyWindow()
         local l, t = AH.husbandryWindow:getPosition()
         AH.husbandryWindowPos = { left = l, top = t }
     end
-    if windowState and windowState.infoPanel then
-        -- The datapanel owns widgets inside the window, so destroy it first.
+    if windowState and windowState.infoPanels then
         local gui = getForgottenGUI()
         if gui then
-            local ok, err = pcall(gui.destroy, gui, windowState.infoPanel)
-            if not ok then
-                AH.log("Husbandry window: could not destroy the datapanel: " .. tostring(err))
+            for i = 1, #windowState.infoPanels do
+                local ok, err = pcall(gui.destroy, gui, windowState.infoPanels[i])
+                if not ok then
+                    AH.log("Husbandry window: could not destroy a datapanel: " .. tostring(err))
+                end
             end
         end
-        windowState.infoPanel = nil
+        windowState.infoPanels = {}
     end
     if windowState and windowState.layout then
         local ok, err = pcall(function()
@@ -307,6 +318,115 @@ local function destroyWindow()
     windowState = nil
 end
 
+local function createLabel(parent, x, y, w, h, name)
+    local lbl = assert(parent:createWidget(
+        "TextBox", "Kenshi_TextboxStandardText", x, y, w, h, MyGUI.Align.Default, name))
+    lbl:setProperty("TextAlign", "Left VCenter")
+    return lbl
+end
+
+local function rebuildProducts(entry)
+    local state = windowState
+    if state == nil or state.target == nil or state.target:isNull() then
+        -- The target despawned while the window was open.
+        destroyWindow()
+        return
+    end
+
+    local productsArea = state.productsArea
+    if not productsArea then
+        AH.log("Husbandry window: products area is missing")
+        return
+    end
+
+    local targetHandle = state.target
+    state.rows = {}
+
+    -- Replace product rows when switching animals, including any layout previews.
+    while productsArea:getChildCount() > 0 do
+        local child = productsArea:getChildAt(0)
+        -- The child count above guarantees that index 0 exists.
+        ---@cast child -nil
+        child:destroy()
+    end
+
+    local products = (entry.def and entry.def.products) or {}
+    local maxVisible = (hcfg() and hcfg().maxVisibleProducts) or 4
+    local rowCount = #products
+
+    local _, _, productsWidth, viewHeight = productsArea:getCoord()
+    if productsWidth <= 0 then productsWidth = 292 end
+    if viewHeight <= 0 then viewHeight = 168 end
+
+    local needsScroll = (rowCount > maxVisible) or (rowCount * ROW_STEP > viewHeight)
+    local scrollbarMargin = needsScroll and (SCROLLBAR_WIDTH + BUTTON_MARGIN) or BUTTON_MARGIN
+    local buttonLeft = productsWidth - BUTTON_WIDTH - scrollbarMargin
+    local statusWidth = buttonLeft - BUTTON_GAP
+
+    local canvasWidth = needsScroll and (productsWidth - SCROLLBAR_WIDTH) or productsWidth
+    local canvasHeight = math.max(viewHeight, rowCount * ROW_STEP)
+    if productsArea.setCanvasSize then
+        productsArea:setCanvasSize(canvasWidth, canvasHeight)
+        productsArea:setVisibleHScroll(false)
+        productsArea:setVisibleVScroll(needsScroll)
+        productsArea:setViewOffset(0, 0)
+    end
+
+    local align = MyGUI.Align.Default
+    if #products == 0 then
+        createLabel(productsArea, 0, 0, canvasWidth, ROW_HEIGHT, "AH_NoProducts")
+            :setCaption("This animal gives no products.")
+    end
+    for i = 1, #products do
+        local product = products[i]
+        local name = productName(product)
+        local rowTop = (i - 1) * ROW_STEP
+        local status = createLabel(productsArea, 0, rowTop, statusWidth, ROW_HEIGHT,
+            "AH_ProductStatus" .. i)
+        local button = assert(productsArea:createWidget(
+            "Button", "Kenshi_Button2", buttonLeft, rowTop,
+            BUTTON_WIDTH, ROW_HEIGHT, align, "AH_ProductHarvest" .. i))
+        button:setCaption("Harvest")
+        button:on("eventMouseButtonClick", function()
+            if windowState ~= state or state.target ~= targetHandle then
+                return
+            end
+            local a, h = resolveWindowCharacters()
+            local e = a and AH.animalEntry(a)
+            if not e then
+                refreshWindow()
+                return
+            end
+            local ok, reason = harvest(e, h, product)
+            if not ok then
+                AH.notify("Cannot harvest " .. name .. ": " .. tostring(reason) .. ".")
+            end
+            refreshWindow()
+        end)
+        state.rows[#state.rows + 1] = { product = product, name = name, status = status, button = button }
+    end
+end
+
+local function showAnimal(targetHandle, entry)
+    local state = windowState
+    if not state then
+        AH.log("Husbandry window: no window state")
+        return
+    end
+    state.target = targetHandle
+    if state.portrait then
+        local portraits = PortraitManager.getInstance()
+        if portraits then
+            local ok, err = pcall(portraits.setImageWidget, portraits, targetHandle, state.portrait, true)
+            if not ok then
+                AH.log("Husbandry window: could not set the portrait: " .. tostring(err))
+            end
+        end
+    end
+    rebuildProducts(entry)
+    refreshWindow()
+end
+
 -- Opens the Husbandry window for an animal. targetHandle and harvesterHandle are hand
 -- values; harvesterHandle can be nil when no person is selected.
 function AH.openHusbandryWindow(targetHandle, harvesterHandle)
@@ -317,6 +437,12 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
     local entry = animal and AH.animalEntry(animal)
     if not entry then
         AH.log("Husbandry window: the target is not an animal")
+        return
+    end
+
+    if windowState and AH.husbandryWindow and AH.husbandryWindow:getVisible() then
+        showAnimal(targetHandle, entry)
+        AH.husbandryWindow:upLayerItem()
         return
     end
 
@@ -360,109 +486,62 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
         layout = layout,
         root = root,
         rows = {},
+        infoPanels = {},
+        infoText = {},
     }
     windowState = state
 
-    -- Animal Portrait
     local portrait = find("AH_Portrait")
-    if portrait then
-        ---@cast portrait MyGUI.ImageBox
-        local portraits = PortraitManager.getInstance()
-        if portraits then
-            local ok, err = pcall(portraits.setImageWidget, portraits, targetHandle, portrait, true)
-            if not ok then
-                AH.log("Husbandry window: could not set the portrait: " .. tostring(err))
-            end
-        end
-    end
+    ---@cast portrait MyGUI.ImageBox|nil
+    state.portrait = portrait
     state.nameText = find("AH_Name")
 
-    -- Details Datapanel
-    local infoArea = find("AH_InfoArea")
-    if infoArea then
-        local guiObj = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
-        state.infoPanel = guiObj:createDatapanel(prefix .. "Info", infoArea, false)
-        if not state.infoPanel then
-            AH.log("Husbandry window: could not create the details datapanel")
-        end
+    local guiObj = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
+    local function createInfoPanel(name, area)
+        local panel = assert(guiObj:createDatapanel(prefix .. name, area, false),
+            "Husbandry window: could not create the " .. name .. " datapanel")
+        state.infoPanels[#state.infoPanels + 1] = panel
+        return panel
     end
 
-    -- Products area (ScrollView or container Widget)
-    local productsArea = assert(find("AH_ProductsScrollView") or find("AH_ProductsArea"),
-        "Husbandry layout missing AH_ProductsScrollView or AH_ProductsArea")
-    -- AH_HusbandryWindow.layout declares this widget as a ScrollView.
+    local generalArea = assert(find("AH_GeneralInfoArea"),
+        "Husbandry layout missing AH_GeneralInfoArea")
+    local husbandryArea = assert(find("AH_BreedingInfoArea"),
+        "Husbandry layout missing AH_BreedingInfoArea")
+    state.generalPanel = createInfoPanel("GeneralInfo", generalArea)
+    state.husbandryPanel = createInfoPanel("HusbandryInfo", husbandryArea)
+
+    local productsArea = assert(find("AH_ProductsScrollView"),
+        "Husbandry layout missing AH_ProductsScrollView")
     ---@cast productsArea MyGUI.ScrollView
     state.productsArea = productsArea
 
-    -- Clear any static preview children present in the layout template
-    while productsArea:getChildCount() > 0 do
-        local child = productsArea:getChildAt(0)
-        -- The child count above guarantees that index 0 exists.
-        ---@cast child -nil
-        pcall(function() child:destroy() end)
-    end
-
-    local products = (entry.def and entry.def.products) or {}
-    local maxVisible = (hcfg() and hcfg().maxVisibleProducts) or 4
-    local rowCount = #products
-
-    local _, _, productsWidth, viewHeight = productsArea:getCoord()
-    if productsWidth <= 0 then productsWidth = 292 end
-    if viewHeight <= 0 then viewHeight = 168 end
-
-    local needsScroll = (rowCount > maxVisible) or (rowCount * ROW_STEP > viewHeight)
-    local scrollbarMargin = needsScroll and (SCROLLBAR_WIDTH + BUTTON_MARGIN) or BUTTON_MARGIN
-    local buttonLeft = productsWidth - BUTTON_WIDTH - scrollbarMargin
-    local statusWidth = buttonLeft - BUTTON_GAP
-
-    local canvasWidth = needsScroll and (productsWidth - SCROLLBAR_WIDTH) or productsWidth
-    local canvasHeight = math.max(viewHeight, rowCount * ROW_STEP)
-    if productsArea.setCanvasSize then
-        productsArea:setCanvasSize(canvasWidth, canvasHeight)
-        productsArea:setVisibleHScroll(false)
-        productsArea:setVisibleVScroll(needsScroll)
-        productsArea:setViewOffset(0, 0)
-    end
-
-    local align = MyGUI.Align.Default
-    if #products == 0 then
-        createLabel(productsArea, 0, 0, canvasWidth, ROW_HEIGHT, "AH_NoProducts")
-            :setCaption("This animal gives no products.")
-    end
-    for i = 1, #products do
-        local product = products[i]
-        local name = productName(product)
-        local rowTop = (i - 1) * ROW_STEP
-        local status = createLabel(productsArea, 0, rowTop, statusWidth, ROW_HEIGHT,
-            "AH_ProductStatus" .. i)
-        local button = assert(productsArea:createWidget(
-            "Button", "Kenshi_Button1", buttonLeft, rowTop,
-            BUTTON_WIDTH, ROW_HEIGHT, align, "AH_ProductHarvest" .. i))
-        button:setCaption("Harvest")
-        button:on("eventMouseButtonClick", function()
-            local a, h = resolveWindowCharacters()
-            local e = a and AH.animalEntry(a)
-            if not e then
-                refreshWindow()
-                return
-            end
-            local ok, reason = harvest(e, h, product)
-            if not ok then
-                AH.notify("Cannot harvest " .. name .. ": " .. tostring(reason) .. ".")
-            end
-            refreshWindow()
-        end)
-        state.rows[#state.rows + 1] = { product = product, name = name, status = status, button = button }
-    end
-
-    refreshWindow()
+    showAnimal(targetHandle, entry)
     root:setVisible(true)
     root:upLayerItem()
 end
 
--- ---------------------------------------------------------------------------
+local function onSelectionChanged(guiObj)
+    local state = windowState
+    if not state or not state.root or not state.root:getVisible() then
+        return
+    end
+    local target = guiObj.selectedObject
+    if not target or target:isNull() or target == state.target then
+        return
+    end
+    local animal = target:getCharacter()
+    if not animal or not animal:isPlayerCharacter() then
+        return
+    end
+    local entry = AH.animalEntry(animal)
+    if entry then
+        -- Selection changes the animal; the harvester belongs to this window session.
+        showAnimal(target, entry)
+    end
+end
+
 -- Context menu row
--- ---------------------------------------------------------------------------
 
 local function menuHasRow(optionsList)
     for i = 0, optionsList:getChildCount() - 1 do
@@ -591,12 +670,19 @@ end
 
 AH.onEvent("harvest_menuShow", "ContextMenuGUI::show", onMenuShow)
 AH.onEvent("harvest_menuShowOrHide", "ContextMenu::showContextMenu", onMenuShowOrHide)
+AH.onEvent("harvest_selection", "ForgottenGUI::selectedObjectsChanged", onSelectionChanged)
 AH.onEvent("harvest_refresh", "GameWorld::charsUpdate", onFrame)
 
-AH.log("harvest loaded")
-
--- Loading this file made KenshiLua remove the event handlers of every Animal
--- Husbandry script; register them again. See the note in 01_ah_core.lua.
-if _G.AnimalHusbandry and _G.AnimalHusbandry.rearmEvents then
-    _G.AnimalHusbandry.rearmEvents()
+local function shutdown()
+    menuState.target = nil
+    menuState.harvester = nil
+    menuState.focused = false
+    -- Look up the row again: the engine may already have destroyed the menu.
+    local row = MyGUI.findWidget(ROW_NAME)
+    if row then
+        row:destroy()
+    end
+    destroyWindow()
 end
+
+return { shutdown = shutdown }

@@ -44,9 +44,7 @@ local function toggle_prone()
     end
 end
 
---- Key down event handler
----@param input_handler InputHandler
----@param key_code number
+--- Event handler for InputHandler::keyDownEvent 
 local function on_key_down(input_handler, key_code)
     logDebug("[Go Prone] Key pressed: " .. tostring(key_code))
     if key_code == KC_V then

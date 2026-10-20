@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<MyGUI type="Layout" version="3.2.0">
+    <Widget type="Window" skin="Kenshi_WindowCX" position="225 145 465 507" align="Default" layer="MiddleFront" name="AH_HusbandryWindow">
+        <Property key="Caption" value="HUSBANDRY"/>
+        <Property key="Movable" value="true"/>
+        <Property key="Snap" value="true"/>
+        <Widget type="ImageBox" skin="ImageBox" position="14 8 136 136" align="Left Top" name="AH_Portrait"/>
+        <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position="14 148 136 24" align="Left Top" name="AH_Name">
+            <Property key="Caption" value="Animal Name"/>
+            <Property key="TextAlign" value="Center VCenter"/>
+            <Property key="FontName" value="Kenshi_StandardFont"/>
+        </Widget>
+        <Widget type="Widget" skin="Kenshi_GenericTextBox" position="160 8 281 164" align="HStretch Top" name="AH_GeneralFrame">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position="8 6 265 20" align="HStretch Top" name="AH_GeneralHeader">
+                <Property key="Caption" value="ANIMAL PROFILE"/>
+                <Property key="TextAlign" value="Center VCenter"/>
+                <Property key="FontName" value="Kenshi_StandardFont"/>
+            </Widget>
+            <Widget type="Widget" skin="PanelEmpty" position="8 28 265 128" align="HStretch VStretch" name="AH_GeneralInfoArea"/>
+        </Widget>
+        <Widget type="Widget" skin="Kenshi_GenericTextBox" position="14 180 427 138" align="HStretch Top" name="AH_HusbandryFrame">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position="8 6 411 20" align="HStretch Top" name="AH_BreedingHeader">
+                <Property key="Caption" value="HUSBANDRY STATUS"/>
+                <Property key="TextAlign" value="Center VCenter"/>
+                <Property key="FontName" value="Kenshi_StandardFont"/>
+            </Widget>
+            <Widget type="Widget" skin="PanelEmpty" position="8 32 411 96" align="HStretch VStretch" name="AH_BreedingInfoArea"/>
+        </Widget>
+        <Widget type="TextBox" skin="Kenshi_GenericTextBoxFlatSmall" position="20 328 420 114" align="HStretch VStretch" name="AH_ProductsFrame">
+            <Widget type="TextBox" skin="Kenshi_TextboxStandardText" position="8 6 404 20" align="HStretch Top" name="AH_ProductsHeader">
+                <Property key="Caption" value="ANIMAL PRODUCTS"/>
+                <Property key="TextAlign" value="Center VCenter"/>
+                <Property key="FontName" value="Kenshi_StandardFont"/>
+            </Widget>
+            <Widget type="ScrollView" skin="Kenshi_ScrollViewEmpty" position="8 32 404 72" align="HStretch VStretch" name="AH_ProductsScrollView">
+                <Property key="CanvasSize" value="404 72"/>
+                <Property key="VisibleHScroll" value="false"/>
+                <Property key="VisibleVScroll" value="false"/>
+            </Widget>
+        </Widget>
+    </Widget>
+    <CodeGeneratorSettings/>
+</MyGUI>

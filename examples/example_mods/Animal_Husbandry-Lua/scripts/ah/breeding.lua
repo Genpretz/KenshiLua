@@ -1,14 +1,7 @@
--- Animal Husbandry: breeding.
---
--- Every breeding.checkIntervalHours, each eligible female animal in the player faction
--- with an eligible male she can mate with nearby rolls her record's "chance of
--- pregnancy". Mates and breeding values come from the animals' ANIMAL_CHARACTER records
--- in FCS (see AnimalHusbandry.animalDef and AnimalHusbandry.canMate); a sterile animal
--- never breeds. A separate, more frequent check handles births: when a pregnancy ends,
--- the mother's "number of offspring" newborns of her template spawn beside her, in her
--- squad. The engine assigns each newborn's sex and ages it like any other animal.
+-- breeding.lua
+-- Breeding, pregnancy, and birth behavior for player animals.
 
-local AH = _G.AnimalHusbandry
+local AH = require("ah.core")
 
 local KEY_DUE = "PregnantUntil"
 local KEY_COOLDOWN = "BreedCooldownUntil"
@@ -17,7 +10,6 @@ local KEY_COOLDOWN = "BreedCooldownUntil"
 -- breeding.checkIntervalHours from the config.
 local BIRTH_CHECK_INTERVAL_HOURS = 0.25
 
--- Config is read at call time so that a hot reload of the config file takes effect.
 local function cfg()
     return AH.config.breeding
 end
@@ -203,9 +195,7 @@ end
 AH.addTask("births", BIRTH_CHECK_INTERVAL_HOURS, birthCheck)
 AH.addTask("breeding", function() return cfg().checkIntervalHours end, breedingCheck)
 
--- ---------------------------------------------------------------------------
 -- Console commands
--- ---------------------------------------------------------------------------
 
 local function fmtDays(v)
     return string.format("%.2f", v)
@@ -305,10 +295,4 @@ function AH.clearBreedingState()
     AH.log("cleared breeding state for " .. tostring(c:getName()))
 end
 
-AH.log("breeding loaded")
-
--- Loading this file made KenshiLua remove the event handlers of every Animal
--- Husbandry script; register them again. See the note in 01_ah_core.lua.
-if _G.AnimalHusbandry and _G.AnimalHusbandry.rearmEvents then
-    _G.AnimalHusbandry.rearmEvents()
-end
+return AH

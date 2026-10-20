@@ -1,21 +1,12 @@
--- Animal Husbandry: shared helpers.
---
--- Provides logging, time, animal definitions from game data, player animal
--- enumeration, per-animal saved state, condition checks, and a task scheduler driven
--- by GameWorld::charsUpdate.
--- Feature scripts register tasks with AnimalHusbandry.addTask().
+-- core.lua
+-- Shared state and helpers for Animal_Husbandry-Lua modules.
 
-local AH = _G.AnimalHusbandry or {}
-_G.AnimalHusbandry = AH
+local AH = { config = require("ah.config") }
 
-local PREFIX = "[AnimalHusbandry] "
+local PREFIX = "[AnimalHusbandryLua] "
 local STATE_PREFIX = "AH_"
 
-math.randomseed(os.time())
-
--- ---------------------------------------------------------------------------
 -- Logging and messages
--- ---------------------------------------------------------------------------
 
 local function joinArgs(...)
     local parts = {}
@@ -53,22 +44,15 @@ function AH.notify(message)
     end
 end
 
--- ---------------------------------------------------------------------------
 -- Time
--- ---------------------------------------------------------------------------
 
 -- Total in-game days since the start of the game.
 function AH.currentDay()
     return getGameWorld():getTimeStamp_inGameHours():getTotalDays()
 end
 
--- ---------------------------------------------------------------------------
 -- Game constants from FCS
---
--- Constants defined in fcs.def under [CONSTANTS] are stored in the engine's Game
--- Constants record (accessible via getGlobalConstants().settings). If set in FCS,
--- they override the defaults in 00_ah_config.lua.
--- ---------------------------------------------------------------------------
+-- Values in the FCS Game Constants record override ah/config.lua.
 
 local CONSTANT_MAP = {
     { section = "breeding", field = "babyAge",            key = "breeding.babyAge" },
@@ -134,13 +118,13 @@ function AH.syncConstantsFromFCS()
     return true, syncedCount
 end
 
--- Console command: displays all Animal Husbandry constants, showing whether each is
--- loaded from FCS or falling back to the 00_ah_config.lua default.
+-- Console command: displays all Animal_Husbandry-Lua constants, showing whether each is
+-- loaded from FCS or falling back to the ah/config.lua default.
 function AH.printConstants()
     AH.syncConstantsFromFCS()
     local settings = getGameConstantsSettings()
 
-    AH.log("Animal Husbandry constants:")
+    AH.log("Animal_Husbandry-Lua constants:")
     for i = 1, #CONSTANT_MAP do
         local def = CONSTANT_MAP[i]
         local current = AH.config and AH.config[def.section] and AH.config[def.section][def.field]
@@ -150,17 +134,10 @@ function AH.printConstants()
     end
 end
 
--- ---------------------------------------------------------------------------
 -- Animal definitions from game data
---
--- The fields that fcs.def adds to ANIMAL_CHARACTER records, read from an animal's
--- own record (Character:getGameData()). The game does not read fcs.def, so a field
--- never set in FCS is absent from the record; FCS_DEFAULTS mirrors the defaults in
--- fcs.def for those. Definitions are cached by record string ID.
--- ---------------------------------------------------------------------------
+-- Missing ANIMAL_CHARACTER fields use FCS_DEFAULTS. Definitions are cached by ID.
 
--- basePrice has no default here: when it is not set in FCS, the sale window uses
--- sales.defaultBasePrice from the config.
+-- Missing basePrice values use sales.defaultBasePrice instead.
 local FCS_DEFAULTS = {
     sterile = true,
     offspring = 1,
@@ -306,9 +283,7 @@ function AH.raceOf(c)
     return d.stringID, d.name
 end
 
--- ---------------------------------------------------------------------------
 -- Player animals
--- ---------------------------------------------------------------------------
 
 function AH.playerInterface()
     return getPlayerInterface() or player
@@ -388,9 +363,7 @@ function AH.selectedCharacter()
     return h:getCharacter()
 end
 
--- ---------------------------------------------------------------------------
 -- Age, sex, and condition
--- ---------------------------------------------------------------------------
 
 function AH.age(animal)
     return animal:getAge0to1()
@@ -424,11 +397,7 @@ function AH.moneyText(n)
     return "c." .. tostring(math.floor(n))
 end
 
--- Returns the price of an animal in cats, using the vanilla animal trader's formula:
--- (getAge0to1() + 0.1) x base, truncated. The engine's CharacterTrading_AnimalBuying
--- uses a 14000 base unless the CHOOSE_ANIMALS_BUYING dialogue action sets one. Here
--- the base is the "base price" from the animal's ANIMAL_CHARACTER record in FCS, or
--- sales.defaultBasePrice. Ages stop at 1.1, so elders cost 1.2 x base.
+-- Uses Kenshi's animal-trader formula: (age + 0.1) x base price, truncated.
 function AH.priceOf(entry)
     if not entry or not entry.animal then
         return 0
@@ -488,13 +457,10 @@ function AH.squadHasRoom(c)
     return true
 end
 
--- ---------------------------------------------------------------------------
 -- Saved per-animal state
---
 -- Values live in the character's appearance data, which the engine saves with the
 -- character, so they survive save and load and travel with an animal when it is sold.
 -- Keys are prefixed with "AH_". Numbers only.
--- ---------------------------------------------------------------------------
 
 function AH.getValue(c, key)
     local ad = c:getAppearanceData()
@@ -520,14 +486,11 @@ function AH.clearValue(c, key)
     end
 end
 
--- ---------------------------------------------------------------------------
 -- Task scheduler
---
 -- One GameWorld::charsUpdate handler runs registered tasks on an in-game interval.
 -- Each task receives (now, elapsedDays). elapsedDays is capped at one day so a long
 -- jump, such as loading a later save, does not trigger a burst of catch-up rolls.
 -- Loading an earlier save resets the task's clock.
--- ---------------------------------------------------------------------------
 
 AH.tasks = AH.tasks or {}
 
@@ -585,46 +548,14 @@ local function onCharsUpdate()
     end
 end
 
--- ---------------------------------------------------------------------------
--- Event registration
---
--- Before KenshiLua loads or reloads any script, it removes event handlers registered
--- by that script. KenshiLua builds up to 0.3.5-alpha treat every script in the same
--- mod as the same source, so loading any Animal Husbandry file also removes handlers
--- that other files registered. To survive that, handlers are recorded here, and every
--- Animal Husbandry script calls AnimalHusbandry.rearmEvents() as its last step to
--- register them again. With a fixed KenshiLua this is redundant but harmless. Handler
--- IDs only increase, so removing a stale ID is harmless.
--- ---------------------------------------------------------------------------
+-- Event specifications are collected during imports. Startup registers them so
+-- all engine handlers belong to the single startup script.
+AH.eventSpecs = {}
 
-AH.eventSpecs = AH.eventSpecs or {}
-AH.eventIds = AH.eventIds or {}
-
-local function registerSpec(key)
-    local spec = AH.eventSpecs[key]
-    local oldId = AH.eventIds[key]
-    if oldId then
-        pcall(Events.off, oldId)
-    end
-    AH.eventIds[key] = Events.on(spec.event, spec.fn)
-end
-
--- Registers fn for eventName under a unique key, replacing any earlier registration
--- with the same key.
 function AH.onEvent(key, eventName, fn)
     AH.eventSpecs[key] = { event = eventName, fn = fn }
-    registerSpec(key)
-end
-
-function AH.rearmEvents()
-    AH.syncConstantsFromFCS()
-    for key in pairs(AH.eventSpecs) do
-        registerSpec(key)
-    end
 end
 
 AH.onEvent("scheduler", "GameWorld::charsUpdate", onCharsUpdate)
-AH.rearmEvents()
-AH.syncConstantsFromFCS()
 
-AH.log("core loaded")
+return AH
