@@ -1,3 +1,6 @@
+// MyKenshiLibPlugin.cpp
+// Demonstrates KenshiLua C++ Extension API integration with KenshiLib.
+
 #include <windows.h>
 
 #include <sstream>

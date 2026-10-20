@@ -2,7 +2,7 @@
 -- Sandboxed LUA_SCRIPT dialogue action for crooked/cheated dice gambling.
 -- Set this as the "run script" reference on the "[Crooked Dice] Bet 1000 cats" line in FCS.
 
-KenshiLua.log("=== Running: gambling_crooked.lua ===")
+KenshiLua.log("[Crooked Dice] Executing gambling_crooked.lua")
 
 -- Retrieve the active dialogue object exposed by C++ hook
 local dialogue = currentDialogue

@@ -1,5 +1,6 @@
--- Example script demonstrating KenshiLua MyGUI bindings using responsive position_real coordinates
--- Save this file as a lua script to be loaded by the mod loader
+-- mygui_example_script.lua
+-- Demonstrates KenshiLua MyGUI bindings using responsive relative coordinates (position_real).
+-- Loaded via the mod loader or executed directly from the in-game script manager.
 
 -- 1. Create a Main Window using relative position_real coordinates (0.0 to 1.0)
 -- Coordinates (0.30, 0.20, 0.30, 0.45) scale responsively across all screen resolutions (e.g. 1920x1080, 2560x1600)

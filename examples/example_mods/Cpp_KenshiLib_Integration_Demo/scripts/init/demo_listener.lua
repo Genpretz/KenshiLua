@@ -1,3 +1,6 @@
+-- demo_listener.lua
+-- Listens for native C++ events dispatched by MyKenshiLibPlugin and calls native extension functions.
+
 -- These globals are registered by MyKenshiLibPlugin.cpp before this script runs.
 ---@type fun(character: Character): number
 ---@diagnostic disable-next-line: undefined-field

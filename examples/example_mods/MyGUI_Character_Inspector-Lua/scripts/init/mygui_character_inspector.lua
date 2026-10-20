@@ -1,8 +1,6 @@
 -- mygui_character_inspector.lua
--- An example script demonstrating how to use the custom MyGUI Lua bindings.
--- It listens to Character selection/unselection events and displays the selected
--- character's name, strength, dexterity, and toughness in a custom MyGUI window.
--- It also includes buttons to heal the character or buff their strength.
+-- Demonstrates custom MyGUI window creation, widget event handling, and live character stat inspection.
+-- Automatically displays selected character stats and provides interactive buttons to heal or modify stats.
 
 -- Clean up any existing window from a previous run to avoid overlaying zombie windows
 if CharInspectorWindow then
@@ -20,7 +18,7 @@ local labelTough = nil
 
 -- Update stats labels on the window
 local function updateStatsLabels()
-    if not inspectingChar or not inspectingChar:isValid() then return end
+    if not inspectingChar or not inspectingChar.handle:isValid() then return end
     
     if labelName then
         labelName:setCaption("Name: " .. inspectingChar:getName())
@@ -90,7 +88,7 @@ local function getOrCreateWindow()
     if btnHeal then
         btnHeal:setCaption("Heal Completely")
         btnHeal:on("eventMouseButtonClick", function(widget)
-            if inspectingChar and inspectingChar:isValid() then
+            if inspectingChar and inspectingChar.handle:isValid() then
                 inspectingChar:healCompletely()
                 log("[CharInspector] Healed character: " .. inspectingChar:getName())
             end
@@ -102,7 +100,7 @@ local function getOrCreateWindow()
     if btnBuff then
         btnBuff:setCaption("Set Strength 100")
         btnBuff:on("eventMouseButtonClick", function(widget)
-            if inspectingChar and inspectingChar:isValid() then
+            if inspectingChar and inspectingChar.handle:isValid() then
                 local stats = inspectingChar:getStats()
                 if stats then
                     stats._strength = 100.0
@@ -118,7 +116,7 @@ end
 
 -- Handles Character selection
 local function onSelect(character)
-    if not character or not character:isValid() then
+    if not character or not character.handle:isValid() then
         return
     end
 
@@ -142,7 +140,7 @@ end
 
 -- Periodic update to keep stats current
 local function onUpdate()
-    if inspectingChar and inspectingChar:isValid() then
+    if inspectingChar and inspectingChar.handle:isValid() then
         updateStatsLabels()
     end
 end

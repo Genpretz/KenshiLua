@@ -1,33 +1,45 @@
-# Crooked Dice (KenshiLua Dialogue Action Plugin)
+# Crooked Dice (Lua Example Mod)
 
 An example mod demonstrating how to use KenshiLua to run scripts triggered by dialogue choices in Kenshi's Forgotten Construction Set (FCS).
 
-## Location & Gameplay
+## Gameplay & Location
 
-The mod places a character in the Bar inside the town known as **The Hub**. She offers to play dice with the player, allowing you to test the scripting features.
+The mod places a gambler NPC named **Dice Player** in the Bar inside the town of **The Hub**. Speaking to her offers the player two gambling options to test dialogue scripting features: playing an honest game of dice or attempting to cheat with crooked dice.
 
-## How it Works
+## How It Works
 
-### Mod File Setup
-In the FCS, we add LUA_SRIPT items to the dialogue lines by choosing the run scripts option from the dropdown menu in the dialogue window. This way the chosen script runs when the player selects the dialogue line.
+### FCS Setup
 
-### Scripts
-When the dialogue hook runs the script, it passes the active dialogue context via a temporary global variable named `currentDialogue`. 
+In the FCS, `LUA_SCRIPT` items are attached to dialogue lines by selecting **run lua script** from the reference dropdown in the dialogue window. When the player chooses that dialogue line in-game, KenshiLua intercepts the event and executes the designated `.lua` file.
 
-Because this variable is cleared as soon as the hook finishes executing, scripts must capture it immediately (e.g., `local dialogue = currentDialogue`) to inspect conversation participants and perform calculations.
+### Dialogue Context
 
+When the dialogue hook triggers a script, it provides the active dialogue context via transient global variables:
 
-#### Honest Gambling (`dialogue/gambling_honest.lua`)
+- `currentDialogue`: Pointer to the active [`Dialogue`](../../../docs/BindingsReference.md#dialogue) instance.
+- `currentDialogueLine`: Pointer to the active [`DialogLineData`](../../../docs/BindingsReference.md#dialoglinedata) being processed.
+
+Scripts capture `currentDialogue` immediately to inspect the speaker and conversation target, retrieve characters, and manipulate currency or stats.
+
+## Scripts
+
+### Honest Gambling (`scripts/dialogue/gambling_honest.lua`)
+
 - **Action**: Plays a fair game of dice between the player and the NPC.
-- **Logic**: 
+- **Logic**:
   - Rolls a random number (1 to 6) for both the player and the NPC.
-  - If the player rolls higher, they win and are paid 2,000 cats (refund + 1,000 cats winnings).
-  - If it's a tie, the player's 1,000 cats bet is refunded.
-  - If the player rolls lower, they lose the bet and receive nothing.
+  - Closes the dialogue window via `dialogue:endDialogue(true)` so characters exit the dialogue animation lock.
+  - Defers payout to the next frame via a `GameWorld::charsUpdate` event listener.
+  - If the player rolls higher, they win 2,000 cats (original 1,000 cat bet + 1,000 cat winnings).
+  - If it is a tie, the player's 1,000 cat bet is refunded.
+  - If the player rolls lower, the NPC keeps the bet.
 
-#### Crooked Gambling (`dialogue/gambling_crooked.lua`)
+### Crooked Gambling (`scripts/dialogue/gambling_crooked.lua`)
+
 - **Action**: The player attempts to cheat at the dice game.
 - **Logic**:
-  - Compares the player's thieving stats (averaging `Thieving` and `Dexterity`) against the NPC's `Perception` stat to calculate a success chance (clamped between 5% and 95%).
-  - Payout is processed if the cheat succeeds (payouts 2,000 cats).
-  - If the cheat fails, the player is caught! The NPC marks the player character as a criminal via `npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME)` and will no longer play with the player.
+  - Compares the player's thieving capability (average of `Thieving` and `Dexterity`) against the NPC's `Perception` stat to calculate a success chance (clamped between 5% and 95%).
+  - Rolls a random number between 1 and 100.
+  - If the cheat succeeds, the player wins 2,000 cats.
+  - If the cheat fails, the NPC catches the player, shouts a warning, and marks the player as a thief using `npc:rememberCharacter(playerChar, CharacterPerceptionTags_LongTerm.LT_STOLE_FROM_ME)`.
+

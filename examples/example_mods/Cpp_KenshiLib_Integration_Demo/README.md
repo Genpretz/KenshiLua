@@ -1,33 +1,31 @@
-# C++ KenshiLib integration demo
+# C++ KenshiLib Integration Demo
 
-This example is a native KenshiLib plugin that discovers KenshiLua at runtime.
-It demonstrates:
+A native KenshiLib DLL plugin demonstration showing how to discover and communicate with KenshiLua's runtime using the header-only C++ Extension SDK.
 
-- registering global native functions;
-- registering a `require()`-able native module;
-- loading a private Lua script on demand;
-- marshalling a `Character*` to and from Lua;
-- dispatching a custom event with two arguments; and
-- handling API failures without linking against KenshiLua or Lua.
+## Features Demonstrated
+
+- Dynamic runtime discovery and ABI negotiation via `KenshiLua::IsAvailable()`.
+- Registering global native functions callable from Lua (`CppDemo_CalculateBonus`, `CppDemo_PrintCharacter`).
+- Registering a `require()`-able native C++ module (`CppDemoNative`).
+- Executing a private Lua script module on demand (`scripts/modules/combat_ai.lua`).
+- Marshalling KenshiLib types (such as `Character*`) between native C++ and Lua userdata wrappers.
+- Dispatching custom named events with arguments from C++ to Lua event listeners (`CppDemo_OnCharacterSelected`).
+- Complete isolation without linking against `KenshiLua.lib` or `lua51.lib`.
+
+For the full specification and ABI contract, see the [C++ Extension API Reference](../../../docs/CppExtensionAPI.md).
 
 ## Build
 
-Build `Cpp_KenshiLib_Integration_Demo.vcxproj` as `Release|x64`. By default the
-project uses this repository's `extern/KenshiLib`; set `KENSHILIB_DIR` to another
-KenshiLib checkout if its compiled libraries are elsewhere. Set `BOOST_ROOT` to
-the Boost version used by KenshiLib.
+Build `Cpp_KenshiLib_Integration_Demo.vcxproj` as `Release|x64`.
 
-The project includes the authoritative `include/KenshiLua.h` from the repository
-root. It links only to `KenshiLib.lib`.
+- By default, the project references the repository's `extern/KenshiLib`; set `KENSHILIB_DIR` to an alternative KenshiLib directory if necessary.
+- Set `BOOST_ROOT` to the Boost distribution path required by KenshiLib.
+- The project includes `include/KenshiLua.h` from the repository root and links only against `KenshiLib.lib`.
 
-## Install
+## Installation & Testing
 
-1. Install RE_Kenshi, KenshiLib, and KenshiLua.
-2. Place the built DLL where RE_Kenshi loads native plugins.
-3. Copy this example directory into Kenshi's active mods directory so the two
-   Lua scripts resolve under `Cpp_KenshiLib_Integration_Demo/scripts/`.
-4. Select a character in game and inspect `KenshiLua.log`.
+1. Install RE_Kenshi, KenshiLib, and KenshiLua into your Kenshi installation.
+2. Place the built `Cpp_KenshiLib_Integration_Demo.dll` into the directory where RE_Kenshi loads native plugins.
+3. Copy this example directory into Kenshi's active `mods/` directory so the scripts resolve under `Cpp_KenshiLib_Integration_Demo/scripts/`.
+4. In-game, select any character and check `logs/KenshiLua.log` for output from the native plugin and Lua listener scripts.
 
-The startup listener is loaded normally from `scripts/init/`. The native DLL
-loads `scripts/modules/combat_ai.lua` explicitly, demonstrating that private
-scripts do not need to live in the startup directory.

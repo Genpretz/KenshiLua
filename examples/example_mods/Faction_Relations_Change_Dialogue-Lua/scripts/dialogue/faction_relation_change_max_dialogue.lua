@@ -1,8 +1,8 @@
--- faction_relation_change_max.lua
+-- faction_relation_change_max_dialogue.lua
 -- Sandboxed LUA_SCRIPT dialogue action to set speaker faction's relationship level.
 -- Set as "run script" reference on a dialogue line in FCS.
 
-KenshiLua.log("=== Running: set_speaker_faction_relation.lua ===")
+KenshiLua.log("[Faction Relations] Executing faction_relation_change_max_dialogue.lua")
 
 -- 1. Retrieve active dialogue object from C++ DialogueScriptBridge hook
 local dialogue = currentDialogue

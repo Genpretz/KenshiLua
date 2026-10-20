@@ -1,5 +1,5 @@
 -- recruit_npc.lua
--- Select any NPC (click on them) and press 'K' to move them into the player faction & active squad.
+-- Select any NPC in-game and press 'K' to transfer them into the player faction and active squad.
 
 local KC_K = 37 -- OIS Keycode for 'K'
 
