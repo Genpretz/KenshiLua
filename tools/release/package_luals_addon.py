@@ -45,7 +45,7 @@ ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
 
 VERSION_LINE = re.compile(r"^-- KenshiLua runtime version: (\S+)$", re.MULTILINE)
 
-REGENERATE_HINT = "Regenerate the definitions with the commands in docs/LuaLS.md and build again."
+REGENERATE_HINT = "Regenerate the definitions with the commands in tools/README.md and build again."
 
 
 def zip_name(version: str) -> str:

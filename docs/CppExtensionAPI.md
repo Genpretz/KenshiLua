@@ -1,11 +1,11 @@
-# KenshiLua C++ Extension SDK
+# C++ Extension API Reference
 
 The KenshiLua C++ Extension SDK lets native KenshiLib DLL mods use KenshiLua's
 Lua runtime without linking to `KenshiLua.lib` or `lua51.lib`. Consumers copy a
 single `KenshiLua.h` header, which discovers `KenshiLua.dll` and negotiates a
 versioned function table at runtime.
 
-## Goals
+## Key Features
 
 - Safe runtime discovery when KenshiLua is absent or not initialized.
 - A versioned C ABI with no C++ standard-library objects crossing DLL bounds.
@@ -241,8 +241,8 @@ KENSHILUA_REGISTER_TYPE_TRAIT(
     "KenshiLua.MedicalSystem_HealthPartStatus")
 ```
 
-The shipped traits are generated from KenshiLua's binding inventory. They must
-not be maintained as a second handwritten type list.
+Pre-registered traits are provided for all core KenshiLib classes. Additional custom or nested types can be registered using `KENSHILUA_REGISTER_TYPE_TRAIT`.
+
 
 ## ABI evolution
 

@@ -6,9 +6,9 @@ KenshiLua exposes native C++ and engine-specific containers directly to Lua. The
 
 ## Architecture, Ownership, and Memory Rules
 
-### 1. Engine-Owned vs. Script-Owned Containers
+### Engine-Owned vs. Script-Owned Containers
 * **Engine-Owned (Borrowed)**:
-  Containers accessed through object fields or method returns (e.g., [`Character.threats`](file:///C:/Users/Genpretz/source/repos/Genpretz/KenshiLua/extern/kenshilib/Include/kenshi/SensoryData.h), [`GameData.data_string`](file:///C:/Users/Genpretz/source/repos/Genpretz/KenshiLua/extern/kenshilib/Include/kenshi/GameData.h), [`Inventory.getAllItems`](file:///C:/Users/Genpretz/source/repos/Genpretz/KenshiLua/src/Bindings/Kenshi/InventoryBinding.cpp#L871)) point directly into live engine memory.
+  Containers accessed through object fields or method returns (e.g., [`Character.threats`](BindingsReference.md#character), [`GameData.data_string`](BindingsReference.md#gamedata), [`Inventory:getAllItems`](BindingsReference.md#inventory)) point directly into live engine memory.
   * Their memory lifecycle is managed entirely by the game engine.
   * Lua GC uses a no-op destructor (`noopGc`) when collecting the userdata handle.
 * **Script-Owned (Factory Created)**:
@@ -16,12 +16,12 @@ KenshiLua exposes native C++ and engine-specific containers directly to Lua. The
   * The container wrapper is owned and managed by Lua's Garbage Collector.
   * When garbage collected, only the container's structural allocations are freed.
 
-### 2. Element Safety (No Entity Destruction)
+### Element Safety (No Entity Destruction)
 Game entities held inside containers (e.g. `Character*`, `RootObject*`, `Item*`, `GameData*`, `TownBase*`) are **borrowed references**:
 * When a container is cleared or collected by Lua GC, **only the container structure and pointer references are freed**.
 * The underlying game entities in the Kenshi game world are **never destroyed** by container cleanup.
 
-### 3. Allocation and High-Frequency Loops
+### Allocation and High-Frequency Loops
 * **Do not allocate containers every frame**: Avoid creating new containers with `.new(...)` inside high-frequency frame events or tick hooks (e.g., `onFrame`, `onUpdate`).
 * **Reuse scratch containers**: Allocate a persistent module-level container, clear it with `:clear()`, and pass it to engine query methods. This avoids triggering unnecessary GC cycles and prevents virtual memory arena exhaustion under LuaJIT's 2GB memory model.
 
@@ -31,7 +31,7 @@ Game entities held inside containers (e.g. `Character*`, `RootObject*`, `Item*`,
 
 | Container | Underlying C++ Type | Key/Index Style | Typical Engine Usage |
 | :--- | :--- | :--- | :--- |
-| **`lektor<T>`** | [`lektor<T>`](file:///C:/Users/Genpretz/source/repos/Genpretz/KenshiLua/extern/kenshilib/Include/kenshi/util/lektor.h) | 1-based integer | General entity lists, spatial queries, inventory section items |
+| **`lektor<T>`** | `lektor<T>` | 1-based integer | General entity lists, spatial queries, inventory section items |
 | **`ogre_unordered_set<T>`** | `ogre_unordered_set<T>` | Value existence | Entity sets, active zone sets, town query filters |
 | **`ogre_unordered_map<K, V>`** | `ogre_unordered_map<K, V>` | Hash key lookup | World state maps, threat assessment maps, entity weights |
 | **`boost_unordered_map<K, V>`** | `boost::unordered_map<K, V>` | Hash key lookup | GameData properties (`data_string`, `data_int`, `data_float`) |
@@ -45,7 +45,7 @@ Game entities held inside containers (e.g. `Character*`, `RootObject*`, `Item*`,
 
 ---
 
-## 1. `lektor<T>`
+## `lektor<T>`
 
 The primary dynamic array container used across Kenshi's engine.
 
@@ -81,7 +81,7 @@ local rootList = lektor.new(RootObject)
 
 ---
 
-## 2. `ogre_unordered_set<T>` and `boost_unordered_set<T>`
+## `ogre_unordered_set<T>` and `boost_unordered_set<T>`
 
 Hash sets backed by Ogre or Boost allocators.
 
@@ -107,7 +107,7 @@ local handSet = ogre_unordered_set.new("hand")
 
 ---
 
-## 3. `ogre_unordered_map<K, V>` and `boost_unordered_map<K, V>`
+## `ogre_unordered_map<K, V>` and `boost_unordered_map<K, V>`
 
 High-performance hash maps. Widely used for GameData values, threat maps, and entity property associations.
 
@@ -141,7 +141,7 @@ local factionState = ogre_unordered_map.new("Faction*", "bool")
 
 ---
 
-## 4. `std::set<T>` and `std::map<K, V>`
+## `std::set<T>` and `std::map<K, V>`
 
 Standard C++ sorted associative containers (red-black tree). Typically encountered on subsystem managers, faction relations, or GUI layout bindings.
 
@@ -166,9 +166,9 @@ Standard C++ sorted associative containers (red-black tree). Typically encounter
 
 ---
 
-## 5. `std::deque<T>`
+## `std::deque<T>`
 
-Standard C++ double-ended queue. Used in engine subsystems for message queuing (e.g. [`Character.ragdollQueue`](file:///C:/Users/Genpretz/source/repos/Genpretz/KenshiLua/src/Bindings/Kenshi/CharacterBinding.cpp), crafting order buffers, root object processing queues).
+Standard C++ double-ended queue. Used in engine subsystems for message queuing (e.g. [`Character.ragdollQueue`](BindingsReference.md#character), crafting order buffers, root object processing queues).
 
 ### Methods and Operators
 | Operation | Syntax | Description |
@@ -189,9 +189,9 @@ Standard C++ double-ended queue. Used in engine subsystems for message queuing (
 
 ---
 
-## 6. `Ogre::FastArray<T>` and `ogre_vector<T>`
+## `Ogre::FastArray<T>` and `ogre_vector<T>`
 
-Contiguous arrays optimized for high cache locality. Commonly exposed on appearance data ([`AppearanceManager`](file:///C:/Users/Genpretz/source/repos/Genpretz/KenshiLua/src/Bindings/Kenshi/AppearanceManagerBinding.cpp)), medical wounds, and GUI widget arrays.
+Contiguous arrays optimized for high cache locality. Commonly exposed on appearance data ([`AppearanceManager`](BindingsReference.md#appearancemanager)), medical wounds, and GUI widget arrays.
 
 ### Methods and Operators
 * **Length**: `#arr` or `arr:size()`
@@ -207,9 +207,9 @@ Contiguous arrays optimized for high cache locality. Commonly exposed on appeara
 
 ---
 
-## 7. `Array2d<T>`
+## `Array2d<T>`
 
-Two-dimensional grid representation used by Kenshi for grid-based inventory layouts ([`InventorySection.items`](file:///C:/Users/Genpretz/source/repos/Genpretz/KenshiLua/src/Bindings/Kenshi/InventorySectionBinding.cpp)).
+Two-dimensional grid representation used by Kenshi for grid-based inventory layouts ([`InventorySection.items`](BindingsReference.md#inventorysection)).
 
 ### Properties
 * `grid.nRows`: Number of vertical grid rows (height).
@@ -219,7 +219,7 @@ Two-dimensional grid representation used by Kenshi for grid-based inventory layo
 
 ## Common Patterns and Idioms
 
-### Pattern 1: Engine Spatial Query with Reusable `lektor`
+### Spatial Queries with Reusable `lektor`
 
 ```lua
 local gw = getGameWorld()
@@ -246,7 +246,7 @@ local function findNearbyEnemies(position, searchRadius)
 end
 ```
 
-### Pattern 2: Inspecting and Filtering GameData Hash Maps
+### Inspecting and Filtering GameData Hash Maps
 
 ```lua
 -- Retrieve GameData string dictionary directly from engine
@@ -265,7 +265,7 @@ if itemData and itemData.data_string then
 end
 ```
 
-### Pattern 3: Set Filtering for Exclusions
+### Set Filtering for Exclusions
 
 ```lua
 -- Maintain an exclusion set of distinct Character pointers
@@ -280,7 +280,7 @@ for i, character in ipairs(nearbyCharacters) do
 end
 ```
 
-### Pattern 4: Safe Conversion to Lua Table
+### Conversion to Standard Lua Tables
 
 When passing container results to external Lua libraries or scripts where C++ userdata wrappers should not be retained, convert to pure Lua tables:
 

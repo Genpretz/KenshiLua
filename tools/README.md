@@ -1,4 +1,4 @@
-# Development tools
+# Development Tools Guide
 
 Run these commands from the repository root with a modern Python 3 installation. In the examples, `python` must resolve to that installation.
 
@@ -68,7 +68,7 @@ Use `python tools/release/sync_version.py --help` for input/output overrides.
 The Release post-build step runs two packaging scripts that write the zips for a GitHub release to `bin/release/`, with the version taken from `src/Version.h`. Each creates its zip once per version: the first Release build after a version bump writes it, and later builds keep it. Pass `--force` to rebuild a zip after further changes to the same version.
 
 - `release/package_mod.py` writes `KenshiLua v<version>.zip` from `bin/KenshiLua/` and `bin/README.md` (copied from `assets/package/README.md` by the build). It leaves out the linker outputs next to the DLL (`KenshiLua.pdb`, `.lib`, `.exp`) and any files in `logs/`.
-- `release/package_luals_addon.py` writes `KenshiLua-LuaLS-Addon-v<version>.zip`. It never packages definitions generated for another version; it warns instead, without failing the build. See [Packaging the addon for a release](../docs/LuaLS.md#packaging-the-addon-for-a-release).
+- `release/package_luals_addon.py` writes `KenshiLua-LuaLS-Addon-v<version>.zip`. It never packages definitions generated for another version; it warns instead, without failing the build.
 
 ```powershell
 python tools/release/package_mod.py --force

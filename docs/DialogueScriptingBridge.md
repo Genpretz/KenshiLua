@@ -1,14 +1,14 @@
-# DialogueScriptingBridge Guide
+# Dialogue Scripting Guide
 
-The **`DialogueScriptBridge`** is a bridge subsystem within KenshiLuaJIT that links Kenshi's Forgotten Construction Set (FCS) dialogue system directly to external Lua scripts. This allows modders to execute custom Lua scripts whenever specific dialogue lines play in-game.
+The **`DialogueScriptBridge`** is a subsystem within KenshiLua that links Kenshi's Forgotten Construction Set (FCS) dialogue system directly to external Lua scripts. This allows modders to execute custom Lua scripts whenever specific dialogue lines play in-game.
 
 ---
 
-## 1. Overview & Architecture
+## Overview & Architecture
 
-When a dialogue line is uttered in Kenshi, the game calls `Dialogue::_doActions(thisptr, dialogLine)`. KenshiLuaJIT hooks this method via `DialogueScriptBridge`:
+When a dialogue line is uttered in Kenshi, the game calls `Dialogue::_doActions(thisptr, dialogLine)`. KenshiLua hooks this method via `DialogueScriptBridge`:
 
-```
+```text
 +------------------+       Dialogue Played       +------------------------+
 | Kenshi Engine    | --------------------------> | Dialogue::_doActions   |
 +------------------+                             +------------------------+
@@ -35,8 +35,8 @@ When a dialogue line is uttered in Kenshi, the game calls `Dialogue::_doActions(
                                                  +------------------------+
 ```
 
-### Key Execution Steps:
-1. **Hook Interception**: When `Dialogue::_doActions` fires, `DialogueScriptBridge(Dialogue* thisptr, DialogLineData* dialogLine)` is invoked.
+### Execution Steps
+1. **Hook Interception**: When `Dialogue::_doActions` fires, `DialogueScriptBridge` is invoked.
 2. **GameData Reference Lookup**: Inspects `dialogLine->data` for reference lists labeled `"run lua script"`.
 3. **Script Item Resolution**: For each reference found, resolves the target `GameData` item of type `322` (`LUA_SCRIPT`) and extracts its `"file"` string attribute.
 4. **Path Resolution**: `ScriptLoader` resolves the relative file path to the mod's `scripts/` directory.
@@ -48,18 +48,18 @@ When a dialogue line is uttered in Kenshi, the game calls `Dialogue::_doActions(
 
 ---
 
-## 2. FCS & FCS Extended Setup
+## FCS Setup with FCS Extended
 
 To bind Lua scripts to dialogue lines in the Forgotten Construction Set (FCS), you must use **FCS Extended**:
 - [FCS Extended on GitHub](https://github.com/BFrizzleFoShizzle/FCS_extended)
 - [FCS Extended on Nexus Mods](https://www.nexusmods.com/kenshi/mods/1825)
 
-### 1. `LUA_SCRIPT` Item Type Definition
+### `LUA_SCRIPT` Item Type Definition
 Using `fcs.def` with FCS Extended (with KenshiLua support enabled), a new item type is registered in FCS:
 - **Item Type Name**: `LUA_SCRIPT`
 - **Enum Value**: `322`
 
-### 2. Creating a `LUA_SCRIPT` Entry
+### Creating a `LUA_SCRIPT` Entry
 1. Open FCS Extended with your `.mod` file active.
 2. In the **GameWorld** window, navigate to any item category or create/edit a `DIALOGUE`, `DIALOGUE_LINE`, or `WORD_SWAP` item.
 3. You will find a new item category available in the GameWorld tree named **"Lua"**.
@@ -73,7 +73,7 @@ Using `fcs.def` with FCS Extended (with KenshiLua support enabled), a new item t
 
 ![FCS LUA_SCRIPT Object Fields](../assets/media/FCS_Dialogue_Scripting/example_fcs_lua_script_object.png)
 
-### 3. Attaching Script to a Dialogue Line
+### Attaching Script to a Dialogue Line
 1. Open the target **DIALOGUE** or **DIALOGUE_LINE** in FCS Extended.
 2. In the dialogue editor (upper right combo box / reference section), select the **`run lua script`** option.
 3. Click to add a reference and select one of the `LUA_SCRIPT` items you created.
@@ -82,14 +82,14 @@ Using `fcs.def` with FCS Extended (with KenshiLua support enabled), a new item t
 
 4. Save your `.mod` file.
 
-### 4. Complete FCS Workflow Diagram
+### Complete FCS Workflow Diagram
 Below is an annotated overview of the entire FCS dialogue scripting setup process:
 
 ![FCS Dialogue Scripting Overview](../assets/media/FCS_Dialogue_Scripting/example_fcs_dialogue_scripting.png)
 
 ---
 
-## 3. Directory & File Conventions
+## Directory & File Conventions
 
 Kenshi organizes mod files under the standard path:
 ```text
@@ -121,7 +121,7 @@ KenshiLua resolves active Steam mods from both the game's `mods/` directory and 
 ### Script Execution Timing
 - **`scripts/init/*.lua`**: All `.lua` files in `scripts/init/` are loaded and executed as soon as KenshiLua initializes (at the main menu, before loading a save game). Use this for registering custom event callbacks and defining helper functions or shared state.
   - Each script runs in its own sandbox environment. Reading a name falls through to the shared globals, but a plain assignment such as `MyMod = {}` creates the name only inside that script's sandbox. Other scripts, dialogue scripts, and the KenshiLua console cannot see it.
-  - To share state, assign it to the global table explicitly: `_G.MyMod = _G.MyMod or {}`. See the [shared global example](../examples/example_mods/Simple_Shared_Global_Demo-Lua/README.md).
+  - To share state, assign it to the global table explicitly: `_G.MyMod = _G.MyMod or {}`.
 - **`scripts/dialogue/*.lua`**: Recommended directory for scripts triggered via `run lua script` in dialogue. They run dynamically whenever the linked dialogue line is executed in-game.
 
 ### Loading Other Lua Files
@@ -156,14 +156,14 @@ Cross-mod paths are confined to the provider's `scripts/` directory and never se
 
 ---
 
-## 4. In-Game Runtime Environment
+## Runtime Environment
 
 During the execution of a dialogue script, the following globals are made available:
 
 | Global Variable | Type | Description |
 | :--- | :--- | :--- |
-| `currentDialogue` | [`Dialogue*`](file:///c:/Users/Genpretz/Desktop/Projects/KenshiLuaJIT/src/Bindings/DialogueBinding.h) | Active Kenshi `Dialogue` instance. |
-| `currentDialogueLine` | [`DialogLineData*`](file:///c:/Users/Genpretz/Desktop/Projects/KenshiLuaJIT/src/Bindings/DialogLineDataBinding.h) | Active `DialogLineData` instance being processed. |
+| `currentDialogue` | [`Dialogue`](BindingsReference.md#dialogue) | Active Kenshi `Dialogue` instance. |
+| `currentDialogueLine` | [`DialogLineData`](BindingsReference.md#dialoglinedata) | Active `DialogLineData` instance being processed. |
 
 ### Example Lua Script (`scripts/dialogue/guard_bribe.lua`)
 
@@ -196,11 +196,11 @@ end
 
 ---
 
-## 5. Diagnostics & Troubleshooting
+## Diagnostics & Troubleshooting
 
 KenshiLua provides a built-in diagnostic function to inspect and verify all `run lua script` references registered in memory across all active mod `GameData` items.
 
-### Running Diagnostic Scan in Lua
+### Scanning Dialogue References in Lua
 You can call `kenshi.checkLuaScriptReferences()` from the debug console or an `init` script:
 
 ```lua

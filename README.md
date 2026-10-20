@@ -28,10 +28,13 @@ Loaded at runtime through RE_Kenshi, KenshiLua exposes selected portions of Kens
 ## How much of KenshiLib can be used from Lua?
 
 A large amount of KenshiLib has been exposed for use from Lua. This includes almost the entirety of KenshiLib 0.3.0.
-* [BindingReference.md](docs/BindingsReference.md) - View for a list of methods and properties available from Lua.
+* [BindingsReference.md](docs/BindingsReference.md) - View for a list of methods and properties available from Lua.
 * [EnumsReference.md](docs/EnumsReference.md) - View for a list of enums available from Lua.
 * [CallbacksReference.md](docs/CallbacksReference.md) - View for a list of event callbacks available from Lua.
-* [MyGuiReference.md](docs/MyGuiReference.md) - View for a list of MyGUI methods and properties available from Lua.
+* [ContainersReference.md](docs/ContainersReference.md) - View for container methods, operators, and memory rules.
+* [MyGUIReference.md](docs/MyGUIReference.md) - View for a list of MyGUI methods and properties available from Lua.
+* [InGameGUI.md](docs/InGameGUI.md) - Guide for using the in-game GUI, script manager, editor, console, and log viewer.
+* [DialogueScriptingBridge.md](docs/DialogueScriptingBridge.md) - Guide for executing Lua scripts from dialogue lines using FCS Extended.
 * [LuaLS.md](docs/LuaLS.md) - Configure Lua Language Server editor support for KenshiLua scripts.
 * [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.3.0 but are not currently exposed to Lua.
 
