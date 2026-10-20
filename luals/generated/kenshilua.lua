@@ -17,7 +17,7 @@
 --- Stateless iterator function yielding `(key, value)` pairs on each invocation.
 ---@alias ContainerIterator<K, V> fun(): K, V
 
---- Engine event names supported by `KenshiLua.on`.
+--- Engine event names supported by `Events.on`.
 ---@alias KenshiLua.EventName
 ---| "ActivePlatoon::_CONSTRUCTOR"
 ---| "ActivePlatoon::_NV_addActiveObject"

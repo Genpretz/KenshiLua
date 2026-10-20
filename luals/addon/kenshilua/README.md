@@ -1,4 +1,4 @@
-# KenshiLua LuaLS addon
+# Lua Language Server Addon Guide
 
 Editor definitions for the KenshiLua Lua API, for the [Lua Language Server](https://luals.github.io/) (LuaLS). With them, the editor completes KenshiLua globals, classes, methods, enums, and event names, shows their types and descriptions, and reports wrong argument types and unchecked `nil` values.
 
@@ -9,11 +9,11 @@ The definitions only describe the API for the editor. Kenshi never loads them, a
 - An editor with LuaLS, for example Visual Studio Code with the **Lua** extension by sumneko.
 - The addon zip from the same KenshiLua release as the KenshiLua DLL your mod targets. Each release's definitions describe that release's API only.
 
-## Install
+## Installation
 
 Extract the zip to a folder outside your mods, for example `C:/KenshiModding/LuaLS`. It contains one folder, `kenshilua`. Then choose one of the following.
 
-### Option 1: one mod
+### Option 1: Per-Mod Configuration
 
 Create a `.luarc.json` file in the mod's root folder, the folder you open in the editor:
 
@@ -26,7 +26,7 @@ Create a `.luarc.json` file in the mod's root folder, the folder you open in the
 }
 ```
 
-### Option 2: every Kenshi mod, through the Addon Manager
+### Option 2: Global Setup via Addon Manager
 
 Add the folder that contains `kenshilua` to your VS Code user settings (`settings.json`):
 
@@ -40,7 +40,7 @@ Add the folder that contains `kenshilua` to your VS Code user settings (`setting
 
 Open a mod folder, run **Lua: Open Addon Manager** from the command palette, and enable **kenshilua**. The Addon Manager stores the choice in that workspace's settings, so enable it once per mod.
 
-## Check that it works
+## Verification
 
 Open a script in the mod and hover over `getGameWorld`. The editor should show its type instead of reporting `Undefined global`.
 

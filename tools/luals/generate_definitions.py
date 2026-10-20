@@ -477,7 +477,7 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         emit_comment(lines, alias.get("description"))
         lines.append("---@alias {0} {1}".format(alias["name"], alias["definition"]))
     lines.append("")
-    emit_comment(lines, "Engine event names supported by `KenshiLua.on`.")
+    emit_comment(lines, "Engine event names supported by `Events.on`.")
     lines.append("---@alias KenshiLua.EventName")
     for event_name in event_names:
         lines.append('---| "' + event_name + '"')
