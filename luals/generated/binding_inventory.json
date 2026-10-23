@@ -28953,6 +28953,47 @@
           "static": false
         },
         {
+          "callback": "CombatMovementControllerBinding::combatMovementOffensive",
+          "name": "combatMovementOffensive",
+          "signature": {
+            "params": [
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "minDistance",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "maxDistance",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "circle",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "power",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "_speedLimit",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "CombatMovementControllerBinding::disable",
           "name": "disable",
           "signature": {
@@ -31283,8 +31324,7 @@
               }
             ],
             "returns": [
-              "lightuserdata",
-              "nil"
+              "CraftingItem"
             ],
             "type_source": "header"
           },
@@ -31318,8 +31358,7 @@
               }
             ],
             "returns": [
-              "lightuserdata",
-              "nil"
+              "CraftingItem"
             ],
             "type_source": "header"
           },
@@ -31663,7 +31702,7 @@
         {
           "access": "readwrite",
           "name": "crafting",
-          "type": "StdDeque<any>"
+          "type": "StdDequeReadOnly<CraftingItem>"
         },
         {
           "access": "readwrite",
@@ -31854,6 +31893,63 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Building/CraftingInventoryLayoutBinding.cpp"
+    },
+    {
+      "binding": "CraftingItemBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "CraftingItem",
+      "metatable": "KenshiLua.CraftingItem",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "criticalSuccess",
+          "type": "YesNoMaybeValue"
+        },
+        {
+          "access": "readwrite",
+          "name": "endTime",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "item",
+          "type": "Item"
+        },
+        {
+          "access": "readwrite",
+          "name": "lastErrorCode",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "progress01",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "rate",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "smithBench",
+          "type": "hand"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Building/CraftingItemBinding.cpp"
     },
     {
       "binding": "CreatelistItemBinding",
@@ -47802,6 +47898,39 @@
             "returns": [
               "FloatingProgressBar"
             ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ForgottenGUIBinding::createScreenLabel",
+          "name": "createScreenLabel",
+          "signature": {
+            "params": [
+              {
+                "name": "text",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "textColour",
+                "optional": false,
+                "type": "MyGUI.Colour"
+              },
+              {
+                "name": "textSize",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "risingSpeed",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "ScreenLabel"
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -75003,6 +75132,17 @@
           "static": false
         },
         {
+          "callback": "NavMeshBinding::getSeedData",
+          "name": "getSeedData",
+          "signature": {
+            "params": [],
+            "returns": [
+              "NavMeshSeeds"
+            ]
+          },
+          "static": false
+        },
+        {
           "callback": "NavMeshBinding::getWorldShift",
           "name": "getWorldShift",
           "signature": {
@@ -75092,6 +75232,24 @@
               }
             ],
             "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::countInteriors",
+          "name": "countInteriors",
+          "signature": {
+            "params": [
+              {
+                "name": "zone",
+                "optional": false,
+                "type": "iVector2"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
             "type_source": "header"
           },
           "static": false
@@ -75958,6 +76116,22 @@
           "signature": {
             "params": [],
             "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "NewGameOptionsWindowBinding::setOptions",
+          "name": "setOptions",
+          "signature": {
+            "params": [
+              {
+                "name": "options",
+                "optional": false,
+                "type": "GameplayOptions"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         }
@@ -99043,6 +99217,58 @@
       "metatable": "KenshiLua.TaskData",
       "methods": [
         {
+          "callback": "TaskDataBinding::addResult",
+          "name": "addResult",
+          "signature": {
+            "params": [
+              {
+                "name": "s",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "val",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "progressional",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskDataBinding::addRequirement",
+          "name": "addRequirement",
+          "signature": {
+            "params": [
+              {
+                "name": "s",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "val",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "progressional",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "TaskDataBinding::setCharacteristics",
           "name": "setCharacteristics",
           "signature": {
@@ -99267,6 +99493,27 @@
             "returns": [
               "boolean"
             ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskDataBinding::setSubTask",
+          "name": "setSubTask",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "required",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         },
@@ -118463,6 +118710,22 @@
           "static": false
         },
         {
+          "callback": "hkVector4fBinding::setNeg3",
+          "name": "setNeg3",
+          "signature": {
+            "params": [
+              {
+                "name": "v",
+                "optional": false,
+                "type": "hkVector4f"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "hkVector4fBinding::normalize3",
           "name": "normalize3",
           "signature": {
@@ -118774,6 +119037,22 @@
               },
               {
                 "name": "v1",
+                "optional": false,
+                "type": "hkVector4f"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "hkVector4fBinding::setPlaneConstant",
+          "name": "setPlaneConstant",
+          "signature": {
+            "params": [
+              {
+                "name": "p",
                 "optional": false,
                 "type": "hkVector4f"
               }
@@ -134856,7 +135135,7 @@
           "static": false
         },
         {
-          "callback": "front",
+          "callback": "Base::front",
           "name": "front",
           "signature": {
             "params": [],
@@ -134868,7 +135147,7 @@
           "static": false
         },
         {
-          "callback": "back",
+          "callback": "Base::back",
           "name": "back",
           "signature": {
             "params": [],
@@ -134906,7 +135185,7 @@
           "static": false
         },
         {
-          "callback": "empty",
+          "callback": "Base::empty",
           "name": "empty",
           "signature": {
             "params": [],
@@ -134918,7 +135197,7 @@
           "static": false
         },
         {
-          "callback": "size",
+          "callback": "Base::size",
           "name": "size",
           "signature": {
             "params": [],
@@ -134930,7 +135209,7 @@
           "static": false
         },
         {
-          "callback": "toTable",
+          "callback": "Base::toTable",
           "name": "toTable",
           "signature": {
             "params": [],
@@ -134958,173 +135237,27 @@
       ]
     },
     {
-      "binding": "StdDequeValueBinding<CraftingItem>",
+      "binding": "StdDequeValueReadOnlyBinding<CraftingItem>",
       "binding_aliases": [
         "CraftingItemDequeBinding"
       ],
       "element_refs": [
-        null
+        "binding:CraftingItemBinding"
       ],
       "element_types": {
         "key": "integer",
-        "value": "any"
+        "value": "CraftingItem"
       },
       "global_names": [],
       "has_constructor": false,
       "indexer": {
         "key": "integer",
-        "type": "any|nil"
+        "type": "CraftingItem|nil"
       },
       "kind": "template_instance",
-      "lua_type": "StdDeque<any>",
+      "lua_type": "StdDequeReadOnly<CraftingItem>",
       "metatable": "std::deque<CraftingItem>",
       "methods": [
-        {
-          "callback": "push_back",
-          "name": "push_back",
-          "signature": {
-            "params": [
-              {
-                "name": "value",
-                "optional": false,
-                "type": "any"
-              }
-            ],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "push_front",
-          "name": "push_front",
-          "signature": {
-            "params": [
-              {
-                "name": "value",
-                "optional": false,
-                "type": "any"
-              }
-            ],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "push_back",
-          "name": "push",
-          "signature": {
-            "params": [
-              {
-                "name": "value",
-                "optional": false,
-                "type": "any"
-              }
-            ],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "pop_back",
-          "name": "pop_back",
-          "signature": {
-            "params": [],
-            "returns": [
-              "any|nil"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "pop_front",
-          "name": "pop_front",
-          "signature": {
-            "params": [],
-            "returns": [
-              "any|nil"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "pop_back",
-          "name": "pop",
-          "signature": {
-            "params": [],
-            "returns": [
-              "any|nil"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "front",
-          "name": "front",
-          "signature": {
-            "params": [],
-            "returns": [
-              "any|nil"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "back",
-          "name": "back",
-          "signature": {
-            "params": [],
-            "returns": [
-              "any|nil"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "removeAt",
-          "name": "removeAt",
-          "signature": {
-            "params": [
-              {
-                "name": "index",
-                "optional": false,
-                "type": "integer"
-              }
-            ],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "clear",
-          "name": "clear",
-          "signature": {
-            "params": [],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "empty",
-          "name": "empty",
-          "signature": {
-            "params": [],
-            "returns": [
-              "boolean"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
         {
           "callback": "size",
           "name": "size",
@@ -135143,7 +135276,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "table<integer, any>"
+              "table<integer, CraftingItem>"
             ],
             "type_source": "container"
           },
@@ -135160,7 +135293,7 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
-      "template": "StdDequeValueBinding",
+      "template": "StdDequeValueReadOnlyBinding",
       "template_args": [
         "CraftingItem"
       ]

@@ -78,6 +78,7 @@
 - [`CPerfTimerT`](#cperftimert)
 - [`CraftingBuilding`](#craftingbuilding)
 - [`CraftingInventoryLayout`](#craftinginventorylayout)
+- [`CraftingItem`](#craftingitem)
 - [`Crossbow`](#crossbow)
 - [`Damages`](#damages)
 - [`DataObjectContainer`](#dataobjectcontainer)
@@ -2696,7 +2697,7 @@
 | setupCombatTechniques | `` | `void` | `CharStats.setupCombatTechniques()`<br>`obj:setupCombatTechniques()` |
 
 ## CombatClass
-**Header:** `extern/KenshiLib/Include/kenshi/CombatClass.h`
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
 **Metatable:** `KenshiLua.CombatClass`
 
 ### Fields
@@ -2829,7 +2830,7 @@
 | updateEffects | `` | `void` | `CombatClass.updateEffects()`<br>`obj:updateEffects()` |
 
 ## CombatClass::AttackSlotManager
-**Header:** `extern/KenshiLib/Include/kenshi/CombatClass.h`
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
 **Parent Class:** [`CombatClass`](#combatclass)
 **Metatable:** `KenshiLua.AttackSlotManager`
 
@@ -2853,12 +2854,12 @@
 | getMaxPossibleAttackSlots | `` | `integer` | `obj:getMaxPossibleAttackSlots()` |
 
 ## CombatClass::AttackSlotManager::SlotData
-**Header:** `extern/KenshiLib/Include/kenshi/CombatClass.h`
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
 **Parent Class:** [`CombatClass`](#combatclass)
 **Metatable:** `KenshiLua.CombatClass_AttackSlotManager_SlotData`
 
 ## CombatClass::EffectData
-**Header:** `extern/KenshiLib/Include/kenshi/CombatClass.h`
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
 **Parent Class:** [`CombatClass`](#combatclass)
 **Metatable:** `KenshiLua.CombatClass_EffectData`
 
@@ -2925,10 +2926,11 @@
 | checkCharacterCollision | `pos: Vector3, movement: Vector3` | `boolean` | `obj:checkCharacterCollision(pos, movement)` |
 | setForcedWP | `v: Vector3` | `void` | `obj:setForcedWP(v)` |
 | getGUIData | `panel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(panel, category)` |
+| combatMovementOffensive | `target: hand, minDistance: number, maxDistance: number, circle: number, power: boolean, speedLimit: number` | `void` | `obj:combatMovementOffensive(target, minDistance, maxDistance, circle, power, speedLimit)` |
 | disable | `` | `void` | `obj:disable()` |
 
 ## CombatTechniqueData
-**Header:** `extern/KenshiLib/Include/kenshi/CombatTechniqueData.h`
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatTechniqueData.h`
 **Metatable:** `KenshiLua.CombatTechniqueData`
 
 ### Fields
@@ -3101,7 +3103,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | maxCraftLevel | `integer` | RW | `obj.maxCraftLevel = <value>` |
-| crafting | `std::deque<CraftingItem>` | RW | `obj.crafting = <value>` |
+| crafting | `std::deque<CraftingItem>` | R | `obj.crafting` |
 | specialCraftItemType | `itemType` | RW | `obj.specialCraftItemType = <value>` |
 | repeat | `boolean` | RW | `obj.repeat = <value>` |
 | whosCrafting | `hand` | RW | `obj.whosCrafting = <value>` |
@@ -3132,9 +3134,9 @@
 | notifyCraftFailiure | `` | `void` | `obj:notifyCraftFailiure()` |
 | tryOperate | `h: hand` | `boolean` | `obj:tryOperate(h)` |
 | getAvailableCrafts | `` | `void` | `obj:getAvailableCrafts()` |
-| _addCraft | `basedata: GameData, matdata: GameData, progress: number, crit: integer` | `lightuserdata` | `obj:_addCraft(basedata, matdata, progress, crit)` |
+| _addCraft | `basedata: GameData, matdata: GameData, progress: number, crit: integer` | `CraftingItem` | `obj:_addCraft(basedata, matdata, progress, crit)` |
 | _removeCraft | `index: integer` | `void` | `obj:_removeCraft(index)` |
-| getCraft | `id: integer` | `lightuserdata` | `obj:getCraft(id)` |
+| getCraft | `id: integer` | `CraftingItem` | `obj:getCraft(id)` |
 | destroyProductionItem | `` | `void` | `obj:destroyProductionItem()` |
 | predictCraftersBestWeapon | `who: hand, levelcap: integer` | `GameData` | `obj:predictCraftersBestWeapon(who, levelcap)` |
 | calculateCriticalChance | `smith: Character` | `number` | `obj:calculateCriticalChance(smith)` |
@@ -3172,6 +3174,22 @@
 | setOutputType | `type: itemType` | `void` | `obj:setOutputType(type)` |
 | setCraftingName | `name: string` | `void` | `obj:setCraftingName(name)` |
 | getQueueButton | `` | `MyGUI::Widget` | `obj:getQueueButton()` |
+
+## CraftingItem
+**Header:** `extern/KenshiLib/Include/kenshi/Building/CraftingBuilding.h`
+**Metatable:** `KenshiLua.CraftingItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| item | `Item` | RW | `obj.item = <value>` |
+| endTime | `number` | RW | `obj.endTime = <value>` |
+| progress01 | `number` | RW | `obj.progress01 = <value>` |
+| smithBench | `hand` | RW | `obj.smithBench = <value>` |
+| rate | `number` | RW | `obj.rate = <value>` |
+| name | `string` | RW | `obj.name = <value>` |
+| lastErrorCode | `integer` | RW | `obj.lastErrorCode = <value>` |
+| criticalSuccess | `YesNoMaybe` | RW | `obj.criticalSuccess = <value>` |
 
 ## Crossbow
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
@@ -4901,6 +4919,7 @@
 | createFloatingImage | `image: string, top: number, left: number, width: number, height: number, layer: string` | `MyGUI::Window` | `obj:createFloatingImage(image, top, left, width, height, layer)` |
 | createFloatingImageAbs | `image: string, top: number, left: number, width: number, height: number, layer: string` | `MyGUI::Window` | `obj:createFloatingImageAbs(image, top, left, width, height, layer)` |
 | createFloatingProgressBar | `` | `FloatingProgressBar` | `obj:createFloatingProgressBar()` |
+| createScreenLabel | `text: string, textSize: ScreenLabel::LabelSize, risingSpeed: ScreenLabel::RisingSpeed` | `ScreenLabel` | `obj:createScreenLabel(text, textSize, risingSpeed)` |
 | createScreenLabelD | `text: string, time: number` | `lightuserdata` | `obj:createScreenLabelD(text, time)` |
 | showCharacterStatsWindow | `owner: hand` | `void` | `obj:showCharacterStatsWindow(owner)` |
 | closeCharacterStatsWindow | `owner: hand` | `void` | `obj:closeCharacterStatsWindow(owner)` |
@@ -5896,6 +5915,7 @@
 | getInt24W | `` | `integer` | `obj:getInt24W()` |
 | getInt16W | `` | `integer` | `obj:getInt16W()` |
 | setZero4 | `` | `void` | `obj:setZero4()` |
+| setNeg3 | `v: hkVector4f` | `void` | `obj:setNeg3(v)` |
 | normalize3 | `` | `void` | `obj:normalize3()` |
 | set [1] | `a: number, b: number, c: number, d: number` | `void` | `obj:set(a, b, c, d)` |
 | set [2] | `a: hkSimdFloat32, b: hkSimdFloat32, c: hkSimdFloat32, d: hkSimdFloat32` | `void` | `obj:set(a, b, c, d)` |
@@ -5925,6 +5945,7 @@
 | setSubMul [1] | `a: hkVector4f, b: hkVector4f, r: hkSimdFloat32` | `void` | `obj:setSubMul(a, b, r)` |
 | setSubMul [2] | `a: hkVector4f, x: hkVector4f, y: hkVector4f` | `void` | `obj:setSubMul(a, x, y)` |
 | setCross | `v0: hkVector4f, v1: hkVector4f` | `void` | `obj:setCross(v0, v1)` |
+| setPlaneConstant | `p: hkVector4f` | `void` | `obj:setPlaneConstant(p)` |
 | setXYZ_W [1] | `xyz: hkVector4f, w: hkSimdFloat32` | `void` | `obj:setXYZ_W(xyz, w)` |
 | setXYZ_W [2] | `xyz: hkVector4f, w: hkVector4f` | `void` | `obj:setXYZ_W(xyz, w)` |
 | setW [1] | `w: hkSimdFloat32` | `void` | `obj:setW(w)` |
@@ -7835,6 +7856,7 @@
 | getPolygonID | `p: Vector3` | `string` | `obj:getPolygonID(p)` |
 | validateFaceKey | `key: integer` | `boolean` | `obj:validateFaceKey(key)` |
 | isGenerating | `` | `boolean` | `obj:isGenerating()` |
+| getSeedData | `` | `NavMeshSeeds` | `obj:getSeedData()` |
 | getWorldShift | `` | `Vector3` | `obj:getWorldShift()` |
 | threadProc | `` | `integer` | `obj:threadProc()` |
 | update | `` | `boolean` | `obj:update()` |
@@ -7843,6 +7865,7 @@
 | loadZone | `` | `void` | `obj:loadZone()` |
 | unloadZone | `` | `void` | `obj:unloadZone()` |
 | unloadBuilding | `h: hand` | `void` | `obj:unloadBuilding(h)` |
+| countInteriors | `zone: iVector2` | `integer` | `obj:countInteriors(zone)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7948,6 +7971,7 @@
 | getVisible | `` | `boolean` | `obj:getVisible()` |
 | setPosition | `x: integer, y: integer` | `void` | `obj:setPosition(x, y)` |
 | update | `` | `void` | `obj:update()` |
+| setOptions | `options: GameplayOptions` | `void` | `obj:setOptions(options)` |
 
 ## NewGameWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/NewGameWindow.h`
@@ -10584,6 +10608,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
+| addResult | `s: StateType, val: boolean, progressional: boolean` | `void` | `obj:addResult(s, val, progressional)` |
+| addRequirement | `s: StateType, val: boolean, progressional: boolean` | `void` | `obj:addRequirement(s, val, progressional)` |
 | setCharacteristics | `_aid: number, _aggressionLevel: number, noise: number, leadsSomewhere: boolean` | `void` | `obj:setCharacteristics(_aid, _aggressionLevel, noise, leadsSomewhere)` |
 | setInfrequentGoalChecks | `` | `void` | `obj:setInfrequentGoalChecks()` |
 | setAlertnessMult | `a: number` | `void` | `obj:setAlertnessMult(a)` |
@@ -10599,6 +10625,7 @@
 | getPermaJobAssociation | `` | `TaskType` | `obj:getPermaJobAssociation()` |
 | getPermaJobAssociation_secondary | `` | `TaskType` | `obj:getPermaJobAssociation_secondary()` |
 | isTargetFinder | `` | `boolean` | `obj:isTargetFinder()` |
+| setSubTask | `state: StateType, required: boolean` | `void` | `obj:setSubTask(state, required)` |
 | setDialogueDeliveryTag | `d: EventTriggerEnum` | `void` | `obj:setDialogueDeliveryTag(d)` |
 | setPermaJob | `on: PermajobType, fixedTarget: boolean, t: TaskType, secondary: TaskType` | `void` | `obj:setPermaJob(on, fixedTarget, t, secondary)` |
 | getPermaJobType | `` | `PermajobType` | `obj:getPermaJobType()` |

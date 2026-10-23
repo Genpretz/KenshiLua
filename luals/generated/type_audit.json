@@ -4531,9 +4531,9 @@
       "member": "_NV_serialise"
     },
     {
-      "category": "multiple",
+      "category": "binding_converts",
       "class": "CraftingBuilding",
-      "expected": "fun(GameData, GameData, number, YesNoMaybeValue): ?CraftingItem*",
+      "expected": "fun(GameData, GameData, number, YesNoMaybeValue): CraftingItem|nil",
       "header": "CraftingItem* _addCraft(GameData* basedata, GameData* matdata, float progress, YesNoMaybe crit)",
       "issues": [
         {
@@ -4541,34 +4541,11 @@
           "category": "binding_converts",
           "expected": "YesNoMaybeValue",
           "position": "param 4"
-        },
-        {
-          "actual": "lightuserdata|nil",
-          "category": "unmapped_header_type",
-          "expected": "?CraftingItem*",
-          "position": "return 1"
         }
       ],
       "kind": "method",
-      "lua": "fun(self: CraftingBuilding, basedata: GameData, matdata?: GameData, progress: number, crit: integer): lightuserdata|nil",
+      "lua": "fun(self: CraftingBuilding, basedata: GameData, matdata?: GameData, progress: number, crit: integer): CraftingItem",
       "member": "_addCraft"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CraftingBuilding",
-      "expected": "fun(integer): ?CraftingItem*",
-      "header": "CraftingItem* getCraft(int id)",
-      "issues": [
-        {
-          "actual": "lightuserdata|nil",
-          "category": "unmapped_header_type",
-          "expected": "?CraftingItem*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CraftingBuilding, id: integer): lightuserdata|nil",
-      "member": "getCraft"
     },
     {
       "category": "enum_typed_as_integer",
@@ -4976,10 +4953,8 @@
       "member": "setLineTextEditable"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "no_header_declaration",
       "class": "DatapanelGUI",
-      "expected": "?function*",
-      "header": "function*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "mouseOverEvent"
@@ -6415,6 +6390,29 @@
       "kind": "method",
       "lua": "fun(self: FootprintNode, arg1: FootprintNode): FootprintNode",
       "member": "operator_assign"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "ForgottenGUI",
+      "expected": "fun(string, MyGUI.Colour, LabelSize, RisingSpeed): ScreenLabel|nil",
+      "header": "ScreenLabel* createScreenLabel(const std::string& text, const MyGUI::Colour& textColour, ScreenLabel::LabelSize textSize, ScreenLabel::RisingSpeed risingSpeed)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "LabelSize",
+          "position": "param 3"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "RisingSpeed",
+          "position": "param 4"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ForgottenGUI, text: string, textColour: MyGUI.Colour, textSize: integer, risingSpeed: integer): ScreenLabel",
+      "member": "createScreenLabel"
     },
     {
       "category": "binding_pushes_raw_pointer",
@@ -9142,8 +9140,8 @@
     {
       "category": "unmapped_header_type",
       "class": "MessageQueue_Node",
-      "expected": "?MessageQueue<T>::Node*",
-      "header": "MessageQueue<T>::Node*",
+      "expected": "?Node*",
+      "header": "Node*",
       "kind": "property",
       "lua": "MessageQueue_Node|nil",
       "member": "next"
@@ -15092,175 +15090,6 @@
       "member": "group"
     },
     {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>, value: T)",
-      "member": "push_back",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>, value: T)",
-      "member": "push_front",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>, value: T)",
-      "member": "push",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): T|nil",
-      "member": "pop_back",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): T|nil",
-      "member": "pop_front",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): T|nil",
-      "member": "pop",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): T|nil",
-      "member": "front",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): T|nil",
-      "member": "back",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>, index: integer)",
-      "member": "removeAt",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>)",
-      "member": "clear",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): boolean",
-      "member": "empty",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): integer",
-      "member": "size",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
-      "audited_categories": [
-        "container_element_untyped"
-      ],
-      "category": "known_binding_bug",
-      "class": "StdDeque<any>",
-      "cpp": "std::deque<CraftingItem>",
-      "kind": "method",
-      "lua": "fun(self: StdDeque<T>): table<integer, T>",
-      "member": "toTable",
-      "metatable": "std::deque<CraftingItem>",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "StorageBuilding",
       "expected": "fun(): TaskType",
@@ -15400,6 +15229,40 @@
     {
       "category": "enum_typed_as_integer",
       "class": "TaskData",
+      "expected": "fun(StateType, boolean, boolean)",
+      "header": "void addResult(StateType s, bool val, bool progressional)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StateType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskData, s: integer, val?: boolean, progressional?: boolean)",
+      "member": "addResult"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskData",
+      "expected": "fun(StateType, boolean, boolean)",
+      "header": "void addRequirement(StateType s, bool val, bool progressional)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StateType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskData, s: integer, val?: boolean, progressional?: boolean)",
+      "member": "addRequirement"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskData",
       "expected": "fun(): TaskType",
       "header": "TaskType getPermaJobAssociation() const",
       "issues": [
@@ -15430,6 +15293,23 @@
       "kind": "method",
       "lua": "fun(self: TaskData): integer",
       "member": "getPermaJobAssociation_secondary"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskData",
+      "expected": "fun(StateType, boolean)",
+      "header": "void setSubTask(StateType state, bool required)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StateType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskData, state: integer, required?: boolean)",
+      "member": "setSubTask"
     },
     {
       "category": "enum_typed_as_integer",
@@ -15495,10 +15375,8 @@
       "member": "getPermaJobType"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "no_header_declaration",
       "class": "TaskData",
-      "expected": "?function*",
-      "header": "function*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "_findTarget"
@@ -15549,10 +15427,8 @@
       "member": "permaJob_Associated_Secondary"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "no_header_declaration",
       "class": "TaskData",
-      "expected": "?function*",
-      "header": "function*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "scoreFunction"
@@ -17998,10 +17874,8 @@
       "member": "update"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "no_header_declaration",
       "class": "ZoneSpacialGrid",
-      "expected": "?function*",
-      "header": "function*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "createCellsFunc"
@@ -18376,14 +18250,13 @@
     "binding_pushes_raw_pointer": 42,
     "binding_shape_differs": 105,
     "blocking_issues": 0,
-    "container_methods_typed": 925,
-    "enum_typed_as_integer": 423,
-    "known_binding_bug": 13,
-    "methods": 7216,
-    "methods_matching_header": 5428,
-    "no_header_declaration": 272,
-    "properties": 3070,
-    "properties_matching_header": 2542,
-    "unmapped_header_type": 503
+    "container_methods_typed": 927,
+    "enum_typed_as_integer": 427,
+    "methods": 7215,
+    "methods_matching_header": 5435,
+    "no_header_declaration": 276,
+    "properties": 3078,
+    "properties_matching_header": 2550,
+    "unmapped_header_type": 497
   }
 }

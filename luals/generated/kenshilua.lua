@@ -5684,6 +5684,8 @@ taskPriority = {
 ---@field createFloatingImageAbs fun(self: ForgottenGUI, image: string, top: number, left: number, width: number, height: number, layer: string): MyGUI.Window
 --- Creates a floating progress bar widget tracking continuous world actions above characters.
 ---@field createFloatingProgressBar fun(self: ForgottenGUI): FloatingProgressBar
+--- Spawns an overhead floating 3D world text label (such as combat text or speech) with customizable color, font size, and rise velocity.
+---@field createScreenLabel fun(self: ForgottenGUI, text: string, textColour: MyGUI.Colour, textSize: integer, risingSpeed: integer): ScreenLabel
 --- Spawns an overhead floating debug text label with a display lifespan in seconds.
 ---@field createScreenLabelD fun(self: ForgottenGUI, text: string, time: number): lightuserdata
 --- Opens the character stats and skills inspector window for the specified character.
@@ -7202,6 +7204,8 @@ taskPriority = {
 ---@field getInt16W fun(self: hkVector4f): integer
 --- Sets all four components (x, y, z, w) of this vector to 0.0.
 ---@field setZero4 fun(self: hkVector4f)
+--- Sets the x, y, and z components of this vector to the negated x, y, and z components of vector v, and copies its w component unchanged.
+---@field setNeg3 fun(self: hkVector4f, v: hkVector4f)
 --- Normalizes the 3D xyz components of this vector to unit length in-place.
 ---@field normalize3 fun(self: hkVector4f)
 --- Static function returning an hkVector4f with all components set to zero.
@@ -7226,6 +7230,8 @@ taskPriority = {
 ---@field setSubMul fun(self: hkVector4f, arg1: hkVector4f, arg2: hkVector4f, arg3: hkVector4f)
 --- Sets the 3D xyz components of this vector to the cross product of vector v0 and vector v1.
 ---@field setCross fun(self: hkVector4f, v0: hkVector4f, v1: hkVector4f)
+--- Sets the W component to the negated 3D dot product of this vector's xyz components and point p, leaving xyz unchanged.
+---@field setPlaneConstant fun(self: hkVector4f, p: hkVector4f)
 --- Sets the 3D xyz components from vector arg1 and the W component from vector arg2.
 ---@field setXYZ_W fun(self: hkVector4f, arg1: hkVector4f, arg2: hkVector4f)
 --- Sets the W component of this vector from the W component of vector arg1.
@@ -14350,6 +14356,8 @@ taskPriority = {
 ---@field setForcedWP fun(self: CombatMovementController, v: table)
 --- Populates debug or inspection UI entries in panel (DatapanelGUI) under category.
 ---@field getGUIData fun(self: CombatMovementController, panel: DatapanelGUI, category: integer)
+--- Initiates offensive combat positioning toward target (hand) within [minDistance, maxDistance], with circling weight circle, powerThrough flag power, and speedLimit.
+---@field combatMovementOffensive fun(self: CombatMovementController, target: hand, minDistance: number, maxDistance: number, circle: number, power?: boolean, _speedLimit: number)
 --- Disables active combat movement control and resets combat target state.
 ---@field disable fun(self: CombatMovementController)
 --- Acceleration rate used while maneuvering in combat mode.
@@ -14731,12 +14739,12 @@ taskPriority = {
 ---@field playerManufacturerData fun(): GameData
 --- Collects all crafting recipes unlocked by the player faction's researched technology tree that are compatible with this workbench type.
 ---@field getAvailableCrafts fun(self: CraftingBuilding, out: CraftingBuilding|LektorReadOnly<GameDataGroup>)
---- Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time.
----@field _addCraft fun(self: CraftingBuilding, basedata: GameData, matdata?: GameData, progress: number, crit: integer): lightuserdata|nil
+--- Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time. Returns the new queue entry as a borrowed `CraftingItem`, or nil.
+---@field _addCraft fun(self: CraftingBuilding, basedata: GameData, matdata?: GameData, progress: number, crit: integer): CraftingItem
 --- Cancels and removes a recipe order at the specified queue index, refunding unprocessed raw materials.
 ---@field _removeCraft fun(self: CraftingBuilding, index: integer)
---- Retrieves a queued recipe order item descriptor by zero-based index from the order deque.
----@field getCraft fun(self: CraftingBuilding, id: integer): lightuserdata|nil
+--- Retrieves a queued recipe order by zero-based index from the order deque as a borrowed `CraftingItem`, or nil.
+---@field getCraft fun(self: CraftingBuilding, id: integer): CraftingItem
 --- Destroys the temporary physical item template used during the crafting cycle.
 ---@field destroyProductionItem fun(self: CraftingBuilding)
 --- Predicts the highest weapon grade a craftsman can produce at this workbench given their current skill level and workbench tier ceiling.
@@ -14777,8 +14785,8 @@ taskPriority = {
 ---@field _NV_setProductionItem fun(self: CraftingBuilding, itemData: GameData, stack: integer, progress01: number)
 --- Size reference item record used for inventory footprint validation.
 ---@field biggestCraftableItem GameData
---- Queued crafting recipe orders scheduled by the player.
----@field crafting StdDeque<any>
+--- Queued crafting recipe orders scheduled by the player, as a read-only deque of borrowed `CraftingItem` entries. KenshiLib exports no `CraftingItem` copy or destructor, so the queue cannot be replaced or resized from Lua; edit an entry's fields instead.
+---@field crafting StdDequeReadOnly<CraftingItem>
 --- Flag suppressing duplicate UI notifications when missing raw materials.
 ---@field failiureNotified boolean
 --- Specific physical material items claimed from inventory during the active crafting cycle.
@@ -14797,6 +14805,25 @@ taskPriority = {
 ---@field specialCraftItemType integer
 --- Persistent runtime handle of the craftsman character currently operating the bench.
 ---@field whosCrafting hand
+
+--- One queued crafting order in a `CraftingBuilding`'s `crafting` queue. Instances are borrowed from the building's queue and become invalid when the engine removes the order.
+---@class CraftingItem
+--- `YesNoMaybe` recording whether this order rolled a critical success.
+---@field criticalSuccess YesNoMaybeValue
+--- End time value for this crafting order.
+---@field endTime number
+--- The `Item` being crafted for this order. The order does not own it.
+---@field item Item
+--- Last crafting error for this order as a `CraftingItem::ErrorCode` integer: 0 = `CEC_NONE`, 1 = `CEC_BENCH_LEVEL`, 2 = `CEC_BENCH_NO_RESOURCES`, 3 = `CEC_BENCH_NO_WORKERS`.
+---@field lastErrorCode integer
+--- Display name of this crafting order.
+---@field name string
+--- Crafting progress of this order, from 0 to 1.
+---@field progress01 number
+--- Crafting rate applied to this order.
+---@field rate number
+--- Handle of the crafting bench assigned to this order.
+---@field smithBench hand
 
 --- Queue item holding creation parameters for deferred instantiation of world objects by RootObjectFactory.
 ---@class CreatelistItem
@@ -18251,6 +18278,8 @@ taskPriority = {
 ---@field validateFaceKey fun(self: NavMesh, key: integer): boolean
 --- Returns true if background navigation mesh generation tasks are currently in progress.
 ---@field isGenerating fun(self: NavMesh): boolean
+--- Returns a reference to the `NavMeshSeeds` database used for navigation connectivity generation.
+---@field getSeedData fun(self: NavMesh): NavMeshSeeds
 --- Returns the 3D translation offset applied during floating-point world origin recentering.
 ---@field getWorldShift fun(self: NavMesh): table
 --- Background worker thread procedure continuously polling pathfinding requests, executing hierarchical A* searches, and handling dynamic navmesh updates.
@@ -18269,6 +18298,8 @@ taskPriority = {
 ---@field unloadZone fun(self: NavMesh): any
 --- Unloads the interior navigation mesh instance for the specified building entity handle.
 ---@field unloadBuilding fun(self: NavMesh, h: hand)
+--- Returns the number of buildings with interiors in the zone at the specified zone coordinate, excluding some the engine filters out. Returns 0 when that zone's content is not loaded.
+---@field countInteriors fun(self: NavMesh, zone: iVector2): integer
 --- Generates a unique 32-bit hash key identifier for a building handle or zone coordinate.
 ---@field getUID fun(arg1: hand|iVector2): integer
 --- Calculates a content hash for a building entity to determine if its navmesh requires regeneration.
@@ -18424,6 +18455,8 @@ taskPriority = {
 ---@field setPosition fun(self: NewGameOptionsWindow, x: integer, y: integer)
 --- Updates internal state and child widgets of the new game options window.
 ---@field update fun(self: NewGameOptionsWindow)
+--- Copies options (GameplayOptions) into the game's active gameplay options and refreshes each line of the options panel.
+---@field setOptions fun(self: NewGameOptionsWindow, options: GameplayOptions)
 --- The DatapanelGUI instance containing the option rows and controls.
 ---@field optionsPanel DatapanelGUI
 --- ToolTip widget used to display descriptive information about hovered settings.
@@ -20815,6 +20848,10 @@ taskPriority = {
 
 --- Static definition and AI planner metadata for a task type (TaskType), including GOAP state requirements, state results, scoring function, and job characteristics.
 ---@class TaskData
+--- Appends a GOAP state result with state key s (StateType), resulting value val, and progression-only flag progressional. Raises a Lua error when all 11 result slots are used, because the engine does not check the bound.
+---@field addResult fun(self: TaskData, s: integer, val?: boolean, progressional?: boolean)
+--- Appends a GOAP state requirement with state key s (StateType), required value val, and progression-only flag progressional. The engine silently ignores the call when all 11 requirement slots are used.
+---@field addRequirement fun(self: TaskData, s: integer, val?: boolean, progressional?: boolean)
 --- Configures task behavior flags: aggression (0 = normal, 1 = aggressive, -1 = peaceful), aid (0 = normal, 1 = helpful, -1 = mean), noisy (0 = normal, 1 = loud, -1 = stealthy), unstoppable, hasStages, and leadsToSomething.
 ---@field setCharacteristics fun(self: TaskData, _aid: number, _aggressionLevel: number, noise: number, leadsSomewhere?: boolean)
 --- Marks this task to evaluate AI goals less frequently.
@@ -20845,6 +20882,8 @@ taskPriority = {
 ---@field getPermaJobAssociation_secondary fun(self: TaskData): integer
 --- Returns true if this task dynamically searches for a target.
 ---@field isTargetFinder fun(self: TaskData): boolean
+--- Sets the sub-task state key (StateType) and required flag, creating the sub-task entry on first use, and clears hasAction.
+---@field setSubTask fun(self: TaskData, state: integer, required?: boolean)
 --- Associates dialogue delivery event e (EventTriggerEnum) with this task.
 ---@field setDialogueDeliveryTag fun(self: TaskData, d: integer)
 --- Configures permanent job behavior (on, fixedTarget, primary associate task, and associate2 secondary task).
@@ -23339,6 +23378,15 @@ taskPriority = {
 ---@field size fun(self: StdDeque<T>): integer
 --- Copies the elements into a new Lua array.
 ---@field toTable fun(self: StdDeque<T>): table<integer, T>
+
+--- Read-only engine `std::deque<T>` list. Indexes are 1-based.
+---@class StdDequeReadOnly<T>
+--- Element at a 1-based index, or nil if the index is out of range.
+---@field [integer] T|nil
+--- Returns the number of elements.
+---@field size fun(self: StdDequeReadOnly<T>): integer
+--- Copies the elements into a new Lua array.
+---@field toTable fun(self: StdDequeReadOnly<T>): table<integer, T>
 
 --- Engine `std::map<K, V>` map. `map[key]` returns the value stored under the key, or nil.
 ---@class StdMap<K, V>
