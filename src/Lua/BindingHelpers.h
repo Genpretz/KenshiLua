@@ -105,13 +105,31 @@ namespace KenshiLua
         return 0;
     }
 
+    // Pushes and returns a readable type name for the value at idx: the metatable
+    // __name of bound userdata, otherwise the Lua type name.
+    inline const char* pushArgumentTypeName(lua_State* L, int idx)
+    {
+        int type = lua_type(L, idx);
+        if (type == LUA_TUSERDATA && lua_getmetatable(L, idx)) {
+            lua_pushstring(L, "__name");
+            lua_rawget(L, -2);
+            if (lua_type(L, -1) == LUA_TSTRING) {
+                lua_remove(L, -2);
+                return lua_tostring(L, -1);
+            }
+            lua_pop(L, 2);
+        }
+        lua_pushstring(L, type == LUA_TLIGHTUSERDATA ? "lightuserdata" : luaL_typename(L, idx));
+        return lua_tostring(L, -1);
+    }
+
     template <class T>
     inline T* checkObject(lua_State* L, int idx, const char* metatableName)
     {
         T* ptr = testObject<T>(L, idx, metatableName);
         if (!ptr) {
             const char* msg = lua_pushfstring(L, "%s expected, got %s",
-                metatableName, luaL_typename(L, idx));
+                metatableName, pushArgumentTypeName(L, idx));
             luaL_argerror(L, idx, msg);
             return 0;
         }
