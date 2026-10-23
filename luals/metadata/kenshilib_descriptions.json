@@ -3385,6 +3385,7 @@
                 "checkCharacterCollision": "Returns true if moving from pos by movement (Vector3 tables) would collide with another character.",
                 "checkWeDontCollideWithCharacters": "Checks and adjusts movement from pos toward newpos (Vector3 tables) to avoid character overlap.",
                 "collisionUpdate": "Updates character collision timers over time seconds.",
+                "combatMovementOffensive": "Initiates offensive combat positioning toward target (hand) within [minDistance, maxDistance], with circling weight circle, powerThrough flag power, and speedLimit.",
                 "combatMovementUpdate": "Updates standing combat movement over frametime given currentPos, currentDirIn, isCurrentlyMoving, repulsionVector, facingDirOut, defensive flag, combatState (swordStateEnum), and raceSpeedMult.",
                 "combatMovementUpdate_crippleMode": "Updates crippled/crawling combat movement over frametime given currentPos, currentDirIn, isCurrentlyMoving, repulsionVector, facingDirOut, defensive flag, combatState (swordStateEnum), and raceSpeedMult.",
                 "create": "Initializes the combat movement controller with flock (FlockingTools), move (CharMovement), med (CharStats), and strafe capability flag.",
@@ -7811,7 +7812,7 @@
                 "changeDoorState": "Updates edge passability in the navigation mesh for doorways within the given bounding box.",
                 "checkCollision": "Tests for navigation mesh edge collision along a motion vector from the specified nav face.",
                 "checkLineOfSight": "Performs a raycast line-of-sight test across the navigation mesh between two characters or towards a target point.",
-                "countInteriors": "Returns the number of building interior navigation instances loaded within the specified zone coordinate.",
+                "countInteriors": "Returns the number of buildings with interiors in the zone at the specified zone coordinate, excluding some the engine filters out. Returns 0 when that zone's content is not loaded.",
                 "create": "Creates and initializes navigation mesh geometry for the given `ZoneMap` chunk.",
                 "createEdgePath": "Constructs an ordered list of edge path nodes traversing the specified faces.",
                 "createInstance": "Instantiates a Havok AI navigation instance for a building interior in the world.",
@@ -8026,6 +8027,7 @@
             "description": "GUI dialog window displaying customizable gameplay options (e.g. hunger rate, squad size limits, chance of death) when starting a new game.",
             "methods": {
                 "getVisible": "Returns whether the new game options window is currently visible.",
+                "setOptions": "Copies options (GameplayOptions) into the game's active gameplay options and refreshes each line of the options panel.",
                 "setPosition": "Sets the on-screen pixel coordinates (X and Y) of the options window.",
                 "setVisible": "Sets the visibility of the new game options window.",
                 "update": "Updates internal state and child widgets of the new game options window."
@@ -10325,6 +10327,8 @@
         "TaskData": {
             "description": "Static definition and AI planner metadata for a task type (TaskType), including GOAP state requirements, state results, scoring function, and job characteristics.",
             "methods": {
+                "addRequirement": "Appends a GOAP state requirement with state key s (StateType), required value val, and progression-only flag progressional. The engine silently ignores the call when all 11 requirement slots are used.",
+                "addResult": "Appends a GOAP state result with state key s (StateType), resulting value val, and progression-only flag progressional. Raises a Lua error when all 11 result slots are used, because the engine does not check the bound.",
                 "getPermaJobAssociation": "Returns the primary associated TaskType when used as a permanent job.",
                 "getPermaJobAssociation_secondary": "Returns the secondary associated TaskType when used as a permanent job.",
                 "getPermaJobType": "Returns the canonical TaskType used when storing this task as a permanent job.",
@@ -10342,7 +10346,8 @@
                 "setInfrequentGoalChecks": "Marks this task to evaluate AI goals less frequently.",
                 "setPermaJob": "Configures permanent job behavior (on, fixedTarget, primary associate task, and associate2 secondary task).",
                 "setRequirementsCantEndActionPrematurely": "Marks this task so failing its state requirements mid-execution will not abort the action early.",
-                "setSelfRegulation": "Enables self-regulation so AI characters do not all choose this task simultaneously."
+                "setSelfRegulation": "Enables self-regulation so AI characters do not all choose this task simultaneously.",
+                "setSubTask": "Sets the sub-task state key (StateType) and required flag, creating the sub-task entry on first use, and clears hasAction."
             },
             "properties": {
                 "_findTarget": "Pointer to the C++ target-finder function object (exposed as read-only lightuserdata).",
@@ -12147,6 +12152,8 @@
                 "setMax": "Sets each component of this vector to the maximum of the corresponding components in vector a and vector b.",
                 "setMin": "Sets each component of this vector to the minimum of the corresponding components in vector a and vector b.",
                 "setMul": "Sets this vector to the component-wise product of vector arg1 and vector arg2.",
+                "setNeg3": "Sets the x, y, and z components of this vector to the negated x, y, and z components of vector v, and copies its w component unchanged.",
+                "setPlaneConstant": "Sets the W component to the negated 3D dot product of this vector's xyz components and point p, leaving xyz unchanged.",
                 "setReciprocal": "Sets this vector to the component-wise reciprocal (1.0 / a) of vector a.",
                 "setSelect": "Selects components from trueValue where comparison mask comp is true and from falseValue where false.",
                 "setSqrt": "Sets this vector to the component-wise square root of vector a.",

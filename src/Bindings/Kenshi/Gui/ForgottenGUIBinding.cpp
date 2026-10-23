@@ -16,6 +16,7 @@
 #include "Bindings/Kenshi/TownBinding.h"
 #include "Bindings/Kenshi/Gui/TutorialGUIBinding.h"
 #include "Bindings/Kenshi/Gui/TutorialpediaGUIBinding.h"
+#include "Bindings/Kenshi/Gui/ScreenLabelBinding.h"
 #include "Bindings/Kenshi/Gui/ScreenLabelInterfaceBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
@@ -1057,6 +1058,19 @@ int ForgottenGUIBinding::createFloatingProgressBar(lua_State* L)
     return pushObject<FloatingProgressBar>(L, result, FloatingProgressBarBinding::getMetatableName());
 }
 
+int ForgottenGUIBinding::createScreenLabel(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    const std::string text = luaL_checkstring(L, 2);
+    MyGUI::Colour textColour = MyGUIBindings::readColour(L, 3);
+    ScreenLabel::LabelSize textSize = (ScreenLabel::LabelSize)luaL_checkinteger(L, 4);
+    ScreenLabel::RisingSpeed risingSpeed = (ScreenLabel::RisingSpeed)luaL_checkinteger(L, 5);
+    ScreenLabel* result = instance->createScreenLabel(text, textColour, textSize, risingSpeed);
+    return pushObject<ScreenLabel>(L, result, ScreenLabelBinding::getMetatableName());
+}
+
 int ForgottenGUIBinding::createScreenLabelD(lua_State* L)
 {
     ForgottenGUI* instance = getInstance(L, 1);
@@ -1769,7 +1783,6 @@ Skipped methods needing manual binding:
   line 122: void destroyWidgets(...) - overloaded method
   line 123: void destroyWidgets(...) - overloaded method
   line 132: void setup(...) - unsupported arg type
-  line 206: ScreenLabel* createScreenLabel(...) - unsupported arg type
 */
 
 /*
@@ -1863,6 +1876,7 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "createFloatingImage", ForgottenGUIBinding::createFloatingImage },
         { "createFloatingImageAbs", ForgottenGUIBinding::createFloatingImageAbs },
         { "createFloatingProgressBar", ForgottenGUIBinding::createFloatingProgressBar },
+        { "createScreenLabel", ForgottenGUIBinding::createScreenLabel },
         { "createScreenLabelD", ForgottenGUIBinding::createScreenLabelD },
         { "showCharacterStatsWindow", ForgottenGUIBinding::showCharacterStatsWindow },
         { "closeCharacterStatsWindow", ForgottenGUIBinding::closeCharacterStatsWindow },

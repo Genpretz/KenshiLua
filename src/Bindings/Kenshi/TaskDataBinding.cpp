@@ -533,6 +533,36 @@ static int TaskData_set_description(lua_State* L)
     return 0;
 }
 
+int TaskDataBinding::addResult(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    StateType s = (StateType)luaL_checkinteger(L, 2);
+    bool val = lua_toboolean(L, 3) != 0;
+    bool progressional = lua_toboolean(L, 4) != 0;
+
+    // Unlike addRequirement, the engine writes results[numResults] without a bounds check.
+    const int maxResults = (int)(sizeof(instance->results) / sizeof(instance->results[0]));
+    if (instance->numResults < 0 || instance->numResults >= maxResults)
+        return luaL_error(L, "TaskData.addResult: results is full (numResults %d, capacity %d)", instance->numResults, maxResults);
+
+    instance->addResult(s, val, progressional);
+    return 0;
+}
+
+int TaskDataBinding::addRequirement(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    StateType s = (StateType)luaL_checkinteger(L, 2);
+    bool val = lua_toboolean(L, 3) != 0;
+    bool progressional = lua_toboolean(L, 4) != 0;
+    instance->addRequirement(s, val, progressional);
+    return 0;
+}
+
 int TaskDataBinding::setCharacteristics(lua_State* L)
 {
     TaskData* instance = getInstance(L, 1);
@@ -688,6 +718,17 @@ int TaskDataBinding::isTargetFinder(lua_State* L)
     return 1;
 }
 
+int TaskDataBinding::setSubTask(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    StateType state = (StateType)luaL_checkinteger(L, 2);
+    bool required = lua_toboolean(L, 3) != 0;
+    instance->setSubTask(state, required);
+    return 0;
+}
+
 int TaskDataBinding::setDialogueDeliveryTag(lua_State* L)
 {
     TaskData* instance = getInstance(L, 1);
@@ -724,15 +765,12 @@ int TaskDataBinding::getPermaJobType(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 228: void addResult(...) - unsupported arg type
-  line 229: void addRequirement(...) - unsupported arg type
   line 278: bool isResultsComplete(...) - unsupported arg type
   line 279: bool isResultsComplete_ignoreSubtasker(...) - unsupported arg type
   line 280: void getRequirementComplaint(...) - non-string reference arg
   line 281: bool _isRequirementsComplete(...) - unsupported arg type
   line 282: bool isRequirementComplete(...) - unsupported arg type
   line 283: void setTargetingFunction(...) - unsupported arg type
-  line 286: void setSubTask(...) - unsupported arg type
   line 292: float runTargetFind(...) - unsupported arg type
   line 293: bool _targetsRemaining(...) - unsupported arg type
 */
@@ -800,6 +838,8 @@ void TaskDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "addResult", TaskDataBinding::addResult },
+        { "addRequirement", TaskDataBinding::addRequirement },
         { "setCharacteristics", TaskDataBinding::setCharacteristics },
         { "setInfrequentGoalChecks", TaskDataBinding::setInfrequentGoalChecks },
         { "setAlertnessMult", TaskDataBinding::setAlertnessMult },
@@ -815,6 +855,7 @@ void TaskDataBinding::registerBinding(lua_State* L)
         { "getPermaJobAssociation", TaskDataBinding::getPermaJobAssociation },
         { "getPermaJobAssociation_secondary", TaskDataBinding::getPermaJobAssociation_secondary },
         { "isTargetFinder", TaskDataBinding::isTargetFinder },
+        { "setSubTask", TaskDataBinding::setSubTask },
         { "setDialogueDeliveryTag", TaskDataBinding::setDialogueDeliveryTag },
         { "setPermaJob", TaskDataBinding::setPermaJob },
         { "getPermaJobType", TaskDataBinding::getPermaJobType },

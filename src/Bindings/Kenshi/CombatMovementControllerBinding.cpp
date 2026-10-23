@@ -713,6 +713,22 @@ int CombatMovementControllerBinding::getGUIData(lua_State* L)
     return 0;
 }
 
+int CombatMovementControllerBinding::combatMovementOffensive(lua_State* L)
+{
+    CombatMovementController* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatMovementController is nil");
+
+    hand* target = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    float minDistance = (float)luaL_checknumber(L, 3);
+    float maxDistance = (float)luaL_checknumber(L, 4);
+    float circle = (float)luaL_checknumber(L, 5);
+    bool power = lua_toboolean(L, 6) != 0;
+    float speedLimit = (float)luaL_checknumber(L, 7);
+
+    instance->combatMovementOffensive(*target, minDistance, maxDistance, circle, power, speedLimit);
+    return 0;
+}
+
 int CombatMovementControllerBinding::disable(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
@@ -724,7 +740,6 @@ int CombatMovementControllerBinding::disable(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 310: void combatMovementOffensive(...) - non-string reference arg
   line 327: void combatMovementAnimationUpdate(...) - unsupported arg type
 */
 
@@ -767,6 +782,7 @@ void CombatMovementControllerBinding::registerBinding(lua_State* L)
         { "checkCharacterCollision", CombatMovementControllerBinding::checkCharacterCollision },
         { "setForcedWP", CombatMovementControllerBinding::setForcedWP },
         { "getGUIData", CombatMovementControllerBinding::getGUIData },
+        { "combatMovementOffensive", CombatMovementControllerBinding::combatMovementOffensive },
         { "disable", CombatMovementControllerBinding::disable },
         { 0, 0 }
     };

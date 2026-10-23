@@ -70,6 +70,7 @@ public:
     static int createFloatingImage(lua_State* L);
     static int createFloatingImageAbs(lua_State* L);
     static int createFloatingProgressBar(lua_State* L);
+    static int createScreenLabel(lua_State* L);
     static int createScreenLabelD(lua_State* L);
     static int showCharacterStatsWindow(lua_State* L);
     static int closeCharacterStatsWindow(lua_State* L);

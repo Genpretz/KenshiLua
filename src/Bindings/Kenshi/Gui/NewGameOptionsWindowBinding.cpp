@@ -87,11 +87,19 @@ int NewGameOptionsWindowBinding::update(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 22: void setOptions(...) - non-string reference arg
-*/
+int NewGameOptionsWindowBinding::setOptions(lua_State* L)
+{
+    NewGameOptionsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NewGameOptionsWindow is nil");
 
+    GameplayOptions* options = checkObject<GameplayOptions>(L, 2, GameplayOptionsBinding::getMetatableName());
+
+    // The engine refreshes optionsPanel's lines without checking it.
+    if (!instance->optionsPanel) return luaL_error(L, "NewGameOptionsWindow.setOptions: optionsPanel is nil");
+
+    instance->setOptions(*options);
+    return 0;
+}
 
 int NewGameOptionsWindowBinding::gc(lua_State* L)
 {
@@ -118,6 +126,7 @@ void NewGameOptionsWindowBinding::registerBinding(lua_State* L)
         { "getVisible", NewGameOptionsWindowBinding::getVisible },
         { "setPosition", NewGameOptionsWindowBinding::setPosition },
         { "update", NewGameOptionsWindowBinding::update },
+        { "setOptions", NewGameOptionsWindowBinding::setOptions },
         { 0, 0 }
     };
 

@@ -18,6 +18,8 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int addResult(lua_State* L);
+    static int addRequirement(lua_State* L);
     static int setCharacteristics(lua_State* L);
     static int setInfrequentGoalChecks(lua_State* L);
     static int setAlertnessMult(lua_State* L);
@@ -33,6 +35,7 @@ public:
     static int getPermaJobAssociation(lua_State* L);
     static int getPermaJobAssociation_secondary(lua_State* L);
     static int isTargetFinder(lua_State* L);
+    static int setSubTask(lua_State* L);
     static int setDialogueDeliveryTag(lua_State* L);
     static int setPermaJob(lua_State* L);
     static int getPermaJobType(lua_State* L);
