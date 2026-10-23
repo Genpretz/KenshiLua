@@ -4,7 +4,7 @@
 
 ## Overview
 
-KenshiLua exposes **1678** bound enum values across **119** enum tables from **46** SDK header files.
+KenshiLua exposes **1711** bound enum values across **124** enum tables from **49** SDK header files.
 
 ## Lua Usage & Syntax
 
@@ -43,6 +43,8 @@ end
 
 ## Table of Contents
 
+- [AI/AI.h](#aiaih) (`AI.AIAggressionOrders`, `AI.AIManuverabilityOrders`, `NodeType`)
+- [Animation/AnimationClass.h](#animationanimationclassh) (`StanceEnum`)
 - [Appearance.h](#appearanceh) (`MeshDataLookup.Dir`)
 - [AppearanceManager.h](#appearancemanagerh) (`AppearanceManager.DataCategory.Enum`, `AppearanceManager.Gender.Enum`)
 - [Bounty.h](#bountyh) (`CrimeEnum`)
@@ -80,6 +82,7 @@ end
 - [ScreenLabel.h](#screenlabelh) (`ScreenLabel.RisingSpeed`, `ScreenLabel.LabelSize`)
 - [SensoryData.h](#sensorydatah) (`SenseType`)
 - [SquadManagementScreen.h](#squadmanagementscreenh) (`PortraitData.State`)
+- [StateBroadcastData.h](#statebroadcastdatah) (`PersonalityTags`)
 - [Tasker.h](#taskerh) (`taskPriority`, `StateType`, `PermajobType`)
 - [ToolTip.h](#tooltiph) (`ToolTip.Type`)
 - [Town.h](#townh) (`TownAlarmState`, `TownType`)
@@ -89,6 +92,51 @@ end
 - [ZoneManager.h](#zonemanagerh) (`ZoneActivationType`, `ZoneSpacialGrid.Result`, `ZoneMap.ZONE_MESSAGE`)
 - [gui/CharacterEditWindow.h](#guicharactereditwindowh) (`CharacterEditMode`)
 - [Kenshi.h](#kenshih) (`KenshiLib.BinaryVersion.KenshiPlatform`)
+
+---
+
+## AI/AI.h
+
+### Table: `AI.AIAggressionOrders`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `AI.AIAggressionOrders.AGGRESSIVE` | `0` | `AI::AIAggressionOrders::AGGRESSIVE` |
+| `AI.AIAggressionOrders.DEFENSIVE` | `1` | `AI::AIAggressionOrders::DEFENSIVE` |
+| `AI.AIAggressionOrders.EVASIVE` | `2` | `AI::AIAggressionOrders::EVASIVE` |
+
+### Table: `AI.AIManuverabilityOrders`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `AI.AIManuverabilityOrders.HOLD_GROUND` | `0` | `AI::AIManuverabilityOrders::HOLD_GROUND` |
+| `AI.AIManuverabilityOrders.STAY_CLOSE` | `1` | `AI::AIManuverabilityOrders::STAY_CLOSE` |
+| `AI.AIManuverabilityOrders.ROAM_FAR` | `2` | `AI::AIManuverabilityOrders::ROAM_FAR` |
+
+### Table: `NodeType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `NodeType.NODE_SHOPKEEPER` | `0` | `NodeType::NODE_SHOPKEEPER` |
+| `NodeType.NODE_GENERAL` | `1` | `NodeType::NODE_GENERAL` |
+| `NodeType.NODE_GUARD_POST` | `2` | `NodeType::NODE_GUARD_POST` |
+| `NodeType.NODE_TURRET` | `3` | `NodeType::NODE_TURRET` |
+| `NodeType.NODE_USE` | `4` | `NodeType::NODE_USE` |
+| `NodeType.NODE_LIGHT` | `5` | `NodeType::NODE_LIGHT` |
+| `NodeType.NODE_NULL` | `6` | `NodeType::NODE_NULL` |
+
+---
+
+## Animation/AnimationClass.h
+
+### Table: `StanceEnum`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `StanceEnum.STANDING` | `0` | `StanceEnum::STANDING` |
+| `StanceEnum.CROUCHED` | `1` | `StanceEnum::CROUCHED` |
+| `StanceEnum.PRONE` | `2` | `StanceEnum::PRONE` |
+| `StanceEnum.MIDAIR` | `3` | `StanceEnum::MIDAIR` |
 
 ---
 
@@ -2158,6 +2206,31 @@ end
 | `PortraitData.State.PRISON` | `32` | `PortraitData::State::PRISON` |
 | `PortraitData.State.EATEN` | `64` | `PortraitData::State::EATEN` |
 | `PortraitData.State.HUNGER` | `128` | `PortraitData::State::HUNGER` |
+
+---
+
+## StateBroadcastData.h
+
+### Table: `PersonalityTags`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `PersonalityTags.PT_NONE` | `0` | `PersonalityTags::PT_NONE` |
+| `PersonalityTags.PT_HONORABLE` | `1` | `PersonalityTags::PT_HONORABLE` |
+| `PersonalityTags.PT_TRAITOROUS` | `2` | `PersonalityTags::PT_TRAITOROUS` |
+| `PersonalityTags.PT___` | `3` | `PersonalityTags::PT___` |
+| `PersonalityTags.PT__` | `4` | `PersonalityTags::PT__` |
+| `PersonalityTags.PT_SMART` | `5` | `PersonalityTags::PT_SMART` |
+| `PersonalityTags.PT_DUMB` | `6` | `PersonalityTags::PT_DUMB` |
+| `PersonalityTags.PT____` | `7` | `PersonalityTags::PT____` |
+| `PersonalityTags.PT_____` | `8` | `PersonalityTags::PT_____` |
+| `PersonalityTags.PT_BRAVE` | `9` | `PersonalityTags::PT_BRAVE` |
+| `PersonalityTags.PT_FEARFUL` | `10` | `PersonalityTags::PT_FEARFUL` |
+| `PersonalityTags.PT_WARM_KIND` | `11` | `PersonalityTags::PT_WARM_KIND` |
+| `PersonalityTags.PT_COLD_CRUEL` | `12` | `PersonalityTags::PT_COLD_CRUEL` |
+| `PersonalityTags.PT_NORMAL` | `13` | `PersonalityTags::PT_NORMAL` |
+| `PersonalityTags.PT_MANIACAL` | `14` | `PersonalityTags::PT_MANIACAL` |
+| `PersonalityTags.PT_END` | `15` | `PersonalityTags::PT_END` |
 
 ---
 

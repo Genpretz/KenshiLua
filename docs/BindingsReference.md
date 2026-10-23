@@ -16,9 +16,12 @@
 - [`AABB2D`](#aabb2d)
 - [`AbstractMovementBase`](#abstractmovementbase)
 - [`ActivePlatoon`](#activeplatoon)
+- [`AI`](#ai)
 - [`AkSoundPosition`](#aksoundposition)
 - [`AkVector`](#akvector)
 - [`AnimalInventoryLayout`](#animalinventorylayout)
+- [`AnimationClass`](#animationclass)
+- [`AnimationClassBase`](#animationclassbase)
 - [`AppearanceAnimal`](#appearanceanimal)
 - [`AppearanceBase`](#appearancebase)
 - [`AppearanceHuman`](#appearancehuman)
@@ -338,6 +341,7 @@
   - [`SquadManagementScreen::SquadCellView`](#squadmanagementscreen::squadcellview)
   - [`SquadManagementScreen::SquadData`](#squadmanagementscreen::squaddata)
   - [`SquadManagementScreen::SquadItemBox`](#squadmanagementscreen::squaditembox)
+- [`StateBroadcastData`](#statebroadcastdata)
 - [`StorageBuilding`](#storagebuilding)
   - [`StorageBuilding::ConsumptionItem`](#storagebuilding::consumptionitem)
 - [`StringPair`](#stringpair)
@@ -571,6 +575,419 @@
 | getCharactersInArea | `pos: Vector3, radius: number, standingOnly: boolean` | `void` | `obj:getCharactersInArea(pos, radius, standingOnly)` |
 | loadInstance | `state: GameSaveState, skipSaveState: boolean, pos: Vector3, rot: Quaternion, callback: FactoryCallbackInterface, positionMoved: Vector3` | `void` | `obj:loadInstance(state, skipSaveState, pos, rot, callback, positionMoved)` |
 
+## AI
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AI.h`
+**Metatable:** `KenshiLua.AI`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| meiDistance | `number` | RW | `obj.meiDistance = <value>` |
+| meiDistanceTolerance | `number` | RW | `obj.meiDistanceTolerance = <value>` |
+| platoon | `Platoon` | RW | `obj.platoon = <value>` |
+| state | `StateBroadcastData` | RW | `obj.state = <value>` |
+| sensoryData | `SensoryData` | R | `obj.sensoryData` |
+| taskRepertoireFlags | `integer` | RW | `obj.taskRepertoireFlags = <value>` |
+| ordersAggression | `AI::AIAggressionOrders` | RW | `obj.ordersAggression = <value>` |
+| ordersMovement | `AI::AIManuverabilityOrders` | RW | `obj.ordersMovement = <value>` |
+| centerOfMovement | `Vector3` | RW | `obj.centerOfMovement = <value>` |
+| centerOfMovementTarget | `hand` | RW | `obj.centerOfMovementTarget = <value>` |
+| slaveStateTimeStamp | `number` | RW | `obj.slaveStateTimeStamp = <value>` |
+| me | `Character` | RW | `obj.me = <value>` |
+| body | `CharBody` | RW | `obj.body = <value>` |
+| inventory | `Inventory` | RW | `obj.inventory = <value>` |
+| stats | `CharStats` | RW | `obj.stats = <value>` |
+| medical | `MedicalSystem` | RW | `obj.medical = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| _createTradingInfo | `` | `void` | `obj:_createTradingInfo()` |
+| isWithinChoppingRange | `subj: RootObjectBase, isMoving: boolean` | `boolean` | `obj:isWithinChoppingRange(subj, isMoving)` |
+| setTaskRepertoireFlag | `flag: integer` | `void` | `obj:setTaskRepertoireFlag(flag)` |
+| clearTaskRepertoireFlag | `flag: integer` | `void` | `obj:clearTaskRepertoireFlag(flag)` |
+| forceOrderInsert | `t: TaskType` | `void` | `obj:forceOrderInsert(t)` |
+| stateIsTrue | `state: TaskStateData, h: hand, v: Vector3` | `boolean` | `obj:stateIsTrue(state, h, v)` |
+| addAIGoalsFrom | `data: GameData, goallistname: string` | `void` | `obj:addAIGoalsFrom(data, goallistname)` |
+| isWithinGivenRange | `subject: hand, loc: Vector3, _range: number` | `boolean` | `obj:isWithinGivenRange(subject, loc, _range)` |
+| getSensoryData | `` | `SensoryData` | `obj:getSensoryData()` |
+| getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
+| _notifyTaskComplete | `` | `void` | `obj:_notifyTaskComplete()` |
+| getDestinationTown | `` | `TownBase` | `obj:getDestinationTown()` |
+| setPlatoon | `p: Platoon` | `void` | `obj:setPlatoon(p)` |
+| getPlatoon | `` | `Platoon` | `obj:getPlatoon()` |
+| getFaction | `` | `Faction` | `obj:getFaction()` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
+| create | `b: CharBody, inv: Inventory, st: CharStats, med: MedicalSystem, p: Platoon` | `void` | `obj:create(b, inv, st, med, p)` |
+| update4Frame | `frametime: number` | `void` | `obj:update4Frame(frametime)` |
+| periodicUpdate | `frametime: number` | `void` | `obj:periodicUpdate(frametime)` |
+| periodicUpdate_KOed | `frametime: number` | `void` | `obj:periodicUpdate_KOed(frametime)` |
+| sendMessage | `message: integer, sender: hand, subject: hand` | `void` | `obj:sendMessage(message, sender, subject)` |
+| underMeleeAttack | `attacker: Character, so: boolean, doAwarenessCheck: boolean` | `void` | `obj:underMeleeAttack(attacker, so, doAwarenessCheck)` |
+| underRangedAttack | `attacker: Character, so: boolean` | `void` | `obj:underRangedAttack(attacker, so)` |
+| isTargetOutsideTheGates | `target: RootObject` | `boolean` | `obj:isTargetOutsideTheGates(target)` |
+| amILockedWithinTownWalls | `` | `boolean` | `obj:amILockedWithinTownWalls()` |
+| isEnemy [1] | `subject: hand, _a2: Vector3` | `boolean` | `obj:isEnemy(subject, _a2)` |
+| isEnemy [2] | `c: RootObjectBase` | `boolean` | `obj:isEnemy(c)` |
+| load | `d: GameData` | `void` | `obj:load(d)` |
+| save | `d: GameData` | `void` | `obj:save(d)` |
+| getPosWithinChoppingRange | `subj: RootObjectBase, clickPos: Vector3` | `Vector3` | `obj:getPosWithinChoppingRange(subj, clickPos)` |
+| setAggressionLevel | `agg: AI::AIAggressionOrders` | `void` | `obj:setAggressionLevel(agg)` |
+| setManuveringFreedomLevel | `agg: AI::AIManuverabilityOrders` | `void` | `obj:setManuveringFreedomLevel(agg)` |
+| setCenterOfMovement | `wher: Vector3` | `void` | `obj:setCenterOfMovement(wher)` |
+| setCenterOfMovementTarget | `wher: hand` | `void` | `obj:setCenterOfMovementTarget(wher)` |
+| getCombatTarget | `` | `hand` | `obj:getCombatTarget()` |
+| updateStateBroadcast | `time: number` | `void` | `obj:updateStateBroadcast(time)` |
+| buySomething | `shop: Building` | `boolean` | `obj:buySomething(shop)` |
+| IDontWantToLeaveTown | `` | `boolean` | `obj:IDontWantToLeaveTown()` |
+| getPosition | `` | `Vector3` | `obj:getPosition()` |
+| amMoving | `` | `boolean` | `obj:amMoving()` |
+| periodicUpdateStateBroadcast | `time: number` | `void` | `obj:periodicUpdateStateBroadcast(time)` |
+| getCharacter | `` | `Character` | `obj:getCharacter()` |
+| getAllMyPermajobMachines | `` | `void` | `obj:getAllMyPermajobMachines()` |
+| hasPermajob | `t: TaskType` | `boolean` | `obj:hasPermajob(t)` |
+| noneState | `subject: hand, _a2: Vector3` | `boolean` | `obj:noneState(subject, _a2)` |
+| isAtLocation | `subject: hand, loc: Vector3` | `boolean` | `obj:isAtLocation(subject, loc)` |
+| isLocationAccessible | `subject: hand, _a2: Vector3` | `boolean` | `obj:isLocationAccessible(subject, _a2)` |
+| isDestinationAccessible [1] | `target: RootObject, outsideBuilding: boolean` | `boolean` | `obj:isDestinationAccessible(target, outsideBuilding)` |
+| isDestinationAccessible [2] | `subject: hand, v: Vector3` | `boolean` | `obj:isDestinationAccessible(subject, v)` |
+| isDestinationAccessibleAnimal | `subject: hand, v: Vector3` | `boolean` | `obj:isDestinationAccessibleAnimal(subject, v)` |
+| isAtDoorOf | `subject: hand, v: Vector3` | `boolean` | `obj:isAtDoorOf(subject, v)` |
+| isAtDoorOf_Inside | `subject: hand, v: Vector3` | `boolean` | `obj:isAtDoorOf_Inside(subject, v)` |
+| isAtDoorOf_Outside | `subject: hand, v: Vector3` | `boolean` | `obj:isAtDoorOf_Outside(subject, v)` |
+| isAtDoorOfCurrentLocation | `subject: hand, v: Vector3` | `boolean` | `obj:isAtDoorOfCurrentLocation(subject, v)` |
+| isBuildingComplete | `subject: hand, _a2: Vector3` | `boolean` | `obj:isBuildingComplete(subject, _a2)` |
+| isSubjectInInventory | `subject: hand, _a2: Vector3` | `boolean` | `obj:isSubjectInInventory(subject, _a2)` |
+| isNoEnemiesInVicinity | `subject: hand, _a2: Vector3` | `boolean` | `obj:isNoEnemiesInVicinity(subject, _a2)` |
+| isTargetDown | `subject: hand, _a2: Vector3` | `boolean` | `obj:isTargetDown(subject, _a2)` |
+| targetIsConscious | `subject: hand, _a2: Vector3` | `boolean` | `obj:targetIsConscious(subject, _a2)` |
+| isLeaderDown | `subject: hand, _a2: Vector3` | `boolean` | `obj:isLeaderDown(subject, _a2)` |
+| isTargetEnemy | `subject: hand, _a2: Vector3` | `boolean` | `obj:isTargetEnemy(subject, _a2)` |
+| crowdLimit8 | `subject: hand, _a2: Vector3` | `boolean` | `obj:crowdLimit8(subject, _a2)` |
+| hasWeapon | `_a1: hand, _a2: Vector3` | `boolean` | `obj:hasWeapon(_a1, _a2)` |
+| hasWeaponEquipped | `_a1: hand, _a2: Vector3` | `boolean` | `obj:hasWeaponEquipped(_a1, _a2)` |
+| hasCrossbowEquipped | `_a1: hand, _a2: Vector3` | `boolean` | `obj:hasCrossbowEquipped(_a1, _a2)` |
+| hasAnythingEquipped | `subject: hand, v: Vector3` | `boolean` | `obj:hasAnythingEquipped(subject, v)` |
+| isAlliesFighting | `_a1: hand, _a2: Vector3` | `boolean` | `obj:isAlliesFighting(_a1, _a2)` |
+| isSquadmatesFighting | `subject: hand, _a2: Vector3` | `boolean` | `obj:isSquadmatesFighting(subject, _a2)` |
+| iAmBeingMeleeAttacked_immediate | `subject: hand, _a2: Vector3` | `boolean` | `obj:iAmBeingMeleeAttacked_immediate(subject, _a2)` |
+| iAmBeingMeleeAttacked_general | `subject: hand, _a2: Vector3` | `boolean` | `obj:iAmBeingMeleeAttacked_general(subject, _a2)` |
+| isAggressionTowards | `subject: hand, _a2: Vector3` | `boolean` | `obj:isAggressionTowards(subject, _a2)` |
+| isAggressionTowardsMe | `subject: hand, _a2: Vector3` | `boolean` | `obj:isAggressionTowardsMe(subject, _a2)` |
+| isGeneralAggressionLevel | `_a1: hand, _a2: Vector3` | `boolean` | `obj:isGeneralAggressionLevel(_a1, _a2)` |
+| isItemLootable | `subject: hand, _a2: Vector3` | `boolean` | `obj:isItemLootable(subject, _a2)` |
+| amIdle | `subject: hand, _a2: Vector3` | `boolean` | `obj:amIdle(subject, _a2)` |
+| needsFirstAid | `_subject: hand, _a2: Vector3` | `boolean` | `obj:needsFirstAid(_subject, _a2)` |
+| myLegsAreMessedUpButCouldBeFixed | `subject: hand, _a2: Vector3` | `boolean` | `obj:myLegsAreMessedUpButCouldBeFixed(subject, _a2)` |
+| haveFirstAidKit | `subject: hand, _a2: Vector3` | `boolean` | `obj:haveFirstAidKit(subject, _a2)` |
+| needsFirstAid_robot | `_subject: hand, _a2: Vector3` | `boolean` | `obj:needsFirstAid_robot(_subject, _a2)` |
+| haveFirstAidKit_robot | `subject: hand, _a2: Vector3` | `boolean` | `obj:haveFirstAidKit_robot(subject, _a2)` |
+| needsSplint | `_subject: hand, _a2: Vector3` | `boolean` | `obj:needsSplint(_subject, _a2)` |
+| hasSplintKit | `subject: hand, _a2: Vector3` | `boolean` | `obj:hasSplintKit(subject, _a2)` |
+| hasTools | `subject: hand, _a2: Vector3` | `boolean` | `obj:hasTools(subject, _a2)` |
+| isCrouching | `subject: hand, _a2: Vector3` | `boolean` | `obj:isCrouching(subject, _a2)` |
+| isCrouchingOrLying | `subject: hand, v: Vector3` | `boolean` | `obj:isCrouchingOrLying(subject, v)` |
+| isLyingProne | `subject: hand, _a2: Vector3` | `boolean` | `obj:isLyingProne(subject, _a2)` |
+| isMovementAllowed | `subject: hand, location: Vector3` | `boolean` | `obj:isMovementAllowed(subject, location)` |
+| isAtHome | `subject: hand, _a2: Vector3` | `boolean` | `obj:isAtHome(subject, _a2)` |
+| isAtHomeTown | `subject: hand, _a2: Vector3` | `boolean` | `obj:isAtHomeTown(subject, _a2)` |
+| targetStandingStill | `subject: hand, _a2: Vector3` | `boolean` | `obj:targetStandingStill(subject, _a2)` |
+| hasOneWorkingArm | `subject: hand, _a2: Vector3` | `boolean` | `obj:hasOneWorkingArm(subject, _a2)` |
+| hasTwoWorkingArms | `subject: hand, _a2: Vector3` | `boolean` | `obj:hasTwoWorkingArms(subject, _a2)` |
+| isReadyForAction | `subject: hand, v: Vector3` | `boolean` | `obj:isReadyForAction(subject, v)` |
+| iAmDown | `subject: hand, _a2: Vector3` | `boolean` | `obj:iAmDown(subject, _a2)` |
+| iAmProne | `subject: hand, _a2: Vector3` | `boolean` | `obj:iAmProne(subject, _a2)` |
+| canGetUp | `subject: hand, _a2: Vector3` | `boolean` | `obj:canGetUp(subject, _a2)` |
+| scoreCanGetUp | `subject: hand, v: Vector3` | `number` | `obj:scoreCanGetUp(subject, v)` |
+| isCarryingSomething | `subject: hand, _a2: Vector3` | `boolean` | `obj:isCarryingSomething(subject, _a2)` |
+| isCarriedDudeInBed | `subject: hand, v: Vector3` | `boolean` | `obj:isCarriedDudeInBed(subject, v)` |
+| isCarriedDudeDead | `subject: hand, v: Vector3` | `boolean` | `obj:isCarriedDudeDead(subject, v)` |
+| isCarryingTarget | `subject: hand, _a2: Vector3` | `boolean` | `obj:isCarryingTarget(subject, _a2)` |
+| final_gotAKidnapVictim | `subject: hand, v: Vector3` | `boolean` | `obj:final_gotAKidnapVictim(subject, v)` |
+| final_foundAndPutInCage | `subject: hand, _a2: Vector3` | `boolean` | `obj:final_foundAndPutInCage(subject, _a2)` |
+| targetIsArrested | `subject: hand, _a2: Vector3` | `boolean` | `obj:targetIsArrested(subject, _a2)` |
+| alarmsInTheVicinity | `subject: hand, _a2: Vector3` | `boolean` | `obj:alarmsInTheVicinity(subject, _a2)` |
+| intruderIsOutside | `subject: hand, _a2: Vector3` | `boolean` | `obj:intruderIsOutside(subject, _a2)` |
+| intruderIsOutsideGates | `subject: hand, _a2: Vector3` | `boolean` | `obj:intruderIsOutsideGates(subject, _a2)` |
+| amSwimming | `subject: hand, _a2: Vector3` | `boolean` | `obj:amSwimming(subject, _a2)` |
+| isTargetSwimming | `subject: hand, _a2: Vector3` | `boolean` | `obj:isTargetSwimming(subject, _a2)` |
+| isBeingCarried | `subject: hand, _a2: Vector3` | `boolean` | `obj:isBeingCarried(subject, _a2)` |
+| hasBuildingMaterials | `subject: hand, _a2: Vector3` | `boolean` | `obj:hasBuildingMaterials(subject, _a2)` |
+| buildingHasBuildingMaterials | `subject: hand, _a2: Vector3` | `boolean` | `obj:buildingHasBuildingMaterials(subject, _a2)` |
+| isDoorBroken | `subject: hand, _a2: Vector3` | `boolean` | `obj:isDoorBroken(subject, _a2)` |
+| isDoorOpen | `subject: hand, _a2: Vector3` | `boolean` | `obj:isDoorOpen(subject, _a2)` |
+| isDoorOpenHere | `_a1: hand, _a2: Vector3` | `boolean` | `obj:isDoorOpenHere(_a1, _a2)` |
+| iAmInsideTargetBuilding | `subject: hand, _a2: Vector3` | `boolean` | `obj:iAmInsideTargetBuilding(subject, _a2)` |
+| farmHasFood | `subject: hand, _a2: Vector3` | `boolean` | `obj:farmHasFood(subject, _a2)` |
+| amHungry | `subject: hand, _a2: Vector3` | `boolean` | `obj:amHungry(subject, _a2)` |
+| iHaveSufficientLockSkill | `subject: hand, _a2: Vector3` | `boolean` | `obj:iHaveSufficientLockSkill(subject, _a2)` |
+| iHaveSufficientLockSkillForShackles | `subject: hand, _a2: Vector3` | `boolean` | `obj:iHaveSufficientLockSkillForShackles(subject, _a2)` |
+| scoreIAmInsideTargetBuilding | `subject: hand, _a2: Vector3` | `number` | `obj:scoreIAmInsideTargetBuilding(subject, _a2)` |
+| scoreIAmOutsideTargetBuilding | `subject: hand, _a2: Vector3` | `number` | `obj:scoreIAmOutsideTargetBuilding(subject, _a2)` |
+| machineHasEmptyInputs | `subject: hand, _a2: Vector3` | `boolean` | `obj:machineHasEmptyInputs(subject, _a2)` |
+| isMachineOutputFull | `subject: hand, _a2: Vector3` | `boolean` | `obj:isMachineOutputFull(subject, _a2)` |
+| machineHasFullInputs | `subject: hand, _a2: Vector3` | `boolean` | `obj:machineHasFullInputs(subject, _a2)` |
+| isMachineOutputEmpty | `subject: hand, _a2: Vector3` | `boolean` | `obj:isMachineOutputEmpty(subject, _a2)` |
+| haveSomeResourcesFrom | `subject: hand, _a2: Vector3` | `boolean` | `obj:haveSomeResourcesFrom(subject, _a2)` |
+| haveSomeResourcesFromThisMachineButWantThemGoneIfPossible | `subject: hand, v: Vector3` | `boolean` | `obj:haveSomeResourcesFromThisMachineButWantThemGoneIfPossible(subject, v)` |
+| haveSomeResourcesFor | `subject: hand, _a2: Vector3` | `boolean` | `obj:haveSomeResourcesFor(subject, _a2)` |
+| isMachineJammed | `subject: hand, v: Vector3` | `boolean` | `obj:isMachineJammed(subject, v)` |
+| isAnyMachineJammed | `subject: hand, _a2: Vector3` | `boolean` | `obj:isAnyMachineJammed(subject, _a2)` |
+| isMachineInputInvalid | `subject: hand, _a2: Vector3` | `boolean` | `obj:isMachineInputInvalid(subject, _a2)` |
+| gotInventoryRoomForResources | `subject: hand, _a2: Vector3` | `boolean` | `obj:gotInventoryRoomForResources(subject, _a2)` |
+| isRouteTraceBlocked | `subject: hand, _a2: Vector3` | `boolean` | `obj:isRouteTraceBlocked(subject, _a2)` |
+| isDoorLocked | `subject: hand, _a2: Vector3` | `boolean` | `obj:isDoorLocked(subject, _a2)` |
+| isDoorLockedHere | `_a1: hand, _a2: Vector3` | `boolean` | `obj:isDoorLockedHere(_a1, _a2)` |
+| isDoorLockedAndMeInside | `subject: hand, _a2: Vector3` | `boolean` | `obj:isDoorLockedAndMeInside(subject, _a2)` |
+| isDoorLockedAndMeOutside | `subject: hand, _a2: Vector3` | `boolean` | `obj:isDoorLockedAndMeOutside(subject, _a2)` |
+| isObjectMine | `subject: hand, _a2: Vector3` | `boolean` | `obj:isObjectMine(subject, _a2)` |
+| isBuildingDamaged | `subject: hand, _a2: Vector3` | `boolean` | `obj:isBuildingDamaged(subject, _a2)` |
+| isBuildingDestroyed | `subject: hand, _a2: Vector3` | `boolean` | `obj:isBuildingDestroyed(subject, _a2)` |
+| isFullyRested | `subject: hand, _a2: Vector3` | `boolean` | `obj:isFullyRested(subject, _a2)` |
+| machineHasFreeOperatorSlot | `subject: hand, _a2: Vector3` | `boolean` | `obj:machineHasFreeOperatorSlot(subject, _a2)` |
+| isDialogDelivered | `subject: hand, _a2: Vector3` | `boolean` | `obj:isDialogDelivered(subject, _a2)` |
+| isMessageDelivered | `subject: hand, _a2: Vector3` | `boolean` | `obj:isMessageDelivered(subject, _a2)` |
+| isEnemyForceDefeated | `subject: hand, _a2: Vector3` | `boolean` | `obj:isEnemyForceDefeated(subject, _a2)` |
+| isInBed | `subject: hand, _a2: Vector3` | `boolean` | `obj:isInBed(subject, _a2)` |
+| isCarryingArmOK | `subject: hand, _a2: Vector3` | `boolean` | `obj:isCarryingArmOK(subject, _a2)` |
+| isAtAShop | `subject: hand, _a2: Vector3` | `boolean` | `obj:isAtAShop(subject, _a2)` |
+| boughtShitComplete | `subject: hand, _a2: Vector3` | `boolean` | `obj:boughtShitComplete(subject, _a2)` |
+| isInsideTargetBuilding | `what: hand, _a2: Vector3` | `boolean` | `obj:isInsideTargetBuilding(what, _a2)` |
+| allDoorsLocked | `subject: hand, v: Vector3` | `boolean` | `obj:allDoorsLocked(subject, v)` |
+| destinationNotBlockedByFortifications [1] | `target: RootObject` | `boolean` | `obj:destinationNotBlockedByFortifications(target)` |
+| destinationNotBlockedByFortifications [2] | `subject: hand, v: Vector3` | `boolean` | `obj:destinationNotBlockedByFortifications(subject, v)` |
+| atLocationGate | `subject: hand, v: Vector3` | `boolean` | `obj:atLocationGate(subject, v)` |
+| isAlly | `subject: hand, _a2: Vector3` | `boolean` | `obj:isAlly(subject, _a2)` |
+| buildingHasPower | `subject: hand, _a2: Vector3` | `boolean` | `obj:buildingHasPower(subject, _a2)` |
+| hasDestinationTown | `subject: hand, _a2: Vector3` | `boolean` | `obj:hasDestinationTown(subject, _a2)` |
+| isCarryingHealthyTarget | `subject: hand, v: Vector3` | `boolean` | `obj:isCarryingHealthyTarget(subject, v)` |
+| atDestinationTown | `subject: hand, v: Vector3` | `boolean` | `obj:atDestinationTown(subject, v)` |
+| atPackageTarget | `subject: hand, v: Vector3` | `boolean` | `obj:atPackageTarget(subject, v)` |
+| atATown | `subject: hand, _a2: Vector3` | `boolean` | `obj:atATown(subject, _a2)` |
+| targetAtATown | `subject: hand, _a2: Vector3` | `boolean` | `obj:targetAtATown(subject, _a2)` |
+| isTiredFromTravel | `subject: hand, _a2: Vector3` | `boolean` | `obj:isTiredFromTravel(subject, _a2)` |
+| scoreGetNextDestinationTown | `subject: hand, _a2: Vector3` | `number` | `obj:scoreGetNextDestinationTown(subject, _a2)` |
+| scoreWantsToGetUp_toFeet | `subject: hand, _a2: Vector3` | `number` | `obj:scoreWantsToGetUp_toFeet(subject, _a2)` |
+| scoreWantsToGetUp_stayLow | `subject: hand, _a2: Vector3` | `number` | `obj:scoreWantsToGetUp_stayLow(subject, _a2)` |
+| isNearTo | `subject: hand, loc: Vector3` | `boolean` | `obj:isNearTo(subject, loc)` |
+| isWithin50Meters | `subject: hand, loc: Vector3` | `boolean` | `obj:isWithin50Meters(subject, loc)` |
+| isWithin10Meters | `subject: hand, loc: Vector3` | `boolean` | `obj:isWithin10Meters(subject, loc)` |
+| isWithinMyBowRange | `subject: hand, loc: Vector3` | `boolean` | `obj:isWithinMyBowRange(subject, loc)` |
+| isTargetRestrainedOrKO | `subject: hand, loc: Vector3` | `boolean` | `obj:isTargetRestrainedOrKO(subject, loc)` |
+| isOccupantAlive | `subject: hand, loc: Vector3` | `boolean` | `obj:isOccupantAlive(subject, loc)` |
+| cagesAreAllFull | `subject: hand, loc: Vector3` | `boolean` | `obj:cagesAreAllFull(subject, loc)` |
+| iAmImprisoned | `subject: hand, loc: Vector3` | `boolean` | `obj:iAmImprisoned(subject, loc)` |
+| targetIsImprisoned | `subject: hand, loc: Vector3` | `boolean` | `obj:targetIsImprisoned(subject, loc)` |
+| targetIsMySlave | `subject: hand, loc: Vector3` | `boolean` | `obj:targetIsMySlave(subject, loc)` |
+| iveDitchedAllMyResources | `subject: hand, loc: Vector3` | `boolean` | `obj:iveDitchedAllMyResources(subject, loc)` |
+| targetHasBeenLootedOfResources | `subject: hand, loc: Vector3` | `boolean` | `obj:targetHasBeenLootedOfResources(subject, loc)` |
+| targetHasBeenLooted | `subject: hand, loc: Vector3` | `boolean` | `obj:targetHasBeenLooted(subject, loc)` |
+| usingTurret_Any | `subject: hand, loc: Vector3` | `boolean` | `obj:usingTurret_Any(subject, loc)` |
+| usingTurret_Target | `subject: hand, loc: Vector3` | `boolean` | `obj:usingTurret_Target(subject, loc)` |
+| strangersAreInMyBuilding | `subject: hand, loc: Vector3` | `boolean` | `obj:strangersAreInMyBuilding(subject, loc)` |
+| strangersAreInMyBuilding_andPrivate | `subject: hand, loc: Vector3` | `boolean` | `obj:strangersAreInMyBuilding_andPrivate(subject, loc)` |
+| buildingIsPublic | `subject: hand, loc: Vector3` | `boolean` | `obj:buildingIsPublic(subject, loc)` |
+| targetIsUnarmed | `subject: hand, loc: Vector3` | `boolean` | `obj:targetIsUnarmed(subject, loc)` |
+| _targetLooksLikeASlave | `subject: hand, loc: Vector3` | `boolean` | `obj:_targetLooksLikeASlave(subject, loc)` |
+| carryingExcessLoot | `subject: hand, loc: Vector3` | `boolean` | `obj:carryingExcessLoot(subject, loc)` |
+| isWorking | `subject: hand, loc: Vector3` | `boolean` | `obj:isWorking(subject, loc)` |
+| gotAFoodItem | `subject: hand, loc: Vector3` | `boolean` | `obj:gotAFoodItem(subject, loc)` |
+| iHaveSomeSlaves | `subject: hand, loc: Vector3` | `boolean` | `obj:iHaveSomeSlaves(subject, loc)` |
+| getALootableResourceItemFromTargetThatWeHaveStorageFor | `target: Character` | `Item` | `obj:getALootableResourceItemFromTargetThatWeHaveStorageFor(target)` |
+| targetLooksLikeASlave | `who: Character` | `boolean` | `obj:targetLooksLikeASlave(who)` |
+| slaveIsEscaping | `who: Character` | `boolean` | `obj:slaveIsEscaping(who)` |
+| slaveIsFollowingOrders | `who: Character` | `boolean` | `obj:slaveIsFollowingOrders(who)` |
+| isRunningAway | `who: Character, from: RootObject` | `boolean` | `obj:isRunningAway(who, from)` |
+| isWearingShackles | `subject: hand, loc: Vector3` | `boolean` | `obj:isWearingShackles(subject, loc)` |
+| isWearingShackles_locked | `subject: hand, loc: Vector3` | `boolean` | `obj:isWearingShackles_locked(subject, loc)` |
+| isTargetEscapee | `subject: hand, loc: Vector3` | `boolean` | `obj:isTargetEscapee(subject, loc)` |
+| isTargetInRangeForOrders [1] | `location: Vector3` | `boolean` | `obj:isTargetInRangeForOrders(location)` |
+| isTargetInRangeForOrders [2] | `who: RootObject` | `boolean` | `obj:isTargetInRangeForOrders(who)` |
+| isTargetInRangeForHOLDMode_hostiles | `who: Character` | `boolean` | `obj:isTargetInRangeForHOLDMode_hostiles(who)` |
+| getMaxTargetRangeForOrdersSq | `` | `number` | `obj:getMaxTargetRangeForOrdersSq()` |
+| targetMyself | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:targetMyself(oldSubject, justAsking)` |
+| findWeapon | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findWeapon(oldSubject, justAsking)` |
+| findSomebodyToLoot | `in: hand, justAsking: boolean` | `hand` | `obj:findSomebodyToLoot(in, justAsking)` |
+| findAttackerOf | `_of: hand, justAsking: boolean` | `hand` | `obj:findAttackerOf(_of, justAsking)` |
+| findAggressiveFellows | `_a1: hand, justAsking: boolean` | `hand` | `obj:findAggressiveFellows(_a1, justAsking)` |
+| wantGuardAggressionNeutralTargetCheck | `who: Character` | `boolean` | `obj:wantGuardAggressionNeutralTargetCheck(who)` |
+| findBounty | `_a1: hand, justAsking: boolean` | `hand` | `obj:findBounty(_a1, justAsking)` |
+| findKOIntruder | `_a1: hand, justAsking: boolean` | `hand` | `obj:findKOIntruder(_a1, justAsking)` |
+| findKOIntruder_town | `_a1: hand, justAsking: boolean` | `hand` | `obj:findKOIntruder_town(_a1, justAsking)` |
+| findTurretToUse | `_a1: hand, justAsking: boolean` | `hand` | `obj:findTurretToUse(_a1, justAsking)` |
+| findTurretToUseOnMyBuilding | `in: hand, justAsking: boolean` | `hand` | `obj:findTurretToUseOnMyBuilding(in, justAsking)` |
+| findMeleeOpponentForTerritorialAggression | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findMeleeOpponentForTerritorialAggression(oldSubject, justAsking)` |
+| findMeleeOpponentForFightingSlave | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findMeleeOpponentForFightingSlave(oldSubject, justAsking)` |
+| findMeleeOpponentForTerritorialAggressionWithNeutrals | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findMeleeOpponentForTerritorialAggressionWithNeutrals(oldSubject, justAsking)` |
+| findMeleeOpponent | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findMeleeOpponent(oldSubject, justAsking)` |
+| findMeleeOpponentNearMyTown | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findMeleeOpponentNearMyTown(oldSubject, justAsking)` |
+| findMeleeOpponentFromSquad | `in: hand, justAsking: boolean` | `hand` | `obj:findMeleeOpponentFromSquad(in, justAsking)` |
+| shouldIFreeMySlaveBuddies | `slave: Character` | `boolean` | `obj:shouldIFreeMySlaveBuddies(slave)` |
+| findAllyInNeed | `_a1: hand, justAsking: boolean` | `hand` | `obj:findAllyInNeed(_a1, justAsking)` |
+| findAllyInNeed_stayInTown | `_a1: hand, justAsking: boolean` | `hand` | `obj:findAllyInNeed_stayInTown(_a1, justAsking)` |
+| findSquadmateInNeed | `_a1: hand, justAsking: boolean` | `hand` | `obj:findSquadmateInNeed(_a1, justAsking)` |
+| findHome | `_a1: hand, justAsking: boolean` | `hand` | `obj:findHome(_a1, justAsking)` |
+| findShopkeeperNode | `_a1: hand, justAsking: boolean` | `hand` | `obj:findShopkeeperNode(_a1, justAsking)` |
+| findDefensiveNode | `_a1: hand, justAsking: boolean` | `hand` | `obj:findDefensiveNode(_a1, justAsking)` |
+| findGuardNodeForBuilding_inOrOut | `_a1: hand, justAsking: boolean` | `hand` | `obj:findGuardNodeForBuilding_inOrOut(_a1, justAsking)` |
+| findGuardNodeForBuilding_indoorOnly | `_a1: hand, justAsking: boolean` | `hand` | `obj:findGuardNodeForBuilding_indoorOnly(_a1, justAsking)` |
+| findGuardNodeForBuilding_nearestPlayer | `indoorsOnly: boolean` | `hand` | `obj:findGuardNodeForBuilding_nearestPlayer(indoorsOnly)` |
+| findGuardNodeForTown | `_a1: hand, justAsking: boolean` | `hand` | `obj:findGuardNodeForTown(_a1, justAsking)` |
+| findGeneralNode | `_a1: hand, justAsking: boolean` | `hand` | `obj:findGeneralNode(_a1, justAsking)` |
+| findGoodRecruitNode | `_a1: hand, justAsking: boolean` | `hand` | `obj:findGoodRecruitNode(_a1, justAsking)` |
+| findPublicGeneralNodeInTown | `_a1: hand, justAsking: boolean` | `hand` | `obj:findPublicGeneralNodeInTown(_a1, justAsking)` |
+| findWoundedAllies | `_a1: hand, justAsking: boolean` | `hand` | `obj:findWoundedAllies(_a1, justAsking)` |
+| findSplintableAllies | `in: hand, justAsking: boolean` | `hand` | `obj:findSplintableAllies(in, justAsking)` |
+| findWoundedAllies_Robots | `_a1: hand, justAsking: boolean` | `hand` | `obj:findWoundedAllies_Robots(_a1, justAsking)` |
+| _findWoundedAllies | `robots: boolean` | `hand` | `obj:_findWoundedAllies(robots)` |
+| findPrisonerFreeToGo | `_a1: hand, justAsking: boolean` | `hand` | `obj:findPrisonerFreeToGo(_a1, justAsking)` |
+| findPrisonerToLiberate | `_a1: hand, justAsking: boolean` | `hand` | `obj:findPrisonerToLiberate(_a1, justAsking)` |
+| findPrisonerWithContraband | `_a1: hand, justAsking: boolean` | `hand` | `obj:findPrisonerWithContraband(_a1, justAsking)` |
+| getCurrentBuilding | `in: hand, justAsking: boolean` | `hand` | `obj:getCurrentBuilding(in, justAsking)` |
+| getDestinationBuilding | `in: hand, justAsking: boolean` | `hand` | `obj:getDestinationBuilding(in, justAsking)` |
+| findJammedMachine | `in: hand, justAsking: boolean` | `hand` | `obj:findJammedMachine(in, justAsking)` |
+| findResourceSourceForMe | `in: hand, justAsking: boolean` | `hand` | `obj:findResourceSourceForMe(in, justAsking)` |
+| findResourceDestinationForMe | `in: hand, justAsking: boolean` | `hand` | `obj:findResourceDestinationForMe(in, justAsking)` |
+| findResourceDestinationFor | `forwhat: hand, includeMyInventoryContents: boolean` | `hand` | `obj:findResourceDestinationFor(forwhat, includeMyInventoryContents)` |
+| findResourceDestinationForMyLoot | `in: hand, justAsking: boolean` | `hand` | `obj:findResourceDestinationForMyLoot(in, justAsking)` |
+| findMineToWorkAt | `in: hand, justAsking: boolean` | `hand` | `obj:findMineToWorkAt(in, justAsking)` |
+| findMineToWorkAt_pretend | `in: hand, justAsking: boolean` | `hand` | `obj:findMineToWorkAt_pretend(in, justAsking)` |
+| findSomethingToDoInHome | `in: hand, justAsking: boolean` | `hand` | `obj:findSomethingToDoInHome(in, justAsking)` |
+| findSomethingToDo_lazy | `in: hand, justAsking: boolean` | `hand` | `obj:findSomethingToDo_lazy(in, justAsking)` |
+| findThrone | `in: hand, justAsking: boolean` | `hand` | `obj:findThrone(in, justAsking)` |
+| findBuildingMaterials | `in: hand, justAsking: boolean` | `hand` | `obj:findBuildingMaterials(in, justAsking)` |
+| findTalkTarget | `in: hand, justAsking: boolean` | `hand` | `obj:findTalkTarget(in, justAsking)` |
+| findDisabledAlly | `in: hand, justAsking: boolean` | `hand` | `obj:findDisabledAlly(in, justAsking)` |
+| findDisabledDude | `flagsAny: integer, flagsNot: integer, includeBeds: boolean` | `hand` | `obj:findDisabledDude(flagsAny, flagsNot, includeBeds)` |
+| findDisabledNonAlly | `in: hand, justAsking: boolean` | `hand` | `obj:findDisabledNonAlly(in, justAsking)` |
+| findSomeoneWhoWouldMakeAGoodSlave | `in: hand, justAsking: boolean` | `hand` | `obj:findSomeoneWhoWouldMakeAGoodSlave(in, justAsking)` |
+| findBadSlaves | `in: hand, justAsking: boolean` | `hand` | `obj:findBadSlaves(in, justAsking)` |
+| findNewSlaveOrPrisonerToProcess | `in: hand, justAsking: boolean` | `hand` | `obj:findNewSlaveOrPrisonerToProcess(in, justAsking)` |
+| findRandomOneOfMySlaves | `in: hand, justAsking: boolean` | `hand` | `obj:findRandomOneOfMySlaves(in, justAsking)` |
+| findConsciousSlaveInTown | `in: hand, justAsking: boolean` | `hand` | `obj:findConsciousSlaveInTown(in, justAsking)` |
+| findConsciousSlaveInTownForShipping | `in: hand, justAsking: boolean` | `hand` | `obj:findConsciousSlaveInTownForShipping(in, justAsking)` |
+| findConsciousSlaveInTown_unholy | `in: hand, justAsking: boolean` | `hand` | `obj:findConsciousSlaveInTown_unholy(in, justAsking)` |
+| findKOedSlaveOfMine | `in: hand, justAsking: boolean` | `hand` | `obj:findKOedSlaveOfMine(in, justAsking)` |
+| findCorpse_onGround | `in: hand, justAsking: boolean` | `hand` | `obj:findCorpse_onGround(in, justAsking)` |
+| findCorpse_onGround_detail | `in: hand, justAsking: boolean, carriableOnly: boolean, edibleOnly: boolean` | `hand` | `obj:findCorpse_onGround_detail(in, justAsking, carriableOnly, edibleOnly)` |
+| findCorpse_includingCages | `in: hand, justAsking: boolean` | `hand` | `obj:findCorpse_includingCages(in, justAsking)` |
+| findDeadOrKOBody_onGround | `in: hand, justAsking: boolean` | `hand` | `obj:findDeadOrKOBody_onGround(in, justAsking)` |
+| findCrops | `in: hand, justAsking: boolean` | `hand` | `obj:findCrops(in, justAsking)` |
+| findOwnedFreeBed | `in: hand, justAsking: boolean` | `hand` | `obj:findOwnedFreeBed(in, justAsking)` |
+| findOwnedFreeCage | `in: hand, justAsking: boolean` | `hand` | `obj:findOwnedFreeCage(in, justAsking)` |
+| findSlaveBuyer | `in: hand, justAsking: boolean` | `hand` | `obj:findSlaveBuyer(in, justAsking)` |
+| findEmptyCageBelongingToMaster | `in: hand, justAsking: boolean` | `hand` | `obj:findEmptyCageBelongingToMaster(in, justAsking)` |
+| findOwnedFullCage_MarkForDeath | `in: hand, justAsking: boolean` | `hand` | `obj:findOwnedFullCage_MarkForDeath(in, justAsking)` |
+| findCorpseDisposal | `in: hand, justAsking: boolean` | `hand` | `obj:findCorpseDisposal(in, justAsking)` |
+| findShop | `in: hand, justAsking: boolean` | `hand` | `obj:findShop(in, justAsking)` |
+| findPackageTarget | `in: hand, justAsking: boolean` | `hand` | `obj:findPackageTarget(in, justAsking)` |
+| getDestinationGate | `in: hand, justAsking: boolean` | `hand` | `obj:getDestinationGate(in, justAsking)` |
+| getBuildingToSmash | `in: hand, justAsking: boolean` | `hand` | `obj:getBuildingToSmash(in, justAsking)` |
+| findSomethingToBuild | `in: hand, justAsking: boolean` | `hand` | `obj:findSomethingToBuild(in, justAsking)` |
+| findNearestHomeBase | `in: hand, justAsking: boolean` | `hand` | `obj:findNearestHomeBase(in, justAsking)` |
+| findNextTown | `_a1: hand, justAsking: boolean` | `hand` | `obj:findNextTown(_a1, justAsking)` |
+| findSomethingToLootFoodFrom | `in: hand, justAsking: boolean` | `hand` | `obj:findSomethingToLootFoodFrom(in, justAsking)` |
+| findFoodOnGround | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findFoodOnGround(oldSubject, justAsking)` |
+| findLimbOnGround | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:findLimbOnGround(oldSubject, justAsking)` |
+| targetMyLeader | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:targetMyLeader(oldSubject, justAsking)` |
+| targetMySlavemaster | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:targetMySlavemaster(oldSubject, justAsking)` |
+| targetMyLeader_theRealOne | `oldSubject: hand, justAsking: boolean` | `hand` | `obj:targetMyLeader_theRealOne(oldSubject, justAsking)` |
+| findUnlockedDoorHere | `in: hand, justAsking: boolean` | `hand` | `obj:findUnlockedDoorHere(in, justAsking)` |
+| findLockedOrClosedDoorHere | `in: hand, justAsking: boolean` | `hand` | `obj:findLockedOrClosedDoorHere(in, justAsking)` |
+| findStrangersInMyBuilding | `in: hand, justAsking: boolean` | `hand` | `obj:findStrangersInMyBuilding(in, justAsking)` |
+| findUnlockedCage | `in: hand, justAsking: boolean` | `hand` | `obj:findUnlockedCage(in, justAsking)` |
+| findRandomBuildingInTown | `in: hand, justAsking: boolean` | `hand` | `obj:findRandomBuildingInTown(in, justAsking)` |
+| findFogmanWorshipTarget | `in: hand, _a3: boolean` | `hand` | `obj:findFogmanWorshipTarget(in, _a3)` |
+| findAnimalsToLoot | `in: hand, justAsking: boolean` | `hand` | `obj:findAnimalsToLoot(in, justAsking)` |
+| findAllyAnimalWithFoodInMouth | `in: hand, justAsking: boolean` | `hand` | `obj:findAllyAnimalWithFoodInMouth(in, justAsking)` |
+| findBodyWithResourceToLoot | `resourceNeeded: GameData, animalsOnly: boolean` | `Character` | `obj:findBodyWithResourceToLoot(resourceNeeded, animalsOnly)` |
+| _findOwnedCageThing | `wantEmpty: boolean, whatType: BuildingFunction` | `UseableStuff` | `obj:_findOwnedCageThing(wantEmpty, whatType)` |
+| findNode | `t: NodeType, forHomeBuildingOnly: boolean, indoorsOnly: boolean` | `hand` | `obj:findNode(t, forHomeBuildingOnly, indoorsOnly)` |
+| itemOnGroundStealingCheckIsSafe | `item: Item` | `boolean` | `obj:itemOnGroundStealingCheckIsSafe(item)` |
+| findSomeoneToLoot | `wantAWeapon: boolean` | `Character` | `obj:findSomeoneToLoot(wantAWeapon)` |
+| getAllLocalMachines | `buildingFunctions: integer` | `void` | `obj:getAllLocalMachines(buildingFunctions)` |
+| findResourceStorageBulidingFor | `needed: GameData, skip: StorageBuilding` | `StorageBuilding` | `obj:findResourceStorageBulidingFor(needed, skip)` |
+| rateWeapon | `item: Item` | `number` | `obj:rateWeapon(item)` |
+| canUseWeapon | `item: Item` | `boolean` | `obj:canUseWeapon(item)` |
+| scoreTargetRange | `range: number` | `number` | `obj:scoreTargetRange(range)` |
+| scoreDistanceTo | `target: RootObject, holdPositionMode: boolean` | `number` | `obj:scoreDistanceTo(target, holdPositionMode)` |
+| scoreSplint | `_subject: hand, _a2: Vector3` | `number` | `obj:scoreSplint(_subject, _a2)` |
+| scoreFirstAid | `_subject: hand, _a2: Vector3` | `number` | `obj:scoreFirstAid(_subject, _a2)` |
+| scoreFixMyLegs | `_subject: hand, v: Vector3` | `number` | `obj:scoreFixMyLegs(_subject, v)` |
+| scoreFirstAidRobot | `_subject: hand, _a2: Vector3` | `number` | `obj:scoreFirstAidRobot(_subject, _a2)` |
+| scorePutCarriedDudeDown | `subject: hand, _a2: Vector3` | `number` | `obj:scorePutCarriedDudeDown(subject, _a2)` |
+| scoreJobMedic | `_subject: hand, _a2: Vector3` | `number` | `obj:scoreJobMedic(_subject, _a2)` |
+| scorePutCarriedDudeInBed | `subject: hand, _a2: Vector3` | `number` | `obj:scorePutCarriedDudeInBed(subject, _a2)` |
+| scorePutCarriedDudeInCage | `subject: hand, _a2: Vector3` | `number` | `obj:scorePutCarriedDudeInCage(subject, _a2)` |
+| scoreCarryingIntruder | `subject: hand, _a2: Vector3` | `number` | `obj:scoreCarryingIntruder(subject, _a2)` |
+| scoreFindAndRescue | `subject: hand, _a2: Vector3` | `number` | `obj:scoreFindAndRescue(subject, _a2)` |
+| scoreFindAndRescueIfTheresBeds | `subject: hand, _a2: Vector3` | `number` | `obj:scoreFindAndRescueIfTheresBeds(subject, _a2)` |
+| scoreRescueLeader | `subject: hand, _a2: Vector3` | `number` | `obj:scoreRescueLeader(subject, _a2)` |
+| scoreFindAndKidnap | `subject: hand, _a2: Vector3` | `number` | `obj:scoreFindAndKidnap(subject, _a2)` |
+| scoreKidnapperCageJob | `subject: hand, v: Vector3` | `number` | `obj:scoreKidnapperCageJob(subject, v)` |
+| scoreShopping | `subject: hand, v: Vector3` | `number` | `obj:scoreShopping(subject, v)` |
+| scoreProtectAllies | `subject: hand, _a2: Vector3` | `number` | `obj:scoreProtectAllies(subject, _a2)` |
+| scoreStayClose | `subject: hand, p: Vector3` | `number` | `obj:scoreStayClose(subject, p)` |
+| scoreStayCloseIsh | `subject: hand, p: Vector3` | `number` | `obj:scoreStayCloseIsh(subject, p)` |
+| scorePutDudeInCage | `who: hand` | `number` | `obj:scorePutDudeInCage(who)` |
+| scoreUnderAttack | `in: hand, _a2: Vector3` | `number` | `obj:scoreUnderAttack(in, _a2)` |
+| scoreEmptyMachine | `in: hand, _a2: Vector3` | `number` | `obj:scoreEmptyMachine(in, _a2)` |
+| scoreNone | `subject: hand, _a2: Vector3` | `number` | `obj:scoreNone(subject, _a2)` |
+| scoreCannibalKill | `subject: hand, _a2: Vector3` | `number` | `obj:scoreCannibalKill(subject, _a2)` |
+| scoreAutoMachinery | `subject: hand, _a2: Vector3` | `number` | `obj:scoreAutoMachinery(subject, _a2)` |
+| scoreCollectOutputResource | `subject: hand, _a2: Vector3` | `number` | `obj:scoreCollectOutputResource(subject, _a2)` |
+| scoreCollectOutputResourceForBuildMats | `subject: hand, _a2: Vector3` | `number` | `obj:scoreCollectOutputResourceForBuildMats(subject, _a2)` |
+| scoreGetFood_inHomeTown | `subject: hand, v: Vector3` | `number` | `obj:scoreGetFood_inHomeTown(subject, v)` |
+| scoreFindFoodOnGround | `subject: hand, _a2: Vector3` | `number` | `obj:scoreFindFoodOnGround(subject, _a2)` |
+| scoreGetFood_inHomeTown_andFeedAnimals | `subject: hand, v: Vector3` | `number` | `obj:scoreGetFood_inHomeTown_andFeedAnimals(subject, v)` |
+| scoreUnlockDoorHere | `subject: hand, _a2: Vector3` | `number` | `obj:scoreUnlockDoorHere(subject, _a2)` |
+| scoreGetOutOfBed | `subject: hand, _a2: Vector3` | `number` | `obj:scoreGetOutOfBed(subject, _a2)` |
+| scoreGetOutOfBedOnceFullyHealed | `subject: hand, v: Vector3` | `number` | `obj:scoreGetOutOfBedOnceFullyHealed(subject, v)` |
+| scoreGoToBed | `subject: hand, _a2: Vector3` | `number` | `obj:scoreGoToBed(subject, _a2)` |
+| scoreHomeIsNotLockedUp | `subject: hand, _a2: Vector3` | `number` | `obj:scoreHomeIsNotLockedUp(subject, _a2)` |
+| scoreDontLeaveTown | `subject: hand, _a2: Vector3` | `number` | `obj:scoreDontLeaveTown(subject, _a2)` |
+| scoreFoundCages | `subject: hand, _a2: Vector3` | `number` | `obj:scoreFoundCages(subject, _a2)` |
+| scoreHasWorkingArm | `subject: hand, v: Vector3` | `number` | `obj:scoreHasWorkingArm(subject, v)` |
+| scoreUseTurret | `subject: hand, _a2: Vector3` | `number` | `obj:scoreUseTurret(subject, _a2)` |
+| scoreAggressiveAction | `subject: hand, _a2: Vector3` | `number` | `obj:scoreAggressiveAction(subject, _a2)` |
+| scoreBashGate | `subject: hand, v: Vector3` | `number` | `obj:scoreBashGate(subject, v)` |
+| scoreNPCEscapeCageOpportunity | `subject: hand, _a2: Vector3` | `number` | `obj:scoreNPCEscapeCageOpportunity(subject, _a2)` |
+| score01 | `subject: hand, _a2: Vector3` | `number` | `obj:score01(subject, _a2)` |
+| score025 | `subject: hand, _a2: Vector3` | `number` | `obj:score025(subject, _a2)` |
+| score05 | `subject: hand, _a2: Vector3` | `number` | `obj:score05(subject, _a2)` |
+| score08 | `subject: hand, _a2: Vector3` | `number` | `obj:score08(subject, _a2)` |
+| score10 | `subject: hand, _a2: Vector3` | `number` | `obj:score10(subject, _a2)` |
+| scoreCanSeeTarget | `subject: hand, _a2: Vector3` | `number` | `obj:scoreCanSeeTarget(subject, _a2)` |
+| score12 | `subject: hand, _a2: Vector3` | `number` | `obj:score12(subject, _a2)` |
+| score15 | `subject: hand, _a2: Vector3` | `number` | `obj:score15(subject, _a2)` |
+| score20 | `subject: hand, _a2: Vector3` | `number` | `obj:score20(subject, _a2)` |
+| scoreRandomFluff | `subject: hand, _a2: Vector3` | `number` | `obj:scoreRandomFluff(subject, _a2)` |
+| scoreHuntingBlood | `subject: hand, _a2: Vector3` | `number` | `obj:scoreHuntingBlood(subject, _a2)` |
+| scoreHuntingEggs | `subject: hand, _a2: Vector3` | `number` | `obj:scoreHuntingEggs(subject, _a2)` |
+| scoreTargetInDanger | `subject: hand, _a2: Vector3` | `number` | `obj:scoreTargetInDanger(subject, _a2)` |
+| scoreAttackEnemies | `subject: hand, _a2: Vector3` | `number` | `obj:scoreAttackEnemies(subject, _a2)` |
+| scoreMeleeAttack | `subject: hand, v: Vector3` | `number` | `obj:scoreMeleeAttack(subject, v)` |
+| scoreRangedAttack | `subject: hand, _a2: Vector3` | `number` | `obj:scoreRangedAttack(subject, _a2)` |
+| scoreRunAway | `subject: hand, _a2: Vector3` | `number` | `obj:scoreRunAway(subject, _a2)` |
+| scoreRetreat | `subject: hand, _a2: Vector3` | `number` | `obj:scoreRetreat(subject, _a2)` |
+| scoreMove | `subject: hand, _a2: Vector3` | `number` | `obj:scoreMove(subject, _a2)` |
+| scoreDontWantToBeUnarmed | `subject: hand, _a2: Vector3` | `number` | `obj:scoreDontWantToBeUnarmed(subject, _a2)` |
+| scoreLiftObject | `subject: hand, _a2: Vector3` | `number` | `obj:scoreLiftObject(subject, _a2)` |
+| scoreLiftIntruder | `subject: hand, v: Vector3` | `number` | `obj:scoreLiftIntruder(subject, v)` |
+| scoreChainNewSlave | `subject: hand, v: Vector3` | `number` | `obj:scoreChainNewSlave(subject, v)` |
+| scoreNotDown | `subject: hand, v: Vector3` | `number` | `obj:scoreNotDown(subject, v)` |
+| scoreNoMoreThan4Slaves | `subject: hand, _a2: Vector3` | `number` | `obj:scoreNoMoreThan4Slaves(subject, _a2)` |
+| scoreSlaveExportTown | `subject: hand, _a2: Vector3` | `number` | `obj:scoreSlaveExportTown(subject, _a2)` |
+| scoreHasSomeSlaves | `subject: hand, _a2: Vector3` | `number` | `obj:scoreHasSomeSlaves(subject, _a2)` |
+| scoreHasSomeSlavesAndAtImportTown | `subject: hand, v: Vector3` | `number` | `obj:scoreHasSomeSlavesAndAtImportTown(subject, v)` |
+| scoreAmTheRealLeader | `subject: hand, v: Vector3` | `number` | `obj:scoreAmTheRealLeader(subject, v)` |
+| scoreAtAttackableTown | `_a1: hand, _a2: Vector3` | `number` | `obj:scoreAtAttackableTown(_a1, _a2)` |
+| scoreDogPlaying | `subject: hand, _a2: Vector3` | `number` | `obj:scoreDogPlaying(subject, _a2)` |
+| scoreDogPlayingChase | `subject: hand, _a2: Vector3` | `number` | `obj:scoreDogPlayingChase(subject, _a2)` |
+| scoreHomeIsPrivate | `subject: hand, _a2: Vector3` | `number` | `obj:scoreHomeIsPrivate(subject, _a2)` |
+| scoreNotKOOrPlayingDead | `subject: hand, _a2: Vector3` | `number` | `obj:scoreNotKOOrPlayingDead(subject, _a2)` |
+| scoreTargetInMyTown | `subject: hand, _a2: Vector3` | `number` | `obj:scoreTargetInMyTown(subject, _a2)` |
+
 ## AkSoundPosition
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 **Metatable:** `KenshiLua.AkSoundPosition`
@@ -601,6 +1018,182 @@
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
 
+## AnimationClass
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationClass`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| appearance | `AppearanceBase` | R | `obj.appearance` |
+| strafeBlendFilter | `MotionFilter` | R | `obj.strafeBlendFilter` |
+| feetHeight | `number` | RW | `obj.feetHeight = <value>` |
+| bootHeight | `number` | RW | `obj.bootHeight = <value>` |
+| totalActionWeight | `number` | RW | `obj.totalActionWeight = <value>` |
+| disableRagdollKinematics | `integer` | RW | `obj.disableRagdollKinematics = <value>` |
+| me | `Character` | RW | `obj.me = <value>` |
+| ragdollParts | `RagdollPart::Enum` | RW | `obj.ragdollParts = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| debugGetAllAnimations | `panel: DatapanelGUI` | `void` | `obj:debugGetAllAnimations(panel)` |
+| endStumble | `` | `void` | `obj:endStumble()` |
+| currentlyStumbling | `` | `boolean` | `obj:currentlyStumbling()` |
+| isCurrentlyIncapableOfWaypointMovemode | `` | `boolean` | `obj:isCurrentlyIncapableOfWaypointMovemode()` |
+| threadSafeRagdollUpdateUT | `` | `void` | `obj:threadSafeRagdollUpdateUT()` |
+| update | `frameTIME: number` | `void` | `obj:update(frameTIME)` |
+| calculatePositionWithWaterHeight | `` | `number` | `obj:calculatePositionWithWaterHeight()` |
+| updateAnimationCharacterEditor | `time: number` | `void` | `obj:updateAnimationCharacterEditor(time)` |
+| updateThreaded | `frameTIME: number` | `void` | `obj:updateThreaded(frameTIME)` |
+| rotationUpdate | `frameTime: number` | `void` | `obj:rotationUpdate(frameTime)` |
+| updateAnimationTransforms | `` | `void` | `obj:updateAnimationTransforms()` |
+| setPosition [1] | `pos: Vector3` | `void` | `obj:setPosition(pos)` |
+| setPosition [2] | `pos: Vector3, dir: Quaternion` | `void` | `obj:setPosition(pos, dir)` |
+| setPosition [3] | `pos: Vector3, dir: Vector3` | `void` | `obj:setPosition(pos, dir)` |
+| getPosition | `` | `Vector3` | `obj:getPosition()` |
+| rotateEntityAroundBone | `bone: string, dir: Vector3` | `Vector3` | `obj:rotateEntityAroundBone(bone, dir)` |
+| getBoneScale | `bonename: string` | `Vector3` | `obj:getBoneScale(bonename)` |
+| deactivateVisuals | `` | `void` | `obj:deactivateVisuals()` |
+| getIsActivated | `` | `boolean` | `obj:getIsActivated()` |
+| resetBody | `` | `void` | `obj:resetBody()` |
+| restartAction | `name: string` | `boolean` | `obj:restartAction(name)` |
+| playAction [1] | `anim: AnimationData, speedMult: number, initialWeight: number, isStumble: boolean` | `void` | `obj:playAction(anim, speedMult, initialWeight, isStumble)` |
+| playAction [2] | `dataname: string, speedMult: number, initialWeight: number, isStumble: boolean` | `void` | `obj:playAction(dataname, speedMult, initialWeight, isStumble)` |
+| stopAction [1] | `` | `boolean` | `obj:stopAction()` |
+| stopAction [2] | `name: string` | `boolean` | `obj:stopAction(name)` |
+| setAnimationMoveSpeed | `speed: number` | `void` | `obj:setAnimationMoveSpeed(speed)` |
+| setStrafeSpeed | `speed: number` | `void` | `obj:setStrafeSpeed(speed)` |
+| setCombatMode | `on: boolean` | `void` | `obj:setCombatMode(on)` |
+| setWeatherType | `w: WeatherAffecting, stren: number, doWeatherAnimation: boolean` | `void` | `obj:setWeatherType(w, stren, doWeatherAnimation)` |
+| getWeatherType | `` | `WeatherAffecting` | `obj:getWeatherType()` |
+| getWeatherStrength | `` | `number` | `obj:getWeatherStrength()` |
+| setStealthMode | `on: boolean` | `void` | `obj:setStealthMode(on)` |
+| setMaximumSpeed | `speed: number` | `void` | `obj:setMaximumSpeed(speed)` |
+| getMaximumSpeed | `` | `number` | `obj:getMaximumSpeed()` |
+| isLinearAnimationDone_byName | `name: string` | `boolean` | `obj:isLinearAnimationDone_byName(name)` |
+| getFootHeight | `` | `number` | `obj:getFootHeight()` |
+| calculateFeetHeight | `` | `void` | `obj:calculateFeetHeight()` |
+| setBootHeight | `h: number` | `void` | `obj:setBootHeight(h)` |
+| isBeingCarried | `` | `boolean` | `obj:isBeingCarried()` |
+| isTotallyRagdoll | `` | `boolean` | `obj:isTotallyRagdoll()` |
+| notifyRagdollNeedsAnUpdate | `` | `void` | `obj:notifyRagdollNeedsAnUpdate()` |
+| setCarryMode | `ed: boolean, left: boolean, right: boolean` | `void` | `obj:setCarryMode(ed, left, right)` |
+| setCombatModeLegsIdle | `on: boolean` | `void` | `obj:setCombatModeLegsIdle(on)` |
+| setCombatModeUpperIdle | `on: boolean` | `void` | `obj:setCombatModeUpperIdle(on)` |
+| isRagdoll | `` | `boolean` | `obj:isRagdoll()` |
+| ragdollAnimateTo | `targetAnimationName: string, duration: number` | `void` | `obj:ragdollAnimateTo(targetAnimationName, duration)` |
+| isRagdollAnimated | `` | `boolean` | `obj:isRagdollAnimated()` |
+| ragdollModeUT | `on: boolean, momentum: Vector3, part: RagdollPart::Enum, physicsFile: string, me: Character` | `void` | `obj:ragdollModeUT(on, momentum, part, physicsFile, me)` |
+| postRagdollCreationCallbackMT | `on: boolean` | `void` | `obj:postRagdollCreationCallbackMT(on)` |
+| hasRagdollPart | `part: RagdollPart::Enum` | `boolean` | `obj:hasRagdollPart(part)` |
+| isPhysical | `` | `boolean` | `obj:isPhysical()` |
+| getHeight | `` | `number` | `obj:getHeight()` |
+| randomiseAnimationPosition | `` | `void` | `obj:randomiseAnimationPosition()` |
+| beingCarriedUpdate | `pos: Vector3, rot: Quaternion` | `Vector3` | `obj:beingCarriedUpdate(pos, rot)` |
+| rangedCombatModeUpdate | `targetpos: Vector3` | `void` | `obj:rangedCombatModeUpdate(targetpos)` |
+| runAnimation [1] | `anim: AnimationData, speed: number, lay: AnimationLayerEnum, blend: number` | `void` | `obj:runAnimation(anim, speed, lay, blend)` |
+| runAnimation [2] | `anim: AnimationData, speed: number, lay: AnimationLayerEnum, blend: number, ext: string` | `void` | `obj:runAnimation(anim, speed, lay, blend, ext)` |
+| runAnimation [3] | `anim: AnimationData, speed: number, blend: number` | `void` | `obj:runAnimation(anim, speed, blend)` |
+| runAnimation [4] | `name: string, speed: number, blend: number` | `void` | `obj:runAnimation(name, speed, blend)` |
+| endCombatAnimation | `` | `void` | `obj:endCombatAnimation()` |
+| runCombatAnimation | `anim: CombatTechniqueData, speed: number, additionalString: string` | `void` | `obj:runCombatAnimation(anim, speed, additionalString)` |
+| startCombatAnimation | `anim: CombatTechniqueData, speed: number, additionalString: string` | `void` | `obj:startCombatAnimation(anim, speed, additionalString)` |
+| startAnimation [1] | `dat: AnimationData, speed: number, startWeight: number` | `void` | `obj:startAnimation(dat, speed, startWeight)` |
+| startAnimation [2] | `anim: string, speed: number, startWeight: number` | `void` | `obj:startAnimation(anim, speed, startWeight)` |
+| stopAnimation [1] | `anim: string` | `void` | `obj:stopAnimation(anim)` |
+| stopAnimation [2] | `ad: AnimationData` | `void` | `obj:stopAnimation(ad)` |
+| activateVisuals | `` | `void` | `obj:activateVisuals()` |
+| estimateAnimationTime | `name: string` | `number` | `obj:estimateAnimationTime(name)` |
+| notifyRelocatedAnimLoop | `` | `void` | `obj:notifyRelocatedAnimLoop()` |
+| serialiseAppearance | `state: GameData` | `void` | `obj:serialiseAppearance(state)` |
+| setAppearanceData | `data: GameDataCopyStandalone` | `void` | `obj:setAppearanceData(data)` |
+| getAppearanceData | `` | `GameDataCopyStandalone` | `obj:getAppearanceData()` |
+| getAudioObject | `` | `integer` | `obj:getAudioObject()` |
+| playSlaveAnim | `name: string, speedMult: number, sync: number, startWeight: number` | `void` | `obj:playSlaveAnim(name, speedMult, sync, startWeight)` |
+| runSlaveAnim | `name: string, speedMult: number, sync: number, startWeight: number` | `void` | `obj:runSlaveAnim(name, speedMult, sync, startWeight)` |
+| endSlaveAnim | `anim: string` | `void` | `obj:endSlaveAnim(anim)` |
+| isSlaveAnimating | `` | `boolean` | `obj:isSlaveAnimating()` |
+| setSlaveHandle | `h: hand` | `void` | `obj:setSlaveHandle(h)` |
+| slaveAttachToBoneMode | `bone: string` | `void` | `obj:slaveAttachToBoneMode(bone)` |
+| isSlaveAttachToBoneMode | `` | `string` | `obj:isSlaveAttachToBoneMode()` |
+| getCharacter | `` | `Character` | `obj:getCharacter()` |
+| setLegDamage | `left: number, right: number` | `void` | `obj:setLegDamage(left, right)` |
+| setDesiredPainOverlayAnimOverride | `anim: string` | `void` | `obj:setDesiredPainOverlayAnimOverride(anim)` |
+| ragdollTheWeapons | `slotname: string, item: Item, attach: boolean` | `void` | `obj:ragdollTheWeapons(slotname, item, attach)` |
+| setStance | `crouch: boolean, prone: boolean` | `void` | `obj:setStance(crouch, prone)` |
+| setStanceAnimation | `_a1: StanceEnum` | `void` | `obj:setStanceAnimation(_a1)` |
+| setEquipmentInHand | `l: boolean, r: boolean` | `void` | `obj:setEquipmentInHand(l, r)` |
+| isTurning | `` | `boolean` | `obj:isTurning()` |
+| isTurningFar | `` | `boolean` | `obj:isTurningFar()` |
+| lookAt | `position: Vector3` | `boolean` | `obj:lookAt(position)` |
+| getLookDirection | `` | `Vector3` | `obj:getLookDirection()` |
+| hasAction | `` | `boolean` | `obj:hasAction()` |
+| animationSelection | `_TIME: number` | `void` | `obj:animationSelection(_TIME)` |
+| animationSelectionCombatMode | `_TIME: number` | `void` | `obj:animationSelectionCombatMode(_TIME)` |
+| overlaidAnimationSelection | `` | `void` | `obj:overlaidAnimationSelection()` |
+| processTurnAnim | `` | `boolean` | `obj:processTurnAnim()` |
+| breathing | `armsToo: boolean` | `void` | `obj:breathing(armsToo)` |
+
+## AnimationClassBase
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationClassBase`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| zeroOutTheBlending | `boolean` | RW | `obj.zeroOutTheBlending = <value>` |
+| boneInitialWorldPositions | `unknown` | RW | `obj.boneInitialWorldPositions = <value>` |
+| boneInitialWorldOrientations | `BoneQuaternionMapBinding::MapType` | RW | `obj.boneInitialWorldOrientations = <value>` |
+| desiredOrientation | `Quaternion` | RW | `obj.desiredOrientation = <value>` |
+| isActivated | `boolean` | RW | `obj.isActivated = <value>` |
+| activateFlag | `boolean` | RW | `obj.activateFlag = <value>` |
+| lastAnimRelocation | `Vector3` | RW | `obj.lastAnimRelocation = <value>` |
+| rootBonePosition | `Vector3` | RW | `obj.rootBonePosition = <value>` |
+| isVisible | `boolean` | RW | `obj.isVisible = <value>` |
+| isIdle | `boolean` | RW | `obj.isIdle = <value>` |
+| movement | `CharMovement` | RW | `obj.movement = <value>` |
+| masterTime | `number` | RW | `obj.masterTime = <value>` |
+| masterSpeed | `number` | RW | `obj.masterSpeed = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setVisible | `on: boolean` | `void` | `obj:setVisible(on)` |
+| getVisible | `` | `boolean` | `obj:getVisible()` |
+| stopAllAnimation | `hardStop: boolean` | `void` | `obj:stopAllAnimation(hardStop)` |
+| clearAllAnimationUT | `` | `void` | `obj:clearAllAnimationUT()` |
+| getBoneWorldOrientation | `name: string` | `Quaternion` | `obj:getBoneWorldOrientation(name)` |
+| getBoneWorldPosition | `name: string, scale: number` | `Vector3` | `obj:getBoneWorldPosition(name, scale)` |
+| getHasBone | `name: string` | `boolean` | `obj:getHasBone(name)` |
+| hasAnimation | `s: string` | `boolean` | `obj:hasAnimation(s)` |
+| getSceneNodePosition | `` | `Vector3` | `obj:getSceneNodePosition()` |
+| getSceneNodeOrientation | `` | `Quaternion` | `obj:getSceneNodeOrientation()` |
+| getBoneLocalOrientation | `name: string` | `Quaternion` | `obj:getBoneLocalOrientation(name)` |
+| getBoneLocalPosition | `name: string` | `Vector3` | `obj:getBoneLocalPosition(name)` |
+| getRootBoneWorldPosition | `` | `Vector3` | `obj:getRootBoneWorldPosition()` |
+| getRootBoneLocalPosition | `` | `Vector3` | `obj:getRootBoneLocalPosition()` |
+| getBoneInitialLocalPosition | `name: string` | `Vector3` | `obj:getBoneInitialLocalPosition(name)` |
+| getBoneInitialLocalOrientation | `name: string` | `Quaternion` | `obj:getBoneInitialLocalOrientation(name)` |
+| getBoneInitialWorldPosition | `name: string` | `Vector3` | `obj:getBoneInitialWorldPosition(name)` |
+| getBoneInitialWorldOrientation | `name: string` | `Quaternion` | `obj:getBoneInitialWorldOrientation(name)` |
+| resetOrientation | `` | `void` | `obj:resetOrientation()` |
+| getAnimationProgress [1] | `name: CombatTechniqueData` | `number` | `obj:getAnimationProgress(name)` |
+| getAnimationProgress [2] | `name: AnimationData` | `number` | `obj:getAnimationProgress(name)` |
+| getAnimationProgress [3] | `name: string` | `number` | `obj:getAnimationProgress(name)` |
+| getOrientation | `` | `Quaternion` | `obj:getOrientation()` |
+| setVerticalPosition | `hpos: number` | `void` | `obj:setVerticalPosition(hpos)` |
+| getAudioObject | `` | `integer` | `obj:getAudioObject()` |
+| getCharacter | `` | `Character` | `obj:getCharacter()` |
+| setMasterTimeSpeed | `speed: number` | `void` | `obj:setMasterTimeSpeed(speed)` |
+| getMasterTimeSpeed | `` | `number` | `obj:getMasterTimeSpeed()` |
+| getMasterTime | `` | `number` | `obj:getMasterTime()` |
+| isVisibleEntity | `` | `boolean` | `obj:isVisibleEntity()` |
+| initBoneInitialWorldPositions | `` | `void` | `obj:initBoneInitialWorldPositions()` |
+| isAnimationPlaying | `name: string` | `boolean` | `obj:isAnimationPlaying(name)` |
+| getTotalActionAnimationWeight | `` | `number` | `obj:getTotalActionAnimationWeight()` |
+| stillPlayingAnActionOrSomething | `` | `boolean` | `obj:stillPlayingAnActionOrSomething()` |
+
 ## AppearanceAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
 **Metatable:** `KenshiLua.AppearanceAnimal`
@@ -627,7 +1220,7 @@
 | me | `Character` | RW | `obj.me = <value>` |
 | visible | `boolean` | RW | `obj.visible = <value>` |
 | bodyFilename | `string` | RW | `obj.bodyFilename = <value>` |
-| animation | `lightuserdata` | R | `obj.animation` |
+| animation | `AnimationClass` | R | `obj.animation` |
 | female | `boolean` | RW | `obj.female = <value>` |
 | updatedAttachments | `boolean` | RW | `obj.updatedAttachments = <value>` |
 | updatedAppearanceData | `boolean` | RW | `obj.updatedAppearanceData = <value>` |
@@ -674,7 +1267,7 @@
 | hasSlot | `slot: string` | `boolean` | `obj:hasSlot(slot)` |
 | getNormalisedCharacterHeight | `` | `number` | `obj:getNormalisedCharacterHeight()` |
 | getCharacterHeight | `` | `number` | `obj:getCharacterHeight()` |
-| getAnimationSystem | `` | `lightuserdata` | `obj:getAnimationSystem()` |
+| getAnimationSystem | `` | `AnimationClass` | `obj:getAnimationSystem()` |
 | getSceneNode | `` | `lightuserdata` | `obj:getSceneNode()` |
 | getSkeleton | `` | `lightuserdata` | `obj:getSkeleton()` |
 | getBody | `` | `lightuserdata` | `obj:getBody()` |
@@ -1560,7 +2153,7 @@
 | playerWantsMeToGetUp | `boolean` | RW | `obj.playerWantsMeToGetUp = <value>` |
 | crimes | `BountyManager` | RW | `obj.crimes = <value>` |
 | currentSkillUsing | `StatsEnumerated` | RW | `obj.currentSkillUsing = <value>` |
-| stateBroadcast | `lightuserdata` | RW | `obj.stateBroadcast = <value>` |
+| stateBroadcast | `StateBroadcastData` | RW | `obj.stateBroadcast = <value>` |
 | isVisibleAndNear | `boolean` | RW | `obj.isVisibleAndNear = <value>` |
 | isOnScreen | `boolean` | RW | `obj.isOnScreen = <value>` |
 | stealthMarkerArrows | `Character::AttachedArrowManager` | R | `obj.stealthMarkerArrows` |
@@ -1593,7 +2186,7 @@
 | diplomacyMultiplier | `number` | RW | `obj.diplomacyMultiplier = <value>` |
 | _destinationInsideBuilding | `hand` | RW | `obj._destinationInsideBuilding = <value>` |
 | _destinationInsideWalls | `integer` | RW | `obj._destinationInsideWalls = <value>` |
-| animation | `lightuserdata` | RW | `obj.animation = <value>` |
+| animation | `AnimationClass` | RW | `obj.animation = <value>` |
 | stats | `CharStats` | RW | `obj.stats = <value>` |
 | medical | `MedicalSystem` | RW | `obj.medical = <value>` |
 | isPhysicalMode | `boolean` | RW | `obj.isPhysicalMode = <value>` |
@@ -1601,7 +2194,7 @@
 | nameTag | `lightuserdata` | RW | `obj.nameTag = <value>` |
 | movement | `CharMovement` | RW | `obj.movement = <value>` |
 | body | `CharBody` | RW | `obj.body = <value>` |
-| ai | `lightuserdata` | RW | `obj.ai = <value>` |
+| ai | `AI` | RW | `obj.ai = <value>` |
 | platoon | `ActivePlatoon` | RW | `obj.platoon = <value>` |
 | portraitIndex | `integer` | RW | `obj.portraitIndex = <value>` |
 | portraitSerial | `integer` | RW | `obj.portraitSerial = <value>` |
@@ -1655,7 +2248,7 @@
 | offscreenUpdate | `` | `void` | `obj:offscreenUpdate()` |
 | updateTimes | `` | `void` | `obj:updateTimes()` |
 | getSensoryData | `` | `SensoryData` | `obj:getSensoryData()` |
-| getStateBroadcast | `` | `lightuserdata` | `obj:getStateBroadcast()` |
+| getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
 | getFormation | `` | `lightuserdata` | `obj:getFormation()` |
 | getEnemyFormation | `` | `lightuserdata` | `obj:getEnemyFormation()` |
 | AIDestinationIndoorOutdoorCheck | `who: RootObject` | `boolean` | `obj:AIDestinationIndoorOutdoorCheck(who)` |
@@ -1820,7 +2413,7 @@
 | getStats | `` | `CharStats` | `obj:getStats()` |
 | getMedical | `` | `MedicalSystem` | `obj:getMedical()` |
 | getOwnerships | `` | `Ownerships` | `obj:getOwnerships()` |
-| getAI | `` | `lightuserdata` | `obj:getAI()` |
+| getAI | `` | `AI` | `obj:getAI()` |
 | getAttackTarget | `` | `hand` | `obj:getAttackTarget()` |
 | isInCombatMode | `melee: boolean, ranged: boolean` | `boolean` | `obj:isInCombatMode(melee, ranged)` |
 | isInRangedCombatMode | `` | `boolean` | `obj:isInRangedCombatMode()` |
@@ -1887,7 +2480,7 @@
 | isEnemy | `who: Character, factorInDisguises: boolean` | `boolean` | `obj:isEnemy(who, factorInDisguises)` |
 | isAlly | `who: Character, factorInDisguises: boolean` | `boolean` | `obj:isAlly(who, factorInDisguises)` |
 | getDefaultTaskRepertoireEnum | `` | `integer` | `obj:getDefaultTaskRepertoireEnum()` |
-| getAnimationClass | `` | `lightuserdata` | `obj:getAnimationClass()` |
+| getAnimationClass | `` | `AnimationClass` | `obj:getAnimationClass()` |
 | getPredictedPosition | `secondsInFuture: number` | `Vector3` | `obj:getPredictedPosition(secondsInFuture)` |
 | carryModeT | `on: boolean, makeRagdoll: boolean, makeHull: boolean` | `void` | `obj:carryModeT(on, makeRagdoll, makeHull)` |
 | _carryMode | `on: boolean, makeRagdoll: boolean, makeHull: boolean` | `void` | `obj:_carryMode(on, makeRagdoll, makeHull)` |
@@ -2305,7 +2898,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | combatClass | `CombatClass` | RW | `obj.combatClass = <value>` |
-| animation | `lightuserdata` | RW | `obj.animation = <value>` |
+| animation | `AnimationClass` | RW | `obj.animation = <value>` |
 | character | `Character` | RW | `obj.character = <value>` |
 | stats | `CharStats` | RW | `obj.stats = <value>` |
 | target | `hand` | RW | `obj.target = <value>` |
@@ -2313,7 +2906,7 @@
 | crouched | `boolean` | RW | `obj.crouched = <value>` |
 | jogMode | `boolean` | RW | `obj.jogMode = <value>` |
 | arbitraryCatchupDist | `number` | RW | `obj.arbitraryCatchupDist = <value>` |
-| ai | `lightuserdata` | RW | `obj.ai = <value>` |
+| ai | `AI` | RW | `obj.ai = <value>` |
 | movement | `CharMovement` | RW | `obj.movement = <value>` |
 | frameTIME | `number` | RW | `obj.frameTIME = <value>` |
 | currentAction | `Tasker` | RW | `obj.currentAction = <value>` |
@@ -2342,7 +2935,7 @@
 | isIdle | `` | `boolean` | `obj:isIdle()` |
 | getFaction | `` | `Faction` | `obj:getFaction()` |
 | _endAction | `` | `void` | `obj:_endAction()` |
-| create | `m: CharMovement, a: userdata, an: userdata, c: Character, st: CharStats` | `void` | `obj:create(m, a, an, c, st)` |
+| create | `m: CharMovement, a: AI, an: AnimationClass, c: Character, st: CharStats` | `void` | `obj:create(m, a, an, c, st)` |
 | setCurrentAction [1] | `startActionMsg: Tasker` | `boolean` | `obj:setCurrentAction(startActionMsg)` |
 | setCurrentAction [2] | `t: TaskType, target: RootObject` | `boolean` | `obj:setCurrentAction(t, target)` |
 | notifyPathImpossible | `h: hand` | `void` | `obj:notifyPathImpossible(h)` |
@@ -2381,7 +2974,7 @@
 | trackingAnimRelocationVector | `Vector3` | RW | `obj.trackingAnimRelocationVector = <value>` |
 | desiredMotion | `Vector3` | RW | `obj.desiredMotion = <value>` |
 | moveLimit | `number` | RW | `obj.moveLimit = <value>` |
-| animation | `lightuserdata` | RW | `obj.animation = <value>` |
+| animation | `AnimationClass` | RW | `obj.animation = <value>` |
 | character | `Character` | RW | `obj.character = <value>` |
 | clickHull | `lightuserdata` | RW | `obj.clickHull = <value>` |
 | movementMode | `MovementMode` | RW | `obj.movementMode = <value>` |
@@ -2720,8 +3313,8 @@
 | attackStartPos | `Vector3` | RW | `obj.attackStartPos = <value>` |
 | frameTIME | `number` | RW | `obj.frameTIME = <value>` |
 | movement | `CharMovement` | RW | `obj.movement = <value>` |
-| ai | `lightuserdata` | RW | `obj.ai = <value>` |
-| animation | `lightuserdata` | RW | `obj.animation = <value>` |
+| ai | `AI` | R | `obj.ai` |
+| animation | `AnimationClass` | R | `obj.animation` |
 | me | `Character` | RW | `obj.me = <value>` |
 | stats | `CharStats` | RW | `obj.stats = <value>` |
 | medical | `MedicalSystem` | RW | `obj.medical = <value>` |
@@ -8703,7 +9296,7 @@
 | getDataType | `` | `integer` | `obj:getDataType()` |
 | erasePlatoonFile | `` | `void` | `obj:erasePlatoonFile()` |
 | showDebugMarker | `on: boolean` | `void` | `obj:showDebugMarker(on)` |
-| getStateBroadcast | `` | `lightuserdata` | `obj:getStateBroadcast()` |
+| getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
 | serialiseEverything | `dataContainer: GameDataContainer, levelEditor: boolean` | `GameData` | `obj:serialiseEverything(dataContainer, levelEditor)` |
 | loadStateData | `state: GameData` | `void` | `obj:loadStateData(state)` |
 | loadFromSerialise | `state: GameSaveState` | `void` | `obj:loadFromSerialise(state)` |
@@ -9703,7 +10296,7 @@
 | hasFaction | `` | `boolean` | `obj:hasFaction()` |
 | getFloor | `` | `integer` | `obj:getFloor()` |
 | getSensoryData | `` | `SensoryData` | `obj:getSensoryData()` |
-| getStateBroadcast | `` | `lightuserdata` | `obj:getStateBroadcast()` |
+| getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
 | getCurrentTownLocation | `` | `TownBase` | `obj:getCurrentTownLocation()` |
 | loadFromSerialise | `_a1: GameSaveState` | `void` | `obj:loadFromSerialise(_a1)` |
 | getOwnerships | `` | `Ownerships` | `obj:getOwnerships()` |
@@ -10128,7 +10721,7 @@
 | getLastKnownPositionOf | `who: Character` | `Vector3` | `obj:getLastKnownPositionOf(who)` |
 | getDataFor | `who: Character` | `SeenSomeone` | `obj:getDataFor(who)` |
 | getFactionRelation | `c: RootObjectBase` | `number` | `obj:getFactionRelation(c)` |
-| getStateBroadcast | `` | `lightuserdata` | `obj:getStateBroadcast()` |
+| getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
 | getGUIData | `panel: DatapanelGUI, cat: integer` | `void` | `obj:getGUIData(panel, cat)` |
 | _calculateFOVScore | `who: Character` | `number` | `obj:_calculateFOVScore(who)` |
 | _traceLineOfSightCheck | `who: Character` | `boolean` | `obj:_traceLineOfSightCheck(who)` |
@@ -10155,7 +10748,7 @@
 | addToThreatsAndFlockingList | `c: Character` | `void` | `obj:addToThreatsAndFlockingList(c)` |
 | buildingSpotterUpdate | `` | `void` | `obj:buildingSpotterUpdate()` |
 | notifyCriminalThreat | `h: hand` | `void` | `obj:notifyCriminalThreat(h)` |
-| getStateBroadcastOf | `who: hand` | `StateBroadcastData*` | `obj:getStateBroadcastOf(who)` |
+| getStateBroadcastOf | `who: hand` | `StateBroadcastData` | `obj:getStateBroadcastOf(who)` |
 | _shareSensesCheck | `leader: Character, list: userdata, time: number` | `boolean` | `obj:_shareSensesCheck(leader, list, time)` |
 | setupMyProgressBar | `who: hand` | `void` | `obj:setupMyProgressBar(who)` |
 | reassessAll | `newTargets: userdata, time: number` | `void` | `obj:reassessAll(newTargets, time)` |
@@ -10462,6 +11055,69 @@
 | setCellSize | `width: integer, height: integer` | `void` | `obj:setCellSize(width, height)` |
 | getItemCount | `` | `integer` | `obj:getItemCount()` |
 
+## StateBroadcastData
+**Header:** `extern/KenshiLib/Include/kenshi/StateBroadcastData.h`
+**Metatable:** `KenshiLua.StateBroadcastData`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| _slaveState | `SlaveStateEnum` | RW | `obj._slaveState = <value>` |
+| _slaveStateChangedTime | `TimeOfDay` | RW | `obj._slaveStateChangedTime = <value>` |
+| me | `Character` | RW | `obj.me = <value>` |
+| combatTargetsFaction | `Faction` | RW | `obj.combatTargetsFaction = <value>` |
+| taskTarget | `hand` | RW | `obj.taskTarget = <value>` |
+| isAtHome | `boolean` | RW | `obj.isAtHome = <value>` |
+| unconcious | `boolean` | RW | `obj.unconcious = <value>` |
+| homeBuilding | `hand` | RW | `obj.homeBuilding = <value>` |
+| intendsToAttack | `hand` | RW | `obj.intendsToAttack = <value>` |
+| currentTownLocation | `TownBase` | RW | `obj.currentTownLocation = <value>` |
+| apparentStrength | `number` | RW | `obj.apparentStrength = <value>` |
+| actualStrength | `number` | RW | `obj.actualStrength = <value>` |
+| distress | `number` | RW | `obj.distress = <value>` |
+| mobility | `number` | RW | `obj.mobility = <value>` |
+| aggressionTowardsTarget | `number` | RW | `obj.aggressionTowardsTarget = <value>` |
+| noise | `number` | RW | `obj.noise = <value>` |
+| followMe | `number` | RW | `obj.followMe = <value>` |
+| intendedAggression | `number` | RW | `obj.intendedAggression = <value>` |
+| intendedHelp | `number` | RW | `obj.intendedHelp = <value>` |
+| isSleeping | `YesNoMaybe` | RW | `obj.isSleeping = <value>` |
+| isSitting | `boolean` | RW | `obj.isSitting = <value>` |
+| lastSlept | `TimeOfDay` | RW | `obj.lastSlept = <value>` |
+| pos | `Vector3` | RW | `obj.pos = <value>` |
+| relativeAttackerStrength | `number` | RW | `obj.relativeAttackerStrength = <value>` |
+| myPersonality | `PersonalityTags` | RW | `obj.myPersonality = <value>` |
+| NPCType | `CharacterTypeEnum` | RW | `obj.NPCType = <value>` |
+| isSlaveOf | `Faction` | RW | `obj.isSlaveOf = <value>` |
+| isEscapedPrisoner | `boolean` | RW | `obj.isEscapedPrisoner = <value>` |
+| isKidnapped | `boolean` | RW | `obj.isKidnapped = <value>` |
+| isTemporaryNeutral | `boolean` | RW | `obj.isTemporaryNeutral = <value>` |
+| slaveGUI_min | `integer` | RW | `obj.slaveGUI_min = <value>` |
+| slaveGUI_gear | `number` | RW | `obj.slaveGUI_gear = <value>` |
+| looksLike_escapedSlave | `number` | RW | `obj.looksLike_escapedSlave = <value>` |
+| looksLike_bounty | `number` | RW | `obj.looksLike_bounty = <value>` |
+| looksLike_intruder | `number` | RW | `obj.looksLike_intruder = <value>` |
+| disguiseQuality | `number` | RW | `obj.disguiseQuality = <value>` |
+| looksLike_clothingArchetype | `CharacterTypeEnum` | RW | `obj.looksLike_clothingArchetype = <value>` |
+| disguiseFaction | `Faction` | RW | `obj.disguiseFaction = <value>` |
+| disguiseBlown | `number` | RW | `obj.disguiseBlown = <value>` |
+| isAggressor | `boolean` | RW | `obj.isAggressor = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| save | `state: GameData` | `void` | `obj:save(state)` |
+| load | `state: GameData` | `void` | `obj:load(state)` |
+| periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
+| setSlaveState | `s: SlaveStateEnum` | `void` | `obj:setSlaveState(s)` |
+| getSlaveState | `` | `SlaveStateEnum` | `obj:getSlaveState()` |
+| getSlaveStateHoursRemaining | `` | `integer` | `obj:getSlaveStateHoursRemaining()` |
+| notifyDisguiseBlown | `` | `void` | `obj:notifyDisguiseBlown()` |
+| isDisguiseBlown | `` | `boolean` | `obj:isDisguiseBlown()` |
+| isDisguised | `` | `Faction` | `obj:isDisguised()` |
+| isHiddenIdentitySlave | `` | `boolean` | `obj:isHiddenIdentitySlave()` |
+| getApparentFaction | `` | `Faction` | `obj:getApparentFaction()` |
+
 ## StorageBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/StorageBuilding.h`
 **Metatable:** `KenshiLua.StorageBuilding`
@@ -10668,12 +11324,12 @@
 | runAction | `_a1: CharBody` | `void` | `obj:runAction(_a1)` |
 | endAction | `_a1: CharBody` | `void` | `obj:endAction(_a1)` |
 | taskSaysItsFinished | `me: Character` | `boolean` | `obj:taskSaysItsFinished(me)` |
-| score | `ai: userdata` | `number` | `obj:score(ai)` |
-| isResultsComplete | `ai: userdata` | `boolean` | `obj:isResultsComplete(ai)` |
-| isResultsComplete_ignoreSubtasker | `ai: userdata` | `boolean` | `obj:isResultsComplete_ignoreSubtasker(ai)` |
-| isRequirementsComplete | `ai: userdata, autoTargetFinder: boolean` | `boolean` | `obj:isRequirementsComplete(ai, autoTargetFinder)` |
-| getRequirementComplaint | `ai: userdata, autoTargetFinder: boolean` | `string` | `obj:getRequirementComplaint(ai, autoTargetFinder)` |
-| getNextSubTarget | `ai: userdata` | `hand` | `obj:getNextSubTarget(ai)` |
+| score | `ai: AI` | `number` | `obj:score(ai)` |
+| isResultsComplete | `ai: AI` | `boolean` | `obj:isResultsComplete(ai)` |
+| isResultsComplete_ignoreSubtasker | `ai: AI` | `boolean` | `obj:isResultsComplete_ignoreSubtasker(ai)` |
+| isRequirementsComplete | `ai: AI, autoTargetFinder: boolean` | `boolean` | `obj:isRequirementsComplete(ai, autoTargetFinder)` |
+| getRequirementComplaint | `ai: AI, autoTargetFinder: boolean` | `string` | `obj:getRequirementComplaint(ai, autoTargetFinder)` |
+| getNextSubTarget | `ai: AI` | `hand` | `obj:getNextSubTarget(ai)` |
 
 ## TaskStateData
 **Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`

@@ -1530,6 +1530,18 @@ MovementMode = {
     MOVE_DIRECTION = 2,
 }
 
+--- Kind of AI node, as used by `AI.findNode`.
+---@enum NodeType
+NodeType = {
+    NODE_SHOPKEEPER = 0,
+    NODE_GENERAL = 1,
+    NODE_GUARD_POST = 2,
+    NODE_TURRET = 3,
+    NODE_USE = 4,
+    NODE_LIGHT = 5,
+    NODE_NULL = 6,
+}
+
 --- Physics character controller collision response action.
 ---@enum NxControllerAction
 NxControllerAction = {
@@ -1564,6 +1576,27 @@ PermajobType = {
     NOT_A_PERMAJOB = 0,
     PERMAJOB_NORMAL = 1,
     PERMAJOB_HIGHCOMBAT = 2,
+}
+
+--- Personality tag assigned to a character, as stored in `StateBroadcastData.myPersonality`.
+---@enum PersonalityTags
+PersonalityTags = {
+    PT_NONE = 0,
+    PT_HONORABLE = 1,
+    PT_TRAITOROUS = 2,
+    PT___ = 3,
+    PT__ = 4,
+    PT_SMART = 5,
+    PT_DUMB = 6,
+    PT____ = 7,
+    PT_____ = 8,
+    PT_BRAVE = 9,
+    PT_FEARFUL = 10,
+    PT_WARM_KIND = 11,
+    PT_COLD_CRUEL = 12,
+    PT_NORMAL = 13,
+    PT_MANIACAL = 14,
+    PT_END = 15,
 }
 
 --- Lifecycle signal dispatched during squad or platoon instantiation.
@@ -1640,6 +1673,15 @@ SquadType = {
     SQ_UNKNOWN = 0,
     SQ_RESIDENT = 1,
     SQ_ROAMING = 2,
+}
+
+--- Character stance used by `AnimationClass.setStanceAnimation`.
+---@enum StanceEnum
+StanceEnum = {
+    STANDING = 0,
+    CROUCHED = 1,
+    PRONE = 2,
+    MIDAIR = 3,
 }
 
 --- AI state machine evaluation conditions and task completion predicates.
@@ -5018,7 +5060,7 @@ taskPriority = {
 --- Override dispatch for `_endAction`. Internal virtual termination routine. Invokes `Tasker::endAction(this)` on active task, releases task memory via destructor, and clears `currentAction` pointer.
 ---@field _NV__endAction fun(self: CharBody)
 --- Binds motion controller, AI decision subsystem, animation layer, owning character entity, and attribute stats to `CharBody`. Allocates and constructs the specialized `CombatClassAI` motor instance, storing it in `combatClass`.
----@field create fun(self: CharBody, m?: CharMovement, a?: lightuserdata, an?: lightuserdata, c?: Character, st?: CharStats)
+---@field create fun(self: CharBody, m?: CharMovement, a?: AI, an?: AnimationClass, c?: Character, st?: CharStats)
 --- Creates and initiates a new atomic action of the requested `TaskType` targeting `RootObject* target`. Requests a task instance from `TaskRepertoire`, assigns it urgent execution priority (`TP_URGENT`), enqueues it into `taskSystemAI`, and triggers execution.
 ---@field setCurrentAction fun(self: CharBody, t?: Tasker|integer, target?: RootObject): boolean
 --- Override dispatch for `setCurrentAction`. Creates and initiates a new atomic action of the requested `TaskType` targeting `RootObject* target`. Requests a task instance from `TaskRepertoire`, assigns it urgent execution priority (`TP_URGENT`), enqueues it into `taskSystemAI`, and triggers execution.
@@ -5036,11 +5078,11 @@ taskPriority = {
 --- Retrieves the unique entity handle (`hand`) of the target subject associated with currently executing action.
 ---@field getCurrentSubject fun(self: CharBody): hand
 --- AI decision, sensory perception, and package coordinator container.
----@field ai lightuserdata
+---@field ai AI
 --- Flag indicating whether character body is currently idle with no active tasks.
 ---@field amIdle boolean
 --- Skeletal animation playback, bone blending, and state machine.
----@field animation lightuserdata
+---@field animation AnimationClass
 --- Separation distance threshold before accelerating movement to catch up.
 ---@field arbitraryCatchupDist number
 --- Owning parent Character actor entity.
@@ -6752,10 +6794,10 @@ taskPriority = {
 ---@field erasePlatoonFile fun(self: Platoon)
 --- Toggles rendering of the debug 3D squad locator model in the scene graph.
 ---@field showDebugMarker fun(self: Platoon, on?: boolean)
---- Retrieves tactical broadcast state sharing crime alerts and target locks across nearby friendly units.
----@field getStateBroadcast fun(self: Platoon): lightuserdata
---- Override dispatch for `getStateBroadcast`. Retrieves tactical broadcast state sharing crime alerts and target locks across nearby friendly units.
----@field _NV_getStateBroadcast fun(self: Platoon): lightuserdata
+--- Returns the squad leader's `StateBroadcastData`, or nil when the platoon is not active or has no squad leader.
+---@field getStateBroadcast fun(self: Platoon): StateBroadcastData
+--- Override dispatch for `getStateBroadcast`. Returns the squad leader's `StateBroadcastData`, or nil when the platoon is not active or has no squad leader.
+---@field _NV_getStateBroadcast fun(self: Platoon): StateBroadcastData
 --- Serializes all character states, medical statuses, and equipment within the platoon.
 ---@field serialiseEverything fun(self: Platoon, dataContainer: GameDataContainer, levelEditor?: boolean): GameData
 --- Override dispatch for `serialiseEverything`. Serializes all character states, medical statuses, and equipment within the platoon.
@@ -8535,10 +8577,10 @@ taskPriority = {
 ---@field getSensoryData fun(self: RootObjectBase): SensoryData
 --- Override dispatch for `getSensoryData`. Returns the SensoryData component for this object, or nil if not applicable.
 ---@field _NV_getSensoryData fun(self: RootObjectBase): SensoryData
---- Returns a raw pointer (lightuserdata) to this object's StateBroadcastData, or nil if not applicable.
----@field getStateBroadcast fun(self: RootObjectBase): lightuserdata
---- Override dispatch for `getStateBroadcast`. Returns a raw pointer (lightuserdata) to this object's StateBroadcastData, or nil if not applicable.
----@field _NV_getStateBroadcast fun(self: RootObjectBase): lightuserdata
+--- Returns this object's `StateBroadcastData`, or nil if it has none.
+---@field getStateBroadcast fun(self: RootObjectBase): StateBroadcastData
+--- Override dispatch for `getStateBroadcast`. Returns this object's `StateBroadcastData`, or nil if it has none.
+---@field _NV_getStateBroadcast fun(self: RootObjectBase): StateBroadcastData
 --- Returns the TownBase that this object is currently located in, or nil if outside any town.
 ---@field getCurrentTownLocation fun(self: RootObjectBase): TownBase
 --- Override dispatch for `getCurrentTownLocation`. Returns the TownBase that this object is currently located in, or nil if outside any town.
@@ -9767,7 +9809,7 @@ taskPriority = {
 --- Queries the absolute world height of the character in meters from feet to head.
 ---@field getCharacterHeight fun(self: AppearanceBase): number
 --- Retrieves the linked skeletal animation controller managing tracks and blends.
----@field getAnimationSystem fun(self: AppearanceBase): lightuserdata
+---@field getAnimationSystem fun(self: AppearanceBase): AnimationClass
 --- Retrieves the root Ogre scene node to which the character mesh and attachments are bound.
 ---@field getSceneNode fun(self: AppearanceBase): lightuserdata
 --- Retrieves the active Ogre skeleton instance driving character animations and bone morphing.
@@ -9857,7 +9899,7 @@ taskPriority = {
 --- Determines the appropriate base `.mesh` asset filename based on race data, gender, and anatomical variations.
 ---@field chooseBodyMesh fun(self: AppearanceBase): string
 --- Bound skeletal animation controller.
----@field animation lightuserdata
+---@field animation AnimationClass
 --- Standalone record containing appearance slider floats.
 ---@field appearanceData GameDataCopyStandalone
 --- Active attached visual particle and light effects.
@@ -10038,10 +10080,10 @@ taskPriority = {
 ---@field getSensoryData fun(self: Character): SensoryData
 --- Override dispatch for `getSensoryData`. Retrieves the sensory perception component managing vision, hearing, and detection.
 ---@field _NV_getSensoryData fun(self: Character): SensoryData
---- Returns the `StateBroadcastData` structure used to broadcast sensory and alert states to nearby AI.
----@field getStateBroadcast fun(self: Character): lightuserdata
---- Override dispatch for `getStateBroadcast`. Returns the `StateBroadcastData` structure used to broadcast sensory and alert states to nearby AI.
----@field _NV_getStateBroadcast fun(self: Character): lightuserdata
+--- Returns this character's `StateBroadcastData`.
+---@field getStateBroadcast fun(self: Character): StateBroadcastData
+--- Non-virtual call of `getStateBroadcast`; returns this character's `StateBroadcastData`.
+---@field _NV_getStateBroadcast fun(self: Character): StateBroadcastData
 --- Returns the movement `Formation` managing this character's squad positioning.
 ---@field getFormation fun(self: Character): lightuserdata
 --- Override dispatch for `getFormation`. Returns the movement `Formation` managing this character's squad positioning.
@@ -10497,7 +10539,7 @@ taskPriority = {
 --- Returns the `Ownerships` manager tracking owned items, buildings, and prisoners.
 ---@field getOwnerships fun(self: Character): Ownerships
 --- Returns pointer to the master `AI` controller coordinating decision making, sensory perception, and jobs.
----@field getAI fun(self: Character): lightuserdata
+---@field getAI fun(self: Character): AI
 --- Returns the object handle of the enemy entity this character is currently targeting in combat.
 ---@field getAttackTarget fun(self: Character): hand
 --- Checks if character is currently locked in an active melee combat engagement.
@@ -10647,7 +10689,7 @@ taskPriority = {
 --- Override dispatch for `getDefaultTaskRepertoireEnum`. Returns the default task repertoire code governing the character's autonomous behavior routines.
 ---@field _NV_getDefaultTaskRepertoireEnum fun(self: Character): integer
 --- Returns the AnimationClass animation controller for this character.
----@field getAnimationClass fun(self: Character): lightuserdata
+---@field getAnimationClass fun(self: Character): AnimationClass
 --- Predicts and returns the character's future world position after the specified number of seconds based on current velocity.
 ---@field getPredictedPosition fun(self: Character, secondsInFuture: number): table
 --- Thread-safe method setting carried state, updating ragdoll physics and collision geometry.
@@ -10825,9 +10867,9 @@ taskPriority = {
 --- Active particle and visual status effects with remaining durations.
 ---@field activeEffects integer|number|table
 --- Master AI subsystem containing GOAP task system, sensory perception, and orders.
----@field ai lightuserdata
+---@field ai AI
 --- Skeletal mesh animation controller, blend masks, and playback channels.
----@field animation lightuserdata
+---@field animation AnimationClass
 --- Dominant armor weight class (CLOTH, LEATHER, CHAIN, PLATE) for footstep sounds.
 ---@field armourType integer
 --- 3D sound position coordinates and orientation vectors.
@@ -10939,7 +10981,7 @@ taskPriority = {
 --- Unique numeric squad index within owning platoon.
 ---@field squadMemberID integer
 --- Broadcast packet containing posture, law enforcement status, and faction alignment.
----@field stateBroadcast lightuserdata
+---@field stateBroadcast StateBroadcastData
 --- Skill levels, attributes, encumbrance multipliers, and experience gains.
 ---@field stats CharStats
 --- Embedded projectile arrows and visual indicator markers.
@@ -12439,6 +12481,953 @@ taskPriority = {
 --- Global MyGUI root table exposing widget factory functions and GUI subsystem singletons.
 ---@class MyGUI
 
+--- Master character artificial intelligence controller. Governs individual Goal-Oriented Action Planning (GOAP) precondition evaluation, sensory perception, order execution pipelines, squad mission targeting, combat arbitration, and movement coordination. Coordinates directly with `Character` for entity state, `SensoryData` for vision and awareness, `AITaskSytem` for job/order priority stacks, `Platoon` for squad blackboards, and `Blackboard` for collective tactical memory.
+---@class AI
+--- Initializes trading information and inventory shopping list state for merchant transactions.
+---@field _createTradingInfo fun(self: AI)
+--- Returns true if the character is close enough to execute a melee weapon swing.
+---@field isWithinChoppingRange fun(self: AI, subj: RootObjectBase, isMoving?: boolean): boolean
+--- Enables a behavioral capability bitflag in `taskRepertoireFlags` (e.g. permitting combat, healing, looting, or fleeing).
+---@field setTaskRepertoireFlag fun(self: AI, flag: integer)
+--- Clears a behavioral capability bitflag from `taskRepertoireFlags`, prohibiting corresponding action categories.
+---@field clearTaskRepertoireFlag fun(self: AI, flag: integer)
+--- Forces immediate high-priority insertion of a player or tactical order ahead of standard autonomous AI goals.
+---@field forceOrderInsert fun(self: AI, t: integer)
+--- Evaluates whether a specified GOAP world state precondition evaluates to true for a given subject entity or spatial location.
+---@field stateIsTrue fun(self: AI, state: TaskStateData, h: hand, v: table): boolean
+--- Override dispatch for `stateIsTrue`. Evaluates whether a specified GOAP world state precondition evaluates to true for a given subject entity or spatial location.
+---@field _NV_stateIsTrue fun(self: AI, state: TaskStateData, h: hand, v: table): boolean
+--- Parses and loads a package of AI goals from an FCS `GameData` template record into the character's active task system.
+---@field addAIGoalsFrom fun(self: AI, data: GameData, goallistname: string)
+--- Returns true if the character is within the specified distance range from the target.
+---@field isWithinGivenRange fun(self: AI, subject: hand, loc: table, _range: number): boolean
+--- Returns pointer to the embedded `SensoryData` processor managing sensory memory, line of sight, and acoustic detection.
+---@field getSensoryData fun(self: AI): SensoryData
+--- Returns pointer to outward `StateBroadcastData` reflecting animation actions, current posture, and dialogue state to external observers.
+---@field getStateBroadcast fun(self: AI): StateBroadcastData
+--- Internal callback invoked when active motor action or GOAP task completes, advancing the task queue to the next sequential action.
+---@field _notifyTaskComplete fun(self: AI)
+--- Returns target settlement `TownBase*` towards which the squad or character is currently traveling.
+---@field getDestinationTown fun(self: AI): TownBase
+--- Assigns character to an active platoon/squad and binds squad-level blackboard memory.
+---@field setPlatoon fun(self: AI, p: Platoon)
+--- Returns pointer to owning `Platoon` squad container.
+---@field getPlatoon fun(self: AI): Platoon
+--- Returns pointer to owning `Faction` determining diplomatic alignments and hostility.
+---@field getFaction fun(self: AI): Faction
+--- Override dispatch for `getFaction`. Returns pointer to owning `Faction` determining diplomatic alignments and hostility.
+---@field _NV_getFaction fun(self: AI): Faction
+--- Returns smart hand handle identifying parent Character actor in the game world.
+---@field getHandle fun(self: AI): hand
+--- Binds core character subsystems (CharBody, Inventory, CharStats, MedicalSystem, Platoon) to this AI controller and initializes GOAP action repertoires.
+---@field create fun(self: AI, b: CharBody, inv: Inventory, st: CharStats, med: MedicalSystem, p: Platoon)
+--- High-frequency per-frame simulation tick processing tactical reactions, incoming combat strikes, sensory perception updates, and motor movement directives.
+---@field update4Frame fun(self: AI, frametime: number)
+--- Override dispatch for `update4Frame`. High-frequency per-frame simulation tick processing tactical reactions, incoming combat strikes, sensory perception updates, and motor movement directives.
+---@field _NV_update4Frame fun(self: AI, frametime: number)
+--- Low-frequency simulation tick executing goal arbitration, re-evaluating long-term objectives, checking food and hunger states, and updating job queues.
+---@field periodicUpdate fun(self: AI, frametime: number)
+--- Override dispatch for `periodicUpdate`. Low-frequency simulation tick executing goal arbitration, re-evaluating long-term objectives, checking food and hunger states, and updating job queues.
+---@field _NV_periodicUpdate fun(self: AI, frametime: number)
+--- Specialized low-frequency tick executed while character is unconscious, in a recovery coma, or playing dead, evaluating recovery readiness and awareness.
+---@field periodicUpdate_KOed fun(self: AI, frametime: number)
+--- Dispatches an inter-character AI communication message packet (e.g. help calls, crime alarms, surrender offers, social dialogue).
+---@field sendMessage fun(self: AI, message: integer, sender: hand, subject: hand)
+--- Combat notification callback triggered when engaged by a melee attacker, evaluating defensive retaliation, parry timing, and threat registration.
+---@field underMeleeAttack fun(self: AI, attacker: Character, so?: boolean, doAwarenessCheck?: boolean)
+--- Combat notification callback triggered when fired upon by ranged weaponry, identifying shooter trajectory and provoking cover-seeking or charges.
+---@field underRangedAttack fun(self: AI, attacker: Character, so?: boolean)
+--- Evaluates whether target entity is located outside fortified town walls, requiring gate traversal.
+---@field isTargetOutsideTheGates fun(self: AI, target: RootObject): boolean
+--- Checks if character is currently enclosed within closed town perimeter walls without an open gate exit.
+---@field amILockedWithinTownWalls fun(self: AI): boolean
+--- Returns true if the specified character or target belongs to an enemy or hostile faction.
+---@field isEnemy fun(self: AI, subject: RootObjectBase|hand, arg2: table): boolean
+--- Restores AI controller state, active tactical stances, and assigned jobs from savegame data.
+---@field load fun(self: AI, d: GameData)
+--- Serializes AI state, including active orders, tactical stances, permajobs, and slave state timestamps, to savegame data.
+---@field save fun(self: AI, d: GameData)
+--- Calculates a navigation position within melee attack range of the target.
+---@field getPosWithinChoppingRange fun(self: AI, subj: RootObjectBase, clickPos: table): table
+--- Configures the character's combat aggression stance and engagement threshold.
+---@field setAggressionLevel fun(self: AI, agg: integer)
+--- Sets the maneuvering freedom level governing the character's movement autonomy and order targeting range.
+---@field setManuveringFreedomLevel fun(self: AI, agg: integer)
+--- Sets the focal anchor coordinates governing autonomous squad roaming or patrol behaviors.
+---@field setCenterOfMovement fun(self: AI, wher: table)
+--- Sets the target object providing the focal anchor for squad roaming or patrol behaviors.
+---@field setCenterOfMovementTarget fun(self: AI, wher: hand)
+--- Returns the character's currently targeted combat opponent.
+---@field getCombatTarget fun(self: AI): hand
+--- Override dispatch for `getCombatTarget`. Returns the character's currently targeted combat opponent.
+---@field _NV_getCombatTarget fun(self: AI): hand
+--- Synchronizes character state broadcasts, updating slave status, squad alert levels, and dialogue events.
+---@field updateStateBroadcast fun(self: AI, time: number)
+--- Override dispatch for `updateStateBroadcast`. Synchronizes character state broadcasts, updating slave status, squad alert levels, and dialogue events.
+---@field _NV_updateStateBroadcast fun(self: AI, time: number)
+--- Executes shopping logic to evaluate vendor inventories and purchase desired goods.
+---@field buySomething fun(self: AI, shop: Building): boolean
+--- Returns true if the character's AI package prohibits them from traveling outside town limits.
+---@field IDontWantToLeaveTown fun(self: AI): boolean
+--- Returns the current world position of the character.
+---@field getPosition fun(self: AI): table
+--- Override dispatch for `getPosition`. Returns the current world position of the character.
+---@field _NV_getPosition fun(self: AI): table
+--- Returns true if the character is currently moving along a path or navigating.
+---@field amMoving fun(self: AI): boolean
+--- Override dispatch for `amMoving`. Returns true if the character is currently moving along a path or navigating.
+---@field _NV_amMoving fun(self: AI): boolean
+--- Updates broadcasted sensory states, including slave status, uniform disguise, and bounty visibility.
+---@field periodicUpdateStateBroadcast fun(self: AI, time: number)
+--- Override dispatch for `periodicUpdateStateBroadcast`. Updates broadcasted sensory states, including slave status, uniform disguise, and bounty visibility.
+---@field _NV_periodicUpdateStateBroadcast fun(self: AI, time: number)
+--- Returns the Character that owns this AI controller.
+---@field getCharacter fun(self: AI): Character
+--- Finds and returns all machine buildings associated with the character's active permanent jobs.
+---@field getAllMyPermajobMachines fun(self: AI): UseableStuff[]
+--- Returns true if the character has at least one permanent assigned job queued.
+---@field hasPermajob fun(self: AI, t: integer): boolean
+--- Returns false as a default placeholder condition in the AI goal condition table.
+---@field noneState fun(self: AI, subject: hand, arg2: table): boolean
+--- Override dispatch for `noneState`. Returns false as a default placeholder condition in the AI goal condition table.
+---@field _NV_noneState fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character has arrived at the designated destination coordinates.
+---@field isAtLocation fun(self: AI, subject: hand, loc: table): boolean
+--- Override dispatch for `isAtLocation`. Returns true if the character has arrived at the designated destination coordinates.
+---@field _NV_isAtLocation fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target coordinates can be reached via pathfinding.
+---@field isLocationAccessible fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if a valid navigation path exists connecting to the target destination.
+---@field isDestinationAccessible fun(self: AI, arg1: RootObject|hand, arg2?: boolean|table): boolean
+--- Returns true if an animal-traversable navigation path exists to the destination.
+---@field isDestinationAccessibleAnimal fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is positioned at the entrance door of the target building.
+---@field isAtDoorOf fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is standing on the interior side of the building entrance door.
+---@field isAtDoorOf_Inside fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is standing on the exterior side of the building entrance door.
+---@field isAtDoorOf_Outside fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is positioned at the entrance of their current building.
+---@field isAtDoorOfCurrentLocation fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the target structure has finished construction and is fully built.
+---@field isBuildingComplete fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target objective item is currently stored in character inventory.
+---@field isSubjectInInventory fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if no active hostile threats are detected in the sensory perception area.
+---@field isNoEnemiesInVicinity fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the designated target character is knocked out, playing dead, or deceased.
+---@field isTargetDown fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target character is conscious and awake.
+---@field targetIsConscious fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the squad leader is currently unconscious, dying, or incapacitated.
+---@field isLeaderDown fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the designated target belongs to a hostile enemy faction.
+---@field isTargetEnemy fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if fewer than eight characters are currently gathered around the target.
+---@field crowdLimit8 fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character has an operable weapon either equipped in hand or stowed in weapon slots.
+---@field hasWeapon fun(self: AI, arg1: hand, arg2: table): boolean
+--- Returns true if the character has an operable weapon actively drawn and equipped in hand.
+---@field hasWeaponEquipped fun(self: AI, arg1: hand, arg2: table): boolean
+--- Returns true if the character has an operable ranged crossbow equipped in hand.
+---@field hasCrossbowEquipped fun(self: AI, arg1: hand, arg2: table): boolean
+--- Returns true if the character has any gear, clothing, or weaponry equipped in inventory slots.
+---@field hasAnythingEquipped fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if any squadmates or friendly allies in visual range are actively engaged in combat.
+---@field isAlliesFighting fun(self: AI, arg1: hand, arg2: table): boolean
+--- Returns true if fellow squad members are actively involved in combat engagements.
+---@field isSquadmatesFighting fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if an enemy melee attack swing is actively targeting this character right now.
+---@field iAmBeingMeleeAttacked_immediate fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently engaged or targeted by melee attackers.
+---@field iAmBeingMeleeAttacked_general fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if hostile aggression is currently directed toward the specified target.
+---@field isAggressionTowards fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if an enemy is actively targeting this character with hostile aggression.
+---@field isAggressionTowardsMe fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if current combat aggression matches the general alert level.
+---@field isGeneralAggressionLevel fun(self: AI, arg1: hand, arg2: table): boolean
+--- Returns true if the target item can be legally picked up or looted.
+---@field isItemLootable fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character has no active tasks or jobs currently executing.
+---@field amIdle fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character or target has untreated bleeding cuts requiring medical bandaging.
+---@field needsFirstAid fun(self: AI, _subject: hand, arg2: table): boolean
+--- Returns true if the character's legs are crippled but eligible for first aid splinting or repair.
+---@field myLegsAreMessedUpButCouldBeFixed fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character has a medical first aid kit in inventory.
+---@field haveFirstAidKit fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character or target has robotic limb wear damage requiring repair kits.
+---@field needsFirstAid_robot fun(self: AI, _subject: hand, arg2: table): boolean
+--- Returns true if the character has a robotics repair kit in inventory.
+---@field haveFirstAidKit_robot fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character has fractured or crippled limbs requiring medical splinting.
+---@field needsSplint fun(self: AI, _subject: hand, arg2: table): boolean
+--- Returns true if the character is carrying a medical splint kit in inventory.
+---@field hasSplintKit fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is carrying lockpicks, toolkits, or required labor tools.
+---@field hasTools fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently in a crouched stealth posture.
+---@field isCrouching fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is either crouching, crawling, or lying prone.
+---@field isCrouchingOrLying fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is currently lying flat on the ground.
+---@field isLyingProne fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is permitted to move (not restrained, encumbered, or immobilized).
+---@field isMovementAllowed fun(self: AI, subject: hand, location: table): boolean
+--- Returns true if the character is currently situated inside their assigned residential building.
+---@field isAtHome fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently situated within their home settlement.
+---@field isAtHomeTown fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target character is currently stationary and not moving.
+---@field targetStandingStill fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if at least one of the character's arms is undamaged and functional.
+---@field hasOneWorkingArm fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if both of the character's arms are undamaged and functional.
+---@field hasTwoWorkingArms fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is in an operable state ready to begin new tasks.
+---@field isReadyForAction fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is currently knocked down, unconscious, or incapacitated.
+---@field iAmDown fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently in a prone stance.
+---@field iAmProne fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character's health, consciousness, and recovery state allow standing up.
+---@field canGetUp fun(self: AI, subject: hand, arg2: table): boolean
+--- Calculates utility weight for attempting to stand up when conscious.
+---@field scoreCanGetUp fun(self: AI, subject: hand, v: table): number
+--- Returns true if the character is currently carrying any character or object on their shoulder.
+---@field isCarryingSomething fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target character has been successfully tucked into a bed.
+---@field isCarriedDudeInBed fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character currently being carried on the shoulder is deceased.
+---@field isCarriedDudeDead fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is currently carrying the designated objective target.
+---@field isCarryingTarget fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is carrying a kidnap victim ready to be imprisoned.
+---@field final_gotAKidnapVictim fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character has successfully placed their carried prisoner into a cage.
+---@field final_foundAndPutInCage fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target character has been apprehended by law enforcement.
+---@field targetIsArrested fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if there are active alarms or alerts triggered in the vicinity.
+---@field alarmsInTheVicinity fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target intruder is located outside the building or private property.
+---@field intruderIsOutside fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if detected intruders are located outside the town's perimeter gates.
+---@field intruderIsOutsideGates fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently swimming in a body of water.
+---@field amSwimming fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target character is swimming in water.
+---@field isTargetSwimming fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently being carried on another character's shoulder.
+---@field isBeingCarried fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is carrying building materials required for construction tasks.
+---@field hasBuildingMaterials fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target construction site contains building materials for construction.
+---@field buildingHasBuildingMaterials fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target door or gate is broken down and passable.
+---@field isDoorBroken fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target door or gateway is currently open.
+---@field isDoorOpen fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the door at the character's immediate position is open.
+---@field isDoorOpenHere fun(self: AI, arg1: hand, arg2: table): boolean
+--- Returns true if the character is currently located inside the target building.
+---@field iAmInsideTargetBuilding fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target farm building contains food resources available for consumption or harvesting.
+---@field farmHasFood fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character's hunger level has dropped below the threshold requiring food.
+---@field amHungry fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character's lockpicking skill meets the minimum threshold to pick the target lock.
+---@field iHaveSufficientLockSkill fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character's lockpicking skill meets the minimum threshold to pick the target shackles.
+---@field iHaveSufficientLockSkillForShackles fun(self: AI, subject: hand, arg2: table): boolean
+--- Calculates utility weight based on being situated inside the target building.
+---@field scoreIAmInsideTargetBuilding fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight based on being situated outside the target structure.
+---@field scoreIAmOutsideTargetBuilding fun(self: AI, subject: hand, arg2: table): number
+--- Returns true if the target machine has empty input resource slots requiring materials.
+---@field machineHasEmptyInputs fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the machine output hopper is filled to capacity and cannot accept more items.
+---@field isMachineOutputFull fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target machine's input resource slots are completely filled.
+---@field machineHasFullInputs fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the machine output hopper contains no finished items.
+---@field isMachineOutputEmpty fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is carrying resources collected from the specified machine.
+---@field haveSomeResourcesFrom fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if carrying machine output resources that should be hauled to storage.
+---@field haveSomeResourcesFromThisMachineButWantThemGoneIfPossible fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character has resources in inventory suitable for the specified machine or container.
+---@field haveSomeResourcesFor fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target production machine is stalled due to full output or missing inputs.
+---@field isMachineJammed fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if any production machine in the settlement is jammed with a full output buffer.
+---@field isAnyMachineJammed fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if incompatible or invalid materials are placed in machine input slots.
+---@field isMachineInputInvalid fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character has sufficient inventory space to carry additional resources.
+---@field gotInventoryRoomForResources fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if pathfinding raycast indicates physical obstacles blocking the direct route.
+---@field isRouteTraceBlocked fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target door or gate is locked shut.
+---@field isDoorLocked fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the door at the character's immediate position is locked.
+---@field isDoorLockedHere fun(self: AI, arg1: hand, arg2: table): boolean
+--- Returns true if the door is locked while the character is situated inside the building.
+---@field isDoorLockedAndMeInside fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the door is locked while the character is situated outside the building.
+---@field isDoorLockedAndMeOutside fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target entity or item is owned by the character's faction.
+---@field isObjectMine fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target building has sustained damage below maximum structural health.
+---@field isBuildingDamaged fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target structure is demolished or destroyed.
+---@field isBuildingDestroyed fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if all body parts and blood levels have fully healed and recovered.
+---@field isFullyRested fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target machine has an unoccupied operator or worker slot.
+---@field machineHasFreeOperatorSlot fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if dialogue lines associated with the current interaction have completed delivery.
+---@field isDialogDelivered fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if cross-character communication messages have completed transmission.
+---@field isMessageDelivered fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if hostile assault forces have been routed, knocked out, or killed.
+---@field isEnemyForceDefeated fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently lying in a bed, sleeping mat, or medical cot.
+---@field isInBed fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character's arm health is sufficient to carry a body or load.
+---@field isCarryingArmOK fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently inside a merchant shop during operating hours.
+---@field isAtAShop fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if all items in the character's trade shopping list have been purchased.
+---@field boughtShitComplete fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character is currently located inside the target building interior.
+---@field isInsideTargetBuilding fun(self: AI, what: hand, arg2: table): boolean
+--- Returns true if all entrance doors of the target building are securely locked.
+---@field allDoorsLocked fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the route to the destination is not obstructed by locked gates or fortification walls.
+---@field destinationNotBlockedByFortifications fun(self: AI, subject: RootObject|hand, v: table): boolean
+--- Returns true if the character has reached the fortification gate for their target location.
+---@field atLocationGate fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the specified character or target belongs to a friendly or allied faction.
+---@field isAlly fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the target building or machine currently has active electrical power.
+---@field buildingHasPower fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character or squad has a destination settlement assigned for travel.
+---@field hasDestinationTown fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the character currently being carried is healthy and conscious.
+---@field isCarryingHealthyTarget fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character has reached their designated destination town.
+---@field atDestinationTown fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character has arrived at the package's target destination or building.
+---@field atPackageTarget fun(self: AI, subject: hand, v: table): boolean
+--- Returns true if the character is currently situated within any recognized town boundary.
+---@field atATown fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if the active target entity is currently located within a town.
+---@field targetAtATown fun(self: AI, subject: hand, arg2: table): boolean
+--- Returns true if long-distance travel fatigue warrants resting at a camp or tavern.
+---@field isTiredFromTravel fun(self: AI, subject: hand, arg2: table): boolean
+--- Calculates utility weight for advancing travel orders toward the next route settlement.
+---@field scoreGetNextDestinationTown fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for standing back up once danger has passed.
+---@field scoreWantsToGetUp_toFeet fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for staying low and playing dead while hostile threats remain in the immediate area.
+---@field scoreWantsToGetUp_stayLow fun(self: AI, subject: hand, arg2: table): number
+--- Returns true if the character is within close proximity distance to the target.
+---@field isNearTo fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the distance to the target is less than or equal to 50 meters.
+---@field isWithin50Meters fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the distance to the target is less than or equal to 10 meters.
+---@field isWithin10Meters fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target is within maximum effective range of the character's equipped crossbow.
+---@field isWithinMyBowRange fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target character is either unconscious, tied to a pole, or caged.
+---@field isTargetRestrainedOrKO fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the occupant inside the target cage or bed is alive.
+---@field isOccupantAlive fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if all prisoner cages in the town or building are currently occupied.
+---@field cagesAreAllFull fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character is currently locked inside a cage or prisoner pole.
+---@field iAmImprisoned fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target character is currently held inside a cage or prisoner pole.
+---@field targetIsImprisoned fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target character is legally owned as a slave by this character or their faction.
+---@field targetIsMySlave fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character has deposited all storable resources into storage.
+---@field iveDitchedAllMyResources fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if all storable resource items have been looted from the target.
+---@field targetHasBeenLootedOfResources fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target character has already been looted.
+---@field targetHasBeenLooted fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character is currently mounted on and operating any turret.
+---@field usingTurret_Any fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character is currently mounted on and operating the target turret.
+---@field usingTurret_Target fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if unauthorized non-faction characters are inside the character's building.
+---@field strangersAreInMyBuilding fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if strangers are inside the character's building and the building is marked private.
+---@field strangersAreInMyBuilding_andPrivate fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target building is open to the public rather than designated private property.
+---@field buildingIsPublic fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target character has no weapons equipped.
+---@field targetIsUnarmed fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target character has appearance attributes, shackles, or markings resembling a slave.
+---@field _targetLooksLikeASlave fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character is carrying excess loot that exceeds inventory thresholds.
+---@field carryingExcessLoot fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character is currently actively operating a machine or performing a labor job.
+---@field isWorking fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character or its backpack contains at least one edible food item.
+---@field gotAFoodItem fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character or their squad currently owns or oversees assigned slaves.
+---@field iHaveSomeSlaves fun(self: AI, subject: hand, loc: table): boolean
+--- Returns a storable resource item from the target's inventory for which valid faction storage exists.
+---@field getALootableResourceItemFromTargetThatWeHaveStorageFor fun(self: AI, target: Character): Item
+--- Returns true if the target character wears slave clothes, shackles, or has a shaved head.
+---@field targetLooksLikeASlave fun(self: AI, who: Character): boolean
+--- Returns true if the target slave has initiated an escape attempt.
+---@field slaveIsEscaping fun(self: AI, who: Character): boolean
+--- Returns true if the target slave is obediently performing assigned labor or following instructions.
+---@field slaveIsFollowingOrders fun(self: AI, who: Character): boolean
+--- Returns true if the character is currently executing a retreat or flee order.
+---@field isRunningAway fun(self: AI, who: Character, from: RootObject): boolean
+--- Returns true if the character has prisoner or slave shackles equipped.
+---@field isWearingShackles fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the character is locked into equipped shackles requiring lockpicking.
+---@field isWearingShackles_locked fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the designated target is a runaway slave or escaped prisoner.
+---@field isTargetEscapee fun(self: AI, subject: hand, loc: table): boolean
+--- Returns true if the target is within acceptable distance to execute the active order.
+---@field isTargetInRangeForOrders fun(self: AI, arg1: RootObject|table): boolean
+--- Returns true if an enemy target is close enough to engage while in HOLD passive mode.
+---@field isTargetInRangeForHOLDMode_hostiles fun(self: AI, who: Character): boolean
+--- Returns the squared maximum range within which the character can acquire targets for orders.
+---@field getMaxTargetRangeForOrdersSq fun(self: AI): number
+--- Assigns the character itself as the active target and returns a targeting score.
+---@field targetMyself fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Searches the ground or nearby weapon cabinets for an operable weapon when disarmed.
+---@field findWeapon fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Searches for a downed character or creature to scavenge items from.
+---@field findSomebodyToLoot fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds the active enemy combatant currently attacking the specified character.
+---@field findAttackerOf fun(self: AI, _of: hand, justAsking?: boolean): number, hand
+--- Searches nearby characters for hostile or aggressive combatants.
+---@field findAggressiveFellows fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Returns true if guard AI behavior should verify neutral targets for potential aggression or contraband violations.
+---@field wantGuardAggressionNeutralTargetCheck fun(self: AI, who: Character): boolean
+--- Searches nearby characters for individuals carrying a claimable faction bounty.
+---@field findBounty fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches for knocked out trespassers inside private faction buildings.
+---@field findKOIntruder fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches the town settlement for unconscious hostile intruders.
+---@field findKOIntruder_town fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds an unmanned defensive harpoon or crossbow turret.
+---@field findTurretToUse fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds an unmanned defensive turret mounted on the character's current building.
+---@field findTurretToUseOnMyBuilding fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds intruders violating faction territory to engage in combat.
+---@field findMeleeOpponentForTerritorialAggression fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Finds an aggressive opponent targeting enslaved gladiators or rebel slaves.
+---@field findMeleeOpponentForFightingSlave fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Finds neutral or hostile trespassers violating private territory.
+---@field findMeleeOpponentForTerritorialAggressionWithNeutrals fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Searches for the most suitable enemy combatant to engage in melee combat.
+---@field findMeleeOpponent fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Finds hostile attackers within settlement perimeter boundaries.
+---@field findMeleeOpponentNearMyTown fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Finds the enemy combatant currently targeted by squadmates.
+---@field findMeleeOpponentFromSquad fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Evaluates whether the character should attempt to pick locks and liberate allied slaves.
+---@field shouldIFreeMySlaveBuddies fun(self: AI, slave: Character): boolean
+--- Searches for allied squad members requiring assistance, first aid, or rescue.
+---@field findAllyInNeed fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches for allies in need within town boundaries.
+---@field findAllyInNeed_stayInTown fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches for a squadmate requiring urgent combat backup, rescue, or first aid.
+---@field findSquadmateInNeed fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches for the character's assigned residential building or town base.
+---@field findHome fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds the counter interaction node where the shop merchant stands.
+---@field findShopkeeperNode fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds a defensive patrol or guard node near town fortifications.
+---@field findDefensiveNode fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds a guard watchpost node positioned either inside or outside the specified building.
+---@field findGuardNodeForBuilding_inOrOut fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds an interior guard watchpost node inside the specified building.
+---@field findGuardNodeForBuilding_indoorOnly fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds the guard post node closest to player characters inside a building.
+---@field findGuardNodeForBuilding_nearestPlayer fun(self: AI, indoorsOnly?: boolean): number, hand
+--- Finds an active guard post or watchtower node protecting the settlement.
+---@field findGuardNodeForTown fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds a general wandering or leisure interaction node within the town.
+---@field findGeneralNode fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds an interaction node in taverns or public buildings where potential recruits gather.
+---@field findGoodRecruitNode fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds a public gathering node in streets, plazas, or open markets.
+---@field findPublicGeneralNodeInTown fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches for wounded allied characters requiring medical first aid.
+---@field findWoundedAllies fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches for wounded squad members suffering from splintable bone fractures.
+---@field findSplintableAllies fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for damaged robotic squadmates requiring repair kit maintenance.
+---@field findWoundedAllies_Robots fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches for nearby wounded allies or damaged robotic squad members requiring first aid or repair.
+---@field _findWoundedAllies fun(self: AI, robots?: boolean): number, hand
+--- Finds an imprisoned character whose sentence has expired and is eligible for release.
+---@field findPrisonerFreeToGo fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Finds an imprisoned ally or sympathetic captive to unlock and free from confinement.
+---@field findPrisonerToLiberate fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches confined prisoners for illegal items or unauthorized weapons.
+---@field findPrisonerWithContraband fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Returns the building entity currently occupied by the character, or nil if outdoors.
+---@field getCurrentBuilding fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Returns the target destination building assigned by the active AI package or order.
+---@field getDestinationBuilding fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for production machines whose output buffers are full or stalled.
+---@field findJammedMachine fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a container or machine supplying required raw materials.
+---@field findResourceSourceForMe fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an appropriate storage container to store items currently in character inventory.
+---@field findResourceDestinationForMe fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an appropriate storage container or machine to deposit the specified resource.
+---@field findResourceDestinationFor fun(self: AI, forwhat: hand, includeMyInventoryContents?: boolean): boolean, hand
+--- Finds an appropriate storage container to haul scavenged items to.
+---@field findResourceDestinationForMyLoot fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an active mining node or quarry assigned for resource extraction.
+---@field findMineToWorkAt fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a mining node for slave or prisoner idle labor animation.
+---@field findMineToWorkAt_pretend fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an idle interaction node (sitting, eating, reading) inside the character's residence.
+---@field findSomethingToDoInHome fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a casual leisure or loafing interaction spot when idle.
+---@field findSomethingToDo_lazy fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a leadership seat or faction throne chair to sit upon.
+---@field findThrone fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches local containers for construction materials required by pending buildings.
+---@field findBuildingMaterials fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a valid NPC or dialogue partner for conversation.
+---@field findTalkTarget fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for incapacitated allied characters requiring carry or medical attention.
+---@field findDisabledAlly fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for any incapacitated character in the immediate area.
+---@field findDisabledDude fun(self: AI, flagsAny: integer, flagsNot: integer, includeBeds?: boolean): hand
+--- Searches for downed neutral or hostile characters.
+---@field findDisabledNonAlly fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for downed, vulnerable humanoid characters suitable for enslavement.
+---@field findSomeoneWhoWouldMakeAGoodSlave fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds misbehaving, rebelling, or escaping slaves within the settlement.
+---@field findBadSlaves fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a newly captured prisoner or slave awaiting processing and imprisonment.
+---@field findNewSlaveOrPrisonerToProcess fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Selects an enslaved character owned by the faction for inspection or assignment.
+---@field findRandomOneOfMySlaves fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches the town for conscious enslaved characters available for work.
+---@field findConsciousSlaveInTown fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches the town for conscious slaves ready to be transferred to slave markets.
+---@field findConsciousSlaveInTownForShipping fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds conscious slaves within Holy Nation slave work camps.
+---@field findConsciousSlaveInTown_unholy fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for knocked out slaves owned by the character's faction.
+---@field findKOedSlaveOfMine fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches the immediate area for dead bodies lying on the ground.
+---@field findCorpse_onGround fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches the ground for corpses matching specific faction or looting criteria.
+---@field findCorpse_onGround_detail fun(self: AI, in: hand, justAsking?: boolean, carriableOnly?: boolean, edibleOnly?: boolean): number, hand
+--- Searches for dead bodies lying on the ground or inside prisoner cages.
+---@field findCorpse_includingCages fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for dead or unconscious bodies on the ground.
+---@field findDeadOrKOBody_onGround fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for harvestable farm crops in nearby agricultural fields.
+---@field findCrops fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an unoccupied bed or sleeping mat owned by the character's faction.
+---@field findOwnedFreeBed fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an unoccupied prisoner cage owned by the character's faction.
+---@field findOwnedFreeCage fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a slave trader NPC capable of purchasing captured characters.
+---@field findSlaveBuyer fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an unoccupied prisoner cage owned by the character's faction master.
+---@field findEmptyCageBelongingToMaster fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an occupied prisoner cage marked for execution or punishment.
+---@field findOwnedFullCage_MarkForDeath fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an available incinerator or disposal furnace to dispose of a dead body.
+---@field findCorpseDisposal fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches the settlement for an open merchant shop.
+---@field findShop fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds the primary objective target designated by the character's active AI package.
+---@field findPackageTarget fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Returns the target fortification gate required to enter or exit the settlement.
+---@field getDestinationGate fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Selects and returns an enemy building or gate for destruction during a raid or assault.
+---@field getBuildingToSmash fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a pending construction site or unfinished building requiring labor.
+---@field findSomethingToBuild fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds the closest friendly settlement or outpost owned by the character's faction.
+---@field findNearestHomeBase fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds the next destination settlement along a patrol or travel route.
+---@field findNextTown fun(self: AI, arg1: hand, justAsking?: boolean): number, hand
+--- Searches local containers, barrels, or defeated targets for edible food.
+---@field findSomethingToLootFoodFrom fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches the ground for dropped food or edible items.
+---@field findFoodOnGround fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Searches the immediate terrain for severed limbs or dropped robotic prosthetics.
+---@field findLimbOnGround fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Assigns the character's squad leader as the active target and returns a targeting score.
+---@field targetMyLeader fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Assigns the character's legal slave master as the active target and returns a targeting score.
+---@field targetMySlavemaster fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Assigns the permanent squad leader as the active target and returns a targeting score.
+---@field targetMyLeader_theRealOne fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand
+--- Finds an unlocked door providing egress from the current room or building.
+---@field findUnlockedDoorHere fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a locked or closed door blocking the character's immediate path.
+---@field findLockedOrClosedDoorHere fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for unauthorized strangers or trespassers inside private buildings.
+---@field findStrangersInMyBuilding fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds an unlocked prisoner cage in the immediate vicinity.
+---@field findUnlockedCage fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Selects a random building within the settlement for idle visiting.
+---@field findRandomBuildingInTown fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Finds a prisoner tied to a deathyard pole for Fogman ritual consumption.
+---@field findFogmanWorshipTarget fun(self: AI, in: hand, arg2?: boolean): number, hand
+--- Searches for dead or knocked out animals with lootable inventory.
+---@field findAnimalsToLoot fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for squad animals currently holding food items.
+---@field findAllyAnimalWithFoodInMouth fun(self: AI, in: hand, justAsking?: boolean): number, hand
+--- Searches for downed bodies possessing specific desired items or resources.
+---@field findBodyWithResourceToLoot fun(self: AI, resourceNeeded: GameData, animalsOnly?: boolean): Character
+--- Finds and returns an unoccupied prisoner cage owned by the character's faction.
+---@field _findOwnedCageThing fun(self: AI, wantEmpty?: boolean, whatType: integer): UseableStuff
+--- Finds a generic spatial waypoint or interaction node matching criteria.
+---@field findNode fun(self: AI, t: integer, forHomeBuildingOnly?: boolean, indoorsOnly?: boolean): hand
+--- Returns true if taking the item from the ground is safe from being considered theft by observers.
+---@field itemOnGroundStealingCheckIsSafe fun(self: AI, item: Item): boolean
+--- Searches for a downed target carrying lootable possessions.
+---@field findSomeoneToLoot fun(self: AI, wantAWeapon?: boolean): Character
+--- Finds and returns all local machines and crafting stations matching the specified building function filter.
+---@field getAllLocalMachines fun(self: AI, buildingFunctions: integer): Building[]
+--- Finds a storage building dedicated to the specified resource type.
+---@field findResourceStorageBulidingFor fun(self: AI, needed: GameData, skip?: StorageBuilding): StorageBuilding
+--- Calculates and returns the combat effectiveness score of the specified weapon item.
+---@field rateWeapon fun(self: AI, item: Item): number
+--- Override dispatch for `rateWeapon`. Calculates and returns the combat effectiveness score of the specified weapon item.
+---@field _NV_rateWeapon fun(self: AI, item: Item): number
+--- Returns true if the character has sufficient arm health and capability to wield equipped weapons.
+---@field canUseWeapon fun(self: AI, item: Item): boolean
+--- Override dispatch for `canUseWeapon`. Returns true if the character has sufficient arm health and capability to wield equipped weapons.
+---@field _NV_canUseWeapon fun(self: AI, item: Item): boolean
+--- Calculates utility weight based on distance proximity to the designated target.
+---@field scoreTargetRange fun(self: AI, range: number): number
+--- Calculates utility weight inversely scaled by distance to the objective target.
+---@field scoreDistanceTo fun(self: AI, target: RootObject, holdPositionMode?: boolean): number
+--- Calculates utility weight for applying splints to broken bones.
+---@field scoreSplint fun(self: AI, _subject: hand, arg2: table): number
+--- Calculates utility weight for performing emergency first aid on bleeding allies.
+---@field scoreFirstAid fun(self: AI, _subject: hand, arg2: table): number
+--- Calculates utility weight for applying splints or repairs to crippled leg limbs.
+---@field scoreFixMyLegs fun(self: AI, _subject: hand, v: table): number
+--- Calculates utility weight for applying robotics repair kits to damaged mechanical squadmates.
+---@field scoreFirstAidRobot fun(self: AI, _subject: hand, arg2: table): number
+--- Calculates utility weight for dropping a currently carried character on the ground.
+---@field scorePutCarriedDudeDown fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for dedicated squad medic job assignments.
+---@field scoreJobMedic fun(self: AI, _subject: hand, arg2: table): number
+--- Calculates utility weight for placing a carried wounded character into an empty bed.
+---@field scorePutCarriedDudeInBed fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for locking a carried prisoner into a cage.
+---@field scorePutCarriedDudeInCage fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for hauling an unconscious or restrained intruder out of private territory.
+---@field scoreCarryingIntruder fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for carrying incapacitated allies to safety.
+---@field scoreFindAndRescue fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for rescuing wounded allies when unoccupied medical beds are available.
+---@field scoreFindAndRescueIfTheresBeds fun(self: AI, subject: hand, arg2: table): number
+--- Calculates high utility weight for prioritizing the rescue of a captured or downed squad leader.
+---@field scoreRescueLeader fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for abducting vulnerable high-value targets.
+---@field scoreFindAndKidnap fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for placing kidnapped prisoners into cages.
+---@field scoreKidnapperCageJob fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for visiting merchant shops and purchasing supplies.
+---@field scoreShopping fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for intervening to defend allies under attack.
+---@field scoreProtectAllies fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreProtectAllies`. Calculates utility weight for intervening to defend allies under attack.
+---@field _NV_scoreProtectAllies fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for maintaining tight formation proximity with the squad leader.
+---@field scoreStayClose fun(self: AI, subject: hand, p: table): number
+--- Override dispatch for `scoreStayClose`. Calculates utility weight for maintaining tight formation proximity with the squad leader.
+---@field _NV_scoreStayClose fun(self: AI, subject: hand, p: table): number
+--- Calculates utility weight for loose formation tethering with the squad.
+---@field scoreStayCloseIsh fun(self: AI, subject: hand, p: table): number
+--- Override dispatch for `scoreStayCloseIsh`. Calculates utility weight for loose formation tethering with the squad.
+---@field _NV_scoreStayCloseIsh fun(self: AI, subject: hand, p: table): number
+--- Calculates utility weight for imprisoning a target character into a cage.
+---@field scorePutDudeInCage fun(self: AI, who: hand): number
+--- Calculates elevated defensive utility weight when taking enemy fire or melee damage.
+---@field scoreUnderAttack fun(self: AI, in: hand, arg2: table): number
+--- Override dispatch for `scoreUnderAttack`. Calculates elevated defensive utility weight when taking enemy fire or melee damage.
+---@field _NV_scoreUnderAttack fun(self: AI, in: hand, arg2: table): number
+--- Calculates utility weight for emptying filled machine output buffers.
+---@field scoreEmptyMachine fun(self: AI, in: hand, arg2: table): number
+--- Override dispatch for `scoreEmptyMachine`. Calculates utility weight for emptying filled machine output buffers.
+---@field _NV_scoreEmptyMachine fun(self: AI, in: hand, arg2: table): number
+--- Returns zero utility weight, marking an action as inactive or invalid.
+---@field scoreNone fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreNone`. Returns zero utility weight, marking an action as inactive or invalid.
+---@field _NV_scoreNone fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for cannibal characters executing captured prisoners.
+---@field scoreCannibalKill fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreCannibalKill`. Calculates utility weight for cannibal characters executing captured prisoners.
+---@field _NV_scoreCannibalKill fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for operating automated or assigned industrial machinery.
+---@field scoreAutoMachinery fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreAutoMachinery`. Calculates utility weight for operating automated or assigned industrial machinery.
+---@field _NV_scoreAutoMachinery fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for collecting finished products from machine outputs.
+---@field scoreCollectOutputResource fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreCollectOutputResource`. Calculates utility weight for collecting finished products from machine outputs.
+---@field _NV_scoreCollectOutputResource fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for hauling produced resources to pending construction sites.
+---@field scoreCollectOutputResourceForBuildMats fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreCollectOutputResourceForBuildMats`. Calculates utility weight for hauling produced resources to pending construction sites.
+---@field _NV_scoreCollectOutputResourceForBuildMats fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for obtaining food from settlement food barrels.
+---@field scoreGetFood_inHomeTown fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreGetFood_inHomeTown`. Calculates utility weight for obtaining food from settlement food barrels.
+---@field _NV_scoreGetFood_inHomeTown fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for picking up dropped food items when hungry.
+---@field scoreFindFoodOnGround fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreFindFoodOnGround`. Calculates utility weight for picking up dropped food items when hungry.
+---@field _NV_scoreFindFoodOnGround fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for retrieving food and feeding squad animals.
+---@field scoreGetFood_inHomeTown_andFeedAnimals fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreGetFood_inHomeTown_andFeedAnimals`. Calculates utility weight for retrieving food and feeding squad animals.
+---@field _NV_scoreGetFood_inHomeTown_andFeedAnimals fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for lockpicking or opening locked doors blocking the route.
+---@field scoreUnlockDoorHere fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreUnlockDoorHere`. Calculates utility weight for lockpicking or opening locked doors blocking the route.
+---@field _NV_scoreUnlockDoorHere fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for vacating a bed when treatment or rest is finished.
+---@field scoreGetOutOfBed fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreGetOutOfBed`. Calculates utility weight for vacating a bed when treatment or rest is finished.
+---@field _NV_scoreGetOutOfBed fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for resting in bed until fully recovered.
+---@field scoreGetOutOfBedOnceFullyHealed fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreGetOutOfBedOnceFullyHealed`. Calculates utility weight for resting in bed until fully recovered.
+---@field _NV_scoreGetOutOfBedOnceFullyHealed fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for lying in an available bed or sleeping bag to recover health.
+---@field scoreGoToBed fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreGoToBed`. Calculates utility weight for lying in an available bed or sleeping bag to recover health.
+---@field _NV_scoreGoToBed fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight verifying that the character's home building is accessible.
+---@field scoreHomeIsNotLockedUp fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreHomeIsNotLockedUp`. Calculates utility weight verifying that the character's home building is accessible.
+---@field _NV_scoreHomeIsNotLockedUp fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight penalizing navigation paths that exit town limits.
+---@field scoreDontLeaveTown fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreDontLeaveTown`. Calculates utility weight penalizing navigation paths that exit town limits.
+---@field _NV_scoreDontLeaveTown fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for utilizing discovered prisoner cages.
+---@field scoreFoundCages fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreFoundCages`. Calculates utility weight for utilizing discovered prisoner cages.
+---@field _NV_scoreFoundCages fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight based on having at least one functional arm capable of performing work.
+---@field scoreHasWorkingArm fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreHasWorkingArm`. Calculates utility weight based on having at least one functional arm capable of performing work.
+---@field _NV_scoreHasWorkingArm fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for mounting and operating defensive turrets.
+---@field scoreUseTurret fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreUseTurret`. Calculates utility weight for mounting and operating defensive turrets.
+---@field _NV_scoreUseTurret fun(self: AI, subject: hand, arg2: table): number
+--- Calculates AI utility weight for engaging in aggressive actions against an enemy.
+---@field scoreAggressiveAction fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreAggressiveAction`. Calculates AI utility weight for engaging in aggressive actions against an enemy.
+---@field _NV_scoreAggressiveAction fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for breaking down locked gates or doors during a raid.
+---@field scoreBashGate fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreBashGate`. Calculates utility weight for breaking down locked gates or doors during a raid.
+---@field _NV_scoreBashGate fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for prisoner NPCs seizing opportunities to pick locks and escape.
+---@field scoreNPCEscapeCageOpportunity fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreNPCEscapeCageOpportunity`. Calculates utility weight for prisoner NPCs seizing opportunities to pick locks and escape.
+---@field _NV_scoreNPCEscapeCageOpportunity fun(self: AI, subject: hand, arg2: table): number
+--- Returns a fixed utility score weight of 0.1 for baseline low-priority AI actions.
+---@field score01 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score01`. Returns a fixed utility score weight of 0.1 for baseline low-priority AI actions.
+---@field _NV_score01 fun(self: AI, subject: hand, arg2: table): number
+--- Returns a fixed utility score weight of 0.25 for low-priority AI actions.
+---@field score025 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score025`. Returns a fixed utility score weight of 0.25 for low-priority AI actions.
+---@field _NV_score025 fun(self: AI, subject: hand, arg2: table): number
+--- Returns a fixed utility score weight of 0.5 for moderate-priority AI actions.
+---@field score05 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score05`. Returns a fixed utility score weight of 0.5 for moderate-priority AI actions.
+---@field _NV_score05 fun(self: AI, subject: hand, arg2: table): number
+--- Returns a fixed utility score weight of 0.8 for high-priority AI actions.
+---@field score08 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score08`. Returns a fixed utility score weight of 0.8 for high-priority AI actions.
+---@field _NV_score08 fun(self: AI, subject: hand, arg2: table): number
+--- Returns a standard baseline utility score weight of 1.0.
+---@field score10 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score10`. Returns a standard baseline utility score weight of 1.0.
+---@field _NV_score10 fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight based on line-of-sight visibility to the current target.
+---@field scoreCanSeeTarget fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreCanSeeTarget`. Calculates utility weight based on line-of-sight visibility to the current target.
+---@field _NV_scoreCanSeeTarget fun(self: AI, subject: hand, arg2: table): number
+--- Returns an elevated utility score weight of 1.2 for urgent AI actions.
+---@field score12 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score12`. Returns an elevated utility score weight of 1.2 for urgent AI actions.
+---@field _NV_score12 fun(self: AI, subject: hand, arg2: table): number
+--- Returns a high utility score weight of 1.5 for high-priority AI actions.
+---@field score15 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score15`. Returns a high utility score weight of 1.5 for high-priority AI actions.
+---@field _NV_score15 fun(self: AI, subject: hand, arg2: table): number
+--- Returns a maximum priority utility score weight of 2.0 for critical AI actions.
+---@field score20 fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `score20`. Returns a maximum priority utility score weight of 2.0 for critical AI actions.
+---@field _NV_score20 fun(self: AI, subject: hand, arg2: table): number
+--- Generates minor randomized utility variance to prevent synchronized behavior among squads.
+---@field scoreRandomFluff fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreRandomFluff`. Generates minor randomized utility variance to prevent synchronized behavior among squads.
+---@field _NV_scoreRandomFluff fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for carnivorous predators tracking bleeding prey.
+---@field scoreHuntingBlood fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreHuntingBlood`. Calculates utility weight for carnivorous predators tracking bleeding prey.
+---@field _NV_scoreHuntingBlood fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for scavenging animal eggs from creature nests.
+---@field scoreHuntingEggs fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreHuntingEggs`. Calculates utility weight for scavenging animal eggs from creature nests.
+---@field _NV_scoreHuntingEggs fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight based on target vulnerability and threat exposure.
+---@field scoreTargetInDanger fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreTargetInDanger`. Calculates utility weight based on target vulnerability and threat exposure.
+---@field _NV_scoreTargetInDanger fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for initiating attacks against visible hostiles.
+---@field scoreAttackEnemies fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreAttackEnemies`. Calculates utility weight for initiating attacks against visible hostiles.
+---@field _NV_scoreAttackEnemies fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for executing a melee combat attack against an opponent.
+---@field scoreMeleeAttack fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreMeleeAttack`. Calculates utility weight for executing a melee combat attack against an opponent.
+---@field _NV_scoreMeleeAttack fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for engaging enemies with crossbows or ranged weapons.
+---@field scoreRangedAttack fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreRangedAttack`. Calculates utility weight for engaging enemies with crossbows or ranged weapons.
+---@field _NV_scoreRangedAttack fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for fleeing from dangerous combat situations.
+---@field scoreRunAway fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreRunAway`. Calculates utility weight for fleeing from dangerous combat situations.
+---@field _NV_scoreRunAway fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for tactical disengagement and falling back to defensive positions.
+---@field scoreRetreat fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreRetreat`. Calculates utility weight for tactical disengagement and falling back to defensive positions.
+---@field _NV_scoreRetreat fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for pathfinding movement toward an objective destination.
+---@field scoreMove fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreMove`. Calculates utility weight for pathfinding movement toward an objective destination.
+---@field _NV_scoreMove fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight encouraging finding and equipping a replacement weapon when disarmed.
+---@field scoreDontWantToBeUnarmed fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreDontWantToBeUnarmed`. Calculates utility weight encouraging finding and equipping a replacement weapon when disarmed.
+---@field _NV_scoreDontWantToBeUnarmed fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for lifting and carrying target entities.
+---@field scoreLiftObject fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreLiftObject`. Calculates utility weight for lifting and carrying target entities.
+---@field _NV_scoreLiftObject fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for picking up unconscious trespassers.
+---@field scoreLiftIntruder fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreLiftIntruder`. Calculates utility weight for picking up unconscious trespassers.
+---@field _NV_scoreLiftIntruder fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for shackling captured prisoners into slavery.
+---@field scoreChainNewSlave fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreChainNewSlave`. Calculates utility weight for shackling captured prisoners into slavery.
+---@field _NV_scoreChainNewSlave fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight requiring the character to be conscious and mobile.
+---@field scoreNotDown fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreNotDown`. Calculates utility weight requiring the character to be conscious and mobile.
+---@field _NV_scoreNotDown fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight capping slave caravan group size.
+---@field scoreNoMoreThan4Slaves fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreNoMoreThan4Slaves`. Calculates utility weight capping slave caravan group size.
+---@field _NV_scoreNoMoreThan4Slaves fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for traveling to slave hubs to sell captured prisoners.
+---@field scoreSlaveExportTown fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreSlaveExportTown`. Calculates utility weight for traveling to slave hubs to sell captured prisoners.
+---@field _NV_scoreSlaveExportTown fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for managing owned slaves.
+---@field scoreHasSomeSlaves fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreHasSomeSlaves`. Calculates utility weight for managing owned slaves.
+---@field _NV_scoreHasSomeSlaves fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for delivering owned slaves to a slave market town.
+---@field scoreHasSomeSlavesAndAtImportTown fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreHasSomeSlavesAndAtImportTown`. Calculates utility weight for delivering owned slaves to a slave market town.
+---@field _NV_scoreHasSomeSlavesAndAtImportTown fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight based on whether this character is the active squad leader.
+---@field scoreAmTheRealLeader fun(self: AI, subject: hand, v: table): number
+--- Override dispatch for `scoreAmTheRealLeader`. Calculates utility weight based on whether this character is the active squad leader.
+---@field _NV_scoreAmTheRealLeader fun(self: AI, subject: hand, v: table): number
+--- Calculates utility weight for launching an assault when arriving at a target enemy town.
+---@field scoreAtAttackableTown fun(self: AI, arg1: hand, arg2: table): number
+--- Override dispatch for `scoreAtAttackableTown`. Calculates utility weight for launching an assault when arriving at a target enemy town.
+---@field _NV_scoreAtAttackableTown fun(self: AI, arg1: hand, arg2: table): number
+--- Calculates utility weight for domestic animal play animations and idle behavior.
+---@field scoreDogPlaying fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreDogPlaying`. Calculates utility weight for domestic animal play animations and idle behavior.
+---@field _NV_scoreDogPlaying fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for dogs chasing characters or balls during leisure activities.
+---@field scoreDogPlayingChase fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreDogPlayingChase`. Calculates utility weight for dogs chasing characters or balls during leisure activities.
+---@field _NV_scoreDogPlayingChase fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight based on home territory privacy and trespassing status.
+---@field scoreHomeIsPrivate fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreHomeIsPrivate`. Calculates utility weight based on home territory privacy and trespassing status.
+---@field _NV_scoreHomeIsPrivate fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight verifying the character is neither knocked out nor feigning death.
+---@field scoreNotKOOrPlayingDead fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreNotKOOrPlayingDead`. Calculates utility weight verifying the character is neither knocked out nor feigning death.
+---@field _NV_scoreNotKOOrPlayingDead fun(self: AI, subject: hand, arg2: table): number
+--- Calculates utility weight for targets located within the character's home settlement.
+---@field scoreTargetInMyTown fun(self: AI, subject: hand, arg2: table): number
+--- Override dispatch for `scoreTargetInMyTown`. Calculates utility weight for targets located within the character's home settlement.
+---@field _NV_scoreTargetInMyTown fun(self: AI, subject: hand, arg2: table): number
+--- Physical body and anatomical health controller.
+---@field body CharBody
+--- Geometric spatial anchor for current formation or defense area.
+---@field centerOfMovement table
+--- Entity handle used as relative spatial anchor for movement.
+---@field centerOfMovementTarget hand
+--- Actor inventory container.
+---@field inventory Inventory
+--- Back-pointer to owning Character actor instance.
+---@field me Character
+--- Medical triage and first-aid treatment coordinator.
+---@field medical MedicalSystem
+--- Target follow distance metric in game units.
+---@field meiDistance number
+--- Distance tolerance window before movement corrections trigger.
+---@field meiDistanceTolerance number
+--- Tactical stance order (`AGGRESSIVE`, `DEFENSIVE`, `EVASIVE`).
+---@field ordersAggression integer
+--- Positional maneuver order (`HOLD_GROUND`, `STAY_CLOSE`, `ROAM_FAR`).
+---@field ordersMovement integer
+--- Owning platoon/squad container pointer.
+---@field platoon Platoon
+--- Embedded sensory perception processor managing line-of-sight and alert levels.
+---@field sensoryData SensoryData
+--- Timestamp tracking duration spent in enslaved status.
+---@field slaveStateTimeStamp number
+--- Outward broadcast packet for animation and UI state reflection.
+---@field state StateBroadcastData
+--- Character attributes and skill proficiencies.
+---@field stats CharStats
+--- Bitmask of enabled task packages and behavioral capabilities.
+---@field taskRepertoireFlags integer
+--- Nested enum table `AI.AIAggressionOrders`.
+---@field AIAggressionOrders AI.AIAggressionOrders
+--- Nested enum table `AI.AIManuverabilityOrders`.
+---@field AIManuverabilityOrders AI.AIManuverabilityOrders
+
 --- Base pathfinding, road-following, and speed-group controller for moving agents. Extends NxUserControllerHitReport.
 ---@class AbstractMovementBase : NxUserControllerHitReport
 --- Initializes the movement base at starting position _pos (Vector3 table).
@@ -12585,6 +13574,334 @@ taskPriority = {
 ---@field speedOrders integer
 --- Standard walking speed in world units per second.
 ---@field walkSpeed number
+
+--- Core skeletal animation subsystem base class for characters and creatures in Kenshi. Manages skeletal bone queries, world-space and local-space bone caching, animation track blending across layered channels (`AnimationLayer`), root motion relocation, and playback timing synchronization with the locomotion kinematic controller (`CharMovement`).
+---@class AnimationClassBase
+--- Controls visibility of the underlying Ogre 3D mesh entity (`body`) and associated scene graph node.
+---@field setVisible fun(self: AnimationClassBase, on?: boolean)
+--- Queries whether the mesh entity is currently visible.
+---@field getVisible fun(self: AnimationClassBase): boolean
+--- Stops all active animations across all layers. If `hardStop` is true, immediately zeroes blend weights; otherwise initiates smooth fade-out.
+---@field stopAllAnimation fun(self: AnimationClassBase, hardStop?: boolean)
+--- Clears all animation layers immediately without thread synchronization locks (unsafe / internal use).
+---@field clearAllAnimationUT fun(self: AnimationClassBase)
+--- Computes world-space orientation quaternion of the named bone by combining scene node orientation with bone hierarchy rotation.
+---@field getBoneWorldOrientation fun(self: AnimationClassBase, name: string): table
+--- Computes world-space 3D coordinates of the named bone, applying parent node translation, skeletal rotations, and optional scaling factor.
+---@field getBoneWorldPosition fun(self: AnimationClassBase, name: string, scale: number): table
+--- Queries whether the skeletal rig contains a bone with the specified name.
+---@field getHasBone fun(self: AnimationClassBase, name: string): boolean
+--- Queries whether the mesh entity contains an animation clip matching the specified string identifier.
+---@field hasAnimation fun(self: AnimationClassBase, s: string): boolean
+--- Retrieves world position of the character's primary Ogre scene node (`node`).
+---@field getSceneNodePosition fun(self: AnimationClassBase): table
+--- Retrieves world orientation quaternion of the character's primary scene node.
+---@field getSceneNodeOrientation fun(self: AnimationClassBase): table
+--- Retrieves local orientation quaternion of the named bone relative to its parent bone.
+---@field getBoneLocalOrientation fun(self: AnimationClassBase, name: string): table
+--- Retrieves local position vector of the named bone relative to its parent bone in the skeletal hierarchy.
+---@field getBoneLocalPosition fun(self: AnimationClassBase, name: string): table
+--- Returns world-space position of the root motion bone (`rootBonePosition`).
+---@field getRootBoneWorldPosition fun(self: AnimationClassBase): table
+--- Returns local position offset of the root motion bone relative to the character scene node origin.
+---@field getRootBoneLocalPosition fun(self: AnimationClassBase): table
+--- Retrieves initial bind-pose local position of the named bone before animation deformation.
+---@field getBoneInitialLocalPosition fun(self: AnimationClassBase, name: string): table
+--- Retrieves initial bind-pose local orientation quaternion of the named bone.
+---@field getBoneInitialLocalOrientation fun(self: AnimationClassBase, name: string): table
+--- Retrieves cached bind-pose world position of the named bone from `boneInitialWorldPositions`.
+---@field getBoneInitialWorldPosition fun(self: AnimationClassBase, name: string): table
+--- Retrieves cached bind-pose world orientation quaternion of the named bone from `boneInitialWorldOrientations`.
+---@field getBoneInitialWorldOrientation fun(self: AnimationClassBase, name: string): table
+--- Resets character scene node orientation and desired orientation quaternion to identity.
+---@field resetOrientation fun(self: AnimationClassBase)
+--- Calculates normalized playback progress [0.0, 1.0] for the active combat technique animation.
+---@field getAnimationProgress fun(self: AnimationClassBase, arg1: CombatTechniqueData|string): number
+--- Returns current target character orientation quaternion (`desiredOrientation`).
+---@field getOrientation fun(self: AnimationClassBase): table
+--- Applies a vertical elevation offset to the character's visual mesh and scene node (e.g. bed height, chair elevation, or water immersion depth).
+---@field setVerticalPosition fun(self: AnimationClassBase, hpos: number)
+---@field getAudioObject fun(self: AnimationClassBase): integer
+--- Retrieves owning `Character` entity linked to this animation controller via `movement`.
+---@field getCharacter fun(self: AnimationClassBase): Character
+--- Override dispatch for `getCharacter`. Retrieves owning `Character` entity linked to this animation controller via `movement`.
+---@field _NV_getCharacter fun(self: AnimationClassBase): Character
+--- Sets the global animation playback speed multiplier (`masterSpeed`), scaling playback rates uniformly across all active tracks and layers.
+---@field setMasterTimeSpeed fun(self: AnimationClassBase, speed: number)
+--- Queries the global animation playback speed multiplier.
+---@field getMasterTimeSpeed fun(self: AnimationClassBase): number
+--- Retrieves the accumulated master animation clock time in seconds (`masterTime`).
+---@field getMasterTime fun(self: AnimationClassBase): number
+--- Checks if the Ogre rendering entity (`body`) exists and is attached to a visible scene node.
+---@field isVisibleEntity fun(self: AnimationClassBase): boolean
+--- Traverses the skeletal hierarchy in bind pose, caching initial world-space bone positions and orientations into lookup maps.
+---@field initBoneInitialWorldPositions fun(self: AnimationClassBase)
+--- Queries whether an animation matching the specified clip name is currently active and blending with non-zero weight.
+---@field isAnimationPlaying fun(self: AnimationClassBase, name: string): boolean
+--- Sums the total active blend weight across all upper body and whole body action animation tracks.
+---@field getTotalActionAnimationWeight fun(self: AnimationClassBase): number
+--- Tests whether an action animation (e.g. attack strike, lockpick, medical treatment, stumble) is actively playing and preventing transition to idle.
+---@field stillPlayingAnActionOrSomething fun(self: AnimationClassBase): boolean
+--- Activation request transition marker.
+---@field activateFlag boolean
+--- Cached base rest-pose world bone orientations.
+---@field boneInitialWorldOrientations StdMap<string, table>
+--- Cached base rest-pose world bone positions.
+---@field boneInitialWorldPositions BoostUnorderedMap<string, table>
+--- Target facing orientation quaternion.
+---@field desiredOrientation table
+--- Active playback update state flag.
+---@field isActivated boolean
+--- Idle posture state indicator.
+---@field isIdle boolean
+--- Scene visibility rendering toggle.
+---@field isVisible boolean
+--- Root motion delta translation accumulator.
+---@field lastAnimRelocation table
+--- Global animation playback speed scale multiplier.
+---@field masterSpeed number
+--- Master animation timeline clock in seconds.
+---@field masterTime number
+--- Locomotion kinematics interface pointer.
+---@field movement CharMovement
+--- Root bone current world position.
+---@field rootBonePosition table
+--- Blending reset toggle flag.
+---@field zeroOutTheBlending boolean
+
+--- Core skeletal animation controller and locomotion blending coordinator governing character poses, movement cycles, combat techniques, stumbles, and ragdoll transitions. Manages Ogre3D skeletal animation layers, motion smoothing filters, pain overlay blend masks, and physics ragdoll kinematics coupling. Interacts directly with `Character` for actor state, `CharMovement` for locomotion velocity and steering, `AppearanceBase` for skeletal mesh scaling and body morphs, and `CombatClass` for attack and parry sequence timing.
+---@class AnimationClass : AnimationClassBase
+--- Populates an array with all loaded animation clips available for this character rig.
+---@field debugGetAllAnimations fun(self: AnimationClass, panel: DatapanelGUI)
+--- Concludes reactive stumble recovery and restores combat idle or locomotion stances.
+---@field endStumble fun(self: AnimationClass)
+--- Returns true if the character is currently executing an involuntary hit-reaction stumble animation.
+---@field currentlyStumbling fun(self: AnimationClass): boolean
+--- Returns true if injuries, carrying states, or stumbles prevent normal waypoint locomotion.
+---@field isCurrentlyIncapableOfWaypointMovemode fun(self: AnimationClass): boolean
+--- Performs thread-safe synchronization of PhysX ragdoll transform matrices with visual bone skeletons.
+---@field threadSafeRagdollUpdateUT fun(self: AnimationClass)
+--- Primary simulation tick arbitrating upper/lower body animation selection, blending active skeletal clips, evaluating stumbles, and advancing playback time.
+---@field update fun(self: AnimationClass, frameTIME: number)
+--- Override dispatch for `update`. Primary simulation tick arbitrating upper/lower body animation selection, blending active skeletal clips, evaluating stumbles, and advancing playback time.
+---@field _NV_update fun(self: AnimationClass, frameTIME: number)
+---@field calculatePositionWithWaterHeight fun(self: AnimationClass): number
+--- Updates animation preview pose and slider morph transformations within character creation.
+---@field updateAnimationCharacterEditor fun(self: AnimationClass, time: number)
+--- Thread-safe parallel animation update evaluating skeletal bone hierarchies and computing track weights across background worker threads.
+---@field updateThreaded fun(self: AnimationClass, frameTIME: number)
+--- Updates skeletal heading orientation and smooths rotational interpolation toward target facing.
+---@field rotationUpdate fun(self: AnimationClass, frameTime: number)
+--- Override dispatch for `rotationUpdate`. Updates skeletal heading orientation and smooths rotational interpolation toward target facing.
+---@field _NV_rotationUpdate fun(self: AnimationClass, frameTime: number)
+--- Flushes calculated skeletal bone matrix transformations into Ogre scene nodes and PhysX collision hulls.
+---@field updateAnimationTransforms fun(self: AnimationClass)
+--- Sets the world space translation coordinates of the skeleton scene node.
+---@field setPosition fun(self: AnimationClass, pos: table, arg2?: table)
+--- Returns the 3D world position coordinates of the character skeleton.
+---@field getPosition fun(self: AnimationClass): boolean, table
+--- Rotates an attached mesh entity relative to its parent bone attachment point.
+---@field rotateEntityAroundBone fun(self: AnimationClass, bone: string, dir: table): table
+--- Returns the visual scaling vector applied to the specified bone node.
+---@field getBoneScale fun(self: AnimationClass, bonename: string): table
+--- Disables visual mesh and bone rendering when a character is culled or out of camera range.
+---@field deactivateVisuals fun(self: AnimationClass)
+--- Returns true if visual mesh and skeleton rendering updates are currently active.
+---@field getIsActivated fun(self: AnimationClass): boolean
+--- Resets all bone transformations back to the default bind pose.
+---@field resetBody fun(self: AnimationClass)
+--- Restarts playback of the current action animation from the beginning.
+---@field restartAction fun(self: AnimationClass, name: string): boolean
+--- Queues and plays an upper-body or whole-body action animation (e.g. eating, healing, crafting, lockpicking) over base locomotion.
+---@field playAction fun(self: AnimationClass, arg1: string, arg2: number, arg3: number, arg4?: boolean)
+--- Fades out and stops the currently active upper-body action clip.
+---@field stopAction fun(self: AnimationClass, arg1?: string): boolean
+--- Sets the target locomotion velocity used to select between walk, jog, and sprint tracks.
+---@field setAnimationMoveSpeed fun(self: AnimationClass, speed: number)
+--- Sets the lateral strafe velocity component for directional locomotion blending.
+---@field setStrafeSpeed fun(self: AnimationClass, speed: number)
+--- Enables or disables combat readiness stance overlays and weapon handling.
+---@field setCombatMode fun(self: AnimationClass, on?: boolean)
+--- Configures weather reaction animations (e.g. shielding eyes from dust storms, acid rain flinching).
+---@field setWeatherType fun(self: AnimationClass, w: integer, stren: number, doWeatherAnimation?: boolean)
+--- Returns the active environmental weather hazard type affecting character reactions.
+---@field getWeatherType fun(self: AnimationClass): integer
+--- Returns the current environmental weather intensity scalar affecting animations.
+---@field getWeatherStrength fun(self: AnimationClass): number
+--- Enables or disables sneaking posture, crouching animations, and silent footsteps.
+---@field setStealthMode fun(self: AnimationClass, on?: boolean)
+--- Sets the maximum locomotion velocity clamp for the character.
+---@field setMaximumSpeed fun(self: AnimationClass, speed: number)
+--- Returns the maximum movement speed permitted for the character's current locomotion blend.
+---@field getMaximumSpeed fun(self: AnimationClass): number
+--- Returns true if the specified linear animation track has finished playing.
+---@field isLinearAnimationDone_byName fun(self: AnimationClass, name: string): boolean
+--- Returns the vertical footing contact height offset for inverse kinematics adjustment.
+---@field getFootHeight fun(self: AnimationClass): number
+--- Calculates terrain contact heights for left and right foot bones to adjust inverse kinematics footing.
+---@field calculateFeetHeight fun(self: AnimationClass)
+--- Adjusts vertical foot offset to compensate for shoe or footwear sole thickness.
+---@field setBootHeight fun(self: AnimationClass, h: number)
+--- Returns true if the character is currently being carried on the shoulder of another character.
+---@field isBeingCarried fun(self: AnimationClass): boolean
+--- Returns true if the character is in full unconstrained physical ragdoll mode with no motor control.
+---@field isTotallyRagdoll fun(self: AnimationClass): boolean
+--- Flags the character ragdoll as requiring PhysX transform resynchronization next frame.
+---@field notifyRagdollNeedsAnUpdate fun(self: AnimationClass)
+--- Configures carrying posture animation overlays when carrying a body or heavy object.
+---@field setCarryMode fun(self: AnimationClass, ed?: boolean, left?: boolean, right?: boolean)
+--- Sets the idle posture animation for lower body legs during combat.
+---@field setCombatModeLegsIdle fun(self: AnimationClass, on?: boolean)
+--- Sets the idle posture animation for upper body torso and arms during combat.
+---@field setCombatModeUpperIdle fun(self: AnimationClass, on?: boolean)
+--- Checks if the character skeleton is currently governed by active PhysX physical simulation.
+---@field isRagdoll fun(self: AnimationClass): boolean
+--- Kinematically blends ragdoll physics bones back into a keyframed recovery pose (e.g. standing up from ground).
+---@field ragdollAnimateTo fun(self: AnimationClass, targetAnimationName: string, duration: number)
+--- Returns true if the character is in a hybrid animated-ragdoll mode (e.g. partial physical impact).
+---@field isRagdollAnimated fun(self: AnimationClass): boolean
+--- Switches character into PhysX physical ragdoll mode, transferring bone linear and angular momentum to rigid body capsules upon incapacitation or death.
+---@field ragdollModeUT fun(self: AnimationClass, on?: boolean, momentum: table, part: integer, physicsFile: string, me: Character)
+--- Override dispatch for `ragdollModeUT`. Switches character into PhysX physical ragdoll mode, transferring bone linear and angular momentum to rigid body capsules upon incapacitation or death.
+---@field _NV_ragdollModeUT fun(self: AnimationClass, on?: boolean, momentum: table, part: integer, physicsFile: string, me: Character)
+--- Callback invoked on main thread after asynchronous PhysX ragdoll construction finishes.
+---@field postRagdollCreationCallbackMT fun(self: AnimationClass, on?: boolean)
+--- Override dispatch for `postRagdollCreationCallbackMT`. Callback invoked on main thread after asynchronous PhysX ragdoll construction finishes.
+---@field _NV_postRagdollCreationCallbackMT fun(self: AnimationClass, on?: boolean)
+--- Returns true if the specified body part bone is currently articulated by a physical ragdoll rigid body.
+---@field hasRagdollPart fun(self: AnimationClass, part: integer): boolean
+--- Returns true if the character's skeleton is currently simulated by dynamic physics ragdoll bodies.
+---@field isPhysical fun(self: AnimationClass): boolean
+--- Returns the effective character height in world units factoring scale sliders.
+---@field getHeight fun(self: AnimationClass): number
+--- Randomizes initial timeline offset of idle animations to avoid visual synchronization across squads.
+---@field randomiseAnimationPosition fun(self: AnimationClass)
+--- Updates animation posture and limb blending when the character is being carried by another entity.
+---@field beingCarriedUpdate fun(self: AnimationClass, pos: table, rot: table): table
+--- Updates aiming elevation, bow draw tension, and weapon reloading animations for ranged combat.
+---@field rangedCombatModeUpdate fun(self: AnimationClass, targetpos: table)
+--- Plays an animation clip by name on the specified skeletal track layer.
+---@field runAnimation fun(self: AnimationClass, arg1: string, arg2: number, arg3: number)
+--- Concludes an attack or block animation cycle, transitioning bones back into combat idle posture.
+---@field endCombatAnimation fun(self: AnimationClass)
+--- Executes an attack or defense animation sequence on the combat animation layer.
+---@field runCombatAnimation fun(self: AnimationClass, anim: CombatTechniqueData, speed: number, additionalString: string)
+--- Starts playback of an offensive martial arts or weapon attack technique on upper/lower animation layers.
+---@field startCombatAnimation fun(self: AnimationClass, anim: CombatTechniqueData, speed: number, additionalString: string)
+--- Fades in and begins playback of an animation clip on the specified layer channel.
+---@field startAnimation fun(self: AnimationClass, arg1: string, arg2: number, arg3: number)
+--- Fades out and stops playback of the specified animation clip.
+---@field stopAnimation fun(self: AnimationClass, arg1: string)
+--- Enables visual skeleton rendering, particle emitters, and bone node transformations for the character.
+---@field activateVisuals fun(self: AnimationClass)
+--- Estimates the total duration in seconds required to play the specified animation clip.
+---@field estimateAnimationTime fun(self: AnimationClass, name: string): number
+--- Notifies the animation controller that a root motion animation track has looped back to start.
+---@field notifyRelocatedAnimLoop fun(self: AnimationClass)
+--- Serializes active visual animation parameters, morphs, and attached props into save data.
+---@field serialiseAppearance fun(self: AnimationClass, state: GameData)
+--- Applies character appearance slider morph targets and skeleton scale factors to the rig.
+---@field setAppearanceData fun(self: AnimationClass, data: GameDataCopyStandalone)
+--- Retrieves the `GameDataCopyStandalone` containing appearance sliders and character morph values.
+---@field getAppearanceData fun(self: AnimationClass): GameDataCopyStandalone
+--- Retrieves the audio playback emitter object bound to this character rig.
+---@field getAudioObject fun(self: AnimationClass): integer
+--- Override dispatch for `getAudioObject`. Retrieves the audio playback emitter object bound to this character rig.
+---@field _NV_getAudioObject fun(self: AnimationClass): integer
+--- Starts playback of a synchronized slave labor animation tied to an interactive furniture object.
+---@field playSlaveAnim fun(self: AnimationClass, name: string, speedMult: number, sync: number, startWeight: number)
+--- Drives frame updates for a synchronized machine or furniture interaction animation.
+---@field runSlaveAnim fun(self: AnimationClass, name: string, speedMult: number, sync: number, startWeight: number)
+--- Terminates a synchronized slave labor or interaction animation and releases bone attachments.
+---@field endSlaveAnim fun(self: AnimationClass, anim: string)
+--- Returns true if the character is currently bound to a synchronized slave labor animation loop.
+---@field isSlaveAnimating fun(self: AnimationClass): boolean
+--- Sets the entity handle of the interactive furniture object governing slave labor.
+---@field setSlaveHandle fun(self: AnimationClass, h: hand)
+--- Enables or disables bone attachment mode during synchronized interaction animations.
+---@field slaveAttachToBoneMode fun(self: AnimationClass, bone: string)
+--- Returns true if slave interaction attaches the character transform directly to a machine bone.
+---@field isSlaveAttachToBoneMode fun(self: AnimationClass): string
+--- Returns the owning `Character` entity driven by this animation controller.
+---@field getCharacter fun(self: AnimationClass): Character
+--- Override dispatch for `getCharacter`. Returns the owning `Character` entity driven by this animation controller.
+---@field _NV_getCharacter fun(self: AnimationClass): Character
+--- Applies limping and crippled locomotion penalties based on damaged left/right legs.
+---@field setLegDamage fun(self: AnimationClass, left: number, right: number)
+--- Override dispatch for `setLegDamage`. Applies limping and crippled locomotion penalties based on damaged left/right legs.
+---@field _NV_setLegDamage fun(self: AnimationClass, left: number, right: number)
+--- Overrides the active pain animation overlay with a specific hit reaction clip.
+---@field setDesiredPainOverlayAnimOverride fun(self: AnimationClass, anim: string)
+--- Override dispatch for `setDesiredPainOverlayAnimOverride`. Overrides the active pain animation overlay with a specific hit reaction clip.
+---@field _NV_setDesiredPainOverlayAnimOverride fun(self: AnimationClass, anim: string)
+--- Decouples equipped weapons from hands and spawns physical dynamic rigid bodies falling to the ground.
+---@field ragdollTheWeapons fun(self: AnimationClass, slotname: string, item: Item, attach?: boolean)
+--- Override dispatch for `ragdollTheWeapons`. Decouples equipped weapons from hands and spawns physical dynamic rigid bodies falling to the ground.
+---@field _NV_ragdollTheWeapons fun(self: AnimationClass, slotname: string, item: Item, attach?: boolean)
+--- Sets the character combat stance profile (e.g. upright, martial arts, defensive block).
+---@field setStance fun(self: AnimationClass, crouch?: boolean, prone?: boolean)
+--- Override dispatch for `setStance`. Sets the character combat stance profile (e.g. upright, martial arts, defensive block).
+---@field _NV_setStance fun(self: AnimationClass, crouch?: boolean, prone?: boolean)
+--- Explicitly sets the stance idle animation clip to play on the character.
+---@field setStanceAnimation fun(self: AnimationClass, arg1: integer)
+--- Override dispatch for `setStanceAnimation`. Explicitly sets the stance idle animation clip to play on the character.
+---@field _NV_setStanceAnimation fun(self: AnimationClass, arg1: integer)
+--- Updates weapon grip attachment points and stance requirements for newly equipped items.
+---@field setEquipmentInHand fun(self: AnimationClass, l?: boolean, r?: boolean)
+--- Override dispatch for `setEquipmentInHand`. Updates weapon grip attachment points and stance requirements for newly equipped items.
+---@field _NV_setEquipmentInHand fun(self: AnimationClass, l?: boolean, r?: boolean)
+--- Returns true if the character is currently playing a stationary turn animation.
+---@field isTurning fun(self: AnimationClass): boolean
+--- Override dispatch for `isTurning`. Returns true if the character is currently playing a stationary turn animation.
+---@field _NV_isTurning fun(self: AnimationClass): boolean
+--- Returns true if the character is turning at a high angular delta requiring large pivot steps.
+---@field isTurningFar fun(self: AnimationClass): boolean
+--- Override dispatch for `isTurningFar`. Returns true if the character is turning at a high angular delta requiring large pivot steps.
+---@field _NV_isTurningFar fun(self: AnimationClass): boolean
+--- Applies head and neck inverse kinematics bone rotation to look toward the specified world position.
+---@field lookAt fun(self: AnimationClass, position: table): boolean
+--- Override dispatch for `lookAt`. Applies head and neck inverse kinematics bone rotation to look toward the specified world position.
+---@field _NV_lookAt fun(self: AnimationClass, position: table): boolean
+--- Returns the 3D unit vector indicating the character's current visual look direction.
+---@field getLookDirection fun(self: AnimationClass): table
+--- Override dispatch for `getLookDirection`. Returns the 3D unit vector indicating the character's current visual look direction.
+---@field _NV_getLookDirection fun(self: AnimationClass): table
+--- Returns true if the character currently has an active action animation playing or queued.
+---@field hasAction fun(self: AnimationClass): boolean
+--- Master selection arbitration routine evaluating movement speed, turning direction, stance, and injuries to blend appropriate movement and idle clips.
+---@field animationSelection fun(self: AnimationClass, _TIME: number)
+--- Evaluates combat stances, weapon readiness, and engagement ranges to select combat idle or attack animations.
+---@field animationSelectionCombatMode fun(self: AnimationClass, _TIME: number)
+--- Override dispatch for `animationSelectionCombatMode`. Evaluates combat stances, weapon readiness, and engagement ranges to select combat idle or attack animations.
+---@field _NV_animationSelectionCombatMode fun(self: AnimationClass, _TIME: number)
+--- Evaluates overlay animation channels (such as pain grimaces, wounded limps, or carrying).
+---@field overlaidAnimationSelection fun(self: AnimationClass)
+--- Override dispatch for `overlaidAnimationSelection`. Evaluates overlay animation channels (such as pain grimaces, wounded limps, or carrying).
+---@field _NV_overlaidAnimationSelection fun(self: AnimationClass)
+--- Applies angular rotation steps and foot pivots for stationary direction adjustments.
+---@field processTurnAnim fun(self: AnimationClass): boolean
+--- Override dispatch for `processTurnAnim`. Applies angular rotation steps and foot pivots for stationary direction adjustments.
+---@field _NV_processTurnAnim fun(self: AnimationClass): boolean
+--- Advances and applies subtle skeletal breathing morph animations to chest and shoulder bones during idles.
+---@field breathing fun(self: AnimationClass, armsToo?: boolean)
+--- Override dispatch for `breathing`. Advances and applies subtle skeletal breathing morph animations to chest and shoulder bones during idles.
+---@field _NV_breathing fun(self: AnimationClass, armsToo?: boolean)
+--- Character cosmetic appearance, skeletal proportions, and body morph target controller.
+---@field appearance AppearanceBase
+--- Footwear sole thickness compensation offset preventing ground mesh penetration.
+---@field bootHeight number
+--- Ragdoll kinematic override lockout counter preventing premature physics transitions.
+---@field disableRagdollKinematics integer
+--- Ground height vertical offset for foot-plant clamping and ground alignment.
+---@field feetHeight number
+--- Back-pointer to owning character actor entity.
+---@field me Character
+--- Ragdoll component collision bitmask identifying active physics limbs.
+---@field ragdollParts integer
+--- Directional strafe blending and velocity smoothing motion filter.
+---@field strafeBlendFilter MotionFilter
+--- Summed blend weight scalar across all active upper-body action clips.
+---@field totalActionWeight number
 
 --- Humanoid character appearance specialist managing facial features, hair/beard styling, gender dimorphism, chest/waist proportions, and skin normal overlays.
 ---@class AppearanceHuman : AppearanceBase
@@ -13496,8 +14813,8 @@ taskPriority = {
 ---@field _combatMoveSpeedMult number
 --- Timestamp of the last off-navmesh recovery check.
 ---@field _lastOffMeshCheck number
---- Pointer to the character's AnimationClass (exposed as lightuserdata).
----@field animation lightuserdata
+--- The character's `AnimationClass`.
+---@field animation AnimationClass
 --- Whether animation is overriding normal movement positioning.
 ---@field animationOverride boolean
 --- Handle (hand) of the building the character is currently inside or standing on.
@@ -14225,9 +15542,9 @@ taskPriority = {
 --- Normalized attack execution progress or execution status (-100 = ragdoll, -1 = stumble, 0.0–1.0 = attack cycle).
 ---@field _isAttacking number
 --- High-level decision engine supplying tactical goals, package overrides, and target priorities.
----@field ai lightuserdata
+---@field ai AI
 --- Skeletal animation blender coordinating strike transitions, recovery poses, and blend layers.
----@field animation lightuserdata
+---@field animation AnimationClass
 --- Internal attack slot manager instance arbitrating incoming hostile engagement slots.
 ---@field attackSlots AttackSlotManager
 --- World-space coordinates where current melee attack swing originated.
@@ -20287,8 +21604,8 @@ taskPriority = {
 ---@field getDataFor fun(self: SensoryData, who: Character): SeenSomeone
 --- Returns the perceived faction relation toward c (RootObjectBase).
 ---@field getFactionRelation fun(self: SensoryData, c: RootObjectBase): number
---- Returns the owning character's StateBroadcastData* as lightuserdata.
----@field getStateBroadcast fun(self: SensoryData): lightuserdata
+--- Returns the owning character's `StateBroadcastData`.
+---@field getStateBroadcast fun(self: SensoryData): StateBroadcastData
 --- Populates debug sensory information into panel (DatapanelGUI) under category cat.
 ---@field getGUIData fun(self: SensoryData, panel: DatapanelGUI, cat: integer)
 --- Computes the field-of-view visibility score for who (Character).
@@ -20341,8 +21658,8 @@ taskPriority = {
 ---@field buildingSpotterUpdate fun(self: SensoryData)
 --- Marks character h (hand) as a criminal threat to be attacked.
 ---@field notifyCriminalThreat fun(self: SensoryData, h: hand)
---- Returns the perceived StateBroadcastData* (as lightuserdata) of character who (hand), or nil if not seen.
----@field getStateBroadcastOf fun(self: SensoryData, who: hand): lightuserdata|nil
+--- Returns the `StateBroadcastData` of character who (hand) as perceived by this character, or nil if not seen.
+---@field getStateBroadcastOf fun(self: SensoryData, who: hand): StateBroadcastData
 --- Shares sensory contacts from squad leader (Character) with list (lektor<RootObject*>) over time and returns whether sharing occurred.
 ---@field _shareSensesCheck fun(self: SensoryData, leader: Character, list: lightuserdata, time: number): boolean
 --- Initializes the floating detection progress bar for observer who (hand).
@@ -20694,6 +22011,111 @@ taskPriority = {
 --- Enumeration value (StatsEnumerated) representing the stat type.
 ---@field type integer
 
+--- Per-character state that a character broadcasts to nearby AI: slave status, current task target, strength and aggression estimates, disguise state, and what the character looks like to observers. Owned by its `Character`; a `Platoon` returns its squad leader's instance.
+---@class StateBroadcastData
+--- Saves this broadcast state into state (GameData).
+---@field save fun(self: StateBroadcastData, state: GameData)
+--- Loads this broadcast state from state (GameData).
+---@field load fun(self: StateBroadcastData, state: GameData)
+--- Runs the periodic update of this broadcast state.
+---@field periodicUpdate fun(self: StateBroadcastData)
+--- Sets the slave state from s (`SlaveStateEnum` integer).
+---@field setSlaveState fun(self: StateBroadcastData, s: integer)
+--- Returns the current slave state as a `SlaveStateEnum` integer.
+---@field getSlaveState fun(self: StateBroadcastData): integer
+--- Returns the number of in-game hours remaining in the current slave state.
+---@field getSlaveStateHoursRemaining fun(self: StateBroadcastData): integer
+--- Marks this character's disguise as blown.
+---@field notifyDisguiseBlown fun(self: StateBroadcastData)
+--- Returns true if this character's disguise has been blown.
+---@field isDisguiseBlown fun(self: StateBroadcastData): boolean
+--- Returns the `Faction` this character is disguised as, or nil when not disguised.
+---@field isDisguised fun(self: StateBroadcastData): Faction
+--- Returns true if this character is a slave whose identity is hidden.
+---@field isHiddenIdentitySlave fun(self: StateBroadcastData): boolean
+--- Returns the `Faction` this character appears to belong to, accounting for disguise and hidden-identity slavery.
+---@field getApparentFaction fun(self: StateBroadcastData): Faction
+--- Character role as a `CharacterTypeEnum` integer.
+---@field NPCType integer
+--- Raw slave state as a `SlaveStateEnum` integer. `setSlaveState` is the engine's setter.
+---@field _slaveState integer
+--- `TimeOfDay` when the slave state last changed.
+---@field _slaveStateChangedTime TimeOfDay
+--- Actual combat strength estimate of this character.
+---@field actualStrength number
+--- Aggression this character shows towards its current target.
+---@field aggressionTowardsTarget number
+--- Combat strength this character appears to have to observers.
+---@field apparentStrength number
+--- `Faction` of this character's combat targets, or nil.
+---@field combatTargetsFaction Faction
+--- `TownBase` this character is currently in, or nil.
+---@field currentTownLocation TownBase
+--- Disguise-blown value for this character.
+---@field disguiseBlown number
+--- `Faction` this character is disguised as, or nil.
+---@field disguiseFaction Faction
+--- Quality of this character's disguise.
+---@field disguiseQuality number
+--- Distress level this character broadcasts.
+---@field distress number
+--- Follow-me signal strength this character broadcasts.
+---@field followMe number
+--- Handle of this character's home building.
+---@field homeBuilding hand
+--- Aggression this character intends.
+---@field intendedAggression number
+--- Help this character intends to give.
+---@field intendedHelp number
+--- Handle of the target this character intends to attack.
+---@field intendsToAttack hand
+--- True if this character is flagged as the aggressor.
+---@field isAggressor boolean
+--- True if this character is at home.
+---@field isAtHome boolean
+--- True if this character is an escaped prisoner.
+---@field isEscapedPrisoner boolean
+--- True if this character is kidnapped.
+---@field isKidnapped boolean
+--- True if this character is sitting.
+---@field isSitting boolean
+--- `Faction` this character is a slave of, or nil.
+---@field isSlaveOf Faction
+--- `YesNoMaybe` sleeping state of this character.
+---@field isSleeping YesNoMaybeValue
+--- True if this character is temporarily neutral.
+---@field isTemporaryNeutral boolean
+--- `TimeOfDay` when this character last slept.
+---@field lastSlept TimeOfDay
+--- How strongly this character looks like a bounty target to observers.
+---@field looksLike_bounty number
+--- Character role suggested by this character's clothing, as a `CharacterTypeEnum` integer.
+---@field looksLike_clothingArchetype integer
+--- How strongly this character looks like an escaped slave to observers.
+---@field looksLike_escapedSlave number
+--- How strongly this character looks like an intruder to observers.
+---@field looksLike_intruder number
+--- The `Character` that owns this broadcast state. Cannot be set to nil.
+---@field me Character
+--- Mobility value this character broadcasts.
+---@field mobility number
+--- Personality as a `PersonalityTags` integer.
+---@field myPersonality integer
+--- Noise level this character broadcasts.
+---@field noise number
+--- Broadcast position of this character.
+---@field pos table
+--- Strength of attackers relative to this character.
+---@field relativeAttackerStrength number
+--- Gear value shown in the slave GUI.
+---@field slaveGUI_gear number
+--- Minimum value shown in the slave GUI.
+---@field slaveGUI_min integer
+--- Handle of this character's current task target.
+---@field taskTarget hand
+--- True if this character is unconscious.
+---@field unconcious boolean
+
 --- Subclass of PhysicalEntity representing a static visual and collision entity attached to a building, wall, or fixed world fixture.
 ---@class StaticEnt : PhysicalEntity
 --- Updates physical simulation state for this entity given the elapsed time speed.
@@ -21008,17 +22430,17 @@ taskPriority = {
 --- Override dispatch for `taskSaysItsFinished`. Checks if the task itself evaluates that it has completed its objectives for the character.
 ---@field _NV_taskSaysItsFinished fun(self: Tasker, me: Character): boolean
 --- Calculates the utility score for this task. Higher scores increase the probability of selection by the AI system.
----@field score fun(self: Tasker, ai: lightuserdata): number
+---@field score fun(self: Tasker, ai: AI): number
 --- Evaluates whether the intended outcomes of the task have been fully achieved. Signals the task is complete.
----@field isResultsComplete fun(self: Tasker, ai: lightuserdata): boolean
+---@field isResultsComplete fun(self: Tasker, ai: AI): boolean
 --- Checks if the primary results of the task are complete without validating sub-task constraints.
----@field isResultsComplete_ignoreSubtasker fun(self: Tasker, ai: lightuserdata): boolean
+---@field isResultsComplete_ignoreSubtasker fun(self: Tasker, ai: AI): boolean
 --- Determines if all preconditions necessary to execute this task are currently met.
----@field isRequirementsComplete fun(self: Tasker, ai: lightuserdata, autoTargetFinder?: boolean): boolean
+---@field isRequirementsComplete fun(self: Tasker, ai: AI, autoTargetFinder?: boolean): boolean
 --- Retrieves a string explaining why the requirements for this task are not met. Used for debugging or UI feedback.
----@field getRequirementComplaint fun(self: Tasker, ai: lightuserdata, autoTargetFinder?: boolean): string
+---@field getRequirementComplaint fun(self: Tasker, ai: AI, autoTargetFinder?: boolean): string
 --- Retrieves the next target entity for a sub-task operation.
----@field getNextSubTarget fun(self: Tasker, ai: lightuserdata): hand
+---@field getNextSubTarget fun(self: Tasker, ai: AI): hand
 --- Active item/resource sub-target handle.
 ---@field currentSubTarget hand
 --- Time-of-day end hour window.
@@ -24129,6 +25551,11 @@ TransformWindow = {}
 ---@diagnostic disable-next-line: missing-fields
 ZoneManager = {}
 
+--- Namespace table enclosing nested `AI` enums.
+---@type AI
+---@diagnostic disable-next-line: missing-fields
+AI = {}
+
 --- Namespace table enclosing nested `AttackDirection` enums.
 ---@type AttackDirection
 ---@diagnostic disable-next-line: missing-fields
@@ -24313,6 +25740,22 @@ KenshiLib.BinaryVersion = {}
 ---@type MedicalSystem.HealthPartStatus
 ---@diagnostic disable-next-line: missing-fields
 MedicalSystem.HealthPartStatus = {}
+
+--- Combat aggression order for an `AI`, as used by `AI.ordersAggression` and `AI.setAggressionLevel`.
+---@enum AI.AIAggressionOrders
+AI.AIAggressionOrders = {
+    AGGRESSIVE = 0,
+    DEFENSIVE = 1,
+    EVASIVE = 2,
+}
+
+--- Movement freedom order for an `AI`, as used by `AI.ordersMovement` and `AI.setManuveringFreedomLevel`.
+---@enum AI.AIManuverabilityOrders
+AI.AIManuverabilityOrders = {
+    HOLD_GROUND = 0,
+    STAY_CLOSE = 1,
+    ROAM_FAR = 2,
+}
 
 --- Character appearance customization section category (face, body, skin tone).
 ---@enum AppearanceManager.DataCategory.Enum

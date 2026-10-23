@@ -1,6 +1,2305 @@
 {
   "entries": [
     {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "fun(TaskType)",
+      "header": "void forceOrderInsert(TaskType t)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, t: integer)",
+      "member": "forceOrderInsert"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "fun(CharacterMessage, hand, hand)",
+      "header": "void sendMessage(CharacterMessage message, const hand& sender, const hand& subject)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "CharacterMessage",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, message: integer, sender: hand, subject: hand)",
+      "member": "sendMessage"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "fun(AIAggressionOrders)",
+      "header": "void setAggressionLevel(AI::AIAggressionOrders agg)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "AIAggressionOrders",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, agg: integer)",
+      "member": "setAggressionLevel"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "fun(AIManuverabilityOrders)",
+      "header": "void setManuveringFreedomLevel(AI::AIManuverabilityOrders agg)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "AIManuverabilityOrders",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, agg: integer)",
+      "member": "setManuveringFreedomLevel"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(?ogre_unordered_set<UseableStuff*>::type)",
+      "header": "void getAllMyPermajobMachines(ogre_unordered_set<UseableStuff*>::type& out)",
+      "issues": [
+        {
+          "actual": 0,
+          "category": "binding_shape_differs",
+          "expected": 1,
+          "position": null
+        },
+        {
+          "actual": "UseableStuff[]",
+          "category": "binding_shape_differs",
+          "expected": "(none)",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI): UseableStuff[]",
+      "member": "getAllMyPermajobMachines"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "fun(TaskType): boolean",
+      "header": "bool hasPermajob(TaskType t) const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, t: integer): boolean",
+      "member": "hasPermajob"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float targetMyself(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "targetMyself"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findWeapon(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findWeapon"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSomebodyToLoot(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSomebodyToLoot"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findAttackerOf(const hand& _of, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, _of: hand, justAsking?: boolean): number, hand",
+      "member": "findAttackerOf"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findAggressiveFellows(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findAggressiveFellows"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findBounty(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findBounty"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findKOIntruder(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findKOIntruder"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findKOIntruder_town(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findKOIntruder_town"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findTurretToUse(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findTurretToUse"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findTurretToUseOnMyBuilding(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findTurretToUseOnMyBuilding"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMeleeOpponentForTerritorialAggression(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findMeleeOpponentForTerritorialAggression"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMeleeOpponentForFightingSlave(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findMeleeOpponentForFightingSlave"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMeleeOpponentForTerritorialAggressionWithNeutrals(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findMeleeOpponentForTerritorialAggressionWithNeutrals"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMeleeOpponent(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findMeleeOpponent"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMeleeOpponentNearMyTown(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findMeleeOpponentNearMyTown"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMeleeOpponentFromSquad(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findMeleeOpponentFromSquad"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findAllyInNeed(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findAllyInNeed"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findAllyInNeed_stayInTown(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findAllyInNeed_stayInTown"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSquadmateInNeed(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findSquadmateInNeed"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findHome(const hand& _a1, hand& _out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findHome"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findShopkeeperNode(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findShopkeeperNode"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findDefensiveNode(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findDefensiveNode"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findGuardNodeForBuilding_inOrOut(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findGuardNodeForBuilding_inOrOut"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findGuardNodeForBuilding_indoorOnly(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findGuardNodeForBuilding_indoorOnly"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, boolean): number",
+      "header": "float findGuardNodeForBuilding_nearestPlayer(hand& out, bool indoorsOnly)",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 2,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, indoorsOnly?: boolean): number, hand",
+      "member": "findGuardNodeForBuilding_nearestPlayer"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findGuardNodeForTown(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findGuardNodeForTown"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findGeneralNode(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findGeneralNode"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findGoodRecruitNode(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findGoodRecruitNode"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findPublicGeneralNodeInTown(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findPublicGeneralNodeInTown"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findWoundedAllies(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findWoundedAllies"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSplintableAllies(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSplintableAllies"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findWoundedAllies_Robots(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findWoundedAllies_Robots"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, boolean): number",
+      "header": "float _findWoundedAllies(hand& out, bool robots)",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 2,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, robots?: boolean): number, hand",
+      "member": "_findWoundedAllies"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findPrisonerFreeToGo(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findPrisonerFreeToGo"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findPrisonerToLiberate(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findPrisonerToLiberate"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findPrisonerWithContraband(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findPrisonerWithContraband"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float getCurrentBuilding(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "getCurrentBuilding"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float getDestinationBuilding(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "getDestinationBuilding"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findJammedMachine(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findJammedMachine"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findResourceSourceForMe(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findResourceSourceForMe"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findResourceDestinationForMe(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findResourceDestinationForMe"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): boolean",
+      "header": "bool findResourceDestinationFor(const hand& forwhat, hand& out, bool includeMyInventoryContents)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "boolean, hand",
+          "category": "binding_shape_differs",
+          "expected": "boolean",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, forwhat: hand, includeMyInventoryContents?: boolean): boolean, hand",
+      "member": "findResourceDestinationFor"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findResourceDestinationForMyLoot(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findResourceDestinationForMyLoot"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMineToWorkAt(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findMineToWorkAt"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findMineToWorkAt_pretend(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findMineToWorkAt_pretend"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSomethingToDoInHome(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSomethingToDoInHome"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSomethingToDo_lazy(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSomethingToDo_lazy"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findThrone(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findThrone"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findBuildingMaterials(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findBuildingMaterials"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findTalkTarget(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findTalkTarget"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findDisabledAlly(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findDisabledAlly"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findDisabledNonAlly(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findDisabledNonAlly"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSomeoneWhoWouldMakeAGoodSlave(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSomeoneWhoWouldMakeAGoodSlave"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findBadSlaves(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findBadSlaves"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findNewSlaveOrPrisonerToProcess(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findNewSlaveOrPrisonerToProcess"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findRandomOneOfMySlaves(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findRandomOneOfMySlaves"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findConsciousSlaveInTown(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findConsciousSlaveInTown"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findConsciousSlaveInTownForShipping(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findConsciousSlaveInTownForShipping"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findConsciousSlaveInTown_unholy(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findConsciousSlaveInTown_unholy"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findKOedSlaveOfMine(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findKOedSlaveOfMine"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findCorpse_onGround(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findCorpse_onGround"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean, boolean, boolean): number",
+      "header": "float findCorpse_onGround_detail(const hand& in, hand& out, bool justAsking, bool carriableOnly, bool edibleOnly)",
+      "issues": [
+        {
+          "actual": 4,
+          "category": "binding_shape_differs",
+          "expected": 5,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean, carriableOnly?: boolean, edibleOnly?: boolean): number, hand",
+      "member": "findCorpse_onGround_detail"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findCorpse_includingCages(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findCorpse_includingCages"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findDeadOrKOBody_onGround(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findDeadOrKOBody_onGround"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findCrops(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findCrops"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findOwnedFreeBed(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findOwnedFreeBed"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findOwnedFreeCage(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findOwnedFreeCage"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSlaveBuyer(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSlaveBuyer"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findEmptyCageBelongingToMaster(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findEmptyCageBelongingToMaster"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findOwnedFullCage_MarkForDeath(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findOwnedFullCage_MarkForDeath"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findCorpseDisposal(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findCorpseDisposal"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findShop(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findShop"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findPackageTarget(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findPackageTarget"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float getDestinationGate(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "getDestinationGate"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float getBuildingToSmash(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "getBuildingToSmash"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSomethingToBuild(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSomethingToBuild"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findNearestHomeBase(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findNearestHomeBase"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findNextTown(const hand& _a1, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, arg1: hand, justAsking?: boolean): number, hand",
+      "member": "findNextTown"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findSomethingToLootFoodFrom(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findSomethingToLootFoodFrom"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findFoodOnGround(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findFoodOnGround"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findLimbOnGround(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "findLimbOnGround"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float targetMyLeader(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "targetMyLeader"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float targetMySlavemaster(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "targetMySlavemaster"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float targetMyLeader_theRealOne(const hand& oldSubject, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, oldSubject: hand, justAsking?: boolean): number, hand",
+      "member": "targetMyLeader_theRealOne"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findUnlockedDoorHere(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findUnlockedDoorHere"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findLockedOrClosedDoorHere(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findLockedOrClosedDoorHere"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findStrangersInMyBuilding(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findStrangersInMyBuilding"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findUnlockedCage(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findUnlockedCage"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findRandomBuildingInTown(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findRandomBuildingInTown"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findFogmanWorshipTarget(const hand& in, hand& out, bool _a3)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, arg2?: boolean): number, hand",
+      "member": "findFogmanWorshipTarget"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findAnimalsToLoot(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findAnimalsToLoot"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(hand, hand, boolean): number",
+      "header": "float findAllyAnimalWithFoodInMouth(const hand& in, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, in: hand, justAsking?: boolean): number, hand",
+      "member": "findAllyAnimalWithFoodInMouth"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "fun(boolean, BuildingFunction): UseableStuff|nil",
+      "header": "UseableStuff* _findOwnedCageThing(bool wantEmpty, BuildingFunction whatType)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "BuildingFunction",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, wantEmpty?: boolean, whatType: integer): UseableStuff",
+      "member": "_findOwnedCageThing"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "fun(NodeType, boolean, boolean): hand",
+      "header": "hand findNode(NodeType t, bool forHomeBuildingOnly, bool indoorsOnly)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "NodeType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, t: integer, forHomeBuildingOnly?: boolean, indoorsOnly?: boolean): hand",
+      "member": "findNode"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI",
+      "expected": "fun(Lektor<Building>, integer)",
+      "header": "void getAllLocalMachines(lektor<Building*>& out, unsigned int buildingFunctions)",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 2,
+          "position": null
+        },
+        {
+          "actual": "Building[]",
+          "category": "binding_shape_differs",
+          "expected": "(none)",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI, buildingFunctions: integer): Building[]",
+      "member": "getAllLocalMachines"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "AIAggressionOrders",
+      "header": "AI::AIAggressionOrders",
+      "kind": "property",
+      "lua": "integer",
+      "member": "ordersAggression"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AI",
+      "expected": "AIManuverabilityOrders",
+      "header": "AI::AIManuverabilityOrders",
+      "kind": "property",
+      "lua": "integer",
+      "member": "ordersMovement"
+    },
+    {
       "category": "unmapped_header_type",
       "class": "AbstractMovementBase",
       "expected": "fun(): ?RoadFollower*",
@@ -351,6 +2650,83 @@
       "member": "characterHandles"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationClass",
+      "expected": "fun(WeatherAffecting, number, boolean)",
+      "header": "void setWeatherType(WeatherAffecting w, float stren, bool doWeatherAnimation)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "WeatherAffecting",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AnimationClass, w: integer, stren: number, doWeatherAnimation?: boolean)",
+      "member": "setWeatherType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationClass",
+      "expected": "fun(): WeatherAffecting",
+      "header": "WeatherAffecting getWeatherType() const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "WeatherAffecting",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AnimationClass): integer",
+      "member": "getWeatherType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationClass",
+      "expected": "fun(StanceEnum)",
+      "header": "void setStanceAnimation(StanceEnum _a1)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StanceEnum",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AnimationClass, arg1: integer)",
+      "member": "setStanceAnimation"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationClass",
+      "expected": "fun(StanceEnum)",
+      "header": "void _NV_setStanceAnimation(StanceEnum _a1)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StanceEnum",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AnimationClass, arg1: integer)",
+      "member": "_NV_setStanceAnimation"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "AnimationClassBase",
+      "expected": "?boost::unordered::unordered_map<std::string,Ogre::Vector3,boost::hash<std::string>,std::equal_to<std::string>,Ogre::STLAllocator<std::pair<std::string ,Ogre::Vector3>,Ogre::GeneralAllocPolicy>>",
+      "header": "boost::unordered::unordered_map<std::string,Ogre::Vector3,boost::hash<std::string>,std::equal_to<std::string>,Ogre::STLAllocator<std::pair<std::string const,Ogre::Vector3>,Ogre::GeneralAllocPolicy>>",
+      "kind": "property",
+      "lua": "BoostUnorderedMap<string, table>",
+      "member": "boneInitialWorldPositions"
+    },
+    {
       "category": "unmapped_header_type",
       "class": "AppearanceBase",
       "expected": "fun(GameData, string, table, table, boolean, number): ?AttachedEffect*",
@@ -400,23 +2776,6 @@
       "kind": "method",
       "lua": "fun(self: AppearanceBase, slot: string, pos: table, rot: table): boolean",
       "member": "getAttachmentPosition"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "AppearanceBase",
-      "expected": "fun(): ?AnimationClass*",
-      "header": "AnimationClass* getAnimationSystem() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AnimationClass*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AppearanceBase): lightuserdata",
-      "member": "getAnimationSystem"
     },
     {
       "category": "unmapped_header_type",
@@ -519,15 +2878,6 @@
       "kind": "method",
       "lua": "fun(self: AppearanceBase, boneName: string, direction: integer): table",
       "member": "getRandomVertexPosition"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "AppearanceBase",
-      "expected": "?AnimationClass*",
-      "header": "AnimationClass*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "animation"
     },
     {
       "category": "unmapped_header_type",
@@ -1917,29 +4267,6 @@
       "member": "data"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "CharBody",
-      "expected": "fun(CharMovement, ?AI*, ?AnimationClass*, Character, CharStats)",
-      "header": "void create(CharMovement* m, AI* a, AnimationClass* an, Character* c, CharStats* st)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "param 2"
-        },
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AnimationClass*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharBody, m?: CharMovement, a?: lightuserdata, an?: lightuserdata, c?: Character, st?: CharStats)",
-      "member": "create"
-    },
-    {
       "category": "binding_shape_differs",
       "class": "CharBody",
       "expected": "fun(Tasker): boolean",
@@ -1997,24 +4324,6 @@
       "member": "_patrol"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "CharBody",
-      "expected": "?AI*",
-      "header": "AI*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "ai"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CharBody",
-      "expected": "?AnimationClass*",
-      "header": "AnimationClass*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "animation"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "CharMovement",
       "expected": "fun(table, UpdatePriority, boolean)",
@@ -2064,15 +4373,6 @@
       "kind": "method",
       "lua": "fun(self: CharMovement, mode: integer)",
       "member": "setMovementMode"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CharMovement",
-      "expected": "?AnimationClass*",
-      "header": "AnimationClass*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "animation"
     },
     {
       "category": "unmapped_header_type",
@@ -2637,40 +4937,6 @@
     {
       "category": "unmapped_header_type",
       "class": "Character",
-      "expected": "fun(): ?StateBroadcastData*",
-      "header": "StateBroadcastData* getStateBroadcast() override",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "getStateBroadcast"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?StateBroadcastData*",
-      "header": "StateBroadcastData* _NV_getStateBroadcast()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "_NV_getStateBroadcast"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
       "expected": "fun(): ?Formation*",
       "header": "Formation* getFormation() const",
       "issues": [
@@ -3128,23 +5394,6 @@
       "member": "getAttackOriginationDirection"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?AI*",
-      "header": "AI* getAI()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "getAI"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "Character",
       "expected": "fun(CharacterPerceptionTags_ShortTerm)",
@@ -3228,23 +5477,6 @@
       "kind": "method",
       "lua": "fun(self: Character): integer",
       "member": "isSlave"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?AnimationClass*",
-      "header": "AnimationClass* getAnimationClass()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AnimationClass*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "getAnimationClass"
     },
     {
       "category": "enum_typed_as_integer",
@@ -3649,24 +5881,6 @@
       "member": "activeEffects"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "?AI*",
-      "header": "AI*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "ai"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "?AnimationClass*",
-      "header": "AnimationClass*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "animation"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "Character",
       "expected": "ArmourType",
@@ -3755,15 +5969,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "rangedCombat"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "?StateBroadcastData*",
-      "header": "StateBroadcastData*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "stateBroadcast"
     },
     {
       "category": "unmapped_header_type",
@@ -4281,24 +6486,6 @@
       "kind": "method",
       "lua": "fun(attacker: Character, victim: Character, damage: Damages, hitType: integer): GameData",
       "member": "getCombatEffect"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CombatClass",
-      "expected": "?AI*",
-      "header": "AI*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "ai"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CombatClass",
-      "expected": "?AnimationClass*",
-      "header": "AnimationClass*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "animation"
     },
     {
       "category": "enum_typed_as_integer",
@@ -12783,40 +14970,6 @@
     {
       "category": "unmapped_header_type",
       "class": "Platoon",
-      "expected": "fun(): ?StateBroadcastData*",
-      "header": "StateBroadcastData* getStateBroadcast() override",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Platoon): lightuserdata",
-      "member": "getStateBroadcast"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Platoon",
-      "expected": "fun(): ?StateBroadcastData*",
-      "header": "StateBroadcastData* _NV_getStateBroadcast()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Platoon): lightuserdata",
-      "member": "_NV_getStateBroadcast"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Platoon",
       "expected": "fun(): ?UnloadedPlatoon*",
       "header": "UnloadedPlatoon* getUnloadedPlatoon()",
       "issues": [
@@ -14223,40 +16376,6 @@
     {
       "category": "unmapped_header_type",
       "class": "RootObjectBase",
-      "expected": "fun(): ?StateBroadcastData*",
-      "header": "StateBroadcastData* getStateBroadcast()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObjectBase): lightuserdata",
-      "member": "getStateBroadcast"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RootObjectBase",
-      "expected": "fun(): ?StateBroadcastData*",
-      "header": "StateBroadcastData* _NV_getStateBroadcast()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObjectBase): lightuserdata",
-      "member": "_NV_getStateBroadcast"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RootObjectBase",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
       "header": "GameSaveState serialise(GameDataContainer* _a1, GameData* _a2, PosRotPair* _a3) = 0",
       "issues": [
@@ -14686,40 +16805,6 @@
       "member": "it"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "SensoryData",
-      "expected": "fun(): ?StateBroadcastData*",
-      "header": "StateBroadcastData* getStateBroadcast() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: SensoryData): lightuserdata",
-      "member": "getStateBroadcast"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "SensoryData",
-      "expected": "fun(hand): ?StateBroadcastData*",
-      "header": "StateBroadcastData* getStateBroadcastOf(const hand& who)",
-      "issues": [
-        {
-          "actual": "lightuserdata|nil",
-          "category": "unmapped_header_type",
-          "expected": "?StateBroadcastData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: SensoryData, who: hand): lightuserdata|nil",
-      "member": "getStateBroadcastOf"
-    },
-    {
       "category": "binding_pushes_raw_pointer",
       "class": "SensoryData",
       "expected": "fun(Character, Lektor<RootObject>, number): boolean",
@@ -15091,6 +17176,76 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "StateBroadcastData",
+      "expected": "fun(SlaveStateEnum)",
+      "header": "void setSlaveState(SlaveStateEnum s)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SlaveStateEnum",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: StateBroadcastData, s: integer)",
+      "member": "setSlaveState"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "StateBroadcastData",
+      "expected": "fun(): SlaveStateEnum",
+      "header": "SlaveStateEnum getSlaveState() const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SlaveStateEnum",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: StateBroadcastData): integer",
+      "member": "getSlaveState"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "StateBroadcastData",
+      "expected": "CharacterTypeEnum",
+      "header": "CharacterTypeEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "NPCType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "StateBroadcastData",
+      "expected": "SlaveStateEnum",
+      "header": "SlaveStateEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "_slaveState"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "StateBroadcastData",
+      "expected": "CharacterTypeEnum",
+      "header": "CharacterTypeEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "looksLike_clothingArchetype"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "StateBroadcastData",
+      "expected": "PersonalityTags",
+      "header": "PersonalityTags",
+      "kind": "property",
+      "lua": "integer",
+      "member": "myPersonality"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "StorageBuilding",
       "expected": "fun(): TaskType",
       "header": "TaskType getDefaultTask() override",
@@ -15458,108 +17613,6 @@
       "kind": "method",
       "lua": "fun(self: Tasker): integer",
       "member": "key"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Tasker",
-      "expected": "fun(?AI*): number",
-      "header": "float score(AI* ai)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Tasker, ai: lightuserdata): number",
-      "member": "score"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Tasker",
-      "expected": "fun(?AI*): boolean",
-      "header": "bool isResultsComplete(AI* ai)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Tasker, ai: lightuserdata): boolean",
-      "member": "isResultsComplete"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Tasker",
-      "expected": "fun(?AI*): boolean",
-      "header": "bool isResultsComplete_ignoreSubtasker(AI* ai)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Tasker, ai: lightuserdata): boolean",
-      "member": "isResultsComplete_ignoreSubtasker"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Tasker",
-      "expected": "fun(?AI*, boolean): boolean",
-      "header": "bool isRequirementsComplete(AI* ai, bool autoTargetFinder)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Tasker, ai: lightuserdata, autoTargetFinder?: boolean): boolean",
-      "member": "isRequirementsComplete"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Tasker",
-      "expected": "fun(?AI*, boolean): string",
-      "header": "std::string getRequirementComplaint(AI* ai, bool autoTargetFinder)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Tasker, ai: lightuserdata, autoTargetFinder?: boolean): string",
-      "member": "getRequirementComplaint"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Tasker",
-      "expected": "fun(?AI*): hand",
-      "header": "hand getNextSubTarget(AI* ai)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AI*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Tasker, ai: lightuserdata): hand",
-      "member": "getNextSubTarget"
     },
     {
       "category": "enum_typed_as_integer",
@@ -18248,15 +20301,15 @@
   "summary": {
     "binding_converts": 51,
     "binding_pushes_raw_pointer": 42,
-    "binding_shape_differs": 105,
+    "binding_shape_differs": 199,
     "blocking_issues": 0,
-    "container_methods_typed": 927,
-    "enum_typed_as_integer": 427,
-    "methods": 7215,
-    "methods_matching_header": 5435,
+    "container_methods_typed": 932,
+    "enum_typed_as_integer": 446,
+    "methods": 7826,
+    "methods_matching_header": 5952,
     "no_header_declaration": 276,
-    "properties": 3078,
-    "properties_matching_header": 2550,
-    "unmapped_header_type": 497
+    "properties": 3155,
+    "properties_matching_header": 2629,
+    "unmapped_header_type": 471
   }
 }
