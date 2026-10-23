@@ -1,5 +1,5 @@
 #include "pch.h"
-#include "kenshi\CombatClass.h"
+#include "kenshi\combat\CombatClass.h"
 #include "CombatClassBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/CharMovementBinding.h"

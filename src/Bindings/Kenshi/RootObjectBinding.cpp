@@ -25,7 +25,7 @@
 #include "RaceDataBinding.h"
 #include "RootObjectContainerBinding.h"
 #include "kenshi/Character.h"
-#include "kenshi/CombatTechniqueData.h"
+#include "kenshi/combat/CombatTechniqueData.h"
 #include "kenshi/Damages.h"
 #include "kenshi/InstanceID.h"
 #include "kenshi/Inventory.h"

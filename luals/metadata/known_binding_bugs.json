@@ -1,10 +1,4 @@
 {
   "description": "Members whose binding is broken in C++, so no correct Lua type exists until the binding is fixed. The type audit reports them as known_binding_bug instead of blocking. Entries name a class, or a container metatable since container classes are generic instantiations. Remove an entry once its binding is fixed.",
-  "members": [
-    {
-      "metatable": "std::deque<CraftingItem>",
-      "member": "*",
-      "reason": "Registered with a nullptr element metatable, so element access calls luaL_getmetatable(L, NULL)."
-    }
-  ]
+  "members": []
 }

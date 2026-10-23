@@ -7,6 +7,12 @@
 namespace KenshiLua
 {
 
+// MSVC sizes AI member-function pointers from whether AI is complete where Tasker.h is
+// first read: 24 bytes when incomplete (the game's layout), 8 when kenshi/AI/AI.h came first.
+static_assert(sizeof(((TaskData*)0)->scoreFunction) == 0x18, "TaskData::scoreFunction must be 0x18 bytes; include kenshi/Tasker.h before kenshi/AI/AI.h");
+static_assert(offsetof(TaskData, subTask) == 0x128, "TaskData::subTask offset does not match the game");
+static_assert(sizeof(TaskData) == 0x178, "TaskData size does not match the game");
+
 static TaskData* getInstance(lua_State* L, int idx)
 {
     return checkObject<TaskData>(L, idx, TaskDataBinding::getMetatableName());
@@ -229,7 +235,8 @@ static int TaskData_get_scoreFunction(lua_State* L)
 {
     TaskData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TaskData is nil");
-    lua_pushlightuserdata(L, (void*)instance->scoreFunction);
+    // The member-function pointer's first word is its code address, as the earlier function* getter returned.
+    lua_pushlightuserdata(L, *reinterpret_cast<void* const*>(&instance->scoreFunction));
     return 1;
 }
 
@@ -276,7 +283,7 @@ static int TaskData_get__findTarget(lua_State* L)
 {
     TaskData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TaskData is nil");
-    lua_pushlightuserdata(L, (void*)instance->_findTarget);
+    lua_pushlightuserdata(L, *reinterpret_cast<void* const*>(&instance->_findTarget));
     return 1;
 }
 

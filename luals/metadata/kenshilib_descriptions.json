@@ -3585,7 +3585,7 @@
             "description": "`CraftingBuilding` extends `ProductionBuilding` to implement Kenshi's item creation system, powering weapon smithies, armour workbenches, crossbow fletchers, leather tanneries, robotics benches, and medical craft tables.",
             "methods": {
                 "CraftingBuilding": "Constructs a new `CraftingBuilding` workstation in the game world, initializing recipe queues, skill ceilings, and item category filters from blueprint data.",
-                "_addCraft": "Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time.",
+                "_addCraft": "Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time. Returns the new queue entry as a borrowed `CraftingItem`, or nil.",
                 "_removeCraft": "Cancels and removes a recipe order at the specified queue index, refunding unprocessed raw materials.",
                 "addFinishedCraftItem": "Deposits a newly fabricated item into the workbench output section or drops it on the floor if output space is filled.",
                 "calculateCriticalChance": "Calculates the percentage probability (0.0% - 50.0%) that the fabricated item will critically succeed to the next quality grade, based on the smith's skill exceeding the tier's minimum requirement.",
@@ -3593,7 +3593,7 @@
                 "createInventoryLayout": "Constructs a specialized `CraftingInventoryLayout` GUI controller managing recipe selection buttons, queue lists, and input/output inventory sections.",
                 "destroyProductionItem": "Destroys the temporary physical item template used during the crafting cycle.",
                 "getAvailableCrafts": "Collects all crafting recipes unlocked by the player faction's researched technology tree that are compatible with this workbench type.",
-                "getCraft": "Retrieves a queued recipe order item descriptor by zero-based index from the order deque.",
+                "getCraft": "Retrieves a queued recipe order by zero-based index from the order deque as a borrowed `CraftingItem`, or nil.",
                 "getCriticalSuccessWeapon": "Resolves the upgraded weapon model tier record awarded on a critical success roll, advancing from Refitted Blade to Catun, Mk, or Edge Type.",
                 "getCurrentProductionQuantity": "Returns the count of finished items resting in the output inventory grid.",
                 "getGUIData": "Renders telemetry data to the HUD Datapanel, displaying active crafting recipe name, completion percentage, and craftsman name.",
@@ -3623,7 +3623,7 @@
             "properties": {
                 "_base": "Inherited industrial production machine state.",
                 "biggestCraftableItem": "Size reference item record used for inventory footprint validation.",
-                "crafting": "Queued crafting recipe orders scheduled by the player.",
+                "crafting": "Queued crafting recipe orders scheduled by the player, as a read-only deque of borrowed `CraftingItem` entries. KenshiLib exports no `CraftingItem` copy or destructor, so the queue cannot be replaced or resized from Lua; edit an entry's fields instead.",
                 "failiureNotified": "Flag suppressing duplicate UI notifications when missing raw materials.",
                 "inItems": "Specific physical material items claimed from inventory during the active crafting cycle.",
                 "itemCrafted": "Flag set upon successful recipe cycle completion.",
@@ -3633,6 +3633,20 @@
                 "repeat": "Loop toggle re-adding finished recipes to the queue tail indefinitely.",
                 "specialCraftItemType": "Specific item type filter restricting craftable categories (e.g. `WEAPON`, `ARMOUR`, `CROSSBOW`).",
                 "whosCrafting": "Persistent runtime handle of the craftsman character currently operating the bench."
+            }
+        },
+        "CraftingItem": {
+            "description": "One queued crafting order in a `CraftingBuilding`'s `crafting` queue. Instances are borrowed from the building's queue and become invalid when the engine removes the order.",
+            "methods": {},
+            "properties": {
+                "criticalSuccess": "`YesNoMaybe` recording whether this order rolled a critical success.",
+                "endTime": "End time value for this crafting order.",
+                "item": "The `Item` being crafted for this order. The order does not own it.",
+                "lastErrorCode": "Last crafting error for this order as a `CraftingItem::ErrorCode` integer: 0 = `CEC_NONE`, 1 = `CEC_BENCH_LEVEL`, 2 = `CEC_BENCH_NO_RESOURCES`, 3 = `CEC_BENCH_NO_WORKERS`.",
+                "name": "Display name of this crafting order.",
+                "progress01": "Crafting progress of this order, from 0 to 1.",
+                "rate": "Crafting rate applied to this order.",
+                "smithBench": "Handle of the crafting bench assigned to this order."
             }
         },
         "CraftingInventoryLayout": {

@@ -32,6 +32,7 @@
 #include "Bindings/Kenshi/Building/ConstructionStateBinding.h"
 #include "Bindings/Kenshi/Building/ConsumptionItemBinding.h"
 #include "Bindings/Kenshi/Building/CraftingBuildingBinding.h"
+#include "Bindings/Kenshi/Building/CraftingItemBinding.h"
 #include "Bindings/Kenshi/Building/CraftingInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Building/DoorStuffBinding.h"
 #include "Bindings/Kenshi/Building/FarmBatchBinding.h"
@@ -707,7 +708,7 @@ void LuaBindings::registerStdDeque(lua_State* L)
     StdDequePtrBinding<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy>>::registerBinding(L, "std::deque<RootObject*>", RootObjectBinding::getMetatableName());
     StdDequePtrBinding<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy>>::registerBinding(L, "std::deque<NestBatcher*>", nullptr);
     StdDequePtrBinding<RootObjectFactory::CreatelistItem*>::registerBinding(L, "std::deque<CreatelistItem*>", CreatelistItemBinding::getMetatableName());
-    StdDequeValueBinding<CraftingItem>::registerBinding(L, "std::deque<CraftingItem>", nullptr);
+    StdDequeValueReadOnlyBinding<CraftingItem>::registerBinding(L, "std::deque<CraftingItem>", CraftingItemBinding::getMetatableName());
     StdDequeValueBinding<Character::RagdollMsg>::registerBinding(L, "std::deque<Character::RagdollMsg>", Character_RagdollMsgBinding::getMetatableName());
     StdDequePrimitiveBinding<float>::registerBinding(L, "std::deque<float>", nullptr);
 }
@@ -792,6 +793,7 @@ void LuaBindings::registerClasses(lua_State* L)
     ContextMenuBinding::registerBinding(L);
     ContextMenuGUIBinding::registerBinding(L);
     CraftingBuildingBinding::registerBinding(L);
+    CraftingItemBinding::registerBinding(L);
     CraftingInventoryLayoutBinding::registerBinding(L);
     CreatelistItemBinding::registerBinding(L);
     CrossbowBinding::registerBinding(L);

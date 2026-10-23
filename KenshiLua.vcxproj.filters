@@ -141,6 +141,7 @@
     <ClCompile Include="src\Bindings\Kenshi\Building\ConstructionStateBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Building\ConsumptionItemBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Building\CraftingBuildingBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Building\CraftingItemBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Building\CraftingInventoryLayoutBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Building\DoorStuffBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Building\FarmBatchBinding.cpp" />
@@ -1052,6 +1053,7 @@
     <ClInclude Include="src\Bindings\Kenshi\Building\ConstructionStateBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Building\ConsumptionItemBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Building\CraftingBuildingBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Building\CraftingItemBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Building\CraftingInventoryLayoutBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Building\DoorStuffBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Building\FarmBatchBinding.h" />

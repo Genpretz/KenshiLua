@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <kenshi\CombatTechniqueData.h>
+#include <kenshi\combat\CombatTechniqueData.h>
 #include <kenshi/Enums.h>
 #include <kenshi/MedicalSystem.h>
 #include "ImpactPointBinding.h"

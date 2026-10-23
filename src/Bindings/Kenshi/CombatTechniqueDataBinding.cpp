@@ -1,5 +1,5 @@
 #include "pch.h"
-#include <kenshi\CombatTechniqueData.h>
+#include <kenshi\combat\CombatTechniqueData.h>
 #include "CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/ImpactPointBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"

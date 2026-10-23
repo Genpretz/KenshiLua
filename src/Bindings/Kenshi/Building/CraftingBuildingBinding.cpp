@@ -8,6 +8,7 @@
 #include "Bindings/Kenshi/ItemBinding.h"
 #include "Bindings/Kenshi/Building/ProductionBuildingBinding.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
+#include "Bindings/Kenshi/Building/CraftingItemBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Building/GameDataGroupBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
@@ -24,7 +25,8 @@
 
 namespace KenshiLua
 {
-typedef StdDequeValueBinding<CraftingItem> CraftingItemDequeBinding;
+// Read-only: KenshiLib exports no CraftingItem copy, assignment, or destructor.
+typedef StdDequeValueReadOnlyBinding<CraftingItem> CraftingItemDequeBinding;
 
 
 static CraftingBuilding* getInstance(lua_State* L, int idx)
@@ -129,15 +131,7 @@ static int CraftingBuilding_set_crafting(lua_State* L)
 {
     CraftingBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CraftingBuilding is nil");
-    if (lua_isnoneornil(L, 2))
-    {
-        instance->crafting.clear();
-        return 0;
-    }
-    auto* src = CraftingItemDequeBinding::getInstance(L, 2);
-    if (!src) return luaL_error(L, "Argument 2 to set crafting must be std::deque<CraftingItem>");
-    instance->crafting = *src;
-    return 0;
+    return luaL_error(L, "CraftingBuilding.crafting is read-only: KenshiLib exports no CraftingItem copy or destructor");
 }
 
 static int CraftingBuilding_set_specialCraftItemType(lua_State* L)
@@ -550,12 +544,7 @@ int CraftingBuildingBinding::_addCraft(lua_State* L)
     YesNoMaybe crit = (YesNoMaybe)(int)luaL_checkinteger(L, 5);
 
     CraftingItem* result = instance->_addCraft(basedata, matdata, progress, crit);
-    if (result) {
-        lua_pushlightuserdata(L, (void*)result);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    return pushObject<CraftingItem>(L, result, CraftingItemBinding::getMetatableName());
 }
 
 int CraftingBuildingBinding::_removeCraft(lua_State* L)
@@ -575,12 +564,7 @@ int CraftingBuildingBinding::getCraft(lua_State* L)
 
     int id = (int)luaL_checkinteger(L, 2);
     CraftingItem* result = instance->getCraft(id);
-    if (result) {
-        lua_pushlightuserdata(L, (void*)result);
-    } else {
-        lua_pushnil(L);
-    }
-    return 1;
+    return pushObject<CraftingItem>(L, result, CraftingItemBinding::getMetatableName());
 }
 
 int CraftingBuildingBinding::destroyProductionItem(lua_State* L)
@@ -785,7 +769,6 @@ int CraftingBuildingBinding::_NV_setProductionItem(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CraftingBuildingBinding::getCraft / CraftingBuildingBinding::_addCraft: CraftingItem* (opaque struct without metatable)
   - CraftingBuildingBinding::newCraftingButton / CraftingBuildingBinding::_NV_newCraftingButton: MyGUI::Widget* (unbound pointer)
 */
 
@@ -904,7 +887,7 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
     registerSetter(L, "partialItems", CraftingBuilding_set_partialItems);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    CraftingItemDequeBinding::registerBinding(L, "std::deque<CraftingItem>", nullptr);
+    CraftingItemDequeBinding::registerBinding(L, "std::deque<CraftingItem>", CraftingItemBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
