@@ -10,6 +10,7 @@
 #include "Bindings/Kenshi/TownBaseBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/StateBroadcastDataBinding.h"
 #include "kenshi/GameSaveState.h"
 #include "kenshi/SensoryData.h"
 
@@ -400,8 +401,7 @@ int RootObjectBaseBinding::getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "RootObjectBase is nil");
 
     StateBroadcastData* result = instance->getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int RootObjectBaseBinding::_NV_getStateBroadcast(lua_State* L)
@@ -410,8 +410,7 @@ int RootObjectBaseBinding::_NV_getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "RootObjectBase is nil");
 
     StateBroadcastData* result = instance->_NV_getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int RootObjectBaseBinding::getCurrentTownLocation(lua_State* L)
@@ -484,12 +483,6 @@ int RootObjectBaseBinding::_NV_setFaction(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-*/
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - RootObjectBaseBinding::getStateBroadcast: StateBroadcastData* (unbound pointer)
-  - RootObjectBaseBinding::_NV_getStateBroadcast: StateBroadcastData* (unbound pointer)
 */
 
 int RootObjectBaseBinding::gc(lua_State* L)

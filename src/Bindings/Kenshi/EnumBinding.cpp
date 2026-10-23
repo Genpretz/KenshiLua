@@ -2,6 +2,7 @@
 #include "Bindings/Kenshi/EnumBinding.h"
 #include "Lua/BindingHelpers.h"
 
+#include "kenshi/Animation/AnimationClass.h"
 #include "kenshi/Appearance.h"
 #include "kenshi/AppearanceManager.h"
 #include "kenshi/Bounty.h"
@@ -31,8 +32,11 @@
 #include "kenshi/SaveFileSystem.h"
 #include "kenshi/SaveManager.h"
 #include "kenshi/SensoryData.h"
+#include "kenshi/StateBroadcastData.h"
 #include "kenshi/Town.h"
 #include "kenshi/Tasker.h"
+// Tasker.h must come before AI.h; see TaskDataBinding.cpp.
+#include "kenshi/AI/AI.h"
 #include "kenshi/WorldEventStateQuery.h"
 #include "kenshi/ZoneManager.h"
 #include "kenshi/gui/CharacterEditWindow.h"
@@ -54,6 +58,63 @@
 
 namespace KenshiLua
 {
+
+    // ------------------------------------------
+    // AI/AI.h
+    // ------------------------------------------
+
+    void registerAIAggressionOrders(lua_State* L)
+    {
+        lua_createtable(L, 0, 3);
+
+        setEnum(L, "AGGRESSIVE", AI::AIAggressionOrders::AGGRESSIVE);
+        setEnum(L, "DEFENSIVE", AI::AIAggressionOrders::DEFENSIVE);
+        setEnum(L, "EVASIVE", AI::AIAggressionOrders::EVASIVE);
+        setNestedClassTable(L, "AI", "AIAggressionOrders");
+        lua_pop(L, 1);
+    }
+
+    void registerAIManuverabilityOrders(lua_State* L)
+    {
+        lua_createtable(L, 0, 3);
+
+        setEnum(L, "HOLD_GROUND", AI::AIManuverabilityOrders::HOLD_GROUND);
+        setEnum(L, "STAY_CLOSE", AI::AIManuverabilityOrders::STAY_CLOSE);
+        setEnum(L, "ROAM_FAR", AI::AIManuverabilityOrders::ROAM_FAR);
+        setNestedClassTable(L, "AI", "AIManuverabilityOrders");
+        lua_pop(L, 1);
+    }
+
+    void registerNodeType(lua_State* L)
+    {
+        lua_createtable(L, 0, 7);
+
+        setEnum(L, "NODE_SHOPKEEPER", NodeType::NODE_SHOPKEEPER);
+        setEnum(L, "NODE_GENERAL", NodeType::NODE_GENERAL);
+        setEnum(L, "NODE_GUARD_POST", NodeType::NODE_GUARD_POST);
+        setEnum(L, "NODE_TURRET", NodeType::NODE_TURRET);
+        setEnum(L, "NODE_USE", NodeType::NODE_USE);
+        setEnum(L, "NODE_LIGHT", NodeType::NODE_LIGHT);
+        setEnum(L, "NODE_NULL", NodeType::NODE_NULL);
+
+        lua_setglobal(L, "NodeType");
+    }
+
+    // ------------------------------------------
+    // Animation/AnimationClass.h
+    // ------------------------------------------
+
+    void registerStanceEnum(lua_State* L)
+    {
+        lua_createtable(L, 0, 4);
+
+        setEnum(L, "STANDING", StanceEnum::STANDING);
+        setEnum(L, "CROUCHED", StanceEnum::CROUCHED);
+        setEnum(L, "PRONE", StanceEnum::PRONE);
+        setEnum(L, "MIDAIR", StanceEnum::MIDAIR);
+
+        lua_setglobal(L, "StanceEnum");
+    }
 
     // ------------------------------------------
     // Appearance.h
@@ -2431,6 +2492,34 @@ namespace KenshiLua
     }
 
     // ------------------------------------------
+    // StateBroadcastData.h
+    // ------------------------------------------
+
+    void registerPersonalityTags(lua_State* L)
+    {
+        lua_createtable(L, 0, 16);
+
+        setEnum(L, "PT_NONE", PersonalityTags::PT_NONE);
+        setEnum(L, "PT_HONORABLE", PersonalityTags::PT_HONORABLE);
+        setEnum(L, "PT_TRAITOROUS", PersonalityTags::PT_TRAITOROUS);
+        setEnum(L, "PT___", PersonalityTags::PT___);
+        setEnum(L, "PT__", PersonalityTags::PT__);
+        setEnum(L, "PT_SMART", PersonalityTags::PT_SMART);
+        setEnum(L, "PT_DUMB", PersonalityTags::PT_DUMB);
+        setEnum(L, "PT____", PersonalityTags::PT____);
+        setEnum(L, "PT_____", PersonalityTags::PT_____);
+        setEnum(L, "PT_BRAVE", PersonalityTags::PT_BRAVE);
+        setEnum(L, "PT_FEARFUL", PersonalityTags::PT_FEARFUL);
+        setEnum(L, "PT_WARM_KIND", PersonalityTags::PT_WARM_KIND);
+        setEnum(L, "PT_COLD_CRUEL", PersonalityTags::PT_COLD_CRUEL);
+        setEnum(L, "PT_NORMAL", PersonalityTags::PT_NORMAL);
+        setEnum(L, "PT_MANIACAL", PersonalityTags::PT_MANIACAL);
+        setEnum(L, "PT_END", PersonalityTags::PT_END);
+
+        lua_setglobal(L, "PersonalityTags");
+    }
+
+    // ------------------------------------------
     // Tasker.h
     // ------------------------------------------
 
@@ -2871,6 +2960,8 @@ namespace KenshiLua
 
     void registerEnumBindings(lua_State* L)
     {
+        registerAIAggressionOrders(L);
+        registerAIManuverabilityOrders(L);
         registerAppearanceManagerDataCategory(L);
         registerAppearanceManagerGender(L);
         registerArmourClass(L);
@@ -2940,8 +3031,10 @@ namespace KenshiLua
         registerNavMeshGeneratorTaskType(L);
         registerNavMeshMessageType(L);
         registerNavMeshState(L);
+        registerNodeType(L);
         registerNxShapeFlag(L);
         registerNxShapesType(L);
+        registerPersonalityTags(L);
         registerPlatoonCreationMessage(L);
         registerPreviewBuildingClassType(L);
         registerPreviewBuildingPlacementResult(L);
@@ -2961,6 +3054,7 @@ namespace KenshiLua
         registerSquadManagementScreenState(L);
         registerSquadMemberType(L);
         registerSquadType(L);
+        registerStanceEnum(L);
         registerStandingOrder(L);
         registerStatsEnumerated(L);
         registerSwordStateEnum(L);

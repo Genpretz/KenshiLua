@@ -411,6 +411,13 @@ class BindingInventoryTests(unittest.TestCase):
                 if item["name"] == "getGroundEffect"
             )["signature"]["return_values"],
         )
+        self.assertEqual(
+            ["number", "hand"],
+            next(
+                item for item in bindings["AI"]["methods"]
+                if item["name"] == "findWeapon"
+            )["signature"]["return_values"],
+        )
         character_properties = {
             item["name"]: item
             for item in bindings["Character"]["properties"]

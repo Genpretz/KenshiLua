@@ -596,8 +596,11 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\AABB2DBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AbstractMovementBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ActivePlatoonBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\AI\AIBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AIOptionsBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceHumanBinding.h" />
@@ -934,6 +937,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\SpeedGroupBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SpotBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SpottingPeopleMgrBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\StateBroadcastDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\StateTBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\StaticEntBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SwordBinding.h" />
@@ -1067,8 +1071,11 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\AABB2DBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AbstractMovementBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ActivePlatoonBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\AI\AIBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AIOptionsBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceHumanBinding.cpp" />
@@ -1403,6 +1410,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\SpeedGroupBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SpotBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SpottingPeopleMgrBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\StateBroadcastDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\StateTBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\StaticEntBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SwordBinding.cpp" />

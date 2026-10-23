@@ -2,6 +2,8 @@
 #include "kenshi\combat\CombatClass.h"
 #include "CombatClassBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
+#include "Bindings/Kenshi/AI/AIBinding.h"
 #include "Bindings/Kenshi/CharMovementBinding.h"
 #include "Bindings/Kenshi/CharStatsBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
@@ -163,16 +165,14 @@ static int CombatClass_get_ai(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    lua_pushlightuserdata(L, (void*)instance->ai);
-    return 1;
+    return pushObject<AI>(L, instance->ai, AIBinding::getMetatableName());
 }
 
 static int CombatClass_get_animation(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    lua_pushlightuserdata(L, (void*)instance->animation);
-    return 1;
+    return pushObject<AnimationClass>(L, instance->animation, AnimationClassBinding::getMetatableName());
 }
 
 static int CombatClass_get_me(lua_State* L)
@@ -1649,8 +1649,6 @@ int CombatClassBinding::updateEffects(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CombatClass_get_ai / CombatClass_set_ai: AI* (unbound pointer)
-  - CombatClass_get_animation / CombatClass_set_animation: AnimationClass* (unbound pointer)
   - CombatClass::getStateClass: CombatState* (unbound pointer)
 */
 
@@ -1883,8 +1881,6 @@ void CombatClassBinding::registerBinding(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CombatClass_get_ai / CombatClass_set_ai: AI* (unbound pointer)
-  - CombatClass_get_animation / CombatClass_set_animation: AnimationClass* (unbound pointer)
   - CombatClass::getStateClass: CombatState* (unbound pointer)
 */
 

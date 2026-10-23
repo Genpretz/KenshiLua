@@ -14,6 +14,7 @@
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
 #include "Bindings/Kenshi/VisibleObjectInfoBinding.h"
+#include "Bindings/Kenshi/StateBroadcastDataBinding.h"
 
 namespace KenshiLua
 {
@@ -428,8 +429,7 @@ int SensoryDataBinding::getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "SensoryData is nil");
 
     StateBroadcastData* result = instance->getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int SensoryDataBinding::getGUIData(lua_State* L)
@@ -704,11 +704,6 @@ int SensoryDataBinding::buildingSpotterUpdate(lua_State* L)
     return 0;
 }
 
-
-/*
-LIGHTUSERDATA DEPENDENCIES:
-  - SensoryDataBinding::getStateBroadcast: StateBroadcastData* (unbound pointer)
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -989,9 +984,7 @@ static int SensoryData_getStateBroadcastOf(lua_State* L)
     if (!instance) return luaL_error(L, "SensoryData is nil");
     hand* who = checkObject<hand>(L, 2, HandBinding::getMetatableName());
     StateBroadcastData* res = instance->getStateBroadcastOf(*who);
-    if (res) lua_pushlightuserdata(L, res);
-    else lua_pushnil(L);
-    return 1;
+    return pushObject<StateBroadcastData>(L, res, StateBroadcastDataBinding::getMetatableName());
 }
 
 

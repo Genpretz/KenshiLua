@@ -52,6 +52,9 @@
 #include "Bindings/Kenshi/Character_RagdollMsgBinding.h"
 #include "Bindings/Kenshi/Character_CarryMsgBinding.h"
 #include "Bindings/Kenshi/Util/StdDequeBinding.h"
+#include "Bindings/Kenshi/StateBroadcastDataBinding.h"
+#include "Bindings/Kenshi/AI/AIBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 
 namespace KenshiLua
 {
@@ -194,8 +197,7 @@ static int Character_get_stateBroadcast(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    lua_pushlightuserdata(L, (void*)instance->stateBroadcast);
-    return 1;
+    return pushObject<StateBroadcastData>(L, instance->stateBroadcast, StateBroadcastDataBinding::getMetatableName());
 }
 
 static int Character_get_isVisibleAndNear(lua_State* L)
@@ -446,8 +448,7 @@ static int Character_get_animation(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    lua_pushlightuserdata(L, (void*)instance->animation);
-    return 1;
+    return pushObject<AnimationClass>(L, instance->animation, AnimationClassBinding::getMetatableName());
 }
 
 static int Character_get_stats(lua_State* L)
@@ -506,8 +507,7 @@ static int Character_get_ai(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    lua_pushlightuserdata(L, (void*)instance->ai);
-    return 1;
+    return pushObject<AI>(L, instance->ai, AIBinding::getMetatableName());
 }
 
 static int Character_get_platoon(lua_State* L)
@@ -1485,8 +1485,7 @@ int CharacterBinding::getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     StateBroadcastData* result = instance->getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int CharacterBinding::_NV_getStateBroadcast(lua_State* L)
@@ -1495,8 +1494,7 @@ int CharacterBinding::_NV_getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     StateBroadcastData* result = instance->_NV_getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int CharacterBinding::getFormation(lua_State* L)
@@ -3928,8 +3926,7 @@ int CharacterBinding::getAI(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     AI* result = instance->getAI();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<AI>(L, result, AIBinding::getMetatableName());
 }
 
 int CharacterBinding::getAttackTarget(lua_State* L)
@@ -4691,8 +4688,7 @@ int CharacterBinding::getAnimationClass(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     AnimationClass* result = instance->getAnimationClass();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<AnimationClass>(L, result, AnimationClassBinding::getMetatableName());
 }
 
 int CharacterBinding::getPredictedPosition(lua_State* L)
@@ -5154,13 +5150,9 @@ Skipped methods needing manual binding:
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - Character_get_nameTag / Character_set_nameTag: CharacterNameTag* (unbound pointer)
-  - Character_get_ai / Character_set_ai: AI* (unbound pointer)
   - Character_get_audioObject / Character_set_audioObject: SoundEmitter* (unbound pointer)
   - Character_get_audioEmitter / Character_set_audioEmitter: SoundEmitter* (unbound pointer)
-  - Character_get_animation / Character_set_animation: AnimationClass* (unbound pointer)
   - Character_get_naturalWeapon / Character_set_naturalWeapon: Weapon* (unbound pointer)
-  - Character_get_currentStumblePainAnimation / Character_set_currentStumblePainAnimation: AnimationClass* (unbound pointer)
-  - Character_get_stateBroadcast / Character_set_stateBroadcast: SoundEmitter* (unbound pointer)
   - Character_get_rangedCombat / Character_set_rangedCombat: RangedCombatClass* (unbound pointer)
 */
 
@@ -5272,7 +5264,7 @@ static int Character_set_stateBroadcast(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->stateBroadcast = (StateBroadcastData*)lua_touserdata(L, 2);
+    instance->stateBroadcast = checkObject<StateBroadcastData>(L, 2, StateBroadcastDataBinding::getMetatableName());
     return 0;
 }
 
@@ -5312,7 +5304,7 @@ static int Character_set_animation(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->animation = lua_isnoneornil(L, 2) ? nullptr : (AnimationClass*)lua_touserdata(L, 2);
+    instance->animation = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationClass>(L, 2, AnimationClassBinding::getMetatableName());
     return 0;
 }
 
@@ -5328,7 +5320,7 @@ static int Character_set_ai(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->ai = (AI*)lua_touserdata(L, 2);
+    instance->ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     return 0;
 }
 

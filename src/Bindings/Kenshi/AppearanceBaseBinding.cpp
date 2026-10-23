@@ -2,6 +2,7 @@
 #include "kenshi\Appearance.h"
 #include "AppearanceBaseBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
@@ -95,8 +96,7 @@ static int AppearanceBase_get_animation(lua_State* L)
 {
     AppearanceBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
-    lua_pushlightuserdata(L, (void*)instance->animation);
-    return 1;
+    return pushObject<AnimationClass>(L, instance->animation, AnimationClassBinding::getMetatableName());
 }
 
 static int AppearanceBase_get_female(lua_State* L)
@@ -770,8 +770,7 @@ int AppearanceBaseBinding::getAnimationSystem(lua_State* L)
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
 
     AnimationClass* result = instance->getAnimationSystem();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<AnimationClass>(L, result, AnimationClassBinding::getMetatableName());
 }
 
 int AppearanceBaseBinding::getSceneNode(lua_State* L)
@@ -1271,10 +1270,8 @@ LIGHTUSERDATA DEPENDENCIES:
   - AppearanceBase_get_slots: const boost::unordered::unordered_map<std::string, AttachmentData*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, AttachmentData*>, Ogre::GeneralAllocPolicy > >* (unbound pointer)
   - AppearanceBase_get_body: Ogre::Entity* (unbound pointer)
   - AppearanceBase_get_bodyLoader: Ogre::Entity* (unbound pointer)
-  - AppearanceBase_get_animation: AnimationClass* (unbound pointer)
   - AppearanceBaseBinding::attachEffect: AttachedEffect* (unbound pointer)
   - AppearanceBaseBinding::getAttachedEntity: AttachedEntity* (unbound pointer)
-  - AppearanceBaseBinding::getAnimationSystem: AnimationClass* (unbound pointer)
   - AppearanceBaseBinding::getSceneNode: Ogre::SceneNode* (unbound pointer)
   - AppearanceBaseBinding::getSkeleton: Ogre::OldSkeletonInstance* (unbound pointer)
   - AppearanceBaseBinding::getBody: Ogre::Entity* (unbound pointer)

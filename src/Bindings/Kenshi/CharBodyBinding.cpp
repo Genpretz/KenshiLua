@@ -2,6 +2,8 @@
 #include "FactionBinding.h"
 #include "PlatoonBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
+#include "Bindings/Kenshi/AI/AIBinding.h"
 #include <kenshi\CharBody.h>
 #include "Bindings/Kenshi/CharBodyBinding.h"
 #include "Bindings/Kenshi/CombatClassBinding.h"
@@ -34,8 +36,7 @@ static int CharBody_get_animation(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
-    lua_pushlightuserdata(L, (void*)instance->animation);
-    return 1;
+    return pushObject<AnimationClass>(L, instance->animation, AnimationClassBinding::getMetatableName());
 }
 
 static int CharBody_get_character(lua_State* L)
@@ -96,8 +97,7 @@ static int CharBody_get_ai(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
-    lua_pushlightuserdata(L, (void*)instance->ai);
-    return 1;
+    return pushObject<AI>(L, instance->ai, AIBinding::getMetatableName());
 }
 
 static int CharBody_get_movement(lua_State* L)
@@ -135,7 +135,7 @@ static int CharBody_set_animation(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
-    instance->animation = lua_isnoneornil(L, 2) ? nullptr : (AnimationClass*)lua_touserdata(L, 2);
+    instance->animation = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationClass>(L, 2, AnimationClassBinding::getMetatableName());
     return 0;
 }
 
@@ -208,7 +208,7 @@ static int CharBody_set_ai(lua_State* L)
 {
     CharBody* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharBody is nil");
-    instance->ai = lua_isnoneornil(L, 2) ? nullptr : (AI*)lua_touserdata(L, 2);
+    instance->ai = lua_isnoneornil(L, 2) ? nullptr : checkObject<AI>(L, 2, AIBinding::getMetatableName());
     return 0;
 }
 
@@ -540,8 +540,8 @@ int CharBodyBinding::create(lua_State* L)
     if (!instance) return luaL_error(L, "CharBody is nil");
 
     CharMovement* m = lua_isnoneornil(L, 2) ? nullptr : checkObject<CharMovement>(L, 2, CharMovementBinding::getMetatableName());
-    AI* a = lua_isnoneornil(L, 3) ? nullptr : (AI*)lua_touserdata(L, 3);
-    AnimationClass* an = lua_isnoneornil(L, 4) ? nullptr : (AnimationClass*)lua_touserdata(L, 4);
+    AI* a = lua_isnoneornil(L, 3) ? nullptr : checkObject<AI>(L, 3, AIBinding::getMetatableName());
+    AnimationClass* an = lua_isnoneornil(L, 4) ? nullptr : checkObject<AnimationClass>(L, 4, AnimationClassBinding::getMetatableName());
     Character* c = lua_isnoneornil(L, 5) ? nullptr : checkObject<Character>(L, 5, CharacterBinding::getMetatableName());
     CharStats* st = lua_isnoneornil(L, 6) ? nullptr : checkObject<CharStats>(L, 6, CharStatsBinding::getMetatableName());
 
@@ -753,8 +753,6 @@ void CharBodyBinding::registerBinding(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CharBody_get_animation / CharBody_set_animation: AnimationClass* (unbound pointer)
-  - CharBody_get_ai / CharBody_set_ai: AI* (unbound pointer)
   - CharBody::_patrol: PatrolInfo*, AITaskSytem* (unbound pointers)
 */
 

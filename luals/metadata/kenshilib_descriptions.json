@@ -2218,7 +2218,7 @@
             "properties": {
                 "_combatMoveSpeedMult": "Cached combat movement speed multiplier.",
                 "_lastOffMeshCheck": "Timestamp of the last off-navmesh recovery check.",
-                "animation": "Pointer to the character's AnimationClass (exposed as lightuserdata).",
+                "animation": "The character's `AnimationClass`.",
                 "animationOverride": "Whether animation is overriding normal movement positioning.",
                 "building": "Handle (hand) of the building the character is currently inside or standing on.",
                 "character": "The Character that owns this CharMovement controller.",
@@ -2641,7 +2641,7 @@
                 "getSquadLeader": "Returns the leader character of this character's squad.",
                 "getSquadMissionTarget": "Returns the target object handle assigned for this character's squad mission.",
                 "getStandingOrder": "Returns true if the specified standing order toggle (e.g. passive, hold, block) is active.",
-                "getStateBroadcast": "Returns the `StateBroadcastData` structure used to broadcast sensory and alert states to nearby AI.",
+                "getStateBroadcast": "Returns this character's `StateBroadcastData`.",
                 "getStats": "Returns the `CharStats` component managing this character's skills and attributes.",
                 "getStealingSuccessChance": "Returns the probability of successfully stealing the specified item without detection, along with the potential detecting character.",
                 "getStealthKOChance": "Calculates the probability (0.0 to 1.0) of a successful stealth assassination knockout on the target.",
@@ -2827,7 +2827,8 @@
                 "wearingUniformOf": "Returns true if this character is wearing clothing or armour belonging to the specified faction.",
                 "weatherUpdate": "Applies environmental weather exposure and protective gear modifiers over the specified time delta.",
                 "willTalkToEnemies": "Returns true if this character is willing to converse with hostile characters.",
-                "~Character": "Virtual destructor unregistering character from platoon, tearing down AI controllers, destroying PhysX actors, releasing audio emitters, and freeing memory."
+                "~Character": "Virtual destructor unregistering character from platoon, tearing down AI controllers, destroying PhysX actors, releasing audio emitters, and freeing memory.",
+                "_NV_getStateBroadcast": "Non-virtual call of `getStateBroadcast`; returns this character's `StateBroadcastData`."
             },
             "properties": {
                 "_base": "Inherited base class state (world handle, transform scene node, scene placement).",
@@ -3635,20 +3636,6 @@
                 "whosCrafting": "Persistent runtime handle of the craftsman character currently operating the bench."
             }
         },
-        "CraftingItem": {
-            "description": "One queued crafting order in a `CraftingBuilding`'s `crafting` queue. Instances are borrowed from the building's queue and become invalid when the engine removes the order.",
-            "methods": {},
-            "properties": {
-                "criticalSuccess": "`YesNoMaybe` recording whether this order rolled a critical success.",
-                "endTime": "End time value for this crafting order.",
-                "item": "The `Item` being crafted for this order. The order does not own it.",
-                "lastErrorCode": "Last crafting error for this order as a `CraftingItem::ErrorCode` integer: 0 = `CEC_NONE`, 1 = `CEC_BENCH_LEVEL`, 2 = `CEC_BENCH_NO_RESOURCES`, 3 = `CEC_BENCH_NO_WORKERS`.",
-                "name": "Display name of this crafting order.",
-                "progress01": "Crafting progress of this order, from 0 to 1.",
-                "rate": "Crafting rate applied to this order.",
-                "smithBench": "Handle of the crafting bench assigned to this order."
-            }
-        },
         "CraftingInventoryLayout": {
             "description": "Inventory layout managing the crafting production interface, queue controls, and output item slots.",
             "methods": {
@@ -3662,6 +3649,20 @@
                 "craftingName": "The MyGUI::TextBox widget displaying the active crafting name.",
                 "outputType": "The integer itemType enum value representing the crafted output item type.",
                 "queueBtn": "The MyGUI::Button widget representing the crafting queue toggle button."
+            }
+        },
+        "CraftingItem": {
+            "description": "One queued crafting order in a `CraftingBuilding`'s `crafting` queue. Instances are borrowed from the building's queue and become invalid when the engine removes the order.",
+            "methods": {},
+            "properties": {
+                "criticalSuccess": "`YesNoMaybe` recording whether this order rolled a critical success.",
+                "endTime": "End time value for this crafting order.",
+                "item": "The `Item` being crafted for this order. The order does not own it.",
+                "lastErrorCode": "Last crafting error for this order as a `CraftingItem::ErrorCode` integer: 0 = `CEC_NONE`, 1 = `CEC_BENCH_LEVEL`, 2 = `CEC_BENCH_NO_RESOURCES`, 3 = `CEC_BENCH_NO_WORKERS`.",
+                "name": "Display name of this crafting order.",
+                "progress01": "Crafting progress of this order, from 0 to 1.",
+                "rate": "Crafting rate applied to this order.",
+                "smithBench": "Handle of the crafting bench assigned to this order."
             }
         },
         "CreatelistItem": {
@@ -8691,7 +8692,7 @@
                 "getSquadLeader": "Retrieves pointer to the character designated as current squad leader.",
                 "getSquadLeader_theRealOne": "Retrieves persistent entity handle referencing the true authoritative squad leader.",
                 "getSquadType": "Retrieves squad operational classification enum (e.g. MILITARY, CARAVAN, PATROL, HOME_DEFENSE).",
-                "getStateBroadcast": "Retrieves tactical broadcast state sharing crime alerts and target locks across nearby friendly units.",
+                "getStateBroadcast": "Returns the squad leader's `StateBroadcastData`, or nil when the platoon is not active or has no squad leader.",
                 "getUnloadedPlatoon": "Retrieves pointer to the `UnloadedPlatoon` container holding abstract background character data.",
                 "hasCampaign": "Checks if the squad is currently dispatched on an active war campaign or raid mission.",
                 "iBuyIllegalGoods": "Checks if merchants in this squad will trade in illegal outlawed goods (e.g. Hashish, Bloodrum).",
@@ -9601,7 +9602,7 @@
                 "getPosition": "Returns the current world position of this object as a Vector3 table {x, y, z}.",
                 "getPositionForWaypoint": "Returns the target waypoint Vector3 position for approaching this object from the given Vector3 origin.",
                 "getSensoryData": "Returns the SensoryData component for this object, or nil if not applicable.",
-                "getStateBroadcast": "Returns a raw pointer (lightuserdata) to this object's StateBroadcastData, or nil if not applicable.",
+                "getStateBroadcast": "Returns this object's `StateBroadcastData`, or nil if it has none.",
                 "hasFaction": "Returns true if this object belongs to a valid Faction.",
                 "isUnconcious": "Returns true if this object (character or platoon) is currently unconscious.",
                 "isValid": "Returns true if this object's validKey matches the engine's valid object key.",
@@ -9953,8 +9954,8 @@
                 "getIterator": "Returns a SenseItr iterator over perceived characters matching any bit in tagsAny (SenseFlags) and excluding bits in tagsNOT.",
                 "getLastKnownPositionOf": "Returns the last known world position (Vector3 table) of who (Character).",
                 "getNearestEnemyDistanceSq": "Returns the squared distance to the closest perceived enemy.",
-                "getStateBroadcast": "Returns the owning character's StateBroadcastData* as lightuserdata.",
-                "getStateBroadcastOf": "Returns the perceived StateBroadcastData* (as lightuserdata) of character who (hand), or nil if not seen.",
+                "getStateBroadcast": "Returns the owning character's `StateBroadcastData`.",
+                "getStateBroadcastOf": "Returns the `StateBroadcastData` of character who (hand) as perceived by this character, or nil if not seen.",
                 "getVisionRange": "Returns the character's effective vision range (inTown adjusts for town lighting/conditions).",
                 "isEscapee": "Returns true if who (Character) is recognized as an escaping prisoner or slave.",
                 "isInMyPrivate_Building": "Returns true if who (Character) is inside a private building owned by this character's faction.",
@@ -10240,6 +10241,64 @@
             "properties": {
                 "group": "StatGroup Group enumeration value identifying the stat category (e.g., Weapons, Combat, Athletics).",
                 "name": "Display title of the stat category."
+            }
+        },
+        "StateBroadcastData": {
+            "description": "Per-character state that a character broadcasts to nearby AI: slave status, current task target, strength and aggression estimates, disguise state, and what the character looks like to observers. Owned by its `Character`; a `Platoon` returns its squad leader's instance.",
+            "methods": {
+                "getApparentFaction": "Returns the `Faction` this character appears to belong to, accounting for disguise and hidden-identity slavery.",
+                "getSlaveState": "Returns the current slave state as a `SlaveStateEnum` integer.",
+                "getSlaveStateHoursRemaining": "Returns the number of in-game hours remaining in the current slave state.",
+                "isDisguiseBlown": "Returns true if this character's disguise has been blown.",
+                "isDisguised": "Returns the `Faction` this character is disguised as, or nil when not disguised.",
+                "isHiddenIdentitySlave": "Returns true if this character is a slave whose identity is hidden.",
+                "load": "Loads this broadcast state from state (GameData).",
+                "notifyDisguiseBlown": "Marks this character's disguise as blown.",
+                "periodicUpdate": "Runs the periodic update of this broadcast state.",
+                "save": "Saves this broadcast state into state (GameData).",
+                "setSlaveState": "Sets the slave state from s (`SlaveStateEnum` integer)."
+            },
+            "properties": {
+                "NPCType": "Character role as a `CharacterTypeEnum` integer.",
+                "_slaveState": "Raw slave state as a `SlaveStateEnum` integer. `setSlaveState` is the engine's setter.",
+                "_slaveStateChangedTime": "`TimeOfDay` when the slave state last changed.",
+                "actualStrength": "Actual combat strength estimate of this character.",
+                "aggressionTowardsTarget": "Aggression this character shows towards its current target.",
+                "apparentStrength": "Combat strength this character appears to have to observers.",
+                "combatTargetsFaction": "`Faction` of this character's combat targets, or nil.",
+                "currentTownLocation": "`TownBase` this character is currently in, or nil.",
+                "disguiseBlown": "Disguise-blown value for this character.",
+                "disguiseFaction": "`Faction` this character is disguised as, or nil.",
+                "disguiseQuality": "Quality of this character's disguise.",
+                "distress": "Distress level this character broadcasts.",
+                "followMe": "Follow-me signal strength this character broadcasts.",
+                "homeBuilding": "Handle of this character's home building.",
+                "intendedAggression": "Aggression this character intends.",
+                "intendedHelp": "Help this character intends to give.",
+                "intendsToAttack": "Handle of the target this character intends to attack.",
+                "isAggressor": "True if this character is flagged as the aggressor.",
+                "isAtHome": "True if this character is at home.",
+                "isEscapedPrisoner": "True if this character is an escaped prisoner.",
+                "isKidnapped": "True if this character is kidnapped.",
+                "isSitting": "True if this character is sitting.",
+                "isSlaveOf": "`Faction` this character is a slave of, or nil.",
+                "isSleeping": "`YesNoMaybe` sleeping state of this character.",
+                "isTemporaryNeutral": "True if this character is temporarily neutral.",
+                "lastSlept": "`TimeOfDay` when this character last slept.",
+                "looksLike_bounty": "How strongly this character looks like a bounty target to observers.",
+                "looksLike_clothingArchetype": "Character role suggested by this character's clothing, as a `CharacterTypeEnum` integer.",
+                "looksLike_escapedSlave": "How strongly this character looks like an escaped slave to observers.",
+                "looksLike_intruder": "How strongly this character looks like an intruder to observers.",
+                "me": "The `Character` that owns this broadcast state. Cannot be set to nil.",
+                "mobility": "Mobility value this character broadcasts.",
+                "myPersonality": "Personality as a `PersonalityTags` integer.",
+                "noise": "Noise level this character broadcasts.",
+                "pos": "Broadcast position of this character.",
+                "relativeAttackerStrength": "Strength of attackers relative to this character.",
+                "slaveGUI_gear": "Gear value shown in the slave GUI.",
+                "slaveGUI_min": "Minimum value shown in the slave GUI.",
+                "taskTarget": "Handle of this character's current task target.",
+                "unconcious": "True if this character is unconscious."
             }
         },
         "StateT": {
@@ -12258,6 +12317,8 @@
         }
     },
     "enums": {
+        "AI.AIAggressionOrders": "Combat aggression order for an `AI`, as used by `AI.ordersAggression` and `AI.setAggressionLevel`.",
+        "AI.AIManuverabilityOrders": "Movement freedom order for an `AI`, as used by `AI.ordersMovement` and `AI.setManuveringFreedomLevel`.",
         "AppearanceManager.DataCategory.Enum": "Character appearance customization section category (face, body, skin tone).",
         "AppearanceManager.Gender.Enum": "Gender enumeration for character anatomy and mesh selection.",
         "ArmourClass": "Armor weight classification determining base damage mitigation and combat speed encumbrance.",
@@ -12324,10 +12385,12 @@
         "NavMesh.MessageType": "NavMesh generation and modification event message type.",
         "NavMesh.State": "Runtime cache state of navigation mesh sectors.",
         "NavMeshGenerator.TaskType": "Asynchronous navigation mesh generation pipeline task type.",
+        "NodeType": "Kind of AI node, as used by `AI.findNode`.",
         "NxControllerAction": "Physics character controller collision response action.",
         "NxShapeFlag": "PhysX collision shape trigger and simulation flags.",
         "NxShapesType": "PhysX collision shape query filter category (static, dynamic, all).",
         "PermajobType": "Persistent recurring task priority classification (normal work job, high-priority combat job).",
+        "PersonalityTags": "Personality tag assigned to a character, as stored in `StateBroadcastData.myPersonality`.",
         "PlatoonCreationMessage": "Lifecycle signal dispatched during squad or platoon instantiation.",
         "PortraitData.State": "UI portrait frame highlight and status badge state.",
         "PreviewBuilding.PlacementResult": "Construction holographic preview validity check result.",
@@ -12347,6 +12410,7 @@
         "SoundRange": "Acoustic propagation distance tier for sound emitter events.",
         "SquadMemberType": "Hierarchy rank of a member within a squad (leader, squad member 1, squad member 2).",
         "SquadType": "Organizational purpose and lifestyle classification of a squad (resident, roaming, patrol).",
+        "StanceEnum": "Character stance used by `AnimationClass.setStanceAnimation`.",
         "StateType": "AI state machine evaluation conditions and task completion predicates.",
         "StatsEnumerated": "Character attribute and weapon skill identifier enumeration.",
         "TalkerEnum": "Dialogue speaker identity reference (speaker, target, player target).",

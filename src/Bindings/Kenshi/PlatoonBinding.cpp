@@ -18,6 +18,7 @@
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "OwnershipsBinding.h"
+#include "Bindings/Kenshi/StateBroadcastDataBinding.h"
 #include "kenshi\GameSaveState.h"
 
 namespace KenshiLua
@@ -702,8 +703,7 @@ int PlatoonBinding::getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "Platoon is nil");
 
     StateBroadcastData* result = instance->getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int PlatoonBinding::_NV_getStateBroadcast(lua_State* L)
@@ -712,8 +712,7 @@ int PlatoonBinding::_NV_getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "Platoon is nil");
 
     StateBroadcastData* result = instance->_NV_getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int PlatoonBinding::serialiseEverything(lua_State* L)
@@ -1154,8 +1153,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - PlatoonBinding::isUnique: UniquePlatoon* (unbound pointer)
   - PlatoonBinding::_NV_isUnique: UniquePlatoon* (unbound pointer)
   - PlatoonBinding::getBlackboard: Blackboard* (unbound pointer)
-  - PlatoonBinding::getStateBroadcast: StateBroadcastData* (unbound pointer)
-  - PlatoonBinding::_NV_getStateBroadcast: StateBroadcastData* (unbound pointer)
   - PlatoonBinding::getUnloadedPlatoon: UnloadedPlatoon* (unbound pointer)
   - PlatoonBinding::getPatrolInfo: PatrolInfo* (unbound pointer)
   - PlatoonBinding::getRoamingMapArea: AreaBiomeGroup* (unbound pointer)

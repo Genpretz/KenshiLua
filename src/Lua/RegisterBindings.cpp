@@ -1,12 +1,15 @@
 #include "pch.h"
 #include "Lua/LuaBindings.h"
 #include "Bindings/Kenshi/AABB2DBinding.h"
+#include "Bindings/Kenshi/AI/AIBinding.h"
 #include "Bindings/Kenshi/AIOptionsBinding.h"
 #include "Bindings/Kenshi/AbstractMovementBaseBinding.h"
 #include "Bindings/Kenshi/ActivePlatoonBinding.h"
 #include "Bindings/Kenshi/AkSoundPositionBinding.h"
 #include "Bindings/Kenshi/AkVectorBinding.h"
 #include "Bindings/Kenshi/AnimalInventoryLayoutBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBaseBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 #include "Bindings/Kenshi/AppearanceAnimalBinding.h"
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/AppearanceHumanBinding.h"
@@ -322,6 +325,7 @@
 #include "Bindings/Kenshi/SpeedGroupBinding.h"
 #include "Bindings/Kenshi/SpotBinding.h"
 #include "Bindings/Kenshi/SpottingPeopleMgrBinding.h"
+#include "Bindings/Kenshi/StateBroadcastDataBinding.h"
 #include "Bindings/Kenshi/StateTBinding.h"
 #include "Bindings/Kenshi/StaticEntBinding.h"
 #include "Bindings/Kenshi/SwordBinding.h"
@@ -407,6 +411,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, AbstractMovementBaseBinding::getMetatableName(),              NxUserControllerHitReportBinding::getMetatableName());
     setMetatableParent(L, ActivePlatoonBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
     setMetatableParent(L, AnimalInventoryLayoutBinding::getMetatableName(),             InventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, AnimationClassBinding::getMetatableName(),                    AnimationClassBaseBinding::getMetatableName());
     setMetatableParent(L, AppearanceAnimalBinding::getMetatableName(),                  AppearanceBaseBinding::getMetatableName());
     setMetatableParent(L, AppearanceHumanBinding::getMetatableName(),                   AppearanceBaseBinding::getMetatableName());
     setMetatableParent(L, AppearanceManager_DataRangePoseBinding::getMetatableName(),   AppearanceManager_DataRangeBinding::getMetatableName());
@@ -701,6 +706,7 @@ void LuaBindings::registerStdMap(lua_State* L)
     StdMapBinding<float, GameData*>::registerBinding(L, "std::map<float, GameData*>", nullptr, GameDataBinding::getMetatableName());
     StdMapBinding<GameData*, float>::registerBinding(L, "std::map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
     StdMapBinding<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData* const, bool>>>::registerBinding(L, "std::map<GameData*, bool>", GameDataBinding::getMetatableName(), nullptr);
+    StdMapBinding<std::string, Ogre::Quaternion>::registerBinding(L, "std::map<std::string, Quaternion>");
 }
 
 void LuaBindings::registerStdDeque(lua_State* L)
@@ -729,12 +735,15 @@ void LuaBindings::registerSTL(lua_State* L)
 void LuaBindings::registerClasses(lua_State* L)
 {
     AABB2DBinding::registerBinding(L);
+    AIBinding::registerBinding(L);
     AIOptionsBinding::registerBinding(L);
     AbstractMovementBaseBinding::registerBinding(L);
     ActivePlatoonBinding::registerBinding(L);
     AkSoundPositionBinding::registerBinding(L);
     AkVectorBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);
+    AnimationClassBaseBinding::registerBinding(L);
+    AnimationClassBinding::registerBinding(L);
     AppearanceAnimalBinding::registerBinding(L);
     AppearanceBaseBinding::registerBinding(L);
     AppearanceHumanBinding::registerBinding(L);
@@ -1027,6 +1036,7 @@ void LuaBindings::registerClasses(lua_State* L)
     SquadManagementScreenBinding::registerBinding(L);
     StatBinding::registerBinding(L);
     StatGroupBinding::registerBinding(L);
+    StateBroadcastDataBinding::registerBinding(L);
     StateTBinding::registerBinding(L);
     StaticEntBinding::registerBinding(L);
     StorageBuildingBinding::registerBinding(L);

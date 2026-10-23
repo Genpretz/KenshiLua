@@ -417,6 +417,9 @@ def infer_multi_return_values(body, count):
         )
         refs = (ref, "nil") if match.group(1) == "pushObject" else (ref,)
         matches.append((match.start(), refs))
+    # Binding push helpers such as HandBinding::push always push a copy.
+    for match in re.finditer(r"\b([A-Za-z_]\w*Binding)::push\s*\(", body):
+        matches.append((match.start(), ("binding:" + match.group(1),)))
     all_pushes = re.findall(
         r"\b(?:lua_(?:new|create)table|\w*push(?!_back)\w*)\s*(?:<[^;()]*>)?\s*\(",
         body,
