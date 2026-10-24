@@ -387,6 +387,12 @@
 #include "Bindings/Kenshi/VisibleObjectInfoBinding.h"
 #include "Bindings/Kenshi/WeaponBinding.h"
 #include "Bindings/Kenshi/WeatherRegionBinding.h"
+#include "Bindings/Kenshi/Weather/SeasonBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherInstanceBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherSystemBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherSystem_FogValuesBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherSystem_ZoneFogBinding.h"
 #include "Bindings/Kenshi/WhoSeesMeBinding.h"
 #include "Bindings/Kenshi/WorldEventStateQueryBinding.h"
 #include "Bindings/Kenshi/WorldEventStateQueryListBinding.h"
@@ -1031,6 +1037,7 @@ void LuaBindings::registerClasses(lua_State* L)
     ScreenLabelDebugBinding::registerBinding(L);
     ScreenLabelInterfaceBinding::registerBinding(L);
     SectionItemBinding::registerBinding(L);
+    SeasonBinding::registerBinding(L);
     SeenSomeoneBinding::registerBinding(L);
     SelectionBoxBinding::registerBinding(L);
     SenseItrBinding::registerBinding(L);
@@ -1110,7 +1117,12 @@ void LuaBindings::registerClasses(lua_State* L)
     VisibleObjectInfoBinding::registerBinding(L);
     WallBuildingBinding::registerBinding(L);
     WeaponBinding::registerBinding(L);
+    WeatherBinding::registerBinding(L);
+    WeatherInstanceBinding::registerBinding(L);
     WeatherRegionBinding::registerBinding(L);
+    WeatherSystemBinding::registerBinding(L);
+    WeatherSystem_FogValuesBinding::registerBinding(L);
+    WeatherSystem_ZoneFogBinding::registerBinding(L);
     WhoSeesMeBinding::registerBinding(L);
     WindGeneratorBuildingBinding::registerBinding(L);
     WorldEventStateQueryBinding::registerBinding(L);

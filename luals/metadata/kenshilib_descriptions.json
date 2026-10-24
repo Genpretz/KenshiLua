@@ -9873,6 +9873,23 @@
                 "visible": "Whether this screen label is currently visible on screen."
             }
         },
+        "Season": {
+            "description": "One season of a `WeatherRegion`, with the weathers that can occur during it. Owned by the region; `~WeatherRegion` deletes its seasons.",
+            "methods": {
+                "getName": "Returns the name of the season's GameData record, or an empty string if it has none.",
+                "getNewWeather": "Picks one of this season's weathers and starts it on the region's `WeatherInstance`. Raises an error if the season has no weathers."
+            },
+            "properties": {
+                "durationInDays": "Length of the season in in-game days.",
+                "hasConditionalWeather": "True if weather selection depends on the time of day.",
+                "regionWeather": "The `WeatherRegion` this season belongs to. Cannot be set to nil.",
+                "seasonData": "The GameData record that defines this season, or nil.",
+                "sunlightColor": "Sunlight colour during this season.",
+                "weatherStrengthMax": "Maximum weather strength during this season.",
+                "weatherStrengthMin": "Minimum weather strength during this season.",
+                "weathers": "Table of the `Weather` profiles that can occur during this season. A copy of the list; the season owns its weathers."
+            }
+        },
         "SectionItem": {
             "description": "Inventory grid cell descriptor associating an Item with its grid coordinate position and slot footprint.",
             "methods": {},
@@ -11807,6 +11824,85 @@
                 "modAttack": "Flat modifier applied to the wielder's melee attack skill."
             }
         },
+        "Weather": {
+            "description": "A weather profile, such as a duststorm or acid rain, built from its GameData record. Owned by its `Season`, and shared by every region that uses that season.",
+            "methods": {
+                "getName": "Returns the name of the weather's GameData record."
+            },
+            "properties": {
+                "affectCharactersStrength": "Strength of the weather's effect on characters.",
+                "affectCharactersType": "Effect on characters, as a `WeatherAffecting` integer.",
+                "cloudsColor": "Cloud colour.",
+                "cloudsDensity": "Cloud density.",
+                "conditionEnd": "Hour of day when the weather stops being eligible, for seasons with conditional weather.",
+                "conditionStart": "Hour of day when the weather becomes eligible, for seasons with conditional weather.",
+                "dust": "Airborne dust amount.",
+                "dustInside": "Dust amount indoors.",
+                "dustSticky": "Dust that sticks to surfaces.",
+                "durationMax": "Maximum duration in minutes.",
+                "durationMin": "Minimum duration in minutes.",
+                "fogColor": "Fog colour.",
+                "fogDistanceMax": "Fog distance at the maximum fog wind speed.",
+                "fogDistanceMin": "Fog distance at the minimum fog wind speed.",
+                "fogEnabled": "True if the weather has fog.",
+                "fogWindSpeedMax": "Wind speed at which the fog distance reaches `fogDistanceMax`.",
+                "fogWindSpeedMin": "Wind speed at which the fog distance is `fogDistanceMin`.",
+                "heatHaze": "Heat haze strength.",
+                "probabilityOccurrence": "Relative chance of this weather being picked.",
+                "rainSound": "Rain sound volume.",
+                "season": "The `Season` that owns this weather. Cannot be set to nil.",
+                "weatherData": "The GameData record that defines this weather. Cannot be set to nil.",
+                "wetness": "Surface wetness.",
+                "windSound": "Wind sound volume.",
+                "windSpeedMax": "Maximum wind speed.",
+                "windSpeedMin": "Minimum wind speed.",
+                "windUpdateLimit": "Largest wind direction change, in degrees.",
+                "windUpdateTime": "Minutes between wind changes."
+            }
+        },
+        "WeatherInstance": {
+            "description": "The weather currently running in a `WeatherRegion`: its `Weather` profile, strength, wind, and timing. Owned by the region; `~WeatherRegion` deletes it.",
+            "methods": {
+                "getFogColour": "Returns the fog colour of the current `Weather`. Raises an error while no `Weather` is assigned.",
+                "getFogDistance": "Returns the fog distance, interpolated from the current wind speed between the `Weather`'s fog distance limits. Raises an error while no `Weather` is assigned.",
+                "getFogEnabled": "Returns true if the current `Weather` has fog. Raises an error while no `Weather` is assigned.",
+                "getFogVisible": "Returns true if the current `Weather` has fog. Raises an error while no `Weather` is assigned.",
+                "getGlobalEffectsStrength": "Returns `effectStrength`, the strength applied to the weather's global effects.",
+                "getHasEnded": "Returns true once the in-game time has passed `endTimeMinutes`.",
+                "getTime": "Returns `weatherTime`, the time this weather has been active.",
+                "getTimeNormalized": "Returns how far this weather is between `startTimeMinutes` and `endTimeMinutes`, from 0 to 1.",
+                "getWeather": "Returns the `Weather` profile in effect, or nil if none is assigned yet.",
+                "getWeatherBiome": "Returns the `WeatherRegion` this instance belongs to.",
+                "getWeatherStrength": "Returns `strength`, the normalized weather strength.",
+                "getWetness": "Returns the current `Weather`'s wetness. Raises an error while no `Weather` is assigned.",
+                "getWindDirection": "Returns the wind direction as a Vector3 table.",
+                "getWindForce": "Returns the wind direction scaled by the wind speed, as a Vector3 table.",
+                "getWindSpeed": "Returns the current wind speed.",
+                "load": "Loads this instance from data (GameData) under key, using newWeather (Weather) as its profile.",
+                "save": "Saves this instance into data (GameData) under key.",
+                "setupWeather": "Starts newWeather (Weather): picks its strength, duration, and wind. Changes the running weather.",
+                "update": "Advances the wind build-up and returns true while the wind is changing. Raises an error while no `Weather` is assigned."
+            },
+            "properties": {
+                "effectStrength": "Strength applied to the weather's global effects.",
+                "endTimeMinutes": "In-game time, in minutes, when this weather ends.",
+                "regionWeather": "The `WeatherRegion` this instance belongs to. Cannot be set to nil.",
+                "startTimeMinutes": "In-game time, in minutes, when this weather started.",
+                "strength": "Normalized weather strength.",
+                "updateTimeWindMinutes": "In-game time, in minutes, of the next wind change.",
+                "weather": "The `Weather` profile in effect, or nil before one is assigned. Cannot be set to nil.",
+                "weatherTime": "Time this weather has been active.",
+                "windBuildUpAngleEnd": "Wind angle at the end of the current wind change.",
+                "windBuildUpAngleStart": "Wind angle at the start of the current wind change.",
+                "windBuildUpEnd": "In-game time, in minutes, when the current wind change ends.",
+                "windBuildUpEnded": "True when no wind change is in progress.",
+                "windBuildUpSpeedEnd": "Wind speed at the end of the current wind change.",
+                "windBuildUpSpeedStart": "Wind speed at the start of the current wind change.",
+                "windBuildUpStart": "In-game time, in minutes, when the current wind change started.",
+                "windDirection": "Wind direction as a Vector3 table.",
+                "windSpeed": "Current wind speed."
+            }
+        },
         "WeatherRegion": {
             "description": "Manages seasonal progression, weather strength, active weather instances, and environmental effects for a biome group.",
             "methods": {
@@ -11814,7 +11910,7 @@
                 "addListener": "Registers a WeatherRegion::Listener pointer (passed as lightuserdata) for weather update notifications.",
                 "getNewSeason": "Advances or selects the next season for this weather region.",
                 "getNewWeatherStrength": "Calculates and returns a new randomized weather strength value within the region's multiplier bounds.",
-                "getWeatherInstance": "Returns a raw pointer (lightuserdata) to the active WeatherInstance for this region.",
+                "getWeatherInstance": "Returns this region's `WeatherInstance`.",
                 "load": "Loads this weather region's season and weather state from the given GameData under key.",
                 "removeListener": "Unregisters a WeatherRegion::Listener pointer (passed as lightuserdata).",
                 "reset": "Resets the weather region state and active effects.",
@@ -11829,15 +11925,72 @@
                 "activeCameraBiome": "Whether the player camera is currently inside this weather region's biome.",
                 "biomeGroup": "Read-only raw pointer (lightuserdata) to the AreaBiomeGroup associated with this weather region.",
                 "biomeGroupLoaded": "Whether the associated biome group is currently loaded.",
-                "currentSeason": "Read-only raw pointer (lightuserdata) to the current Season object.",
+                "currentSeason": "Read-only `Season` currently active in this region.",
                 "currentSeasonEndDay": "The in-game day number when the current season ends.",
                 "currentSeasonIndex": "The index of the currently active season in the region's season list.",
                 "instanceUpdated": "Whether the weather instance was updated.",
                 "requestUpdateEffects": "Flag requesting a refresh of weather effects on the next update.",
-                "weatherInstance": "Read-only raw pointer (lightuserdata) to the active WeatherInstance.",
+                "weatherInstance": "Read-only `WeatherInstance` running in this region. The region owns it.",
                 "weatherStrengthMultiplierMax": "Maximum multiplier bound for generated weather strength in this region.",
                 "weatherStrengthMultiplierMin": "Minimum multiplier bound for generated weather strength in this region.",
-                "weatherUpdated": "Whether the weather state has been updated."
+                "weatherUpdated": "Whether the weather state has been updated.",
+                "seasons": "Table of this region's `Season` objects. A copy of the list; the region owns its seasons."
+            }
+        },
+        "WeatherSystem": {
+            "description": "The game's weather coordinator: the region around the camera, fog blending between biomes, wind, rain, dust, and heat haze. A singleton; get it with `WeatherSystem.getInstance()`.",
+            "methods": {
+                "addWeatherListener": "Registers listener (`Listener`) with the weather region at position (Vector3 table) or for biome (GameData).",
+                "getInstance": "Returns the `WeatherSystem` singleton.",
+                "removeWeatherListener": "Unregisters listener (`Listener`).",
+                "reset": "Resets the weather system.",
+                "setDustShaderValue": "Sets the dust shader parameter from value (Vector3 table).",
+                "updateBT": "Runs the weather system's background-thread update.",
+                "updateMT": "Runs the weather system's main-thread update.",
+                "updateUT": "Runs the weather system's update-thread update."
+            },
+            "properties": {
+                "ActiveRegionWeather": "The `WeatherRegion` around the camera, or nil.",
+                "areaFog": "Table of the four `WeatherSystem_ZoneFog` states used to blend fog between neighbouring biomes. The elements can be edited in place.",
+                "currentDustAmount": "Dust amount passed to the dust shaders, as a Vector3 table.",
+                "currentFogValues": "Current blended fog values, as `WeatherSystem_FogValues`.",
+                "currentRainValue": "Current rain amount.",
+                "currentWindValue": "Current wind amount.",
+                "currentZoneFog": "Fog state being blended towards, as `WeatherSystem_ZoneFog`.",
+                "exitingBiome": "True while the camera is leaving a biome.",
+                "globalWetness": "Current surface wetness.",
+                "heatHazeUpdated": "True when the heat haze value needs to be sent to the shaders.",
+                "heatHazeValue": "Current heat haze strength.",
+                "previousBiomeAABB": "Bounds of the previous biome, as a Vector4 table.",
+                "previousPoint": "Previous camera sample position.",
+                "previousZoneFog": "Fog state being blended from, as `WeatherSystem_ZoneFog`.",
+                "rainValueUpdated": "True when the rain value changed and needs to be applied.",
+                "zoneFogBlendingPosition": "Position where fog blending is happening.",
+                "zoneFogBlendingType": "Fog blending mode."
+            }
+        },
+        "WeatherSystem_FogValues": {
+            "description": "Fog alpha, distance, and colour. Values returned by `WeatherSystem_ZoneFog:getCurrentValues` are copies owned by Lua; fields of `WeatherSystem` and `WeatherSystem_ZoneFog` are borrowed.",
+            "methods": {},
+            "properties": {
+                "alpha": "Fog opacity.",
+                "colour": "Fog colour.",
+                "distance": "Fog distance."
+            }
+        },
+        "WeatherSystem_ZoneFog": {
+            "description": "Fog state for one biome, blending from `prevFog` to `currFog`. Owned by the `WeatherSystem`.",
+            "methods": {
+                "clear": "Detaches the fog from its `WeatherInstance`.",
+                "getCurrentValues": "Returns the current fog values, blended while `blending` is true, as a new `WeatherSystem_FogValues`.",
+                "update": "Updates `currFog` from the attached `WeatherInstance`. Raises an error if that instance has no `Weather` assigned."
+            },
+            "properties": {
+                "blending": "True while the fog is blending between `prevFog` and `currFog`.",
+                "currFog": "Fog values being blended towards.",
+                "lastBlendValue": "Blend progress at the last update.",
+                "prevFog": "Fog values being blended from.",
+                "weatherInstance": "The `WeatherInstance` the fog follows, or nil. An instance without a `Weather` is rejected."
             }
         },
         "WhoSeesMe": {

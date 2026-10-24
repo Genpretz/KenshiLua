@@ -1,8 +1,13 @@
 #include "pch.h"
-#include "kenshi\physicscollection.h"
+#include "kenshi/Weather.h"
+#include "kenshi/PhysicsCollection.h"
 #include "WeatherRegionBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/ListenerBinding.h"
+#include "Bindings/Kenshi/RotatingEntBinding.h"
+#include "Bindings/Kenshi/Weather/SeasonBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherInstanceBinding.h"
 
 namespace KenshiLua
 {
@@ -41,15 +46,27 @@ static int WeatherRegion_get_weatherInstance(lua_State* L)
 {
     WeatherRegion* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WeatherRegion is nil");
-    lua_pushlightuserdata(L, (void*)instance->weatherInstance);
-    return 1;
+    return pushObject<WeatherInstance>(L, instance->weatherInstance, WeatherInstanceBinding::getMetatableName());
 }
 
 static int WeatherRegion_get_currentSeason(lua_State* L)
 {
     WeatherRegion* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WeatherRegion is nil");
-    lua_pushlightuserdata(L, (void*)instance->currentSeason);
+    return pushObject<Season>(L, instance->currentSeason, SeasonBinding::getMetatableName());
+}
+
+// ~WeatherRegion deletes these seasons, so the list is returned as a table and cannot be edited.
+static int WeatherRegion_get_seasons(lua_State* L)
+{
+    WeatherRegion* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherRegion is nil");
+    lua_createtable(L, (int)instance->seasons.size(), 0);
+    for (size_t i = 0; i < instance->seasons.size(); ++i)
+    {
+        pushObject<Season>(L, instance->seasons[i], SeasonBinding::getMetatableName());
+        lua_rawseti(L, -2, (int)i + 1);
+    }
     return 1;
 }
 
@@ -197,8 +214,7 @@ int WeatherRegionBinding::getWeatherInstance(lua_State* L)
     if (!instance) return luaL_error(L, "WeatherRegion is nil");
 
     WeatherInstance* result = instance->getWeatherInstance();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<WeatherInstance>(L, result, WeatherInstanceBinding::getMetatableName());
 }
 
 int WeatherRegionBinding::setCurrentSeason(lua_State* L)
@@ -245,8 +261,12 @@ int WeatherRegionBinding::addListener(lua_State* L)
     WeatherRegion* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WeatherRegion is nil");
 
-    WeatherRegion::Listener* listener = (WeatherRegion::Listener*)lua_touserdata(L, 2);
-    if (listener) instance->addListener(listener);
+    // RotatingEnt holds its Listener base at offset 0x38, so its pointer is converted, not reinterpreted.
+    // weatherChanged calls every listener without a null check.
+    WeatherRegion::Listener* listener = testObject<WeatherRegion::Listener>(L, 2, ListenerBinding::getMetatableName());
+    if (!listener)
+        listener = static_cast<WeatherRegion::Listener*>(checkObject<PhysicsCollection::RotatingEnt>(L, 2, RotatingEntBinding::getMetatableName()));
+    instance->addListener(listener);
     return 0;
 }
 
@@ -255,8 +275,11 @@ int WeatherRegionBinding::removeListener(lua_State* L)
     WeatherRegion* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WeatherRegion is nil");
 
-    WeatherRegion::Listener* listener = (WeatherRegion::Listener*)lua_touserdata(L, 2);
-    if (listener) instance->removeListener(listener);
+    // RotatingEnt holds its Listener base at offset 0x38, so its pointer is converted, not reinterpreted.
+    WeatherRegion::Listener* listener = testObject<WeatherRegion::Listener>(L, 2, ListenerBinding::getMetatableName());
+    if (!listener)
+        listener = static_cast<WeatherRegion::Listener*>(checkObject<PhysicsCollection::RotatingEnt>(L, 2, RotatingEntBinding::getMetatableName()));
+    instance->removeListener(listener);
     return 0;
 }
 
@@ -324,17 +347,13 @@ int WeatherRegionBinding::load(lua_State* L)
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - WeatherRegion_get_biomeGroup: AreaBiomeGroup* (unbound pointer)
-  - WeatherRegion_get_weatherInstance: WeatherInstance* (unbound pointer)
-  - WeatherRegion_get_currentSeason: Season* (unbound pointer)
-  - WeatherRegionBinding::getWeatherInstance: WeatherInstance* (unbound pointer)
 */
 
 /*
 Skipped properties needing manual binding:
-  line 87: seasons (Ogre::vector<Season*>::type) - unsupported type
-  line 94: listeners (Ogre::vector<WeatherRegion::Listener*>::type) - unsupported type
-  line 97: effects (Ogre::vector<EffectGroup*>::type) - unsupported type
-  line 98: activeGlobalEffects (std::vector<std::pair<EffectType::Enum, float>, Ogre::STLAllocator<std::pair<EffectType::Enum, float>, Ogre::GeneralAllocPolicy > >) - unsupported type
+  line 109: listeners (Ogre::vector<WeatherRegion::Listener*>::type) - unsupported type
+  line 112: effects (Ogre::vector<EffectGroup*>::type) - unsupported type
+  line 113: activeGlobalEffects (std::vector<std::pair<EffectType::Enum, float>, Ogre::STLAllocator<std::pair<EffectType::Enum, float>, Ogre::GeneralAllocPolicy > >) - unsupported type
 */
 
 int WeatherRegionBinding::gc(lua_State* L)
@@ -390,6 +409,7 @@ void WeatherRegionBinding::registerBinding(lua_State* L)
     registerGetter(L, "weatherStrengthMultiplierMin", WeatherRegion_get_weatherStrengthMultiplierMin);
     registerGetter(L, "weatherStrengthMultiplierMax", WeatherRegion_get_weatherStrengthMultiplierMax);
     registerGetter(L, "weatherInstance", WeatherRegion_get_weatherInstance);
+    registerGetter(L, "seasons", WeatherRegion_get_seasons);
     registerGetter(L, "currentSeason", WeatherRegion_get_currentSeason);
     registerGetter(L, "currentSeasonIndex", WeatherRegion_get_currentSeasonIndex);
     registerGetter(L, "currentSeasonEndDay", WeatherRegion_get_currentSeasonEndDay);

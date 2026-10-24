@@ -992,6 +992,12 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\VisibleObjectInfoBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\WeaponBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\WeatherRegionBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Weather\SeasonBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Weather\WeatherBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Weather\WeatherInstanceBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Weather\WeatherSystemBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Weather\WeatherSystem_FogValuesBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Weather\WeatherSystem_ZoneFogBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\WhoSeesMeBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\WorldEventStateQueryBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\WorldEventStateQueryListBinding.h" />
@@ -1463,6 +1469,12 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\VisibleObjectInfoBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\WeaponBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\WeatherRegionBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Weather\SeasonBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Weather\WeatherBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Weather\WeatherInstanceBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Weather\WeatherSystemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Weather\WeatherSystem_FogValuesBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Weather\WeatherSystem_ZoneFogBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\WhoSeesMeBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\WorldEventStateQueryBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\WorldEventStateQueryListBinding.cpp" />
