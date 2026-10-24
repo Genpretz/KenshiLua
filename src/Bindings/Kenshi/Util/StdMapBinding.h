@@ -1,6 +1,7 @@
 #pragma once
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Util/ContainerIteration.h"
+#include "Bindings/Kenshi/Util/MapValue.h"
 #include <map>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
@@ -57,8 +58,8 @@ namespace KenshiLua
             
             if (valMetaName)
             {
-                // Return by pointer if element has a metatable
-                return pushObject<V>(L, &it->second, valMetaName);
+                // Borrow a stored value in place, or push the object a pointer value refers to
+                return MapValue<V>::push(L, it->second, valMetaName);
             }
             else
             {
@@ -84,9 +85,7 @@ namespace KenshiLua
             V val;
             if (valMetaName)
             {
-                V* ptr = checkObject<V>(L, 3, valMetaName);
-                if (!ptr) return luaL_error(L, "map: expected valid object for assignment");
-                val = *ptr;
+                val = MapValue<V>::read(L, 3, valMetaName);
             }
             else
             {
@@ -139,7 +138,7 @@ namespace KenshiLua
                 LuaCodec<K>::push(L, it->first, keyMetaName);
                 if (valMetaName)
                 {
-                    pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+                    MapValue<V>::push(L, it->second, valMetaName);
                 }
                 else
                 {
@@ -165,7 +164,7 @@ namespace KenshiLua
                     LuaCodec<K>::push(L, it->first, keyMetaName);
                     lua_rawseti(L, -2, 2 * count - 1);
                     if (valMetaName)
-                        pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+                        MapValue<V>::push(L, it->second, valMetaName);
                     else
                         LuaCodec<V>::push(L, it->second, nullptr);
                     lua_rawseti(L, -2, 2 * count);

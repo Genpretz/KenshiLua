@@ -8,6 +8,7 @@
 #include <kenshi/util/OgreUnordered.h>
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Util/ContainerIteration.h"
+#include "Bindings/Kenshi/Util/MapValue.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Lua/LuaCodec.h"
 
@@ -304,7 +305,7 @@ namespace KenshiLua
             if (it == m->end()) { lua_pushnil(L); return 1; }
             if (valMetaName)
             {
-                return pushObject<V>(L, &it->second, valMetaName);
+                return MapValue<V>::push(L, it->second, valMetaName);
             }
             else
             {
@@ -329,9 +330,7 @@ namespace KenshiLua
             V val;
             if (valMetaName)
             {
-                V* ptr = checkObject<V>(L, 3, valMetaName);
-                if (!ptr) return luaL_error(L, "map: expected valid object for assignment");
-                val = *ptr;
+                val = MapValue<V>::read(L, 3, valMetaName);
             }
             else
             {
@@ -384,7 +383,7 @@ namespace KenshiLua
                 LuaCodec<K>::push(L, it->first, keyMetaName);
                 if (valMetaName)
                 {
-                    pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+                    MapValue<V>::push(L, it->second, valMetaName);
                 }
                 else
                 {
@@ -410,7 +409,7 @@ namespace KenshiLua
                     LuaCodec<K>::push(L, it->first, keyMetaName);
                     lua_rawseti(L, -2, 2 * count - 1);
                     if (valMetaName)
-                        pushObject<V>(L, const_cast<V*>(&it->second), valMetaName);
+                        MapValue<V>::push(L, it->second, valMetaName);
                     else
                         LuaCodec<V>::push(L, it->second, nullptr);
                     lua_rawseti(L, -2, 2 * count);

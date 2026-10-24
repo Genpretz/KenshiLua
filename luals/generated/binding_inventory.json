@@ -155720,6 +155720,119 @@
       ]
     },
     {
+      "binding": "OgreVectorPtrBinding<InventorySection*>",
+      "element_refs": [
+        "binding:InventorySectionBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "InventorySection"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "InventorySection|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreVector<InventorySection>",
+      "metatable": "ogre_vector<InventorySection*>",
+      "methods": [
+        {
+          "callback": "push_back",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "InventorySection"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "InventorySection|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, InventorySection>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "ShopTraderInventoryBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/ShopTraderInventoryBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreVectorBinding.h",
+      "template": "OgreVectorPtrBinding",
+      "template_args": [
+        "InventorySection*"
+      ]
+    },
+    {
       "binding": "OgreVectorValueBinding<GameDataReference>",
       "element_refs": [
         "binding:GameDataReferenceBinding"
@@ -155830,119 +155943,6 @@
       "template": "OgreVectorValueBinding",
       "template_args": [
         "GameDataReference"
-      ]
-    },
-    {
-      "binding": "OgreVectorValueBinding<InventorySection*>",
-      "element_refs": [
-        "binding:InventorySectionBinding"
-      ],
-      "element_types": {
-        "key": "integer",
-        "value": "InventorySection"
-      },
-      "global_names": [],
-      "has_constructor": false,
-      "indexer": {
-        "key": "integer",
-        "type": "InventorySection|nil"
-      },
-      "kind": "template_instance",
-      "lua_type": "OgreVector<InventorySection>",
-      "metatable": "ogre_vector<InventorySection*>",
-      "methods": [
-        {
-          "callback": "push_back",
-          "name": "push",
-          "signature": {
-            "params": [
-              {
-                "name": "value",
-                "optional": false,
-                "type": "InventorySection"
-              }
-            ],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "pop",
-          "name": "pop",
-          "signature": {
-            "params": [],
-            "returns": [
-              "InventorySection|nil"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "removeAt",
-          "name": "removeAt",
-          "signature": {
-            "params": [
-              {
-                "name": "index",
-                "optional": false,
-                "type": "integer"
-              }
-            ],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "clear",
-          "name": "clear",
-          "signature": {
-            "params": [],
-            "returns": [],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "size",
-          "name": "size",
-          "signature": {
-            "params": [],
-            "returns": [
-              "integer"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        },
-        {
-          "callback": "toTable",
-          "name": "toTable",
-          "signature": {
-            "params": [],
-            "returns": [
-              "table<integer, InventorySection>"
-            ],
-            "type_source": "container"
-          },
-          "static": false
-        }
-      ],
-      "owners": [
-        "ShopTraderInventoryBinding"
-      ],
-      "parent_binding": null,
-      "parent_metatable": "",
-      "properties": [],
-      "registered_from": [
-        "src/Bindings/Kenshi/ShopTraderInventoryBinding.cpp"
-      ],
-      "source": "src/Bindings/Kenshi/Util/OgreVectorBinding.h",
-      "template": "OgreVectorValueBinding",
-      "template_args": [
-        "InventorySection*"
       ]
     },
     {

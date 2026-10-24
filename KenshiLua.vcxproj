@@ -999,6 +999,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\Util\rendHitBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StdDequeBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\ContainerIteration.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Util\MapValue.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StdMapBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StdSetBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Util\StringPairBinding.h" />
