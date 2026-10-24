@@ -15,6 +15,7 @@ from kenshi_install import (
     resolve_installation,
     sha256_file,
     steam_client_ready,
+    steam_reports_app_running,
 )
 from launcher_windows import (
     NamedRunEvent,
@@ -167,6 +168,15 @@ def run_single_platform(
                 )
                 return EXIT_SETUP_ERROR
             time.sleep(1.0)
+
+    # Steam starts nothing for an app it already counts as running, so the launch would time out.
+    if platform == "steam" and steam_reports_app_running():
+        print(
+            "[ERROR] Steam reports Kenshi as already running, so it will not start the game. "
+            "Close Kenshi or the FCS if either was started through Steam, then rerun.",
+            file=sys.stderr,
+        )
+        return EXIT_SETUP_ERROR
 
     artifact_dir.mkdir(parents=True, exist_ok=True)
     metadata = {

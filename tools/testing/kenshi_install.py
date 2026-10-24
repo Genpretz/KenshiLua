@@ -137,6 +137,17 @@ def steam_client_ready() -> bool:
     return "steam.exe" in out.lower()
 
 
+def steam_reports_app_running() -> bool:
+    """Return True when Steam counts Kenshi as running, for example while the FCS is open."""
+    import winreg
+
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam\Apps" + "\\" + STEAM_APP_ID) as key:
+            return bool(winreg.QueryValueEx(key, "Running")[0])
+    except OSError:
+        return False
+
+
 def _discover_steam_workshop_provider(game_root: Path) -> Optional[Path]:
     # game_root is <steamapps>/common/Kenshi
     common_dir = game_root.parent
