@@ -205,6 +205,10 @@ For the Kenshi 1.0.65 `MyGUIEngine_x64.dll` (SHA-256 `fea6f1f9...`, unchanged fr
 
 At runtime, KenshiLua loads its KenshiLib functions from the `KenshiLib.dll` that RE_Kenshi installs in the game folder, not the one you built. The build loads only if that DLL exports every symbol KenshiLua imports. Compare `dumpbin /imports` of `KenshiLua.dll` with `dumpbin /exports` of the game's `KenshiLib.dll` to check. On 2026-10-22, the build described above loaded with the `KenshiLib.dll` installed at the time, which reported KenshiLib 0.5.1.
 
+## Known issue: hand comparisons
+
+KenshiLib 0.3.0's `kenshi/util/hand.h` declares `operator==(bool)` before `operator==(const hand&)`. MSVC places overloaded virtual functions in reverse declaration order, so code built against it calls `hand::operator==(bool)` when it compares two handles, and two copies of the same handle compare unequal. KenshiLua `v0.3.9-alpha` compares handles this way. To fix it in a rebuild, move the `virtual bool operator==(const hand& a) const;` and `bool _NV_operator_equal(const hand& a) const;` lines above `virtual bool operator==(bool a) const;`, the same change KenshiLib 0.5.0 needs.
+
 ## Changes that are not needed
 
 The last local setup also contained these changes. They are not part of the required set:
