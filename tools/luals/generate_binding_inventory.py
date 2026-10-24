@@ -692,6 +692,112 @@ def is_static_style(body, binding):
     return bool(match and match.group(1) != binding)
 
 
+STACK_READ_PATTERNS = (
+    (r"checkObject\s*<\s*([^>]+?)\s*>\s*\(\s*L\s*,\s*(\d+)", lambda m: lua_object_type(m.group(1))),
+    # A second object of the binding's own class (operator_assign, compare).
+    (r"\bgetInstance\s*\(\s*L\s*,\s*(\d+)", lambda m: SELF_TYPE),
+    (r"luaL_(?:check|opt)integer\s*\(\s*L\s*,\s*(\d+)", lambda m: "integer"),
+    (r"luaL_(?:check|opt)number\s*\(\s*L\s*,\s*(\d+)", lambda m: "number"),
+    (r"luaL_(?:check|opt)l?string\s*\(\s*L\s*,\s*(\d+)", lambda m: "string"),
+    (r"lua_toboolean\s*\(\s*L\s*,\s*(\d+)", lambda m: "boolean"),
+    (r"lua_tointeger\s*\(\s*L\s*,\s*(\d+)", lambda m: "integer"),
+    (r"lua_tonumber\s*\(\s*L\s*,\s*(\d+)", lambda m: "number"),
+    (r"lua_to(?:l)?string\s*\(\s*L\s*,\s*(\d+)", lambda m: "string"),
+    (r"testObject\s*<\s*([^>]+?)\s*>\s*\(\s*L\s*,\s*(\d+)", lambda m: lua_object_type(m.group(1))),
+    (r"(?:readVector\d|checkVector\d)\s*\(\s*L\s*,\s*(\d+)", lambda m: "table"),
+    (r"lua_touserdata\s*\(\s*L\s*,\s*(\d+)", lambda m: "lightuserdata"),
+    (r"LuaCodec\s*<\s*[^>]+>\s*::read\s*\(\s*L\s*,\s*(\d+)", lambda m: "any"),
+)
+ERROR_RETURN = re.compile(r"\breturn\s+luaL_(?:error|argerror|typerror)\b")
+
+
+def stack_reads(text):
+    """Yield ``(index, match, type_for)`` for every typed stack read in ``text``."""
+    for pattern, type_for in STACK_READ_PATTERNS:
+        for match in re.finditer(pattern, text):
+            index = int(match.group(2) if match.lastindex and match.lastindex > 1 else match.group(1))
+            yield index, match, type_for
+
+
+def read_slots(text):
+    return {index for index, _, _ in stack_reads(text)} | {index for index, _ in object_reads(text)}
+
+
+def final_return(text):
+    """The ``return`` statement that ends ``text`` at its top level, or None."""
+    depth, last = 0, None
+    for match in re.finditer(r"[{}]|\breturn\b[^;]*;", text):
+        token = match.group(0)
+        if token == "{":
+            depth += 1
+        elif token == "}":
+            depth -= 1
+        elif depth == 0:
+            last = match
+    if last is None or text[last.end():].strip():
+        return None
+    return last.group(0)
+
+
+def ends_in_success_return(text):
+    statement = final_return(text)
+    return statement is not None and not ERROR_RETURN.match(statement)
+
+
+def exiting_branches(body):
+    """Top-level ``if``/``else`` blocks of ``body`` that end in a ``return``.
+
+    Yields ``(header_start, block_end, succeeds)``: the branch spans
+    ``body[header_start:block_end]``, and ``succeeds`` is False when it
+    returns an error.
+    """
+    depth, start = 0, None
+    for index, char in enumerate(body):
+        if char == "{":
+            if depth == 0:
+                start = index
+            depth += 1
+        elif char == "}":
+            depth -= 1
+            if depth == 0 and start is not None:
+                header_start = max(body.rfind(c, 0, start) for c in ";{}") + 1
+                statement = final_return(body[start + 1:index])
+                if statement and re.search(r"\b(?:if|else)\b", body[header_start:start]):
+                    yield header_start, index + 1, not ERROR_RETURN.match(statement)
+                start = None
+
+
+def dispatch_optional_slots(body, first_index):
+    """Slots that some successful path through a type-dispatched callback never reads.
+
+    An overload such as ``AI.isEnemy`` returns from an early branch for one
+    form (``if (subject) { ... return 1; }``) and handles the other after it,
+    so a slot read only in one branch is optional for the call as a whole.
+    """
+    branches = list(exiting_branches(body))
+    if not branches:
+        return set()
+    paths = []
+    removed_until = 0
+    prefix = ""
+    for header_start, block_end, succeeds in branches:
+        prefix += body[removed_until:header_start]
+        if succeeds:
+            paths.append(prefix + body[header_start:block_end])
+        removed_until = block_end
+    rest = prefix + body[removed_until:]
+    if ends_in_success_return(rest):
+        paths.append(rest)
+    if len(paths) < 2:
+        return set()
+    arities = []
+    for path in paths:
+        slots = [slot for slot in read_slots(path) if slot >= first_index]
+        arities.append(max(slots) if slots else first_index - 1)
+    shortest = min(arities)
+    return {slot for slot in read_slots(body) if slot > shortest}
+
+
 def infer_method_signature(method, implementation, binding):
     """Infer Lua argument contracts from the callback's checked stack slots."""
     callback = method.get("callback", method["name"])
@@ -705,30 +811,11 @@ def infer_method_signature(method, implementation, binding):
 
     args = {}
     checked = set()
-    patterns = (
-        (r"checkObject\s*<\s*([^>]+?)\s*>\s*\(\s*L\s*,\s*(\d+)", lambda m: lua_object_type(m.group(1))),
-        # A second object of the binding's own class (operator_assign, compare).
-        (r"\bgetInstance\s*\(\s*L\s*,\s*(\d+)", lambda m: SELF_TYPE),
-        (r"luaL_(?:check|opt)integer\s*\(\s*L\s*,\s*(\d+)", lambda m: "integer"),
-        (r"luaL_(?:check|opt)number\s*\(\s*L\s*,\s*(\d+)", lambda m: "number"),
-        (r"luaL_(?:check|opt)l?string\s*\(\s*L\s*,\s*(\d+)", lambda m: "string"),
-        (r"lua_toboolean\s*\(\s*L\s*,\s*(\d+)", lambda m: "boolean"),
-        (r"lua_tointeger\s*\(\s*L\s*,\s*(\d+)", lambda m: "integer"),
-        (r"lua_tonumber\s*\(\s*L\s*,\s*(\d+)", lambda m: "number"),
-        (r"lua_to(?:l)?string\s*\(\s*L\s*,\s*(\d+)", lambda m: "string"),
-        (r"testObject\s*<\s*([^>]+?)\s*>\s*\(\s*L\s*,\s*(\d+)", lambda m: lua_object_type(m.group(1))),
-        (r"(?:readVector\d|checkVector\d)\s*\(\s*L\s*,\s*(\d+)", lambda m: "table"),
-        (r"lua_touserdata\s*\(\s*L\s*,\s*(\d+)", lambda m: "lightuserdata"),
-        (r"LuaCodec\s*<\s*[^>]+>\s*::read\s*\(\s*L\s*,\s*(\d+)", lambda m: "any"),
-    )
-    for pattern, type_for in patterns:
-        for match in re.finditer(pattern, body):
-            index = int(match.group(2) if match.lastindex and match.lastindex > 1 else match.group(1))
-            if index < first_index:
-                continue
-            value_type = type_for(match)
-            args.setdefault(index, set()).add(value_type)
-            checked.add(index)
+    for index, match, type_for in stack_reads(body):
+        if index < first_index:
+            continue
+        args.setdefault(index, set()).add(type_for(match))
+        checked.add(index)
     for index, ref in object_reads(body):
         if index >= first_index:
             args.setdefault(index, set()).add(ref)
@@ -747,6 +834,7 @@ def infer_method_signature(method, implementation, binding):
     else:
         max_index = max(args)
 
+    dispatch_optional = dispatch_optional_slots(body, first_index)
     params = []
     for index in range(first_index, max_index + 1):
         values = args.get(index, {"any"})
@@ -754,7 +842,8 @@ def infer_method_signature(method, implementation, binding):
         # then lua_isstring): the slot accepts their union.
         value_type = "any" if "any" in values else "|".join(sorted(values))
         optional = (
-            re.search(r"lua_gettop\s*\(\s*L\s*\)\s*>=\s*" + str(index), body)
+            index in dispatch_optional
+            or re.search(r"lua_gettop\s*\(\s*L\s*\)\s*>=\s*" + str(index), body)
             or re.search(r"luaL_opt\w+\s*\(\s*L\s*,\s*" + str(index) + r"\s*,", body)
             or re.search(r"lua_is(?:noneor)?nil\s*\(\s*L\s*,\s*" + str(index) + r"\s*\)", body)
             # `lua_isnumber(L, n) ? lua_tonumber(L, n) : default`

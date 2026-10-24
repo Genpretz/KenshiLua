@@ -168,6 +168,35 @@ class BindingInventoryTests(unittest.TestCase):
             ),
         )
 
+    def test_type_dispatch_branches_make_unread_slots_optional(self):
+        dispatch = """
+            hand* subject = testObject<hand>(L, 2, HandBinding::getMetatableName());
+            if (subject)
+            {
+                Ogre::Vector3 v;
+                if (!readVector3(L, 3, v)) return luaL_argerror(L, 3, "Vector3 table expected");
+                lua_pushboolean(L, 1);
+                return 1;
+            }
+            RootObjectBase* c = testObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName());
+            if (!c) return luaL_argerror(L, 2, "hand or RootObjectBase expected");
+            lua_pushboolean(L, 0);
+            return 1;
+        """
+        self.assertEqual({3}, generate_binding_inventory.dispatch_optional_slots(dispatch, 2))
+        # A branch that raises is not a successful call, so slot 3 stays required.
+        guarded = """
+            float a = (float)luaL_checknumber(L, 2);
+            if (a < 0)
+            {
+                return luaL_argerror(L, 2, "must not be negative");
+            }
+            float b = (float)luaL_checknumber(L, 3);
+            lua_pushnumber(L, a + b);
+            return 1;
+        """
+        self.assertEqual(set(), generate_binding_inventory.dispatch_optional_slots(guarded, 2))
+
     def test_mygui_value_bindings_keep_distinct_types(self):
         inventory = generate_binding_inventory.build_inventory()
         types = {entry["binding"]: entry["lua_type"] for entry in inventory["classes"]}
@@ -418,6 +447,8 @@ class BindingInventoryTests(unittest.TestCase):
                 if item["name"] == "findWeapon"
             )["signature"]["return_values"],
         )
+        # isEnemy(hand, Vector3) and isEnemy(RootObjectBase) dispatch on argument 2.
+        self.assertEqual([False, True], [param["optional"] for param in signature("AI", "isEnemy")["params"]])
         character_properties = {
             item["name"]: item
             for item in bindings["Character"]["properties"]
