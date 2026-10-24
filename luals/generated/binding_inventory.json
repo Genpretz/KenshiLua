@@ -354,6 +354,17 @@
           "static": false
         },
         {
+          "callback": "AIBinding::getTaskSystem",
+          "name": "getTaskSystem",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AITaskSytem"
+            ]
+          },
+          "static": false
+        },
+        {
           "callback": "AIBinding::getStateBroadcast",
           "name": "getStateBroadcast",
           "signature": {
@@ -981,6 +992,17 @@
             "params": [],
             "returns": [
               "Character"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIBinding::getMyMissionTarget",
+          "name": "getMyMissionTarget",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TargetInfo"
             ]
           },
           "static": false
@@ -10407,6 +10429,11 @@
         },
         {
           "access": "readonly",
+          "name": "resultsCache",
+          "type": "AI_AIResultsCacher"
+        },
+        {
+          "access": "readonly",
           "name": "sensoryData",
           "type": "SensoryData"
         },
@@ -10429,12 +10456,64 @@
           "access": "readwrite",
           "name": "taskRepertoireFlags",
           "type": "integer"
+        },
+        {
+          "access": "readonly",
+          "name": "taskSystemAI",
+          "type": "AITaskSytem"
         }
       ],
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/AI/AIBinding.cpp"
+    },
+    {
+      "binding": "AIEventClassBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AIEventClass",
+      "metatable": "KenshiLua.AIEventClass",
+      "methods": [
+        {
+          "callback": "AIEventClassBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "repeatRate",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "repeatTimer",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "sendWhoToDoIt",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "target",
+          "type": "hand"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/AIEventClassBinding.cpp"
     },
     {
       "binding": "AIOptionsBinding",
@@ -10549,6 +10628,42 @@
       "lua_type": "AIPackage",
       "metatable": "KenshiLua.AIPackage",
       "methods": [
+        {
+          "callback": "AIPackageBinding::getMyTarget",
+          "name": "getMyTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_getMyTarget",
+          "name": "_NV_getMyTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
         {
           "callback": "AIPackageBinding::notifyMyTargetPathfindImpossible",
           "name": "notifyMyTargetPathfindImpossible",
@@ -11119,6 +11234,1189 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/AI/AIPackageBinding.cpp"
+    },
+    {
+      "binding": "AIPatrolToTownBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AIPatrolToTown",
+      "metatable": "KenshiLua.AIPatrolToTown",
+      "methods": [
+        {
+          "callback": "AIPatrolToTownBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "AIEventClassBinding",
+      "parent_metatable": "KenshiLua.AIEventClass",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/AIPatrolToTownBinding.cpp"
+    },
+    {
+      "binding": "AITaskSytemBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AITaskSytem",
+      "metatable": "KenshiLua.AITaskSytem",
+      "methods": [
+        {
+          "callback": "AITaskSytemBinding::canIDoTheInfrequents",
+          "name": "canIDoTheInfrequents",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::infrequentsStampCheck",
+          "name": "infrequentsStampCheck",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::currentActionChecks",
+          "name": "currentActionChecks",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_logTheAI",
+          "name": "_logTheAI",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::serialise",
+          "name": "serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_NV_serialise",
+          "name": "_NV_serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::loadFromSerialise",
+          "name": "loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_NV_loadFromSerialise",
+          "name": "_NV_loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::getHandle",
+          "name": "getHandle",
+          "signature": {
+            "params": [],
+            "returns": [
+              "hand"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::notifyPathImpossible",
+          "name": "notifyPathImpossible",
+          "signature": {
+            "params": [
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "dest",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::isPathImpossible",
+          "name": "isPathImpossible",
+          "signature": {
+            "params": [
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "position",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::update4Frame",
+          "name": "update4Frame",
+          "signature": {
+            "params": [
+              {
+                "name": "position",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::periodicUpdate",
+          "name": "periodicUpdate",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::taskImpossible",
+          "name": "taskImpossible",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_notifyBodyTaskComplete",
+          "name": "_notifyBodyTaskComplete",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_forcedSetCurrentAction",
+          "name": "_forcedSetCurrentAction",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              },
+              {
+                "name": "score",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::setTaskExpiryTimer",
+          "name": "setTaskExpiryTimer",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::isGoalExpired",
+          "name": "isGoalExpired",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::isTaskExpired",
+          "name": "isTaskExpired",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::getGOalExpiryTimeRemaining",
+          "name": "getGOalExpiryTimeRemaining",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::tryAndRerunGOAP",
+          "name": "tryAndRerunGOAP",
+          "signature": {
+            "params": [
+              {
+                "name": "theRerun",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::setCurrentGoal",
+          "name": "setCurrentGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              },
+              {
+                "name": "score",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "pri",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_NV_setCurrentGoal",
+          "name": "_NV_setCurrentGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              },
+              {
+                "name": "score",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "pri",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::callForUpdate",
+          "name": "callForUpdate",
+          "signature": {
+            "params": [
+              {
+                "name": "superUrgent",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::getGUIData",
+          "name": "getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "datapanel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::getCurrentGoalString",
+          "name": "getCurrentGoalString",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::intendsToAttackTarget",
+          "name": "intendsToAttackTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::updateStateBroadcast",
+          "name": "updateStateBroadcast",
+          "signature": {
+            "params": [
+              {
+                "name": "stateBroadcast",
+                "optional": false,
+                "type": "StateBroadcastData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::clearAllTasks",
+          "name": "clearAllTasks",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::debugTargetInfo",
+          "name": "debugTargetInfo",
+          "signature": {
+            "params": [
+              {
+                "name": "task",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "info",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "isChosenTarget",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::setNeedGOAP",
+          "name": "setNeedGOAP",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_NV_setNeedGOAP",
+          "name": "_NV_setNeedGOAP",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::setDialogueDeliveryTag",
+          "name": "setDialogueDeliveryTag",
+          "signature": {
+            "params": [
+              {
+                "name": "d",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::getCurrentDurationTimedTask",
+          "name": "getCurrentDurationTimedTask",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_taskImpossible",
+          "name": "_taskImpossible",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::isThePlayer",
+          "name": "isThePlayer",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::checkOrders",
+          "name": "checkOrders",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::chooseGoal",
+          "name": "chooseGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "timedLockOnCurrentGoal",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::_chooseGoal",
+          "name": "_chooseGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "priority",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "squadMemberType",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::setupParametersForCurrentGoal",
+          "name": "setupParametersForCurrentGoal",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::clearRequestsList",
+          "name": "clearRequestsList",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::bodyTaskComplete",
+          "name": "bodyTaskComplete",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::popFromOrders",
+          "name": "popFromOrders",
+          "signature": {
+            "params": [
+              {
+                "name": "what",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::setCurrentTask",
+          "name": "setCurrentTask",
+          "signature": {
+            "params": [
+              {
+                "name": "from",
+                "optional": false,
+                "type": "AITaskSytem_ActionsListMgr"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::runGOAP",
+          "name": "runGOAP",
+          "signature": {
+            "params": [
+              {
+                "name": "task",
+                "optional": false,
+                "type": "Tasker"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "playerOrder",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "OrdersReceiverBinding",
+      "parent_metatable": "KenshiLua.OrdersReceiver",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "_currentDialogueEnumQuery",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "_debugBreak",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "_squadMemberType",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "_taskCompletedFlag",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "_taskImpossibleFlag",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "actions",
+          "type": "AITaskSytem_ActionsListMgr"
+        },
+        {
+          "access": "readonly",
+          "name": "actionsTryList",
+          "type": "AITaskSytem_ActionsListMgr"
+        },
+        {
+          "access": "readwrite",
+          "name": "autoDitchTask",
+          "type": "Tasker"
+        },
+        {
+          "access": "readwrite",
+          "name": "autoEjectEnemiesTask1",
+          "type": "Tasker"
+        },
+        {
+          "access": "readwrite",
+          "name": "autoEjectEnemiesTask2",
+          "type": "Tasker"
+        },
+        {
+          "access": "readwrite",
+          "name": "autoGetupTask",
+          "type": "Tasker"
+        },
+        {
+          "access": "readwrite",
+          "name": "autoSitTask",
+          "type": "Tasker"
+        },
+        {
+          "access": "readwrite",
+          "name": "autoSleepTask",
+          "type": "Tasker"
+        },
+        {
+          "access": "readwrite",
+          "name": "body",
+          "type": "CharBody"
+        },
+        {
+          "access": "readwrite",
+          "name": "character",
+          "type": "Character"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentDialogueDelivery",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentGoalExpiryTime",
+          "type": "TimeOfDay"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentTaskExpiryTime",
+          "type": "TimeOfDay"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentlySubTasking",
+          "type": "Tasker"
+        },
+        {
+          "access": "readwrite",
+          "name": "debugCount",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "failedGOAPGoalDebugString",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "infrequentTimeStamp",
+          "type": "number"
+        },
+        {
+          "access": "readonly",
+          "name": "pathFailures",
+          "type": "OgreUnorderedMap<hand, number>",
+          "type_source": "header"
+        },
+        {
+          "access": "readwrite",
+          "name": "pos",
+          "type": "table"
+        },
+        {
+          "access": "readonly",
+          "name": "requestsList",
+          "type": "Lektor<Tasker>"
+        },
+        {
+          "access": "readwrite",
+          "name": "setTaskRecursionCounter",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "taskRecursionLast",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/AITaskSytemBinding.cpp"
+    },
+    {
+      "binding": "AITaskSytem_ActionsListMgrBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AITaskSytem_ActionsListMgr",
+      "metatable": "KenshiLua.AITaskSytem_ActionsListMgr",
+      "methods": [
+        {
+          "callback": "AITaskSytem_ActionsListMgrBinding::copyFrom",
+          "name": "copyFrom",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "AITaskSytem_ActionsListMgr"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytem_ActionsListMgrBinding::addFrom",
+          "name": "addFrom",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "AITaskSytem_ActionsListMgr"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytem_ActionsListMgrBinding::getTaskAfterCurrent",
+          "name": "getTaskAfterCurrent",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytem_ActionsListMgrBinding::get2TasksAfterCurrent",
+          "name": "get2TasksAfterCurrent",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "ActionDequeBinding",
+      "parent_metatable": "KenshiLua.ActionDeque",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/AITaskSytem_ActionsListMgrBinding.cpp"
+    },
+    {
+      "binding": "AITaskSytem_FailedTaskBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AITaskSytem_FailedTask",
+      "metatable": "KenshiLua.AITaskSytem_FailedTask",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "subj",
+          "type": "hand"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/AITaskSytem_FailedTaskBinding.cpp"
+    },
+    {
+      "binding": "AI_AIResultsCacherBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AI_AIResultsCacher",
+      "metatable": "KenshiLua.AI_AIResultsCacher",
+      "methods": [
+        {
+          "callback": "AI_AIResultsCacherBinding::resetAllCaches",
+          "name": "resetAllCaches",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::cacheResult_reqs",
+          "name": "cacheResult_reqs",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              },
+              {
+                "name": "b",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::getCacheResult_reqs",
+          "name": "getCacheResult_reqs",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::hasCacheResult_reqs",
+          "name": "hasCacheResult_reqs",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::cacheResult_results",
+          "name": "cacheResult_results",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              },
+              {
+                "name": "b",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::getCacheResult_results",
+          "name": "getCacheResult_results",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::hasCacheResult_results",
+          "name": "hasCacheResult_results",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::resetSpecificTargetFinderCache",
+          "name": "resetSpecificTargetFinderCache",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::getResourceSource",
+          "name": "getResourceSource",
+          "signature": {
+            "params": [
+              {
+                "name": "resourceNeeded",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "skip",
+                "optional": true,
+                "type": "StorageBuilding"
+              }
+            ],
+            "return_values": [
+              "number",
+              "hand"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AI_AIResultsCacherBinding::cacheResult_targetFinder",
+          "name": "cacheResult_targetFinder",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              },
+              {
+                "name": "sub",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "score",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "ai",
+          "type": "AI"
+        },
+        {
+          "access": "readonly",
+          "name": "requirementsCache",
+          "type": "StdMap<TaskMatch, boolean>"
+        },
+        {
+          "access": "readonly",
+          "name": "resourceSourceCache",
+          "type": "StdMap<GameData, hand>"
+        },
+        {
+          "access": "readonly",
+          "name": "resultsCache",
+          "type": "StdMap<TaskMatch, boolean>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/AI_AIResultsCacherBinding.cpp"
     },
     {
       "binding": "AbstractMovementBaseBinding",
@@ -12011,6 +13309,163 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/AbstractMovementBaseBinding.cpp"
+    },
+    {
+      "binding": "ActionDequeBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "ActionDeque",
+      "metatable": "KenshiLua.ActionDeque",
+      "methods": [
+        {
+          "callback": "ActionDequeBinding::getFirstTask",
+          "name": "getFirstTask",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::getSecondTask",
+          "name": "getSecondTask",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::getLastTask",
+          "name": "getLastTask",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::hasTask",
+          "name": "hasTask",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::insertTask",
+          "name": "insertTask",
+          "signature": {
+            "params": [
+              {
+                "name": "task",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::addTask",
+          "name": "addTask",
+          "signature": {
+            "params": [
+              {
+                "name": "task",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::clearAndDelete",
+          "name": "clearAndDelete",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::clearOnly",
+          "name": "clearOnly",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::passOnCurrentTask",
+          "name": "passOnCurrentTask",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::isEmpty",
+          "name": "isEmpty",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ActionDequeBinding::isOnlyOne",
+          "name": "isOnlyOne",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readonly",
+          "name": "list",
+          "type": "StdDeque<Tasker>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/ActionDequeBinding.cpp"
     },
     {
       "binding": "ActivePlatoonBinding",
@@ -20662,6 +22117,24 @@
           "static": false
         },
         {
+          "callback": "BlackboardBinding::getMissionTarget",
+          "name": "getMissionTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "BlackboardBinding::getMissionTown",
           "name": "getMissionTown",
           "signature": {
@@ -20823,6 +22296,58 @@
           "static": false
         },
         {
+          "callback": "BlackboardBinding::_serialiseJobList",
+          "name": "_serialiseJobList",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "theList",
+                "optional": false,
+                "type": "Lektor<TaskRequest>"
+              },
+              {
+                "name": "name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::_loadJobList",
+          "name": "_loadJobList",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "theList",
+                "optional": false,
+                "type": "Lektor<TaskRequest>"
+              },
+              {
+                "name": "name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "BlackboardBinding::_setupJobFromData",
           "name": "_setupJobFromData",
           "signature": {
@@ -20872,6 +22397,24 @@
           "signature": {
             "params": [],
             "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getJobList",
+          "name": "getJobList",
+          "signature": {
+            "params": [
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "Lektor<TaskRequest>"
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -20992,6 +22535,11 @@
           "type": "integer"
         },
         {
+          "access": "readonly",
+          "name": "currentTasks",
+          "type": "OgreUnorderedMap<hand, Blackboard_TaskInfo>"
+        },
+        {
           "access": "readwrite",
           "name": "currentTownLocation",
           "type": "TownBase"
@@ -21010,6 +22558,11 @@
           "access": "readwrite",
           "name": "homeIsLockedUp",
           "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "leaderJobs",
+          "type": "Lektor<TaskRequest>"
         },
         {
           "access": "readwrite",
@@ -21032,14 +22585,39 @@
           "type": "string"
         },
         {
+          "access": "readonly",
+          "name": "requests",
+          "type": "OgreUnorderedMap<hand, TaskRequest>"
+        },
+        {
           "access": "readwrite",
           "name": "runningAwayMode",
           "type": "boolean"
         },
         {
+          "access": "readonly",
+          "name": "signalJobs",
+          "type": "Lektor<TaskRequest>"
+        },
+        {
+          "access": "readonly",
+          "name": "slaveJobs",
+          "type": "Lektor<TaskRequest>"
+        },
+        {
           "access": "readwrite",
           "name": "squad",
           "type": "Platoon"
+        },
+        {
+          "access": "readonly",
+          "name": "squadJobs",
+          "type": "Lektor<TaskRequest>"
+        },
+        {
+          "access": "readonly",
+          "name": "squadJobs2",
+          "type": "Lektor<TaskRequest>"
         },
         {
           "access": "readwrite",
@@ -21061,6 +22639,58 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
+    },
+    {
+      "binding": "Blackboard_TaskInfoBinding",
+      "global_names": [
+        "Blackboard_TaskInfo"
+      ],
+      "has_constructor": true,
+      "kind": "class",
+      "lua_type": "Blackboard_TaskInfo",
+      "metatable": "KenshiLua.Blackboard_TaskInfo",
+      "methods": [
+        {
+          "callback": "Blackboard_TaskInfoBinding::operator_assign",
+          "name": "operator_assign",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "Blackboard_TaskInfo"
+              }
+            ],
+            "returns": [
+              "Blackboard_TaskInfo"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "subTarget",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "subject",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "type",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/Blackboard_TaskInfoBinding.cpp"
     },
     {
       "binding": "BoundsViolationBinding",
@@ -28251,6 +29881,42 @@
           "static": false
         },
         {
+          "callback": "CampaignInstanceBinding::getAITarget",
+          "name": "getAITarget",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getAITarget",
+          "name": "_NV_getAITarget",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "CampaignInstanceBinding::getMoveSpeedUnloaded",
           "name": "getMoveSpeedUnloaded",
           "signature": {
@@ -28384,6 +30050,11 @@
       "parent_binding": null,
       "parent_metatable": "",
       "properties": [
+        {
+          "access": "readwrite",
+          "name": "_target",
+          "type": "TargetInfo"
+        },
         {
           "access": "readwrite",
           "name": "canTalkToBeforeArrival",
@@ -29298,7 +30969,7 @@
               {
                 "name": "taskSys",
                 "optional": true,
-                "type": "lightuserdata"
+                "type": "AITaskSytem"
               },
               {
                 "name": "town",
@@ -38617,7 +40288,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "OrdersReceiver"
             ]
           },
           "static": false
@@ -46990,6 +48661,783 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Gui/ContextMenuGUIBinding.cpp"
+    },
+    {
+      "binding": "Contract_DefendPlayerBaseBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Contract_DefendPlayerBase",
+      "metatable": "KenshiLua.Contract_DefendPlayerBase",
+      "methods": [
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::getGUIData",
+          "name": "getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "panel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::_NV_getGUIData",
+          "name": "_NV_getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "panel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::getMyTarget",
+          "name": "getMyTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::_NV_getMyTarget",
+          "name": "_NV_getMyTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::getDesiredTravelSpeed",
+          "name": "getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::_NV_getDesiredTravelSpeed",
+          "name": "_NV_getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::activateAndSetup",
+          "name": "activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::_NV_activateAndSetup",
+          "name": "_NV_activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::periodicUpdate",
+          "name": "periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::_NV_periodicUpdate",
+          "name": "_NV_periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::assessNeutral",
+          "name": "assessNeutral",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_DefendPlayerBaseBinding::_NV_assessNeutral",
+          "name": "_NV_assessNeutral",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "Contract_HiredAllyBinding",
+      "parent_metatable": "KenshiLua.Contract_HiredAlly",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/Contract_DefendPlayerBaseBinding.cpp"
+    },
+    {
+      "binding": "Contract_HiredAllyBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Contract_HiredAlly",
+      "metatable": "KenshiLua.Contract_HiredAlly",
+      "methods": [
+        {
+          "callback": "Contract_HiredAllyBinding::getDesiredTravelSpeed",
+          "name": "getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_getDesiredTravelSpeed",
+          "name": "_NV_getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::activateAndSetup",
+          "name": "activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_activateAndSetup",
+          "name": "_NV_activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::periodicUpdate",
+          "name": "periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_periodicUpdate",
+          "name": "_NV_periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::assessNeutral",
+          "name": "assessNeutral",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_assessNeutral",
+          "name": "_NV_assessNeutral",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::assessEnemy",
+          "name": "assessEnemy",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_assessEnemy",
+          "name": "_NV_assessEnemy",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::notifyBetrayal",
+          "name": "notifyBetrayal",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "betrayer",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_notifyBetrayal",
+          "name": "_NV_notifyBetrayal",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "betrayer",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::endPackage",
+          "name": "endPackage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_endPackage",
+          "name": "_NV_endPackage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::showEndedMessage",
+          "name": "showEndedMessage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_showEndedMessage",
+          "name": "_NV_showEndedMessage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::signalEnd",
+          "name": "signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_signalEnd",
+          "name": "_NV_signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::getGUIData",
+          "name": "getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "panel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_getGUIData",
+          "name": "_NV_getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "panel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::wantsRenewButton",
+          "name": "wantsRenewButton",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_wantsRenewButton",
+          "name": "_NV_wantsRenewButton",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::showManagementPanelCallback",
+          "name": "showManagementPanelCallback",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_HiredAllyBinding::_NV_showManagementPanelCallback",
+          "name": "_NV_showManagementPanelCallback",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "Contract_TimedBinding",
+      "parent_metatable": "KenshiLua.Contract_Timed",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/Contract_HiredAllyBinding.cpp"
+    },
+    {
+      "binding": "Contract_TimedBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Contract_Timed",
+      "metatable": "KenshiLua.Contract_Timed",
+      "methods": [
+        {
+          "callback": "Contract_TimedBinding::signalStart",
+          "name": "signalStart",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_TimedBinding::_NV_signalStart",
+          "name": "_NV_signalStart",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_TimedBinding::signalEnd",
+          "name": "signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_TimedBinding::_NV_signalEnd",
+          "name": "_NV_signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "AIPackageBinding",
+      "parent_metatable": "KenshiLua.AIPackage",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/Contract_TimedBinding.cpp"
+    },
+    {
+      "binding": "Contract_UntilExSlaveBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Contract_UntilExSlave",
+      "metatable": "KenshiLua.Contract_UntilExSlave",
+      "methods": [
+        {
+          "callback": "Contract_UntilExSlaveBinding::getDesiredTravelSpeed",
+          "name": "getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilExSlaveBinding::_NV_getDesiredTravelSpeed",
+          "name": "_NV_getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilExSlaveBinding::signalEnd",
+          "name": "signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilExSlaveBinding::_NV_signalEnd",
+          "name": "_NV_signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "AIPackageBinding",
+      "parent_metatable": "KenshiLua.AIPackage",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/Contract_UntilExSlaveBinding.cpp"
+    },
+    {
+      "binding": "Contract_UntilOutOfDangerBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Contract_UntilOutOfDanger",
+      "metatable": "KenshiLua.Contract_UntilOutOfDanger",
+      "methods": [
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::activateAndSetup",
+          "name": "activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::_NV_activateAndSetup",
+          "name": "_NV_activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::periodicUpdate",
+          "name": "periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::_NV_periodicUpdate",
+          "name": "_NV_periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::getDesiredTravelSpeed",
+          "name": "getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::_NV_getDesiredTravelSpeed",
+          "name": "_NV_getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::signalEnd",
+          "name": "signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "Contract_UntilOutOfDangerBinding::_NV_signalEnd",
+          "name": "_NV_signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "Contract_TimedBinding",
+      "parent_metatable": "KenshiLua.Contract_Timed",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/Contract_UntilOutOfDangerBinding.cpp"
     },
     {
       "binding": "CraftingBuildingBinding",
@@ -95484,6 +97932,748 @@
       "source": "src/Bindings/Kenshi/Gui/OrdersPanelBinding.cpp"
     },
     {
+      "binding": "OrdersReceiverBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "OrdersReceiver",
+      "metatable": "KenshiLua.OrdersReceiver",
+      "methods": [
+        {
+          "callback": "OrdersReceiverBinding::serialise",
+          "name": "serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::_NV_serialise",
+          "name": "_NV_serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::loadFromSerialise",
+          "name": "loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::_NV_loadFromSerialise",
+          "name": "_NV_loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::_forceOrderInsert",
+          "name": "_forceOrderInsert",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "Tasker"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::addOrder",
+          "name": "addOrder",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "subject",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "clearOld",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "shift",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::addJob",
+          "name": "addJob",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "subject",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "shift",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::removeJob",
+          "name": "removeJob",
+          "signature": {
+            "params": [
+              {
+                "name": "typ",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::removePermajob",
+          "name": "removePermajob",
+          "signature": {
+            "params": [
+              {
+                "name": "typ",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::movePermajob",
+          "name": "movePermajob",
+          "signature": {
+            "params": [
+              {
+                "name": "taskIdx",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "targetIdx",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::clearPermajobs",
+          "name": "clearPermajobs",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::getPermajobName",
+          "name": "getPermajobName",
+          "signature": {
+            "params": [
+              {
+                "name": "slot",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "string"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::getPermajob",
+          "name": "getPermajob",
+          "signature": {
+            "params": [
+              {
+                "name": "slot",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::getPermajobData",
+          "name": "getPermajobData",
+          "signature": {
+            "params": [
+              {
+                "name": "slot",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "Tasker"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::getPermajobCount",
+          "name": "getPermajobCount",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::hasPermajob",
+          "name": "hasPermajob",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::addGoal",
+          "name": "addGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "task",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::removeGoal",
+          "name": "removeGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "task",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::hasGoal",
+          "name": "hasGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "task",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::updateLastOrder",
+          "name": "updateLastOrder",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "subject",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::setNeedGOAP",
+          "name": "setNeedGOAP",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::_NV_setNeedGOAP",
+          "name": "_NV_setNeedGOAP",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::getFirstOrder",
+          "name": "getFirstOrder",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::clearOrders",
+          "name": "clearOrders",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::clearJobs",
+          "name": "clearJobs",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::_clearGoals",
+          "name": "_clearGoals",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::getCurrentGoal",
+          "name": "getCurrentGoal",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TaskMatch"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::setHoldPositionOrders",
+          "name": "setHoldPositionOrders",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": true,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::_NV_setHoldPositionOrders",
+          "name": "_NV_setHoldPositionOrders",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": true,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::hasPlayerOrders",
+          "name": "hasPlayerOrders",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::hasPlayerOrder",
+          "name": "hasPlayerOrder",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::isInChoosingGoalMode",
+          "name": "isInChoosingGoalMode",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::hasOrders",
+          "name": "hasOrders",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::clearSlaveJobs",
+          "name": "clearSlaveJobs",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::isJobsEnabled",
+          "name": "isJobsEnabled",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::setJobsEnabled",
+          "name": "setJobsEnabled",
+          "signature": {
+            "params": [
+              {
+                "name": "on",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::clearCurrentGoal",
+          "name": "clearCurrentGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "force",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "OrdersReceiverBinding::tryToGetCurrentGoal",
+          "name": "tryToGetCurrentGoal",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "aggroMode",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "aiImplementation",
+          "type": "AI"
+        },
+        {
+          "access": "readwrite",
+          "name": "choosingGoalMode",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentGoal",
+          "type": "TaskMatch"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentGoalPriority",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentGoalScore",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "doJobsEnabled",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "goals",
+          "type": "Lektor<Tasker>[]"
+        },
+        {
+          "access": "readonly",
+          "name": "holdPositionOrders",
+          "type": "Tasker"
+        },
+        {
+          "access": "readonly",
+          "name": "jobs",
+          "type": "Lektor<Tasker>"
+        },
+        {
+          "access": "readwrite",
+          "name": "mainGoalTarget",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "me",
+          "type": "Character"
+        },
+        {
+          "access": "readwrite",
+          "name": "needGOAP",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "orders",
+          "type": "ActionDeque"
+        },
+        {
+          "access": "readonly",
+          "name": "permajobs",
+          "type": "Lektor<Tasker>"
+        },
+        {
+          "access": "readonly",
+          "name": "slaveJobs",
+          "type": "Lektor<OrdersReceiver_TaskRequestSimple>"
+        },
+        {
+          "access": "readonly",
+          "name": "squadAIPackage",
+          "type": "Lektor<Tasker>[]"
+        },
+        {
+          "access": "readwrite",
+          "name": "superDefenseMode",
+          "type": "boolean"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/OrdersReceiverBinding.cpp"
+    },
+    {
+      "binding": "OrdersReceiver_TaskRequestSimpleBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "OrdersReceiver_TaskRequestSimple",
+      "metatable": "KenshiLua.OrdersReceiver_TaskRequestSimple",
+      "methods": [
+        {
+          "callback": "OrdersReceiver_TaskRequestSimpleBinding::sameAs",
+          "name": "sameAs",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "key",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "subject",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "targeting",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/OrdersReceiver_TaskRequestSimpleBinding.cpp"
+    },
+    {
       "binding": "OwnershipsBinding",
       "global_names": [],
       "has_constructor": false,
@@ -114486,6 +117676,79 @@
       "source": "src/Bindings/Kenshi/StateBroadcastDataBinding.cpp"
     },
     {
+      "binding": "StateFunctionListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "StateFunctionList",
+      "metatable": "KenshiLua.StateFunctionList",
+      "methods": [
+        {
+          "callback": "StateFunctionListBinding::isTrue",
+          "name": "isTrue",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "v",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "desired",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "StateFunctionListBinding::hasState",
+          "name": "hasState",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/StateFunctionListBinding.cpp"
+    },
+    {
       "binding": "StateTBinding",
       "global_names": [],
       "has_constructor": false,
@@ -115831,6 +119094,187 @@
       "source": "src/Bindings/MyGUI/TabItemBinding.cpp"
     },
     {
+      "binding": "TargetInfoBinding",
+      "global_names": [
+        "TargetInfo"
+      ],
+      "has_constructor": true,
+      "kind": "class",
+      "lua_type": "TargetInfo",
+      "metatable": "KenshiLua.TargetInfo",
+      "methods": [
+        {
+          "callback": "TargetInfoBinding::setupType",
+          "name": "setupType",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "TargetInfoBinding::operator_assign",
+          "name": "operator_assign",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "TargetInfo"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TargetInfoBinding::operator_bool",
+          "name": "operator_bool",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TargetInfoBinding::isTown",
+          "name": "isTown",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TargetInfoBinding::isCharacter",
+          "name": "isCharacter",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TargetInfoBinding::getTown",
+          "name": "getTown",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TownBase"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TargetInfoBinding::getCharacter",
+          "name": "getCharacter",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Character"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TargetInfoBinding::getPositionForWaypoint",
+          "name": "getPositionForWaypoint",
+          "signature": {
+            "params": [
+              {
+                "name": "from",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "table"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "pos",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "targetType",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "what",
+          "type": "hand"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/TargetInfoBinding.cpp"
+    },
+    {
+      "binding": "TargetWithScoreBinding",
+      "global_names": [
+        "TargetWithScore"
+      ],
+      "has_constructor": true,
+      "kind": "class",
+      "lua_type": "TargetWithScore",
+      "metatable": "KenshiLua.TargetWithScore",
+      "methods": [
+        {
+          "callback": "TargetWithScoreBinding::operator_assign",
+          "name": "operator_assign",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "TargetWithScore"
+              }
+            ],
+            "returns": [
+              "TargetWithScore"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "score",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "target",
+          "type": "hand"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/TargetWithScoreBinding.cpp"
+    },
+    {
       "binding": "TaskDataBinding",
       "global_names": [],
       "has_constructor": false,
@@ -116539,6 +119983,133 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/AI/TaskMatchBinding.cpp"
+    },
+    {
+      "binding": "TaskRequestBinding",
+      "global_names": [
+        "TaskRequest"
+      ],
+      "has_constructor": true,
+      "kind": "class",
+      "lua_type": "TaskRequest",
+      "metatable": "KenshiLua.TaskRequest",
+      "methods": [
+        {
+          "callback": "TaskRequestBinding::sameAs",
+          "name": "sameAs",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskRequestBinding::operator_eq",
+          "name": "operator_eq",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "TaskRequest"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskRequestBinding::operator_assign",
+          "name": "operator_assign",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "TaskRequest"
+              }
+            ],
+            "returns": [
+              "TaskRequest"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "endEvent",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "endTime",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "from",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "key",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "priority",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "startTime",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "subject",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "targeting",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "timeout",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "to",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "weight",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/TaskRequestBinding.cpp"
     },
     {
       "binding": "TaskStateDataBinding",
@@ -141694,6 +145265,115 @@
       ]
     },
     {
+      "binding": "GameDataHandMapBinding",
+      "element_refs": [
+        "binding:GameDataBinding",
+        null
+      ],
+      "element_types": {
+        "key": "GameData",
+        "value": "hand"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "GameData",
+        "type": "hand|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "StdMap<GameData, hand>",
+      "metatable": "std::map<GameData*, hand>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<GameData, hand>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AI_AIResultsCacherBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/AI_AIResultsCacherBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
+      "template": "StdMapBinding",
+      "template_args": [
+        "GameData*",
+        "hand",
+        "std::less<GameData*>",
+        "std::allocator<std::pair<GameData* const, hand> >"
+      ]
+    },
+    {
       "binding": "HandFastArrayBinding",
       "element_refs": [],
       "element_types": {
@@ -141884,6 +145564,316 @@
       "template": "OgreFastArrayPrimitiveBinding",
       "template_args": [
         "hand"
+      ]
+    },
+    {
+      "binding": "HandTaskInfoMapBinding",
+      "element_refs": [
+        "binding:HandBinding",
+        "binding:Blackboard_TaskInfoBinding"
+      ],
+      "element_types": {
+        "key": "hand",
+        "value": "Blackboard_TaskInfo"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "hand",
+        "type": "Blackboard_TaskInfo|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreUnorderedMap<hand, Blackboard_TaskInfo>",
+      "metatable": "ogre_unordered_map<hand, Blackboard::TaskInfo>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "has",
+          "name": "contains",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "erase",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<hand, Blackboard_TaskInfo>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pairs",
+          "name": "pairs",
+          "signature": {
+            "params": [],
+            "returns": [
+              "ContainerIterator<hand, Blackboard_TaskInfo>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "BlackboardBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
+      "template": "OgreUnorderedMapBinding",
+      "template_args": [
+        "hand",
+        "Blackboard::TaskInfo"
+      ]
+    },
+    {
+      "binding": "HandTaskRequestMapBinding",
+      "element_refs": [
+        "binding:HandBinding",
+        "binding:TaskRequestBinding"
+      ],
+      "element_types": {
+        "key": "hand",
+        "value": "TaskRequest"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "hand",
+        "type": "TaskRequest|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreUnorderedMap<hand, TaskRequest>",
+      "metatable": "ogre_unordered_map<hand, TaskRequest>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "has",
+          "name": "contains",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "erase",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<hand, TaskRequest>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pairs",
+          "name": "pairs",
+          "signature": {
+            "params": [],
+            "returns": [
+              "ContainerIterator<hand, TaskRequest>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "BlackboardBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
+      "template": "OgreUnorderedMapBinding",
+      "template_args": [
+        "hand",
+        "TaskRequest"
       ]
     },
     {
@@ -155464,6 +159454,339 @@
       ]
     },
     {
+      "binding": "TaskMatchBoolMapBinding",
+      "element_refs": [
+        "binding:TaskMatchBinding",
+        null
+      ],
+      "element_types": {
+        "key": "TaskMatch",
+        "value": "boolean"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "TaskMatch",
+        "type": "boolean|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "StdMap<TaskMatch, boolean>",
+      "metatable": "std::map<TaskMatch, bool>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<TaskMatch, boolean>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AI_AIResultsCacherBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/AI_AIResultsCacherBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
+      "template": "StdMapBinding",
+      "template_args": [
+        "TaskMatch",
+        "bool"
+      ]
+    },
+    {
+      "binding": "TaskRequestLektorBinding",
+      "element_refs": [
+        "binding:TaskRequestBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "TaskRequest"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "TaskRequest|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<TaskRequest>",
+      "metatable": "lektor<TaskRequest>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "TaskRequest"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TaskRequest|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, TaskRequest>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "BlackboardBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorValueBinding",
+      "template_args": [
+        "TaskRequest"
+      ]
+    },
+    {
+      "binding": "TaskRequestSimpleLektorBinding",
+      "element_refs": [
+        "binding:OrdersReceiver_TaskRequestSimpleBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "OrdersReceiver_TaskRequestSimple"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "OrdersReceiver_TaskRequestSimple|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<OrdersReceiver_TaskRequestSimple>",
+      "metatable": "lektor<OrdersReceiver::TaskRequestSimple*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "OrdersReceiver_TaskRequestSimple"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "OrdersReceiver_TaskRequestSimple|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, OrdersReceiver_TaskRequestSimple>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "OrdersReceiverBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/OrdersReceiverBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "OrdersReceiver::TaskRequestSimple*"
+      ]
+    },
+    {
       "binding": "TaskTypeHandMapBinding",
       "element_refs": [],
       "element_types": {
@@ -155613,6 +159936,324 @@
       "template_args": [
         "TaskType",
         "hand"
+      ]
+    },
+    {
+      "binding": "TaskerDequeBinding",
+      "element_refs": [
+        "binding:TaskerBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "Tasker"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "Tasker|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "StdDeque<Tasker>",
+      "metatable": "std::deque<Tasker*>",
+      "methods": [
+        {
+          "callback": "push_back",
+          "name": "push_back",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "push_front",
+          "name": "push_front",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "push_back",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop_back",
+          "name": "pop_back",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop_front",
+          "name": "pop_front",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop_back",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "front",
+          "name": "front",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "back",
+          "name": "back",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "empty",
+          "name": "empty",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, Tasker>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "ActionDequeBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/ActionDequeBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
+      "template": "StdDequePtrBinding",
+      "template_args": [
+        "Tasker*"
+      ]
+    },
+    {
+      "binding": "TaskerLektorBinding",
+      "element_refs": [
+        "binding:TaskerBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "Tasker"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "Tasker|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<Tasker>",
+      "metatable": "lektor<Tasker*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Tasker|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, Tasker>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "OrdersReceiverBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/OrdersReceiverBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "Tasker*"
       ]
     },
     {

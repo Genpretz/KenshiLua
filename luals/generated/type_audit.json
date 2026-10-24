@@ -2352,6 +2352,139 @@
       "member": "unloadedMode"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "fun(Tasker, number, taskPriority)",
+      "header": "void setCurrentGoal(Tasker* t, float score, taskPriority pri)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "taskPriority",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AITaskSytem, t: Tasker, score: number, pri: integer)",
+      "member": "setCurrentGoal"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "fun(Tasker, number, taskPriority)",
+      "header": "void _NV_setCurrentGoal(Tasker* t, float score, taskPriority pri)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "taskPriority",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AITaskSytem, t: Tasker, score: number, pri: integer)",
+      "member": "_NV_setCurrentGoal"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "fun(EventTriggerEnum)",
+      "header": "void setDialogueDeliveryTag(EventTriggerEnum d)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "EventTriggerEnum",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AITaskSytem, d: integer)",
+      "member": "setDialogueDeliveryTag"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "fun(taskPriority, SquadMemberType): boolean",
+      "header": "bool _chooseGoal(taskPriority priority, SquadMemberType squadMemberType)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "taskPriority",
+          "position": "param 1"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SquadMemberType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AITaskSytem, priority: integer, squadMemberType: integer): boolean",
+      "member": "_chooseGoal"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "EventTriggerEnum",
+      "header": "EventTriggerEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "_currentDialogueEnumQuery"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "SquadMemberType",
+      "header": "SquadMemberType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "_squadMemberType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "EventTriggerEnum",
+      "header": "EventTriggerEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "currentDialogueDelivery"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AITaskSytem",
+      "expected": "TaskType",
+      "header": "TaskType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "taskRecursionLast"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "AI_AIResultsCacher",
+      "expected": "fun(hand, GameData, StorageBuilding): number",
+      "header": "float getResourceSource(hand& buildingFound, GameData* resourceNeeded, StorageBuilding* skip)",
+      "issues": [
+        {
+          "actual": 2,
+          "category": "binding_shape_differs",
+          "expected": 3,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AI_AIResultsCacher, resourceNeeded: GameData, skip?: StorageBuilding): number, hand",
+      "member": "getResourceSource"
+    },
+    {
       "category": "unmapped_header_type",
       "class": "AbstractMovementBase",
       "expected": "fun(): ?RoadFollower*",
@@ -3779,6 +3912,23 @@
       "member": "_setupJobFromData"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard",
+      "expected": "fun(SquadMemberType): Lektor<TaskRequest>|nil",
+      "header": "lektor<TaskRequest>* getJobList(SquadMemberType type)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SquadMemberType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, type: integer): Lektor<TaskRequest>",
+      "member": "getJobList"
+    },
+    {
       "category": "binding_shape_differs",
       "class": "Blackboard",
       "expected": "fun(?Ogre::vector<Ogre::Vector3>::type, integer, integer, integer, number, number, number, number)",
@@ -3800,6 +3950,15 @@
       "kind": "method",
       "lua": "fun(self: Blackboard, gridWidth: integer, gridHeight: integer, size: integer, initialX: number, radius: number, spacingX: number, spacingZ: number): table[]",
       "member": "getGridPositions"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard_TaskInfo",
+      "expected": "TaskType",
+      "header": "TaskType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "type"
     },
     {
       "category": "enum_typed_as_integer",
@@ -4757,7 +4916,7 @@
     {
       "category": "unmapped_header_type",
       "class": "CharBody",
-      "expected": "fun(Tasker, integer, table, ?PatrolInfo*, ?AITaskSytem*, TownBase)",
+      "expected": "fun(Tasker, integer, table, ?PatrolInfo*, AITaskSytem, TownBase)",
       "header": "void _patrol(Tasker* task, int end, Ogre::Vector3 pos, PatrolInfo* area, AITaskSytem* taskSys, TownBase* town)",
       "issues": [
         {
@@ -4765,16 +4924,10 @@
           "category": "unmapped_header_type",
           "expected": "?PatrolInfo*",
           "position": "param 4"
-        },
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AITaskSytem*",
-          "position": "param 5"
         }
       ],
       "kind": "method",
-      "lua": "fun(self: CharBody, task?: Tasker, end: integer, pos: table, area?: lightuserdata, taskSys?: lightuserdata, town?: TownBase)",
+      "lua": "fun(self: CharBody, task?: Tasker, end: integer, pos: table, area?: lightuserdata, taskSys?: AITaskSytem, town?: TownBase)",
       "member": "_patrol"
     },
     {
@@ -5863,23 +6016,6 @@
       "kind": "method",
       "lua": "fun(self: Character, t: integer, subject: RootObject): boolean",
       "member": "checkPlayerOrderForProblems"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?OrdersReceiver*",
-      "header": "OrdersReceiver* getOrdersReciever() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?OrdersReceiver*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "getOrdersReciever"
     },
     {
       "category": "enum_typed_as_integer",
@@ -7102,6 +7238,142 @@
       "kind": "method",
       "lua": "fun(self: ContextMenuGUI, _sender: MyGUI.Widget, _left: integer, _top: integer, _id: integer)",
       "member": "optionSelected"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_DefendPlayerBase",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed getDesiredTravelSpeed(Character* me) override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_DefendPlayerBase, me: Character): integer",
+      "member": "getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_DefendPlayerBase",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_DefendPlayerBase, me: Character): integer",
+      "member": "_NV_getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_HiredAlly",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed getDesiredTravelSpeed(Character* me) override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_HiredAlly, me: Character): integer",
+      "member": "getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_HiredAlly",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_HiredAlly, me: Character): integer",
+      "member": "_NV_getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_UntilExSlave",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed getDesiredTravelSpeed(Character* me) override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_UntilExSlave, me: Character): integer",
+      "member": "getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_UntilExSlave",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_UntilExSlave, me: Character): integer",
+      "member": "_NV_getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_UntilOutOfDanger",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed getDesiredTravelSpeed(Character* me) override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_UntilOutOfDanger, me: Character): integer",
+      "member": "getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Contract_UntilOutOfDanger",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Contract_UntilOutOfDanger, me: Character): integer",
+      "member": "_NV_getDesiredTravelSpeed"
     },
     {
       "category": "unmapped_header_type",
@@ -14641,6 +14913,212 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType): Tasker|nil",
+      "header": "Tasker* _forceOrderInsert(TaskType t)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, t: integer): Tasker",
+      "member": "_forceOrderInsert"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType, hand, table, boolean, boolean)",
+      "header": "void addOrder(TaskType t, const hand& subject, const Ogre::Vector3& location, bool clearOld, bool shift)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, t: integer, subject: hand, location: table, clearOld?: boolean, shift?: boolean)",
+      "member": "addOrder"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType, hand, table, boolean)",
+      "header": "void addJob(TaskType t, const hand& subject, const Ogre::Vector3& location, bool shift)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, t: integer, subject: hand, location: table, shift?: boolean)",
+      "member": "addJob"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType)",
+      "header": "void removeJob(TaskType typ)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, typ: integer)",
+      "member": "removeJob"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(integer): TaskType",
+      "header": "TaskType getPermajob(int slot) const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, slot: integer): integer",
+      "member": "getPermajob"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType): boolean",
+      "header": "bool hasPermajob(TaskType t) const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, t: integer): boolean",
+      "member": "hasPermajob"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType)",
+      "header": "void removeGoal(TaskType task)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, task: integer)",
+      "member": "removeGoal"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType): boolean",
+      "header": "bool hasGoal(TaskType task)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, task: integer): boolean",
+      "member": "hasGoal"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType, hand, table)",
+      "header": "void updateLastOrder(TaskType t, const hand& subject, const Ogre::Vector3& location)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, t: integer, subject: hand, location: table)",
+      "member": "updateLastOrder"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "fun(TaskType): boolean",
+      "header": "bool hasPlayerOrder(TaskType key) const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OrdersReceiver, key: integer): boolean",
+      "member": "hasPlayerOrder"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "AggroType",
+      "header": "OrdersReceiver::AggroType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "aggroMode"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver",
+      "expected": "taskPriority",
+      "header": "taskPriority",
+      "kind": "property",
+      "lua": "integer",
+      "member": "currentGoalPriority"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver_TaskRequestSimple",
+      "expected": "TaskType",
+      "header": "TaskType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "key"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OrdersReceiver_TaskRequestSimple",
+      "expected": "TaskTargetType",
+      "header": "TaskTargetType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "targeting"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "Ownerships",
       "expected": "fun(BuildingDesignation)",
       "header": "void setHomeBuildingDesignation(BuildingDesignation d)",
@@ -17452,6 +17930,40 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "StateFunctionList",
+      "expected": "fun(AI, StateType, hand, table, boolean): boolean",
+      "header": "bool isTrue(AI* ai, StateType key, const hand& h, const Ogre::Vector3& v, bool desired)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StateType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: StateFunctionList, ai: AI, key: integer, h: hand, v: table, desired?: boolean): boolean",
+      "member": "isTrue"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "StateFunctionList",
+      "expected": "fun(StateType): boolean",
+      "header": "bool hasState(StateType key)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StateType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: StateFunctionList, key: integer): boolean",
+      "member": "hasState"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "StorageBuilding",
       "expected": "fun(): TaskType",
       "header": "TaskType getDefaultTask() override",
@@ -17586,6 +18098,23 @@
       "kind": "property",
       "lua": "integer",
       "member": "msg"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "TargetInfo",
+      "cpp": "TargetInfo::operator_bool",
+      "kind": "method",
+      "lua": "fun(self: TargetInfo): boolean",
+      "member": "operator_bool"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TargetInfo",
+      "expected": "TargetInfoType",
+      "header": "TargetInfoType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "targetType"
     },
     {
       "category": "enum_typed_as_integer",
@@ -17852,6 +18381,42 @@
       "kind": "method",
       "lua": "fun(self: TaskMatch): boolean",
       "member": "operator_bool"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskRequest",
+      "expected": "TaskEndEvent",
+      "header": "TaskEndEvent",
+      "kind": "property",
+      "lua": "integer",
+      "member": "endEvent"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskRequest",
+      "expected": "TaskType",
+      "header": "TaskType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "key"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskRequest",
+      "expected": "taskPriority",
+      "header": "taskPriority",
+      "kind": "property",
+      "lua": "integer",
+      "member": "priority"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskRequest",
+      "expected": "TaskTargetType",
+      "header": "TaskTargetType",
+      "kind": "property",
+      "lua": "integer",
+      "member": "targeting"
     },
     {
       "category": "enum_typed_as_integer",
@@ -20515,15 +21080,15 @@
   "summary": {
     "binding_converts": 52,
     "binding_pushes_raw_pointer": 43,
-    "binding_shape_differs": 203,
+    "binding_shape_differs": 204,
     "blocking_issues": 0,
-    "container_methods_typed": 983,
-    "enum_typed_as_integer": 477,
-    "methods": 8104,
-    "methods_matching_header": 6171,
-    "no_header_declaration": 277,
-    "properties": 3362,
-    "properties_matching_header": 2831,
-    "unmapped_header_type": 446
+    "container_methods_typed": 1040,
+    "enum_typed_as_integer": 516,
+    "methods": 8350,
+    "methods_matching_header": 6334,
+    "no_header_declaration": 278,
+    "properties": 3449,
+    "properties_matching_header": 2904,
+    "unmapped_header_type": 445
   }
 }

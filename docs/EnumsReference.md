@@ -4,7 +4,7 @@
 
 ## Overview
 
-KenshiLua exposes **1778** bound enum values across **131** enum tables from **52** SDK header files.
+KenshiLua exposes **1783** bound enum values across **133** enum tables from **52** SDK header files.
 
 ## Lua Usage & Syntax
 
@@ -43,8 +43,8 @@ end
 
 ## Table of Contents
 
-- [AI/AI.h](#aiaih) (`AI.AIAggressionOrders`, `AI.AIManuverabilityOrders`, `NodeType`)
-- [AI/AITaskSystem.h](#aiaitasksystemh) (`TaskEndEvent`, `TaskTargetType`)
+- [AI/AI.h](#aiaih) (`AI.AIAggressionOrders`, `AI.AIManuverabilityOrders`, `NodeType`, `TargetInfoType`)
+- [AI/AITaskSystem.h](#aiaitasksystemh) (`OrdersReceiver.AggroType`, `TaskEndEvent`, `TaskTargetType`)
 - [AI/AIPackage.h](#aiaipackageh) (`BlackboardSignalFunctions`)
 - [Animation/AnimationClass.h](#animationanimationclassh) (`AnimationLayerEnum`, `CharacterAnimCategory`, `StanceEnum`)
 - [Appearance.h](#appearanceh) (`MeshDataLookup.Dir`)
@@ -128,9 +128,24 @@ end
 | `NodeType.NODE_LIGHT` | `5` | `NodeType::NODE_LIGHT` |
 | `NodeType.NODE_NULL` | `6` | `NodeType::NODE_NULL` |
 
+### Table: `TargetInfoType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TargetInfoType.TI_TOWN` | `0` | `TargetInfoType::TI_TOWN` |
+| `TargetInfoType.TI_CHARACTER` | `1` | `TargetInfoType::TI_CHARACTER` |
+
 ---
 
 ## AI/AITaskSystem.h
+
+### Table: `OrdersReceiver.AggroType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OrdersReceiver.AggroType.AI_AGGRESSIVE` | `0` | `OrdersReceiver::AggroType::AI_AGGRESSIVE` |
+| `OrdersReceiver.AggroType.AI_DEFENSIVE` | `1` | `OrdersReceiver::AggroType::AI_DEFENSIVE` |
+| `OrdersReceiver.AggroType.AI_EVASIVE` | `2` | `OrdersReceiver::AggroType::AI_EVASIVE` |
 
 ### Table: `TaskEndEvent`
 

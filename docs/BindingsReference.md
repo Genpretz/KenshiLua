@@ -15,9 +15,16 @@
 - [MyGUI UI Reference](MyGUIReference.md)
 - [`AABB2D`](#aabb2d)
 - [`AbstractMovementBase`](#abstractmovementbase)
+- [`ActionDeque`](#actiondeque)
 - [`ActivePlatoon`](#activeplatoon)
 - [`AI`](#ai)
+  - [`AI::AIResultsCacher`](#ai::airesultscacher)
+- [`AIEventClass`](#aieventclass)
 - [`AIPackage`](#aipackage)
+- [`AIPatrolToTown`](#aipatroltotown)
+- [`AITaskSytem`](#aitasksytem)
+  - [`AITaskSytem::ActionsListMgr`](#aitasksytem::actionslistmgr)
+  - [`AITaskSytem::FailedTask`](#aitasksytem::failedtask)
 - [`AkSoundPosition`](#aksoundposition)
 - [`AkVector`](#akvector)
 - [`AnimalInventoryLayout`](#animalinventorylayout)
@@ -40,6 +47,7 @@
 - [`BackThreadMessagesToMainT`](#backthreadmessagestomaint)
 - [`BadSize`](#badsize)
 - [`Blackboard`](#blackboard)
+  - [`Blackboard::TaskInfo`](#blackboard::taskinfo)
 - [`BoundsViolation`](#boundsviolation)
 - [`Bounty`](#bounty)
 - [`BountyManager`](#bountymanager)
@@ -82,6 +90,11 @@
 - [`ContainerItem`](#containeritem)
 - [`ContextMenu`](#contextmenu)
 - [`ContextMenuGUI`](#contextmenugui)
+- [`Contract_DefendPlayerBase`](#contract_defendplayerbase)
+- [`Contract_HiredAlly`](#contract_hiredally)
+- [`Contract_Timed`](#contract_timed)
+- [`Contract_UntilExSlave`](#contract_untilexslave)
+- [`Contract_UntilOutOfDanger`](#contract_untiloutofdanger)
 - [`CPerfTimer`](#cperftimer)
 - [`CPerfTimerT`](#cperftimert)
 - [`CraftingBuilding`](#craftingbuilding)
@@ -270,6 +283,8 @@
 - [`OrderData`](#orderdata)
 - [`OrdersItemBox`](#ordersitembox)
 - [`OrdersPanel`](#orderspanel)
+- [`OrdersReceiver`](#ordersreceiver)
+  - [`OrdersReceiver::TaskRequestSimple`](#ordersreceiver::taskrequestsimple)
 - [`Ownerships`](#ownerships)
 - [`ParticlePool`](#particlepool)
   - [`ParticlePool::ParticleData`](#particlepool::particledata)
@@ -349,14 +364,18 @@
   - [`SquadManagementScreen::SquadData`](#squadmanagementscreen::squaddata)
   - [`SquadManagementScreen::SquadItemBox`](#squadmanagementscreen::squaditembox)
 - [`StateBroadcastData`](#statebroadcastdata)
+- [`StateFunctionList`](#statefunctionlist)
 - [`StorageBuilding`](#storagebuilding)
   - [`StorageBuilding::ConsumptionItem`](#storagebuilding::consumptionitem)
 - [`StringPair`](#stringpair)
 - [`Sword`](#sword)
 - [`TagsClass`](#tagsclass)
+- [`TargetInfo`](#targetinfo)
+- [`TargetWithScore`](#targetwithscore)
 - [`TaskData`](#taskdata)
 - [`Tasker`](#tasker)
 - [`TaskMatch`](#taskmatch)
+- [`TaskRequest`](#taskrequest)
 - [`TaskStateData`](#taskstatedata)
 - [`Terrain`](#terrain)
   - [`Terrain::BloodQueue`](#terrain::bloodqueue)
@@ -513,6 +532,30 @@
 | onShapeHit | `hit: userdata` | `integer` | `obj:onShapeHit(hit)` |
 | onControllerHit | `hit: userdata` | `integer` | `obj:onControllerHit(hit)` |
 
+## ActionDeque
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Metatable:** `KenshiLua.ActionDeque`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| list | `TaskerDequeBinding::DequeType` | R | `obj.list` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getFirstTask | `` | `Tasker` | `obj:getFirstTask()` |
+| getSecondTask | `` | `Tasker` | `obj:getSecondTask()` |
+| getLastTask | `` | `Tasker` | `obj:getLastTask()` |
+| hasTask | `t: TaskMatch` | `boolean` | `obj:hasTask(t)` |
+| insertTask | `task: Tasker` | `void` | `obj:insertTask(task)` |
+| addTask | `task: Tasker` | `void` | `obj:addTask(task)` |
+| clearAndDelete | `` | `void` | `obj:clearAndDelete()` |
+| clearOnly | `` | `void` | `obj:clearOnly()` |
+| passOnCurrentTask | `` | `Tasker` | `obj:passOnCurrentTask()` |
+| isEmpty | `` | `boolean` | `obj:isEmpty()` |
+| isOnlyOne | `` | `boolean` | `obj:isOnlyOne()` |
+
 ## ActivePlatoon
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
 **Metatable:** `KenshiLua.ActivePlatoon`
@@ -599,7 +642,9 @@
 | meiDistanceTolerance | `number` | RW | `obj.meiDistanceTolerance = <value>` |
 | platoon | `Platoon` | RW | `obj.platoon = <value>` |
 | state | `StateBroadcastData` | RW | `obj.state = <value>` |
+| taskSystemAI | `AITaskSytem` | R | `obj.taskSystemAI` |
 | sensoryData | `SensoryData` | R | `obj.sensoryData` |
+| resultsCache | `AI::AIResultsCacher` | R | `obj.resultsCache` |
 | taskRepertoireFlags | `integer` | RW | `obj.taskRepertoireFlags = <value>` |
 | ordersAggression | `AI::AIAggressionOrders` | RW | `obj.ordersAggression = <value>` |
 | ordersMovement | `AI::AIManuverabilityOrders` | RW | `obj.ordersMovement = <value>` |
@@ -624,6 +669,7 @@
 | addAIGoalsFrom | `data: GameData, goallistname: string` | `void` | `obj:addAIGoalsFrom(data, goallistname)` |
 | isWithinGivenRange | `subject: hand, loc: Vector3, _range: number` | `boolean` | `obj:isWithinGivenRange(subject, loc, _range)` |
 | getSensoryData | `` | `SensoryData` | `obj:getSensoryData()` |
+| getTaskSystem | `` | `AITaskSytem` | `obj:getTaskSystem()` |
 | getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
 | _notifyTaskComplete | `` | `void` | `obj:_notifyTaskComplete()` |
 | getDestinationTown | `` | `TownBase` | `obj:getDestinationTown()` |
@@ -658,6 +704,7 @@
 | amMoving | `` | `boolean` | `obj:amMoving()` |
 | periodicUpdateStateBroadcast | `time: number` | `void` | `obj:periodicUpdateStateBroadcast(time)` |
 | getCharacter | `` | `Character` | `obj:getCharacter()` |
+| getMyMissionTarget | `` | `TargetInfo` | `obj:getMyMissionTarget()` |
 | getAllMyPermajobMachines | `` | `void` | `obj:getAllMyPermajobMachines()` |
 | hasPermajob | `t: TaskType` | `boolean` | `obj:hasPermajob(t)` |
 | noneState | `subject: hand, _a2: Vector3` | `boolean` | `obj:noneState(subject, _a2)` |
@@ -1002,6 +1049,42 @@
 | scoreNotKOOrPlayingDead | `subject: hand, _a2: Vector3` | `number` | `obj:scoreNotKOOrPlayingDead(subject, _a2)` |
 | scoreTargetInMyTown | `subject: hand, _a2: Vector3` | `number` | `obj:scoreTargetInMyTown(subject, _a2)` |
 
+## AI::AIResultsCacher
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AI.h`
+**Parent Class:** [`AI`](#ai)
+**Metatable:** `KenshiLua.AI_AIResultsCacher`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| resetAllCaches | `` | `void` | `obj:resetAllCaches()` |
+| cacheResult_reqs | `key: TaskMatch, b: boolean` | `void` | `obj:cacheResult_reqs(key, b)` |
+| getCacheResult_reqs | `key: TaskMatch` | `boolean` | `obj:getCacheResult_reqs(key)` |
+| hasCacheResult_reqs | `key: TaskMatch` | `boolean` | `obj:hasCacheResult_reqs(key)` |
+| cacheResult_results | `key: TaskMatch, b: boolean` | `void` | `obj:cacheResult_results(key, b)` |
+| getCacheResult_results | `key: TaskMatch` | `boolean` | `obj:getCacheResult_results(key)` |
+| hasCacheResult_results | `key: TaskMatch` | `boolean` | `obj:hasCacheResult_results(key)` |
+| resetSpecificTargetFinderCache | `key: TaskMatch` | `void` | `obj:resetSpecificTargetFinderCache(key)` |
+| getResourceSource | `resourceNeeded: GameData, skip: StorageBuilding` | `hand` | `obj:getResourceSource(resourceNeeded, skip)` |
+| cacheResult_targetFinder | `key: TaskMatch, sub: hand, score: number` | `void` | `obj:cacheResult_targetFinder(key, sub, score)` |
+
+## AIEventClass
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AIEventClass.h`
+**Metatable:** `KenshiLua.AIEventClass`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| target | `hand` | RW | `obj.target = <value>` |
+| sendWhoToDoIt | `hand` | RW | `obj.sendWhoToDoIt = <value>` |
+| repeatRate | `number` | RW | `obj.repeatRate = <value>` |
+| repeatTimer | `number` | RW | `obj.repeatTimer = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| update | `` | `void` | `obj:update()` |
+
 ## AIPackage
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AIPackage.h`
 **Metatable:** `KenshiLua.AIPackage`
@@ -1026,6 +1109,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
+| getMyTarget | `me: Character` | `TargetInfo` | `obj:getMyTarget(me)` |
 | notifyMyTargetPathfindImpossible | `me: Character, was: hand` | `void` | `obj:notifyMyTargetPathfindImpossible(me, was)` |
 | getDesiredTravelSpeed | `me: Character` | `MoveSpeed` | `obj:getDesiredTravelSpeed(me)` |
 | getLeader | `` | `Character` | `obj:getLeader()` |
@@ -1045,6 +1129,114 @@
 | wantsRenewButton | `` | `boolean` | `obj:wantsRenewButton()` |
 | showManagementPanelCallback | `` | `void` | `obj:showManagementPanelCallback()` |
 | wasASuccess | `` | `boolean` | `obj:wasASuccess()` |
+
+## AIPatrolToTown
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AIEventClass.h`
+**Metatable:** `KenshiLua.AIPatrolToTown`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| update | `` | `void` | `obj:update()` |
+
+## AITaskSytem
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Metatable:** `KenshiLua.AITaskSytem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| infrequentTimeStamp | `number` | RW | `obj.infrequentTimeStamp = <value>` |
+| pathFailures | `HandFloatMapBinding::MapType` | R | `obj.pathFailures` |
+| _debugBreak | `boolean` | RW | `obj._debugBreak = <value>` |
+| _squadMemberType | `SquadMemberType` | RW | `obj._squadMemberType = <value>` |
+| debugCount | `integer` | RW | `obj.debugCount = <value>` |
+| currentDialogueDelivery | `EventTriggerEnum` | RW | `obj.currentDialogueDelivery = <value>` |
+| _currentDialogueEnumQuery | `EventTriggerEnum` | RW | `obj._currentDialogueEnumQuery = <value>` |
+| _taskCompletedFlag | `boolean` | RW | `obj._taskCompletedFlag = <value>` |
+| _taskImpossibleFlag | `boolean` | RW | `obj._taskImpossibleFlag = <value>` |
+| body | `CharBody` | RW | `obj.body = <value>` |
+| character | `Character` | RW | `obj.character = <value>` |
+| currentGoalExpiryTime | `TimeOfDay` | RW | `obj.currentGoalExpiryTime = <value>` |
+| currentTaskExpiryTime | `TimeOfDay` | RW | `obj.currentTaskExpiryTime = <value>` |
+| autoSleepTask | `Tasker` | RW | `obj.autoSleepTask = <value>` |
+| autoGetupTask | `Tasker` | RW | `obj.autoGetupTask = <value>` |
+| autoDitchTask | `Tasker` | RW | `obj.autoDitchTask = <value>` |
+| autoSitTask | `Tasker` | RW | `obj.autoSitTask = <value>` |
+| autoEjectEnemiesTask1 | `Tasker` | RW | `obj.autoEjectEnemiesTask1 = <value>` |
+| autoEjectEnemiesTask2 | `Tasker` | RW | `obj.autoEjectEnemiesTask2 = <value>` |
+| requestsList | `lektor<Tasker*>` | R | `obj.requestsList` |
+| actions | `AITaskSytem::ActionsListMgr` | R | `obj.actions` |
+| actionsTryList | `AITaskSytem::ActionsListMgr` | R | `obj.actionsTryList` |
+| failedGOAPGoalDebugString | `lstring` | RW | `obj.failedGOAPGoalDebugString = <value>` |
+| pos | `Vector3` | RW | `obj.pos = <value>` |
+| currentlySubTasking | `Tasker` | RW | `obj.currentlySubTasking = <value>` |
+| setTaskRecursionCounter | `integer` | RW | `obj.setTaskRecursionCounter = <value>` |
+| taskRecursionLast | `TaskType` | RW | `obj.taskRecursionLast = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| canIDoTheInfrequents | `` | `boolean` | `obj:canIDoTheInfrequents()` |
+| infrequentsStampCheck | `` | `void` | `obj:infrequentsStampCheck()` |
+| currentActionChecks | `` | `void` | `obj:currentActionChecks()` |
+| _logTheAI | `` | `void` | `obj:_logTheAI()` |
+| serialise | `data: GameData` | `void` | `obj:serialise(data)` |
+| loadFromSerialise | `data: GameData` | `void` | `obj:loadFromSerialise(data)` |
+| getHandle | `` | `hand` | `obj:getHandle()` |
+| notifyPathImpossible | `target: hand, dest: Vector3` | `void` | `obj:notifyPathImpossible(target, dest)` |
+| isPathImpossible | `target: hand` | `boolean` | `obj:isPathImpossible(target)` |
+| update | `position: Vector3, time: number` | `void` | `obj:update(position, time)` |
+| update4Frame | `position: Vector3, time: number` | `void` | `obj:update4Frame(position, time)` |
+| periodicUpdate | `time: number` | `void` | `obj:periodicUpdate(time)` |
+| taskImpossible | `` | `void` | `obj:taskImpossible()` |
+| _notifyBodyTaskComplete | `` | `void` | `obj:_notifyBodyTaskComplete()` |
+| _forcedSetCurrentAction | `t: Tasker, score: number` | `void` | `obj:_forcedSetCurrentAction(t, score)` |
+| setTaskExpiryTimer | `` | `void` | `obj:setTaskExpiryTimer()` |
+| isGoalExpired | `` | `boolean` | `obj:isGoalExpired()` |
+| isTaskExpired | `` | `boolean` | `obj:isTaskExpired()` |
+| getGOalExpiryTimeRemaining | `` | `number` | `obj:getGOalExpiryTimeRemaining()` |
+| tryAndRerunGOAP | `theRerun: Tasker` | `boolean` | `obj:tryAndRerunGOAP(theRerun)` |
+| setCurrentGoal | `t: Tasker, score: number, pri: taskPriority` | `void` | `obj:setCurrentGoal(t, score, pri)` |
+| callForUpdate | `superUrgent: boolean` | `void` | `obj:callForUpdate(superUrgent)` |
+| getGUIData | `datapanel: DatapanelGUI` | `void` | `obj:getGUIData(datapanel)` |
+| getCurrentGoalString | `` | `void` | `obj:getCurrentGoalString()` |
+| intendsToAttackTarget | `who: Character` | `boolean` | `obj:intendsToAttackTarget(who)` |
+| updateStateBroadcast | `stateBroadcast: StateBroadcastData` | `void` | `obj:updateStateBroadcast(stateBroadcast)` |
+| clearAllTasks | `` | `void` | `obj:clearAllTasks()` |
+| debugTargetInfo | `task: string, target: hand, info: string, isChosenTarget: boolean` | `void` | `obj:debugTargetInfo(task, target, info, isChosenTarget)` |
+| setNeedGOAP | `` | `void` | `obj:setNeedGOAP()` |
+| setDialogueDeliveryTag | `d: EventTriggerEnum` | `void` | `obj:setDialogueDeliveryTag(d)` |
+| getCurrentDurationTimedTask | `` | `Tasker` | `obj:getCurrentDurationTimedTask()` |
+| _taskImpossible | `` | `void` | `obj:_taskImpossible()` |
+| isThePlayer | `` | `boolean` | `obj:isThePlayer()` |
+| checkOrders | `` | `boolean` | `obj:checkOrders()` |
+| chooseGoal | `timedLockOnCurrentGoal: boolean` | `void` | `obj:chooseGoal(timedLockOnCurrentGoal)` |
+| _chooseGoal | `priority: taskPriority, squadMemberType: SquadMemberType` | `boolean` | `obj:_chooseGoal(priority, squadMemberType)` |
+| setupParametersForCurrentGoal | `` | `void` | `obj:setupParametersForCurrentGoal()` |
+| clearRequestsList | `` | `void` | `obj:clearRequestsList()` |
+| bodyTaskComplete | `` | `void` | `obj:bodyTaskComplete()` |
+| popFromOrders | `what: Tasker` | `void` | `obj:popFromOrders(what)` |
+| setCurrentTask | `from: AITaskSytem::ActionsListMgr` | `boolean` | `obj:setCurrentTask(from)` |
+| runGOAP | `task: Tasker, _a2: boolean, playerOrder: boolean` | `number` | `obj:runGOAP(task, _a2, playerOrder)` |
+
+## AITaskSytem::ActionsListMgr
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Parent Class:** [`AITaskSytem`](#aitasksytem)
+**Metatable:** `KenshiLua.AITaskSytem_ActionsListMgr`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| copyFrom | `` | `void` | `obj:copyFrom()` |
+| addFrom | `` | `void` | `obj:addFrom()` |
+| getTaskAfterCurrent | `` | `Tasker` | `obj:getTaskAfterCurrent()` |
+| get2TasksAfterCurrent | `` | `Tasker` | `obj:get2TasksAfterCurrent()` |
+
+## AITaskSytem::FailedTask
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Parent Class:** [`AITaskSytem`](#aitasksytem)
+**Metatable:** `KenshiLua.AITaskSytem_FailedTask`
 
 ## AkSoundPosition
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
@@ -1699,8 +1891,15 @@
 | runningAwayMode | `boolean` | RW | `obj.runningAwayMode = <value>` |
 | characterCount | `integer` | RW | `obj.characterCount = <value>` |
 | enemyCount | `integer` | RW | `obj.enemyCount = <value>` |
+| requests | `HandTaskRequestMapBinding::MapType` | R | `obj.requests` |
+| leaderJobs | `lektor<TaskRequest>` | R | `obj.leaderJobs` |
+| squadJobs | `lektor<TaskRequest>` | R | `obj.squadJobs` |
+| squadJobs2 | `lektor<TaskRequest>` | R | `obj.squadJobs2` |
+| signalJobs | `lektor<TaskRequest>` | R | `obj.signalJobs` |
+| slaveJobs | `lektor<TaskRequest>` | R | `obj.slaveJobs` |
 | contractJob | `AIPackage` | R | `obj.contractJob` |
 | contractExpiryTime | `TimeOfDay` | RW | `obj.contractExpiryTime = <value>` |
+| currentTasks | `HandTaskInfoMapBinding::MapType` | R | `obj.currentTasks` |
 | formationNeedUpdate | `boolean` | RW | `obj.formationNeedUpdate = <value>` |
 | characterFormationPosition | `HandVector3MapBinding::MapType` | R | `obj.characterFormationPosition` |
 
@@ -1752,6 +1951,7 @@
 | load | `state: GameData` | `void` | `obj:load(state)` |
 | stateUpdate | `frameTime: number` | `void` | `obj:stateUpdate(frameTime)` |
 | notifyMissionTargetPathfindImpossible | `forWho: Character, target: hand` | `void` | `obj:notifyMissionTargetPathfindImpossible(forWho, target)` |
+| getMissionTarget | `who: Character` | `TargetInfo` | `obj:getMissionTarget(who)` |
 | getMissionTown | `getHometownAsFallback: boolean` | `hand` | `obj:getMissionTown(getHometownAsFallback)` |
 | getMissionGiver | `` | `hand` | `obj:getMissionGiver()` |
 | getCurrentTownLocation | `` | `TownBase` | `obj:getCurrentTownLocation()` |
@@ -1764,12 +1964,30 @@
 | contractJobNotifyBetrayal | `myWitness: Character, betrayer: Character` | `void` | `obj:contractJobNotifyBetrayal(myWitness, betrayer)` |
 | contractJobWasBetrayal | `` | `boolean` | `obj:contractJobWasBetrayal()` |
 | showEndedMessage | `` | `void` | `obj:showEndedMessage()` |
+| _serialiseJobList | `state: GameData, theList: lektor<TaskRequest>, name: string` | `void` | `obj:_serialiseJobList(state, theList, name)` |
+| _loadJobList | `state: GameData, theList: lektor<TaskRequest>, name: string` | `void` | `obj:_loadJobList(state, theList, name)` |
 | _setupJobFromData | `data: GameData, listname: string, listEnum: SquadMemberType` | `void` | `obj:_setupJobFromData(data, listname, listEnum)` |
 | countCharacters | `` | `void` | `obj:countCharacters()` |
 | runAwayCheck | `` | `void` | `obj:runAwayCheck()` |
 | runAway | `` | `void` | `obj:runAway()` |
+| getJobList | `type: SquadMemberType` | `lektor<TaskRequest>` | `obj:getJobList(type)` |
 | buildFormation | `` | `void` | `obj:buildFormation()` |
 | getGridPositions | `gridWidth: integer, gridHeight: integer, size: integer, initialX: number, radius: number, spacingX: number, spacingZ: number` | `Vector3` | `obj:getGridPositions(gridWidth, gridHeight, size, initialX, radius, spacingX, spacingZ)` |
+
+## Blackboard::TaskInfo
+**Header:** `extern/KenshiLib/Include/kenshi/AI/Blackboard.h`
+**Parent Class:** [`Blackboard`](#blackboard)
+**Metatable:** `KenshiLua.Blackboard_TaskInfo`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
+### Constructors
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| Blackboard::TaskInfo | `` | `Blackboard::TaskInfo` | `local obj = Blackboard::TaskInfo()` |
 
 ## BoundsViolation
 **Header:** `extern/KenshiLib/Include/kenshi/util/Array2d.h`
@@ -2412,6 +2630,7 @@
 | manPowerLastCount | `integer` | RW | `obj.manPowerLastCount = <value>` |
 | reachedDestination | `boolean` | RW | `obj.reachedDestination = <value>` |
 | hasTriggeredSomething | `boolean` | RW | `obj.hasTriggeredSomething = <value>` |
+| _target | `TargetInfo` | RW | `obj._target = <value>` |
 | me | `Faction` | RW | `obj.me = <value>` |
 | enemy | `Faction` | RW | `obj.enemy = <value>` |
 | leader | `hand` | RW | `obj.leader = <value>` |
@@ -2445,6 +2664,7 @@
 | addToCampaign | `who: Platoon, forceLeader: boolean` | `void` | `obj:addToCampaign(who, forceLeader)` |
 | areForcesAllTogether | `` | `boolean` | `obj:areForcesAllTogether()` |
 | removeFromCampaign | `who: Platoon` | `void` | `obj:removeFromCampaign(who)` |
+| getAITarget | `who: Platoon` | `TargetInfo` | `obj:getAITarget(who)` |
 | getMoveSpeedUnloaded | `` | `MoveSpeed` | `obj:getMoveSpeedUnloaded()` |
 | getMoveSpeedLoaded | `` | `MoveSpeed` | `obj:getMoveSpeedLoaded()` |
 | getTargetTown | `` | `hand` | `obj:getTargetTown()` |
@@ -2786,7 +3006,7 @@
 | isInAPersistentPlatoon | `` | `boolean` | `obj:isInAPersistentPlatoon()` |
 | getBlackboard | `` | `Blackboard` | `obj:getBlackboard()` |
 | getSquadLeader | `` | `Character` | `obj:getSquadLeader()` |
-| getOrdersReciever | `` | `lightuserdata` | `obj:getOrdersReciever()` |
+| getOrdersReciever | `` | `OrdersReceiver` | `obj:getOrdersReciever()` |
 | preventRagdollMode | `` | `boolean` | `obj:preventRagdollMode()` |
 | setPrisonMode | `on: boolean, h: UseableStuff` | `void` | `obj:setPrisonMode(on, h)` |
 | setBedMode | `on: boolean, h: UseableStuff` | `void` | `obj:setBedMode(on, h)` |
@@ -3274,7 +3494,7 @@
 | setCurrentAction [2] | `t: TaskType, target: RootObject` | `boolean` | `obj:setCurrentAction(t, target)` |
 | notifyPathImpossible | `h: hand` | `void` | `obj:notifyPathImpossible(h)` |
 | _move | `who: RootObjectBase, location: Vector3` | `void` | `obj:_move(who, location)` |
-| _patrol | `task: Tasker, end: integer, pos: Vector3, area: userdata, taskSys: userdata, town: TownBase` | `void` | `obj:_patrol(task, end, pos, area, taskSys, town)` |
+| _patrol | `task: Tasker, end: integer, pos: Vector3, area: userdata, taskSys: AITaskSytem, town: TownBase` | `void` | `obj:_patrol(task, end, pos, area, taskSys, town)` |
 | getHandle | `` | `hand` | `obj:getHandle()` |
 | getCurrentSubject | `` | `hand` | `obj:getCurrentSubject()` |
 
@@ -3990,6 +4210,72 @@
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
 | show | `ordersList: lektor<int>, name: string, offset: boolean` | `void` | `obj:show(ordersList, name, offset)` |
 | optionSelected | `sender: MyGUI::Widget, left: integer, top: integer, id: integer` | `void` | `obj:optionSelected(sender, left, top, id)` |
+
+## Contract_DefendPlayerBase
+**Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
+**Metatable:** `KenshiLua.Contract_DefendPlayerBase`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getGUIData | `panel: DatapanelGUI` | `boolean` | `obj:getGUIData(panel)` |
+| getMyTarget | `me: Character` | `TargetInfo` | `obj:getMyTarget(me)` |
+| getDesiredTravelSpeed | `me: Character` | `integer` | `obj:getDesiredTravelSpeed(me)` |
+| activateAndSetup | `` | `void` | `obj:activateAndSetup()` |
+| periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
+| assessNeutral | `who: Character` | `void` | `obj:assessNeutral(who)` |
+
+## Contract_HiredAlly
+**Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
+**Metatable:** `KenshiLua.Contract_HiredAlly`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getDesiredTravelSpeed | `me: Character` | `integer` | `obj:getDesiredTravelSpeed(me)` |
+| activateAndSetup | `` | `void` | `obj:activateAndSetup()` |
+| periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
+| assessNeutral | `who: Character` | `void` | `obj:assessNeutral(who)` |
+| assessEnemy | `who: Character` | `boolean` | `obj:assessEnemy(who)` |
+| notifyBetrayal | `me: Character, betrayer: Character` | `boolean` | `obj:notifyBetrayal(me, betrayer)` |
+| endPackage | `` | `void` | `obj:endPackage()` |
+| showEndedMessage | `` | `void` | `obj:showEndedMessage()` |
+| signalEnd | `` | `boolean` | `obj:signalEnd()` |
+| getGUIData | `panel: DatapanelGUI` | `boolean` | `obj:getGUIData(panel)` |
+| wantsRenewButton | `` | `boolean` | `obj:wantsRenewButton()` |
+| showManagementPanelCallback | `` | `void` | `obj:showManagementPanelCallback()` |
+
+## Contract_Timed
+**Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
+**Metatable:** `KenshiLua.Contract_Timed`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| signalStart | `` | `boolean` | `obj:signalStart()` |
+| signalEnd | `` | `boolean` | `obj:signalEnd()` |
+
+## Contract_UntilExSlave
+**Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
+**Metatable:** `KenshiLua.Contract_UntilExSlave`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getDesiredTravelSpeed | `me: Character` | `integer` | `obj:getDesiredTravelSpeed(me)` |
+| signalEnd | `` | `boolean` | `obj:signalEnd()` |
+
+## Contract_UntilOutOfDanger
+**Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
+**Metatable:** `KenshiLua.Contract_UntilOutOfDanger`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| activateAndSetup | `` | `void` | `obj:activateAndSetup()` |
+| periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
+| getDesiredTravelSpeed | `me: Character` | `integer` | `obj:getDesiredTravelSpeed(me)` |
+| signalEnd | `` | `boolean` | `obj:signalEnd()` |
 
 ## CPerfTimer
 **Header:** `extern/KenshiLib/Include/kenshi/util/PerfTimer.h`
@@ -9301,6 +9587,80 @@
 | liftButton | `sender: MyGUI::Widget` | `void` | `obj:liftButton(sender)` |
 | prospectingButton | `sender: MyGUI::Widget` | `void` | `obj:prospectingButton(sender)` |
 
+## OrdersReceiver
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Metatable:** `KenshiLua.OrdersReceiver`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| me | `Character` | RW | `obj.me = <value>` |
+| mainGoalTarget | `hand` | RW | `obj.mainGoalTarget = <value>` |
+| aggroMode | `OrdersReceiver::AggroType` | RW | `obj.aggroMode = <value>` |
+| superDefenseMode | `boolean` | RW | `obj.superDefenseMode = <value>` |
+| doJobsEnabled | `boolean` | RW | `obj.doJobsEnabled = <value>` |
+| orders | `ActionDeque` | R | `obj.orders` |
+| jobs | `lektor<Tasker*>` | R | `obj.jobs` |
+| permajobs | `lektor<Tasker*>` | R | `obj.permajobs` |
+| goals | `lektor<Tasker*>` | R | `obj.goals` |
+| squadAIPackage | `lektor<Tasker*>` | R | `obj.squadAIPackage` |
+| holdPositionOrders | `Tasker` | R | `obj.holdPositionOrders` |
+| slaveJobs | `lektor<OrdersReceiver::TaskRequestSimple*>` | R | `obj.slaveJobs` |
+| needGOAP | `boolean` | RW | `obj.needGOAP = <value>` |
+| choosingGoalMode | `boolean` | RW | `obj.choosingGoalMode = <value>` |
+| aiImplementation | `AI` | RW | `obj.aiImplementation = <value>` |
+| currentGoal | `TaskMatch` | RW | `obj.currentGoal = <value>` |
+| currentGoalScore | `number` | RW | `obj.currentGoalScore = <value>` |
+| currentGoalPriority | `taskPriority` | RW | `obj.currentGoalPriority = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| serialise | `data: GameData` | `void` | `obj:serialise(data)` |
+| loadFromSerialise | `data: GameData` | `void` | `obj:loadFromSerialise(data)` |
+| _forceOrderInsert | `t: TaskType` | `Tasker` | `obj:_forceOrderInsert(t)` |
+| addOrder | `t: TaskType, subject: hand, location: Vector3, clearOld: boolean, shift: boolean` | `void` | `obj:addOrder(t, subject, location, clearOld, shift)` |
+| addJob | `t: TaskType, subject: hand, location: Vector3, shift: boolean` | `void` | `obj:addJob(t, subject, location, shift)` |
+| removeJob | `typ: TaskType` | `void` | `obj:removeJob(typ)` |
+| removePermajob | `typ: integer` | `void` | `obj:removePermajob(typ)` |
+| movePermajob | `taskIdx: integer, targetIdx: integer` | `void` | `obj:movePermajob(taskIdx, targetIdx)` |
+| clearPermajobs | `` | `void` | `obj:clearPermajobs()` |
+| getPermajobName | `slot: integer` | `void` | `obj:getPermajobName(slot)` |
+| getPermajob | `slot: integer` | `TaskType` | `obj:getPermajob(slot)` |
+| getPermajobData | `slot: integer` | `Tasker` | `obj:getPermajobData(slot)` |
+| getPermajobCount | `` | `integer` | `obj:getPermajobCount()` |
+| hasPermajob | `t: TaskType` | `boolean` | `obj:hasPermajob(t)` |
+| addGoal | `task: Tasker` | `void` | `obj:addGoal(task)` |
+| removeGoal | `task: TaskType` | `void` | `obj:removeGoal(task)` |
+| hasGoal | `task: TaskType` | `boolean` | `obj:hasGoal(task)` |
+| updateLastOrder | `t: TaskType, subject: hand, location: Vector3` | `void` | `obj:updateLastOrder(t, subject, location)` |
+| setNeedGOAP | `` | `void` | `obj:setNeedGOAP()` |
+| getFirstOrder | `` | `Tasker` | `obj:getFirstOrder()` |
+| clearOrders | `` | `void` | `obj:clearOrders()` |
+| clearJobs | `` | `void` | `obj:clearJobs()` |
+| _clearGoals | `` | `void` | `obj:_clearGoals()` |
+| getCurrentGoal | `` | `TaskMatch` | `obj:getCurrentGoal()` |
+| setHoldPositionOrders | `t: Tasker` | `void` | `obj:setHoldPositionOrders(t)` |
+| hasPlayerOrders | `` | `boolean` | `obj:hasPlayerOrders()` |
+| hasPlayerOrder | `key: TaskType` | `boolean` | `obj:hasPlayerOrder(key)` |
+| isInChoosingGoalMode | `` | `boolean` | `obj:isInChoosingGoalMode()` |
+| hasOrders | `` | `boolean` | `obj:hasOrders()` |
+| clearSlaveJobs | `` | `void` | `obj:clearSlaveJobs()` |
+| isJobsEnabled | `` | `boolean` | `obj:isJobsEnabled()` |
+| setJobsEnabled | `on: boolean` | `void` | `obj:setJobsEnabled(on)` |
+| clearCurrentGoal | `force: boolean` | `void` | `obj:clearCurrentGoal(force)` |
+| tryToGetCurrentGoal | `` | `Tasker` | `obj:tryToGetCurrentGoal()` |
+
+## OrdersReceiver::TaskRequestSimple
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Parent Class:** [`OrdersReceiver`](#ordersreceiver)
+**Metatable:** `KenshiLua.OrdersReceiver_TaskRequestSimple`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| sameAs | `t: Tasker` | `boolean` | `obj:sameAs(t)` |
+
 ## Ownerships
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
 **Metatable:** `KenshiLua.Ownerships`
@@ -11478,6 +11838,16 @@
 | isHiddenIdentitySlave | `` | `boolean` | `obj:isHiddenIdentitySlave()` |
 | getApparentFaction | `` | `Faction` | `obj:getApparentFaction()` |
 
+## StateFunctionList
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AI.h`
+**Metatable:** `KenshiLua.StateFunctionList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isTrue | `ai: AI, key: StateType, h: hand, v: Vector3, desired: boolean` | `boolean` | `obj:isTrue(ai, key, h, v, desired)` |
+| hasState | `key: StateType` | `boolean` | `obj:hasState(key)` |
+
 ## StorageBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/StorageBuilding.h`
 **Metatable:** `KenshiLua.StorageBuilding`
@@ -11576,6 +11946,54 @@
 ## TagsClass
 **Header:** `extern/KenshiLib/Include/kenshi/util/TagsClass.h`
 **Metatable:** `KenshiLua.TagsClass`
+
+## TargetInfo
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AI.h`
+**Metatable:** `KenshiLua.TargetInfo`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| what | `hand` | RW | `obj.what = <value>` |
+| pos | `Vector3` | RW | `obj.pos = <value>` |
+| targetType | `TargetInfoType` | RW | `obj.targetType = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupType | `` | `void` | `obj:setupType()` |
+| operator_assign | `p: hand` | `void` | `obj:operator_assign(p)` |
+| operator_bool | `` | `boolean` | `obj:operator_bool()` |
+| isTown | `` | `boolean` | `obj:isTown()` |
+| isCharacter | `` | `boolean` | `obj:isCharacter()` |
+| getTown | `` | `TownBase` | `obj:getTown()` |
+| getCharacter | `` | `Character` | `obj:getCharacter()` |
+| getPositionForWaypoint | `from: Vector3` | `Vector3` | `obj:getPositionForWaypoint(from)` |
+
+### Constructors
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| TargetInfo | `` | `TargetInfo` | `local obj = TargetInfo()` |
+
+## TargetWithScore
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AI.h`
+**Metatable:** `KenshiLua.TargetWithScore`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| target | `hand` | RW | `obj.target = <value>` |
+| score | `number` | RW | `obj.score = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
+### Constructors
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| TargetWithScore | `` | `TargetWithScore` | `local obj = TargetWithScore()` |
 
 ## TaskData
 **Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`
@@ -11719,6 +12137,37 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | TaskMatch | `` | `TaskMatch` | `local obj = TaskMatch()` |
+
+## TaskRequest
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Metatable:** `KenshiLua.TaskRequest`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| to | `hand` | RW | `obj.to = <value>` |
+| from | `hand` | RW | `obj.from = <value>` |
+| key | `TaskType` | RW | `obj.key = <value>` |
+| subject | `hand` | RW | `obj.subject = <value>` |
+| priority | `taskPriority` | RW | `obj.priority = <value>` |
+| weight | `number` | RW | `obj.weight = <value>` |
+| timeout | `number` | RW | `obj.timeout = <value>` |
+| targeting | `TaskTargetType` | RW | `obj.targeting = <value>` |
+| startTime | `integer` | RW | `obj.startTime = <value>` |
+| endTime | `integer` | RW | `obj.endTime = <value>` |
+| endEvent | `TaskEndEvent` | RW | `obj.endEvent = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| sameAs | `t: Tasker` | `boolean` | `obj:sameAs(t)` |
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_assign | `` | `void` | `obj:operator_assign()` |
+
+### Constructors
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| TaskRequest | `` | `TaskRequest` | `local obj = TaskRequest()` |
 
 ## TaskStateData
 **Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`

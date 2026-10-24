@@ -2011,6 +2011,13 @@ TalkerEnum = {
     T_TARGET_WITH_RACE = 7,
 }
 
+--- Whether a `TargetInfo` names a town or a character.
+---@enum TargetInfoType
+TargetInfoType = {
+    TI_TOWN = 0,
+    TI_CHARACTER = 1,
+}
+
 --- What happens to squad jobs when a task ends.
 ---@enum TaskEndEvent
 TaskEndEvent = {
@@ -5174,7 +5181,7 @@ taskPriority = {
 --- Issues low-level locomotion request to destination vector `location` or interaction offset around target object `who`. Automatically adjusts approach offsets within weapon reach and switches movement mode based on sensory threat levels.
 ---@field _move fun(self: CharBody, who?: RootObjectBase, location: table)
 --- Executes patrol route waypoint navigation within designated patrol area bounds and town perimeter. Computes patrol radii, updates steering target, and maintains squad spacing.
----@field _patrol fun(self: CharBody, task?: Tasker, end: integer, pos: table, area?: lightuserdata, taskSys?: lightuserdata, town?: TownBase)
+---@field _patrol fun(self: CharBody, task?: Tasker, end: integer, pos: table, area?: lightuserdata, taskSys?: AITaskSytem, town?: TownBase)
 --- Constructs and returns the unique entity handle (`hand`) representing parent character.
 ---@field getHandle fun(self: CharBody): hand
 --- Retrieves the unique entity handle (`hand`) of the target subject associated with currently executing action.
@@ -10727,7 +10734,7 @@ taskPriority = {
 --- Returns the leader character of this character's squad.
 ---@field getSquadLeader fun(self: Character): Character
 --- Retrieves the `OrdersReceiver` managing the character's player orders and permanent jobs.
----@field getOrdersReciever fun(self: Character): lightuserdata
+---@field getOrdersReciever fun(self: Character): OrdersReceiver
 --- Suppresses or allows automatic transitions into physical ragdoll mode upon taking damage.
 ---@field preventRagdollMode fun(self: Character): boolean
 --- Configures prisoner confinement mode when placed inside a cage or pole.
@@ -12605,6 +12612,8 @@ taskPriority = {
 ---@field isWithinGivenRange fun(self: AI, subject: hand, loc: table, _range: number): boolean
 --- Returns pointer to the embedded `SensoryData` processor managing sensory memory, line of sight, and acoustic detection.
 ---@field getSensoryData fun(self: AI): SensoryData
+--- Returns pointer to the `AITaskSytem` managing active, goal, and job queues.
+---@field getTaskSystem fun(self: AI): AITaskSytem
 --- Returns pointer to outward `StateBroadcastData` reflecting animation actions, current posture, and dialogue state to external observers.
 ---@field getStateBroadcast fun(self: AI): StateBroadcastData
 --- Internal callback invoked when active motor action or GOAP task completes, advancing the task queue to the next sequential action.
@@ -12687,6 +12696,8 @@ taskPriority = {
 ---@field _NV_periodicUpdateStateBroadcast fun(self: AI, time: number)
 --- Returns the Character that owns this AI controller.
 ---@field getCharacter fun(self: AI): Character
+--- Executes squad coordination routine `getMyMissionTarget`, synchronizing platoon orders, mission objectives, and strategic blackboard data.
+---@field getMyMissionTarget fun(self: AI): TargetInfo
 --- Finds and returns all machine buildings associated with the character's active permanent jobs.
 ---@field getAllMyPermajobMachines fun(self: AI): UseableStuff[]
 --- Returns true if the character has at least one permanent assigned job queued.
@@ -13517,6 +13528,8 @@ taskPriority = {
 ---@field ordersMovement integer
 --- Owning platoon/squad container pointer.
 ---@field platoon Platoon
+--- Evaluation cache for preconditions, target finders, and resource containers.
+---@field resultsCache AI_AIResultsCacher
 --- Embedded sensory perception processor managing line-of-sight and alert levels.
 ---@field sensoryData SensoryData
 --- Timestamp tracking duration spent in enslaved status.
@@ -13527,13 +13540,32 @@ taskPriority = {
 ---@field stats CharStats
 --- Bitmask of enabled task packages and behavioral capabilities.
 ---@field taskRepertoireFlags integer
+--- Task system coordinator managing active, goal, and job queues.
+---@field taskSystemAI AITaskSytem
 --- Nested enum table `AI.AIAggressionOrders`.
 ---@field AIAggressionOrders AI.AIAggressionOrders
 --- Nested enum table `AI.AIManuverabilityOrders`.
 ---@field AIManuverabilityOrders AI.AIManuverabilityOrders
 
+--- Base of scripted AI events such as `AIPatrolToTown`. Abstract; no bound member returns one.
+---@class AIEventClass
+--- Runs the event's update. Pure virtual.
+---@field update fun(self: AIEventClass)
+--- Time between repeats.
+---@field repeatRate number
+--- Time until the next repeat.
+---@field repeatTimer number
+--- Handle of the character or squad sent to carry out the event.
+---@field sendWhoToDoIt hand
+--- Handle of the event's target.
+---@field target hand
+
 --- Engine class `AIPackage`.
 ---@class AIPackage
+--- Evaluates the intended target for a given character under this package's context. Often resolves handles like `missionTarget` to explicit instances if valid in the current loaded area.
+---@field getMyTarget fun(self: AIPackage, me: Character): TargetInfo
+--- Non-virtual `getMyTarget`.
+---@field _NV_getMyTarget fun(self: AIPackage, me: Character): TargetInfo
 --- A callback invoked by the navigation mesh subsystem when an assigned agent cannot find a valid path to its target. Typically triggers package abortion or fallback behaviors.
 ---@field notifyMyTargetPathfindImpossible fun(self: AIPackage, me: Character, was: hand)
 --- Override dispatch for `notifyMyTargetPathfindImpossible`. A callback invoked by the navigation mesh subsystem when an assigned agent cannot find a valid path to its target. Typically triggers package abortion or fallback behaviors.
@@ -13632,6 +13664,207 @@ taskPriority = {
 ---@field unloadedMode integer
 --- Flag indicating contract betrayal occurred.
 ---@field wasBetrayed boolean
+
+--- AI event that sends a patrol to a town. Abstract; no bound member returns one.
+---@class AIPatrolToTown : AIEventClass
+--- Runs the event's update. Pure virtual.
+---@field update fun(self: AIPatrolToTown)
+
+--- A character's AI task system, owned by its `AI` (`AI.taskSystemAI`). Inherits the orders and jobs of `OrdersReceiver`.
+---@class AITaskSytem : OrdersReceiver
+--- Returns whether the infrequent checks are due.
+---@field canIDoTheInfrequents fun(self: AITaskSytem): boolean
+--- Updates the infrequent-check timestamp.
+---@field infrequentsStampCheck fun(self: AITaskSytem)
+--- Runs the checks for the current action.
+---@field currentActionChecks fun(self: AITaskSytem)
+--- Writes the AI state to the debug log.
+---@field _logTheAI fun(self: AITaskSytem)
+--- Saves the task system to the `GameData`.
+---@field serialise fun(self: AITaskSytem, data: GameData)
+--- Non-virtual `serialise`.
+---@field _NV_serialise fun(self: AITaskSytem, data: GameData)
+--- Loads the task system from the `GameData`.
+---@field loadFromSerialise fun(self: AITaskSytem, data: GameData)
+--- Non-virtual `loadFromSerialise`.
+---@field _NV_loadFromSerialise fun(self: AITaskSytem, data: GameData)
+--- Returns the handle of the character.
+---@field getHandle fun(self: AITaskSytem): hand
+--- Records that the target at `dest` could not be reached.
+---@field notifyPathImpossible fun(self: AITaskSytem, target: hand, dest: table)
+--- Returns whether pathing to the target failed recently.
+---@field isPathImpossible fun(self: AITaskSytem, target: hand): boolean
+--- Updates the task system at the position for the frame time.
+---@field update fun(self: AITaskSytem, position: table, time: number)
+--- Runs the four-frame update at the position.
+---@field update4Frame fun(self: AITaskSytem, position: table, time: number)
+--- Runs the periodic update.
+---@field periodicUpdate fun(self: AITaskSytem, time: number)
+--- Marks the current task as impossible.
+---@field taskImpossible fun(self: AITaskSytem)
+--- Notifies the task system that the body finished its task.
+---@field _notifyBodyTaskComplete fun(self: AITaskSytem)
+--- Sets the current action to the task with the score.
+---@field _forcedSetCurrentAction fun(self: AITaskSytem, t: Tasker, score: number)
+--- Starts the current task's expiry timer.
+---@field setTaskExpiryTimer fun(self: AITaskSytem)
+--- Returns whether the current goal has expired.
+---@field isGoalExpired fun(self: AITaskSytem): boolean
+--- Returns whether the current task has expired.
+---@field isTaskExpired fun(self: AITaskSytem): boolean
+--- Returns the time remaining before the current goal expires.
+---@field getGOalExpiryTimeRemaining fun(self: AITaskSytem): number
+--- Plans the task again with GOAP and returns whether that succeeded.
+---@field tryAndRerunGOAP fun(self: AITaskSytem, theRerun: Tasker): boolean
+--- Sets the current goal to the task with the score and priority. The task cannot be nil.
+---@field setCurrentGoal fun(self: AITaskSytem, t: Tasker, score: number, pri: integer)
+--- Non-virtual `setCurrentGoal`.
+---@field _NV_setCurrentGoal fun(self: AITaskSytem, t: Tasker, score: number, pri: integer)
+--- Requests an update; `superUrgent` requests it immediately.
+---@field callForUpdate fun(self: AITaskSytem, superUrgent?: boolean)
+--- Adds the task system's information to the `DatapanelGUI`.
+---@field getGUIData fun(self: AITaskSytem, datapanel: DatapanelGUI)
+--- Returns a description of the current goal.
+---@field getCurrentGoalString fun(self: AITaskSytem): string
+--- Returns whether the AI intends to attack the character.
+---@field intendsToAttackTarget fun(self: AITaskSytem, who: Character): boolean
+--- Updates the `StateBroadcastData` from the task system.
+---@field updateStateBroadcast fun(self: AITaskSytem, stateBroadcast: StateBroadcastData)
+--- Removes every order, job, goal, and action.
+---@field clearAllTasks fun(self: AITaskSytem)
+--- Records target debugging information for the task.
+---@field debugTargetInfo fun(self: AITaskSytem, task: string, target: hand, info: string, isChosenTarget?: boolean)
+--- Requests a new GOAP plan.
+---@field setNeedGOAP fun(self: AITaskSytem)
+--- Non-virtual `setNeedGOAP`.
+---@field _NV_setNeedGOAP fun(self: AITaskSytem)
+--- Sets `currentDialogueDelivery`.
+---@field setDialogueDeliveryTag fun(self: AITaskSytem, d: integer)
+--- Returns the current duration-based task, or nil.
+---@field getCurrentDurationTimedTask fun(self: AITaskSytem): Tasker
+--- Marks the current task as impossible.
+---@field _taskImpossible fun(self: AITaskSytem)
+--- Returns whether the character is player-controlled.
+---@field isThePlayer fun(self: AITaskSytem): boolean
+--- Checks the orders and returns whether one is active.
+---@field checkOrders fun(self: AITaskSytem): boolean
+--- Chooses a new goal; `timedLockOnCurrentGoal` keeps a current timed goal.
+---@field chooseGoal fun(self: AITaskSytem, timedLockOnCurrentGoal?: boolean)
+--- Chooses a goal of the priority for the squad member type and returns whether one was set.
+---@field _chooseGoal fun(self: AITaskSytem, priority: integer, squadMemberType: integer): boolean
+--- Sets up the parameters of the current goal.
+---@field setupParametersForCurrentGoal fun(self: AITaskSytem)
+--- Clears `requestsList`.
+---@field clearRequestsList fun(self: AITaskSytem)
+--- Handles completion of the body's task.
+---@field bodyTaskComplete fun(self: AITaskSytem)
+--- Removes the task from the orders.
+---@field popFromOrders fun(self: AITaskSytem, what: Tasker)
+--- Takes the current task from the action list and returns whether one was set.
+---@field setCurrentTask fun(self: AITaskSytem, from: AITaskSytem_ActionsListMgr): boolean
+--- Plans the task with GOAP and returns its score.
+---@field runGOAP fun(self: AITaskSytem, task: Tasker, arg2?: boolean, playerOrder?: boolean): number
+--- Dialogue event being queried, as an `EventTriggerEnum` value.
+---@field _currentDialogueEnumQuery integer
+--- Debug break flag.
+---@field _debugBreak boolean
+--- Squad member type, as a `SquadMemberType` value.
+---@field _squadMemberType integer
+--- True when the current task completed.
+---@field _taskCompletedFlag boolean
+--- True when the current task is impossible.
+---@field _taskImpossibleFlag boolean
+--- The current action list, borrowed. Read-only; ~AITaskSytem deletes its tasks.
+---@field actions AITaskSytem_ActionsListMgr
+--- The trial action list, borrowed. Read-only; ~AITaskSytem deletes its tasks.
+---@field actionsTryList AITaskSytem_ActionsListMgr
+--- Automatic ditch task, or nil.
+---@field autoDitchTask Tasker
+--- First automatic eject-enemies task, or nil.
+---@field autoEjectEnemiesTask1 Tasker
+--- Second automatic eject-enemies task, or nil.
+---@field autoEjectEnemiesTask2 Tasker
+--- Automatic get-up task, or nil.
+---@field autoGetupTask Tasker
+--- Automatic sit task, or nil.
+---@field autoSitTask Tasker
+--- Automatic sleep task, or nil.
+---@field autoSleepTask Tasker
+--- The character's `CharBody`. nil is rejected.
+---@field body CharBody
+--- The `Character`. nil is rejected.
+---@field character Character
+--- Dialogue event being delivered, as an `EventTriggerEnum` value.
+---@field currentDialogueDelivery integer
+--- When the current goal expires.
+---@field currentGoalExpiryTime TimeOfDay
+--- When the current task expires.
+---@field currentTaskExpiryTime TimeOfDay
+--- The task being run as a subtask, or nil.
+---@field currentlySubTasking Tasker
+--- Debug counter.
+---@field debugCount integer
+--- Debug text of the last failed GOAP goal.
+---@field failedGOAPGoalDebugString string
+--- Time of the last infrequent check.
+---@field infrequentTimeStamp number
+--- Recent path failures by target handle, as a live map. Read-only; edit it in place.
+---@field pathFailures OgreUnorderedMap<hand, number>
+--- Position of the character at the last update.
+---@field pos table
+--- Pending requests, as a live `lektor<Tasker*>`. Read-only; edit it in place.
+---@field requestsList Lektor<Tasker>
+--- Recursion counter of `setCurrentTask`.
+---@field setTaskRecursionCounter integer
+--- Last task type seen by the recursion counter, as a `TaskType` value.
+---@field taskRecursionLast integer
+
+--- The `ActionDeque` of the task system's current and trial action lists, `AITaskSytem.actions` and `AITaskSytem.actionsTryList`.
+---@class AITaskSytem_ActionsListMgr : ActionDeque
+--- Replaces the tasks with those of another action list.
+---@field copyFrom fun(self: AITaskSytem_ActionsListMgr, a: AITaskSytem_ActionsListMgr)
+--- Appends the tasks of another action list.
+---@field addFrom fun(self: AITaskSytem_ActionsListMgr, a: AITaskSytem_ActionsListMgr)
+--- Returns the task after the current one, or nil.
+---@field getTaskAfterCurrent fun(self: AITaskSytem_ActionsListMgr): Tasker
+--- Returns the task two after the current one, or nil.
+---@field get2TasksAfterCurrent fun(self: AITaskSytem_ActionsListMgr): Tasker
+
+--- The subject of a GOAP task that failed. No bound member returns one.
+---@class AITaskSytem_FailedTask
+--- Handle of the failed task's subject.
+---@field subj hand
+
+--- Per-AI cache of task requirement checks, result checks, and resource sources. Embedded in `AI` and reached through `AI.resultsCache`.
+---@class AI_AIResultsCacher
+--- Clears every cached result.
+---@field resetAllCaches fun(self: AI_AIResultsCacher)
+--- Stores a requirements check result for the `TaskMatch`.
+---@field cacheResult_reqs fun(self: AI_AIResultsCacher, key: TaskMatch, b?: boolean)
+--- Returns the cached requirements check for the `TaskMatch`.
+---@field getCacheResult_reqs fun(self: AI_AIResultsCacher, key: TaskMatch): boolean
+--- Returns whether a requirements check is cached for the `TaskMatch`.
+---@field hasCacheResult_reqs fun(self: AI_AIResultsCacher, key: TaskMatch): boolean
+--- Stores a results check for the `TaskMatch`.
+---@field cacheResult_results fun(self: AI_AIResultsCacher, key: TaskMatch, b?: boolean)
+--- Returns the cached results check for the `TaskMatch`.
+---@field getCacheResult_results fun(self: AI_AIResultsCacher, key: TaskMatch): boolean
+--- Returns whether a results check is cached for the `TaskMatch`.
+---@field hasCacheResult_results fun(self: AI_AIResultsCacher, key: TaskMatch): boolean
+--- Clears the cached target-finder result for the `TaskMatch`.
+---@field resetSpecificTargetFinderCache fun(self: AI_AIResultsCacher, key: TaskMatch)
+--- Finds a source of the item `resourceNeeded`, skipping the `skip` storage building when given. Returns the score (0 or 1) and the handle of the source found.
+---@field getResourceSource fun(self: AI_AIResultsCacher, resourceNeeded: GameData, skip?: StorageBuilding): number, hand
+--- Stores a target-finder result, a subject handle and score, for the `TaskMatch`.
+---@field cacheResult_targetFinder fun(self: AI_AIResultsCacher, key: TaskMatch, sub: hand, score: number)
+--- The owning `AI`. nil is rejected.
+---@field ai AI
+--- Cached requirements checks by `TaskMatch`, as a live map.
+---@field requirementsCache StdMap<TaskMatch, boolean>
+--- Cached resource sources by item `GameData`, as a live map. Its hand values are copies.
+---@field resourceSourceCache StdMap<GameData, hand>
+--- Cached results checks by `TaskMatch`, as a live map.
+---@field resultsCache StdMap<TaskMatch, boolean>
 
 --- Base pathfinding, road-following, and speed-group controller for moving agents. Extends NxUserControllerHitReport.
 ---@class AbstractMovementBase : NxUserControllerHitReport
@@ -13779,6 +14012,33 @@ taskPriority = {
 ---@field speedOrders integer
 --- Standard walking speed in world units per second.
 ---@field walkSpeed number
+
+--- Ordered list of `Tasker` actions. Embedded in `OrdersReceiver` as `orders` and in `AITaskSytem` as `actions` and `actionsTryList`; the owner deletes the tasks it holds.
+---@class ActionDeque
+--- Returns the first task, or nil.
+---@field getFirstTask fun(self: ActionDeque): Tasker
+--- Returns the second task, or nil.
+---@field getSecondTask fun(self: ActionDeque): Tasker
+--- Returns the last task, or nil.
+---@field getLastTask fun(self: ActionDeque): Tasker
+--- Returns whether a task matching the `TaskMatch` is in the list.
+---@field hasTask fun(self: ActionDeque, t: TaskMatch): boolean
+--- Inserts a task at the front. The deque takes ownership.
+---@field insertTask fun(self: ActionDeque, task: Tasker)
+--- Appends a task. The deque takes ownership.
+---@field addTask fun(self: ActionDeque, task: Tasker)
+--- Removes and deletes every task.
+---@field clearAndDelete fun(self: ActionDeque)
+--- Removes every task without deleting it.
+---@field clearOnly fun(self: ActionDeque)
+--- Removes the first task and returns it without deleting it, or returns nil when empty.
+---@field passOnCurrentTask fun(self: ActionDeque): Tasker
+--- Returns whether the deque holds no tasks.
+---@field isEmpty fun(self: ActionDeque): boolean
+--- Returns whether the deque holds exactly one task.
+---@field isOnlyOne fun(self: ActionDeque): boolean
+--- The tasks, as a live `std::deque<Tasker*>`. Read-only; edit it in place.
+---@field list StdDeque<Tasker>
 
 --- Core skeletal animation subsystem base class for characters and creatures in Kenshi. Manages skeletal bone queries, world-space and local-space bone caching, animation track blending across layered channels (`AnimationLayer`), root motion relocation, and playback timing synchronization with the locomotion kinematic controller (`CharMovement`).
 ---@class AnimationClassBase
@@ -14742,6 +15002,8 @@ taskPriority = {
 ---@field load fun(self: Blackboard, state: GameData)
 ---@field stateUpdate fun(self: Blackboard, frameTime: number)
 ---@field notifyMissionTargetPathfindImpossible fun(self: Blackboard, forWho: Character, target: hand)
+--- Returns the character's mission target as a new `TargetInfo`.
+---@field getMissionTarget fun(self: Blackboard, who: Character): TargetInfo
 ---@field getMissionTown fun(self: Blackboard, getHometownAsFallback?: boolean): hand
 ---@field getMissionGiver fun(self: Blackboard): hand
 ---@field getCurrentTownLocation fun(self: Blackboard): TownBase
@@ -14755,10 +15017,16 @@ taskPriority = {
 ---@field contractJobWasBetrayal fun(self: Blackboard): boolean
 ---@field showEndedMessage fun(self: Blackboard)
 ---@field _NV_showEndedMessage fun(self: Blackboard)
+--- Saves the job list to the `GameData` under the name.
+---@field _serialiseJobList fun(self: Blackboard, state: GameData, theList: Lektor<TaskRequest>, name: string)
+--- Loads the job list from the `GameData` under the name.
+---@field _loadJobList fun(self: Blackboard, state: GameData, theList: Lektor<TaskRequest>, name: string)
 ---@field _setupJobFromData fun(self: Blackboard, data: GameData, listname: string, listEnum: integer)
 ---@field countCharacters fun(self: Blackboard)
 ---@field runAwayCheck fun(self: Blackboard)
 ---@field runAway fun(self: Blackboard)
+--- Returns the job list for the `SquadMemberType` as a live `lektor<TaskRequest>`, or nil.
+---@field getJobList fun(self: Blackboard, type: integer): Lektor<TaskRequest>
 ---@field buildFormation fun(self: Blackboard)
 ---@field getGridPositions fun(self: Blackboard, gridWidth: integer, gridHeight: integer, size: integer, initialX: number, radius: number, spacingX: number, spacingZ: number): table[]
 ---@field HIGHEST_PRIORITY_LEVEL integer
@@ -14775,20 +15043,45 @@ taskPriority = {
 ---@field currentPackage AIPackage
 --- Active package priority tier.
 ---@field currentPackagePriorityLevel integer
+--- The members' current tasks by handle, as a live map of `Blackboard_TaskInfo`. Read-only; edit it in place.
+---@field currentTasks OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@field currentTownLocation TownBase
 ---@field enemyCount integer
 ---@field formationNeedUpdate boolean
 ---@field homeIsLockedUp boolean
+--- Leader jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.
+---@field leaderJobs Lektor<TaskRequest>
 ---@field missionData GameData
 ---@field moraleIsBroken boolean
 ---@field needsStateUpdate boolean
 --- SID of package scheduled to replace current upon completion.
 ---@field replacementAIPackageSID string
+--- Job requests by handle, as a live map of `TaskRequest`. Read-only; edit it in place.
+---@field requests OgreUnorderedMap<hand, TaskRequest>
 ---@field runningAwayMode boolean
+--- Signal jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.
+---@field signalJobs Lektor<TaskRequest>
+--- Slave jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.
+---@field slaveJobs Lektor<TaskRequest>
 ---@field squad Platoon
+--- Squad jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.
+---@field squadJobs Lektor<TaskRequest>
+--- Second squad job list, as a live `lektor<TaskRequest>`. Read-only; edit it in place.
+---@field squadJobs2 Lektor<TaskRequest>
 ---@field targetTown TownBase
 ---@field targetZoneHunting ZoneMap
 ---@field townArrivalTime TimeOfDay
+
+--- The task a squad member is carrying out, as held in `Blackboard.currentTasks`. `Blackboard_TaskInfo()` and `Blackboard_TaskInfo(other)` create Lua-owned values.
+---@class Blackboard_TaskInfo
+--- Copies another `Blackboard_TaskInfo` into this one and returns it.
+---@field operator_assign fun(self: Blackboard_TaskInfo, arg1: Blackboard_TaskInfo): Blackboard_TaskInfo
+--- Handle of the task's secondary target.
+---@field subTarget hand
+--- Handle of the task's subject.
+---@field subject hand
+--- The task, as a `TaskType` value.
+---@field type integer
 
 --- Individual faction criminal bounty record. Tracks monetary reward, accumulated crime bitflags, claim status, and timestamp when the bounty was posted.
 ---@class Bounty
@@ -15198,6 +15491,10 @@ taskPriority = {
 ---@field _NV_areForcesAllTogether fun(self: CampaignInstance): boolean
 ---@field removeFromCampaign fun(self: CampaignInstance, who: Platoon)
 ---@field _NV_removeFromCampaign fun(self: CampaignInstance, who: Platoon)
+--- Returns the platoon's target as a new `TargetInfo`.
+---@field getAITarget fun(self: CampaignInstance, who: Platoon): TargetInfo
+--- Non-virtual `getAITarget`.
+---@field _NV_getAITarget fun(self: CampaignInstance, who: Platoon): TargetInfo
 ---@field getMoveSpeedUnloaded fun(self: CampaignInstance): integer
 ---@field _NV_getMoveSpeedUnloaded fun(self: CampaignInstance): integer
 ---@field getMoveSpeedLoaded fun(self: CampaignInstance): integer
@@ -15208,6 +15505,8 @@ taskPriority = {
 ---@field getDestination fun(self: CampaignInstance, who: Platoon): table
 ---@field _NV_getDestination fun(self: CampaignInstance, who: Platoon): table
 ---@field isSuccessful fun(self: CampaignInstance): boolean
+--- The campaign's target, borrowed. Assigning copies a `TargetInfo` into it.
+---@field _target TargetInfo
 ---@field canTalkToBeforeArrival boolean
 --- Current strategic campaign state enum.
 ---@field currentPhase integer
@@ -16570,6 +16869,125 @@ taskPriority = {
 ---@field optionsList MyGUI.Widget|nil
 --- Coordinates and dimensions defining the layout of value and numeric labels.
 ---@field valueCoords MyGUI.IntCoord
+
+--- Hired-ally contract to defend the player's base.
+---@class Contract_DefendPlayerBase : Contract_HiredAlly
+--- Adds the contract's information to the `DatapanelGUI` and returns whether it did.
+---@field getGUIData fun(self: Contract_DefendPlayerBase, panel: DatapanelGUI): boolean
+--- Non-virtual `getGUIData`.
+---@field _NV_getGUIData fun(self: Contract_DefendPlayerBase, panel: DatapanelGUI): boolean
+--- Returns the character's target as a new `TargetInfo`.
+---@field getMyTarget fun(self: Contract_DefendPlayerBase, me: Character): TargetInfo
+--- Non-virtual `getMyTarget`.
+---@field _NV_getMyTarget fun(self: Contract_DefendPlayerBase, me: Character): TargetInfo
+--- Returns the travel speed for the character, as a `MoveSpeed` value.
+---@field getDesiredTravelSpeed fun(self: Contract_DefendPlayerBase, me: Character): integer
+--- Non-virtual `getDesiredTravelSpeed`.
+---@field _NV_getDesiredTravelSpeed fun(self: Contract_DefendPlayerBase, me: Character): integer
+--- Activates and sets up the contract.
+---@field activateAndSetup fun(self: Contract_DefendPlayerBase)
+--- Non-virtual `activateAndSetup`.
+---@field _NV_activateAndSetup fun(self: Contract_DefendPlayerBase)
+--- Runs the contract's periodic update.
+---@field periodicUpdate fun(self: Contract_DefendPlayerBase)
+--- Non-virtual `periodicUpdate`.
+---@field _NV_periodicUpdate fun(self: Contract_DefendPlayerBase)
+--- Assesses the neutral character for the contract.
+---@field assessNeutral fun(self: Contract_DefendPlayerBase, who: Character)
+--- Non-virtual `assessNeutral`.
+---@field _NV_assessNeutral fun(self: Contract_DefendPlayerBase, who: Character)
+
+--- Timed contract for hired allies.
+---@class Contract_HiredAlly : Contract_Timed
+--- Returns the travel speed for the character, as a `MoveSpeed` value.
+---@field getDesiredTravelSpeed fun(self: Contract_HiredAlly, me: Character): integer
+--- Non-virtual `getDesiredTravelSpeed`.
+---@field _NV_getDesiredTravelSpeed fun(self: Contract_HiredAlly, me: Character): integer
+--- Activates and sets up the contract.
+---@field activateAndSetup fun(self: Contract_HiredAlly)
+--- Non-virtual `activateAndSetup`.
+---@field _NV_activateAndSetup fun(self: Contract_HiredAlly)
+--- Runs the contract's periodic update.
+---@field periodicUpdate fun(self: Contract_HiredAlly)
+--- Non-virtual `periodicUpdate`.
+---@field _NV_periodicUpdate fun(self: Contract_HiredAlly)
+--- Assesses the neutral character for the contract.
+---@field assessNeutral fun(self: Contract_HiredAlly, who: Character)
+--- Non-virtual `assessNeutral`.
+---@field _NV_assessNeutral fun(self: Contract_HiredAlly, who: Character)
+--- Assesses whether the character is an enemy of the contract and returns the result.
+---@field assessEnemy fun(self: Contract_HiredAlly, who: Character): boolean
+--- Non-virtual `assessEnemy`.
+---@field _NV_assessEnemy fun(self: Contract_HiredAlly, who: Character): boolean
+--- Notifies the contract that `betrayer` betrayed it, witnessed by `me`, and returns the result.
+---@field notifyBetrayal fun(self: Contract_HiredAlly, me: Character, betrayer: Character): boolean
+--- Non-virtual `notifyBetrayal`.
+---@field _NV_notifyBetrayal fun(self: Contract_HiredAlly, me: Character, betrayer: Character): boolean
+--- Ends the contract.
+---@field endPackage fun(self: Contract_HiredAlly)
+--- Non-virtual `endPackage`.
+---@field _NV_endPackage fun(self: Contract_HiredAlly)
+--- Shows the message for the contract ending.
+---@field showEndedMessage fun(self: Contract_HiredAlly)
+--- Non-virtual `showEndedMessage`.
+---@field _NV_showEndedMessage fun(self: Contract_HiredAlly)
+--- Returns whether the contract signals that it has ended.
+---@field signalEnd fun(self: Contract_HiredAlly): boolean
+--- Non-virtual `signalEnd`.
+---@field _NV_signalEnd fun(self: Contract_HiredAlly): boolean
+--- Adds the contract's information to the `DatapanelGUI` and returns whether it did.
+---@field getGUIData fun(self: Contract_HiredAlly, panel: DatapanelGUI): boolean
+--- Non-virtual `getGUIData`.
+---@field _NV_getGUIData fun(self: Contract_HiredAlly, panel: DatapanelGUI): boolean
+--- Returns whether the contract offers a renew button.
+---@field wantsRenewButton fun(self: Contract_HiredAlly): boolean
+--- Non-virtual `wantsRenewButton`.
+---@field _NV_wantsRenewButton fun(self: Contract_HiredAlly): boolean
+--- Opens the contract's management panel.
+---@field showManagementPanelCallback fun(self: Contract_HiredAlly)
+--- Non-virtual `showManagementPanelCallback`.
+---@field _NV_showManagementPanelCallback fun(self: Contract_HiredAlly)
+
+--- Contract package that lasts for a set time. Packages are created and deleted by `Blackboard`.
+---@class Contract_Timed : AIPackage
+--- Returns whether the contract signals that it has started.
+---@field signalStart fun(self: Contract_Timed): boolean
+--- Non-virtual `signalStart`.
+---@field _NV_signalStart fun(self: Contract_Timed): boolean
+--- Returns whether the contract signals that it has ended.
+---@field signalEnd fun(self: Contract_Timed): boolean
+--- Non-virtual `signalEnd`.
+---@field _NV_signalEnd fun(self: Contract_Timed): boolean
+
+--- Contract that lasts while a character is an ex-slave.
+---@class Contract_UntilExSlave : AIPackage
+--- Returns the travel speed for the character, as a `MoveSpeed` value.
+---@field getDesiredTravelSpeed fun(self: Contract_UntilExSlave, me: Character): integer
+--- Non-virtual `getDesiredTravelSpeed`.
+---@field _NV_getDesiredTravelSpeed fun(self: Contract_UntilExSlave, me: Character): integer
+--- Returns whether the contract signals that it has ended.
+---@field signalEnd fun(self: Contract_UntilExSlave): boolean
+--- Non-virtual `signalEnd`.
+---@field _NV_signalEnd fun(self: Contract_UntilExSlave): boolean
+
+--- Timed contract that lasts until the squad is out of danger.
+---@class Contract_UntilOutOfDanger : Contract_Timed
+--- Activates and sets up the contract.
+---@field activateAndSetup fun(self: Contract_UntilOutOfDanger)
+--- Non-virtual `activateAndSetup`.
+---@field _NV_activateAndSetup fun(self: Contract_UntilOutOfDanger)
+--- Runs the contract's periodic update.
+---@field periodicUpdate fun(self: Contract_UntilOutOfDanger)
+--- Non-virtual `periodicUpdate`.
+---@field _NV_periodicUpdate fun(self: Contract_UntilOutOfDanger)
+--- Returns the travel speed for the character, as a `MoveSpeed` value.
+---@field getDesiredTravelSpeed fun(self: Contract_UntilOutOfDanger, me: Character): integer
+--- Non-virtual `getDesiredTravelSpeed`.
+---@field _NV_getDesiredTravelSpeed fun(self: Contract_UntilOutOfDanger, me: Character): integer
+--- Returns whether the contract signals that it has ended.
+---@field signalEnd fun(self: Contract_UntilOutOfDanger): boolean
+--- Non-virtual `signalEnd`.
+---@field _NV_signalEnd fun(self: Contract_UntilOutOfDanger): boolean
 
 --- `CraftingBuilding` extends `ProductionBuilding` to implement Kenshi's item creation system, powering weapon smithies, armour workbenches, crossbow fletchers, leather tanneries, robotics benches, and medical craft tables.
 ---@class CraftingBuilding : ProductionBuilding
@@ -20667,6 +21085,134 @@ taskPriority = {
 --- Taunt stance attracting enemy aggro checkbox.
 ---@field tauntCheckBox MyGUI.Button|nil
 
+--- Core task management, order arbitration, and player command dispatch subsystem in Kenshi. Manages player interactive action queues (`ActionDeque orders`), autonomous permanent jobs (`permajobs`), Goal-Oriented Action Planning goal priority tiers (`goals[5]`), squad AI packages (`squadAIPackage[5]`), and subordinate slave job delegations (`slaveJobs`).
+---@class OrdersReceiver
+--- Serializes active orders, permanent assigned jobs, combat aggro stance, and hold-position tasks into a `GameData` save record.
+---@field serialise fun(self: OrdersReceiver, data: GameData)
+--- Non-virtual `serialise`.
+---@field _NV_serialise fun(self: OrdersReceiver, data: GameData)
+--- Deserializes orders, permanent jobs, and tactical stances from a `GameData` record during game loading, reconstructing task instances and enqueuing them.
+---@field loadFromSerialise fun(self: OrdersReceiver, data: GameData)
+--- Non-virtual `loadFromSerialise`.
+---@field _NV_loadFromSerialise fun(self: OrdersReceiver, data: GameData)
+--- Directly forces insertion of a high-priority order task into the front of the player action queue (`orders`), bypassing standard arbitration.
+---@field _forceOrderInsert fun(self: OrdersReceiver, t: integer): Tasker
+--- Enqueues an interactive player command (move, attack, interact) into the order deque. If `clearOld` is set, discards existing queued actions; if `shift` is true, queues behind current tasks without preemption.
+---@field addOrder fun(self: OrdersReceiver, t: integer, subject: hand, location: table, clearOld?: boolean, shift?: boolean)
+--- Appends a permanent autonomous job (crafting, farming, guarding, hauling) to the permanent jobs list (`permajobs`).
+---@field addJob fun(self: OrdersReceiver, t: integer, subject: hand, location: table, shift?: boolean)
+--- Removes temporary job instances of a specific task type from the dynamic jobs list (`jobs`).
+---@field removeJob fun(self: OrdersReceiver, typ: integer)
+--- Removes a permanent job at the specified index from `permajobs`, shifting subsequent job priorities up.
+---@field removePermajob fun(self: OrdersReceiver, typ: integer)
+--- Reorders permanent jobs in the priority list, moving a permajob from `taskIdx` to `targetIdx`.
+---@field movePermajob fun(self: OrdersReceiver, taskIdx: integer, targetIdx: integer)
+--- Purges and deallocates all assigned permanent jobs from `permajobs`.
+---@field clearPermajobs fun(self: OrdersReceiver)
+--- Retrieves the display string name of a permanent job occupying a specified priority slot.
+---@field getPermajobName fun(self: OrdersReceiver, slot: integer): string
+--- Queries the `TaskType` enumeration of the permajob in a specified priority slot.
+---@field getPermajob fun(self: OrdersReceiver, slot: integer): integer
+--- Returns pointer to the underlying `Tasker` data descriptor of the permajob in a specified slot.
+---@field getPermajobData fun(self: OrdersReceiver, slot: integer): Tasker
+--- Returns the total number of configured permanent jobs currently assigned to this character.
+---@field getPermajobCount fun(self: OrdersReceiver): integer
+--- Checks whether a permajob of the specified task type is currently configured in `permajobs`.
+---@field hasPermajob fun(self: OrdersReceiver, t: integer): boolean
+--- Inserts an AI goal task into the appropriate priority tier array in `goals[5]`, triggering GOAP re-evaluation.
+---@field addGoal fun(self: OrdersReceiver, task: Tasker)
+--- Removes all AI goals matching specified task type across all priority tiers in `goals[5]`.
+---@field removeGoal fun(self: OrdersReceiver, task: integer)
+--- Checks whether an active goal of the specified task type exists in any priority tier.
+---@field hasGoal fun(self: OrdersReceiver, task: integer): boolean
+--- Updates target coordinate or target entity handle of the most recently enqueued player order.
+---@field updateLastOrder fun(self: OrdersReceiver, t: integer, subject: hand, location: table)
+--- Sets the `needGOAP` dirty flag to request a fresh AI task and goal re-evaluation on the next frame.
+---@field setNeedGOAP fun(self: OrdersReceiver)
+--- Non-virtual `setNeedGOAP`.
+---@field _NV_setNeedGOAP fun(self: OrdersReceiver)
+--- Peeks at the active head order at the front of the action deque (`orders`).
+---@field getFirstOrder fun(self: OrdersReceiver): Tasker
+--- Clears and deallocates all pending interactive orders in the action deque, halting manual player tasks.
+---@field clearOrders fun(self: OrdersReceiver)
+--- Clears all temporary dynamic jobs from `jobs` list.
+---@field clearJobs fun(self: OrdersReceiver)
+--- Internal routine clearing and deallocating all goal descriptors across all 5 priority tiers in `goals`.
+---@field _clearGoals fun(self: OrdersReceiver)
+--- Retrieves const reference to the currently selected active goal match descriptor (`currentGoal`).
+---@field getCurrentGoal fun(self: OrdersReceiver): TaskMatch
+--- Assigns or clears explicit 'Hold Position' stance orders (`holdPositionOrders`), anchoring character to current coordinate.
+---@field setHoldPositionOrders fun(self: OrdersReceiver, t?: Tasker)
+--- Non-virtual `setHoldPositionOrders`.
+---@field _NV_setHoldPositionOrders fun(self: OrdersReceiver, t?: Tasker)
+--- Checks whether the action deque contains any active, uncompleted manual player orders.
+---@field hasPlayerOrders fun(self: OrdersReceiver): boolean
+--- Checks whether a specific task type is currently pending within the player order deque.
+---@field hasPlayerOrder fun(self: OrdersReceiver, key: integer): boolean
+--- Queries whether the AI is currently in the middle of goal arbitration and candidate evaluation (`choosingGoalMode`).
+---@field isInChoosingGoalMode fun(self: OrdersReceiver): boolean
+--- Evaluates whether any commands (manual orders or hold position) are active on this receiver.
+---@field hasOrders fun(self: OrdersReceiver): boolean
+--- Clears and frees all delegated subordinate tasks stored in `slaveJobs`.
+---@field clearSlaveJobs fun(self: OrdersReceiver)
+--- Queries whether the automated permanent jobs execution toggle (`doJobsEnabled`) is active.
+---@field isJobsEnabled fun(self: OrdersReceiver): boolean
+--- Enables or disables autonomous permanent job execution (`doJobsEnabled`). When disabled, character idles rather than working.
+---@field setJobsEnabled fun(self: OrdersReceiver, on?: boolean)
+--- Resets and clears the currently executing goal (`currentGoal`), optionally forcing abort even during critical actions.
+---@field clearCurrentGoal fun(self: OrdersReceiver, force?: boolean)
+--- Evaluates candidate goals across priority tiers, orders deque, and permajobs, returning the winning `Tasker*` candidate.
+---@field tryToGetCurrentGoal fun(self: OrdersReceiver): Tasker
+--- Combat aggro stance (AGGRESSIVE, DEFENSIVE, EVASIVE).
+---@field aggroMode integer
+--- Pointer to master AI decision engine coordinator.
+---@field aiImplementation AI
+--- Active goal evaluation and arbitration status flag.
+---@field choosingGoalMode boolean
+--- Currently arbitrated and executing GOAP goal match structure.
+---@field currentGoal TaskMatch
+--- Priority tier classification of current goal.
+---@field currentGoalPriority integer
+--- Utility evaluation score of the active goal.
+---@field currentGoalScore number
+--- Global toggle enabling autonomous permanent job execution.
+---@field doJobsEnabled boolean
+--- Five priority tier buckets of active autonomous GOAP goals.
+---@field goals Lektor<Tasker>[]
+--- Explicit hold ground / stay put stance task pointer.
+---@field holdPositionOrders Tasker
+--- Dynamic temporary jobs list.
+---@field jobs Lektor<Tasker>
+--- Target entity or item handle of primary active goal.
+---@field mainGoalTarget hand
+--- Owning character actor entity.
+---@field me Character
+--- Dirty flag requesting fresh GOAP planning pass next frame.
+---@field needGOAP boolean
+--- FIFO deque of player interactive movement and command orders.
+---@field orders ActionDeque
+--- Ordered priority list of assigned permanent jobs.
+---@field permajobs Lektor<Tasker>
+--- Delegated slave/subordinate task request container.
+---@field slaveJobs Lektor<OrdersReceiver_TaskRequestSimple>
+--- Five priority tier buckets of platoon/squad AI packages.
+---@field squadAIPackage Lektor<Tasker>[]
+--- Passive block / hold ground defense mode toggle.
+---@field superDefenseMode boolean
+--- Nested enum table `OrdersReceiver.AggroType`.
+---@field AggroType OrdersReceiver.AggroType
+
+--- A slave job entry in `OrdersReceiver.slaveJobs`. Borrowed from the receiver.
+---@class OrdersReceiver_TaskRequestSimple
+--- Returns whether the entry matches the `Tasker`.
+---@field sameAs fun(self: OrdersReceiver_TaskRequestSimple, t: Tasker): boolean
+--- The job, as a `TaskType` value.
+---@field key integer
+--- Handle of the job's subject.
+---@field subject hand
+--- How the job picks its target, as a `TaskTargetType` value.
+---@field targeting integer
+
 --- Tracks money, home town, home building, slaves, and owned world objects (buildings, furniture, items) for a Faction or Platoon.
 ---@class Ownerships
 --- Associates this Ownerships instance with the specified Platoon.
@@ -22723,6 +23269,13 @@ taskPriority = {
 --- True if this character is unconscious.
 ---@field unconcious boolean
 
+--- Maps GOAP `StateType` values to the AI functions that test them. The engine's list is the static `AI::stateFuncs`, which KenshiLib does not export.
+---@class StateFunctionList
+--- Evaluates the test registered for `key` for the AI, subject handle, and position; `desired` is the wanted result.
+---@field isTrue fun(self: StateFunctionList, ai: AI, key: integer, h: hand, v: table, desired?: boolean): boolean
+--- Returns whether a test is registered for the `StateType`.
+---@field hasState fun(self: StateFunctionList, key: integer): boolean
+
 --- Subclass of PhysicalEntity representing a static visual and collision entity attached to a building, wall, or fixed world fixture.
 ---@class StaticEnt : PhysicalEntity
 --- Updates physical simulation state for this entity given the elapsed time speed.
@@ -22875,6 +23428,40 @@ taskPriority = {
 --- Persistent hand handle referencing the recipient object.
 ---@field target hand
 
+--- A mission or AI target: a handle, a position, and whether it names a town or a character. Values returned by the engine and by `TargetInfo(...)` are Lua-owned copies; `CampaignInstance._target` is borrowed.
+---@class TargetInfo
+--- Sets `targetType` from the object `what` refers to.
+---@field setupType fun(self: TargetInfo)
+--- Assigns a `hand` as the target (`operator=(const hand&)`) and returns this TargetInfo.
+---@field operator_assign fun(self: TargetInfo, arg1: hand): TargetInfo
+--- Returns the SDK `operator bool` result.
+---@field operator_bool fun(self: TargetInfo): boolean
+--- Returns whether the target is a town.
+---@field isTown fun(self: TargetInfo): boolean
+--- Returns whether the target is a character.
+---@field isCharacter fun(self: TargetInfo): boolean
+--- Returns the target as a `TownBase`, or nil.
+---@field getTown fun(self: TargetInfo): TownBase
+--- Returns the target as a `Character`, or nil.
+---@field getCharacter fun(self: TargetInfo): Character
+--- Returns the position to travel to when approaching the target from `from`.
+---@field getPositionForWaypoint fun(self: TargetInfo, from: table): table
+--- Target position.
+---@field pos table
+--- Whether the target is a town or a character, as a `TargetInfoType` value.
+---@field targetType integer
+--- Handle of the target object.
+---@field what hand
+
+--- A target handle paired with a score. `TargetWithScore(target, score)` and `TargetWithScore(other)` create Lua-owned values.
+---@class TargetWithScore
+--- Copies another `TargetWithScore` into this one and returns it.
+---@field operator_assign fun(self: TargetWithScore, arg1: TargetWithScore): TargetWithScore
+--- Score of the target.
+---@field score number
+--- Handle of the target.
+---@field target hand
+
 --- Static definition and AI planner metadata for a task type (TaskType), including GOAP state requirements, state results, scoring function, and job characteristics.
 ---@class TaskData
 --- Appends a GOAP state result with state key s (StateType), resulting value val, and progression-only flag progressional. Raises a Lua error when all 11 result slots are used, because the engine does not check the bound.
@@ -23013,6 +23600,37 @@ taskPriority = {
 ---@field subtarget hand
 --- The `TaskData` this match refers to, or nil.
 ---@field taskData TaskData
+
+--- A job request held by value in the `Blackboard` job lists and request map. `TaskRequest()` and `TaskRequest(other)` create Lua-owned values.
+---@class TaskRequest
+--- Returns whether the request matches the `Tasker`.
+---@field sameAs fun(self: TaskRequest, t: Tasker): boolean
+--- Returns the SDK `operator==` result for another `TaskRequest`.
+---@field operator_eq fun(self: TaskRequest, arg1: TaskRequest): boolean
+--- Copies another `TaskRequest` into this one and returns it.
+---@field operator_assign fun(self: TaskRequest, arg1: TaskRequest): TaskRequest
+--- What happens to squad jobs when the task ends, as a `TaskEndEvent` value.
+---@field endEvent integer
+--- End time of the request.
+---@field endTime integer
+--- Handle of the requester.
+---@field from hand
+--- The requested task, as a `TaskType` value.
+---@field key integer
+--- Priority of the request, as a `taskPriority` value.
+---@field priority integer
+--- Start time of the request.
+---@field startTime integer
+--- Handle of the task's subject.
+---@field subject hand
+--- How the task picks its target, as a `TaskTargetType` value.
+---@field targeting integer
+--- Timeout of the request.
+---@field timeout number
+--- Handle of the character the request is for.
+---@field to hand
+--- Weight of the request.
+---@field weight number
 
 --- AI task instance representing an assigned goal, job, or behavior routine, managing execution conditions, priorities, target subjects, and subtasks.
 ---@class Tasker
@@ -25708,6 +26326,9 @@ taskPriority = {
 --- Constructs a new BinaryVersion instance from a platform integer and a version string.
 ---@field new fun(arg1: integer, arg2: string): BinaryVersion
 
+--- Static functions registered on the `Blackboard_TaskInfo` global table.
+---@class Blackboard_TaskInfoStatics
+
 --- Static functions registered on the `BuildModeWindow` global table.
 ---@class BuildModeWindowStatics
 --- Compares two building material items to determine their sort ordering in the requirements list.
@@ -25938,8 +26559,17 @@ taskPriority = {
 --- Static function calculating the bounding coordinate dimensions for squad cell layout.
 ---@field getCellDimension fun(_sender: MyGUI.Widget, _coord?: MyGUI.IntCoord|boolean, _drop?: boolean): MyGUI.IntCoord
 
+--- Static functions registered on the `TargetInfo` global table.
+---@class TargetInfoStatics
+
+--- Static functions registered on the `TargetWithScore` global table.
+---@class TargetWithScoreStatics
+
 --- Static functions registered on the `TaskMatch` global table.
 ---@class TaskMatchStatics
+
+--- Static functions registered on the `TaskRequest` global table.
+---@class TaskRequestStatics
 
 --- Static functions registered on the `TitleScreen` global table.
 ---@class TitleScreenStatics
@@ -26242,6 +26872,11 @@ AppearanceManager = {}
 ---@diagnostic disable-next-line: missing-fields
 BinaryVersion = {}
 
+--- Global table of static functions for `Blackboard_TaskInfo`.
+---@type Blackboard_TaskInfoStatics
+---@diagnostic disable-next-line: missing-fields
+Blackboard_TaskInfo = {}
+
 --- Global table of static functions for `BuildModeWindow`.
 ---@type BuildModeWindowStatics
 ---@diagnostic disable-next-line: missing-fields
@@ -26392,10 +27027,25 @@ SaveManager = {}
 ---@diagnostic disable-next-line: missing-fields
 SquadCellView = {}
 
+--- Global table of static functions for `TargetInfo`.
+---@type TargetInfoStatics
+---@diagnostic disable-next-line: missing-fields
+TargetInfo = {}
+
+--- Global table of static functions for `TargetWithScore`.
+---@type TargetWithScoreStatics
+---@diagnostic disable-next-line: missing-fields
+TargetWithScore = {}
+
 --- Global table of static functions for `TaskMatch`.
 ---@type TaskMatchStatics
 ---@diagnostic disable-next-line: missing-fields
 TaskMatch = {}
+
+--- Global table of static functions for `TaskRequest`.
+---@type TaskRequestStatics
+---@diagnostic disable-next-line: missing-fields
+TaskRequest = {}
 
 --- Global table of static functions for `TitleScreen`.
 ---@type TitleScreenStatics
@@ -26506,6 +27156,11 @@ NXU = {}
 ---@type NavMeshGenerator
 ---@diagnostic disable-next-line: missing-fields
 NavMeshGenerator = {}
+
+--- Namespace table enclosing nested `OrdersReceiver` enums.
+---@type OrdersReceiver
+---@diagnostic disable-next-line: missing-fields
+OrdersReceiver = {}
 
 --- Namespace table enclosing nested `PortraitData` enums.
 ---@type PortraitData
@@ -27005,6 +27660,14 @@ NavMeshGenerator.TaskType = {
     GENERATE_STITCH = 4,
 }
 
+--- Aggression modes of an `OrdersReceiver`.
+---@enum OrdersReceiver.AggroType
+OrdersReceiver.AggroType = {
+    AI_AGGRESSIVE = 0,
+    AI_DEFENSIVE = 1,
+    AI_EVASIVE = 2,
+}
+
 --- UI portrait frame highlight and status badge state.
 ---@enum PortraitData.State
 PortraitData.State = {
@@ -27347,6 +28010,12 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
+---@overload fun(typeName: "lektor<TaskRequest>"): Lektor<TaskRequest>
+---@overload fun(typeName: "TaskRequest"): Lektor<TaskRequest>
+---@overload fun(typeName: "lektor<OrdersReceiver::TaskRequestSimple*>"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "OrdersReceiver::TaskRequestSimple*"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
+---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
 ---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
@@ -27377,6 +28046,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
+---@overload fun(typeName: "OrdersReceiver::TaskRequestSimple"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "Tasker"): Lektor<Tasker>
 ---@overload fun(typeName: string|table): Lektor<any>
 lektor = {}
 
@@ -27473,6 +28144,12 @@ lektor = {}
 ---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
+---@overload fun(typeName: "lektor<TaskRequest>"): Lektor<TaskRequest>
+---@overload fun(typeName: "TaskRequest"): Lektor<TaskRequest>
+---@overload fun(typeName: "lektor<OrdersReceiver::TaskRequestSimple*>"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "OrdersReceiver::TaskRequestSimple*"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
+---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
 ---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
@@ -27503,6 +28180,8 @@ lektor = {}
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
+---@overload fun(typeName: "OrdersReceiver::TaskRequestSimple"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "Tasker"): Lektor<Tasker>
 ---@param typeName string|table
 ---@return Lektor<any>
 function lektor.new(typeName) end
@@ -27573,6 +28252,10 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
+---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
+---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
+---@overload fun(keyType: "hand", valueType: "TaskRequest"): OgreUnorderedMap<hand, TaskRequest>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
 ---@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
@@ -27663,6 +28346,10 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
+---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
+---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
+---@overload fun(keyType: "hand", valueType: "TaskRequest"): OgreUnorderedMap<hand, TaskRequest>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
 ---@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
