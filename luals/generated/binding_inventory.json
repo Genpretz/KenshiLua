@@ -434,6 +434,17 @@
           "static": false
         },
         {
+          "callback": "AIBinding::getBlackboard",
+          "name": "getBlackboard",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Blackboard"
+            ]
+          },
+          "static": false
+        },
+        {
           "callback": "AIBinding::getHandle",
           "name": "getHandle",
           "signature": {
@@ -10531,6 +10542,585 @@
       "source": "src/Bindings/Kenshi/AIOptionsBinding.cpp"
     },
     {
+      "binding": "AIPackageBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AIPackage",
+      "metatable": "KenshiLua.AIPackage",
+      "methods": [
+        {
+          "callback": "AIPackageBinding::notifyMyTargetPathfindImpossible",
+          "name": "notifyMyTargetPathfindImpossible",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "was",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_notifyMyTargetPathfindImpossible",
+          "name": "_NV_notifyMyTargetPathfindImpossible",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "was",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::getDesiredTravelSpeed",
+          "name": "getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_getDesiredTravelSpeed",
+          "name": "_NV_getDesiredTravelSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::getLeader",
+          "name": "getLeader",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Character"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::save",
+          "name": "save",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_save",
+          "name": "_NV_save",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::load",
+          "name": "load",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_load",
+          "name": "_NV_load",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::activateAndSetup",
+          "name": "activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_activateAndSetup",
+          "name": "_NV_activateAndSetup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::endPackage",
+          "name": "endPackage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_endPackage",
+          "name": "_NV_endPackage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::notifyBetrayal",
+          "name": "notifyBetrayal",
+          "signature": {
+            "params": [
+              {
+                "name": "myWitness",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "betrayer",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_notifyBetrayal",
+          "name": "_NV_notifyBetrayal",
+          "signature": {
+            "params": [
+              {
+                "name": "myWitness",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "betrayer",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::periodicUpdate",
+          "name": "periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_periodicUpdate",
+          "name": "_NV_periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::assessNeutral",
+          "name": "assessNeutral",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_assessNeutral",
+          "name": "_NV_assessNeutral",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::assessEnemy",
+          "name": "assessEnemy",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_assessEnemy",
+          "name": "_NV_assessEnemy",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::signalStart",
+          "name": "signalStart",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_signalStart",
+          "name": "_NV_signalStart",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::signalEnd",
+          "name": "signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_signalEnd",
+          "name": "_NV_signalEnd",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::iAmActivePackage",
+          "name": "iAmActivePackage",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::getGUIData",
+          "name": "getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "panel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_getGUIData",
+          "name": "_NV_getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "panel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::autoNotifyJobsPanel",
+          "name": "autoNotifyJobsPanel",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_autoNotifyJobsPanel",
+          "name": "_NV_autoNotifyJobsPanel",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::wantsRenewButton",
+          "name": "wantsRenewButton",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_wantsRenewButton",
+          "name": "_NV_wantsRenewButton",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::showManagementPanelCallback",
+          "name": "showManagementPanelCallback",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_showManagementPanelCallback",
+          "name": "_NV_showManagementPanelCallback",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::wasASuccess",
+          "name": "wasASuccess",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AIPackageBinding::_NV_wasASuccess",
+          "name": "_NV_wasASuccess",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "blackboard",
+          "type": "Blackboard"
+        },
+        {
+          "access": "readwrite",
+          "name": "endingDialogActive",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "endingDialogPassive",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "key",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "leadsToPackage",
+          "type": "AIPackage"
+        },
+        {
+          "access": "readwrite",
+          "name": "missionEmployer",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "missionTarget",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "missionTown",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "packageData",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "priorityLevel",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "squad",
+          "type": "Platoon"
+        },
+        {
+          "access": "readwrite",
+          "name": "unloadedMode",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "wasBetrayed",
+          "type": "boolean"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/AIPackageBinding.cpp"
+    },
+    {
       "binding": "AbstractMovementBaseBinding",
       "global_names": [],
       "has_constructor": false,
@@ -12083,7 +12673,7 @@
               {
                 "name": "extra",
                 "optional": true,
-                "type": "lightuserdata"
+                "type": "Serialisable"
               }
             ],
             "returns": [
@@ -12106,7 +12696,7 @@
               {
                 "name": "extra",
                 "optional": true,
-                "type": "lightuserdata"
+                "type": "Serialisable"
               }
             ],
             "returns": [
@@ -12732,7 +13322,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "CombatTechniqueData|string"
+                "type": "AnimationData|CombatTechniqueData|string"
               }
             ],
             "returns": [
@@ -12878,6 +13468,24 @@
           "static": false
         },
         {
+          "callback": "AnimationClassBaseBinding::getAnimationCurrentWeight",
+          "name": "getAnimationCurrentWeight",
+          "signature": {
+            "params": [
+              {
+                "name": "name",
+                "optional": false,
+                "type": "AnimationData"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "AnimationClassBaseBinding::getTotalActionAnimationWeight",
           "name": "getTotalActionAnimationWeight",
           "signature": {
@@ -12895,6 +13503,59 @@
             "params": [],
             "returns": [
               "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBaseBinding::getAnimation_Medic",
+          "name": "getAnimation_Medic",
+          "signature": {
+            "params": [
+              {
+                "name": "inwhat",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "AnimationData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBaseBinding::getAnimation_Lockpick",
+          "name": "getAnimation_Lockpick",
+          "signature": {
+            "params": [
+              {
+                "name": "inwhat",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "AnimationData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBaseBinding::getAnimationData",
+          "name": "getAnimationData",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationData"
             ]
           },
           "static": false
@@ -13001,6 +13662,22 @@
           "static": false
         },
         {
+          "callback": "AnimationClassBinding::startStumble",
+          "name": "startStumble",
+          "signature": {
+            "params": [
+              {
+                "name": "anim",
+                "optional": true,
+                "type": "AnimationData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "AnimationClassBinding::endStumble",
           "name": "endStumble",
           "signature": {
@@ -13016,6 +13693,17 @@
             "params": [],
             "returns": [
               "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getCurrentlyStumbleAnim",
+          "name": "getCurrentlyStumbleAnim",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData"
             ]
           },
           "static": false
@@ -13286,7 +13974,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "string"
+                "type": "AnimationData|string"
               },
               {
                 "name": "arg2",
@@ -13473,6 +14161,24 @@
                 "name": "name",
                 "optional": false,
                 "type": "string"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::isLinearAnimationDone",
+          "name": "isLinearAnimationDone",
+          "signature": {
+            "params": [
+              {
+                "name": "anim",
+                "optional": true,
+                "type": "AnimationData"
               }
             ],
             "returns": [
@@ -13850,7 +14556,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "string"
+                "type": "AnimationData|string"
               },
               {
                 "name": "arg2",
@@ -13860,10 +14566,46 @@
               {
                 "name": "arg3",
                 "optional": false,
+                "type": "integer|number"
+              },
+              {
+                "name": "arg4",
+                "optional": false,
                 "type": "number"
+              },
+              {
+                "name": "arg5",
+                "optional": false,
+                "type": "string"
               }
             ],
             "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::runAnimation_manualTiming",
+          "name": "runAnimation_manualTiming",
+          "signature": {
+            "params": [
+              {
+                "name": "anim",
+                "optional": false,
+                "type": "AnimationData"
+              },
+              {
+                "name": "time01",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "blend",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         },
@@ -13936,7 +14678,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "string"
+                "type": "AnimationData|string"
               },
               {
                 "name": "arg2",
@@ -13961,7 +14703,7 @@
               {
                 "name": "arg1",
                 "optional": false,
-                "type": "string"
+                "type": "AnimationData|string"
               }
             ],
             "returns": []
@@ -13974,6 +14716,76 @@
           "signature": {
             "params": [],
             "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getAnimationData",
+          "name": "getAnimationData",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "GameData|string"
+              }
+            ],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::_NV_getAnimationData",
+          "name": "_NV_getAnimationData",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "GameData|string"
+              }
+            ],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getAnimationDataByOgreName",
+          "name": "getAnimationDataByOgreName",
+          "signature": {
+            "params": [
+              {
+                "name": "name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::_NV_getAnimationDataByOgreName",
+          "name": "_NV_getAnimationDataByOgreName",
+          "signature": {
+            "params": [
+              {
+                "name": "name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationData"
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -14566,6 +15378,100 @@
           "static": false
         },
         {
+          "callback": "AnimationClassBinding::chooseStumbleAnim",
+          "name": "chooseStumbleAnim",
+          "signature": {
+            "params": [
+              {
+                "name": "bodypart",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "hitFrom",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "bigone",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "AnimationData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getIdleAnimation",
+          "name": "getIdleAnimation",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::_NV_getIdleAnimation",
+          "name": "_NV_getIdleAnimation",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getFloatingAnim",
+          "name": "getFloatingAnim",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::_NV_getFloatingAnim",
+          "name": "_NV_getFloatingAnim",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getStandingUpAnim",
+          "name": "getStandingUpAnim",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::_NV_getStandingUpAnim",
+          "name": "_NV_getStandingUpAnim",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData"
+            ]
+          },
+          "static": false
+        },
+        {
           "callback": "AnimationClassBinding::hasAction",
           "name": "hasAction",
           "signature": {
@@ -14615,6 +15521,48 @@
             "params": [
               {
                 "name": "_TIME",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::runStrafe",
+          "name": "runStrafe",
+          "signature": {
+            "params": [
+              {
+                "name": "strafe",
+                "optional": true,
+                "type": "AnimationData"
+              },
+              {
+                "name": "weightLimit",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::_NV_runStrafe",
+          "name": "_NV_runStrafe",
+          "signature": {
+            "params": [
+              {
+                "name": "strafe",
+                "optional": true,
+                "type": "AnimationData"
+              },
+              {
+                "name": "weightLimit",
                 "optional": false,
                 "type": "number"
               }
@@ -14712,6 +15660,11 @@
         },
         {
           "access": "readwrite",
+          "name": "defaultIdleAnimation",
+          "type": "AnimationData"
+        },
+        {
+          "access": "readwrite",
           "name": "disableRagdollKinematics",
           "type": "integer"
         },
@@ -14745,6 +15698,248 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Animation/AnimationClassBinding.cpp"
+    },
+    {
+      "binding": "AnimationDataBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationData",
+      "metatable": "KenshiLua.AnimationData",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "_rawData",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "animName",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "bigStumble",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "carried",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "carryingLeft",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "carryingRight",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "category",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "crouched",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "dataName",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "holdingWeaponL",
+          "type": "YesNoMaybeValue"
+        },
+        {
+          "access": "readwrite",
+          "name": "holdingWeaponR",
+          "type": "YesNoMaybeValue"
+        },
+        {
+          "access": "readwrite",
+          "name": "idealMoveSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "idleChance",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "idleTimeMax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "idleTimeMin",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "isAction",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "isCombatMode",
+          "type": "YesNoMaybeValue"
+        },
+        {
+          "access": "readwrite",
+          "name": "isStealthMode",
+          "type": "YesNoMaybeValue"
+        },
+        {
+          "access": "readwrite",
+          "name": "layername",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageLIdeal",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageLmax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageLmin",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageRIdeal",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageRmax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageRmin",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "looped",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "maxMoveSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "minMoveSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "normalise",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "playSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "possibleEndingPosition",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "prone",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "relocates",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "restrictsMovementOrders",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "slave",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "stumbleBodyParts",
+          "type": "OgreUnorderedSet<GameData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "stumbleOrigination",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "stumbleRarityMult",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "synchOffset",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "synched",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "usesLeftArm",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "usesRightArm",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "weaponTypeFlags",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherType",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "wholeBodyAllLayer",
+          "type": "boolean"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationDataBinding.cpp"
     },
     {
       "binding": "AppearanceAnimalBinding",
@@ -16916,7 +18111,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "OgreFastArray<lightuserdata>"
+              "OgreFastArray<AnimationData>"
             ]
           },
           "static": false
@@ -16928,7 +18123,7 @@
         {
           "access": "readwrite",
           "name": "characterIdleAnimations",
-          "type": "OgreFastArray<lightuserdata>"
+          "type": "OgreFastArray<AnimationData>"
         },
         {
           "access": "readwrite",
@@ -18614,6 +19809,1258 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/BinaryVersionBinding.cpp"
+    },
+    {
+      "binding": "BlackboardBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Blackboard",
+      "metatable": "KenshiLua.Blackboard",
+      "methods": [
+        {
+          "callback": "BlackboardBinding::createNewPackage",
+          "name": "createNewPackage",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "priority",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "giver",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "AIPackage"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::_setContractJob",
+          "name": "_setContractJob",
+          "signature": {
+            "params": [
+              {
+                "name": "package",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "hours",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "giver",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::_addPackage",
+          "name": "_addPackage",
+          "signature": {
+            "params": [
+              {
+                "name": "package",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::clearAllPackages",
+          "name": "clearAllPackages",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::_activateCurrentPackage",
+          "name": "_activateCurrentPackage",
+          "signature": {
+            "params": [
+              {
+                "name": "package",
+                "optional": false,
+                "type": "AIPackage"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::_addFromData",
+          "name": "_addFromData",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getPackage",
+          "name": "getPackage",
+          "signature": {
+            "params": [
+              {
+                "name": "sid",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AIPackage"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getPackageList",
+          "name": "getPackageList",
+          "signature": {
+            "params": [
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "Lektor<AIPackage>"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::periodicPackageCheck",
+          "name": "periodicPackageCheck",
+          "signature": {
+            "params": [
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "frameTime",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::dialogEventsCheck",
+          "name": "dialogEventsCheck",
+          "signature": {
+            "params": [
+              {
+                "name": "line",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::setContractJob",
+          "name": "setContractJob",
+          "signature": {
+            "params": [
+              {
+                "name": "packageCollection",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "giver",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::endContractJob",
+          "name": "endContractJob",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::isMissionComplete",
+          "name": "isMissionComplete",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::isTargetMarkedForDeath",
+          "name": "isTargetMarkedForDeath",
+          "signature": {
+            "params": [
+              {
+                "name": "cage",
+                "optional": false,
+                "type": "Building"
+              },
+              {
+                "name": "t",
+                "optional": false,
+                "type": "TownBase"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "frameTime",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::periodicUpdate",
+          "name": "periodicUpdate",
+          "signature": {
+            "params": [
+              {
+                "name": "frameTime",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::addPackages",
+          "name": "addPackages",
+          "signature": {
+            "params": [
+              {
+                "name": "packageCollection",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::addFallbackPackages",
+          "name": "addFallbackPackages",
+          "signature": {
+            "params": [
+              {
+                "name": "packageCollection_faction",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::replaceAIPackage",
+          "name": "replaceAIPackage",
+          "signature": {
+            "params": [
+              {
+                "name": "package",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getCurrentAIPackageName",
+          "name": "getCurrentAIPackageName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getCurrentAIPackageGUIData",
+          "name": "getCurrentAIPackageGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "panel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              },
+              {
+                "name": "cat",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::assessNeutral",
+          "name": "assessNeutral",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::assessEnemy",
+          "name": "assessEnemy",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getCurrentPackage",
+          "name": "getCurrentPackage",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AIPackage"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getFormationPositionOffset",
+          "name": "getFormationPositionOffset",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "table"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::nodifyFormationUpdate",
+          "name": "nodifyFormationUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getOwnerships",
+          "name": "getOwnerships",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Ownerships"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::notifyGoalStart",
+          "name": "notifyGoalStart",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              },
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::notifyGoalEnd",
+          "name": "notifyGoalEnd",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::notifySubTarget",
+          "name": "notifySubTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::howManyGuysDoingThisGoal",
+          "name": "howManyGuysDoingThisGoal",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              },
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::howManyGuysWorkingOnThisSubTarget",
+          "name": "howManyGuysWorkingOnThisSubTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker|hand"
+              },
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "subtarget",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::isMySubTarget",
+          "name": "isMySubTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              },
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "subtarget",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getSubTarget",
+          "name": "getSubTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::addRequest",
+          "name": "addRequest",
+          "signature": {
+            "params": [
+              {
+                "name": "from",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "to",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "subject",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "pri",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "weight",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::removeRequest",
+          "name": "removeRequest",
+          "signature": {
+            "params": [
+              {
+                "name": "from",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::notifyJobCompleted",
+          "name": "notifyJobCompleted",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "subj",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "me",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::addSquadJob",
+          "name": "addSquadJob",
+          "signature": {
+            "params": [
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "subject",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "pri",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "weight",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "targeting",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "ending",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "startTime",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "endTime",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getUnloadedPlatoonJob",
+          "name": "getUnloadedPlatoonJob",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::clearAllTheJobs",
+          "name": "clearAllTheJobs",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::serialise",
+          "name": "serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::load",
+          "name": "load",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::stateUpdate",
+          "name": "stateUpdate",
+          "signature": {
+            "params": [
+              {
+                "name": "frameTime",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::notifyMissionTargetPathfindImpossible",
+          "name": "notifyMissionTargetPathfindImpossible",
+          "signature": {
+            "params": [
+              {
+                "name": "forWho",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getMissionTown",
+          "name": "getMissionTown",
+          "signature": {
+            "params": [
+              {
+                "name": "getHometownAsFallback",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getMissionGiver",
+          "name": "getMissionGiver",
+          "signature": {
+            "params": [],
+            "returns": [
+              "hand"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getCurrentTownLocation",
+          "name": "getCurrentTownLocation",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TownBase"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getTimeSpentInTown_inGameHours",
+          "name": "getTimeSpentInTown_inGameHours",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::setMyHomeIsLocked",
+          "name": "setMyHomeIsLocked",
+          "signature": {
+            "params": [
+              {
+                "name": "on",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getMyHomeIsLocked",
+          "name": "getMyHomeIsLocked",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getHomeGate",
+          "name": "getHomeGate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "hand"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::hasContractJob",
+          "name": "hasContractJob",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getContractExpiryTime",
+          "name": "getContractExpiryTime",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TimeOfDay"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::contractJobNotifyBetrayal",
+          "name": "contractJobNotifyBetrayal",
+          "signature": {
+            "params": [
+              {
+                "name": "myWitness",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "betrayer",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::contractJobWasBetrayal",
+          "name": "contractJobWasBetrayal",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::showEndedMessage",
+          "name": "showEndedMessage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::_NV_showEndedMessage",
+          "name": "_NV_showEndedMessage",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::_setupJobFromData",
+          "name": "_setupJobFromData",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "listname",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "listEnum",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::countCharacters",
+          "name": "countCharacters",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::runAwayCheck",
+          "name": "runAwayCheck",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::runAway",
+          "name": "runAway",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::buildFormation",
+          "name": "buildFormation",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "BlackboardBinding::getGridPositions",
+          "name": "getGridPositions",
+          "signature": {
+            "params": [
+              {
+                "name": "gridWidth",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "gridHeight",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "size",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "initialX",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "radius",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "spacingX",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "spacingZ",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "table[]"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "HIGHEST_PRIORITY_LEVEL",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "_flagCleared",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "_homeGateTarget",
+          "type": "hand"
+        },
+        {
+          "access": "readonly",
+          "name": "actionTargets",
+          "type": "OgreUnorderedMap<integer, hand>"
+        },
+        {
+          "access": "readwrite",
+          "name": "cageMarkedForDeath",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "characterCount",
+          "type": "integer"
+        },
+        {
+          "access": "readonly",
+          "name": "characterFormationPosition",
+          "type": "OgreUnorderedMap<hand, table>"
+        },
+        {
+          "access": "readwrite",
+          "name": "contractExpiryTime",
+          "type": "TimeOfDay"
+        },
+        {
+          "access": "readonly",
+          "name": "contractJob",
+          "type": "AIPackage"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentPackage",
+          "type": "AIPackage"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentPackagePriorityLevel",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentTownLocation",
+          "type": "TownBase"
+        },
+        {
+          "access": "readwrite",
+          "name": "enemyCount",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "formationNeedUpdate",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "homeIsLockedUp",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "missionData",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "moraleIsBroken",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "needsStateUpdate",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "replacementAIPackageSID",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "runningAwayMode",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "squad",
+          "type": "Platoon"
+        },
+        {
+          "access": "readwrite",
+          "name": "targetTown",
+          "type": "TownBase"
+        },
+        {
+          "access": "readwrite",
+          "name": "targetZoneHunting",
+          "type": "ZoneMap"
+        },
+        {
+          "access": "readwrite",
+          "name": "townArrivalTime",
+          "type": "TimeOfDay"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
     },
     {
       "binding": "BoundsViolationBinding",
@@ -24899,6 +27346,1141 @@
       "source": "src/Bindings/Kenshi/CameraClassBinding.cpp"
     },
     {
+      "binding": "CampaignDataBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "CampaignData",
+      "metatable": "KenshiLua.CampaignData",
+      "methods": [
+        {
+          "callback": "CampaignDataBinding::_setupPackages",
+          "name": "_setupPackages",
+          "signature": {
+            "params": [
+              {
+                "name": "d",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "listname",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "state",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::_addDataFrom",
+          "name": "_addDataFrom",
+          "signature": {
+            "params": [
+              {
+                "name": "d",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::reset",
+          "name": "reset",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::key",
+          "name": "key",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::isHostile",
+          "name": "isHostile",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::getDisplayName",
+          "name": "getDisplayName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::isTriggersRandomly",
+          "name": "isTriggersRandomly",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::chooseTarget",
+          "name": "chooseTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "enemy",
+                "optional": false,
+                "type": "Faction"
+              }
+            ],
+            "return_values": [
+              "RootObjectBase|nil",
+              "TownBase|nil"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::_NV_chooseTarget",
+          "name": "_NV_chooseTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "enemy",
+                "optional": false,
+                "type": "Faction"
+              }
+            ],
+            "return_values": [
+              "RootObjectBase|nil",
+              "TownBase|nil"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::territorialTriggerScore",
+          "name": "territorialTriggerScore",
+          "signature": {
+            "params": [
+              {
+                "name": "enemy",
+                "optional": false,
+                "type": "Faction"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "RootObjectBase"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::_NV_territorialTriggerScore",
+          "name": "_NV_territorialTriggerScore",
+          "signature": {
+            "params": [
+              {
+                "name": "enemy",
+                "optional": false,
+                "type": "Faction"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "RootObjectBase"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::canStart",
+          "name": "canStart",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::_NV_canStart",
+          "name": "_NV_canStart",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::numForcesNeeded",
+          "name": "numForcesNeeded",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::ignoresMults",
+          "name": "ignoresMults",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignDataBinding::canUseThisSquad",
+          "name": "canUseThisSquad",
+          "signature": {
+            "params": [
+              {
+                "name": "squadTemplate",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "_isHostile",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "allyTriggers",
+          "type": "Lektor<GameData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "campaignType",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "data",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "factionOverride",
+          "type": "Faction"
+        },
+        {
+          "access": "readwrite",
+          "name": "hasAssaultPhase",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "lastTerritorialTrigger",
+          "type": "TimeOfDay"
+        },
+        {
+          "access": "readonly",
+          "name": "lossTriggers",
+          "type": "FitnessSelectorCampaignTriggerData"
+        },
+        {
+          "access": "readwrite",
+          "name": "me",
+          "type": "Faction"
+        },
+        {
+          "access": "readwrite",
+          "name": "repeatLimit",
+          "type": "number"
+        },
+        {
+          "access": "readonly",
+          "name": "spawns",
+          "type": "GameDataFitnessSelector"
+        },
+        {
+          "access": "readonly",
+          "name": "specificLeaderCharacter",
+          "type": "Lektor<GameData>"
+        },
+        {
+          "access": "readonly",
+          "name": "specificTargetCharacter",
+          "type": "Lektor<GameData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "targetCharacters",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggerChancePerDay01",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggerRangeFurthest",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggerRangeNear",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggerTargetPopulation",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggerTargetTechLevel",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggerTimeMax",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggerTimeMin",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "triggersRandomly_territorial",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "victoryTriggers",
+          "type": "FitnessSelectorCampaignTriggerData"
+        },
+        {
+          "access": "readonly",
+          "name": "worldStateRequirements",
+          "type": "WorldEventStateQueryList"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/CampaignDataBinding.cpp"
+    },
+    {
+      "binding": "CampaignInstanceBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "CampaignInstance",
+      "metatable": "KenshiLua.CampaignInstance",
+      "methods": [
+        {
+          "callback": "CampaignInstanceBinding::getData",
+          "name": "getData",
+          "signature": {
+            "params": [],
+            "returns": [
+              "CampaignData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::changePhase",
+          "name": "changePhase",
+          "signature": {
+            "params": [
+              {
+                "name": "p",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::saveState",
+          "name": "saveState",
+          "signature": {
+            "params": [
+              {
+                "name": "s",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "id",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::loadState",
+          "name": "loadState",
+          "signature": {
+            "params": [
+              {
+                "name": "s",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "id",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::markOnMap",
+          "name": "markOnMap",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_markOnMap",
+          "name": "_NV_markOnMap",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getDialogData",
+          "name": "getDialogData",
+          "signature": {
+            "params": [
+              {
+                "name": "ev",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "GameData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::hasSufficientManpower",
+          "name": "hasSufficientManpower",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::victoryEvent",
+          "name": "victoryEvent",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_victoryEvent",
+          "name": "_NV_victoryEvent",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::lossEvent",
+          "name": "lossEvent",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_lossEvent",
+          "name": "_NV_lossEvent",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::setLeader",
+          "name": "setLeader",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_setLeader",
+          "name": "_NV_setLeader",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getLeader",
+          "name": "getLeader",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Character"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getLeader",
+          "name": "_NV_getLeader",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Character"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getLeaderPlatoon",
+          "name": "getLeaderPlatoon",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Platoon"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getLeaderPlatoon",
+          "name": "_NV_getLeaderPlatoon",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Platoon"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::isEnemy",
+          "name": "isEnemy",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_isEnemy",
+          "name": "_NV_isEnemy",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getName",
+          "name": "getName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getName",
+          "name": "_NV_getName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::setup",
+          "name": "setup",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_setup",
+          "name": "_NV_setup",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::periodicUpdate",
+          "name": "periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_periodicUpdate",
+          "name": "_NV_periodicUpdate",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::isEverybodyIdle",
+          "name": "isEverybodyIdle",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_isEverybodyIdle",
+          "name": "_NV_isEverybodyIdle",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getUnloadedPlatoonBehavior",
+          "name": "getUnloadedPlatoonBehavior",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getUnloadedPlatoonBehavior",
+          "name": "_NV_getUnloadedPlatoonBehavior",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getAIPackage",
+          "name": "getAIPackage",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "GameData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getAIPackage",
+          "name": "_NV_getAIPackage",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "GameData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::addToCampaign",
+          "name": "addToCampaign",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              },
+              {
+                "name": "forceLeader",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_addToCampaign",
+          "name": "_NV_addToCampaign",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              },
+              {
+                "name": "forceLeader",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::areForcesAllTogether",
+          "name": "areForcesAllTogether",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_areForcesAllTogether",
+          "name": "_NV_areForcesAllTogether",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::removeFromCampaign",
+          "name": "removeFromCampaign",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_removeFromCampaign",
+          "name": "_NV_removeFromCampaign",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getMoveSpeedUnloaded",
+          "name": "getMoveSpeedUnloaded",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getMoveSpeedUnloaded",
+          "name": "_NV_getMoveSpeedUnloaded",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getMoveSpeedLoaded",
+          "name": "getMoveSpeedLoaded",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getMoveSpeedLoaded",
+          "name": "_NV_getMoveSpeedLoaded",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getTargetTown",
+          "name": "getTargetTown",
+          "signature": {
+            "params": [],
+            "returns": [
+              "hand"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getTargetTown",
+          "name": "_NV_getTargetTown",
+          "signature": {
+            "params": [],
+            "returns": [
+              "hand"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getFormationPosition",
+          "name": "getFormationPosition",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "table"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::getDestination",
+          "name": "getDestination",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "table"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::_NV_getDestination",
+          "name": "_NV_getDestination",
+          "signature": {
+            "params": [
+              {
+                "name": "who",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "table"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CampaignInstanceBinding::isSuccessful",
+          "name": "isSuccessful",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "canTalkToBeforeArrival",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentPhase",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "enemy",
+          "type": "Faction"
+        },
+        {
+          "access": "readwrite",
+          "name": "hasTriggeredSomething",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "homeTown",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "leader",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "manPowerLastCount",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "manPowerMax",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "manPowerMin",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "me",
+          "type": "Faction"
+        },
+        {
+          "access": "readonly",
+          "name": "membersInOrder",
+          "type": "Lektor<hand>"
+        },
+        {
+          "access": "readwrite",
+          "name": "myData",
+          "type": "CampaignData"
+        },
+        {
+          "access": "readwrite",
+          "name": "phaseChangeTime",
+          "type": "TimeOfDay"
+        },
+        {
+          "access": "readwrite",
+          "name": "reachedDestination",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "timeWithNoEnemies",
+          "type": "TimeOfDay"
+        },
+        {
+          "access": "readwrite",
+          "name": "travelSpeedLoaded",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "travelSpeedUnloaded",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "uniqueID",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/CampaignInstanceBinding.cpp"
+    },
+    {
       "binding": "CampaignRequestBinding",
       "global_names": [],
       "has_constructor": false,
@@ -24924,7 +28506,7 @@
         {
           "access": "readonly",
           "name": "data",
-          "type": "lightuserdata"
+          "type": "CampaignData"
         },
         {
           "access": "readwrite",
@@ -30673,7 +34255,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "CampaignInstance"
             ]
           },
           "static": false
@@ -35013,7 +38595,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "Blackboard"
             ]
           },
           "static": false
@@ -37997,7 +41579,7 @@
         {
           "access": "readwrite",
           "name": "idleAnimations",
-          "type": "OgreFastArray<lightuserdata>"
+          "type": "OgreFastArray<AnimationData>"
         },
         {
           "access": "readwrite",
@@ -56268,7 +59850,7 @@
               {
                 "name": "c",
                 "optional": false,
-                "type": "lightuserdata"
+                "type": "CampaignInstance"
               }
             ],
             "returns": [],
@@ -56289,7 +59871,7 @@
               {
                 "name": "c",
                 "optional": false,
-                "type": "lightuserdata"
+                "type": "CampaignInstance"
               }
             ],
             "returns": [],
@@ -56310,7 +59892,7 @@
               {
                 "name": "c",
                 "optional": false,
-                "type": "lightuserdata"
+                "type": "CampaignInstance"
               }
             ],
             "returns": [],
@@ -56367,7 +59949,7 @@
               {
                 "name": "data",
                 "optional": false,
-                "type": "GameData|RootObjectBase|lightuserdata"
+                "type": "CampaignData|GameData|RootObjectBase"
               },
               {
                 "name": "home",
@@ -56396,7 +59978,7 @@
               }
             ],
             "returns": [
-              "lightuserdata",
+              "CampaignInstance",
               "nil"
             ],
             "type_source": "header"
@@ -56415,7 +59997,7 @@
               }
             ],
             "returns": [
-              "lightuserdata"
+              "CampaignInstance"
             ],
             "type_source": "header"
           },
@@ -56547,7 +60129,7 @@
               }
             ],
             "returns": [
-              "lightuserdata"
+              "CampaignInstance"
             ],
             "type_source": "header"
           },
@@ -56574,7 +60156,7 @@
               }
             ],
             "returns": [
-              "lightuserdata"
+              "CampaignData"
             ],
             "type_source": "header"
           },
@@ -56587,7 +60169,7 @@
         {
           "access": "readwrite",
           "name": "activeCampaigns",
-          "type": "lightuserdata"
+          "type": "Lektor<CampaignInstance>"
         },
         {
           "access": "readwrite",
@@ -56608,7 +60190,8 @@
         {
           "access": "readwrite",
           "name": "forces",
-          "type": "lightuserdata"
+          "type": "StdMap<Platoon, CampaignInstance>",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -56638,7 +60221,7 @@
         {
           "access": "readwrite",
           "name": "possibleCampaigns",
-          "type": "lightuserdata"
+          "type": "Lektor<CampaignData>"
         }
       ],
       "registered_from": [
@@ -64340,7 +67923,7 @@
               {
                 "name": "moreData",
                 "optional": true,
-                "type": "lightuserdata"
+                "type": "Serialisable"
               }
             ],
             "returns": [
@@ -64373,7 +67956,7 @@
               {
                 "name": "moreData",
                 "optional": true,
-                "type": "lightuserdata"
+                "type": "Serialisable"
               },
               {
                 "name": "keepDeletedInstances",
@@ -64401,7 +67984,7 @@
               {
                 "name": "moreData",
                 "optional": true,
-                "type": "lightuserdata"
+                "type": "Serialisable"
               }
             ],
             "returns": [
@@ -93462,7 +97045,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "CampaignInstance"
             ]
           },
           "static": false
@@ -93585,7 +97168,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "Blackboard"
             ]
           },
           "static": false
@@ -94294,9 +97877,9 @@
           "type": "ActivePlatoon"
         },
         {
-          "access": "readwrite",
+          "access": "readonly",
           "name": "blackboard",
-          "type": "lightuserdata"
+          "type": "Blackboard"
         },
         {
           "access": "readwrite",
@@ -108211,6 +111794,22 @@
       "source": "src/Bindings/Kenshi/SensoryDataBinding.cpp"
     },
     {
+      "binding": "SerialisableBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Serialisable",
+      "metatable": "KenshiLua.Serialisable",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/SerialisableBinding.cpp"
+    },
+    {
       "binding": "ShopTraderBinding",
       "global_names": [],
       "has_constructor": false,
@@ -112711,6 +116310,157 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/TaskDataBinding.cpp"
+    },
+    {
+      "binding": "TaskMatchBinding",
+      "global_names": [
+        "TaskMatch"
+      ],
+      "has_constructor": true,
+      "kind": "class",
+      "lua_type": "TaskMatch",
+      "metatable": "KenshiLua.TaskMatch",
+      "methods": [
+        {
+          "callback": "TaskMatchBinding::getTaskData",
+          "name": "getTaskData",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TaskData"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::key",
+          "name": "key",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::operator_assign",
+          "name": "operator_assign",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "TaskMatch"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::reset",
+          "name": "reset",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::operator_eq",
+          "name": "operator_eq",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::operator_ne",
+          "name": "operator_ne",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::sameAs",
+          "name": "sameAs",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "Tasker"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::operator_lt",
+          "name": "operator_lt",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "TaskMatch"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskMatchBinding::operator_bool",
+          "name": "operator_bool",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "subject",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "subtarget",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "taskData",
+          "type": "TaskData"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AI/TaskMatchBinding.cpp"
     },
     {
       "binding": "TaskStateDataBinding",
@@ -133293,8 +137043,239 @@
     },
     {
       "binding": "AnimationDataFastArrayBinding",
+      "element_refs": [
+        "binding:AnimationDataBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "AnimationData"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "AnimationData|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreFastArray<AnimationData>",
+      "metatable": "Ogre::FastArray<AnimationData*>",
+      "methods": [
+        {
+          "callback": "push_back",
+          "name": "push_back",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "AnimationData"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "push_back",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "AnimationData"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop_back",
+          "name": "pop_back",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop_back",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "front",
+          "name": "front",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "back",
+          "name": "back",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "empty",
+          "name": "empty",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "reserve",
+          "name": "reserve",
+          "signature": {
+            "params": [
+              {
+                "name": "count",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, AnimationData>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AppearanceManagerBinding",
+        "CharacterEditWindowBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AppearanceManagerBinding.cpp",
+        "src/Bindings/Kenshi/Gui/CharacterEditWindowBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreFastArrayBinding.h",
+      "template": "OgreFastArrayPtrBinding",
+      "template_args": [
+        "AnimationData*"
+      ]
+    },
+    {
+      "binding": "Array2dBinding<Item>",
+      "element_refs": [
+        "binding:ItemBinding"
+      ],
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "template_instance",
+      "lua_type": "ItemArray2d",
+      "metatable": "KenshiLua.Array2d<Item>",
+      "methods": [],
+      "owners": [
+        "InventorySectionBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "nCols",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "nRows",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Bindings/Kenshi/InventorySectionBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/Array2dBinding.h",
+      "template": "Array2dBinding",
+      "template_args": [
+        "Item"
+      ]
+    },
+    {
+      "binding": "AttachedEffectFastArrayBinding",
       "binding_aliases": [
-        "AttachedEffectFastArrayBinding",
         "CharacterTradingBoxFastArrayBinding",
         "HarpoonFastArrayBinding",
         "RaceGroupDataFastArrayBinding",
@@ -133316,9 +137297,8 @@
       },
       "kind": "template_instance",
       "lua_type": "OgreFastArray<lightuserdata>",
-      "metatable": "Ogre::FastArray<AnimationData*>",
+      "metatable": "Ogre::FastArray<AttachedEffect*>",
       "metatable_aliases": [
-        "Ogre::FastArray<AttachedEffect*>",
         "Ogre::FastArray<CharacterTradingBox*>",
         "Ogre::FastArray<Harpoon*>",
         "Ogre::FastArray<RaceGroupData*>",
@@ -133487,7 +137467,6 @@
       ],
       "owners": [
         "AppearanceBaseBinding",
-        "AppearanceManagerBinding",
         "CharacterEditWindowBinding",
         "CharacterTradingWindowBinding",
         "MedicalSystemBinding",
@@ -133498,7 +137477,6 @@
       "properties": [],
       "registered_from": [
         "src/Bindings/Kenshi/AppearanceBaseBinding.cpp",
-        "src/Bindings/Kenshi/AppearanceManagerBinding.cpp",
         "src/Bindings/Kenshi/Gui/CharacterEditWindowBinding.cpp",
         "src/Bindings/Kenshi/Gui/CharacterTradingWindowBinding.cpp",
         "src/Bindings/Kenshi/MedicalSystemBinding.cpp",
@@ -133507,44 +137485,7 @@
       "source": "src/Bindings/Kenshi/Util/OgreFastArrayBinding.h",
       "template": "OgreFastArrayPtrBinding",
       "template_args": [
-        "AnimationData*"
-      ]
-    },
-    {
-      "binding": "Array2dBinding<Item>",
-      "element_refs": [
-        "binding:ItemBinding"
-      ],
-      "global_names": [],
-      "has_constructor": false,
-      "kind": "template_instance",
-      "lua_type": "ItemArray2d",
-      "metatable": "KenshiLua.Array2d<Item>",
-      "methods": [],
-      "owners": [
-        "InventorySectionBinding"
-      ],
-      "parent_binding": null,
-      "parent_metatable": "",
-      "properties": [
-        {
-          "access": "readwrite",
-          "name": "nCols",
-          "type": "integer"
-        },
-        {
-          "access": "readwrite",
-          "name": "nRows",
-          "type": "integer"
-        }
-      ],
-      "registered_from": [
-        "src/Bindings/Kenshi/InventorySectionBinding.cpp"
-      ],
-      "source": "src/Bindings/Kenshi/Util/Array2dBinding.h",
-      "template": "Array2dBinding",
-      "template_args": [
-        "Item"
+        "AttachedEffect*"
       ]
     },
     {
@@ -137044,6 +140985,160 @@
       ]
     },
     {
+      "binding": "HandVector3MapBinding",
+      "element_refs": [
+        "binding:HandBinding"
+      ],
+      "element_types": {
+        "key": "hand",
+        "value": "table"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "hand",
+        "type": "table|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreUnorderedMap<hand, table>",
+      "metatable": "ogre_unordered_map<hand, Vector3>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "has",
+          "name": "contains",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "erase",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<hand, table>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pairs",
+          "name": "pairs",
+          "signature": {
+            "params": [],
+            "returns": [
+              "ContainerIterator<hand, table>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "BlackboardBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
+      "template": "OgreUnorderedMapBinding",
+      "template_args": [
+        "hand",
+        "Ogre::Vector3"
+      ]
+    },
+    {
       "binding": "HealthStatusMapBinding",
       "element_refs": [
         "binding:GameDataBinding",
@@ -137544,6 +141639,119 @@
       ]
     },
     {
+      "binding": "LektorPtrBinding<AIPackage*>",
+      "element_refs": [
+        "binding:AIPackageBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "AIPackage"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "AIPackage|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<AIPackage>",
+      "metatable": "lektor<AIPackage*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "AIPackage"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AIPackage|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, AIPackage>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "BlackboardBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "AIPackage*"
+      ]
+    },
+    {
       "binding": "LektorPtrBinding<Armour*>",
       "element_refs": [
         "binding:ArmourBinding"
@@ -137880,6 +142088,232 @@
       "template": "LektorPtrBinding",
       "template_args": [
         "Building::ConstructionState::BuildMaterial*"
+      ]
+    },
+    {
+      "binding": "LektorPtrBinding<CampaignData*>",
+      "element_refs": [
+        "binding:CampaignDataBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "CampaignData"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "CampaignData|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<CampaignData>",
+      "metatable": "lektor<CampaignData*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "CampaignData"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "CampaignData|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, CampaignData>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "CampaignData*"
+      ]
+    },
+    {
+      "binding": "LektorPtrBinding<CampaignInstance*>",
+      "element_refs": [
+        "binding:CampaignInstanceBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "CampaignInstance"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "CampaignInstance|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<CampaignInstance>",
+      "metatable": "lektor<CampaignInstance*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "CampaignInstance"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "CampaignInstance|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, CampaignInstance>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "CampaignInstance*"
       ]
     },
     {
@@ -148570,6 +153004,113 @@
       ]
     },
     {
+      "binding": "StdMapBinding<Platoon*,CampaignInstance*>",
+      "element_refs": [
+        "binding:PlatoonBinding",
+        "binding:CampaignInstanceBinding"
+      ],
+      "element_types": {
+        "key": "Platoon",
+        "value": "CampaignInstance"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "Platoon",
+        "type": "CampaignInstance|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "StdMap<Platoon, CampaignInstance>",
+      "metatable": "std::map<Platoon*, CampaignInstance*>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "Platoon"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<Platoon, CampaignInstance>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
+      "template": "StdMapBinding",
+      "template_args": [
+        "Platoon*",
+        "CampaignInstance*"
+      ]
+    },
+    {
       "binding": "StdMapBinding<float,CombatTechniqueData*>",
       "element_refs": [
         null,
@@ -150018,6 +154559,158 @@
       "template": "OgreFastArrayValueBinding",
       "template_args": [
         "MainTabPortraitPlatoon"
+      ]
+    },
+    {
+      "binding": "TaskTypeHandMapBinding",
+      "element_refs": [],
+      "element_types": {
+        "key": "integer",
+        "value": "hand"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "hand|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreUnorderedMap<integer, hand>",
+      "metatable": "ogre_unordered_map<TaskType, hand>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "has",
+          "name": "contains",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "erase",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, hand>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pairs",
+          "name": "pairs",
+          "signature": {
+            "params": [],
+            "returns": [
+              "ContainerIterator<integer, hand>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "BlackboardBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/AI/BlackboardBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
+      "template": "OgreUnorderedMapBinding",
+      "template_args": [
+        "TaskType",
+        "hand"
       ]
     },
     {

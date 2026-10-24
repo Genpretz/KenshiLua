@@ -894,6 +894,17 @@
 ---| "ZoneMap::_CONSTRUCTOR"
 ---| "wraps::BaseLayout::initialise"
 
+--- Animation layer an `AnimationData` plays on.
+---@enum AnimationLayerEnum
+AnimationLayerEnum = {
+    LOWER = 0,
+    UPPER = 1,
+    OVERLAY = 2,
+    TAIL = 3,
+    EARS = 4,
+    ALL = 5,
+}
+
 --- Armor weight classification determining base damage mitigation and combat speed encumbrance.
 ---@enum ArmourClass
 ArmourClass = {
@@ -935,6 +946,45 @@ AttachSlot = {
     ATTACH_RIGHT_ARM = 51,
     ATTACH_LEFT_LEG = 52,
     ATTACH_RIGHT_LEG = 53,
+}
+
+--- Signal raised on a squad `Blackboard` to drive AI package behaviour.
+---@enum BlackboardSignalFunctions
+BlackboardSignalFunctions = {
+    SIGNAL_NONE = 0,
+    SIG_RETREAT_CANNIBAL_RAID = 1,
+    SIG_AT_SAFE_TOWN = 2,
+    SIG_AT_HOME_TOWN = 3,
+    SIG_CANNIBAL_START_PATROL = 4,
+    SIG_SQUAD_NOT_INTACT = 5,
+    SIG_START_PATROL = 6,
+    SIG_DIPLOMAT_MISSION = 7,
+    SIG_DEFEAT_SQUAD = 8,
+    SIG_HOME_OWNER_KEEP_LOCKED = 9,
+    SIG_GATHER_UP_ALL_LOCAL_PRISONERS = 10,
+    SIG_SLAVER_SHIP_TO_WORKCAMPS = 11,
+    SIG_BODYGUARD = 12,
+    SIG_BECOME_EX_SLAVE = 13,
+    SIG_OUT_OF_DANGER = 14,
+    SIG_DEFEND_PLAYER_TOWN_TIMED = 15,
+    SIG_WANDERING_TOWN_TO_TOWN = 16,
+    SIG_HANG_OUT_AT_BAR = 17,
+    SIG_RAIDING_WEAK_VILLAGES = 18,
+    WAR_GATHER_FORCES = 19,
+    WAR_ASSAULT_TOWN = 20,
+    WAR_BATTLE_MEETING = 21,
+    SIG_REFUGEE_DISBAND = 22,
+    SIG_START_PATROL_RUNNING = 23,
+    SIG_GATHER_UP_ALL_LOCAL_PRISONERS_UNHOLY = 24,
+    SIG_RETREAT_CANNIBAL_RAID_TO_NEAREST_NEST = 25,
+    SIG_HANG_OUT_OUTDOORS_ONLY = 26,
+    SIG_CANNIBALS_AT_HOME = 27,
+    SIG_SLAVER_SHIP_TO_ANYWHERE_CLOSE = 28,
+    SIG_PASSING_BY_TOWN_ASSAULT = 29,
+    SIG_OCCUPY_CONQUERED_TOWN = 30,
+    SIG_DEFEND_PLAYER_TOWN_CAMPAIGN = 31,
+    WAR_ASSAULT_TOWN_CANNIBAL = 32,
+    SIG_TIMED_CONTRACT = 33,
 }
 
 --- Functional categorization of buildings in the settlement simulation (doors, usable structures, fluff).
@@ -1019,6 +1069,20 @@ BuildingRotation = {
     ROTATION_FACE_WIND_DIRECTION = 4,
     ROTATION_TARGET = 5,
     ROTATION_MATCH_PARENT = 6,
+}
+
+--- Category of an `AnimationData`, such as normal, sleeping, or combat.
+---@enum CharacterAnimCategory
+CharacterAnimCategory = {
+    ANIM_NORMAL = 0,
+    ANIM_IMPRISONED = 1,
+    ANIM_SLEEPING = 2,
+    ANIM_CARRIED = 3,
+    ANIM_SWIMMING = 4,
+    ANIM_GROUNDED = 5,
+    ANIM_COMBAT = 6,
+    ANIM_ATTACKS = 7,
+    ANIM_RANGED = 8,
 }
 
 --- Context mode for the character customization editor (new game, plastic surgeon mid-game, debug).
@@ -1599,6 +1663,17 @@ PersonalityTags = {
     PT_END = 15,
 }
 
+--- Phase of a running `CampaignInstance`.
+---@enum Phase
+Phase = {
+    GATHERING = 0,
+    ASSAULTING = 1,
+    RETREATING = 2,
+    VICTORY = 3,
+    ASSAULT_2_HAPPY = 4,
+    ASSAULT_2_ANGRY = 5,
+}
+
 --- Lifecycle signal dispatched during squad or platoon instantiation.
 ---@enum PlatoonCreationMessage
 PlatoonCreationMessage = {
@@ -1934,6 +2009,24 @@ TalkerEnum = {
     T_INTERJECTOR3 = 5,
     T_WHOLE_SQUAD = 6,
     T_TARGET_WITH_RACE = 7,
+}
+
+--- What happens to squad jobs when a task ends.
+---@enum TaskEndEvent
+TaskEndEvent = {
+    TEE_NOTHING = 0,
+    TEE_REMOVE_MINE_ONLY = 1,
+    TEE_REMOVE_WHOLE_SQUADS = 2,
+}
+
+--- How a squad job chooses its target.
+---@enum TaskTargetType
+TaskTargetType = {
+    TARGET_SPECIFIC = 0,
+    TARGET_SELF = 1,
+    TARGET_LEADER = 2,
+    TARGET_SQUAD_MISSION = 3,
+    TARGET_HOME_GATE = 4,
 }
 
 --- AI task goal type defining character behaviors, work assignments, and sensory goals.
@@ -2302,6 +2395,15 @@ WallSectionLinkType = {
     WALLTYPE_LOWER_WEDGE = 2,
     WALLTYPE_SINGLE = 3,
     WALLTYPE_SHORT = 4,
+}
+
+--- Type of a war campaign, as returned by `CampaignData.key`.
+---@enum WarCampaignEnum
+WarCampaignEnum = {
+    ASSAULT_TOWN = 0,
+    CONQUER_TOWN = 1,
+    DEFEND_TOWN = 2,
+    TRADER_VISIT = 3,
 }
 
 --- Weapon class and skill taxonomy (katanas, sabres, blunt, heavy weapons, polearms).
@@ -6767,7 +6869,7 @@ taskPriority = {
 --- Override dispatch for `getCurrentTownLocation`. Retrieves pointer to town structure currently enclosing or nearest to the squad's world position.
 ---@field _NV_getCurrentTownLocation fun(self: Platoon): TownBase
 --- Checks if the squad is currently dispatched on an active war campaign or raid mission.
----@field hasCampaign fun(self: Platoon): lightuserdata
+---@field hasCampaign fun(self: Platoon): CampaignInstance
 --- Checks if merchants or fences in this squad will purchase stolen contraband goods.
 ---@field iBuyStolenGoods fun(self: Platoon, what: Item): boolean
 --- Checks if merchants in this squad will trade in illegal outlawed goods (e.g. Hashish, Bloodrum).
@@ -6785,7 +6887,7 @@ taskPriority = {
 --- Retrieves the persistent unique alphanumeric identifier string assigned to this platoon.
 ---@field getPlatoonStringID fun(self: Platoon): string
 --- Retrieves pointer to squad AI `Blackboard` holding shared tactical intelligence and target threats.
----@field getBlackboard fun(self: Platoon): lightuserdata
+---@field getBlackboard fun(self: Platoon): Blackboard
 --- Returns the FCS item type identifier corresponding to platoon squad entities (`itemType::SQUAD`).
 ---@field getDataType fun(self: Platoon): integer
 --- Override dispatch for `getDataType`. Returns the FCS item type identifier corresponding to platoon squad entities (`itemType::SQUAD`).
@@ -6897,7 +6999,7 @@ taskPriority = {
 --- Flag marking squad as permanently retained in savegame.
 ---@field _persistentSquad boolean
 --- Tactical AI intelligence and threat tracking blackboard.
----@field blackboard lightuserdata
+---@field blackboard Blackboard
 --- Flag permitting recruit and equipment respawn.
 ---@field canRefresh boolean
 --- Sector partition bounding initial spawn.
@@ -7045,10 +7147,10 @@ taskPriority = {
 ---@field _checkForUniqueCharactersOnUnload fun(self: ActivePlatoon)
 --- Returns the display name of this squad.
 ---@field getName fun(self: ActivePlatoon): string
---- Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (Serialisable* lightuserdata).
----@field loadFromDisk fun(self: ActivePlatoon, force?: boolean, extra?: lightuserdata): boolean
---- Override dispatch for `loadFromDisk`. Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (Serialisable* lightuserdata).
----@field _NV_loadFromDisk fun(self: ActivePlatoon, force?: boolean, extra?: lightuserdata): boolean
+--- Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (`Serialisable` or nil).
+---@field loadFromDisk fun(self: ActivePlatoon, force?: boolean, extra?: Serialisable): boolean
+--- Override dispatch for `loadFromDisk`. Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (`Serialisable` or nil).
+---@field _NV_loadFromDisk fun(self: ActivePlatoon, force?: boolean, extra?: Serialisable): boolean
 --- Appends squad characters within radius of pos (Vector3 table) into out (lektor<RootObject*>), optionally filtering to standingOnly.
 ---@field getCharactersInArea fun(self: ActivePlatoon, out: ActivePlatoon|Lektor<RootObject>, pos: table, radius: number, standingOnly?: boolean)
 --- Spawns a single character instance from state (GameSaveState) at pos (Vector3 table) and rot (Quaternion table), with skipSaveState, optional callback (FactoryCallbackInterface), and positionMoved offset (Vector3 table).
@@ -8868,11 +8970,11 @@ taskPriority = {
 --- Retrieves direct const reference to the internal integer ID lookup map (`gamedataID`).
 ---@field _getAllData fun(self: GameDataContainer): OgreUnorderedMap<integer, GameData>
 --- Loads game data records from a binary or text file, optionally marking records read-only or active file members, returning success status.
----@field loadGameDataReturn fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: lightuserdata): boolean
+---@field loadGameDataReturn fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: Serialisable): boolean
 --- Primary mod loading interface reading a mod file (`.mod`) or base data file into this container with mod indexing and instance deletion tracking.
----@field load fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: lightuserdata, keepDeletedInstances?: boolean): boolean
+---@field load fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: Serialisable, keepDeletedInstances?: boolean): boolean
 --- Serializes all records in this container to disk at `filename`, invoking auxiliary serialization via `moreData`.
----@field save fun(self: GameDataContainer, filename: string, moreData?: lightuserdata): boolean
+---@field save fun(self: GameDataContainer, filename: string, moreData?: Serialisable): boolean
 --- Processes and deallocates all `GameData` records enqueued in the global static `killList` deferred deletion set.
 ---@field flushKillList fun()
 --- Destroys a standalone unparented record (`dat->sourceContainer == nullptr`), queuing it for disposal.
@@ -10043,7 +10145,7 @@ taskPriority = {
 --- Returns true if this character is the designated leader of an active war campaign.
 ---@field isLeadingAWarCampaign fun(self: Character): boolean
 --- Returns true if the character is actively participating in a military war campaign.
----@field isInAWarCampaign fun(self: Character): lightuserdata
+---@field isInAWarCampaign fun(self: Character): CampaignInstance
 --- Returns true if the character is capable of triggering faction raids or war campaigns.
 ---@field wantsToTriggerCampaigns fun(self: Character): boolean
 --- Returns true if this character is a unique named NPC.
@@ -10621,7 +10723,7 @@ taskPriority = {
 --- Returns true if the character belongs to a persistent, saved platoon rather than a temporary ambient squad.
 ---@field isInAPersistentPlatoon fun(self: Character): boolean
 --- Returns the AI blackboard containing shared tactical knowledge and squad coordination data.
----@field getBlackboard fun(self: Character): lightuserdata
+---@field getBlackboard fun(self: Character): Blackboard
 --- Returns the leader character of this character's squad.
 ---@field getSquadLeader fun(self: Character): Character
 --- Retrieves the `OrdersReceiver` managing the character's player orders and permanent jobs.
@@ -12517,6 +12619,8 @@ taskPriority = {
 ---@field getFaction fun(self: AI): Faction
 --- Override dispatch for `getFaction`. Returns pointer to owning `Faction` determining diplomatic alignments and hostility.
 ---@field _NV_getFaction fun(self: AI): Faction
+--- Retrieves squad-wide shared `Blackboard` memory recording perceived threats, targets, and strategic orders.
+---@field getBlackboard fun(self: AI): Blackboard
 --- Returns smart hand handle identifying parent Character actor in the game world.
 ---@field getHandle fun(self: AI): hand
 --- Binds core character subsystems (CharBody, Inventory, CharStats, MedicalSystem, Platoon) to this AI controller and initializes GOAP action repertoires.
@@ -13428,6 +13532,107 @@ taskPriority = {
 --- Nested enum table `AI.AIManuverabilityOrders`.
 ---@field AIManuverabilityOrders AI.AIManuverabilityOrders
 
+--- Engine class `AIPackage`.
+---@class AIPackage
+--- A callback invoked by the navigation mesh subsystem when an assigned agent cannot find a valid path to its target. Typically triggers package abortion or fallback behaviors.
+---@field notifyMyTargetPathfindImpossible fun(self: AIPackage, me: Character, was: hand)
+--- Override dispatch for `notifyMyTargetPathfindImpossible`. A callback invoked by the navigation mesh subsystem when an assigned agent cannot find a valid path to its target. Typically triggers package abortion or fallback behaviors.
+---@field _NV_notifyMyTargetPathfindImpossible fun(self: AIPackage, me: Character, was: hand)
+--- Determines the preferred movement speed constraint for the given character while executing this package. Modulates pacing, such as forcing walking speeds during patrols.
+---@field getDesiredTravelSpeed fun(self: AIPackage, me: Character): integer
+--- Override dispatch for `getDesiredTravelSpeed`. Determines the preferred movement speed constraint for the given character while executing this package. Modulates pacing, such as forcing walking speeds during patrols.
+---@field _NV_getDesiredTravelSpeed fun(self: AIPackage, me: Character): integer
+--- Retrieves the designated leader driving this package's operations. This is frequently the platoon leader of the bound `squad`, but specialized packages might assign dynamic leaders.
+---@field getLeader fun(self: AIPackage): Character
+--- Serializes the package's internal state into the provided save game block. Preserves vital handles like `missionTarget` and tracking variables across game sessions.
+---@field save fun(self: AIPackage, state: GameData)
+--- Override dispatch for `save`. Serializes the package's internal state into the provided save game block. Preserves vital handles like `missionTarget` and tracking variables across game sessions.
+---@field _NV_save fun(self: AIPackage, state: GameData)
+--- Restores the package's state from a save game data block. Rebinds references to characters and towns using saved handles, reconstructing the mission context.
+---@field load fun(self: AIPackage, state: GameData)
+--- Override dispatch for `load`. Restores the package's state from a save game data block. Rebinds references to characters and towns using saved handles, reconstructing the mission context.
+---@field _NV_load fun(self: AIPackage, state: GameData)
+--- Activates the AI package and prepares it for execution. This involves binding necessary platoon context and optionally triggering initial dialogs if an employer or target requires engagement.
+---@field activateAndSetup fun(self: AIPackage)
+--- Override dispatch for `activateAndSetup`. Activates the AI package and prepares it for execution. This involves binding necessary platoon context and optionally triggering initial dialogs if an employer or target requires engagement.
+---@field _NV_activateAndSetup fun(self: AIPackage)
+--- Finalizes the AI package's lifecycle. It triggers the ending dialogue based on success criteria and initiates the transition to a successor package if `leadsToPackage` is configured.
+---@field endPackage fun(self: AIPackage)
+--- Override dispatch for `endPackage`. Finalizes the AI package's lifecycle. It triggers the ending dialogue based on success criteria and initiates the transition to a successor package if `leadsToPackage` is configured.
+---@field _NV_endPackage fun(self: AIPackage)
+--- Processes a betrayal event relevant to the package, such as an employer attacking the contracted platoon. Sets the `wasBetrayed` flag and typically invalidates mission terms immediately.
+---@field notifyBetrayal fun(self: AIPackage, myWitness: Character, betrayer: Character): boolean
+--- Override dispatch for `notifyBetrayal`. Processes a betrayal event relevant to the package, such as an employer attacking the contracted platoon. Sets the `wasBetrayed` flag and typically invalidates mission terms immediately.
+---@field _NV_notifyBetrayal fun(self: AIPackage, myWitness: Character, betrayer: Character): boolean
+--- Tick method invoked during the blackboard update cycle to maintain package state. Handles time-gated logic, distance checks to towns, or dynamic requirement validation.
+---@field periodicUpdate fun(self: AIPackage)
+--- Override dispatch for `periodicUpdate`. Tick method invoked during the blackboard update cycle to maintain package state. Handles time-gated logic, distance checks to towns, or dynamic requirement validation.
+---@field _NV_periodicUpdate fun(self: AIPackage)
+--- Evaluates if a target should be treated as neutral within the scope of this package. Allows packages to temporarily override standard faction diplomacy rules for mission targets.
+---@field assessNeutral fun(self: AIPackage, who: Character)
+--- Override dispatch for `assessNeutral`. Evaluates if a target should be treated as neutral within the scope of this package. Allows packages to temporarily override standard faction diplomacy rules for mission targets.
+---@field _NV_assessNeutral fun(self: AIPackage, who: Character)
+--- Evaluates if a target should be forcibly treated as an enemy by this package. Overrides global diplomacy if the mission demands hostility (e.g. assassination contracts).
+---@field assessEnemy fun(self: AIPackage, who: Character): boolean
+--- Override dispatch for `assessEnemy`. Evaluates if a target should be forcibly treated as an enemy by this package. Overrides global diplomacy if the mission demands hostility (e.g. assassination contracts).
+---@field _NV_assessEnemy fun(self: AIPackage, who: Character): boolean
+--- Invoked when the package becomes the active operational focus. Base implementation typically updates internal state to flag successful startup sequence.
+---@field signalStart fun(self: AIPackage): boolean
+--- Override dispatch for `signalStart`. Invoked when the package becomes the active operational focus. Base implementation typically updates internal state to flag successful startup sequence.
+---@field _NV_signalStart fun(self: AIPackage): boolean
+--- Invoked when the package is preempted, completed, or cancelled. Facilitates graceful tear-down of active tasks, like unsetting destination markers.
+---@field signalEnd fun(self: AIPackage): boolean
+--- Override dispatch for `signalEnd`. Invoked when the package is preempted, completed, or cancelled. Facilitates graceful tear-down of active tasks, like unsetting destination markers.
+---@field _NV_signalEnd fun(self: AIPackage): boolean
+--- Checks if this specific instance is currently the highest-priority executing package on the platoon's blackboard. Important for conditional logic and UI indicators.
+---@field iAmActivePackage fun(self: AIPackage): boolean
+--- Populates a target UI data panel with string representations and context details regarding this package's current task. Used to inform the player of AI goals.
+---@field getGUIData fun(self: AIPackage, panel: DatapanelGUI): boolean
+--- Override dispatch for `getGUIData`. Populates a target UI data panel with string representations and context details regarding this package's current task. Used to inform the player of AI goals.
+---@field _NV_getGUIData fun(self: AIPackage, panel: DatapanelGUI): boolean
+--- Automatically pushes state updates or task name modifications to the squad's job panel in the user interface. Ensures player-facing goals remain synchronized with package state.
+---@field autoNotifyJobsPanel fun(self: AIPackage): boolean
+--- Override dispatch for `autoNotifyJobsPanel`. Automatically pushes state updates or task name modifications to the squad's job panel in the user interface. Ensures player-facing goals remain synchronized with package state.
+---@field _NV_autoNotifyJobsPanel fun(self: AIPackage): boolean
+--- Indicates whether this package type supports a manual "renew contract" interaction from the player UI, typical for mercenary hire packages.
+---@field wantsRenewButton fun(self: AIPackage): boolean
+--- Override dispatch for `wantsRenewButton`. Indicates whether this package type supports a manual "renew contract" interaction from the player UI, typical for mercenary hire packages.
+---@field _NV_wantsRenewButton fun(self: AIPackage): boolean
+--- Callback triggered when a user explicitly interacts with the package's UI representation. Useful for opening specialized configuration dialogues if the package has advanced parameters.
+---@field showManagementPanelCallback fun(self: AIPackage)
+--- Override dispatch for `showManagementPanelCallback`. Callback triggered when a user explicitly interacts with the package's UI representation. Useful for opening specialized configuration dialogues if the package has advanced parameters.
+---@field _NV_showManagementPanelCallback fun(self: AIPackage)
+--- Determines the completion status of the package. This directly influences whether the active or passive ending dialogue plays during `endPackage`.
+---@field wasASuccess fun(self: AIPackage): boolean
+--- Override dispatch for `wasASuccess`. Determines the completion status of the package. This directly influences whether the active or passive ending dialogue plays during `endPackage`.
+---@field _NV_wasASuccess fun(self: AIPackage): boolean
+--- Parent platoon blackboard controller.
+---@field blackboard Blackboard
+--- Dialogue script triggered on active completion.
+---@field endingDialogActive GameData
+--- Dialogue script triggered on passive termination.
+---@field endingDialogPassive GameData
+--- Signal key enum identifying package category.
+---@field key integer
+--- Successor package queued on completion.
+---@field leadsToPackage AIPackage
+--- Contract employer/funder character handle.
+---@field missionEmployer hand
+--- Target character or squad handle.
+---@field missionTarget hand
+--- Destination or base town target handle.
+---@field missionTown hand
+--- FCS package template data definition.
+---@field packageData GameData
+--- Evaluation priority tier.
+---@field priorityLevel integer
+--- Bound platoon squad pointer.
+---@field squad Platoon
+--- Behavior mode when platoon is streaming unloaded.
+---@field unloadedMode integer
+--- Flag indicating contract betrayal occurred.
+---@field wasBetrayed boolean
+
 --- Base pathfinding, road-following, and speed-group controller for moving agents. Extends NxUserControllerHitReport.
 ---@class AbstractMovementBase : NxUserControllerHitReport
 --- Initializes the movement base at starting position _pos (Vector3 table).
@@ -13616,7 +13821,7 @@ taskPriority = {
 --- Resets character scene node orientation and desired orientation quaternion to identity.
 ---@field resetOrientation fun(self: AnimationClassBase)
 --- Calculates normalized playback progress [0.0, 1.0] for the active combat technique animation.
----@field getAnimationProgress fun(self: AnimationClassBase, arg1: CombatTechniqueData|string): number
+---@field getAnimationProgress fun(self: AnimationClassBase, arg1: AnimationData|CombatTechniqueData|string): number
 --- Returns current target character orientation quaternion (`desiredOrientation`).
 ---@field getOrientation fun(self: AnimationClassBase): table
 --- Applies a vertical elevation offset to the character's visual mesh and scene node (e.g. bed height, chair elevation, or water immersion depth).
@@ -13638,10 +13843,17 @@ taskPriority = {
 ---@field initBoneInitialWorldPositions fun(self: AnimationClassBase)
 --- Queries whether an animation matching the specified clip name is currently active and blending with non-zero weight.
 ---@field isAnimationPlaying fun(self: AnimationClassBase, name: string): boolean
+--- Queries the current blend weight [0.0, 1.0] of the specified `AnimationData` track.
+---@field getAnimationCurrentWeight fun(self: AnimationClassBase, name: AnimationData): number
 --- Sums the total active blend weight across all upper body and whole body action animation tracks.
 ---@field getTotalActionAnimationWeight fun(self: AnimationClassBase): number
 --- Tests whether an action animation (e.g. attack strike, lockpick, medical treatment, stumble) is actively playing and preventing transition to idle.
 ---@field stillPlayingAnActionOrSomething fun(self: AnimationClassBase): boolean
+--- Resolves the appropriate medical first-aid treatment animation track based on patient posture, height, and target limb.
+---@field getAnimation_Medic fun(self: AnimationClassBase, inwhat: hand): AnimationData
+--- Resolves the appropriate lockpicking animation track based on lock mechanism height and character posture (standing vs kneeling).
+---@field getAnimation_Lockpick fun(self: AnimationClassBase, inwhat: hand): AnimationData
+---@field getAnimationData fun(self: AnimationClassBase, arg1: string): AnimationData
 --- Activation request transition marker.
 ---@field activateFlag boolean
 --- Cached base rest-pose world bone orientations.
@@ -13673,10 +13885,14 @@ taskPriority = {
 ---@class AnimationClass : AnimationClassBase
 --- Populates an array with all loaded animation clips available for this character rig.
 ---@field debugGetAllAnimations fun(self: AnimationClass, panel: DatapanelGUI)
+--- Triggers a reactive hit stumble animation in response to a melee or ranged impact, interrupting current actions.
+---@field startStumble fun(self: AnimationClass, anim?: AnimationData)
 --- Concludes reactive stumble recovery and restores combat idle or locomotion stances.
 ---@field endStumble fun(self: AnimationClass)
 --- Returns true if the character is currently executing an involuntary hit-reaction stumble animation.
 ---@field currentlyStumbling fun(self: AnimationClass): boolean
+--- Returns the stumble animation clip currently being executed, or nil if not stumbling.
+---@field getCurrentlyStumbleAnim fun(self: AnimationClass): AnimationData
 --- Returns true if injuries, carrying states, or stumbles prevent normal waypoint locomotion.
 ---@field isCurrentlyIncapableOfWaypointMovemode fun(self: AnimationClass): boolean
 --- Performs thread-safe synchronization of PhysX ragdoll transform matrices with visual bone skeletons.
@@ -13713,7 +13929,7 @@ taskPriority = {
 --- Restarts playback of the current action animation from the beginning.
 ---@field restartAction fun(self: AnimationClass, name: string): boolean
 --- Queues and plays an upper-body or whole-body action animation (e.g. eating, healing, crafting, lockpicking) over base locomotion.
----@field playAction fun(self: AnimationClass, arg1: string, arg2: number, arg3: number, arg4?: boolean)
+---@field playAction fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: number, arg4?: boolean)
 --- Fades out and stops the currently active upper-body action clip.
 ---@field stopAction fun(self: AnimationClass, arg1?: string): boolean
 --- Sets the target locomotion velocity used to select between walk, jog, and sprint tracks.
@@ -13736,6 +13952,8 @@ taskPriority = {
 ---@field getMaximumSpeed fun(self: AnimationClass): number
 --- Returns true if the specified linear animation track has finished playing.
 ---@field isLinearAnimationDone_byName fun(self: AnimationClass, name: string): boolean
+--- Returns true if the currently active linear non-looping animation track has completed.
+---@field isLinearAnimationDone fun(self: AnimationClass, anim?: AnimationData): boolean
 --- Returns the vertical footing contact height offset for inverse kinematics adjustment.
 ---@field getFootHeight fun(self: AnimationClass): number
 --- Calculates terrain contact heights for left and right foot bones to adjust inverse kinematics footing.
@@ -13781,7 +13999,9 @@ taskPriority = {
 --- Updates aiming elevation, bow draw tension, and weapon reloading animations for ranged combat.
 ---@field rangedCombatModeUpdate fun(self: AnimationClass, targetpos: table)
 --- Plays an animation clip by name on the specified skeletal track layer.
----@field runAnimation fun(self: AnimationClass, arg1: string, arg2: number, arg3: number)
+---@field runAnimation fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: integer|number, arg4: number, arg5: string)
+--- Plays an animation track with manually driven timeline playback time.
+---@field runAnimation_manualTiming fun(self: AnimationClass, anim: AnimationData, time01: number, blend: number)
 --- Concludes an attack or block animation cycle, transitioning bones back into combat idle posture.
 ---@field endCombatAnimation fun(self: AnimationClass)
 --- Executes an attack or defense animation sequence on the combat animation layer.
@@ -13789,11 +14009,19 @@ taskPriority = {
 --- Starts playback of an offensive martial arts or weapon attack technique on upper/lower animation layers.
 ---@field startCombatAnimation fun(self: AnimationClass, anim: CombatTechniqueData, speed: number, additionalString: string)
 --- Fades in and begins playback of an animation clip on the specified layer channel.
----@field startAnimation fun(self: AnimationClass, arg1: string, arg2: number, arg3: number)
+---@field startAnimation fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: number)
 --- Fades out and stops playback of the specified animation clip.
----@field stopAnimation fun(self: AnimationClass, arg1: string)
+---@field stopAnimation fun(self: AnimationClass, arg1: AnimationData|string)
 --- Enables visual skeleton rendering, particle emitters, and bone node transformations for the character.
 ---@field activateVisuals fun(self: AnimationClass)
+--- Looks up the `AnimationData` definition record for the specified animation clip name.
+---@field getAnimationData fun(self: AnimationClass, arg1: GameData|string): AnimationData
+--- Override dispatch for `getAnimationData`. Looks up the `AnimationData` definition record for the specified animation clip name.
+---@field _NV_getAnimationData fun(self: AnimationClass, arg1: GameData|string): AnimationData
+--- Retrieves the `AnimationData` record corresponding to an Ogre skeleton animation track name.
+---@field getAnimationDataByOgreName fun(self: AnimationClass, name: string): AnimationData
+--- Override dispatch for `getAnimationDataByOgreName`. Retrieves the `AnimationData` record corresponding to an Ogre skeleton animation track name.
+---@field _NV_getAnimationDataByOgreName fun(self: AnimationClass, name: string): AnimationData
 --- Estimates the total duration in seconds required to play the specified animation clip.
 ---@field estimateAnimationTime fun(self: AnimationClass, name: string): number
 --- Notifies the animation controller that a root motion animation track has looped back to start.
@@ -13866,6 +14094,20 @@ taskPriority = {
 ---@field getLookDirection fun(self: AnimationClass): table
 --- Override dispatch for `getLookDirection`. Returns the 3D unit vector indicating the character's current visual look direction.
 ---@field _NV_getLookDirection fun(self: AnimationClass): table
+--- Selects the most appropriate stumble animation clip based on damaged body part, cut origination angle, and strike severity.
+---@field chooseStumbleAnim fun(self: AnimationClass, bodypart: GameData, hitFrom: integer, bigone?: boolean): AnimationData
+--- Returns the active ambient idle animation clip currently playing.
+---@field getIdleAnimation fun(self: AnimationClass): AnimationData
+--- Override dispatch for `getIdleAnimation`. Returns the active ambient idle animation clip currently playing.
+---@field _NV_getIdleAnimation fun(self: AnimationClass): AnimationData
+--- Returns the swimming or floating animation clip used when the character is in deep water.
+---@field getFloatingAnim fun(self: AnimationClass): AnimationData
+--- Override dispatch for `getFloatingAnim`. Returns the swimming or floating animation clip used when the character is in deep water.
+---@field _NV_getFloatingAnim fun(self: AnimationClass): AnimationData
+--- Returns the keyframed recovery animation clip used to stand up from a ragdoll knockdown pose.
+---@field getStandingUpAnim fun(self: AnimationClass): AnimationData
+--- Override dispatch for `getStandingUpAnim`. Returns the keyframed recovery animation clip used to stand up from a ragdoll knockdown pose.
+---@field _NV_getStandingUpAnim fun(self: AnimationClass): AnimationData
 --- Returns true if the character currently has an active action animation playing or queued.
 ---@field hasAction fun(self: AnimationClass): boolean
 --- Master selection arbitration routine evaluating movement speed, turning direction, stance, and injuries to blend appropriate movement and idle clips.
@@ -13874,6 +14116,10 @@ taskPriority = {
 ---@field animationSelectionCombatMode fun(self: AnimationClass, _TIME: number)
 --- Override dispatch for `animationSelectionCombatMode`. Evaluates combat stances, weapon readiness, and engagement ranges to select combat idle or attack animations.
 ---@field _NV_animationSelectionCombatMode fun(self: AnimationClass, _TIME: number)
+--- Drives lateral strafing locomotion blending based on movement heading relative to facing.
+---@field runStrafe fun(self: AnimationClass, strafe?: AnimationData, weightLimit: number)
+--- Override dispatch for `runStrafe`. Drives lateral strafing locomotion blending based on movement heading relative to facing.
+---@field _NV_runStrafe fun(self: AnimationClass, strafe?: AnimationData, weightLimit: number)
 --- Evaluates overlay animation channels (such as pain grimaces, wounded limps, or carrying).
 ---@field overlaidAnimationSelection fun(self: AnimationClass)
 --- Override dispatch for `overlaidAnimationSelection`. Evaluates overlay animation channels (such as pain grimaces, wounded limps, or carrying).
@@ -13890,6 +14136,8 @@ taskPriority = {
 ---@field appearance AppearanceBase
 --- Footwear sole thickness compensation offset preventing ground mesh penetration.
 ---@field bootHeight number
+--- Fallback idle fidget animation clip when no specific stance idle is active.
+---@field defaultIdleAnimation AnimationData
 --- Ragdoll kinematic override lockout counter preventing premature physics transitions.
 ---@field disableRagdollKinematics integer
 --- Ground height vertical offset for foot-plant clamping and ground alignment.
@@ -13902,6 +14150,99 @@ taskPriority = {
 ---@field strafeBlendFilter MotionFilter
 --- Summed blend weight scalar across all active upper-body action clips.
 ---@field totalActionWeight number
+
+--- Animation clip record storing character animation data and mode requirements.
+---@class AnimationData
+--- Raw GameData reference from game database.
+---@field _rawData GameData
+--- Underlying OGRE skeleton animation clip name.
+---@field animName string
+--- Severe stagger animation flag.
+---@field bigStumble boolean
+--- Being carried passenger flag.
+---@field carried boolean
+--- Shoulder carry left flag.
+---@field carryingLeft boolean
+--- Shoulder carry right flag.
+---@field carryingRight boolean
+--- High-level animation category (walk, run, combat, idle, stumble).
+---@field category integer
+--- Crouched posture flag.
+---@field crouched boolean
+--- FCS item descriptor name.
+---@field dataName string
+--- Requirement for left-hand weapon presence.
+---@field holdingWeaponL YesNoMaybeValue
+--- Requirement for right-hand weapon presence.
+---@field holdingWeaponR YesNoMaybeValue
+--- Natural locomotion speed for 1.0 animation playback rate.
+---@field idealMoveSpeed number
+--- Relative chance weight among competing idle anims.
+---@field idleChance number
+--- Maximum idle fidget delay.
+---@field idleTimeMax number
+--- Minimum idle fidget delay.
+---@field idleTimeMin number
+--- Atomic action animation flag.
+---@field isAction boolean
+--- Combat stance requirement filter.
+---@field isCombatMode YesNoMaybeValue
+--- Stealth/sneaking posture requirement filter.
+---@field isStealthMode YesNoMaybeValue
+--- Skeletal blending layer target.
+---@field layername integer
+--- Optimal left leg injury for limping animation match.
+---@field legDamageLIdeal number
+--- Left leg maximum injury threshold.
+---@field legDamageLmax number
+--- Left leg minimum injury curve score.
+---@field legDamageLmin number
+--- Optimal right leg injury for limping animation match.
+---@field legDamageRIdeal number
+--- Right leg maximum injury threshold.
+---@field legDamageRmax number
+--- Right leg minimum injury curve score.
+---@field legDamageRmin number
+--- Looping playback flag.
+---@field looped boolean
+--- Upper bound movement velocity.
+---@field maxMoveSpeed number
+--- Lower bound movement velocity threshold.
+---@field minMoveSpeed number
+--- Motion normalization flag.
+---@field normalise boolean
+--- Base playback rate multiplier.
+---@field playSpeed number
+--- Allowed blend-out early exit frame.
+---@field possibleEndingPosition number
+--- Prone/crawling posture flag.
+---@field prone boolean
+--- True if animation root moves from origin.
+---@field relocates boolean
+--- Movement order lockout flag.
+---@field restrictsMovementOrders boolean
+--- Synchronized paired animation target name.
+---@field slave string
+--- Anatomical parts that can trigger this stumble.
+---@field stumbleBodyParts OgreUnorderedSet<GameData>
+--- Directional impulse source for stumble reaction.
+---@field stumbleOrigination integer
+--- Selection probability dampener.
+---@field stumbleRarityMult number
+--- Timeline offset for synced interactions.
+---@field synchOffset number
+--- Two-character synced animation pair flag.
+---@field synched boolean
+--- Left arm bone animation channel active.
+---@field usesLeftArm boolean
+--- Right arm bone animation channel active.
+---@field usesRightArm boolean
+--- Compatible weapon category bitmask.
+---@field weaponTypeFlags integer
+--- Environmental hazard stance filter.
+---@field weatherType integer
+--- Override all skeletal blend layers.
+---@field wholeBodyAllLayer boolean
 
 --- Humanoid character appearance specialist managing facial features, hair/beard styling, gender dimorphism, chest/waist proportions, and skin normal overlays.
 ---@class AppearanceHuman : AppearanceBase
@@ -14029,9 +14370,9 @@ taskPriority = {
 --- Returns the starving or emaciated normal map texture filename for the given race GameData and gender.
 ---@field getNormalMap_Starving fun(self: AppearanceManager, race: GameData, gender: any): string
 --- Returns an Ogre::FastArray of animation data pointers for idle animations.
----@field getCharacterIdleAnimations fun(self: AppearanceManager): OgreFastArray<lightuserdata>
+---@field getCharacterIdleAnimations fun(self: AppearanceManager): OgreFastArray<AnimationData>
 --- Ogre::FastArray of animation data pointers for character idle animations.
----@field characterIdleAnimations OgreFastArray<lightuserdata>
+---@field characterIdleAnimations OgreFastArray<AnimationData>
 --- Ogre::FastArray of race GameData definitions managed by the appearance manager.
 ---@field races OgreFastArray<GameData>
 --- Nested enum table `AppearanceManager.DataCategory`.
@@ -14339,6 +14680,115 @@ taskPriority = {
 ---@field platformStr string
 --- The version number string.
 ---@field version string
+
+--- Shared AI coordination state and package execution manager for squads, tracking queued AIPackages, priority tiers, and active contract jobs.
+---@class Blackboard
+--- Constructs a new `AIPackage` derivative based on `typeId` (such as `Package_OccupyTown` or `CannibalRetreatFromRaid`). Connects relevant callback functions.
+---@field createNewPackage fun(self: Blackboard, key: integer, data: GameData, priority: integer, giver: hand): AIPackage
+--- Assigns an overriding mercenary contract task at a specific priority. Halts lower priority goals.
+---@field _setContractJob fun(self: Blackboard, package: GameData, hours: integer, giver: hand)
+--- Enqueues an AI task definition into the priority tier queues without immediately executing it. Allows complex queuing of behaviors over time.
+---@field _addPackage fun(self: Blackboard, package: GameData, type: integer)
+--- Iterates through `packagesMain` queues and terminates all pending or active routines. Used during platoon destruction or combat override.
+---@field clearAllPackages fun(self: Blackboard)
+--- Suspends or clears the currently executing package, resetting local tracking flags. Replaces it with the provided new `AIPackage` reference.
+---@field _activateCurrentPackage fun(self: Blackboard, package: AIPackage)
+--- Decodes a serialized behavior tree payload into local instances and loads them onto the active execution stack.
+---@field _addFromData fun(self: Blackboard, data: GameData)
+--- Searches the queued priority map for a specific task package by its internal string identifier.
+---@field getPackage fun(self: Blackboard, sid: string): AIPackage
+--- Retrieves the underlying queue struct associated with a requested priority level from `packagesMain`.
+---@field getPackageList fun(self: Blackboard, type: integer): Lektor<AIPackage>
+--- Evaluates queued packages based on a specified priority slice. Ensures packages are still valid for their given goal conditions and purges completed tasks.
+---@field periodicPackageCheck fun(self: Blackboard, type: integer, frameTime: number): boolean
+--- Validates and polls conditions matching current dialog hooks against incoming game events. Often transitions an NPC's behavior state depending on dialog outcome.
+---@field dialogEventsCheck fun(self: Blackboard, line: GameData, target: hand)
+--- Extracts standard contract behavior from `GameData` by looking up the "AI contract" entry in the parameters unordered map. If validated, pushes down into `_setContractJob`.
+---@field setContractJob fun(self: Blackboard, packageCollection: GameData, giver: hand)
+--- Concludes the currently active mercenary contract package. Triggers dialog/payment handlers for successful termination.
+---@field endContractJob fun(self: Blackboard)
+--- Checks if the main directive tied to the squad's primary `AIPackage` has fulfilled its goal conditions.
+---@field isMissionComplete fun(self: Blackboard): boolean
+--- Tests if a target building belongs to a faction currently marked for destruction by the active occupation behavior.
+---@field isTargetMarkedForDeath fun(self: Blackboard, cage: Building, t: TownBase): boolean
+--- Ticks the active behavior packages within the blackboard. Determines if new conditions have invalidated the current goal and handles scheduling logic.
+---@field update fun(self: Blackboard, frameTime: number)
+---@field periodicUpdate fun(self: Blackboard, frameTime: number)
+---@field addPackages fun(self: Blackboard, packageCollection: GameData)
+---@field addFallbackPackages fun(self: Blackboard, packageCollection_faction: GameData)
+---@field replaceAIPackage fun(self: Blackboard, package: GameData)
+---@field getCurrentAIPackageName fun(self: Blackboard): string
+---@field getCurrentAIPackageGUIData fun(self: Blackboard, panel: DatapanelGUI, cat: integer)
+---@field assessNeutral fun(self: Blackboard, who: Character)
+---@field assessEnemy fun(self: Blackboard, who: Character): boolean
+---@field getCurrentPackage fun(self: Blackboard): AIPackage
+---@field getFormationPositionOffset fun(self: Blackboard, character: Character): table
+---@field nodifyFormationUpdate fun(self: Blackboard)
+---@field getOwnerships fun(self: Blackboard): Ownerships
+---@field notifyGoalStart fun(self: Blackboard, t: Tasker, me: hand)
+---@field notifyGoalEnd fun(self: Blackboard, me: hand)
+---@field notifySubTarget fun(self: Blackboard, me: hand, target: hand)
+---@field howManyGuysDoingThisGoal fun(self: Blackboard, t: Tasker, me: hand): integer
+---@field howManyGuysWorkingOnThisSubTarget fun(self: Blackboard, t: Tasker|hand, me: hand, subtarget: hand): integer
+---@field isMySubTarget fun(self: Blackboard, t: Tasker, me: hand, subtarget: hand): boolean
+---@field getSubTarget fun(self: Blackboard, me: hand): hand
+---@field addRequest fun(self: Blackboard, from: hand, to: hand, key: integer, subject: hand, pri: integer, weight: number)
+---@field removeRequest fun(self: Blackboard, from: hand)
+---@field notifyJobCompleted fun(self: Blackboard, key: integer, subj: hand, me: hand)
+---@field addSquadJob fun(self: Blackboard, type: integer, key: integer, subject: hand, pri: integer, weight: number, targeting: integer, ending: integer, startTime: integer, endTime: integer)
+---@field getUnloadedPlatoonJob fun(self: Blackboard): integer
+---@field clearAllTheJobs fun(self: Blackboard)
+---@field serialise fun(self: Blackboard, state: GameData)
+---@field load fun(self: Blackboard, state: GameData)
+---@field stateUpdate fun(self: Blackboard, frameTime: number)
+---@field notifyMissionTargetPathfindImpossible fun(self: Blackboard, forWho: Character, target: hand)
+---@field getMissionTown fun(self: Blackboard, getHometownAsFallback?: boolean): hand
+---@field getMissionGiver fun(self: Blackboard): hand
+---@field getCurrentTownLocation fun(self: Blackboard): TownBase
+---@field getTimeSpentInTown_inGameHours fun(self: Blackboard): number
+---@field setMyHomeIsLocked fun(self: Blackboard, on?: boolean)
+---@field getMyHomeIsLocked fun(self: Blackboard): boolean
+---@field getHomeGate fun(self: Blackboard): hand
+---@field hasContractJob fun(self: Blackboard): boolean
+---@field getContractExpiryTime fun(self: Blackboard): TimeOfDay
+---@field contractJobNotifyBetrayal fun(self: Blackboard, myWitness: Character, betrayer: Character)
+---@field contractJobWasBetrayal fun(self: Blackboard): boolean
+---@field showEndedMessage fun(self: Blackboard)
+---@field _NV_showEndedMessage fun(self: Blackboard)
+---@field _setupJobFromData fun(self: Blackboard, data: GameData, listname: string, listEnum: integer)
+---@field countCharacters fun(self: Blackboard)
+---@field runAwayCheck fun(self: Blackboard)
+---@field runAway fun(self: Blackboard)
+---@field buildFormation fun(self: Blackboard)
+---@field getGridPositions fun(self: Blackboard, gridWidth: integer, gridHeight: integer, size: integer, initialX: number, radius: number, spacingX: number, spacingZ: number): table[]
+---@field HIGHEST_PRIORITY_LEVEL integer
+---@field _flagCleared boolean
+---@field _homeGateTarget hand
+---@field actionTargets OgreUnorderedMap<integer, hand>
+--- Cage handle of target marked for execution.
+---@field cageMarkedForDeath hand
+---@field characterCount integer
+---@field characterFormationPosition OgreUnorderedMap<hand, table>
+---@field contractExpiryTime TimeOfDay
+---@field contractJob AIPackage
+--- Currently executing squad package.
+---@field currentPackage AIPackage
+--- Active package priority tier.
+---@field currentPackagePriorityLevel integer
+---@field currentTownLocation TownBase
+---@field enemyCount integer
+---@field formationNeedUpdate boolean
+---@field homeIsLockedUp boolean
+---@field missionData GameData
+---@field moraleIsBroken boolean
+---@field needsStateUpdate boolean
+--- SID of package scheduled to replace current upon completion.
+---@field replacementAIPackageSID string
+---@field runningAwayMode boolean
+---@field squad Platoon
+---@field targetTown TownBase
+---@field targetZoneHunting ZoneMap
+---@field townArrivalTime TimeOfDay
 
 --- Individual faction criminal bounty record. Tracks monetary reward, accumulated crime bitflags, claim status, and timestamp when the bounty was posted.
 ---@class Bounty
@@ -14658,12 +15108,143 @@ taskPriority = {
 --- Current camera yaw angle in degrees.
 ---@field yaw number
 
+--- A faction's definition of one war campaign type, owned by that faction's `FactionWarMgr` (`possibleCampaigns`).
+---@class CampaignData
+---@field _setupPackages fun(self: CampaignData, d: GameData, listname: string, state: integer)
+---@field _addDataFrom fun(self: CampaignData, d: GameData)
+---@field reset fun(self: CampaignData)
+---@field key fun(self: CampaignData): integer
+---@field isHostile fun(self: CampaignData): boolean
+---@field getDisplayName fun(self: CampaignData): string
+---@field isTriggersRandomly fun(self: CampaignData): boolean
+---@field chooseTarget fun(self: CampaignData, enemy: Faction): RootObjectBase|nil, TownBase|nil
+---@field _NV_chooseTarget fun(self: CampaignData, enemy: Faction): RootObjectBase|nil, TownBase|nil
+---@field territorialTriggerScore fun(self: CampaignData, enemy: Faction, target: RootObjectBase): number
+---@field _NV_territorialTriggerScore fun(self: CampaignData, enemy: Faction, target: RootObjectBase): number
+---@field canStart fun(self: CampaignData): boolean
+---@field _NV_canStart fun(self: CampaignData): boolean
+---@field numForcesNeeded fun(self: CampaignData): integer
+---@field ignoresMults fun(self: CampaignData): boolean
+---@field canUseThisSquad fun(self: CampaignData, squadTemplate: GameData): boolean
+---@field _isHostile boolean
+---@field allyTriggers Lektor<GameData>
+---@field campaignType integer
+--- The `GameData` record this campaign is built from. Cannot be set to nil.
+---@field data GameData
+--- `Faction` that runs this campaign instead of the owner, or nil.
+---@field factionOverride Faction
+---@field hasAssaultPhase boolean
+---@field lastTerritorialTrigger TimeOfDay
+---@field lossTriggers FitnessSelectorCampaignTriggerData
+--- The `Faction` that owns this campaign data. Cannot be set to nil.
+---@field me Faction
+---@field repeatLimit number
+---@field spawns GameDataFitnessSelector
+---@field specificLeaderCharacter Lektor<GameData>
+---@field specificTargetCharacter Lektor<GameData>
+---@field targetCharacters boolean
+---@field triggerChancePerDay01 number
+---@field triggerRangeFurthest number
+---@field triggerRangeNear number
+---@field triggerTargetPopulation integer
+---@field triggerTargetTechLevel integer
+---@field triggerTimeMax integer
+---@field triggerTimeMin integer
+---@field triggersRandomly_territorial boolean
+---@field victoryTriggers FitnessSelectorCampaignTriggerData
+---@field worldStateRequirements WorldEventStateQueryList
+
+--- Active military expedition instance tracking marching forces, operational phases (Gathering, Assaulting, Retreating, Victory), destination waypoints, and casualties.
+---@class CampaignInstance
+--- Retrieves the blueprint `CampaignData` record configuring this expedition.
+---@field getData fun(self: CampaignInstance): CampaignData
+--- Transitions the expedition into a new strategic operational phase.
+---@field changePhase fun(self: CampaignInstance, p: integer)
+--- Serializes active campaign state, phases, and troop census into a savegame record.
+---@field saveState fun(self: CampaignInstance, s: GameData, id: integer)
+--- Restores campaign operational state, waypoint objectives, and troop census from save data.
+---@field loadState fun(self: CampaignInstance, s: GameData, id: integer)
+---@field markOnMap fun(self: CampaignInstance)
+---@field _NV_markOnMap fun(self: CampaignInstance)
+---@field getDialogData fun(self: CampaignInstance, ev: integer): GameData
+---@field hasSufficientManpower fun(self: CampaignInstance): boolean
+---@field victoryEvent fun(self: CampaignInstance)
+---@field _NV_victoryEvent fun(self: CampaignInstance)
+---@field lossEvent fun(self: CampaignInstance)
+---@field _NV_lossEvent fun(self: CampaignInstance)
+---@field setLeader fun(self: CampaignInstance, h: hand)
+---@field _NV_setLeader fun(self: CampaignInstance, h: hand)
+---@field getLeader fun(self: CampaignInstance): Character
+---@field _NV_getLeader fun(self: CampaignInstance): Character
+---@field getLeaderPlatoon fun(self: CampaignInstance): Platoon
+---@field _NV_getLeaderPlatoon fun(self: CampaignInstance): Platoon
+---@field isEnemy fun(self: CampaignInstance, who: Character): boolean
+---@field _NV_isEnemy fun(self: CampaignInstance, who: Character): boolean
+---@field getName fun(self: CampaignInstance): string
+---@field _NV_getName fun(self: CampaignInstance): string
+---@field setup fun(self: CampaignInstance): boolean
+---@field _NV_setup fun(self: CampaignInstance): boolean
+---@field periodicUpdate fun(self: CampaignInstance)
+---@field _NV_periodicUpdate fun(self: CampaignInstance)
+---@field isEverybodyIdle fun(self: CampaignInstance): boolean
+---@field _NV_isEverybodyIdle fun(self: CampaignInstance): boolean
+---@field getUnloadedPlatoonBehavior fun(self: CampaignInstance, who: Platoon): integer
+---@field _NV_getUnloadedPlatoonBehavior fun(self: CampaignInstance, who: Platoon): integer
+---@field getAIPackage fun(self: CampaignInstance, who: Platoon): GameData
+---@field _NV_getAIPackage fun(self: CampaignInstance, who: Platoon): GameData
+---@field addToCampaign fun(self: CampaignInstance, who: Platoon, forceLeader?: boolean)
+---@field _NV_addToCampaign fun(self: CampaignInstance, who: Platoon, forceLeader?: boolean)
+---@field areForcesAllTogether fun(self: CampaignInstance): boolean
+---@field _NV_areForcesAllTogether fun(self: CampaignInstance): boolean
+---@field removeFromCampaign fun(self: CampaignInstance, who: Platoon)
+---@field _NV_removeFromCampaign fun(self: CampaignInstance, who: Platoon)
+---@field getMoveSpeedUnloaded fun(self: CampaignInstance): integer
+---@field _NV_getMoveSpeedUnloaded fun(self: CampaignInstance): integer
+---@field getMoveSpeedLoaded fun(self: CampaignInstance): integer
+---@field _NV_getMoveSpeedLoaded fun(self: CampaignInstance): integer
+---@field getTargetTown fun(self: CampaignInstance): hand
+---@field _NV_getTargetTown fun(self: CampaignInstance): hand
+---@field getFormationPosition fun(self: CampaignInstance, arg1: Platoon): table
+---@field getDestination fun(self: CampaignInstance, who: Platoon): table
+---@field _NV_getDestination fun(self: CampaignInstance, who: Platoon): table
+---@field isSuccessful fun(self: CampaignInstance): boolean
+---@field canTalkToBeforeArrival boolean
+--- Current strategic campaign state enum.
+---@field currentPhase integer
+---@field enemy Faction
+--- Trigger activation execution latch.
+---@field hasTriggeredSomething boolean
+---@field homeTown hand
+---@field leader hand
+--- Census of surviving forces at last evaluation.
+---@field manPowerLastCount integer
+--- Peak muster troop strength committed.
+---@field manPowerMax integer
+--- Minimum troop strength threshold required to maintain assault.
+---@field manPowerMin integer
+---@field me Faction
+---@field membersInOrder Lektor<hand>
+--- Campaign blueprint configuration data.
+---@field myData CampaignData
+--- Timestamp when active phase transition occurred.
+---@field phaseChangeTime TimeOfDay
+--- Target settlement breach waypoint reached flag.
+---@field reachedDestination boolean
+--- Elapsed duration with zero combat engagements.
+---@field timeWithNoEnemies TimeOfDay
+--- Marching velocity when rendered in active reality.
+---@field travelSpeedLoaded integer
+--- Marching velocity across background streaming terrain.
+---@field travelSpeedUnloaded integer
+--- Unique campaign operation identifier.
+---@field uniqueID integer
+
 --- Represents a queued or pending campaign request managed by `FactionWarMgr` (wrapping `FactionWarMgr::CampaignRequest`).
 ---@class CampaignRequest
 --- Attempts to find and assign an alternative valid target for this campaign request, returning true if successful.
 ---@field tryToChangeTarget fun(self: CampaignRequest): boolean
---- Read-only `lightuserdata` pointer to the underlying `CampaignData` object.
----@field data lightuserdata
+--- Read-only `CampaignData` this request refers to.
+---@field data CampaignData
 --- Target enemy `Faction` for this campaign request.
 ---@field enemy Faction
 --- Handle (`hand`) to the home town or base launching the campaign.
@@ -15132,7 +15713,7 @@ taskPriority = {
 --- Export body morph preset button (`.bod2`).
 ---@field exportButton MyGUI.Button|nil
 --- Preview idle animation list.
----@field idleAnimations OgreFastArray<lightuserdata>
+---@field idleAnimations OgreFastArray<AnimationData>
 --- Import body morph preset button (`.bod2`).
 ---@field importButton MyGUI.Button|nil
 --- Initial squad member platform positions.
@@ -17055,11 +17636,11 @@ taskPriority = {
 --- Checks whether any aggressive military campaigns are currently active, optionally filtering only for those targeting the player.
 ---@field areAnyHostileCampaignsRunning fun(self: FactionWarMgr, playeronly?: boolean): boolean
 --- Concludes the specified active military campaign, dismissing participant platoons or ordering them to return to their home bases.
----@field endCampaign fun(self: FactionWarMgr, c: lightuserdata)
+---@field endCampaign fun(self: FactionWarMgr, c: CampaignInstance)
 --- Gathers and mobilizes all participating platoons assigned to a campaign targeting the given object or town.
----@field getAllTheForces fun(self: FactionWarMgr, target: RootObjectBase, c: lightuserdata)
+---@field getAllTheForces fun(self: FactionWarMgr, target: RootObjectBase, c: CampaignInstance)
 --- Assembles assault platoons and recruits military forces from the specified town for an active campaign.
----@field _generateForcesForTown fun(self: FactionWarMgr, t: TownBase, c: lightuserdata)
+---@field _generateForcesForTown fun(self: FactionWarMgr, t: TownBase, c: CampaignInstance)
 --- Returns true if the faction has enough reserve population to field the requested number of assault squads.
 ---@field canGenerateThisManyForces fun(self: FactionWarMgr, num: integer): boolean
 --- Advances faction war simulation, evaluating scheduled campaign start times, army movements, and assault objectives.
@@ -17067,9 +17648,9 @@ taskPriority = {
 --- Executes a debug routine to inspect or advance faction war manager state and campaign progression.
 ---@field debugButton fun(self: FactionWarMgr)
 --- Initiates or schedules a military campaign against a target town or outpost using specified campaign data and home base.
----@field triggerCampaign fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: GameData|RootObjectBase|lightuserdata, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): lightuserdata|nil
+---@field triggerCampaign fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): CampaignInstance|nil
 --- Returns the `CampaignInstance` that the specified platoon is currently assigned to, or nullptr.
----@field getCurrentCampaign fun(self: FactionWarMgr, who: Platoon): lightuserdata
+---@field getCurrentCampaign fun(self: FactionWarMgr, who: Platoon): CampaignInstance
 --- Returns the objective target `hand` assigned to the given platoon in its active campaign.
 ---@field getAITarget fun(self: FactionWarMgr, who: Platoon): hand
 --- Returns the unloaded AI behavior order (`UPJOB_PATROL_TOWN`, `UPJOB_TRAVEL_TARGET`, etc.) for the given platoon when outside player render distance.
@@ -17083,13 +17664,13 @@ taskPriority = {
 --- Populates a list of faction-owned settlements that have sufficient free population to generate assault forces.
 ---@field getMyTownsWithEnoughFreePopulation fun(self: FactionWarMgr, out: FactionWarMgr|Lektor<TownBase>, popNeeded: integer)
 --- Finds and returns the active `CampaignInstance` matching the given unique campaign ID, or nullptr.
----@field getActiveCampaign fun(self: FactionWarMgr, uniqueID: integer): lightuserdata
+---@field getActiveCampaign fun(self: FactionWarMgr, uniqueID: integer): CampaignInstance
 --- Internal initialization configuring faction territory biomes, valid campaign types, and town registries.
 ---@field setup fun(self: FactionWarMgr)
 --- Instantiates and configures a campaign definition object from raw game data records.
----@field _createCampaignData fun(self: FactionWarMgr, dat: GameData): lightuserdata
+---@field _createCampaignData fun(self: FactionWarMgr, dat: GameData): CampaignData
 --- Currently marching or assaulting military campaigns.
----@field activeCampaigns lightuserdata
+---@field activeCampaigns Lektor<CampaignInstance>
 --- List of AreaBiomeGroup regions avoided by this faction's patrols and campaigns.
 ---@field biomeNoGoZones lightuserdata
 --- List of AreaBiomeGroup regions considered home territory by this faction.
@@ -17097,7 +17678,7 @@ taskPriority = {
 --- List of pending FactionWarMgr::CampaignRequest entries waiting to launch.
 ---@field campaignRequests Lektor<CampaignRequest>
 --- Map of active Platoon pointers to the CampaignInstance they are assigned to.
----@field forces lightuserdata
+---@field forces StdMap<Platoon, CampaignInstance>
 --- List of hand handles for mercenary platoons currently hired by or from this faction.
 ---@field hiredForces Lektor<hand>
 --- Last assigned unique identifier for war campaigns created by this manager.
@@ -17109,7 +17690,7 @@ taskPriority = {
 --- Scheduled TimeOfDay for the next strategic war manager evaluation.
 ---@field nextUpdateTime TimeOfDay
 --- List of CampaignData templates available for this faction to trigger.
----@field possibleCampaigns lightuserdata
+---@field possibleCampaigns Lektor<CampaignData>
 
 --- UI screen managing diplomacy, relations bars, and faction status in the player management menu.
 ---@class FactionsScreen
@@ -21715,6 +22296,9 @@ taskPriority = {
 --- Combined threat level of enemies targeting this character personally.
 ---@field totalThreatLevelPersonal number
 
+--- Engine interface for objects that can be written to and read from save streams. Its methods take C++ streams and are not exposed; the type is used for typed `Serialisable` arguments.
+---@class Serialisable
+
 --- Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.
 ---@class ShopTrader : RootObject
 --- Populates the barter interface data panel with shopkeeper title, faction affiliation, trade price markup factors, and Cat balances.
@@ -22384,6 +22968,28 @@ taskPriority = {
 ---@field scoreFunction lightuserdata
 --- Child TaskType spawned by this task.
 ---@field subTask TaskStateData
+
+--- Identifies a task by its TaskData and subject/subtarget handles, used to match and compare AI tasks. Values created with `TaskMatch(...)` are owned by Lua.
+---@class TaskMatch
+--- Returns the `TaskData` this match refers to, or nil.
+---@field getTaskData fun(self: TaskMatch): TaskData
+--- Returns the task type of this match as a `TaskType` integer.
+---@field key fun(self: TaskMatch): integer
+---@field operator_assign fun(self: TaskMatch, arg1: integer): TaskMatch
+--- Clears this match.
+---@field reset fun(self: TaskMatch)
+---@field operator_eq fun(self: TaskMatch): boolean
+---@field operator_ne fun(self: TaskMatch): boolean
+--- Returns true if this match refers to the same task as the given `Tasker`.
+---@field sameAs fun(self: TaskMatch, t: Tasker): boolean
+---@field operator_lt fun(self: TaskMatch, arg1: TaskMatch): boolean
+---@field operator_bool fun(self: TaskMatch): boolean
+--- Handle of the task subject.
+---@field subject hand
+--- Handle of the task subtarget.
+---@field subtarget hand
+--- The `TaskData` this match refers to, or nil.
+---@field taskData TaskData
 
 --- AI task instance representing an assigned goal, job, or behavior routine, managing execution conditions, priorities, target subjects, and subtasks.
 ---@class Tasker
@@ -25090,6 +25696,9 @@ taskPriority = {
 --- Static function calculating the bounding coordinate dimensions for squad cell layout.
 ---@field getCellDimension fun(_sender: MyGUI.Widget, _coord?: MyGUI.IntCoord|boolean, _drop?: boolean): MyGUI.IntCoord
 
+--- Static functions registered on the `TaskMatch` global table.
+---@class TaskMatchStatics
+
 --- Static functions registered on the `TitleScreen` global table.
 ---@class TitleScreenStatics
 --- Static method returning the singleton TitleScreen instance.
@@ -25535,6 +26144,11 @@ SaveManager = {}
 ---@type SquadCellViewStatics
 ---@diagnostic disable-next-line: missing-fields
 SquadCellView = {}
+
+--- Global table of static functions for `TaskMatch`.
+---@type TaskMatchStatics
+---@diagnostic disable-next-line: missing-fields
+TaskMatch = {}
 
 --- Global table of static functions for `TitleScreen`.
 ---@type TitleScreenStatics
@@ -26391,12 +27005,18 @@ hkVector4ComparisonMask.Mask = {
 ---@class LektorFactory
 ---@overload fun(typeName: "lektor<int>"): Lektor<integer>
 ---@overload fun(typeName: "int"): Lektor<integer>
+---@overload fun(typeName: "lektor<AIPackage*>"): Lektor<AIPackage>
+---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
 ---@overload fun(typeName: "Armour*"): Lektor<Armour>
 ---@overload fun(typeName: "lektor<Building*>"): Lektor<Building>
 ---@overload fun(typeName: "Building*"): Lektor<Building>
 ---@overload fun(typeName: "lektor<Building::ConstructionState::BuildMaterial*>"): Lektor<BuildMaterial>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial*"): Lektor<BuildMaterial>
+---@overload fun(typeName: "lektor<CampaignData*>"): Lektor<CampaignData>
+---@overload fun(typeName: "CampaignData*"): Lektor<CampaignData>
+---@overload fun(typeName: "lektor<CampaignInstance*>"): Lektor<CampaignInstance>
+---@overload fun(typeName: "CampaignInstance*"): Lektor<CampaignInstance>
 ---@overload fun(typeName: "lektor<Character*>"): Lektor<Character>
 ---@overload fun(typeName: "Character*"): Lektor<Character>
 ---@overload fun(typeName: "lektor<CombatTechniqueData*>"): Lektor<CombatTechniqueData>
@@ -26475,9 +27095,12 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
+---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
+---@overload fun(typeName: "CampaignData"): Lektor<CampaignData>
+---@overload fun(typeName: "CampaignInstance"): Lektor<CampaignInstance>
 ---@overload fun(typeName: "Character"): Lektor<Character>
 ---@overload fun(typeName: "CombatTechniqueData"): Lektor<CombatTechniqueData>
 ---@overload fun(typeName: "DatapanelGUI"): Lektor<DatapanelGUI>
@@ -26508,12 +27131,18 @@ lektor = {}
 --- Creates an empty Lua-owned container; raises for an unknown type name.
 ---@overload fun(typeName: "lektor<int>"): Lektor<integer>
 ---@overload fun(typeName: "int"): Lektor<integer>
+---@overload fun(typeName: "lektor<AIPackage*>"): Lektor<AIPackage>
+---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
 ---@overload fun(typeName: "Armour*"): Lektor<Armour>
 ---@overload fun(typeName: "lektor<Building*>"): Lektor<Building>
 ---@overload fun(typeName: "Building*"): Lektor<Building>
 ---@overload fun(typeName: "lektor<Building::ConstructionState::BuildMaterial*>"): Lektor<BuildMaterial>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial*"): Lektor<BuildMaterial>
+---@overload fun(typeName: "lektor<CampaignData*>"): Lektor<CampaignData>
+---@overload fun(typeName: "CampaignData*"): Lektor<CampaignData>
+---@overload fun(typeName: "lektor<CampaignInstance*>"): Lektor<CampaignInstance>
+---@overload fun(typeName: "CampaignInstance*"): Lektor<CampaignInstance>
 ---@overload fun(typeName: "lektor<Character*>"): Lektor<Character>
 ---@overload fun(typeName: "Character*"): Lektor<Character>
 ---@overload fun(typeName: "lektor<CombatTechniqueData*>"): Lektor<CombatTechniqueData>
@@ -26592,9 +27221,12 @@ lektor = {}
 ---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
+---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
+---@overload fun(typeName: "CampaignData"): Lektor<CampaignData>
+---@overload fun(typeName: "CampaignInstance"): Lektor<CampaignInstance>
 ---@overload fun(typeName: "Character"): Lektor<Character>
 ---@overload fun(typeName: "CombatTechniqueData"): Lektor<CombatTechniqueData>
 ---@overload fun(typeName: "DatapanelGUI"): Lektor<DatapanelGUI>
@@ -26689,6 +27321,8 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
+---@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
 ---@overload fun(keyType: "GameData*", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "ogre_unordered_map<hand, PortraitData*>"): OgreUnorderedMap<hand, PortraitData>
@@ -26735,6 +27369,8 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, lightuserdata>
 ---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
+---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
 ---@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
 ---@overload fun(keyType: "Faction", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>
@@ -26775,6 +27411,8 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
+---@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
 ---@overload fun(keyType: "GameData*", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "ogre_unordered_map<hand, PortraitData*>"): OgreUnorderedMap<hand, PortraitData>
@@ -26821,6 +27459,8 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, lightuserdata>
 ---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
+---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
 ---@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
 ---@overload fun(keyType: "Faction", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>

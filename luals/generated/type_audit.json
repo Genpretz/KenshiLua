@@ -2300,6 +2300,58 @@
       "member": "ordersMovement"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "AIPackage",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed getDesiredTravelSpeed(Character* me)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AIPackage, me: Character): integer",
+      "member": "getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AIPackage",
+      "expected": "fun(Character): MoveSpeed",
+      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AIPackage, me: Character): integer",
+      "member": "_NV_getDesiredTravelSpeed"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AIPackage",
+      "expected": "BlackboardSignalFunctions",
+      "header": "BlackboardSignalFunctions",
+      "kind": "property",
+      "lua": "integer",
+      "member": "key"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AIPackage",
+      "expected": "UnloadedPlatoonJob",
+      "header": "UnloadedPlatoonJob",
+      "kind": "property",
+      "lua": "integer",
+      "member": "unloadedMode"
+    },
+    {
       "category": "unmapped_header_type",
       "class": "AbstractMovementBase",
       "expected": "fun(): ?RoadFollower*",
@@ -2591,40 +2643,6 @@
     {
       "category": "unmapped_header_type",
       "class": "ActivePlatoon",
-      "expected": "fun(boolean, ?Serialisable*): boolean",
-      "header": "bool loadFromDisk(bool force, Serialisable* extra) override",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Serialisable*",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ActivePlatoon, force?: boolean, extra?: lightuserdata): boolean",
-      "member": "loadFromDisk"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ActivePlatoon",
-      "expected": "fun(boolean, ?Serialisable*): boolean",
-      "header": "bool _NV_loadFromDisk(bool force, Serialisable* extra)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Serialisable*",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ActivePlatoon, force?: boolean, extra?: lightuserdata): boolean",
-      "member": "_NV_loadFromDisk"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ActivePlatoon",
       "expected": "?GroupSense*",
       "header": "GroupSense*",
       "kind": "property",
@@ -2684,6 +2702,23 @@
       "member": "getWeatherType"
     },
     {
+      "category": "binding_converts",
+      "class": "AnimationClass",
+      "expected": "fun(AnimationData, number, AnimationLayerEnum, number, string)",
+      "header": "void runAnimation(AnimationData* anim, float speed, AnimationLayerEnum lay, float blend, const std::string& ext)",
+      "issues": [
+        {
+          "actual": "integer|number",
+          "category": "binding_converts",
+          "expected": "AnimationLayerEnum",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: integer|number, arg4: number, arg5: string)",
+      "member": "runAnimation"
+    },
+    {
       "category": "enum_typed_as_integer",
       "class": "AnimationClass",
       "expected": "fun(StanceEnum)",
@@ -2718,6 +2753,23 @@
       "member": "_NV_setStanceAnimation"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationClass",
+      "expected": "fun(GameData, CutOrigination, boolean): AnimationData|nil",
+      "header": "AnimationData* chooseStumbleAnim(GameData* bodypart, CutOrigination hitFrom, bool bigone)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "CutOrigination",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AnimationClass, bodypart: GameData, hitFrom: integer, bigone?: boolean): AnimationData",
+      "member": "chooseStumbleAnim"
+    },
+    {
       "category": "unmapped_header_type",
       "class": "AnimationClassBase",
       "expected": "?boost::unordered::unordered_map<std::string,Ogre::Vector3,boost::hash<std::string>,std::equal_to<std::string>,Ogre::STLAllocator<std::pair<std::string ,Ogre::Vector3>,Ogre::GeneralAllocPolicy>>",
@@ -2725,6 +2777,42 @@
       "kind": "property",
       "lua": "BoostUnorderedMap<string, table>",
       "member": "boneInitialWorldPositions"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationData",
+      "expected": "CharacterAnimCategory",
+      "header": "CharacterAnimCategory",
+      "kind": "property",
+      "lua": "integer",
+      "member": "category"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationData",
+      "expected": "AnimationLayerEnum",
+      "header": "AnimationLayerEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "layername"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationData",
+      "expected": "CutOrigination",
+      "header": "CutOrigination",
+      "kind": "property",
+      "lua": "integer",
+      "member": "stumbleOrigination"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationData",
+      "expected": "WeatherAffecting",
+      "header": "WeatherAffecting",
+      "kind": "property",
+      "lua": "integer",
+      "member": "weatherType"
     },
     {
       "category": "unmapped_header_type",
@@ -2878,24 +2966,6 @@
       "kind": "method",
       "lua": "fun(self: AppearanceBase, boneName: string, direction: integer): table",
       "member": "getRandomVertexPosition"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "AppearanceBase",
-      "expected": "?Ogre::FastArray<AttachedEffect*>",
-      "header": "Ogre::FastArray<AttachedEffect*>",
-      "kind": "property",
-      "lua": "OgreFastArray<lightuserdata>",
-      "member": "attachedEffects"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "AppearanceBase",
-      "expected": "?Ogre::FastArray<AttachedEffect*>",
-      "header": "Ogre::FastArray<AttachedEffect*>",
-      "kind": "property",
-      "lua": "OgreFastArray<lightuserdata>",
-      "member": "attachedEffectsToRemove"
     },
     {
       "category": "unmapped_header_type",
@@ -3552,6 +3622,184 @@
       "kind": "property",
       "lua": "string",
       "member": "platformStr"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard",
+      "expected": "fun(BlackboardSignalFunctions, GameData, integer, hand): AIPackage|nil",
+      "header": "AIPackage* createNewPackage(BlackboardSignalFunctions key, GameData* data, int priority, const hand& giver)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "BlackboardSignalFunctions",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, key: integer, data: GameData, priority: integer, giver: hand): AIPackage",
+      "member": "createNewPackage"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "Blackboard",
+      "expected": "fun(hand, hand)",
+      "header": "void getSubTarget(const hand& me, hand& subtarget)",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 2,
+          "position": null
+        },
+        {
+          "actual": "hand",
+          "category": "binding_shape_differs",
+          "expected": "(none)",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, me: hand): hand",
+      "member": "getSubTarget"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard",
+      "expected": "fun(hand, hand, TaskType, hand, taskPriority, number)",
+      "header": "void addRequest(const hand& from, const hand& to, TaskType key, const hand& subject, taskPriority pri, float weight)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 3"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "taskPriority",
+          "position": "param 5"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, from: hand, to: hand, key: integer, subject: hand, pri: integer, weight: number)",
+      "member": "addRequest"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard",
+      "expected": "fun(TaskType, hand, hand)",
+      "header": "void notifyJobCompleted(TaskType key, const hand& subj, const hand& me)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, key: integer, subj: hand, me: hand)",
+      "member": "notifyJobCompleted"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard",
+      "expected": "fun(SquadMemberType, TaskType, hand, taskPriority, number, TaskTargetType, TaskEndEvent, integer, integer)",
+      "header": "void addSquadJob(SquadMemberType type, TaskType key, const hand& subject, taskPriority pri, float weight, TaskTargetType targeting, TaskEndEvent ending, int startTime, int endTime)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SquadMemberType",
+          "position": "param 1"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "param 2"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "taskPriority",
+          "position": "param 4"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskTargetType",
+          "position": "param 6"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskEndEvent",
+          "position": "param 7"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, type: integer, key: integer, subject: hand, pri: integer, weight: number, targeting: integer, ending: integer, startTime: integer, endTime: integer)",
+      "member": "addSquadJob"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard",
+      "expected": "fun(): UnloadedPlatoonJob",
+      "header": "UnloadedPlatoonJob getUnloadedPlatoonJob() const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "UnloadedPlatoonJob",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard): integer",
+      "member": "getUnloadedPlatoonJob"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "Blackboard",
+      "expected": "fun(GameData, string, SquadMemberType)",
+      "header": "void _setupJobFromData(GameData* data, const std::string& listname, SquadMemberType listEnum)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SquadMemberType",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, data: GameData, listname: string, listEnum: integer)",
+      "member": "_setupJobFromData"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "Blackboard",
+      "expected": "fun(?Ogre::vector<Ogre::Vector3>::type, integer, integer, integer, number, number, number, number)",
+      "header": "void getGridPositions(Ogre::vector<Ogre::Vector3>::type& positions, int gridWidth, int gridHeight, int size, float initialX, float radius, float spacingX, float spacingZ)",
+      "issues": [
+        {
+          "actual": 7,
+          "category": "binding_shape_differs",
+          "expected": 8,
+          "position": null
+        },
+        {
+          "actual": "table[]",
+          "category": "binding_shape_differs",
+          "expected": "(none)",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Blackboard, gridWidth: integer, gridHeight: integer, size: integer, initialX: number, radius: number, spacingX: number, spacingZ: number): table[]",
+      "member": "getGridPositions"
     },
     {
       "category": "enum_typed_as_integer",
@@ -4258,13 +4506,219 @@
       "member": "rotationMarker"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "CampaignRequest",
-      "expected": "?CampaignData*",
-      "header": "CampaignData*",
+      "category": "enum_typed_as_integer",
+      "class": "CampaignData",
+      "expected": "fun(GameData, string, Phase)",
+      "header": "void _setupPackages(GameData* d, const std::string& listname, Phase state)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Phase",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignData, d: GameData, listname: string, state: integer)",
+      "member": "_setupPackages"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignData",
+      "expected": "fun(): WarCampaignEnum",
+      "header": "WarCampaignEnum key()",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "WarCampaignEnum",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignData): integer",
+      "member": "key"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignData",
+      "expected": "WarCampaignEnum",
+      "header": "WarCampaignEnum",
       "kind": "property",
-      "lua": "lightuserdata",
-      "member": "data"
+      "lua": "integer",
+      "member": "campaignType"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "CampaignData",
+      "expected": "?GameDataScoredList",
+      "header": "GameDataScoredList",
+      "kind": "property",
+      "lua": "GameDataFitnessSelector",
+      "member": "spawns"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(Phase)",
+      "header": "void changePhase(Phase p)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Phase",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance, p: integer)",
+      "member": "changePhase"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(EventTriggerEnum): GameData|nil",
+      "header": "GameData* getDialogData(EventTriggerEnum ev)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "EventTriggerEnum",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance, ev: integer): GameData",
+      "member": "getDialogData"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(Platoon): UnloadedPlatoonJob",
+      "header": "UnloadedPlatoonJob getUnloadedPlatoonBehavior(Platoon* who)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "UnloadedPlatoonJob",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance, who: Platoon): integer",
+      "member": "getUnloadedPlatoonBehavior"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(Platoon): UnloadedPlatoonJob",
+      "header": "UnloadedPlatoonJob _NV_getUnloadedPlatoonBehavior(Platoon* who)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "UnloadedPlatoonJob",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance, who: Platoon): integer",
+      "member": "_NV_getUnloadedPlatoonBehavior"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(): MoveSpeed",
+      "header": "MoveSpeed getMoveSpeedUnloaded()",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance): integer",
+      "member": "getMoveSpeedUnloaded"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(): MoveSpeed",
+      "header": "MoveSpeed _NV_getMoveSpeedUnloaded()",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance): integer",
+      "member": "_NV_getMoveSpeedUnloaded"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(): MoveSpeed",
+      "header": "MoveSpeed getMoveSpeedLoaded()",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance): integer",
+      "member": "getMoveSpeedLoaded"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "fun(): MoveSpeed",
+      "header": "MoveSpeed _NV_getMoveSpeedLoaded()",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MoveSpeed",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: CampaignInstance): integer",
+      "member": "_NV_getMoveSpeedLoaded"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "Phase",
+      "header": "Phase",
+      "kind": "property",
+      "lua": "integer",
+      "member": "currentPhase"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "MoveSpeed",
+      "header": "MoveSpeed",
+      "kind": "property",
+      "lua": "integer",
+      "member": "travelSpeedLoaded"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "CampaignInstance",
+      "expected": "MoveSpeed",
+      "header": "MoveSpeed",
+      "kind": "property",
+      "lua": "integer",
+      "member": "travelSpeedUnloaded"
     },
     {
       "category": "binding_shape_differs",
@@ -4901,23 +5355,6 @@
       "member": "_NV_getDataType"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?CampaignInstance*",
-      "header": "CampaignInstance* isInAWarCampaign()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignInstance*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "isInAWarCampaign"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "Character",
       "expected": "fun(SquadMemberType)",
@@ -5426,23 +5863,6 @@
       "kind": "method",
       "lua": "fun(self: Character, t: integer, subject: RootObject): boolean",
       "member": "checkPlayerOrderForProblems"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?Blackboard*",
-      "header": "Blackboard* getBlackboard()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Blackboard*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "getBlackboard"
     },
     {
       "category": "unmapped_header_type",
@@ -6058,9 +6478,9 @@
       "member": "characterRotationNode"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "CharacterEditWindow",
-      "expected": "?AnimationData*",
+      "expected": "AnimationData|nil",
       "header": "AnimationData*",
       "kind": "property",
       "lua": "lightuserdata",
@@ -8040,89 +8460,21 @@
       "member": "endOfUniqueSquad"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "fun(?CampaignInstance*)",
-      "header": "void endCampaign(CampaignInstance* c)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignInstance*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FactionWarMgr, c: lightuserdata)",
-      "member": "endCampaign"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "fun(RootObjectBase, ?CampaignInstance*)",
-      "header": "void getAllTheForces(RootObjectBase* target, CampaignInstance* c)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignInstance*",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FactionWarMgr, target: RootObjectBase, c: lightuserdata)",
-      "member": "getAllTheForces"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "fun(TownBase, ?CampaignInstance*)",
-      "header": "void _generateForcesForTown(TownBase* t, CampaignInstance* c)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignInstance*",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FactionWarMgr, t: TownBase, c: lightuserdata)",
-      "member": "_generateForcesForTown"
-    },
-    {
       "category": "binding_shape_differs",
       "class": "FactionWarMgr",
-      "expected": "fun(RootObjectBase, GameData, number, number, TownBase, boolean, Faction)",
-      "header": "void triggerCampaign(RootObjectBase* targetTown, GameData* _data, float minTime, float maxTime, TownBase* hometown, bool forceDuplicate, Faction* triggeringFaction)",
+      "expected": "fun(RootObjectBase, CampaignData, TownBase): CampaignInstance|nil",
+      "header": "CampaignInstance* triggerCampaign(RootObjectBase* targetTown, CampaignData* data, TownBase* home)",
       "issues": [
         {
-          "actual": "lightuserdata|nil",
+          "actual": 7,
           "category": "binding_shape_differs",
-          "expected": "(none)",
-          "position": "return"
+          "expected": 3,
+          "position": null
         }
       ],
       "kind": "method",
-      "lua": "fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: GameData|RootObjectBase|lightuserdata, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): lightuserdata|nil",
+      "lua": "fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): CampaignInstance|nil",
       "member": "triggerCampaign"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "fun(Platoon): ?CampaignInstance*",
-      "header": "CampaignInstance* getCurrentCampaign(Platoon* who)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignInstance*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FactionWarMgr, who: Platoon): lightuserdata",
-      "member": "getCurrentCampaign"
     },
     {
       "category": "enum_typed_as_integer",
@@ -8178,49 +8530,6 @@
     {
       "category": "unmapped_header_type",
       "class": "FactionWarMgr",
-      "expected": "fun(integer): ?CampaignInstance*",
-      "header": "CampaignInstance* getActiveCampaign(int uniqueID)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignInstance*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FactionWarMgr, uniqueID: integer): lightuserdata",
-      "member": "getActiveCampaign"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "fun(GameData): ?CampaignData*",
-      "header": "CampaignData* _createCampaignData(GameData* dat)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignData*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FactionWarMgr, dat: GameData): lightuserdata",
-      "member": "_createCampaignData"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "?lektor<CampaignInstance*>",
-      "header": "lektor<CampaignInstance*>",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "activeCampaigns"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
       "expected": "?lektor<AreaBiomeGroup*>",
       "header": "lektor<AreaBiomeGroup*>",
       "kind": "property",
@@ -8235,24 +8544,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "biomeTerritories"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "?std::map<Platoon*,CampaignInstance*,std::less<Platoon*>,Ogre::STLAllocator<std::pair<Platoon*,CampaignInstance*>,Ogre::GeneralAllocPolicy>>",
-      "header": "std::map<Platoon*,CampaignInstance*,std::less<Platoon*>,Ogre::STLAllocator<std::pair<Platoon*const,CampaignInstance*>,Ogre::GeneralAllocPolicy>>",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "forces"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FactionWarMgr",
-      "expected": "?lektor<CampaignData*>",
-      "header": "lektor<CampaignData*>",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "possibleCampaigns"
     },
     {
       "category": "unmapped_header_type",
@@ -8960,57 +9251,6 @@
       "kind": "method",
       "lua": "fun(self: GameDataContainer, list: Lektor<GameData>, itemType: integer)",
       "member": "getDataOfType"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "GameDataContainer",
-      "expected": "fun(string, boolean, boolean, ?Serialisable*): boolean",
-      "header": "bool loadGameDataReturn(std::string file, bool isActive, bool readOnly, Serialisable* moreData)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Serialisable*",
-          "position": "param 4"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: lightuserdata): boolean",
-      "member": "loadGameDataReturn"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "GameDataContainer",
-      "expected": "fun(string, string, integer, ?Serialisable*, boolean): boolean",
-      "header": "bool load(const std::string& filename, const std::string& modName, int modIndex, Serialisable* moreData, bool keepDeletedInstances)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Serialisable*",
-          "position": "param 4"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: lightuserdata, keepDeletedInstances?: boolean): boolean",
-      "member": "load"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "GameDataContainer",
-      "expected": "fun(string, ?Serialisable*): boolean",
-      "header": "bool save(const std::string& filename, Serialisable* moreData)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Serialisable*",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: GameDataContainer, filename: string, moreData?: lightuserdata): boolean",
-      "member": "save"
     },
     {
       "category": "no_header_declaration",
@@ -14868,23 +15108,6 @@
     {
       "category": "unmapped_header_type",
       "class": "Platoon",
-      "expected": "fun(): ?CampaignInstance*",
-      "header": "CampaignInstance* hasCampaign()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CampaignInstance*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Platoon): lightuserdata",
-      "member": "hasCampaign"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Platoon",
       "expected": "fun(): ?UniquePlatoon*",
       "header": "UniquePlatoon* isUnique()",
       "issues": [
@@ -14915,23 +15138,6 @@
       "kind": "method",
       "lua": "fun(self: Platoon): lightuserdata",
       "member": "_NV_isUnique"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Platoon",
-      "expected": "fun(): ?Blackboard*",
-      "header": "Blackboard* getBlackboard()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Blackboard*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Platoon): lightuserdata",
-      "member": "getBlackboard"
     },
     {
       "category": "enum_typed_as_integer",
@@ -15068,15 +15274,6 @@
       "kind": "method",
       "lua": "fun(self: Platoon, maparea: lightuserdata)",
       "member": "setRoamingMapArea"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Platoon",
-      "expected": "?Blackboard*",
-      "header": "Blackboard*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "blackboard"
     },
     {
       "category": "unmapped_header_type",
@@ -17587,6 +17784,65 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "scoreFunction"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TaskMatch",
+      "expected": "fun(): TaskType",
+      "header": "TaskType key() const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TaskType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskMatch): integer",
+      "member": "key"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "TaskMatch",
+      "expected": "fun(Tasker): boolean",
+      "header": "bool operator==(const Tasker* a) const",
+      "issues": [
+        {
+          "actual": 0,
+          "category": "binding_shape_differs",
+          "expected": 1,
+          "position": null
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskMatch): boolean",
+      "member": "operator_eq"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "TaskMatch",
+      "expected": "fun(Tasker): boolean",
+      "header": "bool operator!=(const Tasker* a) const",
+      "issues": [
+        {
+          "actual": 0,
+          "category": "binding_shape_differs",
+          "expected": 1,
+          "position": null
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskMatch): boolean",
+      "member": "operator_ne"
+    },
+    {
+      "category": "no_header_declaration",
+      "class": "TaskMatch",
+      "cpp": "TaskMatch::operator_bool",
+      "kind": "method",
+      "lua": "fun(self: TaskMatch): boolean",
+      "member": "operator_bool"
     },
     {
       "category": "enum_typed_as_integer",
@@ -20299,17 +20555,17 @@
   ],
   "schema_version": 1,
   "summary": {
-    "binding_converts": 51,
-    "binding_pushes_raw_pointer": 42,
-    "binding_shape_differs": 199,
+    "binding_converts": 52,
+    "binding_pushes_raw_pointer": 43,
+    "binding_shape_differs": 203,
     "blocking_issues": 0,
-    "container_methods_typed": 932,
-    "enum_typed_as_integer": 446,
-    "methods": 7826,
-    "methods_matching_header": 5952,
-    "no_header_declaration": 276,
-    "properties": 3155,
-    "properties_matching_header": 2629,
-    "unmapped_header_type": 471
+    "container_methods_typed": 983,
+    "enum_typed_as_integer": 476,
+    "methods": 8071,
+    "methods_matching_header": 6135,
+    "no_header_declaration": 277,
+    "properties": 3283,
+    "properties_matching_header": 2753,
+    "unmapped_header_type": 449
   }
 }

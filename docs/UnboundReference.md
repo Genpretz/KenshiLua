@@ -82,7 +82,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `ZoneActivationType` | 1 |
 | `ZoneMapContent*` | 1 |
 | `_ScytheRootObjectInterfaceT*` | 3 |
-| `bool` | 66 |
+| `bool` | 67 |
 | `boost::function<void` | 3 |
 | `boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >` | 2 |
 | `boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >` | 1 |
@@ -125,9 +125,9 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const std::string&` | 3 |
 | `const type_info&` | 3 |
 | `const void*` | 1 |
-| `float` | 11 |
+| `float` | 14 |
 | `float (AI::*` | 1 |
-| `float&` | 11 |
+| `float&` | 14 |
 | `hand&` | 3 |
 | `hkArray<EdgePathNode, hkContainerHeapAllocator>&` | 5 |
 | `hkArray<unsigned int, hkContainerHeapAllocator>&` | 2 |
@@ -149,8 +149,8 @@ This document registers all C++ SDK classes and complex types that are currently
 | `unsigned char` | 1 |
 | `unsigned int` | 8 |
 | `unsigned int&` | 8 |
-| `void*` | 256 |
-| `void**` | 256 |
+| `void*` | 252 |
+| `void**` | 252 |
 
 ## Unsupported Properties Detail
 
@@ -176,51 +176,34 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | _getBone | `Ogre::OldBone*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | create | `void` | appends five new AnimationLayers each call; Lua cannot construct an AnimationClassBase, and calling it on a live instance duplicates the layers |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimation | `Ogre::Animation*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationCurrentWeight | `float` | unbound pointer argument |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationData | `AnimationData*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying | `AnimationClassBase::SingleAnimation*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying | `AnimationClassBase::SingleAnimation*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying_animName | `AnimationClassBase::SingleAnimation*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying_datName | `AnimationClassBase::SingleAnimation*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationState | `Ogre::AnimationState*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimation_Lockpick | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimation_Medic | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | _NV_getAnimationData | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | _NV_getAnimationData | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | _NV_getAnimationDataByOgreName | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | _NV_getFloatingAnim | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | _NV_getIdleAnimation | `AnimationData*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | _NV_getRagdoll | `RagdollClass*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | _NV_getStandingUpAnim | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | _NV_runStrafe | `void` | unbound pointer argument |
 | Kenshi/Animation/AnimationClassBinding.cpp | _NV_setDesiredPainOverlayAnims | `void` | StringValuePair is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | chooseAnims | `void` | AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | chooseRandomAnim | `AnimationChoices` | AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | chooseStumbleAnim | `AnimationData*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | create | `bool` | initialisation only; Lua cannot construct an AnimationClass, and AnimationClassBase::create appends new layers on a live instance |
-| Kenshi/Animation/AnimationClassBinding.cpp | getAnimationData | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | getAnimationData | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | getAnimationDataByOgreName | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | getAnimationDatasList | `AnimsListsManager::AnimList*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | getCurrentlyStumbleAnim | `AnimationData*` | unbound pointer |
+| Kenshi/Animation/AnimationClassBinding.cpp | getAnimationDatasList | `AnimsListsManager::AnimList*` | AnimsListsManager::AnimList is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | getEvents | `AnimationEvents*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | getFloatingAnim | `AnimationData*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | getIdleAnimation | `AnimationData*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | getRagdoll | `RagdollClass*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | getStandingUpAnim | `AnimationData*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | isHuman | `AnimationClassHuman*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | isLinearAnimationDone | `bool` | unbound pointer argument |
 | Kenshi/Animation/AnimationClassBinding.cpp | processActionAnims | `bool` | boost::unordered_map<std::string, AnimationData*> and AnimationRequirement are unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | processCombatIdleAnims | `void` | lektor<AnimationData*> and AnimationRequirement are unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | processIdleAnims | `void` | lektor<AnimationData*> and AnimationRequirement are unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | processMoveAnims | `void` | lektor<AnimationData*> and AnimationRequirement are unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | runAnimation_manualTiming | `void` | unbound pointer argument |
-| Kenshi/Animation/AnimationClassBinding.cpp | runStrafe | `void` | unbound pointer argument |
-| Kenshi/Animation/AnimationClassBinding.cpp | scoreAnim | `float` | AnimationData and AnimationRequirement are unbound |
+| Kenshi/Animation/AnimationClassBinding.cpp | scoreAnim | `float` | AnimationRequirement is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | setBodyEntity | `void` | unbound pointer argument |
 | Kenshi/Animation/AnimationClassBinding.cpp | setDesiredPainOverlayAnims | `void` | StringValuePair is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | setupRagdoll | `bool` | unbound pointer argument |
-| Kenshi/Animation/AnimationClassBinding.cpp | startStumble | `void` | unbound pointer argument |
+| Kenshi/Animation/AnimationDataBinding.cpp | checkModes | `bool` | AnimationRequirement is unbound |
+| Kenshi/Animation/AnimationDataBinding.cpp | checkWeaponArms | `bool` | AnimationRequirement is unbound |
+| Kenshi/Animation/AnimationDataBinding.cpp | scoreCarryMode | `float` | AnimationRequirement is unbound |
+| Kenshi/Animation/AnimationDataBinding.cpp | scoreInjury | `float` | AnimationRequirement is unbound |
+| Kenshi/Animation/AnimationDataBinding.cpp | scoreSpeed | `float` | AnimationRequirement is unbound |
+| Kenshi/Animation/AnimationDataBinding.cpp | scoreWeaponType | `float` | AnimationRequirement is unbound |
 | Kenshi/AppearanceBaseBinding.cpp | _NV_setupCharacterEntityTexture | `void` | unsupported arg type (Ogre::Entity*, const boost::unordered::unordered_map<std::string, std::string, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, std::string >, Ogre::GeneralAllocPolicy > >&, Ogre::ColourValue*) |
 | Kenshi/AppearanceBaseBinding.cpp | addWound | `void` | unsupported arg type (Wound*) |
 | Kenshi/AppearanceBaseBinding.cpp | affectsPortrait | `bool` | unsupported arg type (AttachedEntity*) |
@@ -295,8 +278,8 @@ Below are methods that were skipped during binding generation:
 | Kenshi/CombatMovementControllerBinding.cpp | combatMovementAnimationUpdate | `void` | unsupported arg type (const Ogre::Vector3&, const Ogre::Vector3&, AnimationClass*, bool) |
 | Kenshi/CrossbowBinding.cpp | _NV_createItemEntityCallback_Equipping | `void` | unsupported arg type (Ogre::Entity*, Ogre::SceneNode*) |
 | Kenshi/CrossbowBinding.cpp | createItemEntityCallback_Equipping | `void` | unsupported arg type (Ogre::Entity*, Ogre::SceneNode*) |
-| Kenshi/DataObjectContainerBinding.cpp | _NV_loadFromDisk | `bool` | unsupported arg type (Serialisable*) |
-| Kenshi/DataObjectContainerBinding.cpp | loadFromDisk | `bool` | unsupported arg type (Serialisable*) |
+| Kenshi/DataObjectContainerBinding.cpp | _NV_loadFromDisk | `bool` | unsupported arg type (bool, Serialisable*) |
+| Kenshi/DataObjectContainerBinding.cpp | loadFromDisk | `bool` | unsupported arg type (bool, Serialisable*) |
 | Kenshi/EntDataBinding.cpp | createEntity1Callback | `void` | unsupported arg type (Ogre::SharedPtr<Ogre::Resource>) |
 | Kenshi/EntDataBinding.cpp | createEntity2Callback | `void` | unsupported arg type (Ogre::SharedPtr<Ogre::Resource>) |
 | Kenshi/FoliageSystemBinding.cpp | addGrassLayerToCoverageMap | `int` | unsupported arg type (RealWorldEditableImage*) |

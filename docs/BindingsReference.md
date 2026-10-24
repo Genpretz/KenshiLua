@@ -17,11 +17,13 @@
 - [`AbstractMovementBase`](#abstractmovementbase)
 - [`ActivePlatoon`](#activeplatoon)
 - [`AI`](#ai)
+- [`AIPackage`](#aipackage)
 - [`AkSoundPosition`](#aksoundposition)
 - [`AkVector`](#akvector)
 - [`AnimalInventoryLayout`](#animalinventorylayout)
 - [`AnimationClass`](#animationclass)
 - [`AnimationClassBase`](#animationclassbase)
+- [`AnimationData`](#animationdata)
 - [`AppearanceAnimal`](#appearanceanimal)
 - [`AppearanceBase`](#appearancebase)
 - [`AppearanceHuman`](#appearancehuman)
@@ -37,6 +39,7 @@
 - [`BackpackInventoryLayout`](#backpackinventorylayout)
 - [`BackThreadMessagesToMainT`](#backthreadmessagestomaint)
 - [`BadSize`](#badsize)
+- [`Blackboard`](#blackboard)
 - [`BoundsViolation`](#boundsviolation)
 - [`Bounty`](#bounty)
 - [`BountyManager`](#bountymanager)
@@ -50,6 +53,8 @@
   - [`BuildModeWindow::BuildingCategory`](#buildmodewindow::buildingcategory)
   - [`BuildModeWindow::BuildingGroup`](#buildmodewindow::buildinggroup)
 - [`CameraClass`](#cameraclass)
+- [`CampaignData`](#campaigndata)
+- [`CampaignInstance`](#campaigninstance)
 - [`CampaignTriggerData`](#campaigntriggerdata)
 - [`Character`](#character)
   - [`Character::AttachedArrowManager`](#character::attachedarrowmanager)
@@ -328,6 +333,7 @@
 - [`SensoryData`](#sensorydata)
   - [`SensoryData::SpottingPeopleMgr`](#sensorydata::spottingpeoplemgr)
   - [`SensoryData::SpottingPeopleMgr::Spot`](#sensorydata::spottingpeoplemgr::spot)
+- [`Serialisable`](#serialisable)
 - [`ShopTrader`](#shoptrader)
 - [`ShopTraderInventory`](#shoptraderinventory)
 - [`ShopTraderInventorySection`](#shoptraderinventorysection)
@@ -349,6 +355,7 @@
 - [`TagsClass`](#tagsclass)
 - [`TaskData`](#taskdata)
 - [`Tasker`](#tasker)
+- [`TaskMatch`](#taskmatch)
 - [`TaskStateData`](#taskstatedata)
 - [`Terrain`](#terrain)
   - [`Terrain::BloodQueue`](#terrain::bloodqueue)
@@ -571,7 +578,7 @@
 | calculateCurrentPos | `` | `Vector3` | `obj:calculateCurrentPos()` |
 | _checkForUniqueCharactersOnUnload | `` | `void` | `obj:_checkForUniqueCharactersOnUnload()` |
 | getName | `` | `string` | `obj:getName()` |
-| loadFromDisk | `force: boolean, extra: userdata` | `boolean` | `obj:loadFromDisk(force, extra)` |
+| loadFromDisk | `force: boolean, extra: Serialisable` | `boolean` | `obj:loadFromDisk(force, extra)` |
 | getCharactersInArea | `pos: Vector3, radius: number, standingOnly: boolean` | `void` | `obj:getCharactersInArea(pos, radius, standingOnly)` |
 | loadInstance | `state: GameSaveState, skipSaveState: boolean, pos: Vector3, rot: Quaternion, callback: FactoryCallbackInterface, positionMoved: Vector3` | `void` | `obj:loadInstance(state, skipSaveState, pos, rot, callback, positionMoved)` |
 
@@ -617,6 +624,7 @@
 | setPlatoon | `p: Platoon` | `void` | `obj:setPlatoon(p)` |
 | getPlatoon | `` | `Platoon` | `obj:getPlatoon()` |
 | getFaction | `` | `Faction` | `obj:getFaction()` |
+| getBlackboard | `` | `Blackboard` | `obj:getBlackboard()` |
 | getHandle | `` | `hand` | `obj:getHandle()` |
 | create | `b: CharBody, inv: Inventory, st: CharStats, med: MedicalSystem, p: Platoon` | `void` | `obj:create(b, inv, st, med, p)` |
 | update4Frame | `frametime: number` | `void` | `obj:update4Frame(frametime)` |
@@ -988,6 +996,50 @@
 | scoreNotKOOrPlayingDead | `subject: hand, _a2: Vector3` | `number` | `obj:scoreNotKOOrPlayingDead(subject, _a2)` |
 | scoreTargetInMyTown | `subject: hand, _a2: Vector3` | `number` | `obj:scoreTargetInMyTown(subject, _a2)` |
 
+## AIPackage
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AIPackage.h`
+**Metatable:** `KenshiLua.AIPackage`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| missionTown | `hand` | RW | `obj.missionTown = <value>` |
+| missionTarget | `hand` | RW | `obj.missionTarget = <value>` |
+| missionEmployer | `hand` | RW | `obj.missionEmployer = <value>` |
+| packageData | `GameData` | RW | `obj.packageData = <value>` |
+| priorityLevel | `integer` | RW | `obj.priorityLevel = <value>` |
+| key | `BlackboardSignalFunctions` | RW | `obj.key = <value>` |
+| unloadedMode | `UnloadedPlatoonJob` | RW | `obj.unloadedMode = <value>` |
+| blackboard | `Blackboard` | RW | `obj.blackboard = <value>` |
+| squad | `Platoon` | RW | `obj.squad = <value>` |
+| leadsToPackage | `AIPackage` | RW | `obj.leadsToPackage = <value>` |
+| endingDialogPassive | `GameData` | RW | `obj.endingDialogPassive = <value>` |
+| endingDialogActive | `GameData` | RW | `obj.endingDialogActive = <value>` |
+| wasBetrayed | `boolean` | RW | `obj.wasBetrayed = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| notifyMyTargetPathfindImpossible | `me: Character, was: hand` | `void` | `obj:notifyMyTargetPathfindImpossible(me, was)` |
+| getDesiredTravelSpeed | `me: Character` | `MoveSpeed` | `obj:getDesiredTravelSpeed(me)` |
+| getLeader | `` | `Character` | `obj:getLeader()` |
+| save | `state: GameData` | `void` | `obj:save(state)` |
+| load | `state: GameData` | `void` | `obj:load(state)` |
+| activateAndSetup | `` | `void` | `obj:activateAndSetup()` |
+| endPackage | `` | `void` | `obj:endPackage()` |
+| notifyBetrayal | `myWitness: Character, betrayer: Character` | `boolean` | `obj:notifyBetrayal(myWitness, betrayer)` |
+| periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
+| assessNeutral | `who: Character` | `void` | `obj:assessNeutral(who)` |
+| assessEnemy | `who: Character` | `boolean` | `obj:assessEnemy(who)` |
+| signalStart | `` | `boolean` | `obj:signalStart()` |
+| signalEnd | `` | `boolean` | `obj:signalEnd()` |
+| iAmActivePackage | `` | `boolean` | `obj:iAmActivePackage()` |
+| getGUIData | `panel: DatapanelGUI` | `boolean` | `obj:getGUIData(panel)` |
+| autoNotifyJobsPanel | `` | `boolean` | `obj:autoNotifyJobsPanel()` |
+| wantsRenewButton | `` | `boolean` | `obj:wantsRenewButton()` |
+| showManagementPanelCallback | `` | `void` | `obj:showManagementPanelCallback()` |
+| wasASuccess | `` | `boolean` | `obj:wasASuccess()` |
+
 ## AkSoundPosition
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 **Metatable:** `KenshiLua.AkSoundPosition`
@@ -1032,14 +1084,17 @@
 | totalActionWeight | `number` | RW | `obj.totalActionWeight = <value>` |
 | disableRagdollKinematics | `integer` | RW | `obj.disableRagdollKinematics = <value>` |
 | me | `Character` | RW | `obj.me = <value>` |
+| defaultIdleAnimation | `AnimationData` | RW | `obj.defaultIdleAnimation = <value>` |
 | ragdollParts | `RagdollPart::Enum` | RW | `obj.ragdollParts = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | debugGetAllAnimations | `panel: DatapanelGUI` | `void` | `obj:debugGetAllAnimations(panel)` |
+| startStumble | `anim: AnimationData` | `void` | `obj:startStumble(anim)` |
 | endStumble | `` | `void` | `obj:endStumble()` |
 | currentlyStumbling | `` | `boolean` | `obj:currentlyStumbling()` |
+| getCurrentlyStumbleAnim | `` | `AnimationData` | `obj:getCurrentlyStumbleAnim()` |
 | isCurrentlyIncapableOfWaypointMovemode | `` | `boolean` | `obj:isCurrentlyIncapableOfWaypointMovemode()` |
 | threadSafeRagdollUpdateUT | `` | `void` | `obj:threadSafeRagdollUpdateUT()` |
 | update | `frameTIME: number` | `void` | `obj:update(frameTIME)` |
@@ -1072,6 +1127,7 @@
 | setMaximumSpeed | `speed: number` | `void` | `obj:setMaximumSpeed(speed)` |
 | getMaximumSpeed | `` | `number` | `obj:getMaximumSpeed()` |
 | isLinearAnimationDone_byName | `name: string` | `boolean` | `obj:isLinearAnimationDone_byName(name)` |
+| isLinearAnimationDone | `anim: AnimationData` | `boolean` | `obj:isLinearAnimationDone(anim)` |
 | getFootHeight | `` | `number` | `obj:getFootHeight()` |
 | calculateFeetHeight | `` | `void` | `obj:calculateFeetHeight()` |
 | setBootHeight | `h: number` | `void` | `obj:setBootHeight(h)` |
@@ -1096,6 +1152,7 @@
 | runAnimation [2] | `anim: AnimationData, speed: number, lay: AnimationLayerEnum, blend: number, ext: string` | `void` | `obj:runAnimation(anim, speed, lay, blend, ext)` |
 | runAnimation [3] | `anim: AnimationData, speed: number, blend: number` | `void` | `obj:runAnimation(anim, speed, blend)` |
 | runAnimation [4] | `name: string, speed: number, blend: number` | `void` | `obj:runAnimation(name, speed, blend)` |
+| runAnimation_manualTiming | `anim: AnimationData, time01: number, blend: number` | `void` | `obj:runAnimation_manualTiming(anim, time01, blend)` |
 | endCombatAnimation | `` | `void` | `obj:endCombatAnimation()` |
 | runCombatAnimation | `anim: CombatTechniqueData, speed: number, additionalString: string` | `void` | `obj:runCombatAnimation(anim, speed, additionalString)` |
 | startCombatAnimation | `anim: CombatTechniqueData, speed: number, additionalString: string` | `void` | `obj:startCombatAnimation(anim, speed, additionalString)` |
@@ -1104,6 +1161,9 @@
 | stopAnimation [1] | `anim: string` | `void` | `obj:stopAnimation(anim)` |
 | stopAnimation [2] | `ad: AnimationData` | `void` | `obj:stopAnimation(ad)` |
 | activateVisuals | `` | `void` | `obj:activateVisuals()` |
+| getAnimationData [1] | `` | `AnimationData` | `obj:getAnimationData()` |
+| getAnimationData [2] | `dat: GameData` | `AnimationData` | `obj:getAnimationData(dat)` |
+| getAnimationDataByOgreName | `name: string` | `AnimationData` | `obj:getAnimationDataByOgreName(name)` |
 | estimateAnimationTime | `name: string` | `number` | `obj:estimateAnimationTime(name)` |
 | notifyRelocatedAnimLoop | `` | `void` | `obj:notifyRelocatedAnimLoop()` |
 | serialiseAppearance | `state: GameData` | `void` | `obj:serialiseAppearance(state)` |
@@ -1128,9 +1188,14 @@
 | isTurningFar | `` | `boolean` | `obj:isTurningFar()` |
 | lookAt | `position: Vector3` | `boolean` | `obj:lookAt(position)` |
 | getLookDirection | `` | `Vector3` | `obj:getLookDirection()` |
+| chooseStumbleAnim | `bodypart: GameData, hitFrom: CutOrigination, bigone: boolean` | `AnimationData` | `obj:chooseStumbleAnim(bodypart, hitFrom, bigone)` |
+| getIdleAnimation | `` | `AnimationData` | `obj:getIdleAnimation()` |
+| getFloatingAnim | `` | `AnimationData` | `obj:getFloatingAnim()` |
+| getStandingUpAnim | `` | `AnimationData` | `obj:getStandingUpAnim()` |
 | hasAction | `` | `boolean` | `obj:hasAction()` |
 | animationSelection | `_TIME: number` | `void` | `obj:animationSelection(_TIME)` |
 | animationSelectionCombatMode | `_TIME: number` | `void` | `obj:animationSelectionCombatMode(_TIME)` |
+| runStrafe | `strafe: AnimationData, weightLimit: number` | `void` | `obj:runStrafe(strafe, weightLimit)` |
 | overlaidAnimationSelection | `` | `void` | `obj:overlaidAnimationSelection()` |
 | processTurnAnim | `` | `boolean` | `obj:processTurnAnim()` |
 | breathing | `armsToo: boolean` | `void` | `obj:breathing(armsToo)` |
@@ -1191,8 +1256,65 @@
 | isVisibleEntity | `` | `boolean` | `obj:isVisibleEntity()` |
 | initBoneInitialWorldPositions | `` | `void` | `obj:initBoneInitialWorldPositions()` |
 | isAnimationPlaying | `name: string` | `boolean` | `obj:isAnimationPlaying(name)` |
+| getAnimationCurrentWeight | `name: AnimationData` | `number` | `obj:getAnimationCurrentWeight(name)` |
 | getTotalActionAnimationWeight | `` | `number` | `obj:getTotalActionAnimationWeight()` |
 | stillPlayingAnActionOrSomething | `` | `boolean` | `obj:stillPlayingAnActionOrSomething()` |
+| getAnimation_Medic | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Medic(inwhat)` |
+| getAnimation_Lockpick | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Lockpick(inwhat)` |
+| getAnimationData | `name: string` | `AnimationData` | `obj:getAnimationData(name)` |
+
+## AnimationData
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationData`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| category | `CharacterAnimCategory` | RW | `obj.category = <value>` |
+| dataName | `string` | RW | `obj.dataName = <value>` |
+| animName | `string` | RW | `obj.animName = <value>` |
+| _rawData | `GameData` | RW | `obj._rawData = <value>` |
+| layername | `AnimationLayerEnum` | RW | `obj.layername = <value>` |
+| weatherType | `WeatherAffecting` | RW | `obj.weatherType = <value>` |
+| idealMoveSpeed | `number` | RW | `obj.idealMoveSpeed = <value>` |
+| maxMoveSpeed | `number` | RW | `obj.maxMoveSpeed = <value>` |
+| minMoveSpeed | `number` | RW | `obj.minMoveSpeed = <value>` |
+| playSpeed | `number` | RW | `obj.playSpeed = <value>` |
+| holdingWeaponL | `YesNoMaybe` | RW | `obj.holdingWeaponL = <value>` |
+| holdingWeaponR | `YesNoMaybe` | RW | `obj.holdingWeaponR = <value>` |
+| isCombatMode | `YesNoMaybe` | RW | `obj.isCombatMode = <value>` |
+| isStealthMode | `YesNoMaybe` | RW | `obj.isStealthMode = <value>` |
+| relocates | `boolean` | RW | `obj.relocates = <value>` |
+| restrictsMovementOrders | `boolean` | RW | `obj.restrictsMovementOrders = <value>` |
+| looped | `boolean` | RW | `obj.looped = <value>` |
+| wholeBodyAllLayer | `boolean` | RW | `obj.wholeBodyAllLayer = <value>` |
+| synched | `boolean` | RW | `obj.synched = <value>` |
+| isAction | `boolean` | RW | `obj.isAction = <value>` |
+| synchOffset | `number` | RW | `obj.synchOffset = <value>` |
+| normalise | `boolean` | RW | `obj.normalise = <value>` |
+| possibleEndingPosition | `number` | RW | `obj.possibleEndingPosition = <value>` |
+| crouched | `boolean` | RW | `obj.crouched = <value>` |
+| prone | `boolean` | RW | `obj.prone = <value>` |
+| usesRightArm | `boolean` | RW | `obj.usesRightArm = <value>` |
+| usesLeftArm | `boolean` | RW | `obj.usesLeftArm = <value>` |
+| carryingLeft | `boolean` | RW | `obj.carryingLeft = <value>` |
+| carryingRight | `boolean` | RW | `obj.carryingRight = <value>` |
+| carried | `boolean` | RW | `obj.carried = <value>` |
+| slave | `string` | RW | `obj.slave = <value>` |
+| legDamageRmin | `number` | RW | `obj.legDamageRmin = <value>` |
+| legDamageRmax | `number` | RW | `obj.legDamageRmax = <value>` |
+| legDamageLmin | `number` | RW | `obj.legDamageLmin = <value>` |
+| legDamageLmax | `number` | RW | `obj.legDamageLmax = <value>` |
+| legDamageLIdeal | `number` | RW | `obj.legDamageLIdeal = <value>` |
+| legDamageRIdeal | `number` | RW | `obj.legDamageRIdeal = <value>` |
+| idleTimeMin | `number` | RW | `obj.idleTimeMin = <value>` |
+| idleTimeMax | `number` | RW | `obj.idleTimeMax = <value>` |
+| idleChance | `number` | RW | `obj.idleChance = <value>` |
+| weaponTypeFlags | `integer` | RW | `obj.weaponTypeFlags = <value>` |
+| stumbleBodyParts | `ogre_unordered_set<GameData*>::type` | RW | `obj.stumbleBodyParts = <value>` |
+| stumbleOrigination | `CutOrigination` | RW | `obj.stumbleOrigination = <value>` |
+| bigStumble | `boolean` | RW | `obj.bigStumble = <value>` |
+| stumbleRarityMult | `number` | RW | `obj.stumbleRarityMult = <value>` |
 
 ## AppearanceAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -1543,6 +1665,105 @@
 ## BadSize
 **Header:** `extern/KenshiLib/Include/kenshi/util/Array2d.h`
 **Metatable:** `KenshiLua.BadSize`
+
+## Blackboard
+**Header:** `extern/KenshiLib/Include/kenshi/AI/Blackboard.h`
+**Metatable:** `KenshiLua.Blackboard`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| currentPackage | `AIPackage` | RW | `obj.currentPackage = <value>` |
+| currentPackagePriorityLevel | `integer` | RW | `obj.currentPackagePriorityLevel = <value>` |
+| replacementAIPackageSID | `string` | RW | `obj.replacementAIPackageSID = <value>` |
+| cageMarkedForDeath | `hand` | RW | `obj.cageMarkedForDeath = <value>` |
+| squad | `Platoon` | RW | `obj.squad = <value>` |
+| actionTargets | `TaskTypeHandMapBinding::MapType` | R | `obj.actionTargets` |
+| homeIsLockedUp | `boolean` | RW | `obj.homeIsLockedUp = <value>` |
+| targetTown | `TownBase` | RW | `obj.targetTown = <value>` |
+| targetZoneHunting | `ZoneMap` | RW | `obj.targetZoneHunting = <value>` |
+| missionData | `GameData` | RW | `obj.missionData = <value>` |
+| moraleIsBroken | `boolean` | RW | `obj.moraleIsBroken = <value>` |
+| _homeGateTarget | `hand` | RW | `obj._homeGateTarget = <value>` |
+| _flagCleared | `boolean` | RW | `obj._flagCleared = <value>` |
+| needsStateUpdate | `boolean` | RW | `obj.needsStateUpdate = <value>` |
+| currentTownLocation | `TownBase` | RW | `obj.currentTownLocation = <value>` |
+| townArrivalTime | `TimeOfDay` | RW | `obj.townArrivalTime = <value>` |
+| HIGHEST_PRIORITY_LEVEL | `integer` | RW | `obj.HIGHEST_PRIORITY_LEVEL = <value>` |
+| runningAwayMode | `boolean` | RW | `obj.runningAwayMode = <value>` |
+| characterCount | `integer` | RW | `obj.characterCount = <value>` |
+| enemyCount | `integer` | RW | `obj.enemyCount = <value>` |
+| contractJob | `AIPackage` | R | `obj.contractJob` |
+| contractExpiryTime | `TimeOfDay` | RW | `obj.contractExpiryTime = <value>` |
+| formationNeedUpdate | `boolean` | RW | `obj.formationNeedUpdate = <value>` |
+| characterFormationPosition | `HandVector3MapBinding::MapType` | R | `obj.characterFormationPosition` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| createNewPackage | `key: BlackboardSignalFunctions, data: GameData, priority: integer, giver: hand` | `AIPackage` | `obj:createNewPackage(key, data, priority, giver)` |
+| _setContractJob | `package: GameData, hours: integer, giver: hand` | `void` | `obj:_setContractJob(package, hours, giver)` |
+| _addPackage | `package: GameData, type: integer` | `void` | `obj:_addPackage(package, type)` |
+| clearAllPackages | `` | `void` | `obj:clearAllPackages()` |
+| _activateCurrentPackage | `package: AIPackage` | `void` | `obj:_activateCurrentPackage(package)` |
+| _addFromData | `data: GameData` | `void` | `obj:_addFromData(data)` |
+| getPackage | `sid: string` | `AIPackage` | `obj:getPackage(sid)` |
+| getPackageList | `type: integer` | `lektor<AIPackage*>` | `obj:getPackageList(type)` |
+| periodicPackageCheck | `type: integer, frameTime: number` | `boolean` | `obj:periodicPackageCheck(type, frameTime)` |
+| dialogEventsCheck | `line: GameData, target: hand` | `void` | `obj:dialogEventsCheck(line, target)` |
+| setContractJob | `packageCollection: GameData, giver: hand` | `void` | `obj:setContractJob(packageCollection, giver)` |
+| endContractJob | `` | `void` | `obj:endContractJob()` |
+| isMissionComplete | `` | `boolean` | `obj:isMissionComplete()` |
+| isTargetMarkedForDeath | `cage: Building, t: TownBase` | `boolean` | `obj:isTargetMarkedForDeath(cage, t)` |
+| update | `frameTime: number` | `void` | `obj:update(frameTime)` |
+| periodicUpdate | `frameTime: number` | `void` | `obj:periodicUpdate(frameTime)` |
+| addPackages | `packageCollection: GameData` | `void` | `obj:addPackages(packageCollection)` |
+| addFallbackPackages | `packageCollection_faction: GameData` | `void` | `obj:addFallbackPackages(packageCollection_faction)` |
+| replaceAIPackage | `package: GameData` | `void` | `obj:replaceAIPackage(package)` |
+| getCurrentAIPackageName | `` | `string` | `obj:getCurrentAIPackageName()` |
+| getCurrentAIPackageGUIData | `panel: DatapanelGUI, cat: integer` | `void` | `obj:getCurrentAIPackageGUIData(panel, cat)` |
+| assessNeutral | `who: Character` | `void` | `obj:assessNeutral(who)` |
+| assessEnemy | `who: Character` | `boolean` | `obj:assessEnemy(who)` |
+| getCurrentPackage | `` | `AIPackage` | `obj:getCurrentPackage()` |
+| getFormationPositionOffset | `character: Character` | `Vector3` | `obj:getFormationPositionOffset(character)` |
+| nodifyFormationUpdate | `` | `void` | `obj:nodifyFormationUpdate()` |
+| getOwnerships | `` | `Ownerships` | `obj:getOwnerships()` |
+| notifyGoalStart | `t: Tasker, me: hand` | `void` | `obj:notifyGoalStart(t, me)` |
+| notifyGoalEnd | `me: hand` | `void` | `obj:notifyGoalEnd(me)` |
+| notifySubTarget | `me: hand, target: hand` | `void` | `obj:notifySubTarget(me, target)` |
+| howManyGuysDoingThisGoal | `t: Tasker, me: hand` | `integer` | `obj:howManyGuysDoingThisGoal(t, me)` |
+| howManyGuysWorkingOnThisSubTarget [1] | `t: Tasker, me: hand, subtarget: hand` | `integer` | `obj:howManyGuysWorkingOnThisSubTarget(t, me, subtarget)` |
+| howManyGuysWorkingOnThisSubTarget [2] | `me: hand, subtarget: hand` | `integer` | `obj:howManyGuysWorkingOnThisSubTarget(me, subtarget)` |
+| isMySubTarget | `t: Tasker, me: hand, subtarget: hand` | `boolean` | `obj:isMySubTarget(t, me, subtarget)` |
+| getSubTarget | `me: hand` | `hand` | `obj:getSubTarget(me)` |
+| addRequest | `from: hand, to: hand, key: TaskType, subject: hand, pri: taskPriority, weight: number` | `void` | `obj:addRequest(from, to, key, subject, pri, weight)` |
+| removeRequest | `from: hand` | `void` | `obj:removeRequest(from)` |
+| notifyJobCompleted | `key: TaskType, subj: hand, me: hand` | `void` | `obj:notifyJobCompleted(key, subj, me)` |
+| addSquadJob | `type: SquadMemberType, key: TaskType, subject: hand, pri: taskPriority, weight: number, targeting: TaskTargetType, ending: TaskEndEvent, startTime: integer, endTime: integer` | `void` | `obj:addSquadJob(type, key, subject, pri, weight, targeting, ending, startTime, endTime)` |
+| getUnloadedPlatoonJob | `` | `UnloadedPlatoonJob` | `obj:getUnloadedPlatoonJob()` |
+| clearAllTheJobs | `` | `void` | `obj:clearAllTheJobs()` |
+| serialise | `state: GameData` | `void` | `obj:serialise(state)` |
+| load | `state: GameData` | `void` | `obj:load(state)` |
+| stateUpdate | `frameTime: number` | `void` | `obj:stateUpdate(frameTime)` |
+| notifyMissionTargetPathfindImpossible | `forWho: Character, target: hand` | `void` | `obj:notifyMissionTargetPathfindImpossible(forWho, target)` |
+| getMissionTown | `getHometownAsFallback: boolean` | `hand` | `obj:getMissionTown(getHometownAsFallback)` |
+| getMissionGiver | `` | `hand` | `obj:getMissionGiver()` |
+| getCurrentTownLocation | `` | `TownBase` | `obj:getCurrentTownLocation()` |
+| getTimeSpentInTown_inGameHours | `` | `number` | `obj:getTimeSpentInTown_inGameHours()` |
+| setMyHomeIsLocked | `on: boolean` | `void` | `obj:setMyHomeIsLocked(on)` |
+| getMyHomeIsLocked | `` | `boolean` | `obj:getMyHomeIsLocked()` |
+| getHomeGate | `` | `hand` | `obj:getHomeGate()` |
+| hasContractJob | `` | `boolean` | `obj:hasContractJob()` |
+| getContractExpiryTime | `` | `TimeOfDay` | `obj:getContractExpiryTime()` |
+| contractJobNotifyBetrayal | `myWitness: Character, betrayer: Character` | `void` | `obj:contractJobNotifyBetrayal(myWitness, betrayer)` |
+| contractJobWasBetrayal | `` | `boolean` | `obj:contractJobWasBetrayal()` |
+| showEndedMessage | `` | `void` | `obj:showEndedMessage()` |
+| _setupJobFromData | `data: GameData, listname: string, listEnum: SquadMemberType` | `void` | `obj:_setupJobFromData(data, listname, listEnum)` |
+| countCharacters | `` | `void` | `obj:countCharacters()` |
+| runAwayCheck | `` | `void` | `obj:runAwayCheck()` |
+| runAway | `` | `void` | `obj:runAway()` |
+| buildFormation | `` | `void` | `obj:buildFormation()` |
+| getGridPositions | `gridWidth: integer, gridHeight: integer, size: integer, initialX: number, radius: number, spacingX: number, spacingZ: number` | `Vector3` | `obj:getGridPositions(gridWidth, gridHeight, size, initialX, radius, spacingX, spacingZ)` |
 
 ## BoundsViolation
 **Header:** `extern/KenshiLib/Include/kenshi/util/Array2d.h`
@@ -2118,6 +2339,113 @@
 | isVisible [2] | `pos: Vector3` | `boolean` | `obj:isVisible(pos)` |
 | restrictPosition | `` | `void` | `obj:restrictPosition()` |
 
+## CampaignData
+**Header:** `extern/KenshiLib/Include/kenshi/Campaign.h`
+**Metatable:** `KenshiLua.CampaignData`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| me | `Faction` | RW | `obj.me = <value>` |
+| targetCharacters | `boolean` | RW | `obj.targetCharacters = <value>` |
+| triggersRandomly_territorial | `boolean` | RW | `obj.triggersRandomly_territorial = <value>` |
+| _isHostile | `boolean` | RW | `obj._isHostile = <value>` |
+| triggerTargetTechLevel | `integer` | RW | `obj.triggerTargetTechLevel = <value>` |
+| triggerTargetPopulation | `integer` | RW | `obj.triggerTargetPopulation = <value>` |
+| triggerChancePerDay01 | `number` | RW | `obj.triggerChancePerDay01 = <value>` |
+| triggerTimeMin | `integer` | RW | `obj.triggerTimeMin = <value>` |
+| triggerTimeMax | `integer` | RW | `obj.triggerTimeMax = <value>` |
+| triggerRangeNear | `number` | RW | `obj.triggerRangeNear = <value>` |
+| triggerRangeFurthest | `number` | RW | `obj.triggerRangeFurthest = <value>` |
+| worldStateRequirements | `WorldEventStateQueryList` | R | `obj.worldStateRequirements` |
+| specificTargetCharacter | `lektor<GameData*>` | R | `obj.specificTargetCharacter` |
+| specificLeaderCharacter | `lektor<GameData*>` | R | `obj.specificLeaderCharacter` |
+| spawns | `FitnessSelector<GameData*>` | R | `obj.spawns` |
+| repeatLimit | `number` | RW | `obj.repeatLimit = <value>` |
+| campaignType | `WarCampaignEnum` | RW | `obj.campaignType = <value>` |
+| lastTerritorialTrigger | `TimeOfDay` | RW | `obj.lastTerritorialTrigger = <value>` |
+| hasAssaultPhase | `boolean` | RW | `obj.hasAssaultPhase = <value>` |
+| factionOverride | `Faction` | RW | `obj.factionOverride = <value>` |
+| allyTriggers | `lektor<GameData*>` | R | `obj.allyTriggers` |
+| data | `GameData` | RW | `obj.data = <value>` |
+| lossTriggers | `FitnessSelector<CampaignTriggerData*>` | R | `obj.lossTriggers` |
+| victoryTriggers | `FitnessSelector<CampaignTriggerData*>` | R | `obj.victoryTriggers` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| _setupPackages | `d: GameData, listname: string, state: Phase` | `void` | `obj:_setupPackages(d, listname, state)` |
+| _addDataFrom | `d: GameData` | `void` | `obj:_addDataFrom(d)` |
+| reset | `` | `void` | `obj:reset()` |
+| key | `` | `WarCampaignEnum` | `obj:key()` |
+| isHostile | `` | `boolean` | `obj:isHostile()` |
+| getDisplayName | `` | `string` | `obj:getDisplayName()` |
+| isTriggersRandomly | `` | `boolean` | `obj:isTriggersRandomly()` |
+| chooseTarget | `enemy: Faction` | `TownBase` | `obj:chooseTarget(enemy)` |
+| territorialTriggerScore | `enemy: Faction, target: RootObjectBase` | `number` | `obj:territorialTriggerScore(enemy, target)` |
+| canStart | `` | `boolean` | `obj:canStart()` |
+| numForcesNeeded | `` | `integer` | `obj:numForcesNeeded()` |
+| ignoresMults | `` | `boolean` | `obj:ignoresMults()` |
+| canUseThisSquad | `squadTemplate: GameData` | `boolean` | `obj:canUseThisSquad(squadTemplate)` |
+
+## CampaignInstance
+**Header:** `extern/KenshiLib/Include/kenshi/Campaign.h`
+**Metatable:** `KenshiLua.CampaignInstance`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| uniqueID | `integer` | RW | `obj.uniqueID = <value>` |
+| myData | `CampaignData` | RW | `obj.myData = <value>` |
+| phaseChangeTime | `TimeOfDay` | RW | `obj.phaseChangeTime = <value>` |
+| timeWithNoEnemies | `TimeOfDay` | RW | `obj.timeWithNoEnemies = <value>` |
+| travelSpeedUnloaded | `MoveSpeed` | RW | `obj.travelSpeedUnloaded = <value>` |
+| travelSpeedLoaded | `MoveSpeed` | RW | `obj.travelSpeedLoaded = <value>` |
+| manPowerMin | `integer` | RW | `obj.manPowerMin = <value>` |
+| manPowerMax | `integer` | RW | `obj.manPowerMax = <value>` |
+| manPowerLastCount | `integer` | RW | `obj.manPowerLastCount = <value>` |
+| reachedDestination | `boolean` | RW | `obj.reachedDestination = <value>` |
+| hasTriggeredSomething | `boolean` | RW | `obj.hasTriggeredSomething = <value>` |
+| me | `Faction` | RW | `obj.me = <value>` |
+| enemy | `Faction` | RW | `obj.enemy = <value>` |
+| leader | `hand` | RW | `obj.leader = <value>` |
+| homeTown | `hand` | RW | `obj.homeTown = <value>` |
+| currentPhase | `Phase` | RW | `obj.currentPhase = <value>` |
+| canTalkToBeforeArrival | `boolean` | RW | `obj.canTalkToBeforeArrival = <value>` |
+| membersInOrder | `lektor<hand>` | R | `obj.membersInOrder` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getData | `` | `CampaignData` | `obj:getData()` |
+| changePhase | `p: Phase` | `void` | `obj:changePhase(p)` |
+| saveState | `s: GameData, id: integer` | `void` | `obj:saveState(s, id)` |
+| loadState | `s: GameData, id: integer` | `void` | `obj:loadState(s, id)` |
+| markOnMap | `` | `void` | `obj:markOnMap()` |
+| getDialogData | `ev: EventTriggerEnum` | `GameData` | `obj:getDialogData(ev)` |
+| hasSufficientManpower | `` | `boolean` | `obj:hasSufficientManpower()` |
+| victoryEvent | `` | `void` | `obj:victoryEvent()` |
+| lossEvent | `` | `void` | `obj:lossEvent()` |
+| setLeader | `h: hand` | `void` | `obj:setLeader(h)` |
+| getLeader | `` | `Character` | `obj:getLeader()` |
+| getLeaderPlatoon | `` | `Platoon` | `obj:getLeaderPlatoon()` |
+| isEnemy | `who: Character` | `boolean` | `obj:isEnemy(who)` |
+| getName | `` | `string` | `obj:getName()` |
+| setup | `` | `boolean` | `obj:setup()` |
+| periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
+| isEverybodyIdle | `` | `boolean` | `obj:isEverybodyIdle()` |
+| getUnloadedPlatoonBehavior | `who: Platoon` | `UnloadedPlatoonJob` | `obj:getUnloadedPlatoonBehavior(who)` |
+| getAIPackage | `who: Platoon` | `GameData` | `obj:getAIPackage(who)` |
+| addToCampaign | `who: Platoon, forceLeader: boolean` | `void` | `obj:addToCampaign(who, forceLeader)` |
+| areForcesAllTogether | `` | `boolean` | `obj:areForcesAllTogether()` |
+| removeFromCampaign | `who: Platoon` | `void` | `obj:removeFromCampaign(who)` |
+| getMoveSpeedUnloaded | `` | `MoveSpeed` | `obj:getMoveSpeedUnloaded()` |
+| getMoveSpeedLoaded | `` | `MoveSpeed` | `obj:getMoveSpeedLoaded()` |
+| getTargetTown | `` | `hand` | `obj:getTargetTown()` |
+| getFormationPosition | `who: Platoon` | `Vector3` | `obj:getFormationPosition(who)` |
+| getDestination | `who: Platoon` | `Vector3` | `obj:getDestination(who)` |
+| isSuccessful | `` | `boolean` | `obj:isSuccessful()` |
+
 ## CampaignTriggerData
 **Header:** `extern/KenshiLib/Include/kenshi/FactionWarMgr.h`
 **Metatable:** `KenshiLua.CampaignTriggerData`
@@ -2233,7 +2561,7 @@
 | getDataType | `` | `integer` | `obj:getDataType()` |
 | isDiplomaticStatus | `factorInBiome: boolean` | `boolean` | `obj:isDiplomaticStatus(factorInBiome)` |
 | isLeadingAWarCampaign | `` | `boolean` | `obj:isLeadingAWarCampaign()` |
-| isInAWarCampaign | `` | `lightuserdata` | `obj:isInAWarCampaign()` |
+| isInAWarCampaign | `` | `CampaignInstance` | `obj:isInAWarCampaign()` |
 | wantsToTriggerCampaigns | `` | `boolean` | `obj:wantsToTriggerCampaigns()` |
 | isUnique | `` | `boolean` | `obj:isUnique()` |
 | canSpeakNormally | `` | `boolean` | `obj:canSpeakNormally()` |
@@ -2450,7 +2778,7 @@
 | getPlatoon | `` | `ActivePlatoon` | `obj:getPlatoon()` |
 | hasPlatoon | `` | `boolean` | `obj:hasPlatoon()` |
 | isInAPersistentPlatoon | `` | `boolean` | `obj:isInAPersistentPlatoon()` |
-| getBlackboard | `` | `lightuserdata` | `obj:getBlackboard()` |
+| getBlackboard | `` | `Blackboard` | `obj:getBlackboard()` |
 | getSquadLeader | `` | `Character` | `obj:getSquadLeader()` |
 | getOrdersReciever | `` | `lightuserdata` | `obj:getOrdersReciever()` |
 | preventRagdollMode | `` | `boolean` | `obj:preventRagdollMode()` |
@@ -5034,12 +5362,12 @@
 | nextUpdateTime | `TimeOfDay` | RW | `obj.nextUpdateTime = <value>` |
 | myTowns | `lektor<TownBase*>` | RW | `obj.myTowns = <value>` |
 | hiredForces | `lektor<hand>` | RW | `obj.hiredForces = <value>` |
-| activeCampaigns | `lightuserdata` | RW | `obj.activeCampaigns = <value>` |
+| activeCampaigns | `lektor<CampaignInstance*>` | RW | `obj.activeCampaigns = <value>` |
 | biomeTerritories | `lightuserdata` | RW | `obj.biomeTerritories = <value>` |
 | biomeNoGoZones | `lightuserdata` | RW | `obj.biomeNoGoZones = <value>` |
 | campaignRequests | `unknown` | RW | `obj.campaignRequests = <value>` |
-| possibleCampaigns | `lightuserdata` | RW | `obj.possibleCampaigns = <value>` |
-| forces | `lightuserdata` | RW | `obj.forces = <value>` |
+| possibleCampaigns | `lektor<CampaignData*>` | RW | `obj.possibleCampaigns = <value>` |
+| forces | `StdMapBinding<Platoon*, CampaignInstance*>::MapType` | RW | `obj.forces = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -5051,25 +5379,25 @@
 | addPlatoon | `p: Platoon` | `void` | `obj:addPlatoon(p)` |
 | getGUIData | `panel: DatapanelGUI, cat: integer, playeronly: boolean` | `void` | `obj:getGUIData(panel, cat, playeronly)` |
 | areAnyHostileCampaignsRunning | `playeronly: boolean` | `boolean` | `obj:areAnyHostileCampaignsRunning(playeronly)` |
-| endCampaign | `c: userdata` | `void` | `obj:endCampaign(c)` |
-| getAllTheForces | `target: RootObjectBase, c: userdata` | `void` | `obj:getAllTheForces(target, c)` |
-| _generateForcesForTown | `t: TownBase, c: userdata` | `void` | `obj:_generateForcesForTown(t, c)` |
+| endCampaign | `c: CampaignInstance` | `void` | `obj:endCampaign(c)` |
+| getAllTheForces | `target: RootObjectBase, c: CampaignInstance` | `void` | `obj:getAllTheForces(target, c)` |
+| _generateForcesForTown | `t: TownBase, c: CampaignInstance` | `void` | `obj:_generateForcesForTown(t, c)` |
 | canGenerateThisManyForces | `num: integer` | `boolean` | `obj:canGenerateThisManyForces(num)` |
 | periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
 | debugButton | `` | `void` | `obj:debugButton()` |
 | triggerCampaign [1] | `targetTown: RootObjectBase, data: CampaignData, home: TownBase` | `CampaignInstance` | `obj:triggerCampaign(targetTown, data, home)` |
 | triggerCampaign [2] | `targetTown: RootObjectBase, _data: GameData, minTime: number, maxTime: number, hometown: TownBase, forceDuplicate: boolean, triggeringFaction: Faction` | `void` | `obj:triggerCampaign(targetTown, _data, minTime, maxTime, hometown, forceDuplicate, triggeringFaction)` |
 | triggerCampaign [3] | `randomTriggers: FitnessSelector<CampaignTriggerData*>, targetTown: RootObjectBase, hometown: TownBase, forceDuplicate: boolean, triggeringFaction: Faction` | `void` | `obj:triggerCampaign(randomTriggers, targetTown, hometown, forceDuplicate, triggeringFaction)` |
-| getCurrentCampaign | `who: Platoon` | `lightuserdata` | `obj:getCurrentCampaign(who)` |
+| getCurrentCampaign | `who: Platoon` | `CampaignInstance` | `obj:getCurrentCampaign(who)` |
 | getAITarget | `who: Platoon` | `hand` | `obj:getAITarget(who)` |
 | getMyUnloadedAI | `who: Platoon` | `UnloadedPlatoonJob` | `obj:getMyUnloadedAI(who)` |
 | isBiomeHomeTerritory | `area: userdata` | `boolean` | `obj:isBiomeHomeTerritory(area)` |
 | getNearestTown | `p: Vector3` | `TownBase` | `obj:getNearestTown(p)` |
 | getTownsInBiome | `b: userdata` | `void` | `obj:getTownsInBiome(b)` |
 | getMyTownsWithEnoughFreePopulation | `popNeeded: integer` | `void` | `obj:getMyTownsWithEnoughFreePopulation(popNeeded)` |
-| getActiveCampaign | `uniqueID: integer` | `lightuserdata` | `obj:getActiveCampaign(uniqueID)` |
+| getActiveCampaign | `uniqueID: integer` | `CampaignInstance` | `obj:getActiveCampaign(uniqueID)` |
 | setup | `` | `void` | `obj:setup()` |
-| _createCampaignData | `dat: GameData` | `lightuserdata` | `obj:_createCampaignData(dat)` |
+| _createCampaignData | `dat: GameData` | `CampaignData` | `obj:_createCampaignData(dat)` |
 
 ## FactionWarMgr::CampaignRequest
 **Header:** `extern/KenshiLib/Include/kenshi/FactionWarMgr.h`
@@ -5080,7 +5408,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | timeToStart | `TimeOfDay` | RW | `obj.timeToStart = <value>` |
-| data | `lightuserdata` | R | `obj.data` |
+| data | `CampaignData` | R | `obj.data` |
 | target | `hand` | RW | `obj.target = <value>` |
 | homeBase | `hand` | RW | `obj.homeBase = <value>` |
 | enemy | `Faction` | RW | `obj.enemy = <value>` |
@@ -5783,9 +6111,9 @@
 | getData [2] | `id: integer, category: integer` | `GameData` | `obj:getData(id, category)` |
 | getDataOfType | `type: itemType` | `void` | `obj:getDataOfType(type)` |
 | _getAllData | `` | `ogre_unordered_map<int, GameData*>::type` | `obj:_getAllData()` |
-| loadGameDataReturn | `file: string, isActive: boolean, readOnly: boolean, moreData: userdata` | `boolean` | `obj:loadGameDataReturn(file, isActive, readOnly, moreData)` |
-| load | `filename: string, modName: string, modIndex: integer, moreData: userdata, keepDeletedInstances: boolean` | `boolean` | `obj:load(filename, modName, modIndex, moreData, keepDeletedInstances)` |
-| save | `filename: string, moreData: userdata` | `boolean` | `obj:save(filename, moreData)` |
+| loadGameDataReturn | `file: string, isActive: boolean, readOnly: boolean, moreData: Serialisable` | `boolean` | `obj:loadGameDataReturn(file, isActive, readOnly, moreData)` |
+| load | `filename: string, modName: string, modIndex: integer, moreData: Serialisable, keepDeletedInstances: boolean` | `boolean` | `obj:load(filename, modName, modIndex, moreData, keepDeletedInstances)` |
+| save | `filename: string, moreData: Serialisable` | `boolean` | `obj:save(filename, moreData)` |
 | flushKillList | `` | `void` | `obj:flushKillList()` |
 | destroyHomelessData | `` | `void` | `obj:destroyHomelessData()` |
 | findAllDataThatReferencesThis | `what: GameData, ofType: itemType, listname: string` | `void` | `obj:findAllDataThatReferencesThis(what, ofType, listname)` |
@@ -9257,7 +9585,7 @@
 | _iBuyStolenGoods | `boolean` | RW | `obj._iBuyStolenGoods = <value>` |
 | _iBuyIllegalGoods | `boolean` | RW | `obj._iBuyIllegalGoods = <value>` |
 | locatorModel | `lightuserdata` | RW | `obj.locatorModel = <value>` |
-| blackboard | `lightuserdata` | RW | `obj.blackboard = <value>` |
+| blackboard | `Blackboard` | R | `obj.blackboard` |
 | _isIntact | `boolean` | RW | `obj._isIntact = <value>` |
 | squadTemplate | `GameData` | RW | `obj.squadTemplate = <value>` |
 | malnourishedLevel | `number` | RW | `obj.malnourishedLevel = <value>` |
@@ -9285,14 +9613,14 @@
 | getSquadType | `` | `SquadType` | `obj:getSquadType()` |
 | setSquadType | `t: SquadType` | `void` | `obj:setSquadType(t)` |
 | getCurrentTownLocation | `` | `TownBase` | `obj:getCurrentTownLocation()` |
-| hasCampaign | `` | `lightuserdata` | `obj:hasCampaign()` |
+| hasCampaign | `` | `CampaignInstance` | `obj:hasCampaign()` |
 | iBuyStolenGoods | `what: Item` | `boolean` | `obj:iBuyStolenGoods(what)` |
 | iBuyIllegalGoods | `` | `boolean` | `obj:iBuyIllegalGoods()` |
 | setFaction | `p: Faction` | `void` | `obj:setFaction(p)` |
 | canTakeRefugees | `who: Platoon` | `boolean` | `obj:canTakeRefugees(who)` |
 | isUnique | `` | `lightuserdata` | `obj:isUnique()` |
 | getPlatoonStringID | `` | `string` | `obj:getPlatoonStringID()` |
-| getBlackboard | `` | `lightuserdata` | `obj:getBlackboard()` |
+| getBlackboard | `` | `Blackboard` | `obj:getBlackboard()` |
 | getDataType | `` | `integer` | `obj:getDataType()` |
 | erasePlatoonFile | `` | `void` | `obj:erasePlatoonFile()` |
 | showDebugMarker | `on: boolean` | `void` | `obj:showDebugMarker(on)` |
@@ -10785,6 +11113,10 @@
 | timeLimitMax | `number` | RW | `obj.timeLimitMax = <value>` |
 | stillSeen | `boolean` | RW | `obj.stillSeen = <value>` |
 
+## Serialisable
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.Serialisable`
+
 ## ShopTrader
 **Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
 **Metatable:** `KenshiLua.ShopTrader`
@@ -11330,6 +11662,35 @@
 | isRequirementsComplete | `ai: AI, autoTargetFinder: boolean` | `boolean` | `obj:isRequirementsComplete(ai, autoTargetFinder)` |
 | getRequirementComplaint | `ai: AI, autoTargetFinder: boolean` | `string` | `obj:getRequirementComplaint(ai, autoTargetFinder)` |
 | getNextSubTarget | `ai: AI` | `hand` | `obj:getNextSubTarget(ai)` |
+
+## TaskMatch
+**Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
+**Metatable:** `KenshiLua.TaskMatch`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| taskData | `TaskData` | RW | `obj.taskData = <value>` |
+| subject | `hand` | RW | `obj.subject = <value>` |
+| subtarget | `hand` | RW | `obj.subtarget = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getTaskData | `` | `TaskData` | `obj:getTaskData()` |
+| key | `` | `TaskType` | `obj:key()` |
+| operator_assign | `instance: integer` | `void` | `obj:operator_assign(instance)` |
+| reset | `` | `void` | `obj:reset()` |
+| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_ne | `` | `boolean` | `obj:operator_ne()` |
+| sameAs | `` | `boolean` | `obj:sameAs()` |
+| operator_lt | `` | `boolean` | `obj:operator_lt()` |
+| operator_bool | `` | `boolean` | `obj:operator_bool()` |
+
+### Constructors
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| TaskMatch | `` | `TaskMatch` | `local obj = TaskMatch()` |
 
 ## TaskStateData
 **Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`

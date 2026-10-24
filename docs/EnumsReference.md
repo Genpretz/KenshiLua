@@ -4,7 +4,7 @@
 
 ## Overview
 
-KenshiLua exposes **1711** bound enum values across **124** enum tables from **49** SDK header files.
+KenshiLua exposes **1778** bound enum values across **131** enum tables from **52** SDK header files.
 
 ## Lua Usage & Syntax
 
@@ -44,7 +44,9 @@ end
 ## Table of Contents
 
 - [AI/AI.h](#aiaih) (`AI.AIAggressionOrders`, `AI.AIManuverabilityOrders`, `NodeType`)
-- [Animation/AnimationClass.h](#animationanimationclassh) (`StanceEnum`)
+- [AI/AITaskSystem.h](#aiaitasksystemh) (`TaskEndEvent`, `TaskTargetType`)
+- [AI/AIPackage.h](#aiaipackageh) (`BlackboardSignalFunctions`)
+- [Animation/AnimationClass.h](#animationanimationclassh) (`AnimationLayerEnum`, `CharacterAnimCategory`, `StanceEnum`)
 - [Appearance.h](#appearanceh) (`MeshDataLookup.Dir`)
 - [AppearanceManager.h](#appearancemanagerh) (`AppearanceManager.DataCategory.Enum`, `AppearanceManager.Gender.Enum`)
 - [Bounty.h](#bountyh) (`CrimeEnum`)
@@ -53,6 +55,7 @@ end
 - [Building/FarmBuilding.h](#buildingfarmbuildingh) (`CropType`)
 - [Building/ProductionBuilding.h](#buildingproductionbuildingh) (`ProductionBuilding.ProductionState`)
 - [Building/WallBuilding.h](#buildingwallbuildingh) (`WallSectionLinkType`)
+- [Campaign.h](#campaignh) (`Phase`, `WarCampaignEnum`)
 - [Character.h](#characterh) (`ProneState`, `WaterState.Enum`, `RagdollPart.Enum`, `CharacterPerceptionTags_ShortTerm`, `CharacterPerceptionTags_LongTerm`, `SoundRange`, `SquadMemberType`, `CharacterMessage`, `UseStuffState`, `Character.DisguiseGUIFeedback`, `Character.CharMessage`)
 - [CharacterStatsWindow.h](#characterstatswindowh) (`CharacterStatsWindow.StatGroup.Group`)
 - [CharMovement.h](#charmovementh) (`UpdatePriority`, `NxControllerAction`)
@@ -127,7 +130,97 @@ end
 
 ---
 
+## AI/AITaskSystem.h
+
+### Table: `TaskEndEvent`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TaskEndEvent.TEE_NOTHING` | `0` | `TaskEndEvent::TEE_NOTHING` |
+| `TaskEndEvent.TEE_REMOVE_MINE_ONLY` | `1` | `TaskEndEvent::TEE_REMOVE_MINE_ONLY` |
+| `TaskEndEvent.TEE_REMOVE_WHOLE_SQUADS` | `2` | `TaskEndEvent::TEE_REMOVE_WHOLE_SQUADS` |
+
+### Table: `TaskTargetType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `TaskTargetType.TARGET_SPECIFIC` | `0` | `TaskTargetType::TARGET_SPECIFIC` |
+| `TaskTargetType.TARGET_SELF` | `1` | `TaskTargetType::TARGET_SELF` |
+| `TaskTargetType.TARGET_LEADER` | `2` | `TaskTargetType::TARGET_LEADER` |
+| `TaskTargetType.TARGET_SQUAD_MISSION` | `3` | `TaskTargetType::TARGET_SQUAD_MISSION` |
+| `TaskTargetType.TARGET_HOME_GATE` | `4` | `TaskTargetType::TARGET_HOME_GATE` |
+
+---
+
+## AI/AIPackage.h
+
+### Table: `BlackboardSignalFunctions`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `BlackboardSignalFunctions.SIGNAL_NONE` | `0` | `BlackboardSignalFunctions::SIGNAL_NONE` |
+| `BlackboardSignalFunctions.SIG_RETREAT_CANNIBAL_RAID` | `1` | `BlackboardSignalFunctions::SIG_RETREAT_CANNIBAL_RAID` |
+| `BlackboardSignalFunctions.SIG_AT_SAFE_TOWN` | `2` | `BlackboardSignalFunctions::SIG_AT_SAFE_TOWN` |
+| `BlackboardSignalFunctions.SIG_AT_HOME_TOWN` | `3` | `BlackboardSignalFunctions::SIG_AT_HOME_TOWN` |
+| `BlackboardSignalFunctions.SIG_CANNIBAL_START_PATROL` | `4` | `BlackboardSignalFunctions::SIG_CANNIBAL_START_PATROL` |
+| `BlackboardSignalFunctions.SIG_SQUAD_NOT_INTACT` | `5` | `BlackboardSignalFunctions::SIG_SQUAD_NOT_INTACT` |
+| `BlackboardSignalFunctions.SIG_START_PATROL` | `6` | `BlackboardSignalFunctions::SIG_START_PATROL` |
+| `BlackboardSignalFunctions.SIG_DIPLOMAT_MISSION` | `7` | `BlackboardSignalFunctions::SIG_DIPLOMAT_MISSION` |
+| `BlackboardSignalFunctions.SIG_DEFEAT_SQUAD` | `8` | `BlackboardSignalFunctions::SIG_DEFEAT_SQUAD` |
+| `BlackboardSignalFunctions.SIG_HOME_OWNER_KEEP_LOCKED` | `9` | `BlackboardSignalFunctions::SIG_HOME_OWNER_KEEP_LOCKED` |
+| `BlackboardSignalFunctions.SIG_GATHER_UP_ALL_LOCAL_PRISONERS` | `10` | `BlackboardSignalFunctions::SIG_GATHER_UP_ALL_LOCAL_PRISONERS` |
+| `BlackboardSignalFunctions.SIG_SLAVER_SHIP_TO_WORKCAMPS` | `11` | `BlackboardSignalFunctions::SIG_SLAVER_SHIP_TO_WORKCAMPS` |
+| `BlackboardSignalFunctions.SIG_BODYGUARD` | `12` | `BlackboardSignalFunctions::SIG_BODYGUARD` |
+| `BlackboardSignalFunctions.SIG_BECOME_EX_SLAVE` | `13` | `BlackboardSignalFunctions::SIG_BECOME_EX_SLAVE` |
+| `BlackboardSignalFunctions.SIG_OUT_OF_DANGER` | `14` | `BlackboardSignalFunctions::SIG_OUT_OF_DANGER` |
+| `BlackboardSignalFunctions.SIG_DEFEND_PLAYER_TOWN_TIMED` | `15` | `BlackboardSignalFunctions::SIG_DEFEND_PLAYER_TOWN_TIMED` |
+| `BlackboardSignalFunctions.SIG_WANDERING_TOWN_TO_TOWN` | `16` | `BlackboardSignalFunctions::SIG_WANDERING_TOWN_TO_TOWN` |
+| `BlackboardSignalFunctions.SIG_HANG_OUT_AT_BAR` | `17` | `BlackboardSignalFunctions::SIG_HANG_OUT_AT_BAR` |
+| `BlackboardSignalFunctions.SIG_RAIDING_WEAK_VILLAGES` | `18` | `BlackboardSignalFunctions::SIG_RAIDING_WEAK_VILLAGES` |
+| `BlackboardSignalFunctions.WAR_GATHER_FORCES` | `19` | `BlackboardSignalFunctions::WAR_GATHER_FORCES` |
+| `BlackboardSignalFunctions.WAR_ASSAULT_TOWN` | `20` | `BlackboardSignalFunctions::WAR_ASSAULT_TOWN` |
+| `BlackboardSignalFunctions.WAR_BATTLE_MEETING` | `21` | `BlackboardSignalFunctions::WAR_BATTLE_MEETING` |
+| `BlackboardSignalFunctions.SIG_REFUGEE_DISBAND` | `22` | `BlackboardSignalFunctions::SIG_REFUGEE_DISBAND` |
+| `BlackboardSignalFunctions.SIG_START_PATROL_RUNNING` | `23` | `BlackboardSignalFunctions::SIG_START_PATROL_RUNNING` |
+| `BlackboardSignalFunctions.SIG_GATHER_UP_ALL_LOCAL_PRISONERS_UNHOLY` | `24` | `BlackboardSignalFunctions::SIG_GATHER_UP_ALL_LOCAL_PRISONERS_UNHOLY` |
+| `BlackboardSignalFunctions.SIG_RETREAT_CANNIBAL_RAID_TO_NEAREST_NEST` | `25` | `BlackboardSignalFunctions::SIG_RETREAT_CANNIBAL_RAID_TO_NEAREST_NEST` |
+| `BlackboardSignalFunctions.SIG_HANG_OUT_OUTDOORS_ONLY` | `26` | `BlackboardSignalFunctions::SIG_HANG_OUT_OUTDOORS_ONLY` |
+| `BlackboardSignalFunctions.SIG_CANNIBALS_AT_HOME` | `27` | `BlackboardSignalFunctions::SIG_CANNIBALS_AT_HOME` |
+| `BlackboardSignalFunctions.SIG_SLAVER_SHIP_TO_ANYWHERE_CLOSE` | `28` | `BlackboardSignalFunctions::SIG_SLAVER_SHIP_TO_ANYWHERE_CLOSE` |
+| `BlackboardSignalFunctions.SIG_PASSING_BY_TOWN_ASSAULT` | `29` | `BlackboardSignalFunctions::SIG_PASSING_BY_TOWN_ASSAULT` |
+| `BlackboardSignalFunctions.SIG_OCCUPY_CONQUERED_TOWN` | `30` | `BlackboardSignalFunctions::SIG_OCCUPY_CONQUERED_TOWN` |
+| `BlackboardSignalFunctions.SIG_DEFEND_PLAYER_TOWN_CAMPAIGN` | `31` | `BlackboardSignalFunctions::SIG_DEFEND_PLAYER_TOWN_CAMPAIGN` |
+| `BlackboardSignalFunctions.WAR_ASSAULT_TOWN_CANNIBAL` | `32` | `BlackboardSignalFunctions::WAR_ASSAULT_TOWN_CANNIBAL` |
+| `BlackboardSignalFunctions.SIG_TIMED_CONTRACT` | `33` | `BlackboardSignalFunctions::SIG_TIMED_CONTRACT` |
+
+---
+
 ## Animation/AnimationClass.h
+
+### Table: `AnimationLayerEnum`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `AnimationLayerEnum.LOWER` | `0` | `AnimationLayerEnum::LOWER` |
+| `AnimationLayerEnum.UPPER` | `1` | `AnimationLayerEnum::UPPER` |
+| `AnimationLayerEnum.OVERLAY` | `2` | `AnimationLayerEnum::OVERLAY` |
+| `AnimationLayerEnum.TAIL` | `3` | `AnimationLayerEnum::TAIL` |
+| `AnimationLayerEnum.EARS` | `4` | `AnimationLayerEnum::EARS` |
+| `AnimationLayerEnum.ALL` | `5` | `AnimationLayerEnum::ALL` |
+
+### Table: `CharacterAnimCategory`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `CharacterAnimCategory.ANIM_NORMAL` | `0` | `CharacterAnimCategory::ANIM_NORMAL` |
+| `CharacterAnimCategory.ANIM_IMPRISONED` | `1` | `CharacterAnimCategory::ANIM_IMPRISONED` |
+| `CharacterAnimCategory.ANIM_SLEEPING` | `2` | `CharacterAnimCategory::ANIM_SLEEPING` |
+| `CharacterAnimCategory.ANIM_CARRIED` | `3` | `CharacterAnimCategory::ANIM_CARRIED` |
+| `CharacterAnimCategory.ANIM_SWIMMING` | `4` | `CharacterAnimCategory::ANIM_SWIMMING` |
+| `CharacterAnimCategory.ANIM_GROUNDED` | `5` | `CharacterAnimCategory::ANIM_GROUNDED` |
+| `CharacterAnimCategory.ANIM_COMBAT` | `6` | `CharacterAnimCategory::ANIM_COMBAT` |
+| `CharacterAnimCategory.ANIM_ATTACKS` | `7` | `CharacterAnimCategory::ANIM_ATTACKS` |
+| `CharacterAnimCategory.ANIM_RANGED` | `8` | `CharacterAnimCategory::ANIM_RANGED` |
 
 ### Table: `StanceEnum`
 
@@ -322,6 +415,30 @@ end
 | `WallSectionLinkType.WALLTYPE_LOWER_WEDGE` | `2` | `WallSectionLinkType::WALLTYPE_LOWER_WEDGE` |
 | `WallSectionLinkType.WALLTYPE_SINGLE` | `3` | `WallSectionLinkType::WALLTYPE_SINGLE` |
 | `WallSectionLinkType.WALLTYPE_SHORT` | `4` | `WallSectionLinkType::WALLTYPE_SHORT` |
+
+---
+
+## Campaign.h
+
+### Table: `Phase`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `Phase.GATHERING` | `0` | `Phase::GATHERING` |
+| `Phase.ASSAULTING` | `1` | `Phase::ASSAULTING` |
+| `Phase.RETREATING` | `2` | `Phase::RETREATING` |
+| `Phase.VICTORY` | `3` | `Phase::VICTORY` |
+| `Phase.ASSAULT_2_HAPPY` | `4` | `Phase::ASSAULT_2_HAPPY` |
+| `Phase.ASSAULT_2_ANGRY` | `5` | `Phase::ASSAULT_2_ANGRY` |
+
+### Table: `WarCampaignEnum`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `WarCampaignEnum.ASSAULT_TOWN` | `0` | `WarCampaignEnum::ASSAULT_TOWN` |
+| `WarCampaignEnum.CONQUER_TOWN` | `1` | `WarCampaignEnum::CONQUER_TOWN` |
+| `WarCampaignEnum.DEFEND_TOWN` | `2` | `WarCampaignEnum::DEFEND_TOWN` |
+| `WarCampaignEnum.TRADER_VISIT` | `3` | `WarCampaignEnum::TRADER_VISIT` |
 
 ---
 
