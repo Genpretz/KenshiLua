@@ -105,9 +105,30 @@ namespace KenshiLua
         lua_setglobal(L, "NodeType");
     }
 
+    void registerTargetInfoType(lua_State* L)
+    {
+        lua_createtable(L, 0, 2);
+
+        setEnum(L, "TI_TOWN", TargetInfoType::TI_TOWN);
+        setEnum(L, "TI_CHARACTER", TargetInfoType::TI_CHARACTER);
+
+        lua_setglobal(L, "TargetInfoType");
+    }
+
     // ------------------------------------------
     // AI/AITaskSystem.h
     // ------------------------------------------
+
+    void registerOrdersReceiverAggroType(lua_State* L)
+    {
+        lua_createtable(L, 0, 3);
+
+        setEnum(L, "AI_AGGRESSIVE", OrdersReceiver::AggroType::AI_AGGRESSIVE);
+        setEnum(L, "AI_DEFENSIVE", OrdersReceiver::AggroType::AI_DEFENSIVE);
+        setEnum(L, "AI_EVASIVE", OrdersReceiver::AggroType::AI_EVASIVE);
+        setNestedClassTable(L, "OrdersReceiver", "AggroType");
+        lua_pop(L, 1);
+    }
 
     void registerTaskEndEvent(lua_State* L)
     {
@@ -3177,6 +3198,7 @@ namespace KenshiLua
         registerNodeType(L);
         registerNxShapeFlag(L);
         registerNxShapesType(L);
+        registerOrdersReceiverAggroType(L);
         registerPersonalityTags(L);
         registerPhase(L);
         registerPlatoonCreationMessage(L);
@@ -3204,6 +3226,7 @@ namespace KenshiLua
         registerSwordStateEnum(L);
         registerSysMessageEnum(L);
         registerTalker(L);
+        registerTargetInfoType(L);
         registerTaskEndEvent(L);
         registerTaskTargetType(L);
         registerTaskType(L);

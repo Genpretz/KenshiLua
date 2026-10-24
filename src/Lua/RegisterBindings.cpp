@@ -2,9 +2,28 @@
 #include "Lua/LuaBindings.h"
 #include "Bindings/Kenshi/AABB2DBinding.h"
 #include "Bindings/Kenshi/AI/AIBinding.h"
+#include "Bindings/Kenshi/AI/AIEventClassBinding.h"
 #include "Bindings/Kenshi/AI/AIPackageBinding.h"
+#include "Bindings/Kenshi/AI/AIPatrolToTownBinding.h"
+#include "Bindings/Kenshi/AI/AITaskSytemBinding.h"
+#include "Bindings/Kenshi/AI/AITaskSytem_ActionsListMgrBinding.h"
+#include "Bindings/Kenshi/AI/AITaskSytem_FailedTaskBinding.h"
+#include "Bindings/Kenshi/AI/AI_AIResultsCacherBinding.h"
+#include "Bindings/Kenshi/AI/ActionDequeBinding.h"
 #include "Bindings/Kenshi/AI/BlackboardBinding.h"
+#include "Bindings/Kenshi/AI/Blackboard_TaskInfoBinding.h"
+#include "Bindings/Kenshi/AI/Contract_DefendPlayerBaseBinding.h"
+#include "Bindings/Kenshi/AI/Contract_HiredAllyBinding.h"
+#include "Bindings/Kenshi/AI/Contract_TimedBinding.h"
+#include "Bindings/Kenshi/AI/Contract_UntilExSlaveBinding.h"
+#include "Bindings/Kenshi/AI/Contract_UntilOutOfDangerBinding.h"
+#include "Bindings/Kenshi/AI/OrdersReceiverBinding.h"
+#include "Bindings/Kenshi/AI/OrdersReceiver_TaskRequestSimpleBinding.h"
+#include "Bindings/Kenshi/AI/StateFunctionListBinding.h"
+#include "Bindings/Kenshi/AI/TargetInfoBinding.h"
+#include "Bindings/Kenshi/AI/TargetWithScoreBinding.h"
 #include "Bindings/Kenshi/AI/TaskMatchBinding.h"
+#include "Bindings/Kenshi/AI/TaskRequestBinding.h"
 #include "Bindings/Kenshi/AIOptionsBinding.h"
 #include "Bindings/Kenshi/AbstractMovementBaseBinding.h"
 #include "Bindings/Kenshi/ActivePlatoonBinding.h"
@@ -421,6 +440,9 @@ namespace KenshiLua
 static void registerInheritance(lua_State* L)
 {
 // --- ACTIVE INHERITANCE WIRING ---
+    setMetatableParent(L, AIPatrolToTownBinding::getMetatableName(),                    AIEventClassBinding::getMetatableName());
+    setMetatableParent(L, AITaskSytemBinding::getMetatableName(),                       OrdersReceiverBinding::getMetatableName());
+    setMetatableParent(L, AITaskSytem_ActionsListMgrBinding::getMetatableName(),        ActionDequeBinding::getMetatableName());
     setMetatableParent(L, AbstractMovementBaseBinding::getMetatableName(),              NxUserControllerHitReportBinding::getMetatableName());
     setMetatableParent(L, ActivePlatoonBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
     setMetatableParent(L, AnimalInventoryLayoutBinding::getMetatableName(),             InventoryLayoutBinding::getMetatableName());
@@ -447,6 +469,11 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, CharacterTradingWindowBinding::getMetatableName(),            GUIWindowBinding::getMetatableName());
     setMetatableParent(L, ContainerItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
     setMetatableParent(L, ContextMenuGUIBinding::getMetatableName(),                    BaseLayoutBinding::getMetatableName());
+    setMetatableParent(L, Contract_DefendPlayerBaseBinding::getMetatableName(),         Contract_HiredAllyBinding::getMetatableName());
+    setMetatableParent(L, Contract_HiredAllyBinding::getMetatableName(),                Contract_TimedBinding::getMetatableName());
+    setMetatableParent(L, Contract_TimedBinding::getMetatableName(),                    AIPackageBinding::getMetatableName());
+    setMetatableParent(L, Contract_UntilExSlaveBinding::getMetatableName(),             AIPackageBinding::getMetatableName());
+    setMetatableParent(L, Contract_UntilOutOfDangerBinding::getMetatableName(),         Contract_TimedBinding::getMetatableName());
     setMetatableParent(L, CraftingBuildingBinding::getMetatableName(),                  ProductionBuildingBinding::getMetatableName());
     setMetatableParent(L, CraftingInventoryLayoutBinding::getMetatableName(),           BuildInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, CrossbowBinding::getMetatableName(),                          WeaponBinding::getMetatableName());
@@ -752,9 +779,28 @@ void LuaBindings::registerClasses(lua_State* L)
 {
     AABB2DBinding::registerBinding(L);
     AIBinding::registerBinding(L);
+    AIEventClassBinding::registerBinding(L);
     AIPackageBinding::registerBinding(L);
+    AIPatrolToTownBinding::registerBinding(L);
+    AITaskSytemBinding::registerBinding(L);
+    AITaskSytem_ActionsListMgrBinding::registerBinding(L);
+    AITaskSytem_FailedTaskBinding::registerBinding(L);
+    AI_AIResultsCacherBinding::registerBinding(L);
+    ActionDequeBinding::registerBinding(L);
     BlackboardBinding::registerBinding(L);
+    Blackboard_TaskInfoBinding::registerBinding(L);
+    Contract_DefendPlayerBaseBinding::registerBinding(L);
+    Contract_HiredAllyBinding::registerBinding(L);
+    Contract_TimedBinding::registerBinding(L);
+    Contract_UntilExSlaveBinding::registerBinding(L);
+    Contract_UntilOutOfDangerBinding::registerBinding(L);
+    OrdersReceiverBinding::registerBinding(L);
+    OrdersReceiver_TaskRequestSimpleBinding::registerBinding(L);
+    StateFunctionListBinding::registerBinding(L);
+    TargetInfoBinding::registerBinding(L);
+    TargetWithScoreBinding::registerBinding(L);
     TaskMatchBinding::registerBinding(L);
+    TaskRequestBinding::registerBinding(L);
     AIOptionsBinding::registerBinding(L);
     AbstractMovementBaseBinding::registerBinding(L);
     ActivePlatoonBinding::registerBinding(L);

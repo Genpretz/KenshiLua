@@ -4,6 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 #include "Bindings/Kenshi/AI/AIBinding.h"
+#include "Bindings/Kenshi/AI/AITaskSytemBinding.h"
 #include <kenshi\CharBody.h>
 #include "Bindings/Kenshi/CharBodyBinding.h"
 #include "Bindings/Kenshi/CombatClassBinding.h"
@@ -636,7 +637,8 @@ int CharBodyBinding::_patrol(lua_State* L)
     Ogre::Vector3 pos;
     readVector3(L, 4, pos);
     PatrolInfo* area = lua_isnoneornil(L, 5) ? nullptr : (PatrolInfo*)lua_touserdata(L, 5);
-    AITaskSytem* taskSys = lua_isnoneornil(L, 6) ? nullptr : (AITaskSytem*)lua_touserdata(L, 6);
+    // _patrol never reads taskSys, so nil is accepted.
+    AITaskSytem* taskSys = lua_isnoneornil(L, 6) ? nullptr : checkObject<AITaskSytem>(L, 6, AITaskSytemBinding::getMetatableName());
     TownBase* town = lua_isnoneornil(L, 7) ? nullptr : checkObject<TownBase>(L, 7, TownBaseBinding::getMetatableName());
 
     instance->_patrol(task, end, pos, area, taskSys, town);
@@ -753,7 +755,7 @@ void CharBodyBinding::registerBinding(lua_State* L)
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - CharBody::_patrol: PatrolInfo*, AITaskSytem* (unbound pointers)
+  - CharBody::_patrol: PatrolInfo* (unbound pointer)
 */
 
     lua_pop(L, 1); // Pop the metatable off the stack

@@ -56,6 +56,7 @@
 #include "Bindings/Kenshi/CampaignInstanceBinding.h"
 #include "Bindings/Kenshi/AI/BlackboardBinding.h"
 #include "Bindings/Kenshi/AI/AIBinding.h"
+#include "Bindings/Kenshi/AI/OrdersReceiverBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 
 namespace KenshiLua
@@ -4357,8 +4358,7 @@ int CharacterBinding::getOrdersReciever(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     OrdersReceiver* result = instance->getOrdersReciever();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<OrdersReceiver>(L, result, OrdersReceiverBinding::getMetatableName());
 }
 
 int CharacterBinding::preventRagdollMode(lua_State* L)

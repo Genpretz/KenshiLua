@@ -63,6 +63,7 @@ public:
     static int load(lua_State* L);
     static int stateUpdate(lua_State* L);
     static int notifyMissionTargetPathfindImpossible(lua_State* L);
+    static int getMissionTarget(lua_State* L);
     static int getMissionTown(lua_State* L);
     static int getMissionGiver(lua_State* L);
     static int getCurrentTownLocation(lua_State* L);
@@ -76,10 +77,13 @@ public:
     static int contractJobWasBetrayal(lua_State* L);
     static int showEndedMessage(lua_State* L);
     static int _NV_showEndedMessage(lua_State* L);
+    static int _serialiseJobList(lua_State* L);
+    static int _loadJobList(lua_State* L);
     static int _setupJobFromData(lua_State* L);
     static int countCharacters(lua_State* L);
     static int runAwayCheck(lua_State* L);
     static int runAway(lua_State* L);
+    static int getJobList(lua_State* L);
     static int buildFormation(lua_State* L);
     static int getGridPositions(lua_State* L);
 };

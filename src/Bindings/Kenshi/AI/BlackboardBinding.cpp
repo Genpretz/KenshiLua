@@ -5,6 +5,9 @@
 #include "BlackboardBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/AI/AIPackageBinding.h"
+#include "Bindings/Kenshi/AI/Blackboard_TaskInfoBinding.h"
+#include "Bindings/Kenshi/AI/TargetInfoBinding.h"
+#include "Bindings/Kenshi/AI/TaskRequestBinding.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
@@ -31,6 +34,10 @@ static_assert(offsetof(Blackboard, characterFormationPosition) == 0x268, "Blackb
 // Hand values are copied through LuaCodec<hand>; a value metatable would push borrowed hands.
 typedef OgreUnorderedMapBinding<TaskType, hand> TaskTypeHandMapBinding;
 typedef OgreUnorderedMapBinding<hand, Ogre::Vector3> HandVector3MapBinding;
+// TaskRequest and TaskInfo values are pushed as borrowed views of the container's elements.
+typedef OgreUnorderedMapBinding<hand, TaskRequest> HandTaskRequestMapBinding;
+typedef OgreUnorderedMapBinding<hand, Blackboard::TaskInfo> HandTaskInfoMapBinding;
+typedef LektorValueBinding<TaskRequest> TaskRequestLektorBinding;
 
 static Blackboard* getInstance(lua_State* L, int idx)
 {
@@ -188,6 +195,48 @@ static int Blackboard_get_enemyCount(lua_State* L)
     return 1;
 }
 
+static int Blackboard_get_requests(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+    return pushObject<HandTaskRequestMapBinding::MapType>(L, &instance->requests, HandTaskRequestMapBinding::getMetatableName());
+}
+
+static int Blackboard_get_leaderJobs(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+    return pushObject<lektor<TaskRequest> >(L, &instance->leaderJobs, TaskRequestLektorBinding::getMetatableName());
+}
+
+static int Blackboard_get_squadJobs(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+    return pushObject<lektor<TaskRequest> >(L, &instance->squadJobs, TaskRequestLektorBinding::getMetatableName());
+}
+
+static int Blackboard_get_squadJobs2(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+    return pushObject<lektor<TaskRequest> >(L, &instance->squadJobs2, TaskRequestLektorBinding::getMetatableName());
+}
+
+static int Blackboard_get_signalJobs(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+    return pushObject<lektor<TaskRequest> >(L, &instance->signalJobs, TaskRequestLektorBinding::getMetatableName());
+}
+
+static int Blackboard_get_slaveJobs(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+    return pushObject<lektor<TaskRequest> >(L, &instance->slaveJobs, TaskRequestLektorBinding::getMetatableName());
+}
+
 static int Blackboard_get_contractJob(lua_State* L)
 {
     Blackboard* instance = getInstance(L, 1);
@@ -200,6 +249,13 @@ static int Blackboard_get_contractExpiryTime(lua_State* L)
     Blackboard* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Blackboard is nil");
     return pushObject<TimeOfDay>(L, &instance->contractExpiryTime, TimeOfDayBinding::getMetatableName());
+}
+
+static int Blackboard_get_currentTasks(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+    return pushObject<HandTaskInfoMapBinding::MapType>(L, &instance->currentTasks, HandTaskInfoMapBinding::getMetatableName());
 }
 
 static int Blackboard_get_formationNeedUpdate(lua_State* L)
@@ -878,6 +934,16 @@ int BlackboardBinding::notifyMissionTargetPathfindImpossible(lua_State* L)
     return 0;
 }
 
+int BlackboardBinding::getMissionTarget(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+
+    Character* who = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    TargetInfo result = instance->getMissionTarget(who);
+    return pushValue<TargetInfo>(L, result, TargetInfoBinding::getMetatableName());
+}
+
 int BlackboardBinding::getMissionTown(lua_State* L)
 {
     Blackboard* instance = getInstance(L, 1);
@@ -1003,6 +1069,30 @@ int BlackboardBinding::_NV_showEndedMessage(lua_State* L)
     return 0;
 }
 
+int BlackboardBinding::_serialiseJobList(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lektor<TaskRequest>* theList = checkObject<lektor<TaskRequest> >(L, 3, TaskRequestLektorBinding::getMetatableName());
+    std::string name = luaL_checkstring(L, 4);
+    instance->_serialiseJobList(state, *theList, name);
+    return 0;
+}
+
+int BlackboardBinding::_loadJobList(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+
+    GameData* state = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    lektor<TaskRequest>* theList = checkObject<lektor<TaskRequest> >(L, 3, TaskRequestLektorBinding::getMetatableName());
+    std::string name = luaL_checkstring(L, 4);
+    instance->_loadJobList(state, *theList, name);
+    return 0;
+}
+
 int BlackboardBinding::_setupJobFromData(lua_State* L)
 {
     Blackboard* instance = getInstance(L, 1);
@@ -1042,6 +1132,17 @@ int BlackboardBinding::runAway(lua_State* L)
     return 0;
 }
 
+// Returns the borrowed job list for the squad member type.
+int BlackboardBinding::getJobList(lua_State* L)
+{
+    Blackboard* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Blackboard is nil");
+
+    SquadMemberType type = (SquadMemberType)luaL_checkinteger(L, 2);
+    lektor<TaskRequest>* result = instance->getJobList(type);
+    return pushObject<lektor<TaskRequest> >(L, result, TaskRequestLektorBinding::getMetatableName());
+}
+
 int BlackboardBinding::buildFormation(lua_State* L)
 {
     Blackboard* instance = getInstance(L, 1);
@@ -1078,22 +1179,15 @@ int BlackboardBinding::getGridPositions(lua_State* L)
 /*
 Skipped properties needing manual binding:
   line 60: packagesMain (ogre_unordered_map<int, lektor<AIPackage*>>::type) - no container binding; getPackageList(type) returns the same lists
-  line 158: requests (ogre_unordered_map<hand, TaskRequest>::type) - TaskRequest is unbound
-  line 159-163: leaderJobs, squadJobs, squadJobs2, signalJobs, slaveJobs (lektor<TaskRequest>) - TaskRequest is unbound
-  line 180: currentTasks (ogre_unordered_map<hand, Blackboard::TaskInfo>::type) - Blackboard::TaskInfo is unbound
 Read-only properties:
   contractJob - endContractJob and ~Blackboard delete it, so assigning another package would free it twice
-  actionTargets, characterFormationPosition - containers are edited in place; whole-container assignment is not bound
+  actionTargets, characterFormationPosition, requests, leaderJobs, squadJobs, squadJobs2, signalJobs, slaveJobs, currentTasks - containers are edited in place; whole-container assignment is not bound
 
 Skipped methods needing manual binding:
   line 73: resetAllTheStaticData() - static engine reset of Blackboard's shared data
   line 81-84: Blackboard(Platoon*), _CONSTRUCTOR, ~Blackboard, _DESTRUCTOR - owned by Platoon (created in Platoon's constructor, deleted in ~Platoon)
   line 110: getRequests(...) - TaskRepertoire* (unbound pointer)
   line 114: getSquadJobs(...) - TaskRepertoire* (unbound pointer)
-  line 126: getMissionTarget(...) - TargetInfo return (unbound type)
-  line 149: _serialiseJobList(...) - lektor<TaskRequest> (TaskRequest is unbound)
-  line 150: _loadJobList(...) - lektor<TaskRequest> (TaskRequest is unbound)
-  line 166: getJobList(...) - lektor<TaskRequest>* return (TaskRequest is unbound)
 */
 
 int BlackboardBinding::gc(lua_State* L)
@@ -1113,6 +1207,9 @@ void BlackboardBinding::registerBinding(lua_State* L)
     LektorPtrBinding<AIPackage*>::registerBinding(L, "lektor<AIPackage*>", AIPackageBinding::getMetatableName());
     TaskTypeHandMapBinding::registerBinding(L, "ogre_unordered_map<TaskType, hand>");
     HandVector3MapBinding::registerBinding(L, "ogre_unordered_map<hand, Vector3>", HandBinding::getMetatableName());
+    HandTaskRequestMapBinding::registerBinding(L, "ogre_unordered_map<hand, TaskRequest>", HandBinding::getMetatableName(), TaskRequestBinding::getMetatableName());
+    HandTaskInfoMapBinding::registerBinding(L, "ogre_unordered_map<hand, Blackboard::TaskInfo>", HandBinding::getMetatableName(), Blackboard_TaskInfoBinding::getMetatableName());
+    TaskRequestLektorBinding::registerBinding(L, "lektor<TaskRequest>", TaskRequestBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       BlackboardBinding::gc },
@@ -1165,6 +1262,7 @@ void BlackboardBinding::registerBinding(lua_State* L)
         { "load", BlackboardBinding::load },
         { "stateUpdate", BlackboardBinding::stateUpdate },
         { "notifyMissionTargetPathfindImpossible", BlackboardBinding::notifyMissionTargetPathfindImpossible },
+        { "getMissionTarget", BlackboardBinding::getMissionTarget },
         { "getMissionTown", BlackboardBinding::getMissionTown },
         { "getMissionGiver", BlackboardBinding::getMissionGiver },
         { "getCurrentTownLocation", BlackboardBinding::getCurrentTownLocation },
@@ -1178,10 +1276,13 @@ void BlackboardBinding::registerBinding(lua_State* L)
         { "contractJobWasBetrayal", BlackboardBinding::contractJobWasBetrayal },
         { "showEndedMessage", BlackboardBinding::showEndedMessage },
         { "_NV_showEndedMessage", BlackboardBinding::_NV_showEndedMessage },
+        { "_serialiseJobList", BlackboardBinding::_serialiseJobList },
+        { "_loadJobList", BlackboardBinding::_loadJobList },
         { "_setupJobFromData", BlackboardBinding::_setupJobFromData },
         { "countCharacters", BlackboardBinding::countCharacters },
         { "runAwayCheck", BlackboardBinding::runAwayCheck },
         { "runAway", BlackboardBinding::runAway },
+        { "getJobList", BlackboardBinding::getJobList },
         { "buildFormation", BlackboardBinding::buildFormation },
         { "getGridPositions", BlackboardBinding::getGridPositions },
         { 0, 0 }
@@ -1218,8 +1319,15 @@ void BlackboardBinding::registerBinding(lua_State* L)
     registerGetter(L, "runningAwayMode", Blackboard_get_runningAwayMode);
     registerGetter(L, "characterCount", Blackboard_get_characterCount);
     registerGetter(L, "enemyCount", Blackboard_get_enemyCount);
+    registerGetter(L, "requests", Blackboard_get_requests);
+    registerGetter(L, "leaderJobs", Blackboard_get_leaderJobs);
+    registerGetter(L, "squadJobs", Blackboard_get_squadJobs);
+    registerGetter(L, "squadJobs2", Blackboard_get_squadJobs2);
+    registerGetter(L, "signalJobs", Blackboard_get_signalJobs);
+    registerGetter(L, "slaveJobs", Blackboard_get_slaveJobs);
     registerGetter(L, "contractJob", Blackboard_get_contractJob);
     registerGetter(L, "contractExpiryTime", Blackboard_get_contractExpiryTime);
+    registerGetter(L, "currentTasks", Blackboard_get_currentTasks);
     registerGetter(L, "formationNeedUpdate", Blackboard_get_formationNeedUpdate);
     registerGetter(L, "characterFormationPosition", Blackboard_get_characterFormationPosition);
     lua_setfield(L, -2, "__getters"); // Bind to metatable

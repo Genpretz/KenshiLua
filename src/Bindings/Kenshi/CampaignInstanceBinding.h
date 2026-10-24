@@ -58,6 +58,8 @@ public:
     static int _NV_areForcesAllTogether(lua_State* L);
     static int removeFromCampaign(lua_State* L);
     static int _NV_removeFromCampaign(lua_State* L);
+    static int getAITarget(lua_State* L);
+    static int _NV_getAITarget(lua_State* L);
     static int getMoveSpeedUnloaded(lua_State* L);
     static int _NV_getMoveSpeedUnloaded(lua_State* L);
     static int getMoveSpeedLoaded(lua_State* L);

@@ -5,6 +5,7 @@
 #include "AIPackageBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/AI/BlackboardBinding.h"
+#include "Bindings/Kenshi/AI/TargetInfoBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
@@ -226,6 +227,26 @@ static int AIPackage_set_wasBetrayed(lua_State* L)
     if (!instance) return luaL_error(L, "AIPackage is nil");
     instance->wasBetrayed = lua_toboolean(L, 2) != 0;
     return 0;
+}
+
+int AIPackageBinding::getMyTarget(lua_State* L)
+{
+    AIPackage* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AIPackage is nil");
+
+    Character* me = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    TargetInfo result = instance->getMyTarget(me);
+    return pushValue<TargetInfo>(L, result, TargetInfoBinding::getMetatableName());
+}
+
+int AIPackageBinding::_NV_getMyTarget(lua_State* L)
+{
+    AIPackage* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AIPackage is nil");
+
+    Character* me = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    TargetInfo result = instance->_NV_getMyTarget(me);
+    return pushValue<TargetInfo>(L, result, TargetInfoBinding::getMetatableName());
 }
 
 int AIPackageBinding::notifyMyTargetPathfindImpossible(lua_State* L)
@@ -597,8 +618,6 @@ Skipped methods needing manual binding:
   line 56: _CONSTRUCTOR() - packages are created by Blackboard::createNewPackage and deleted by Blackboard
   line 57: ~AIPackage() - packages are deleted by Blackboard
   line 58: _DESTRUCTOR() - packages are deleted by Blackboard
-  line 59: getMyTarget(...) - TargetInfo return (unbound type)
-  line 60: _NV_getMyTarget(...) - TargetInfo return (unbound type)
 */
 
 int AIPackageBinding::gc(lua_State* L)
@@ -622,6 +641,8 @@ void AIPackageBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "getMyTarget", AIPackageBinding::getMyTarget },
+        { "_NV_getMyTarget", AIPackageBinding::_NV_getMyTarget },
         { "notifyMyTargetPathfindImpossible", AIPackageBinding::notifyMyTargetPathfindImpossible },
         { "_NV_notifyMyTargetPathfindImpossible", AIPackageBinding::_NV_notifyMyTargetPathfindImpossible },
         { "getDesiredTravelSpeed", AIPackageBinding::getDesiredTravelSpeed },

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "CampaignInstanceBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/AI/TargetInfoBinding.h"
 #include "Bindings/Kenshi/CampaignDataBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/FactionBinding.h"
@@ -108,6 +109,13 @@ static int CampaignInstance_get_hasTriggeredSomething(lua_State* L)
     if (!instance) return luaL_error(L, "CampaignInstance is nil");
     lua_pushboolean(L, instance->hasTriggeredSomething ? 1 : 0);
     return 1;
+}
+
+static int CampaignInstance_get__target(lua_State* L)
+{
+    CampaignInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignInstance is nil");
+    return pushObject<TargetInfo>(L, &instance->_target, TargetInfoBinding::getMetatableName());
 }
 
 static int CampaignInstance_get_me(lua_State* L)
@@ -248,6 +256,14 @@ static int CampaignInstance_set_hasTriggeredSomething(lua_State* L)
     CampaignInstance* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignInstance is nil");
     instance->hasTriggeredSomething = lua_toboolean(L, 2) != 0;
+    return 0;
+}
+
+static int CampaignInstance_set__target(lua_State* L)
+{
+    CampaignInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignInstance is nil");
+    instance->_target = *checkObject<TargetInfo>(L, 2, TargetInfoBinding::getMetatableName());
     return 0;
 }
 
@@ -677,6 +693,26 @@ int CampaignInstanceBinding::_NV_removeFromCampaign(lua_State* L)
     return 0;
 }
 
+int CampaignInstanceBinding::getAITarget(lua_State* L)
+{
+    CampaignInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignInstance is nil");
+
+    Platoon* who = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    TargetInfo result = instance->getAITarget(who);
+    return pushValue<TargetInfo>(L, result, TargetInfoBinding::getMetatableName());
+}
+
+int CampaignInstanceBinding::_NV_getAITarget(lua_State* L)
+{
+    CampaignInstance* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CampaignInstance is nil");
+
+    Platoon* who = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
+    TargetInfo result = instance->_NV_getAITarget(who);
+    return pushValue<TargetInfo>(L, result, TargetInfoBinding::getMetatableName());
+}
+
 int CampaignInstanceBinding::getMoveSpeedUnloaded(lua_State* L)
 {
     CampaignInstance* instance = getInstance(L, 1);
@@ -786,10 +822,6 @@ Skipped methods needing manual binding:
   line 123: _CONSTRUCTOR(...) - see above
   line 124: ~CampaignInstance() - FactionWarMgr::endCampaign destroys campaigns
   line 125: _DESTRUCTOR() - see above
-  line 184: getAITarget(Platoon*) - returns TargetInfo, which has no binding
-  line 185: _NV_getAITarget(Platoon*) - returns TargetInfo, which has no binding
-Skipped properties needing manual binding:
-  line 143: _target (TargetInfo) - TargetInfo has no binding
 Read-only properties:
   membersInOrder (lektor<hand>) - KenshiLib's lektor has no deep copy, so assignment would alias the engine's buffer
 */
@@ -853,6 +885,8 @@ void CampaignInstanceBinding::registerBinding(lua_State* L)
         { "_NV_areForcesAllTogether", CampaignInstanceBinding::_NV_areForcesAllTogether },
         { "removeFromCampaign", CampaignInstanceBinding::removeFromCampaign },
         { "_NV_removeFromCampaign", CampaignInstanceBinding::_NV_removeFromCampaign },
+        { "getAITarget", CampaignInstanceBinding::getAITarget },
+        { "_NV_getAITarget", CampaignInstanceBinding::_NV_getAITarget },
         { "getMoveSpeedUnloaded", CampaignInstanceBinding::getMoveSpeedUnloaded },
         { "_NV_getMoveSpeedUnloaded", CampaignInstanceBinding::_NV_getMoveSpeedUnloaded },
         { "getMoveSpeedLoaded", CampaignInstanceBinding::getMoveSpeedLoaded },
@@ -888,6 +922,7 @@ void CampaignInstanceBinding::registerBinding(lua_State* L)
     registerGetter(L, "manPowerLastCount", CampaignInstance_get_manPowerLastCount);
     registerGetter(L, "reachedDestination", CampaignInstance_get_reachedDestination);
     registerGetter(L, "hasTriggeredSomething", CampaignInstance_get_hasTriggeredSomething);
+    registerGetter(L, "_target", CampaignInstance_get__target);
     registerGetter(L, "me", CampaignInstance_get_me);
     registerGetter(L, "enemy", CampaignInstance_get_enemy);
     registerGetter(L, "leader", CampaignInstance_get_leader);
@@ -909,6 +944,7 @@ void CampaignInstanceBinding::registerBinding(lua_State* L)
     registerSetter(L, "manPowerLastCount", CampaignInstance_set_manPowerLastCount);
     registerSetter(L, "reachedDestination", CampaignInstance_set_reachedDestination);
     registerSetter(L, "hasTriggeredSomething", CampaignInstance_set_hasTriggeredSomething);
+    registerSetter(L, "_target", CampaignInstance_set__target);
     registerSetter(L, "me", CampaignInstance_set_me);
     registerSetter(L, "enemy", CampaignInstance_set_enemy);
     registerSetter(L, "leader", CampaignInstance_set_leader);

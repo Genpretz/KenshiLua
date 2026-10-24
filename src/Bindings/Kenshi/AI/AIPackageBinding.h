@@ -19,6 +19,8 @@ public:
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
 
+    static int getMyTarget(lua_State* L);
+    static int _NV_getMyTarget(lua_State* L);
     static int notifyMyTargetPathfindImpossible(lua_State* L);
     static int _NV_notifyMyTargetPathfindImpossible(lua_State* L);
     static int getDesiredTravelSpeed(lua_State* L);

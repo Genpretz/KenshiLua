@@ -435,6 +435,18 @@
                 "tradingInfo": "Economic and merchant state tracking for barter and vendor operations."
             }
         },
+        "AIEventClass": {
+            "description": "Base of scripted AI events such as `AIPatrolToTown`. Abstract; no bound member returns one.",
+            "methods": {
+                "update": "Runs the event's update. Pure virtual."
+            },
+            "properties": {
+                "repeatRate": "Time between repeats.",
+                "repeatTimer": "Time until the next repeat.",
+                "sendWhoToDoIt": "Handle of the character or squad sent to carry out the event.",
+                "target": "Handle of the event's target."
+            }
+        },
         "AIOptions": {
             "description": "Stores player-configurable squad AI behavior toggles (such as auto-healing, rescuing allies, and sharing food) on PlayerInterface.",
             "methods": {
@@ -459,6 +471,7 @@
             "description": "",
             "methods": {
                 "AIPackage": "Initializes a new `AIPackage` instance. Sets default values for handles and nullifies pointers, preparing the object for configuration via its template data.",
+                "_NV_getMyTarget": "Non-virtual `getMyTarget`.",
                 "activateAndSetup": "Activates the AI package and prepares it for execution. This involves binding necessary platoon context and optionally triggering initial dialogs if an employer or target requires engagement.",
                 "assessEnemy": "Evaluates if a target should be forcibly treated as an enemy by this package. Overrides global diplomacy if the mission demands hostility (e.g. assassination contracts).",
                 "assessNeutral": "Evaluates if a target should be treated as neutral within the scope of this package. Allows packages to temporarily override standard faction diplomacy rules for mission targets.",
@@ -496,6 +509,131 @@
                 "squad": "Bound platoon squad pointer.",
                 "unloadedMode": "Behavior mode when platoon is streaming unloaded.",
                 "wasBetrayed": "Flag indicating contract betrayal occurred."
+            }
+        },
+        "AIPatrolToTown": {
+            "description": "AI event that sends a patrol to a town. Abstract; no bound member returns one.",
+            "methods": {
+                "update": "Runs the event's update. Pure virtual."
+            },
+            "properties": {}
+        },
+        "AITaskSytem": {
+            "description": "A character's AI task system, owned by its `AI` (`AI.taskSystemAI`). Inherits the orders and jobs of `OrdersReceiver`.",
+            "methods": {
+                "_NV_loadFromSerialise": "Non-virtual `loadFromSerialise`.",
+                "_NV_serialise": "Non-virtual `serialise`.",
+                "_NV_setCurrentGoal": "Non-virtual `setCurrentGoal`.",
+                "_NV_setNeedGOAP": "Non-virtual `setNeedGOAP`.",
+                "_chooseGoal": "Chooses a goal of the priority for the squad member type and returns whether one was set.",
+                "_forcedSetCurrentAction": "Sets the current action to the task with the score.",
+                "_logTheAI": "Writes the AI state to the debug log.",
+                "_notifyBodyTaskComplete": "Notifies the task system that the body finished its task.",
+                "_taskImpossible": "Marks the current task as impossible.",
+                "bodyTaskComplete": "Handles completion of the body's task.",
+                "callForUpdate": "Requests an update; `superUrgent` requests it immediately.",
+                "canIDoTheInfrequents": "Returns whether the infrequent checks are due.",
+                "checkOrders": "Checks the orders and returns whether one is active.",
+                "chooseGoal": "Chooses a new goal; `timedLockOnCurrentGoal` keeps a current timed goal.",
+                "clearAllTasks": "Removes every order, job, goal, and action.",
+                "clearRequestsList": "Clears `requestsList`.",
+                "currentActionChecks": "Runs the checks for the current action.",
+                "debugTargetInfo": "Records target debugging information for the task.",
+                "getCurrentDurationTimedTask": "Returns the current duration-based task, or nil.",
+                "getCurrentGoalString": "Returns a description of the current goal.",
+                "getGOalExpiryTimeRemaining": "Returns the time remaining before the current goal expires.",
+                "getGUIData": "Adds the task system's information to the `DatapanelGUI`.",
+                "getHandle": "Returns the handle of the character.",
+                "infrequentsStampCheck": "Updates the infrequent-check timestamp.",
+                "intendsToAttackTarget": "Returns whether the AI intends to attack the character.",
+                "isGoalExpired": "Returns whether the current goal has expired.",
+                "isPathImpossible": "Returns whether pathing to the target failed recently.",
+                "isTaskExpired": "Returns whether the current task has expired.",
+                "isThePlayer": "Returns whether the character is player-controlled.",
+                "loadFromSerialise": "Loads the task system from the `GameData`.",
+                "notifyPathImpossible": "Records that the target at `dest` could not be reached.",
+                "periodicUpdate": "Runs the periodic update.",
+                "popFromOrders": "Removes the task from the orders.",
+                "runGOAP": "Plans the task with GOAP and returns its score.",
+                "serialise": "Saves the task system to the `GameData`.",
+                "setCurrentGoal": "Sets the current goal to the task with the score and priority. The task cannot be nil.",
+                "setCurrentTask": "Takes the current task from the action list and returns whether one was set.",
+                "setDialogueDeliveryTag": "Sets `currentDialogueDelivery`.",
+                "setNeedGOAP": "Requests a new GOAP plan.",
+                "setTaskExpiryTimer": "Starts the current task's expiry timer.",
+                "setupParametersForCurrentGoal": "Sets up the parameters of the current goal.",
+                "taskImpossible": "Marks the current task as impossible.",
+                "tryAndRerunGOAP": "Plans the task again with GOAP and returns whether that succeeded.",
+                "update": "Updates the task system at the position for the frame time.",
+                "update4Frame": "Runs the four-frame update at the position.",
+                "updateStateBroadcast": "Updates the `StateBroadcastData` from the task system."
+            },
+            "properties": {
+                "_currentDialogueEnumQuery": "Dialogue event being queried, as an `EventTriggerEnum` value.",
+                "_debugBreak": "Debug break flag.",
+                "_squadMemberType": "Squad member type, as a `SquadMemberType` value.",
+                "_taskCompletedFlag": "True when the current task completed.",
+                "_taskImpossibleFlag": "True when the current task is impossible.",
+                "actions": "The current action list, borrowed. Read-only; ~AITaskSytem deletes its tasks.",
+                "actionsTryList": "The trial action list, borrowed. Read-only; ~AITaskSytem deletes its tasks.",
+                "autoDitchTask": "Automatic ditch task, or nil.",
+                "autoEjectEnemiesTask1": "First automatic eject-enemies task, or nil.",
+                "autoEjectEnemiesTask2": "Second automatic eject-enemies task, or nil.",
+                "autoGetupTask": "Automatic get-up task, or nil.",
+                "autoSitTask": "Automatic sit task, or nil.",
+                "autoSleepTask": "Automatic sleep task, or nil.",
+                "body": "The character's `CharBody`. nil is rejected.",
+                "character": "The `Character`. nil is rejected.",
+                "currentDialogueDelivery": "Dialogue event being delivered, as an `EventTriggerEnum` value.",
+                "currentGoalExpiryTime": "When the current goal expires.",
+                "currentTaskExpiryTime": "When the current task expires.",
+                "currentlySubTasking": "The task being run as a subtask, or nil.",
+                "debugCount": "Debug counter.",
+                "failedGOAPGoalDebugString": "Debug text of the last failed GOAP goal.",
+                "infrequentTimeStamp": "Time of the last infrequent check.",
+                "pathFailures": "Recent path failures by target handle, as a live map. Read-only; edit it in place.",
+                "pos": "Position of the character at the last update.",
+                "requestsList": "Pending requests, as a live `lektor<Tasker*>`. Read-only; edit it in place.",
+                "setTaskRecursionCounter": "Recursion counter of `setCurrentTask`.",
+                "taskRecursionLast": "Last task type seen by the recursion counter, as a `TaskType` value."
+            }
+        },
+        "AITaskSytem_ActionsListMgr": {
+            "description": "The `ActionDeque` of the task system's current and trial action lists, `AITaskSytem.actions` and `AITaskSytem.actionsTryList`.",
+            "methods": {
+                "addFrom": "Appends the tasks of another action list.",
+                "copyFrom": "Replaces the tasks with those of another action list.",
+                "get2TasksAfterCurrent": "Returns the task two after the current one, or nil.",
+                "getTaskAfterCurrent": "Returns the task after the current one, or nil."
+            },
+            "properties": {}
+        },
+        "AITaskSytem_FailedTask": {
+            "description": "The subject of a GOAP task that failed. No bound member returns one.",
+            "methods": {},
+            "properties": {
+                "subj": "Handle of the failed task's subject."
+            }
+        },
+        "AI_AIResultsCacher": {
+            "description": "Per-AI cache of task requirement checks, result checks, and resource sources. Embedded in `AI` and reached through `AI.resultsCache`.",
+            "methods": {
+                "cacheResult_reqs": "Stores a requirements check result for the `TaskMatch`.",
+                "cacheResult_results": "Stores a results check for the `TaskMatch`.",
+                "cacheResult_targetFinder": "Stores a target-finder result, a subject handle and score, for the `TaskMatch`.",
+                "getCacheResult_reqs": "Returns the cached requirements check for the `TaskMatch`.",
+                "getCacheResult_results": "Returns the cached results check for the `TaskMatch`.",
+                "getResourceSource": "Finds a source of the item `resourceNeeded`, skipping the `skip` storage building when given. Returns the score (0 or 1) and the handle of the source found.",
+                "hasCacheResult_reqs": "Returns whether a requirements check is cached for the `TaskMatch`.",
+                "hasCacheResult_results": "Returns whether a results check is cached for the `TaskMatch`.",
+                "resetAllCaches": "Clears every cached result.",
+                "resetSpecificTargetFinderCache": "Clears the cached target-finder result for the `TaskMatch`."
+            },
+            "properties": {
+                "ai": "The owning `AI`. nil is rejected.",
+                "requirementsCache": "Cached requirements checks by `TaskMatch`, as a live map.",
+                "resourceSourceCache": "Cached resource sources by item `GameData`, as a live map. Its hand values are copies.",
+                "resultsCache": "Cached results checks by `TaskMatch`, as a live map."
             }
         },
         "AbstractMovementBase": {
@@ -557,6 +695,25 @@
                 "speedGroup": "Shared SpeedGroup instance synchronizing movement speed across a group, or nil if none.",
                 "speedOrders": "Ordered MoveSpeed enum value.",
                 "walkSpeed": "Standard walking speed in world units per second."
+            }
+        },
+        "ActionDeque": {
+            "description": "Ordered list of `Tasker` actions. Embedded in `OrdersReceiver` as `orders` and in `AITaskSytem` as `actions` and `actionsTryList`; the owner deletes the tasks it holds.",
+            "methods": {
+                "addTask": "Appends a task. The deque takes ownership.",
+                "clearAndDelete": "Removes and deletes every task.",
+                "clearOnly": "Removes every task without deleting it.",
+                "getFirstTask": "Returns the first task, or nil.",
+                "getLastTask": "Returns the last task, or nil.",
+                "getSecondTask": "Returns the second task, or nil.",
+                "hasTask": "Returns whether a task matching the `TaskMatch` is in the list.",
+                "insertTask": "Inserts a task at the front. The deque takes ownership.",
+                "isEmpty": "Returns whether the deque holds no tasks.",
+                "isOnlyOne": "Returns whether the deque holds exactly one task.",
+                "passOnCurrentTask": "Removes the first task and returns it without deleting it, or returns nil when empty."
+            },
+            "properties": {
+                "list": "The tasks, as a live `std::deque<Tasker*>`. Read-only; edit it in place."
             }
         },
         "ActivePlatoon": {
@@ -1471,11 +1628,15 @@
                 "_activateCurrentPackage": "Suspends or clears the currently executing package, resetting local tracking flags. Replaces it with the provided new `AIPackage` reference.",
                 "_addFromData": "Decodes a serialized behavior tree payload into local instances and loads them onto the active execution stack.",
                 "_addPackage": "Enqueues an AI task definition into the priority tier queues without immediately executing it. Allows complex queuing of behaviors over time.",
+                "_loadJobList": "Loads the job list from the `GameData` under the name.",
+                "_serialiseJobList": "Saves the job list to the `GameData` under the name.",
                 "_setContractJob": "Assigns an overriding mercenary contract task at a specific priority. Halts lower priority goals.",
                 "clearAllPackages": "Iterates through `packagesMain` queues and terminates all pending or active routines. Used during platoon destruction or combat override.",
                 "createNewPackage": "Constructs a new `AIPackage` derivative based on `typeId` (such as `Package_OccupyTown` or `CannibalRetreatFromRaid`). Connects relevant callback functions.",
                 "dialogEventsCheck": "Validates and polls conditions matching current dialog hooks against incoming game events. Often transitions an NPC's behavior state depending on dialog outcome.",
                 "endContractJob": "Concludes the currently active mercenary contract package. Triggers dialog/payment handlers for successful termination.",
+                "getJobList": "Returns the job list for the `SquadMemberType` as a live `lektor<TaskRequest>`, or nil.",
+                "getMissionTarget": "Returns the character's mission target as a new `TargetInfo`.",
                 "getPackage": "Searches the queued priority map for a specific task package by its internal string identifier.",
                 "getPackageList": "Retrieves the underlying queue struct associated with a requested priority level from `packagesMain`.",
                 "isMissionComplete": "Checks if the main directive tied to the squad's primary `AIPackage` has fulfilled its goal conditions.",
@@ -1491,8 +1652,26 @@
                 "cageMarkedForDeath": "Cage handle of target marked for execution.",
                 "currentPackage": "Currently executing squad package.",
                 "currentPackagePriorityLevel": "Active package priority tier.",
+                "currentTasks": "The members' current tasks by handle, as a live map of `Blackboard_TaskInfo`. Read-only; edit it in place.",
+                "leaderJobs": "Leader jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
                 "packagesMain": "Priority-indexed queues of behavior packages.",
-                "replacementAIPackageSID": "SID of package scheduled to replace current upon completion."
+                "replacementAIPackageSID": "SID of package scheduled to replace current upon completion.",
+                "requests": "Job requests by handle, as a live map of `TaskRequest`. Read-only; edit it in place.",
+                "signalJobs": "Signal jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
+                "slaveJobs": "Slave jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
+                "squadJobs": "Squad jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
+                "squadJobs2": "Second squad job list, as a live `lektor<TaskRequest>`. Read-only; edit it in place."
+            }
+        },
+        "Blackboard_TaskInfo": {
+            "description": "The task a squad member is carrying out, as held in `Blackboard.currentTasks`. `Blackboard_TaskInfo()` and `Blackboard_TaskInfo(other)` create Lua-owned values.",
+            "methods": {
+                "operator_assign": "Copies another `Blackboard_TaskInfo` into this one and returns it."
+            },
+            "properties": {
+                "subTarget": "Handle of the task's secondary target.",
+                "subject": "Handle of the task's subject.",
+                "type": "The task, as a `TaskType` value."
             }
         },
         "BoundsViolation": {
@@ -2071,13 +2250,16 @@
             "description": "Active military expedition instance tracking marching forces, operational phases (Gathering, Assaulting, Retreating, Victory), destination waypoints, and casualties.",
             "methods": {
                 "CampaignInstance": "Constructs a new `CampaignInstance` initialized with participating factions and home territory.",
+                "_NV_getAITarget": "Non-virtual `getAITarget`.",
                 "changePhase": "Transitions the expedition into a new strategic operational phase.",
+                "getAITarget": "Returns the platoon's target as a new `TargetInfo`.",
                 "getData": "Retrieves the blueprint `CampaignData` record configuring this expedition.",
                 "loadState": "Restores campaign operational state, waypoint objectives, and troop census from save data.",
                 "saveState": "Serializes active campaign state, phases, and troop census into a savegame record.",
                 "~CampaignInstance": "Destructs the `CampaignInstance` and releases allocated military expedition resources."
             },
             "properties": {
+                "_target": "The campaign's target, borrowed. Assigning copies a `TargetInfo` into it.",
                 "_vftable": "Virtual method table pointer.",
                 "currentPhase": "Current strategic campaign state enum.",
                 "hasTriggeredSomething": "Trigger activation execution latch.",
@@ -3590,6 +3772,88 @@
                 "optionsList": "Widget container housing the selectable action items and buttons.",
                 "valueCoords": "Coordinates and dimensions defining the layout of value and numeric labels."
             }
+        },
+        "Contract_DefendPlayerBase": {
+            "description": "Hired-ally contract to defend the player's base.",
+            "methods": {
+                "_NV_activateAndSetup": "Non-virtual `activateAndSetup`.",
+                "_NV_assessNeutral": "Non-virtual `assessNeutral`.",
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_getGUIData": "Non-virtual `getGUIData`.",
+                "_NV_getMyTarget": "Non-virtual `getMyTarget`.",
+                "_NV_periodicUpdate": "Non-virtual `periodicUpdate`.",
+                "activateAndSetup": "Activates and sets up the contract.",
+                "assessNeutral": "Assesses the neutral character for the contract.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "getGUIData": "Adds the contract's information to the `DatapanelGUI` and returns whether it did.",
+                "getMyTarget": "Returns the character's target as a new `TargetInfo`.",
+                "periodicUpdate": "Runs the contract's periodic update."
+            },
+            "properties": {}
+        },
+        "Contract_HiredAlly": {
+            "description": "Timed contract for hired allies.",
+            "methods": {
+                "_NV_activateAndSetup": "Non-virtual `activateAndSetup`.",
+                "_NV_assessEnemy": "Non-virtual `assessEnemy`.",
+                "_NV_assessNeutral": "Non-virtual `assessNeutral`.",
+                "_NV_endPackage": "Non-virtual `endPackage`.",
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_getGUIData": "Non-virtual `getGUIData`.",
+                "_NV_notifyBetrayal": "Non-virtual `notifyBetrayal`.",
+                "_NV_periodicUpdate": "Non-virtual `periodicUpdate`.",
+                "_NV_showEndedMessage": "Non-virtual `showEndedMessage`.",
+                "_NV_showManagementPanelCallback": "Non-virtual `showManagementPanelCallback`.",
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "_NV_wantsRenewButton": "Non-virtual `wantsRenewButton`.",
+                "activateAndSetup": "Activates and sets up the contract.",
+                "assessEnemy": "Assesses whether the character is an enemy of the contract and returns the result.",
+                "assessNeutral": "Assesses the neutral character for the contract.",
+                "endPackage": "Ends the contract.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "getGUIData": "Adds the contract's information to the `DatapanelGUI` and returns whether it did.",
+                "notifyBetrayal": "Notifies the contract that `betrayer` betrayed it, witnessed by `me`, and returns the result.",
+                "periodicUpdate": "Runs the contract's periodic update.",
+                "showEndedMessage": "Shows the message for the contract ending.",
+                "showManagementPanelCallback": "Opens the contract's management panel.",
+                "signalEnd": "Returns whether the contract signals that it has ended.",
+                "wantsRenewButton": "Returns whether the contract offers a renew button."
+            },
+            "properties": {}
+        },
+        "Contract_Timed": {
+            "description": "Contract package that lasts for a set time. Packages are created and deleted by `Blackboard`.",
+            "methods": {
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "_NV_signalStart": "Non-virtual `signalStart`.",
+                "signalEnd": "Returns whether the contract signals that it has ended.",
+                "signalStart": "Returns whether the contract signals that it has started."
+            },
+            "properties": {}
+        },
+        "Contract_UntilExSlave": {
+            "description": "Contract that lasts while a character is an ex-slave.",
+            "methods": {
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "signalEnd": "Returns whether the contract signals that it has ended."
+            },
+            "properties": {}
+        },
+        "Contract_UntilOutOfDanger": {
+            "description": "Timed contract that lasts until the squad is out of danger.",
+            "methods": {
+                "_NV_activateAndSetup": "Non-virtual `activateAndSetup`.",
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_periodicUpdate": "Non-virtual `periodicUpdate`.",
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "activateAndSetup": "Activates and sets up the contract.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "periodicUpdate": "Runs the contract's periodic update.",
+                "signalEnd": "Returns whether the contract signals that it has ended."
+            },
+            "properties": {}
         },
         "CraftingBuilding": {
             "description": "`CraftingBuilding` extends `ProductionBuilding` to implement Kenshi's item creation system, powering weapon smithies, armour workbenches, crossbow fletchers, leather tanneries, robotics benches, and medical craft tables.",
@@ -8448,6 +8712,10 @@
             "description": "Core task management, order arbitration, and player command dispatch subsystem in Kenshi. Manages player interactive action queues (`ActionDeque orders`), autonomous permanent jobs (`permajobs`), Goal-Oriented Action Planning goal priority tiers (`goals[5]`), squad AI packages (`squadAIPackage[5]`), and subordinate slave job delegations (`slaveJobs`).",
             "methods": {
                 "OrdersReceiver": "Primary constructor for `OrdersReceiver`. Links owner character and AI controller (`AI*`), initializes default combat aggro mode (`AI_AGGRESSIVE`), allocates empty FIFO order deque (`orders`), initializes permajob containers, goal priority queues, and resets GOAP flags.",
+                "_NV_loadFromSerialise": "Non-virtual `loadFromSerialise`.",
+                "_NV_serialise": "Non-virtual `serialise`.",
+                "_NV_setHoldPositionOrders": "Non-virtual `setHoldPositionOrders`.",
+                "_NV_setNeedGOAP": "Non-virtual `setNeedGOAP`.",
                 "_clearGoals": "Internal routine clearing and deallocating all goal descriptors across all 5 priority tiers in `goals`.",
                 "_forceOrderInsert": "Directly forces insertion of a high-priority order task into the front of the player action queue (`orders`), bypassing standard arbitration.",
                 "addGoal": "Inserts an AI goal task into the appropriate priority tier array in `goals[5]`, triggering GOAP re-evaluation.",
@@ -8505,6 +8773,17 @@
                 "slaveJobs": "Delegated slave/subordinate task request container.",
                 "squadAIPackage": "Five priority tier buckets of platoon/squad AI packages.",
                 "superDefenseMode": "Passive block / hold ground defense mode toggle."
+            }
+        },
+        "OrdersReceiver_TaskRequestSimple": {
+            "description": "A slave job entry in `OrdersReceiver.slaveJobs`. Borrowed from the receiver.",
+            "methods": {
+                "sameAs": "Returns whether the entry matches the `Tasker`."
+            },
+            "properties": {
+                "key": "The job, as a `TaskType` value.",
+                "subject": "Handle of the job's subject.",
+                "targeting": "How the job picks its target, as a `TaskTargetType` value."
             }
         },
         "Ownerships": {
@@ -10332,6 +10611,14 @@
                 "unconcious": "True if this character is unconscious."
             }
         },
+        "StateFunctionList": {
+            "description": "Maps GOAP `StateType` values to the AI functions that test them. The engine's list is the static `AI::stateFuncs`, which KenshiLib does not export.",
+            "methods": {
+                "hasState": "Returns whether a test is registered for the `StateType`.",
+                "isTrue": "Evaluates the test registered for `key` for the AI, subject handle, and position; `desired` is the wanted result."
+            },
+            "properties": {}
+        },
         "StateT": {
             "description": "Internal state tracking structure in ZoneMap recording whether a zone is actively loading on a background thread or fully loaded.",
             "methods": {},
@@ -10426,6 +10713,34 @@
                 "number": "Floating-point numeric parameter accompanying the message.",
                 "on": "Boolean flag parameter accompanying the message.",
                 "target": "Persistent hand handle referencing the recipient object."
+            }
+        },
+        "TargetInfo": {
+            "description": "A mission or AI target: a handle, a position, and whether it names a town or a character. Values returned by the engine and by `TargetInfo(...)` are Lua-owned copies; `CampaignInstance._target` is borrowed.",
+            "methods": {
+                "getCharacter": "Returns the target as a `Character`, or nil.",
+                "getPositionForWaypoint": "Returns the position to travel to when approaching the target from `from`.",
+                "getTown": "Returns the target as a `TownBase`, or nil.",
+                "isCharacter": "Returns whether the target is a character.",
+                "isTown": "Returns whether the target is a town.",
+                "operator_assign": "Assigns a `hand` as the target (`operator=(const hand&)`) and returns this TargetInfo.",
+                "operator_bool": "Returns the SDK `operator bool` result.",
+                "setupType": "Sets `targetType` from the object `what` refers to."
+            },
+            "properties": {
+                "pos": "Target position.",
+                "targetType": "Whether the target is a town or a character, as a `TargetInfoType` value.",
+                "what": "Handle of the target object."
+            }
+        },
+        "TargetWithScore": {
+            "description": "A target handle paired with a score. `TargetWithScore(target, score)` and `TargetWithScore(other)` create Lua-owned values.",
+            "methods": {
+                "operator_assign": "Copies another `TargetWithScore` into this one and returns it."
+            },
+            "properties": {
+                "score": "Score of the target.",
+                "target": "Handle of the target."
             }
         },
         "TaskData": {
@@ -10558,6 +10873,27 @@
                 "name": "Repertoire identifier name.",
                 "negativeResults": "Mapping of states negated to tasks that cancel them.",
                 "positiveResults": "Mapping of states achieved to tasks that produce them."
+            }
+        },
+        "TaskRequest": {
+            "description": "A job request held by value in the `Blackboard` job lists and request map. `TaskRequest()` and `TaskRequest(other)` create Lua-owned values.",
+            "methods": {
+                "operator_assign": "Copies another `TaskRequest` into this one and returns it.",
+                "operator_eq": "Returns the SDK `operator==` result for another `TaskRequest`.",
+                "sameAs": "Returns whether the request matches the `Tasker`."
+            },
+            "properties": {
+                "endEvent": "What happens to squad jobs when the task ends, as a `TaskEndEvent` value.",
+                "endTime": "End time of the request.",
+                "from": "Handle of the requester.",
+                "key": "The requested task, as a `TaskType` value.",
+                "priority": "Priority of the request, as a `taskPriority` value.",
+                "startTime": "Start time of the request.",
+                "subject": "Handle of the task's subject.",
+                "targeting": "How the task picks its target, as a `TaskTargetType` value.",
+                "timeout": "Timeout of the request.",
+                "to": "Handle of the character the request is for.",
+                "weight": "Weight of the request."
             }
         },
         "TaskStateData": {
@@ -12573,6 +12909,7 @@
         "NxControllerAction": "Physics character controller collision response action.",
         "NxShapeFlag": "PhysX collision shape trigger and simulation flags.",
         "NxShapesType": "PhysX collision shape query filter category (static, dynamic, all).",
+        "OrdersReceiver.AggroType": "Aggression modes of an `OrdersReceiver`.",
         "PermajobType": "Persistent recurring task priority classification (normal work job, high-priority combat job).",
         "PersonalityTags": "Personality tag assigned to a character, as stored in `StateBroadcastData.myPersonality`.",
         "Phase": "Phase of a running `CampaignInstance`.",
@@ -12599,6 +12936,7 @@
         "StateType": "AI state machine evaluation conditions and task completion predicates.",
         "StatsEnumerated": "Character attribute and weapon skill identifier enumeration.",
         "TalkerEnum": "Dialogue speaker identity reference (speaker, target, player target).",
+        "TargetInfoType": "Whether a `TargetInfo` names a town or a character.",
         "TaskEndEvent": "What happens to squad jobs when a task ends.",
         "TaskTargetType": "How a squad job chooses its target.",
         "TaskType": "AI task goal type defining character behaviors, work assignments, and sensory goals.",

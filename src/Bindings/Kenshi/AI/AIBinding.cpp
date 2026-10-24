@@ -1,7 +1,11 @@
 #include "pch.h"
+#include "kenshi/AI/AITaskSystem.h"
 #include "AIBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/AI/AI_AIResultsCacherBinding.h"
+#include "Bindings/Kenshi/AI/AITaskSytemBinding.h"
 #include "Bindings/Kenshi/AI/BlackboardBinding.h"
+#include "Bindings/Kenshi/AI/TargetInfoBinding.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
 #include "Bindings/Kenshi/Building/StorageBuildingBinding.h"
 #include "Bindings/Kenshi/Building/UseableStuffBinding.h"
@@ -66,11 +70,25 @@ static int AI_get_state(lua_State* L)
     return pushObject<StateBroadcastData>(L, instance->state, StateBroadcastDataBinding::getMetatableName());
 }
 
+static int AI_get_taskSystemAI(lua_State* L)
+{
+    AI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AI is nil");
+    return pushObject<AITaskSytem>(L, instance->taskSystemAI, AITaskSytemBinding::getMetatableName());
+}
+
 static int AI_get_sensoryData(lua_State* L)
 {
     AI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AI is nil");
     return pushObject<SensoryData>(L, &instance->sensoryData, SensoryDataBinding::getMetatableName());
+}
+
+static int AI_get_resultsCache(lua_State* L)
+{
+    AI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AI is nil");
+    return pushObject<AI::AIResultsCacher>(L, &instance->resultsCache, AI_AIResultsCacherBinding::getMetatableName());
 }
 
 static int AI_get_taskRepertoireFlags(lua_State* L)
@@ -393,6 +411,15 @@ int AIBinding::getSensoryData(lua_State* L)
 
     SensoryData* result = instance->getSensoryData();
     return pushObject<SensoryData>(L, result, SensoryDataBinding::getMetatableName());
+}
+
+int AIBinding::getTaskSystem(lua_State* L)
+{
+    AI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AI is nil");
+
+    AITaskSytem* result = instance->getTaskSystem();
+    return pushObject<AITaskSytem>(L, result, AITaskSytemBinding::getMetatableName());
 }
 
 int AIBinding::getStateBroadcast(lua_State* L)
@@ -820,6 +847,15 @@ int AIBinding::getCharacter(lua_State* L)
 
     Character* result = instance->getCharacter();
     return pushObject<Character>(L, result, CharacterBinding::getMetatableName());
+}
+
+int AIBinding::getMyMissionTarget(lua_State* L)
+{
+    AI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AI is nil");
+
+    TargetInfo result = instance->getMyMissionTarget();
+    return pushValue<TargetInfo>(L, result, TargetInfoBinding::getMetatableName());
 }
 
 int AIBinding::getAllMyPermajobMachines(lua_State* L)
@@ -6162,23 +6198,21 @@ int AIBinding::_NV_scoreTargetInMyTown(lua_State* L)
 
 /*
 Skipped fields:
-  line 107: stateFuncs - static StateFunctionList of member-function pointers
-  line 114: taskSystemAI - AITaskSytem* (unbound pointer)
+  line 107: stateFuncs - static StateFunctionList; KenshiLib.dll does not export AI::stateFuncs
+  line 114: taskSystemAI setter - ~AI deletes the task system, so assigning another would free it twice
   line 115: sensoryData setter - embedded SensoryData; KenshiLib exports no SensoryData::operator=
-  line 144: resultsCache - AI::AIResultsCacher (unbound type)
+  line 144: resultsCache setter - embedded AI::AIResultsCacher; KenshiLib exports no AIResultsCacher::operator=
   line 147: taskRepertoire - TaskRepertoire* (unbound pointer)
   line 198: tradingInfo - TradingInfo* (unbound pointer)
 
 Skipped methods needing manual binding:
   line 145: setFunc - static; takes a bool (AI::*)(const hand&, const Ogre::Vector3&) member-function pointer
   line 146: _setupGOAPFuncs - static engine initialization of AI::stateFuncs
-  line 157: getTaskSystem - AITaskSytem* (unbound pointer)
   line 183: AI - engine-owned; created by Character
   line 184: _CONSTRUCTOR - engine-owned; created by Character
   line 185: ~AI - engine-owned; destroyed by Character
   line 186: _DESTRUCTOR - engine-owned; destroyed by Character
   line 204: chooseBestAttackTarget - RootObject** and float& out-parameters plus a lektor<Character*>& input built by the engine
-  line 233: getMyMissionTarget - TargetInfo return (unbound type)
 */
 
 int AIBinding::gc(lua_State* L)
@@ -6212,6 +6246,7 @@ void AIBinding::registerBinding(lua_State* L)
         { "addAIGoalsFrom", AIBinding::addAIGoalsFrom },
         { "isWithinGivenRange", AIBinding::isWithinGivenRange },
         { "getSensoryData", AIBinding::getSensoryData },
+        { "getTaskSystem", AIBinding::getTaskSystem },
         { "getStateBroadcast", AIBinding::getStateBroadcast },
         { "_notifyTaskComplete", AIBinding::_notifyTaskComplete },
         { "getDestinationTown", AIBinding::getDestinationTown },
@@ -6253,6 +6288,7 @@ void AIBinding::registerBinding(lua_State* L)
         { "periodicUpdateStateBroadcast", AIBinding::periodicUpdateStateBroadcast },
         { "_NV_periodicUpdateStateBroadcast", AIBinding::_NV_periodicUpdateStateBroadcast },
         { "getCharacter", AIBinding::getCharacter },
+        { "getMyMissionTarget", AIBinding::getMyMissionTarget },
         { "getAllMyPermajobMachines", AIBinding::getAllMyPermajobMachines },
         { "hasPermajob", AIBinding::hasPermajob },
         { "noneState", AIBinding::noneState },
@@ -6675,8 +6711,10 @@ void AIBinding::registerBinding(lua_State* L)
     registerGetter(L, "meiDistanceTolerance", AI_get_meiDistanceTolerance);
     registerGetter(L, "platoon", AI_get_platoon);
     registerGetter(L, "state", AI_get_state);
+    registerGetter(L, "taskSystemAI", AI_get_taskSystemAI);
     registerGetter(L, "sensoryData", AI_get_sensoryData);
     registerGetter(L, "taskRepertoireFlags", AI_get_taskRepertoireFlags);
+    registerGetter(L, "resultsCache", AI_get_resultsCache);
     registerGetter(L, "ordersAggression", AI_get_ordersAggression);
     registerGetter(L, "ordersMovement", AI_get_ordersMovement);
     registerGetter(L, "centerOfMovement", AI_get_centerOfMovement);

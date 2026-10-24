@@ -30,6 +30,7 @@ public:
     static int addAIGoalsFrom(lua_State* L);
     static int isWithinGivenRange(lua_State* L);
     static int getSensoryData(lua_State* L);
+    static int getTaskSystem(lua_State* L);
     static int getStateBroadcast(lua_State* L);
     static int _notifyTaskComplete(lua_State* L);
     static int getDestinationTown(lua_State* L);
@@ -71,6 +72,7 @@ public:
     static int periodicUpdateStateBroadcast(lua_State* L);
     static int _NV_periodicUpdateStateBroadcast(lua_State* L);
     static int getCharacter(lua_State* L);
+    static int getMyMissionTarget(lua_State* L);
     static int getAllMyPermajobMachines(lua_State* L);
     static int hasPermajob(lua_State* L);
     static int noneState(lua_State* L);
