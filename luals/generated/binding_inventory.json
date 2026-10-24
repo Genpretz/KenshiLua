@@ -85,7 +85,7 @@
               },
               {
                 "name": "arg2",
-                "optional": false,
+                "optional": true,
                 "type": "number|table"
               }
             ],
@@ -685,7 +685,7 @@
               },
               {
                 "name": "arg2",
-                "optional": false,
+                "optional": true,
                 "type": "table"
               }
             ],
@@ -3525,7 +3525,7 @@
               },
               {
                 "name": "v",
-                "optional": false,
+                "optional": true,
                 "type": "table"
               }
             ],
@@ -14570,12 +14570,12 @@
               },
               {
                 "name": "arg4",
-                "optional": false,
+                "optional": true,
                 "type": "number"
               },
               {
                 "name": "arg5",
-                "optional": false,
+                "optional": true,
                 "type": "string"
               }
             ],
@@ -16904,7 +16904,7 @@
               },
               {
                 "name": "slot",
-                "optional": false,
+                "optional": true,
                 "type": "string"
               }
             ],
@@ -20376,7 +20376,7 @@
               },
               {
                 "name": "subtarget",
-                "optional": false,
+                "optional": true,
                 "type": "hand"
               }
             ],
@@ -32377,7 +32377,7 @@
               },
               {
                 "name": "current",
-                "optional": false,
+                "optional": true,
                 "type": "integer"
               }
             ],
@@ -58534,7 +58534,7 @@
               },
               {
                 "name": "name",
-                "optional": false,
+                "optional": true,
                 "type": "string"
               }
             ],
@@ -59958,12 +59958,12 @@
               },
               {
                 "name": "arg4",
-                "optional": false,
+                "optional": true,
                 "type": "boolean|number"
               },
               {
                 "name": "arg5",
-                "optional": false,
+                "optional": true,
                 "type": "Faction|TownBase"
               },
               {
@@ -59973,7 +59973,7 @@
               },
               {
                 "name": "arg7",
-                "optional": false,
+                "optional": true,
                 "type": "Faction"
               }
             ],
@@ -61206,7 +61206,7 @@
               },
               {
                 "name": "arg2",
-                "optional": false,
+                "optional": true,
                 "type": "number"
               },
               {
@@ -64449,7 +64449,7 @@
               },
               {
                 "name": "arg4",
-                "optional": false,
+                "optional": true,
                 "type": "number"
               },
               {
@@ -64459,7 +64459,7 @@
               },
               {
                 "name": "arg6",
-                "optional": false,
+                "optional": true,
                 "type": "string"
               },
               {
@@ -64487,7 +64487,7 @@
               },
               {
                 "name": "player",
-                "optional": false,
+                "optional": true,
                 "type": "hand"
               },
               {
@@ -64518,7 +64518,7 @@
               },
               {
                 "name": "layout",
-                "optional": false,
+                "optional": true,
                 "type": "InventoryLayout"
               },
               {
@@ -67858,7 +67858,7 @@
               },
               {
                 "name": "arg2",
-                "optional": false,
+                "optional": true,
                 "type": "integer"
               }
             ],
@@ -74503,7 +74503,7 @@
               },
               {
                 "name": "arg2",
-                "optional": false,
+                "optional": true,
                 "type": "string"
               }
             ],
@@ -78964,7 +78964,7 @@
               },
               {
                 "name": "arg5",
-                "optional": false,
+                "optional": true,
                 "type": "integer"
               },
               {
@@ -80325,7 +80325,7 @@
               },
               {
                 "name": "arg5",
-                "optional": false,
+                "optional": true,
                 "type": "integer"
               }
             ],
@@ -85623,7 +85623,7 @@
               },
               {
                 "name": "arg2",
-                "optional": false,
+                "optional": true,
                 "type": "integer"
               }
             ],
@@ -93418,12 +93418,12 @@
               },
               {
                 "name": "_y",
-                "optional": false,
+                "optional": true,
                 "type": "number"
               },
               {
                 "name": "_z",
-                "optional": false,
+                "optional": true,
                 "type": "number"
               }
             ],
@@ -107479,7 +107479,7 @@
               },
               {
                 "name": "mod",
-                "optional": false,
+                "optional": true,
                 "type": "string"
               }
             ],
@@ -108017,7 +108017,7 @@
               },
               {
                 "name": "arg5",
-                "optional": false,
+                "optional": true,
                 "type": "integer"
               },
               {
@@ -129148,7 +129148,7 @@
               },
               {
                 "name": "hi",
-                "optional": false,
+                "optional": true,
                 "type": "number"
               }
             ],
@@ -129200,7 +129200,7 @@
             "params": [
               {
                 "name": "s",
-                "optional": false,
+                "optional": true,
                 "type": "integer"
               }
             ],
@@ -132759,7 +132759,7 @@
             "params": [
               {
                 "name": "arg1",
-                "optional": false,
+                "optional": true,
                 "type": "YesNoMaybe|YesNoMaybeValue|integer"
               }
             ],
@@ -132776,7 +132776,7 @@
             "params": [
               {
                 "name": "arg1",
-                "optional": false,
+                "optional": true,
                 "type": "YesNoMaybe|YesNoMaybeValue|boolean|integer"
               }
             ],
@@ -133764,7 +133764,7 @@
               },
               {
                 "name": "deactivationTimer",
-                "optional": false,
+                "optional": true,
                 "type": "number"
               }
             ],

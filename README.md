@@ -27,7 +27,7 @@ Loaded at runtime through RE_Kenshi, KenshiLua exposes selected portions of Kens
 
 ## How much of KenshiLib can be used from Lua?
 
-A large amount of KenshiLib has been exposed for use from Lua. This includes almost the entirety of KenshiLib 0.3.0.
+A large amount of KenshiLib has been exposed for use from Lua. KenshiLua is built against KenshiLib 0.5.0, the version RE_Kenshi ships. It covers almost all of the API that KenshiLib 0.3.0 provided, and the classes added in 0.5.0 are being bound in batches.
 * [BindingsReference.md](docs/BindingsReference.md) - View for a list of methods and properties available from Lua.
 * [EnumsReference.md](docs/EnumsReference.md) - View for a list of enums available from Lua.
 * [CallbacksReference.md](docs/CallbacksReference.md) - View for a list of event callbacks available from Lua.
@@ -36,7 +36,7 @@ A large amount of KenshiLib has been exposed for use from Lua. This includes alm
 * [InGameGUI.md](docs/InGameGUI.md) - Guide for using the in-game GUI, script manager, editor, console, and log viewer.
 * [DialogueScriptingBridge.md](docs/DialogueScriptingBridge.md) - Guide for executing Lua scripts from dialogue lines using FCS Extended.
 * [LuaLS.md](docs/LuaLS.md) - Configure Lua Language Server editor support for KenshiLua scripts.
-* [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.3.0 but are not currently exposed to Lua.
+* [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.5.0 but are not currently exposed to Lua.
 
 KenshiLib is a large and complex codebase, and while KenshiLua exposes a large portion of it, there are still many methods and properties that are not yet exposed to Lua. If you find that a method or property you need is not available, please open an issue on the KenshiLua GitHub repository.
 

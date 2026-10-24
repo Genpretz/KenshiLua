@@ -5867,9 +5867,9 @@ taskPriority = {
 --- Destroys and releases an active GUI element (`ScreenLabelInterface`, `DatapanelGUI`, or `GUIWindow`), cleaning up associated MyGUI widgets.
 ---@field destroy fun(self: ForgottenGUI, arg1: DatapanelGUI|GUIWindow|ScreenLabelInterface)
 --- Updates the active mouse cursor icon based on context (e.g. standard pointer, attack sword, talk speech bubble, pick up hand, or forbidden red cross).
----@field changeMouseCursor fun(self: ForgottenGUI, cursor: integer, player: hand, target?: hand)
+---@field changeMouseCursor fun(self: ForgottenGUI, cursor: integer, player?: hand, target?: hand)
 --- Internal factory creating an `InventoryGUI` window for the given owner entity and inventory layout.
----@field createInventoryWindow fun(self: ForgottenGUI, owner: hand, inventory: Inventory|InventoryLayout, layout: InventoryLayout, trader?: RootObject): InventoryGUI
+---@field createInventoryWindow fun(self: ForgottenGUI, owner: hand, inventory: Inventory|InventoryLayout, layout?: InventoryLayout, trader?: RootObject): InventoryGUI
 --- Toggles an entity's inventory window open or closed, optionally docking it beside a parent inventory.
 ---@field toggleInventory fun(self: ForgottenGUI, owner: hand, parentInv?: InventoryGUI, attached?: boolean): InventoryGUI
 --- Returns true if the mouse cursor is currently hovering over the specified widget.
@@ -6159,7 +6159,7 @@ taskPriority = {
 --- Constructs and returns a new Building from the given GameData template, position, TownBase, Faction owner, rotation, callback, layout/door/indoor parent links, save state, and floor/foliage flags.
 ---@field createBuilding fun(self: RootObjectFactory, data: GameData, position: table, t?: TownBase, owner?: Faction, rotation: table, callbackObject?: FactoryCallbackInterface, furnitureOf?: lightuserdata, isDoorOf?: Building, saveState?: GameSaveState, isIndoorsOf?: Building, invisible?: boolean, completed?: boolean, isFoliage?: boolean, floorNumber?: integer, isOutsideFurniture?: boolean): Building
 --- Creates and returns an Item either from a single item-state GameData (1 argument) or from a template GameData, optional hand (or nil for a new handle), weapon mesh GameData, material GameData, level override, and uniform Faction (5-6 arguments).
----@field createItem fun(self: RootObjectFactory, itemState: GameData, arg2?: hand, arg3?: GameData, arg4?: GameData, arg5: integer, arg6?: Faction): Item
+---@field createItem fun(self: RootObjectFactory, itemState: GameData, arg2?: hand, arg3?: GameData, arg4?: GameData, arg5?: integer, arg6?: Faction): Item
 --- Looks up itemInList within the named reference list on dataList and returns its TripleInt values.
 ---@field getValsFromDataInList fun(self: RootObjectFactory, dataList: GameData, itemInList: GameData, listName: string): TripleInt
 --- Creates a serialized GameSaveState for a random unloaded character in an UnloadedPlatoon (lightuserdata) from a character template GameData.
@@ -6735,7 +6735,7 @@ taskPriority = {
 --- Activates queued unloaded platoons across all factions.
 ---@field activateUnloadedPlatoons fun(self: FactionManager)
 --- Finds or creates a `Faction` either from `(id, name)` strings or from a faction `GameData` object.
----@field getOrCreateFaction fun(self: FactionManager, id: GameData|string, name: string): Faction
+---@field getOrCreateFaction fun(self: FactionManager, id: GameData|string, name?: string): Faction
 --- Initializes and cross-links all factions from loaded game data.
 ---@field setupAndLinkAllFactions fun(self: FactionManager)
 --- Finds and returns the `Faction` that owns the specified squad template (`squadtemplate`, `GameData`).
@@ -7859,7 +7859,7 @@ taskPriority = {
 --- Systematically scans the 2D grid row-by-row and column-by-column to locate the first free spatial footprint with zero item overlaps.
 ---@field findNearestPlaceForItem fun(self: InventorySection, item: Item): boolean, integer, integer
 --- Collects all distinct items whose bounding footprints intersect the rectangular boundary defined by `(x, y, itemWidth, itemHeight)`.
----@field getItemsInFootprint fun(self: InventorySection, out: InventorySection|Lektor<Item>, item: Item|integer, x: integer, y: integer, arg5: integer): integer
+---@field getItemsInFootprint fun(self: InventorySection, out: InventorySection|Lektor<Item>, item: Item|integer, x: integer, y: integer, arg5?: integer): integer
 --- Provides direct const access to the internal list of placed section items and coordinates.
 ---@field getItems fun(self: InventorySection): OgreVector<SectionItem>
 --- Restricts acceptable items exclusively to wearable gear (`itemType::ARMOUR`).
@@ -9096,7 +9096,7 @@ taskPriority = {
 --- Returns the base game data index of this instance.
 ---@field getBaseIndex fun(self: InstanceID): integer
 --- Can be called as an instance method or statically with a string identifier to retrieve the mod index.
----@field getModIndex fun(s: InstanceID|string, arg2: string): integer
+---@field getModIndex fun(s: InstanceID|string, arg2?: string): integer
 --- The integer base index of the instance.
 ---@field baseIndex integer
 --- The integer index of the mod package that owns or modified this instance.
@@ -9991,7 +9991,7 @@ taskPriority = {
 --- Computes locomotion speed multiplier derived from character leg height proportions.
 ---@field getCharacterHeightSpeedMultiplier fun(self: AppearanceBase): number
 --- Attaches an equipment item to a specified body slot using an explicit mesh asset override.
----@field attachItem fun(self: AppearanceBase, item: Item, mesh?: string, slot: string): boolean
+---@field attachItem fun(self: AppearanceBase, item: Item, mesh?: string, slot?: string): boolean
 --- Detaches visual mesh and physical scene node corresponding to the specified equipment item.
 ---@field detachItem fun(self: AppearanceBase, arg1: Item|string): boolean
 --- Queries the local rest-pose 3D position of a specific vertex index in the body mesh.
@@ -12308,7 +12308,7 @@ taskPriority = {
 --- Generates formatted string displaying top run speed in mph.
 ---@field printRunSpeedStatMax fun(self: CharStats): string
 --- Formats an integer stat into display string showing base value and modifier breakdown (e.g. '50 (+5)' or '40 (-10)').
----@field formatWholeStatStringWithBonuses fun(self: CharStats, base: integer, current: integer): string
+---@field formatWholeStatStringWithBonuses fun(self: CharStats, base: integer, current?: integer): string
 --- Returns a direct float reference to a stat's storage field given its `StatsEnumerated` identifier.
 ---@field getStatRef fun(self: CharStats, what: integer): number
 --- Static utility returning human-readable string name for an enumerated stat ID.
@@ -12646,7 +12646,7 @@ taskPriority = {
 --- Checks if character is currently enclosed within closed town perimeter walls without an open gate exit.
 ---@field amILockedWithinTownWalls fun(self: AI): boolean
 --- Returns true if the specified character or target belongs to an enemy or hostile faction.
----@field isEnemy fun(self: AI, subject: RootObjectBase|hand, arg2: table): boolean
+---@field isEnemy fun(self: AI, subject: RootObjectBase|hand, arg2?: table): boolean
 --- Restores AI controller state, active tactical stances, and assigned jobs from savegame data.
 ---@field load fun(self: AI, d: GameData)
 --- Serializes AI state, including active orders, tactical stances, permajobs, and slave state timestamps, to savegame data.
@@ -12910,7 +12910,7 @@ taskPriority = {
 --- Returns true if all entrance doors of the target building are securely locked.
 ---@field allDoorsLocked fun(self: AI, subject: hand, v: table): boolean
 --- Returns true if the route to the destination is not obstructed by locked gates or fortification walls.
----@field destinationNotBlockedByFortifications fun(self: AI, subject: RootObject|hand, v: table): boolean
+---@field destinationNotBlockedByFortifications fun(self: AI, subject: RootObject|hand, v?: table): boolean
 --- Returns true if the character has reached the fortification gate for their target location.
 ---@field atLocationGate fun(self: AI, subject: hand, v: table): boolean
 --- Returns true if the specified character or target belongs to a friendly or allied faction.
@@ -13999,7 +13999,7 @@ taskPriority = {
 --- Updates aiming elevation, bow draw tension, and weapon reloading animations for ranged combat.
 ---@field rangedCombatModeUpdate fun(self: AnimationClass, targetpos: table)
 --- Plays an animation clip by name on the specified skeletal track layer.
----@field runAnimation fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: integer|number, arg4: number, arg5: string)
+---@field runAnimation fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: integer|number, arg4?: number, arg5?: string)
 --- Plays an animation track with manually driven timeline playback time.
 ---@field runAnimation_manualTiming fun(self: AnimationClass, anim: AnimationData, time01: number, blend: number)
 --- Concludes an attack or block animation cycle, transitioning bones back into combat idle posture.
@@ -14729,7 +14729,7 @@ taskPriority = {
 ---@field notifyGoalEnd fun(self: Blackboard, me: hand)
 ---@field notifySubTarget fun(self: Blackboard, me: hand, target: hand)
 ---@field howManyGuysDoingThisGoal fun(self: Blackboard, t: Tasker, me: hand): integer
----@field howManyGuysWorkingOnThisSubTarget fun(self: Blackboard, t: Tasker|hand, me: hand, subtarget: hand): integer
+---@field howManyGuysWorkingOnThisSubTarget fun(self: Blackboard, t: Tasker|hand, me: hand, subtarget?: hand): integer
 ---@field isMySubTarget fun(self: Blackboard, t: Tasker, me: hand, subtarget: hand): boolean
 ---@field getSubTarget fun(self: Blackboard, me: hand): hand
 ---@field addRequest fun(self: Blackboard, from: hand, to: hand, key: integer, subject: hand, pri: integer, weight: number)
@@ -17648,7 +17648,7 @@ taskPriority = {
 --- Executes a debug routine to inspect or advance faction war manager state and campaign progression.
 ---@field debugButton fun(self: FactionWarMgr)
 --- Initiates or schedules a military campaign against a target town or outpost using specified campaign data and home base.
----@field triggerCampaign fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): CampaignInstance|nil
+---@field triggerCampaign fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4?: boolean|number, arg5?: Faction|TownBase, arg6?: boolean, arg7?: Faction): CampaignInstance|nil
 --- Returns the `CampaignInstance` that the specified platoon is currently assigned to, or nullptr.
 ---@field getCurrentCampaign fun(self: FactionWarMgr, who: Platoon): CampaignInstance
 --- Returns the objective target `hand` assigned to the given platoon in its active campaign.
@@ -17837,7 +17837,7 @@ taskPriority = {
 --- Called when wild animals or starving bandits graze upon the crop field, damaging crops and consuming nutrition.
 ---@field eat fun(self: FarmBuilding, rate: number)
 --- Computes environmental yield probability for a crop species given biome climate, soil moisture, and ground fertility.
----@field getYieldChancePerCrop fun(self: FarmBuilding, arg1: lightuserdata|number, arg2: number, arg3?: number): number
+---@field getYieldChancePerCrop fun(self: FarmBuilding, arg1: lightuserdata|number, arg2?: number, arg3?: number): number
 --- Retrieves the environmental growth rate multiplier for the specified crop species in this zone.
 ---@field getCropMult fun(self: FarmBuilding, typ: integer): number
 --- Serializes crop maturity progress, plant death ratios, drought timers, and harvested counts into savegame delta records.
@@ -19380,7 +19380,7 @@ taskPriority = {
 --- Override dispatch for `autoChangeSelectedObject`. Dispatched when the primary active object selection changes in the game world. Automatically inspects the newly selected object, switches the active HUD datapanel (character stats, building details, town jurisdiction), and selects the corresponding squad portrait.
 ---@field _NV_autoChangeSelectedObject fun(self: MainBarGUI, obj: hand)
 --- Retrieves portrait cell data (`PortraitData`) located at the specified 2D screen coordinate within the squad portrait tray.
----@field getPortrait fun(self: MainBarGUI, arg1: hand|integer, arg2: integer): lightuserdata|nil
+---@field getPortrait fun(self: MainBarGUI, arg1: hand|integer, arg2?: integer): lightuserdata|nil
 --- Marks the portrait of the specified character dirty, queueing a render-to-texture portrait snapshot refresh.
 ---@field updatePortrait fun(self: MainBarGUI, character: hand)
 --- Explicitly closes the world map and territory navigation window via `ForgottenGUI`.
@@ -21762,7 +21762,7 @@ taskPriority = {
 --- Override dispatch for `getSelectedObjects`. Appends objects from this container matching the given itemType (and optionally only selected ones) into the provided lektor<RootObject*> out-parameter.
 ---@field _NV_getSelectedObjects fun(self: RootObjectContainer, out: Lektor<RootObject>|RootObjectContainer, type: integer, selectedOnly?: boolean)
 --- Serializes either a provided lektor<RootObject*> or all objects in this container into the given instance collection GameData and GameDataContainer, applying an optional PosRotPair offset (lightuserdata) and mod name.
----@field serialiseThings fun(self: RootObjectContainer, _things?: GameData|RootObjectContainer, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod: string)
+---@field serialiseThings fun(self: RootObjectContainer, _things?: GameData|RootObjectContainer, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod?: string)
 --- Instantiates a single object from a GameSaveState into the world at the specified position and rotation.
 ---@field loadInstance fun(self: RootObjectContainer, state: GameSaveState, skipSaveState?: boolean, pos: table, rot: table, callback?: FactoryCallbackInterface, positionMoved: table)
 --- Override dispatch for `loadInstance`. Instantiates a single object from a GameSaveState into the world at the specified position and rotation.
@@ -24623,13 +24623,13 @@ taskPriority = {
 --- Static or instance method computing fast terrain height at (x, z) using cached ZoneMap data.
 ---@field getTerrainHeightFast fun(self: UtilityT, x: number, z: number, map: ZoneMap): number
 --- Static or instance method returning a pseudo-random floating-point number, optionally within range [min, max] or [0, max].
----@field random fun(self: UtilityT, lo?: number, hi: number): number
+---@field random fun(self: UtilityT, lo?: number, hi?: number): number
 --- Static or instance method returning a pseudo-random boolean value.
 ---@field randomBool fun(self: UtilityT): boolean
 --- Static or instance method returning a pseudo-random integer between lo and hi inclusive.
 ---@field randomInt fun(self: UtilityT, lo: integer, hi: integer): integer
 --- Static or instance method seeding the pseudo-random number generator with the specified seed number.
----@field seed fun(self: UtilityT, s: integer)
+---@field seed fun(self: UtilityT, s?: integer)
 --- Static or instance method rounding a floating-point number to the nearest integer.
 ---@field round fun(self: UtilityT, value: number): integer
 --- Static or instance method computing normalized linear interpolation between values a and b by factor t.
@@ -24919,9 +24919,9 @@ taskPriority = {
 --- Tri-state boolean value wrapper in Kenshi (YesNoMaybe) representing YES, NO, or MAYBE states with boolean and integer conversions.
 ---@class YesNoMaybeValue
 --- Compares this YesNoMaybeValue against another YesNoMaybeValue, enum constant, or integer for equality.
----@field operator_eq fun(self: YesNoMaybeValue, arg1: YesNoMaybe|YesNoMaybeValue|integer): boolean
+---@field operator_eq fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|integer): boolean
 --- Compares this YesNoMaybeValue against another YesNoMaybeValue, enum constant, boolean, or integer for inequality.
----@field operator_ne fun(self: YesNoMaybeValue, arg1: YesNoMaybe|YesNoMaybeValue|boolean|integer): boolean
+---@field operator_ne fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|boolean|integer): boolean
 --- Returns the underlying integer representation of the tri-state value.
 ---@field toInt fun(self: YesNoMaybeValue): integer
 --- Evaluates the tri-state value and returns true if state is YES.
@@ -25054,7 +25054,7 @@ taskPriority = {
 --- Returns the sound effect identifier corresponding to footstep impacts on the specified surface material.
 ---@field getGroundSound fun(arg1: ZoneManager|integer, type: boolean|integer|table, barefoot?: boolean): string
 --- Requests streaming and activation of a specific world zone chunk, queuing background mesh loading, building instantiation, and nest generation.
----@field activateZoneMap fun(self: ZoneManager, map: ZoneMap|iVector2, center: iVector2|integer, range: integer, type: boolean|integer, deactivationTimer: number): boolean
+---@field activateZoneMap fun(self: ZoneManager, map: ZoneMap|iVector2, center: iVector2|integer, range: integer, type: boolean|integer, deactivationTimer?: number): boolean
 --- Searches for a building in the specified town matching faction, sale status, and function criteria.
 ---@field findBuilding fun(self: ZoneManager, t: TownBase, f?: Faction, forSaleOnly?: boolean, fun: integer, own?: Ownerships): Building
 --- Populates an array with pointers to all currently simulated active `ZoneMap` instances.
@@ -25524,7 +25524,7 @@ taskPriority = {
 --- Static functions registered on the `InstanceID` global table.
 ---@class InstanceIDStatics
 --- Can be called as an instance method or statically with a string identifier to retrieve the mod index.
----@field getModIndex fun(s: InstanceID|string, arg2: string): integer
+---@field getModIndex fun(s: InstanceID|string, arg2?: string): integer
 
 --- Static functions registered on the `InteriorModeButtonWindow` global table.
 ---@class InteriorModeButtonWindowStatics

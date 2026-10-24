@@ -2715,7 +2715,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: integer|number, arg4: number, arg5: string)",
+      "lua": "fun(self: AnimationClass, arg1: AnimationData|string, arg2: number, arg3: integer|number, arg4?: number, arg5?: string)",
       "member": "runAnimation"
     },
     {
@@ -8473,7 +8473,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4: boolean|number, arg5: Faction|TownBase, arg6?: boolean, arg7: Faction): CampaignInstance|nil",
+      "lua": "fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4?: boolean|number, arg5?: Faction|TownBase, arg6?: boolean, arg7?: Faction): CampaignInstance|nil",
       "member": "triggerCampaign"
     },
     {
@@ -8576,7 +8576,7 @@
       "class": "FarmBuilding",
       "cpp": "GameData::getYieldChancePerCrop",
       "kind": "method",
-      "lua": "fun(self: FarmBuilding, arg1: lightuserdata|number, arg2: number, arg3?: number): number",
+      "lua": "fun(self: FarmBuilding, arg1: lightuserdata|number, arg2?: number, arg3?: number): number",
       "member": "getYieldChancePerCrop"
     },
     {
@@ -8940,7 +8940,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: ForgottenGUI, cursor: integer, player: hand, target?: hand)",
+      "lua": "fun(self: ForgottenGUI, cursor: integer, player?: hand, target?: hand)",
       "member": "changeMouseCursor"
     },
     {
@@ -9957,7 +9957,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(s: InstanceID|string, arg2: string): integer",
+      "lua": "fun(s: InstanceID|string, arg2?: string): integer",
       "member": "getModIndex"
     },
     {
@@ -11068,7 +11068,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: MainBarGUI, arg1: hand|integer, arg2: integer): lightuserdata|nil",
+      "lua": "fun(self: MainBarGUI, arg1: hand|integer, arg2?: integer): lightuserdata|nil",
       "member": "getPortrait"
     },
     {
@@ -16641,7 +16641,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: RootObjectContainer, _things?: GameData|RootObjectContainer, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod: string)",
+      "lua": "fun(self: RootObjectContainer, _things?: GameData|RootObjectContainer, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod?: string)",
       "member": "serialiseThings"
     },
     {
@@ -19601,7 +19601,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: YesNoMaybeValue, arg1: YesNoMaybe|YesNoMaybeValue|integer): boolean",
+      "lua": "fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|integer): boolean",
       "member": "operator_eq"
     },
     {
@@ -19762,7 +19762,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: ZoneManager, map: ZoneMap|iVector2, center: iVector2|integer, range: integer, type: boolean|integer, deactivationTimer: number): boolean",
+      "lua": "fun(self: ZoneManager, map: ZoneMap|iVector2, center: iVector2|integer, range: integer, type: boolean|integer, deactivationTimer?: number): boolean",
       "member": "activateZoneMap"
     },
     {
