@@ -116,6 +116,27 @@ def find_processes_under_root(game_root: Path, launched_after_epoch: float) -> L
     return pids
 
 
+def steam_client_ready() -> bool:
+    """Return True when the Steam client is running and signed in."""
+    import winreg
+
+    try:
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Valve\Steam\ActiveProcess") as key:
+            pid = winreg.QueryValueEx(key, "pid")[0]
+            active_user = winreg.QueryValueEx(key, "ActiveUser")[0]
+    except OSError:
+        return False
+    if not pid or not active_user:
+        return False
+    # The registry keeps the last pid after Steam exits, so confirm the process.
+    out = subprocess.run(
+        ["tasklist", "/FI", f"PID eq {pid}", "/NH"],
+        capture_output=True,
+        text=True,
+    ).stdout
+    return "steam.exe" in out.lower()
+
+
 def _discover_steam_workshop_provider(game_root: Path) -> Optional[Path]:
     # game_root is <steamapps>/common/Kenshi
     common_dir = game_root.parent
@@ -158,8 +179,13 @@ def resolve_installation(
     else:
         re_exe = game_root / "RE_Kenshi" / "kenshi_x64.exe"
         exe_path = re_exe if re_exe.is_file() else (game_root / "kenshi_x64.exe")
+        # Kenshi loads a local mods/ copy in preference to a workshop item with the same name.
+        local_provider = game_root / "mods" / "KenshiLua"
         workshop_provider = _discover_steam_workshop_provider(game_root)
-        provider_root = workshop_provider if workshop_provider is not None else (game_root / "mods" / "KenshiLua")
+        if (local_provider / PROVIDER_MOD_FILE).is_file() or workshop_provider is None:
+            provider_root = local_provider
+        else:
+            provider_root = workshop_provider
 
     if not exe_path.is_file():
         raise FileNotFoundError(f"Kenshi executable not found: {exe_path}")

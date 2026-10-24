@@ -14,6 +14,7 @@ from kenshi_install import (
     find_running_kenshi_processes,
     resolve_installation,
     sha256_file,
+    steam_client_ready,
 )
 from launcher_windows import (
     NamedRunEvent,
@@ -34,6 +35,8 @@ EXIT_OK = 0
 EXIT_TEST_FAILED = 1
 EXIT_SETUP_ERROR = 2
 EXIT_CRASH_OR_TIMEOUT = 3
+
+STEAM_READY_TIMEOUT_S = 120.0
 
 DEFAULT_SAVE_FIXTURE_NAME = "kltest_vanilla_1065"
 SAVE_DEPENDENT_SUITES = {"world-smoke", "binding-smoke", "all"}
@@ -146,6 +149,24 @@ def run_single_platform(
     if dry_run:
         print(json.dumps(tx.plan_summary(), indent=2))
         return EXIT_OK
+
+    # Launching the game before Steam has signed in shows a Steam error dialog.
+    if platform == "steam" and not steam_client_ready():
+        print("[INFO] Starting Steam and waiting for sign-in...")
+        subprocess.run(
+            ["powershell", "-NoProfile", "-Command", "Start-Process 'steam://open/main'"],
+            check=True,
+        )
+        steam_deadline = time.time() + STEAM_READY_TIMEOUT_S
+        while not steam_client_ready():
+            if time.time() > steam_deadline:
+                print(
+                    f"[ERROR] Steam was not running and signed in after {STEAM_READY_TIMEOUT_S:.0f}s; "
+                    "start Steam and sign in, then rerun.",
+                    file=sys.stderr,
+                )
+                return EXIT_SETUP_ERROR
+            time.sleep(1.0)
 
     artifact_dir.mkdir(parents=True, exist_ok=True)
     metadata = {
