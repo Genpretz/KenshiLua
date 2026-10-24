@@ -84,7 +84,8 @@ namespace KenshiLua
             SetType* s = getInstance(L, 1);
             if (!s) { lua_pushnil(L); return 1; }
 
-            if (lua_isstring(L, 2))
+            // lua_isstring is also true for numbers, which would hide integer keys.
+            if (lua_type(L, 2) == LUA_TSTRING)
             {
                 luaL_getmetatable(L, metaName);
                 lua_getfield(L, -1, lua_tostring(L, 2));
@@ -287,7 +288,8 @@ namespace KenshiLua
             MapType* m = getInstance(L, 1);
             if (!m) { lua_pushnil(L); return 1; }
 
-            if (lua_isstring(L, 2))
+            // lua_isstring is also true for numbers, which would hide integer keys.
+            if (lua_type(L, 2) == LUA_TSTRING)
             {
                 luaL_getmetatable(L, metaName);
                 lua_getfield(L, -1, lua_tostring(L, 2));
