@@ -110502,6 +110502,84 @@
       "source": "src/Bindings/MyGUI/ScrollViewBinding.cpp"
     },
     {
+      "binding": "SeasonBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Season",
+      "metatable": "KenshiLua.Season",
+      "methods": [
+        {
+          "callback": "SeasonBinding::getName",
+          "name": "getName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "SeasonBinding::getNewWeather",
+          "name": "getNewWeather",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "durationInDays",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "hasConditionalWeather",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "regionWeather",
+          "type": "WeatherRegion"
+        },
+        {
+          "access": "readwrite",
+          "name": "seasonData",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "sunlightColor",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherStrengthMax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherStrengthMin",
+          "type": "number"
+        },
+        {
+          "access": "readonly",
+          "name": "weathers",
+          "type": "Weather[]"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Weather/SeasonBinding.cpp"
+    },
+    {
       "binding": "SectionItemBinding",
       "global_names": [],
       "has_constructor": false,
@@ -130711,6 +130789,517 @@
       "source": "src/Bindings/Kenshi/WeaponBinding.cpp"
     },
     {
+      "binding": "WeatherBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Weather",
+      "metatable": "KenshiLua.Weather",
+      "methods": [
+        {
+          "callback": "WeatherBinding::getName",
+          "name": "getName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "affectCharactersStrength",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "affectCharactersType",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "cloudsColor",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "cloudsDensity",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "conditionEnd",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "conditionStart",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "durationMax",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "durationMin",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "dust",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "dustInside",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "dustSticky",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "fogColor",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "fogDistanceMax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "fogDistanceMin",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "fogEnabled",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "fogWindSpeedMax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "fogWindSpeedMin",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "heatHaze",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "probabilityOccurrence",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "rainSound",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "season",
+          "type": "Season"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherData",
+          "type": "GameData"
+        },
+        {
+          "access": "readwrite",
+          "name": "wetness",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windSound",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windSpeedMax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windSpeedMin",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windUpdateLimit",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "windUpdateTime",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Weather/WeatherBinding.cpp"
+    },
+    {
+      "binding": "WeatherInstanceBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "WeatherInstance",
+      "metatable": "KenshiLua.WeatherInstance",
+      "methods": [
+        {
+          "callback": "WeatherInstanceBinding::getTime",
+          "name": "getTime",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getTimeNormalized",
+          "name": "getTimeNormalized",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getWeatherBiome",
+          "name": "getWeatherBiome",
+          "signature": {
+            "params": [],
+            "returns": [
+              "WeatherRegion"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getWeather",
+          "name": "getWeather",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Weather"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getHasEnded",
+          "name": "getHasEnded",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getFogVisible",
+          "name": "getFogVisible",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getFogDistance",
+          "name": "getFogDistance",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getFogColour",
+          "name": "getFogColour",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getFogEnabled",
+          "name": "getFogEnabled",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getGlobalEffectsStrength",
+          "name": "getGlobalEffectsStrength",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getWindSpeed",
+          "name": "getWindSpeed",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getWindDirection",
+          "name": "getWindDirection",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getWindForce",
+          "name": "getWindForce",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getWetness",
+          "name": "getWetness",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::getWeatherStrength",
+          "name": "getWeatherStrength",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::save",
+          "name": "save",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "key",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::load",
+          "name": "load",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "newWeather",
+                "optional": false,
+                "type": "Weather"
+              },
+              {
+                "name": "key",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherInstanceBinding::setupWeather",
+          "name": "setupWeather",
+          "signature": {
+            "params": [
+              {
+                "name": "newWeather",
+                "optional": false,
+                "type": "Weather"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "effectStrength",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "endTimeMinutes",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "regionWeather",
+          "type": "WeatherRegion"
+        },
+        {
+          "access": "readwrite",
+          "name": "startTimeMinutes",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "strength",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "updateTimeWindMinutes",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "weather",
+          "type": "Weather"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherTime",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windBuildUpAngleEnd",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windBuildUpAngleStart",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windBuildUpEnd",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "windBuildUpEnded",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "windBuildUpSpeedEnd",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windBuildUpSpeedStart",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "windBuildUpStart",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "windDirection",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "windSpeed",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Weather/WeatherInstanceBinding.cpp"
+    },
+    {
       "binding": "WeatherRegionBinding",
       "global_names": [],
       "has_constructor": false,
@@ -130733,7 +131322,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "WeatherInstance"
             ]
           },
           "static": false
@@ -130796,7 +131385,7 @@
               {
                 "name": "listener",
                 "optional": false,
-                "type": "lightuserdata"
+                "type": "Listener|RotatingEnt"
               }
             ],
             "returns": [],
@@ -130812,7 +131401,7 @@
               {
                 "name": "listener",
                 "optional": false,
-                "type": "lightuserdata"
+                "type": "Listener|RotatingEnt"
               }
             ],
             "returns": [],
@@ -130934,7 +131523,7 @@
         {
           "access": "readonly",
           "name": "currentSeason",
-          "type": "lightuserdata"
+          "type": "Season"
         },
         {
           "access": "readwrite",
@@ -130958,8 +131547,13 @@
         },
         {
           "access": "readonly",
+          "name": "seasons",
+          "type": "Season[]"
+        },
+        {
+          "access": "readonly",
           "name": "weatherInstance",
-          "type": "lightuserdata"
+          "type": "WeatherInstance"
         },
         {
           "access": "readwrite",
@@ -130981,6 +131575,314 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/WeatherRegionBinding.cpp"
+    },
+    {
+      "binding": "WeatherSystemBinding",
+      "global_names": [
+        "WeatherSystem"
+      ],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "WeatherSystem",
+      "metatable": "KenshiLua.WeatherSystem",
+      "methods": [
+        {
+          "callback": "WeatherSystemBinding::getInstanceMethod",
+          "name": "getInstance",
+          "signature": {
+            "params": [],
+            "returns": [
+              "WeatherSystem"
+            ]
+          },
+          "static": true
+        },
+        {
+          "callback": "WeatherSystemBinding::reset",
+          "name": "reset",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::updateMT",
+          "name": "updateMT",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::updateBT",
+          "name": "updateBT",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::updateUT",
+          "name": "updateUT",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::addWeatherListener",
+          "name": "addWeatherListener",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "GameData|table"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "Listener|RotatingEnt"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::removeWeatherListener",
+          "name": "removeWeatherListener",
+          "signature": {
+            "params": [
+              {
+                "name": "listener",
+                "optional": false,
+                "type": "Listener|RotatingEnt"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::setDustShaderValue",
+          "name": "setDustShaderValue",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "ActiveRegionWeather",
+          "type": "WeatherRegion"
+        },
+        {
+          "access": "readonly",
+          "name": "areaFog",
+          "type": "WeatherSystem_ZoneFog[]"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentDustAmount",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentFogValues",
+          "type": "WeatherSystem_FogValues"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentRainValue",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentWindValue",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentZoneFog",
+          "type": "WeatherSystem_ZoneFog"
+        },
+        {
+          "access": "readwrite",
+          "name": "exitingBiome",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "globalWetness",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "heatHazeUpdated",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "heatHazeValue",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "previousBiomeAABB",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "previousPoint",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "previousZoneFog",
+          "type": "WeatherSystem_ZoneFog"
+        },
+        {
+          "access": "readwrite",
+          "name": "rainValueUpdated",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "zoneFogBlendingPosition",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "zoneFogBlendingType",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Weather/WeatherSystemBinding.cpp"
+    },
+    {
+      "binding": "WeatherSystem_FogValuesBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "WeatherSystem_FogValues",
+      "metatable": "KenshiLua.WeatherSystem_FogValues",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "alpha",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "colour",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "distance",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Weather/WeatherSystem_FogValuesBinding.cpp"
+    },
+    {
+      "binding": "WeatherSystem_ZoneFogBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "WeatherSystem_ZoneFog",
+      "metatable": "KenshiLua.WeatherSystem_ZoneFog",
+      "methods": [
+        {
+          "callback": "WeatherSystem_ZoneFogBinding::clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystem_ZoneFogBinding::getCurrentValues",
+          "name": "getCurrentValues",
+          "signature": {
+            "params": [],
+            "returns": [
+              "WeatherSystem_FogValues"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystem_ZoneFogBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "blending",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "currFog",
+          "type": "WeatherSystem_FogValues"
+        },
+        {
+          "access": "readwrite",
+          "name": "lastBlendValue",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "prevFog",
+          "type": "WeatherSystem_FogValues"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherInstance",
+          "type": "WeatherInstance"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Weather/WeatherSystem_ZoneFogBinding.cpp"
     },
     {
       "binding": "WhoSeesMeBinding",

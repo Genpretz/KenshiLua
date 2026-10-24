@@ -142,6 +142,7 @@ Events.on("InputHandler::keyDownEvent", on_key_down)
    | `kenshi/SaveInfo.h` | Delete `class GameplayOptions { ... };` and add `#include "GameplayOptions.h"`. |
    | `kenshi/PlayerInterface.h` | Delete `class ContextMenu { ... };` and add `#include "gui/ContextMenu.h"`. |
    | `kenshi/Campaign.h` | Delete `class CampaignTriggerData { ... };` and add `#include "Dialogue.h"`. |
+   | `kenshi/PhysicsCollection.h` | Delete `class WeatherRegion { ... };` and add `#include "Weather.h"`. |
    | `kenshi/ZoneManager.h`, `kenshi/combat/CombatClass.h` | Both define `class ParticlePool`. Move it into a new `kenshi/ParticlePool.h` ([contents](docs/legacy/BuildingWithKenshiLib-0.3.0.md#duplicate-definitions-still-present-in-050)), delete it from both headers, and include the new file: `#include <kenshi/ParticlePool.h>` in `ZoneManager.h` and `#include "../ParticlePool.h"` in `CombatClass.h`. |
 
    These declarations disagree with the game or with the libraries KenshiLua links against:

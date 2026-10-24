@@ -16940,6 +16940,15 @@
       "member": "labelSize"
     },
     {
+      "category": "unmapped_header_type",
+      "class": "Season",
+      "expected": "?lektor<Weather*>",
+      "header": "lektor<Weather*>",
+      "kind": "property",
+      "lua": "Weather[]",
+      "member": "weathers"
+    },
+    {
       "category": "enum_typed_as_integer",
       "class": "SeenSomeone",
       "expected": "SlaveStateEnum",
@@ -19483,55 +19492,13 @@
       "member": "category_animationOverride"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "WeatherRegion",
-      "expected": "fun(): ?WeatherInstance*",
-      "header": "WeatherInstance* getWeatherInstance() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?WeatherInstance*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: WeatherRegion): lightuserdata",
-      "member": "getWeatherInstance"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "WeatherRegion",
-      "expected": "fun(?WeatherRegion::Listener*)",
-      "header": "void addListener(WeatherRegion::Listener* listener)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?WeatherRegion::Listener*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: WeatherRegion, listener: lightuserdata)",
-      "member": "addListener"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "WeatherRegion",
-      "expected": "fun(?WeatherRegion::Listener*)",
-      "header": "void removeListener(WeatherRegion::Listener* listener)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?WeatherRegion::Listener*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: WeatherRegion, listener: lightuserdata)",
-      "member": "removeListener"
+      "category": "enum_typed_as_integer",
+      "class": "Weather",
+      "expected": "WeatherAffecting",
+      "header": "WeatherAffecting",
+      "kind": "property",
+      "lua": "integer",
+      "member": "affectCharactersType"
     },
     {
       "category": "unmapped_header_type",
@@ -19545,20 +19512,11 @@
     {
       "category": "unmapped_header_type",
       "class": "WeatherRegion",
-      "expected": "?Season*",
-      "header": "Season*",
+      "expected": "?Ogre::vector<Season*>::type",
+      "header": "Ogre::vector<Season*>::type",
       "kind": "property",
-      "lua": "lightuserdata",
-      "member": "currentSeason"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "WeatherRegion",
-      "expected": "?WeatherInstance*",
-      "header": "WeatherInstance*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "weatherInstance"
+      "lua": "Season[]",
+      "member": "seasons"
     },
     {
       "category": "unmapped_header_type",
@@ -20560,12 +20518,12 @@
     "binding_shape_differs": 203,
     "blocking_issues": 0,
     "container_methods_typed": 983,
-    "enum_typed_as_integer": 476,
-    "methods": 8071,
-    "methods_matching_header": 6135,
+    "enum_typed_as_integer": 477,
+    "methods": 8104,
+    "methods_matching_header": 6171,
     "no_header_declaration": 277,
-    "properties": 3283,
-    "properties_matching_header": 2753,
-    "unmapped_header_type": 449
+    "properties": 3362,
+    "properties_matching_header": 2831,
+    "unmapped_header_type": 446
   }
 }

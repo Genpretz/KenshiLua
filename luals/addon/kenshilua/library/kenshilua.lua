@@ -22088,6 +22088,29 @@ taskPriority = {
 --- Whether this screen label is currently visible on screen.
 ---@field visible boolean
 
+--- One season of a `WeatherRegion`, with the weathers that can occur during it. Owned by the region; `~WeatherRegion` deletes its seasons.
+---@class Season
+--- Returns the name of the season's GameData record, or an empty string if it has none.
+---@field getName fun(self: Season): string
+--- Picks one of this season's weathers and starts it on the region's `WeatherInstance`. Raises an error if the season has no weathers.
+---@field getNewWeather fun(self: Season)
+--- Length of the season in in-game days.
+---@field durationInDays integer
+--- True if weather selection depends on the time of day.
+---@field hasConditionalWeather boolean
+--- The `WeatherRegion` this season belongs to. Cannot be set to nil.
+---@field regionWeather WeatherRegion
+--- The GameData record that defines this season, or nil.
+---@field seasonData GameData
+--- Sunlight colour during this season.
+---@field sunlightColor table
+--- Maximum weather strength during this season.
+---@field weatherStrengthMax number
+--- Minimum weather strength during this season.
+---@field weatherStrengthMin number
+--- Table of the `Weather` profiles that can occur during this season. A copy of the list; the season owns its weathers.
+---@field weathers Weather[]
+
 --- Per-target sensory record stored in SensoryData describing a perceived character's last known position, timestamp, perceived faction, and classification flags.
 ---@class SeenSomeone
 --- Returns the elapsed in-game time in seconds since this character was last seen.
@@ -24838,12 +24861,148 @@ taskPriority = {
 --- Flat modifier applied to the wielder's melee attack skill.
 ---@field modAttack integer
 
+--- A weather profile, such as a duststorm or acid rain, built from its GameData record. Owned by its `Season`, and shared by every region that uses that season.
+---@class Weather
+--- Returns the name of the weather's GameData record.
+---@field getName fun(self: Weather): string
+--- Strength of the weather's effect on characters.
+---@field affectCharactersStrength number
+--- Effect on characters, as a `WeatherAffecting` integer.
+---@field affectCharactersType integer
+--- Cloud colour.
+---@field cloudsColor table
+--- Cloud density.
+---@field cloudsDensity number
+--- Hour of day when the weather stops being eligible, for seasons with conditional weather.
+---@field conditionEnd number
+--- Hour of day when the weather becomes eligible, for seasons with conditional weather.
+---@field conditionStart number
+--- Maximum duration in minutes.
+---@field durationMax integer
+--- Minimum duration in minutes.
+---@field durationMin integer
+--- Airborne dust amount.
+---@field dust number
+--- Dust amount indoors.
+---@field dustInside number
+--- Dust that sticks to surfaces.
+---@field dustSticky number
+--- Fog colour.
+---@field fogColor table
+--- Fog distance at the maximum fog wind speed.
+---@field fogDistanceMax number
+--- Fog distance at the minimum fog wind speed.
+---@field fogDistanceMin number
+--- True if the weather has fog.
+---@field fogEnabled boolean
+--- Wind speed at which the fog distance reaches `fogDistanceMax`.
+---@field fogWindSpeedMax number
+--- Wind speed at which the fog distance is `fogDistanceMin`.
+---@field fogWindSpeedMin number
+--- Heat haze strength.
+---@field heatHaze number
+--- Relative chance of this weather being picked.
+---@field probabilityOccurrence number
+--- Rain sound volume.
+---@field rainSound number
+--- The `Season` that owns this weather. Cannot be set to nil.
+---@field season Season
+--- The GameData record that defines this weather. Cannot be set to nil.
+---@field weatherData GameData
+--- Surface wetness.
+---@field wetness number
+--- Wind sound volume.
+---@field windSound number
+--- Maximum wind speed.
+---@field windSpeedMax number
+--- Minimum wind speed.
+---@field windSpeedMin number
+--- Largest wind direction change, in degrees.
+---@field windUpdateLimit integer
+--- Minutes between wind changes.
+---@field windUpdateTime integer
+
+--- The weather currently running in a `WeatherRegion`: its `Weather` profile, strength, wind, and timing. Owned by the region; `~WeatherRegion` deletes it.
+---@class WeatherInstance
+--- Returns `weatherTime`, the time this weather has been active.
+---@field getTime fun(self: WeatherInstance): number
+--- Returns how far this weather is between `startTimeMinutes` and `endTimeMinutes`, from 0 to 1.
+---@field getTimeNormalized fun(self: WeatherInstance): number
+--- Returns the `WeatherRegion` this instance belongs to.
+---@field getWeatherBiome fun(self: WeatherInstance): WeatherRegion
+--- Returns the `Weather` profile in effect, or nil if none is assigned yet.
+---@field getWeather fun(self: WeatherInstance): Weather
+--- Advances the wind build-up and returns true while the wind is changing. Raises an error while no `Weather` is assigned.
+---@field update fun(self: WeatherInstance): boolean
+--- Returns true once the in-game time has passed `endTimeMinutes`.
+---@field getHasEnded fun(self: WeatherInstance): boolean
+--- Returns true if the current `Weather` has fog. Raises an error while no `Weather` is assigned.
+---@field getFogVisible fun(self: WeatherInstance): boolean
+--- Returns the fog distance, interpolated from the current wind speed between the `Weather`'s fog distance limits. Raises an error while no `Weather` is assigned.
+---@field getFogDistance fun(self: WeatherInstance): number
+--- Returns the fog colour of the current `Weather`. Raises an error while no `Weather` is assigned.
+---@field getFogColour fun(self: WeatherInstance): table
+--- Returns true if the current `Weather` has fog. Raises an error while no `Weather` is assigned.
+---@field getFogEnabled fun(self: WeatherInstance): boolean
+--- Returns `effectStrength`, the strength applied to the weather's global effects.
+---@field getGlobalEffectsStrength fun(self: WeatherInstance): number
+--- Returns the current wind speed.
+---@field getWindSpeed fun(self: WeatherInstance): number
+--- Returns the wind direction as a Vector3 table.
+---@field getWindDirection fun(self: WeatherInstance): table
+--- Returns the wind direction scaled by the wind speed, as a Vector3 table.
+---@field getWindForce fun(self: WeatherInstance): table
+--- Returns the current `Weather`'s wetness. Raises an error while no `Weather` is assigned.
+---@field getWetness fun(self: WeatherInstance): number
+--- Returns `strength`, the normalized weather strength.
+---@field getWeatherStrength fun(self: WeatherInstance): number
+--- Saves this instance into data (GameData) under key.
+---@field save fun(self: WeatherInstance, data: GameData, key: string)
+--- Loads this instance from data (GameData) under key, using newWeather (Weather) as its profile.
+---@field load fun(self: WeatherInstance, data: GameData, newWeather: Weather, key: string)
+--- Starts newWeather (Weather): picks its strength, duration, and wind. Changes the running weather.
+---@field setupWeather fun(self: WeatherInstance, newWeather: Weather)
+--- Strength applied to the weather's global effects.
+---@field effectStrength number
+--- In-game time, in minutes, when this weather ends.
+---@field endTimeMinutes integer
+--- The `WeatherRegion` this instance belongs to. Cannot be set to nil.
+---@field regionWeather WeatherRegion
+--- In-game time, in minutes, when this weather started.
+---@field startTimeMinutes integer
+--- Normalized weather strength.
+---@field strength number
+--- In-game time, in minutes, of the next wind change.
+---@field updateTimeWindMinutes integer
+--- The `Weather` profile in effect, or nil before one is assigned. Cannot be set to nil.
+---@field weather Weather
+--- Time this weather has been active.
+---@field weatherTime number
+--- Wind angle at the end of the current wind change.
+---@field windBuildUpAngleEnd number
+--- Wind angle at the start of the current wind change.
+---@field windBuildUpAngleStart number
+--- In-game time, in minutes, when the current wind change ends.
+---@field windBuildUpEnd integer
+--- True when no wind change is in progress.
+---@field windBuildUpEnded boolean
+--- Wind speed at the end of the current wind change.
+---@field windBuildUpSpeedEnd number
+--- Wind speed at the start of the current wind change.
+---@field windBuildUpSpeedStart number
+--- In-game time, in minutes, when the current wind change started.
+---@field windBuildUpStart integer
+--- Wind direction as a Vector3 table.
+---@field windDirection table
+--- Current wind speed.
+---@field windSpeed number
+
 --- Manages seasonal progression, weather strength, active weather instances, and environmental effects for a biome group.
 ---@class WeatherRegion
 --- Resets the weather region state and active effects.
 ---@field reset fun(self: WeatherRegion)
---- Returns a raw pointer (lightuserdata) to the active WeatherInstance for this region.
----@field getWeatherInstance fun(self: WeatherRegion): lightuserdata
+--- Returns this region's `WeatherInstance`.
+---@field getWeatherInstance fun(self: WeatherRegion): WeatherInstance
 --- Sets the active season index and the day on which the season ends.
 ---@field setCurrentSeason fun(self: WeatherRegion, seasonIndex: integer, seasonEnd: integer)
 --- Calculates and returns a new randomized weather strength value within the region's multiplier bounds.
@@ -24853,9 +25012,9 @@ taskPriority = {
 --- Updates the weather region on the background thread.
 ---@field updateBT fun(self: WeatherRegion)
 --- Registers a WeatherRegion::Listener pointer (passed as lightuserdata) for weather update notifications.
----@field addListener fun(self: WeatherRegion, listener: lightuserdata)
+---@field addListener fun(self: WeatherRegion, listener: Listener|RotatingEnt)
 --- Unregisters a WeatherRegion::Listener pointer (passed as lightuserdata).
----@field removeListener fun(self: WeatherRegion, listener: lightuserdata)
+---@field removeListener fun(self: WeatherRegion, listener: Listener|RotatingEnt)
 --- Adds a global environmental effect of the specified EffectType::Enum to this region.
 ---@field addGlobalEffect fun(self: WeatherRegion, type: integer)
 --- Advances or selects the next season for this weather region.
@@ -24874,8 +25033,8 @@ taskPriority = {
 ---@field biomeGroup lightuserdata
 --- Whether the associated biome group is currently loaded.
 ---@field biomeGroupLoaded boolean
---- Read-only raw pointer (lightuserdata) to the current Season object.
----@field currentSeason lightuserdata
+--- Read-only `Season` currently active in this region.
+---@field currentSeason Season
 --- The in-game day number when the current season ends.
 ---@field currentSeasonEndDay integer
 --- The index of the currently active season in the region's season list.
@@ -24884,14 +25043,97 @@ taskPriority = {
 ---@field instanceUpdated boolean
 --- Flag requesting a refresh of weather effects on the next update.
 ---@field requestUpdateEffects boolean
---- Read-only raw pointer (lightuserdata) to the active WeatherInstance.
----@field weatherInstance lightuserdata
+--- Table of this region's `Season` objects. A copy of the list; the region owns its seasons.
+---@field seasons Season[]
+--- Read-only `WeatherInstance` running in this region. The region owns it.
+---@field weatherInstance WeatherInstance
 --- Maximum multiplier bound for generated weather strength in this region.
 ---@field weatherStrengthMultiplierMax number
 --- Minimum multiplier bound for generated weather strength in this region.
 ---@field weatherStrengthMultiplierMin number
 --- Whether the weather state has been updated.
 ---@field weatherUpdated boolean
+
+--- The game's weather coordinator: the region around the camera, fog blending between biomes, wind, rain, dust, and heat haze. A singleton; get it with `WeatherSystem.getInstance()`.
+---@class WeatherSystem
+--- Returns the `WeatherSystem` singleton.
+---@field getInstance fun(): WeatherSystem
+--- Resets the weather system.
+---@field reset fun(self: WeatherSystem)
+--- Runs the weather system's main-thread update.
+---@field updateMT fun(self: WeatherSystem)
+--- Runs the weather system's background-thread update.
+---@field updateBT fun(self: WeatherSystem)
+--- Runs the weather system's update-thread update.
+---@field updateUT fun(self: WeatherSystem)
+--- Registers listener (`Listener`) with the weather region at position (Vector3 table) or for biome (GameData).
+---@field addWeatherListener fun(self: WeatherSystem, arg1: GameData|table, arg2: Listener|RotatingEnt)
+--- Unregisters listener (`Listener`).
+---@field removeWeatherListener fun(self: WeatherSystem, listener: Listener|RotatingEnt)
+--- Sets the dust shader parameter from value (Vector3 table).
+---@field setDustShaderValue fun(self: WeatherSystem, value: table)
+--- The `WeatherRegion` around the camera, or nil.
+---@field ActiveRegionWeather WeatherRegion
+--- Table of the four `WeatherSystem_ZoneFog` states used to blend fog between neighbouring biomes. The elements can be edited in place.
+---@field areaFog WeatherSystem_ZoneFog[]
+--- Dust amount passed to the dust shaders, as a Vector3 table.
+---@field currentDustAmount table
+--- Current blended fog values, as `WeatherSystem_FogValues`.
+---@field currentFogValues WeatherSystem_FogValues
+--- Current rain amount.
+---@field currentRainValue number
+--- Current wind amount.
+---@field currentWindValue number
+--- Fog state being blended towards, as `WeatherSystem_ZoneFog`.
+---@field currentZoneFog WeatherSystem_ZoneFog
+--- True while the camera is leaving a biome.
+---@field exitingBiome boolean
+--- Current surface wetness.
+---@field globalWetness number
+--- True when the heat haze value needs to be sent to the shaders.
+---@field heatHazeUpdated boolean
+--- Current heat haze strength.
+---@field heatHazeValue number
+--- Bounds of the previous biome, as a Vector4 table.
+---@field previousBiomeAABB table
+--- Previous camera sample position.
+---@field previousPoint table
+--- Fog state being blended from, as `WeatherSystem_ZoneFog`.
+---@field previousZoneFog WeatherSystem_ZoneFog
+--- True when the rain value changed and needs to be applied.
+---@field rainValueUpdated boolean
+--- Position where fog blending is happening.
+---@field zoneFogBlendingPosition table
+--- Fog blending mode.
+---@field zoneFogBlendingType integer
+
+--- Fog alpha, distance, and colour. Values returned by `WeatherSystem_ZoneFog:getCurrentValues` are copies owned by Lua; fields of `WeatherSystem` and `WeatherSystem_ZoneFog` are borrowed.
+---@class WeatherSystem_FogValues
+--- Fog opacity.
+---@field alpha number
+--- Fog colour.
+---@field colour table
+--- Fog distance.
+---@field distance number
+
+--- Fog state for one biome, blending from `prevFog` to `currFog`. Owned by the `WeatherSystem`.
+---@class WeatherSystem_ZoneFog
+--- Detaches the fog from its `WeatherInstance`.
+---@field clear fun(self: WeatherSystem_ZoneFog)
+--- Returns the current fog values, blended while `blending` is true, as a new `WeatherSystem_FogValues`.
+---@field getCurrentValues fun(self: WeatherSystem_ZoneFog): WeatherSystem_FogValues
+--- Updates `currFog` from the attached `WeatherInstance`. Raises an error if that instance has no `Weather` assigned.
+---@field update fun(self: WeatherSystem_ZoneFog)
+--- True while the fog is blending between `prevFog` and `currFog`.
+---@field blending boolean
+--- Fog values being blended towards.
+---@field currFog WeatherSystem_FogValues
+--- Blend progress at the last update.
+---@field lastBlendValue number
+--- Fog values being blended from.
+---@field prevFog WeatherSystem_FogValues
+--- The `WeatherInstance` the fog follows, or nil. An instance without a `Weather` is rejected.
+---@field weatherInstance WeatherInstance
 
 --- Specialized GeneratorBuilding that produces electrical power from wind speed without consuming fuel items.
 ---@class WindGeneratorBuilding : GeneratorBuilding
@@ -25709,6 +25951,11 @@ taskPriority = {
 --- Static function returning the singleton instance of TransformWindow.
 ---@field getSingleton fun(): TransformWindow
 
+--- Static functions registered on the `WeatherSystem` global table.
+---@class WeatherSystemStatics
+--- Returns the `WeatherSystem` singleton.
+---@field getInstance fun(): WeatherSystem
+
 --- Static functions registered on the `ZoneManager` global table.
 ---@class ZoneManagerStatics
 --- Returns the sound effect identifier corresponding to footstep impacts on the specified surface material.
@@ -26159,6 +26406,11 @@ TitleScreen = {}
 ---@type TransformWindowStatics
 ---@diagnostic disable-next-line: missing-fields
 TransformWindow = {}
+
+--- Global table of static functions for `WeatherSystem`.
+---@type WeatherSystemStatics
+---@diagnostic disable-next-line: missing-fields
+WeatherSystem = {}
 
 --- Global table of static functions for `ZoneManager`.
 ---@type ZoneManagerStatics

@@ -327,6 +327,7 @@
 - [`ScreenLabelDebug`](#screenlabeldebug)
 - [`ScreenLabelInterface`](#screenlabelinterface)
 - [`Scythe::PhysicsClass`](#scythe::physicsclass)
+- [`Season`](#season)
 - [`SeenSomeone`](#seensomeone)
 - [`SelectionBox`](#selectionbox)
 - [`SenseItr`](#senseitr)
@@ -397,8 +398,13 @@
 - [`VisibleObjectInfo`](#visibleobjectinfo)
 - [`WallBuilding`](#wallbuilding)
 - [`Weapon`](#weapon)
+- [`Weather`](#weather)
+- [`WeatherInstance`](#weatherinstance)
 - [`WeatherRegion`](#weatherregion)
   - [`WeatherRegion::Listener`](#weatherregion::listener)
+- [`WeatherSystem`](#weathersystem)
+  - [`WeatherSystem::FogValues`](#weathersystem::fogvalues)
+  - [`WeatherSystem::ZoneFog`](#weathersystem::zonefog)
 - [`WindGeneratorBuilding`](#windgeneratorbuilding)
 - [`WorldEventStateQuery`](#worldeventstatequery)
 - [`WorldEventStateQueryList`](#worldeventstatequerylist)
@@ -10933,6 +10939,28 @@
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
 **Metatable:** `KenshiLua.PhysicsClass`
 
+## Season
+**Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
+**Metatable:** `KenshiLua.Season`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| regionWeather | `WeatherRegion` | RW | `obj.regionWeather = <value>` |
+| weathers | `Weather` | R | `obj.weathers` |
+| hasConditionalWeather | `boolean` | RW | `obj.hasConditionalWeather = <value>` |
+| durationInDays | `integer` | RW | `obj.durationInDays = <value>` |
+| weatherStrengthMin | `number` | RW | `obj.weatherStrengthMin = <value>` |
+| weatherStrengthMax | `number` | RW | `obj.weatherStrengthMax = <value>` |
+| sunlightColor | `unknown` | RW | `obj.sunlightColor = <value>` |
+| seasonData | `GameData` | RW | `obj.seasonData = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getName | `` | `string` | `obj:getName()` |
+| getNewWeather | `` | `void` | `obj:getNewWeather()` |
+
 ## SeenSomeone
 **Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
 **Metatable:** `KenshiLua.SeenSomeone`
@@ -12920,8 +12948,97 @@
 | getSkillModIndoors | `` | `integer` | `obj:getSkillModIndoors()` |
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 
+## Weather
+**Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
+**Metatable:** `KenshiLua.Weather`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| affectCharactersType | `WeatherAffecting` | RW | `obj.affectCharactersType = <value>` |
+| affectCharactersStrength | `number` | RW | `obj.affectCharactersStrength = <value>` |
+| weatherData | `GameData` | RW | `obj.weatherData = <value>` |
+| windSpeedMin | `number` | RW | `obj.windSpeedMin = <value>` |
+| windSpeedMax | `number` | RW | `obj.windSpeedMax = <value>` |
+| windUpdateTime | `integer` | RW | `obj.windUpdateTime = <value>` |
+| windUpdateLimit | `integer` | RW | `obj.windUpdateLimit = <value>` |
+| fogEnabled | `boolean` | RW | `obj.fogEnabled = <value>` |
+| fogDistanceMin | `number` | RW | `obj.fogDistanceMin = <value>` |
+| fogDistanceMax | `number` | RW | `obj.fogDistanceMax = <value>` |
+| fogWindSpeedMin | `number` | RW | `obj.fogWindSpeedMin = <value>` |
+| fogWindSpeedMax | `number` | RW | `obj.fogWindSpeedMax = <value>` |
+| fogColor | `unknown` | RW | `obj.fogColor = <value>` |
+| cloudsDensity | `number` | RW | `obj.cloudsDensity = <value>` |
+| cloudsColor | `unknown` | RW | `obj.cloudsColor = <value>` |
+| probabilityOccurrence | `number` | RW | `obj.probabilityOccurrence = <value>` |
+| conditionStart | `number` | RW | `obj.conditionStart = <value>` |
+| conditionEnd | `number` | RW | `obj.conditionEnd = <value>` |
+| durationMin | `integer` | RW | `obj.durationMin = <value>` |
+| durationMax | `integer` | RW | `obj.durationMax = <value>` |
+| rainSound | `number` | RW | `obj.rainSound = <value>` |
+| windSound | `number` | RW | `obj.windSound = <value>` |
+| wetness | `number` | RW | `obj.wetness = <value>` |
+| dust | `number` | RW | `obj.dust = <value>` |
+| dustInside | `number` | RW | `obj.dustInside = <value>` |
+| dustSticky | `number` | RW | `obj.dustSticky = <value>` |
+| heatHaze | `number` | RW | `obj.heatHaze = <value>` |
+| season | `Season` | RW | `obj.season = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getName | `` | `string` | `obj:getName()` |
+
+## WeatherInstance
+**Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
+**Metatable:** `KenshiLua.WeatherInstance`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| regionWeather | `WeatherRegion` | RW | `obj.regionWeather = <value>` |
+| weather | `Weather` | RW | `obj.weather = <value>` |
+| effectStrength | `number` | RW | `obj.effectStrength = <value>` |
+| strength | `number` | RW | `obj.strength = <value>` |
+| windSpeed | `number` | RW | `obj.windSpeed = <value>` |
+| windDirection | `Vector3` | RW | `obj.windDirection = <value>` |
+| windBuildUpEnded | `boolean` | RW | `obj.windBuildUpEnded = <value>` |
+| windBuildUpStart | `integer` | RW | `obj.windBuildUpStart = <value>` |
+| windBuildUpEnd | `integer` | RW | `obj.windBuildUpEnd = <value>` |
+| windBuildUpSpeedStart | `number` | RW | `obj.windBuildUpSpeedStart = <value>` |
+| windBuildUpSpeedEnd | `number` | RW | `obj.windBuildUpSpeedEnd = <value>` |
+| windBuildUpAngleStart | `number` | RW | `obj.windBuildUpAngleStart = <value>` |
+| windBuildUpAngleEnd | `number` | RW | `obj.windBuildUpAngleEnd = <value>` |
+| startTimeMinutes | `integer` | RW | `obj.startTimeMinutes = <value>` |
+| endTimeMinutes | `integer` | RW | `obj.endTimeMinutes = <value>` |
+| updateTimeWindMinutes | `integer` | RW | `obj.updateTimeWindMinutes = <value>` |
+| weatherTime | `number` | RW | `obj.weatherTime = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getTime | `` | `number` | `obj:getTime()` |
+| getTimeNormalized | `` | `number` | `obj:getTimeNormalized()` |
+| getWeatherBiome | `` | `WeatherRegion` | `obj:getWeatherBiome()` |
+| getWeather | `` | `Weather` | `obj:getWeather()` |
+| update | `` | `boolean` | `obj:update()` |
+| getHasEnded | `` | `boolean` | `obj:getHasEnded()` |
+| getFogVisible | `` | `boolean` | `obj:getFogVisible()` |
+| getFogDistance | `` | `number` | `obj:getFogDistance()` |
+| getFogColour | `` | `void` | `obj:getFogColour()` |
+| getFogEnabled | `` | `boolean` | `obj:getFogEnabled()` |
+| getGlobalEffectsStrength | `` | `number` | `obj:getGlobalEffectsStrength()` |
+| getWindSpeed | `` | `number` | `obj:getWindSpeed()` |
+| getWindDirection | `` | `Vector3` | `obj:getWindDirection()` |
+| getWindForce | `` | `Vector3` | `obj:getWindForce()` |
+| getWetness | `` | `number` | `obj:getWetness()` |
+| getWeatherStrength | `` | `number` | `obj:getWeatherStrength()` |
+| save | `data: GameData, key: string` | `void` | `obj:save(data, key)` |
+| load | `data: GameData, newWeather: Weather, key: string` | `void` | `obj:load(data, newWeather, key)` |
+| setupWeather | `newWeather: Weather` | `void` | `obj:setupWeather(newWeather)` |
+
 ## WeatherRegion
-**Header:** `extern/KenshiLib/Include/kenshi/PhysicsCollection.h`
+**Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
 **Metatable:** `KenshiLua.WeatherRegion`
 
 ### Fields
@@ -12930,8 +13047,9 @@
 | biomeGroup | `lightuserdata` | RW | `obj.biomeGroup = <value>` |
 | weatherStrengthMultiplierMin | `number` | RW | `obj.weatherStrengthMultiplierMin = <value>` |
 | weatherStrengthMultiplierMax | `number` | RW | `obj.weatherStrengthMultiplierMax = <value>` |
-| weatherInstance | `lightuserdata` | R | `obj.weatherInstance` |
-| currentSeason | `lightuserdata` | RW | `obj.currentSeason = <value>` |
+| weatherInstance | `WeatherInstance` | R | `obj.weatherInstance` |
+| currentSeason | `Season` | RW | `obj.currentSeason = <value>` |
+| seasons | `Season` | R | `obj.seasons` |
 | currentSeasonIndex | `integer` | RW | `obj.currentSeasonIndex = <value>` |
 | currentSeasonEndDay | `integer` | RW | `obj.currentSeasonEndDay = <value>` |
 | biomeGroupLoaded | `boolean` | RW | `obj.biomeGroupLoaded = <value>` |
@@ -12944,13 +13062,13 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | reset | `` | `void` | `obj:reset()` |
-| getWeatherInstance | `` | `lightuserdata` | `obj:getWeatherInstance()` |
+| getWeatherInstance | `` | `WeatherInstance` | `obj:getWeatherInstance()` |
 | setCurrentSeason | `seasonIndex: integer, seasonEnd: integer` | `void` | `obj:setCurrentSeason(seasonIndex, seasonEnd)` |
 | getNewWeatherStrength | `` | `number` | `obj:getNewWeatherStrength()` |
 | update | `` | `void` | `obj:update()` |
 | updateBT | `` | `void` | `obj:updateBT()` |
-| addListener | `listener: userdata` | `void` | `obj:addListener(listener)` |
-| removeListener | `listener: userdata` | `void` | `obj:removeListener(listener)` |
+| addListener | `listener: WeatherRegion::Listener` | `void` | `obj:addListener(listener)` |
+| removeListener | `listener: WeatherRegion::Listener` | `void` | `obj:removeListener(listener)` |
 | addGlobalEffect | `type: EffectType::Enum` | `void` | `obj:addGlobalEffect(type)` |
 | getNewSeason | `` | `void` | `obj:getNewSeason()` |
 | weatherChanged | `newWeather: boolean` | `void` | `obj:weatherChanged(newWeather)` |
@@ -12962,6 +13080,65 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
 **Parent Class:** [`WeatherRegion`](#weatherregion)
 **Metatable:** `KenshiLua.Listener`
+
+## WeatherSystem
+**Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
+**Metatable:** `KenshiLua.WeatherSystem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| ActiveRegionWeather | `WeatherRegion` | RW | `obj.ActiveRegionWeather = <value>` |
+| exitingBiome | `boolean` | RW | `obj.exitingBiome = <value>` |
+| previousBiomeAABB | `Vector4` | RW | `obj.previousBiomeAABB = <value>` |
+| areaFog | `WeatherSystem::ZoneFog` | R | `obj.areaFog` |
+| previousPoint | `Vector3` | RW | `obj.previousPoint = <value>` |
+| zoneFogBlendingPosition | `Vector3` | RW | `obj.zoneFogBlendingPosition = <value>` |
+| zoneFogBlendingType | `integer` | RW | `obj.zoneFogBlendingType = <value>` |
+| previousZoneFog | `WeatherSystem::ZoneFog` | RW | `obj.previousZoneFog = <value>` |
+| currentZoneFog | `WeatherSystem::ZoneFog` | RW | `obj.currentZoneFog = <value>` |
+| currentFogValues | `WeatherSystem::FogValues` | RW | `obj.currentFogValues = <value>` |
+| currentWindValue | `number` | RW | `obj.currentWindValue = <value>` |
+| currentRainValue | `number` | RW | `obj.currentRainValue = <value>` |
+| rainValueUpdated | `boolean` | RW | `obj.rainValueUpdated = <value>` |
+| globalWetness | `number` | RW | `obj.globalWetness = <value>` |
+| currentDustAmount | `Vector3` | RW | `obj.currentDustAmount = <value>` |
+| heatHazeUpdated | `boolean` | RW | `obj.heatHazeUpdated = <value>` |
+| heatHazeValue | `number` | RW | `obj.heatHazeValue = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| reset | `` | `void` | `obj:reset()` |
+| updateMT | `` | `void` | `obj:updateMT()` |
+| updateBT | `` | `void` | `obj:updateBT()` |
+| updateUT | `` | `void` | `obj:updateUT()` |
+| addWeatherListener [1] | `position: Vector3, listener: WeatherRegion::Listener` | `void` | `obj:addWeatherListener(position, listener)` |
+| addWeatherListener [2] | `biome: GameData, listener: WeatherRegion::Listener` | `void` | `obj:addWeatherListener(biome, listener)` |
+| removeWeatherListener | `listener: WeatherRegion::Listener` | `void` | `obj:removeWeatherListener(listener)` |
+| setDustShaderValue | `value: Vector3` | `void` | `obj:setDustShaderValue(value)` |
+
+### Static Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getInstance | `` | `WeatherSystem` | `WeatherSystem.getInstance()`<br>`obj:getInstance()` |
+
+## WeatherSystem::FogValues
+**Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
+**Parent Class:** [`WeatherSystem`](#weathersystem)
+**Metatable:** `KenshiLua.WeatherSystem_FogValues`
+
+## WeatherSystem::ZoneFog
+**Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
+**Parent Class:** [`WeatherSystem`](#weathersystem)
+**Metatable:** `KenshiLua.WeatherSystem_ZoneFog`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| clear | `` | `void` | `obj:clear()` |
+| getCurrentValues | `` | `WeatherSystem::FogValues` | `obj:getCurrentValues()` |
+| update | `` | `void` | `obj:update()` |
 
 ## WindGeneratorBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/GeneratorBuilding.h`

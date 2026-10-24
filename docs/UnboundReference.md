@@ -82,7 +82,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `ZoneActivationType` | 1 |
 | `ZoneMapContent*` | 1 |
 | `_ScytheRootObjectInterfaceT*` | 3 |
-| `bool` | 67 |
+| `bool` | 70 |
 | `boost::function<void` | 3 |
 | `boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >` | 2 |
 | `boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >` | 1 |
@@ -394,7 +394,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/InputHandlerBinding.cpp | addKey | `void` | non-string reference arg (const std::string&, bool&) |
 | Kenshi/ItemBinding.cpp | createItemEntityCallback | `void` | unsupported arg type (Ogre::SharedPtr<Ogre::Resource>) |
 | Kenshi/LimbsInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only LimbsInventoryLayout_setupSections_PLACEHOLDER) |
-| Kenshi/ListenerBinding.cpp | weatherUpdated | `void` | unsupported arg type (WeatherInstance*) |
+| Kenshi/ListenerBinding.cpp | weatherUpdated | `void` | unsupported arg type (WeatherInstance*, bool) |
 | Kenshi/MedianFilterBinding.cpp | apply | `void` | non-string reference arg |
 | Kenshi/MeshDataLookupBinding.cpp | init | `void` | unsupported arg type |
 | Kenshi/MotionFilterBinding.cpp | Apply | `void` | non-string reference arg (float&) |
@@ -525,8 +525,8 @@ Below are methods that were skipped during binding generation:
 | Kenshi/ResourceLoaderBinding.cpp | releaseSceneNode | `void` | unsupported arg type (Ogre::SceneNode*) |
 | Kenshi/ResourceLoaderBinding.cpp | removeRequest | `void` | unsupported arg type (Ogre::Entity*) |
 | Kenshi/ResourceLoaderBinding.cpp | setupResourceMesh | `unsigned __int64` | unsupported return type |
-| Kenshi/RotatingEntBinding.cpp | _NV_weatherUpdated | `void` | unsupported arg type (WeatherInstance*) |
-| Kenshi/RotatingEntBinding.cpp | weatherUpdated | `void` | unsupported arg type (WeatherInstance*) |
+| Kenshi/RotatingEntBinding.cpp | _NV_weatherUpdated | `void` | unsupported arg type (WeatherInstance*, bool) |
+| Kenshi/RotatingEntBinding.cpp | weatherUpdated | `void` | unsupported arg type (WeatherInstance*, bool) |
 | Kenshi/TaskDataBinding.cpp | _isRequirementsComplete | `bool` | unsupported arg type (AI*, const hand&, const Ogre::Vector3&, hand&, bool, StateType&) |
 | Kenshi/TaskDataBinding.cpp | _targetsRemaining | `bool` | unsupported arg type (AI*, const hand&) |
 | Kenshi/TaskDataBinding.cpp | getRequirementComplaint | `void` | non-string reference arg (std::string&, const hand&, const Ogre::Vector3&, const hand&) |
