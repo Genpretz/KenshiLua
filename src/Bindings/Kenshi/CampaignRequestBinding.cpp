@@ -6,6 +6,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/FactionBinding.h"
 #include "Bindings/Kenshi/Util/TimeOfDayBinding.h"
+#include "Bindings/Kenshi/CampaignDataBinding.h"
 
 namespace KenshiLua
 {
@@ -29,8 +30,7 @@ static int CampaignRequest_get_data(lua_State* L)
 {
     CampaignRequest* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignRequest is nil");
-    lua_pushlightuserdata(L, (void*)instance->data);
-    return 1;
+    return pushObject<CampaignData>(L, instance->data, CampaignDataBinding::getMetatableName());
 }
 
 static int CampaignRequest_get_target(lua_State* L)

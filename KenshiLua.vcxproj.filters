@@ -115,10 +115,14 @@
     <ClCompile Include="src\Bindings\Kenshi\AbstractMovementBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ActivePlatoonBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AI\AIBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\AI\AIPackageBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\AI\BlackboardBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\AI\TaskMatchBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AIOptionsBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceHumanBinding.cpp" />
@@ -175,6 +179,8 @@
     <ClCompile Include="src\Bindings\Kenshi\Building\WindGeneratorBuildingBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Faction_BuildingSwapsBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\CameraClassBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\CampaignDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\CampaignInstanceBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\CampaignRequestBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\CampaignTriggerDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\CharacterAnimalBinding.cpp" />
@@ -409,6 +415,7 @@
     <ClCompile Include="src\Bindings\Kenshi\SelectionBoxBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SenseItrBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SensoryDataBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\SerialisableBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderInventoryBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderInventorySectionBinding.cpp" />
@@ -1031,10 +1038,14 @@
     <ClInclude Include="src\Bindings\Kenshi\AbstractMovementBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ActivePlatoonBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AI\AIBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\AI\AIPackageBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\AI\BlackboardBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\AI\TaskMatchBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AIOptionsBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceHumanBinding.h" />
@@ -1091,6 +1102,8 @@
     <ClInclude Include="src\Bindings\Kenshi\Building\WindGeneratorBuildingBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Faction_BuildingSwapsBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\CameraClassBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\CampaignDataBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\CampaignInstanceBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\CampaignRequestBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\CampaignTriggerDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\CharacterAnimalBinding.h" />
@@ -1327,6 +1340,7 @@
     <ClInclude Include="src\Bindings\Kenshi\SelectionBoxBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SenseItrBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SensoryDataBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\SerialisableBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderInventoryBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderInventorySectionBinding.h" />

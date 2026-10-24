@@ -6,6 +6,7 @@
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
 #include "Bindings/Kenshi/Util/BoostUnorderedBinding.h"
+#include "Bindings/Kenshi/SerialisableBinding.h"
 
 namespace KenshiLua
 {
@@ -364,7 +365,7 @@ int GameDataContainerBinding::loadGameDataReturn(lua_State* L)
     std::string file = luaL_checkstring(L, 2);
     bool isActive = lua_toboolean(L, 3) != 0;
     bool readOnly = lua_toboolean(L, 4) != 0;
-    Serialisable* moreData = lua_isuserdata(L, 5) ? (Serialisable*)lua_touserdata(L, 5) : nullptr;
+    Serialisable* moreData = lua_isnoneornil(L, 5) ? nullptr : checkObject<Serialisable>(L, 5, SerialisableBinding::getMetatableName());
     bool res = instance->loadGameDataReturn(file, isActive, readOnly, moreData);
     lua_pushboolean(L, res ? 1 : 0);
     return 1;
@@ -378,7 +379,7 @@ int GameDataContainerBinding::load(lua_State* L)
     std::string filename = luaL_checkstring(L, 2);
     std::string modName = luaL_checkstring(L, 3);
     int modIndex = (int)luaL_checkinteger(L, 4);
-    Serialisable* moreData = lua_isuserdata(L, 5) ? (Serialisable*)lua_touserdata(L, 5) : nullptr;
+    Serialisable* moreData = lua_isnoneornil(L, 5) ? nullptr : checkObject<Serialisable>(L, 5, SerialisableBinding::getMetatableName());
     bool keepDeletedInstances = lua_isboolean(L, 6) ? (lua_toboolean(L, 6) != 0) : false;
     bool res = instance->load(filename, modName, modIndex, moreData, keepDeletedInstances);
     lua_pushboolean(L, res ? 1 : 0);
@@ -391,7 +392,7 @@ int GameDataContainerBinding::save(lua_State* L)
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
     std::string filename = luaL_checkstring(L, 2);
-    Serialisable* moreData = lua_isuserdata(L, 3) ? (Serialisable*)lua_touserdata(L, 3) : nullptr;
+    Serialisable* moreData = lua_isnoneornil(L, 3) ? nullptr : checkObject<Serialisable>(L, 3, SerialisableBinding::getMetatableName());
     bool res = instance->save(filename, moreData);
     lua_pushboolean(L, res ? 1 : 0);
     return 1;
@@ -433,11 +434,6 @@ int GameDataContainerBinding::_addToKillList(lua_State* L)
 }
 
 /*
-LIGHTUSERDATA DEPENDENCIES:
-  - GameDataContainerBinding::loadGameDataReturn: Serialisable* parameter (unbound pointer)
-  - GameDataContainerBinding::load: Serialisable* parameter (unbound pointer)
-  - GameDataContainerBinding::save: Serialisable* parameter (unbound pointer)
-
 SKIPPED PROPERTIES / CONTAINERS NEEDING MANUAL BINDING OR UNBOUND TYPES:
   - gamedataCatName (nested map boost::unordered_map<int, boost::unordered_map<std::string, GameData*>>) - unsupported nested container
   - gamedataCatSID (nested map boost::unordered_map<int, boost::unordered_map<std::string, GameData*>>) - unsupported nested container

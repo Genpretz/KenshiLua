@@ -2,10 +2,12 @@
 #include "kenshi/Animation/AnimationClass.h"
 #include "AnimationClassBaseBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
 #include "Bindings/Kenshi/CharMovementBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/Util/BoostUnorderedBinding.h"
+#include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/StdMapBinding.h"
 
 namespace KenshiLua
@@ -445,11 +447,15 @@ int AnimationClassBaseBinding::getAnimationProgress(lua_State* L)
         lua_pushnumber(L, instance->getAnimationProgress(name));
         return 1;
     }
+    if (AnimationData* name = testObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName())) {
+        lua_pushnumber(L, instance->getAnimationProgress(name));
+        return 1;
+    }
     if (CombatTechniqueData* name = testObject<CombatTechniqueData>(L, 2, CombatTechniqueDataBinding::getMetatableName())) {
         lua_pushnumber(L, instance->getAnimationProgress(name));
         return 1;
     }
-    return luaL_error(L, "Argument 2 to getAnimationProgress must be a string or CombatTechniqueData, got %s", luaL_typename(L, 2));
+    return luaL_error(L, "Argument 2 to getAnimationProgress must be a string, AnimationData, or CombatTechniqueData, got %s", luaL_typename(L, 2));
 }
 
 int AnimationClassBaseBinding::getOrientation(lua_State* L)
@@ -560,6 +566,17 @@ int AnimationClassBaseBinding::isAnimationPlaying(lua_State* L)
     return 1;
 }
 
+int AnimationClassBaseBinding::getAnimationCurrentWeight(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+
+    AnimationData* name = checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    float result = instance->getAnimationCurrentWeight(name);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
 int AnimationClassBaseBinding::getTotalActionAnimationWeight(lua_State* L)
 {
     AnimationClassBase* instance = getInstance(L, 1);
@@ -580,21 +597,48 @@ int AnimationClassBaseBinding::stillPlayingAnActionOrSomething(lua_State* L)
     return 1;
 }
 
+int AnimationClassBaseBinding::getAnimation_Medic(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+
+    hand* inwhat = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    AnimationData* result = instance->getAnimation_Medic(*inwhat);
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBaseBinding::getAnimation_Lockpick(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+
+    hand* inwhat = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    AnimationData* result = instance->getAnimation_Lockpick(*inwhat);
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+// Pure virtual here; dispatches to the AnimationClass override through vtable slot 0x18,
+// which adds a null allAnims entry for an unknown name.
+int AnimationClassBaseBinding::getAnimationData(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+
+    const std::string name = luaL_checkstring(L, 2);
+    AnimationData* result = instance->getAnimationData(name);
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
   line 85: void create(...) - appends five new AnimationLayers each call; Lua cannot construct an AnimationClassBase, and calling it on a live instance duplicates the layers
   line 93: Ogre::OldBone* _getBone(...) - unbound pointer
-  line 108: float getAnimationProgress(AnimationData*) - unbound pointer argument; the string and CombatTechniqueData overloads are bound
   line 236: AnimationClassBase::SingleAnimation* getAnimationPlaying_animName(...) - unbound pointer
   line 237: AnimationClassBase::SingleAnimation* getAnimationPlaying_datName(...) - unbound pointer
   line 238: AnimationClassBase::SingleAnimation* getAnimationPlaying(CombatTechniqueData*) - unbound pointer
   line 239: AnimationClassBase::SingleAnimation* getAnimationPlaying(AnimationData*) - unbound pointer
-  line 241: float getAnimationCurrentWeight(AnimationData*) - unbound pointer argument
   line 244: Ogre::AnimationState* getAnimationState(...) - unbound pointer
   line 245: Ogre::Animation* getAnimation(...) - unbound pointer
-  line 246: AnimationData* getAnimation_Medic(...) - unbound pointer
-  line 247: AnimationData* getAnimation_Lockpick(...) - unbound pointer
-  line 248: AnimationData* getAnimationData(...) - unbound pointer
 */
 
 /*
@@ -657,8 +701,12 @@ void AnimationClassBaseBinding::registerBinding(lua_State* L)
         { "isVisibleEntity", AnimationClassBaseBinding::isVisibleEntity },
         { "initBoneInitialWorldPositions", AnimationClassBaseBinding::initBoneInitialWorldPositions },
         { "isAnimationPlaying", AnimationClassBaseBinding::isAnimationPlaying },
+        { "getAnimationCurrentWeight", AnimationClassBaseBinding::getAnimationCurrentWeight },
         { "getTotalActionAnimationWeight", AnimationClassBaseBinding::getTotalActionAnimationWeight },
         { "stillPlayingAnActionOrSomething", AnimationClassBaseBinding::stillPlayingAnActionOrSomething },
+        { "getAnimation_Medic", AnimationClassBaseBinding::getAnimation_Medic },
+        { "getAnimation_Lockpick", AnimationClassBaseBinding::getAnimation_Lockpick },
+        { "getAnimationData", AnimationClassBaseBinding::getAnimationData },
         { 0, 0 }
     };
 

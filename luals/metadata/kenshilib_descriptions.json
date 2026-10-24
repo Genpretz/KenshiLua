@@ -588,7 +588,7 @@
                 "isLoaded": "Returns true if this active platoon's characters are currently spawned and loaded.",
                 "isWholeSquadDown": "Returns true if all squad members (optionally excluding minusThis count) are unconscious, dead, or incapacitated.",
                 "loadCharacters": "Spawns the platoon's characters around position _a1 (Vector3 table), optionally notifying _a2 (FactoryCallbackInterface).",
-                "loadFromDisk": "Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (Serialisable* lightuserdata).",
+                "loadFromDisk": "Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (`Serialisable` or nil).",
                 "loadInstance": "Spawns a single character instance from state (GameSaveState) at pos (Vector3 table) and rot (Quaternion table), with skipSaveState, optional callback (FactoryCallbackInterface), and positionMoved offset (Vector3 table).",
                 "periodicUpdate": "Runs periodic squad AI, sensory, and zone checks.",
                 "putTheSpecialCharactersInNewSquads_captured": "Moves captured unique/special characters into separate squads before unloading.",
@@ -2058,6 +2058,15 @@
                 "yaw": "Current camera yaw angle in degrees."
             }
         },
+        "CampaignData": {
+            "description": "A faction's definition of one war campaign type, owned by that faction's `FactionWarMgr` (`possibleCampaigns`).",
+            "methods": {},
+            "properties": {
+                "data": "The `GameData` record this campaign is built from. Cannot be set to nil.",
+                "factionOverride": "`Faction` that runs this campaign instead of the owner, or nil.",
+                "me": "The `Faction` that owns this campaign data. Cannot be set to nil."
+            }
+        },
         "CampaignInstance": {
             "description": "Active military expedition instance tracking marching forces, operational phases (Gathering, Assaulting, Retreating, Victory), destination waypoints, and casualties.",
             "methods": {
@@ -2092,7 +2101,7 @@
                 "tryToChangeTarget": "Attempts to find and assign an alternative valid target for this campaign request, returning true if successful."
             },
             "properties": {
-                "data": "Read-only `lightuserdata` pointer to the underlying `CampaignData` object.",
+                "data": "Read-only `CampaignData` this request refers to.",
                 "enemy": "Target enemy `Faction` for this campaign request.",
                 "homeBase": "Handle (`hand`) to the home town or base launching the campaign.",
                 "numAttempts": "Number of attempts made to launch or retarget this campaign request.",
@@ -10001,6 +10010,11 @@
                 "totalThreatLevelPersonal": "Combined threat level of enemies targeting this character personally."
             }
         },
+        "Serialisable": {
+            "description": "Engine interface for objects that can be written to and read from save streams. Its methods take C++ streams and are not exposed; the type is used for typed `Serialisable` arguments.",
+            "methods": {},
+            "properties": {}
+        },
         "ShopTrader": {
             "description": "Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.",
             "methods": {
@@ -10459,6 +10473,20 @@
                 "results": "TaskStateData pointer to the first element of the 8-element GOAP state results array.",
                 "scoreFunction": "Pointer to the C++ function object used to score this task (exposed as read-only lightuserdata).",
                 "subTask": "Child TaskType spawned by this task."
+            }
+        },
+        "TaskMatch": {
+            "description": "Identifies a task by its TaskData and subject/subtarget handles, used to match and compare AI tasks. Values created with `TaskMatch(...)` are owned by Lua.",
+            "methods": {
+                "getTaskData": "Returns the `TaskData` this match refers to, or nil.",
+                "key": "Returns the task type of this match as a `TaskType` integer.",
+                "reset": "Clears this match.",
+                "sameAs": "Returns true if this match refers to the same task as the given `Tasker`."
+            },
+            "properties": {
+                "subject": "Handle of the task subject.",
+                "subtarget": "Handle of the task subtarget.",
+                "taskData": "The `TaskData` this match refers to, or nil."
             }
         },
         "TaskPathfinder": {
@@ -12319,12 +12347,14 @@
     "enums": {
         "AI.AIAggressionOrders": "Combat aggression order for an `AI`, as used by `AI.ordersAggression` and `AI.setAggressionLevel`.",
         "AI.AIManuverabilityOrders": "Movement freedom order for an `AI`, as used by `AI.ordersMovement` and `AI.setManuveringFreedomLevel`.",
+        "AnimationLayerEnum": "Animation layer an `AnimationData` plays on.",
         "AppearanceManager.DataCategory.Enum": "Character appearance customization section category (face, body, skin tone).",
         "AppearanceManager.Gender.Enum": "Gender enumeration for character anatomy and mesh selection.",
         "ArmourClass": "Armor weight classification determining base damage mitigation and combat speed encumbrance.",
         "ArmourType": "Equipment slot or layer category for armor (cloth, leather, chain, or plate).",
         "AttachSlot": "Visual and physical attachment slot for weapons, hair, backpacks, and equipment.",
         "AttackDirection.Enum": "Incoming attack angle relative to the defending character.",
+        "BlackboardSignalFunctions": "Signal raised on a squad `Blackboard` to drive AI package behaviour.",
         "BuildingClassType": "Functional categorization of buildings in the settlement simulation (doors, usable structures, fluff).",
         "BuildingDesignation": "Settlement zoning and building purpose classification (shop, barracks, hospital, residential).",
         "BuildingFunction": "Operational role or production utility of a building (mining, storage, crafting, housing).",
@@ -12334,6 +12364,7 @@
         "CharStats.GUIStatsDisplayMode": "Character stats panel display layout mode.",
         "Character.CharMessage": "Character status notifications dispatched during state changes and interaction.",
         "Character.DisguiseGUIFeedback": "Faction disguise evaluation outcome and recognition feedback.",
+        "CharacterAnimCategory": "Category of an `AnimationData`, such as normal, sleeping, or combat.",
         "CharacterEditMode": "Context mode for the character customization editor (new game, plastic surgeon mid-game, debug).",
         "CharacterMessage": "Character message types dispatched during melee combat and state changes.",
         "CharacterPerceptionTags_LongTerm": "Long-term persistent perception relationships between characters (e.g. lifesaver, intruder).",
@@ -12391,6 +12422,7 @@
         "NxShapesType": "PhysX collision shape query filter category (static, dynamic, all).",
         "PermajobType": "Persistent recurring task priority classification (normal work job, high-priority combat job).",
         "PersonalityTags": "Personality tag assigned to a character, as stored in `StateBroadcastData.myPersonality`.",
+        "Phase": "Phase of a running `CampaignInstance`.",
         "PlatoonCreationMessage": "Lifecycle signal dispatched during squad or platoon instantiation.",
         "PortraitData.State": "UI portrait frame highlight and status badge state.",
         "PreviewBuilding.PlacementResult": "Construction holographic preview validity check result.",
@@ -12414,6 +12446,8 @@
         "StateType": "AI state machine evaluation conditions and task completion predicates.",
         "StatsEnumerated": "Character attribute and weapon skill identifier enumeration.",
         "TalkerEnum": "Dialogue speaker identity reference (speaker, target, player target).",
+        "TaskEndEvent": "What happens to squad jobs when a task ends.",
+        "TaskTargetType": "How a squad job chooses its target.",
         "TaskType": "AI task goal type defining character behaviors, work assignments, and sensory goals.",
         "ToolTip.Type": "GUI tooltip formatting and content rendering type.",
         "TownAlarmState": "Settlement security alarm condition (peaceful, intruder alert, prisoner escape).",
@@ -12425,6 +12459,7 @@
         "UpdatePriority": "Actor and physics simulation tick frequency priority tier.",
         "UseStuffState": "Furniture and station usage posture (sleeping in bed, locked in cage, operating turret).",
         "WallSectionLinkType": "Modular defensive wall section connection link geometry type.",
+        "WarCampaignEnum": "Type of a war campaign, as returned by `CampaignData.key`.",
         "WaterState.Enum": "Water submersion depth classification for characters and vehicles.",
         "WeaponCategory": "Weapon class and skill taxonomy (katanas, sabres, blunt, heavy weapons, polearms).",
         "WeatherAffecting": "Environmental hazard type applied to characters by the active weather system.",

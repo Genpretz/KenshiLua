@@ -18,8 +18,10 @@ public:
     static int tostring(lua_State* L);
 
     static int debugGetAllAnimations(lua_State* L);
+    static int startStumble(lua_State* L);
     static int endStumble(lua_State* L);
     static int currentlyStumbling(lua_State* L);
+    static int getCurrentlyStumbleAnim(lua_State* L);
     static int isCurrentlyIncapableOfWaypointMovemode(lua_State* L);
     static int threadSafeRagdollUpdateUT(lua_State* L);
     static int update(lua_State* L);
@@ -50,6 +52,7 @@ public:
     static int setMaximumSpeed(lua_State* L);
     static int getMaximumSpeed(lua_State* L);
     static int isLinearAnimationDone_byName(lua_State* L);
+    static int isLinearAnimationDone(lua_State* L);
     static int getFootHeight(lua_State* L);
     static int calculateFeetHeight(lua_State* L);
     static int setBootHeight(lua_State* L);
@@ -73,12 +76,17 @@ public:
     static int beingCarriedUpdate(lua_State* L);
     static int rangedCombatModeUpdate(lua_State* L);
     static int runAnimation(lua_State* L);
+    static int runAnimation_manualTiming(lua_State* L);
     static int endCombatAnimation(lua_State* L);
     static int runCombatAnimation(lua_State* L);
     static int startCombatAnimation(lua_State* L);
     static int startAnimation(lua_State* L);
     static int stopAnimation(lua_State* L);
     static int activateVisuals(lua_State* L);
+    static int getAnimationData(lua_State* L);
+    static int _NV_getAnimationData(lua_State* L);
+    static int getAnimationDataByOgreName(lua_State* L);
+    static int _NV_getAnimationDataByOgreName(lua_State* L);
     static int estimateAnimationTime(lua_State* L);
     static int notifyRelocatedAnimLoop(lua_State* L);
     static int serialiseAppearance(lua_State* L);
@@ -115,10 +123,19 @@ public:
     static int _NV_lookAt(lua_State* L);
     static int getLookDirection(lua_State* L);
     static int _NV_getLookDirection(lua_State* L);
+    static int chooseStumbleAnim(lua_State* L);
+    static int getIdleAnimation(lua_State* L);
+    static int _NV_getIdleAnimation(lua_State* L);
+    static int getFloatingAnim(lua_State* L);
+    static int _NV_getFloatingAnim(lua_State* L);
+    static int getStandingUpAnim(lua_State* L);
+    static int _NV_getStandingUpAnim(lua_State* L);
     static int hasAction(lua_State* L);
     static int animationSelection(lua_State* L);
     static int animationSelectionCombatMode(lua_State* L);
     static int _NV_animationSelectionCombatMode(lua_State* L);
+    static int runStrafe(lua_State* L);
+    static int _NV_runStrafe(lua_State* L);
     static int overlaidAnimationSelection(lua_State* L);
     static int _NV_overlaidAnimationSelection(lua_State* L);
     static int processTurnAnim(lua_State* L);

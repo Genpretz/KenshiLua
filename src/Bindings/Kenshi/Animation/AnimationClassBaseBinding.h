@@ -48,7 +48,11 @@ public:
     static int isVisibleEntity(lua_State* L);
     static int initBoneInitialWorldPositions(lua_State* L);
     static int isAnimationPlaying(lua_State* L);
+    static int getAnimationCurrentWeight(lua_State* L);
     static int getTotalActionAnimationWeight(lua_State* L);
     static int stillPlayingAnActionOrSomething(lua_State* L);
+    static int getAnimation_Medic(lua_State* L);
+    static int getAnimation_Lockpick(lua_State* L);
+    static int getAnimationData(lua_State* L);
 };
 }

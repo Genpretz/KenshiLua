@@ -6169,15 +6169,15 @@
         },
         {
           "name": "loadGameDataReturn",
-          "type": "fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: lightuserdata): boolean"
+          "type": "fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: Serialisable): boolean"
         },
         {
           "name": "load",
-          "type": "fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: lightuserdata, keepDeletedInstances?: boolean): boolean"
+          "type": "fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: Serialisable, keepDeletedInstances?: boolean): boolean"
         },
         {
           "name": "save",
-          "type": "fun(self: GameDataContainer, filename: string, moreData?: lightuserdata): boolean"
+          "type": "fun(self: GameDataContainer, filename: string, moreData?: Serialisable): boolean"
         },
         {
           "description": "Static function exposed through the instance method table; call with dot syntax.",

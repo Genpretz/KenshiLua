@@ -376,7 +376,7 @@ class BindingInventoryTests(unittest.TestCase):
             next(item for item in bindings["ActivePlatoon"]["methods"] if item["name"] == "getSquadLeader")["signature"]["returns"],
         )
         self.assertEqual(
-            ["OgreFastArray<lightuserdata>"],
+            ["OgreFastArray<AnimationData>"],
             next(item for item in bindings["AppearanceManager"]["methods"] if item["name"] == "getCharacterIdleAnimations")["signature"]["returns"],
         )
         self.assertEqual(
@@ -497,8 +497,8 @@ class BindingInventoryTests(unittest.TestCase):
             for binding in [entry["binding"]] + entry.get("binding_aliases", []):
                 bindings.setdefault(binding, entry)
         animation_data = bindings["AnimationDataFastArrayBinding"]
-        # Pointer arrays registered without an element metatable share one type.
-        self.assertEqual("OgreFastArray<lightuserdata>", animation_data["lua_type"])
+        # A pointer array registered with an element metatable is typed by that element.
+        self.assertEqual("OgreFastArray<AnimationData>", animation_data["lua_type"])
         self.assertIn(
             "Ogre::FastArray<AnimationData*>",
             [animation_data["metatable"]] + animation_data.get("metatable_aliases", []),

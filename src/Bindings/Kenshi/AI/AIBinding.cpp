@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "AIBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/AI/BlackboardBinding.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
 #include "Bindings/Kenshi/Building/StorageBuildingBinding.h"
 #include "Bindings/Kenshi/Building/UseableStuffBinding.h"
@@ -456,6 +457,15 @@ int AIBinding::_NV_getFaction(lua_State* L)
 
     Faction* result = instance->_NV_getFaction();
     return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
+}
+
+int AIBinding::getBlackboard(lua_State* L)
+{
+    AI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AI is nil");
+
+    Blackboard* result = instance->getBlackboard();
+    return pushObject<Blackboard>(L, result, BlackboardBinding::getMetatableName());
 }
 
 int AIBinding::getHandle(lua_State* L)
@@ -6163,7 +6173,6 @@ Skipped methods needing manual binding:
   line 145: setFunc - static; takes a bool (AI::*)(const hand&, const Ogre::Vector3&) member-function pointer
   line 146: _setupGOAPFuncs - static engine initialization of AI::stateFuncs
   line 157: getTaskSystem - AITaskSytem* (unbound pointer)
-  line 180: getBlackboard - Blackboard* (unbound pointer)
   line 183: AI - engine-owned; created by Character
   line 184: _CONSTRUCTOR - engine-owned; created by Character
   line 185: ~AI - engine-owned; destroyed by Character
@@ -6210,6 +6219,7 @@ void AIBinding::registerBinding(lua_State* L)
         { "getPlatoon", AIBinding::getPlatoon },
         { "getFaction", AIBinding::getFaction },
         { "_NV_getFaction", AIBinding::_NV_getFaction },
+        { "getBlackboard", AIBinding::getBlackboard },
         { "getHandle", AIBinding::getHandle },
         { "create", AIBinding::create },
         { "update4Frame", AIBinding::update4Frame },

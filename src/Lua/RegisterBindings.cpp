@@ -2,6 +2,9 @@
 #include "Lua/LuaBindings.h"
 #include "Bindings/Kenshi/AABB2DBinding.h"
 #include "Bindings/Kenshi/AI/AIBinding.h"
+#include "Bindings/Kenshi/AI/AIPackageBinding.h"
+#include "Bindings/Kenshi/AI/BlackboardBinding.h"
+#include "Bindings/Kenshi/AI/TaskMatchBinding.h"
 #include "Bindings/Kenshi/AIOptionsBinding.h"
 #include "Bindings/Kenshi/AbstractMovementBaseBinding.h"
 #include "Bindings/Kenshi/ActivePlatoonBinding.h"
@@ -10,6 +13,7 @@
 #include "Bindings/Kenshi/AnimalInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassBaseBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
 #include "Bindings/Kenshi/AppearanceAnimalBinding.h"
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/AppearanceHumanBinding.h"
@@ -66,6 +70,8 @@
 #include "Bindings/Kenshi/Building/WindGeneratorBuildingBinding.h"
 #include "Bindings/Kenshi/Faction_BuildingSwapsBinding.h"
 #include "Bindings/Kenshi/CameraClassBinding.h"
+#include "Bindings/Kenshi/CampaignDataBinding.h"
+#include "Bindings/Kenshi/CampaignInstanceBinding.h"
 #include "Bindings/Kenshi/CampaignRequestBinding.h"
 #include "Bindings/Kenshi/CampaignTriggerDataBinding.h"
 #include "Bindings/Kenshi/CharBodyBinding.h"
@@ -317,6 +323,7 @@
 #include "Bindings/Kenshi/SelectionBoxBinding.h"
 #include "Bindings/Kenshi/SenseItrBinding.h"
 #include "Bindings/Kenshi/SensoryDataBinding.h"
+#include "Bindings/Kenshi/SerialisableBinding.h"
 #include "Bindings/Kenshi/ShopTraderBinding.h"
 #include "Bindings/Kenshi/ShopTraderInventoryBinding.h"
 #include "Bindings/Kenshi/ShopTraderInventorySectionBinding.h"
@@ -652,6 +659,8 @@ void LuaBindings::registerLektor(lua_State* L)
     LektorPtrBinding<DatapanelGUI*>::registerBinding(L, "lektor<DatapanelGUI*>", DatapanelGUIBinding::getMetatableName());
     LektorPtrBinding<GUIWindow*>::registerBinding(L, "lektor<GUIWindow*>", GUIWindowBinding::getMetatableName());
     LektorPtrBinding<ScreenLabelInterface*>::registerBinding(L, "lektor<ScreenLabelInterface*>", ScreenLabelInterfaceBinding::getMetatableName());
+    LektorPtrBinding<CampaignInstance*>::registerBinding(L, "lektor<CampaignInstance*>", CampaignInstanceBinding::getMetatableName());
+    LektorPtrBinding<CampaignData*>::registerBinding(L, "lektor<CampaignData*>", CampaignDataBinding::getMetatableName());
 
     LektorValueBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
     LektorValueBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
@@ -707,6 +716,7 @@ void LuaBindings::registerStdMap(lua_State* L)
     StdMapBinding<GameData*, float>::registerBinding(L, "std::map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
     StdMapBinding<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData* const, bool>>>::registerBinding(L, "std::map<GameData*, bool>", GameDataBinding::getMetatableName(), nullptr);
     StdMapBinding<std::string, Ogre::Quaternion>::registerBinding(L, "std::map<std::string, Quaternion>");
+    StdMapBinding<Platoon*, CampaignInstance*>::registerBinding(L, "std::map<Platoon*, CampaignInstance*>", PlatoonBinding::getMetatableName(), CampaignInstanceBinding::getMetatableName());
 }
 
 void LuaBindings::registerStdDeque(lua_State* L)
@@ -736,6 +746,9 @@ void LuaBindings::registerClasses(lua_State* L)
 {
     AABB2DBinding::registerBinding(L);
     AIBinding::registerBinding(L);
+    AIPackageBinding::registerBinding(L);
+    BlackboardBinding::registerBinding(L);
+    TaskMatchBinding::registerBinding(L);
     AIOptionsBinding::registerBinding(L);
     AbstractMovementBaseBinding::registerBinding(L);
     ActivePlatoonBinding::registerBinding(L);
@@ -744,6 +757,7 @@ void LuaBindings::registerClasses(lua_State* L)
     AnimalInventoryLayoutBinding::registerBinding(L);
     AnimationClassBaseBinding::registerBinding(L);
     AnimationClassBinding::registerBinding(L);
+    AnimationDataBinding::registerBinding(L);
     AppearanceAnimalBinding::registerBinding(L);
     AppearanceBaseBinding::registerBinding(L);
     AppearanceHumanBinding::registerBinding(L);
@@ -777,6 +791,8 @@ void LuaBindings::registerClasses(lua_State* L)
     CPerfTimerBinding::registerBinding(L);
     CPerfTimerTBinding::registerBinding(L);
     CameraClassBinding::registerBinding(L);
+    CampaignDataBinding::registerBinding(L);
+    CampaignInstanceBinding::registerBinding(L);
     CampaignRequestBinding::registerBinding(L);
     CampaignTriggerDataBinding::registerBinding(L);
     CharBodyBinding::registerBinding(L);
@@ -1019,6 +1035,7 @@ void LuaBindings::registerClasses(lua_State* L)
     SelectionBoxBinding::registerBinding(L);
     SenseItrBinding::registerBinding(L);
     SensoryDataBinding::registerBinding(L);
+    SerialisableBinding::registerBinding(L);
     ShopTraderBinding::registerBinding(L);
     ShopTraderInventoryBinding::registerBinding(L);
     ShopTraderInventorySectionBinding::registerBinding(L);

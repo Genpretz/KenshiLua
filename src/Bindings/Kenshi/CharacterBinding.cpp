@@ -53,6 +53,8 @@
 #include "Bindings/Kenshi/Character_CarryMsgBinding.h"
 #include "Bindings/Kenshi/Util/StdDequeBinding.h"
 #include "Bindings/Kenshi/StateBroadcastDataBinding.h"
+#include "Bindings/Kenshi/CampaignInstanceBinding.h"
+#include "Bindings/Kenshi/AI/BlackboardBinding.h"
 #include "Bindings/Kenshi/AI/AIBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 
@@ -1293,8 +1295,7 @@ int CharacterBinding::isInAWarCampaign(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     CampaignInstance* result = instance->isInAWarCampaign();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<CampaignInstance>(L, result, CampaignInstanceBinding::getMetatableName());
 }
 
 int CharacterBinding::wantsToTriggerCampaigns(lua_State* L)
@@ -4338,8 +4339,7 @@ int CharacterBinding::getBlackboard(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     Blackboard* result = instance->getBlackboard();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<Blackboard>(L, result, BlackboardBinding::getMetatableName());
 }
 
 int CharacterBinding::getSquadLeader(lua_State* L)

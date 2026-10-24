@@ -14,6 +14,9 @@
 #include "Bindings/Kenshi/CampaignTriggerDataBinding.h"
 #include "Bindings/Kenshi/CampaignRequestBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/Kenshi/CampaignDataBinding.h"
+#include "Bindings/Kenshi/CampaignInstanceBinding.h"
+#include "Bindings/Kenshi/Util/StdMapBinding.h"
 
 namespace KenshiLua
 {
@@ -64,8 +67,7 @@ static int FactionWarMgr_get_activeCampaigns(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lua_pushlightuserdata(L, (void*)&instance->activeCampaigns);
-    return 1;
+    return pushObject<lektor<CampaignInstance*> >(L, &instance->activeCampaigns, LektorPtrBinding<CampaignInstance*>::metaName);
 }
 
 static int FactionWarMgr_get_biomeTerritories(lua_State* L)
@@ -95,16 +97,14 @@ static int FactionWarMgr_get_possibleCampaigns(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lua_pushlightuserdata(L, (void*)&instance->possibleCampaigns);
-    return 1;
+    return pushObject<lektor<CampaignData*> >(L, &instance->possibleCampaigns, LektorPtrBinding<CampaignData*>::metaName);
 }
 
 static int FactionWarMgr_get_forces(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lua_pushlightuserdata(L, (void*)&instance->forces);
-    return 1;
+    return pushObject<StdMapBinding<Platoon*, CampaignInstance*>::MapType>(L, &instance->forces, StdMapBinding<Platoon*, CampaignInstance*>::getMetatableName());
 }
 
 // --- Setters for FactionWarMgr ---
@@ -156,8 +156,8 @@ static int FactionWarMgr_set_activeCampaigns(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lektor<CampaignInstance*>* val = (lektor<CampaignInstance*>*)lua_touserdata(L, 2);
-    if (!val) return luaL_error(L, "Expected lektor<CampaignInstance*> lightuserdata");
+    lektor<CampaignInstance*>* val = LektorPtrBinding<CampaignInstance*>::getInstance(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set activeCampaigns must be lektor<CampaignInstance*>");
     instance->activeCampaigns = *val;
     return 0;
 }
@@ -196,8 +196,8 @@ static int FactionWarMgr_set_possibleCampaigns(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lektor<CampaignData*>* val = (lektor<CampaignData*>*)lua_touserdata(L, 2);
-    if (!val) return luaL_error(L, "Expected lektor<CampaignData*> lightuserdata");
+    lektor<CampaignData*>* val = LektorPtrBinding<CampaignData*>::getInstance(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set possibleCampaigns must be lektor<CampaignData*>");
     instance->possibleCampaigns = *val;
     return 0;
 }
@@ -206,9 +206,8 @@ static int FactionWarMgr_set_forces(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    typedef std::map<Platoon*, CampaignInstance*, std::less<Platoon*>, Ogre::STLAllocator<std::pair<Platoon* const, CampaignInstance*>, Ogre::GeneralAllocPolicy > > MapType;
-    MapType* val = (MapType*)lua_touserdata(L, 2);
-    if (!val) return luaL_error(L, "Expected map lightuserdata");
+    StdMapBinding<Platoon*, CampaignInstance*>::MapType* val = StdMapBinding<Platoon*, CampaignInstance*>::getInstance(L, 2);
+    if (!val) return luaL_error(L, "Argument 2 to set forces must be std::map<Platoon*, CampaignInstance*>");
     instance->forces = *val;
     return 0;
 }
@@ -290,7 +289,7 @@ int FactionWarMgrBinding::endCampaign(lua_State* L)
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
 
-    CampaignInstance* c = (CampaignInstance*)lua_touserdata(L, 2);
+    CampaignInstance* c = checkObject<CampaignInstance>(L, 2, CampaignInstanceBinding::getMetatableName());
     instance->endCampaign(c);
     return 0;
 }
@@ -301,7 +300,7 @@ int FactionWarMgrBinding::getAllTheForces(lua_State* L)
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
 
     RootObjectBase* target = checkObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName());
-    CampaignInstance* c = (CampaignInstance*)lua_touserdata(L, 3);
+    CampaignInstance* c = checkObject<CampaignInstance>(L, 3, CampaignInstanceBinding::getMetatableName());
     instance->getAllTheForces(target, c);
     return 0;
 }
@@ -312,7 +311,7 @@ int FactionWarMgrBinding::_generateForcesForTown(lua_State* L)
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
 
     TownBase* t = checkObject<TownBase>(L, 2, TownBaseBinding::getMetatableName());
-    CampaignInstance* c = (CampaignInstance*)lua_touserdata(L, 3);
+    CampaignInstance* c = checkObject<CampaignInstance>(L, 3, CampaignInstanceBinding::getMetatableName());
     instance->_generateForcesForTown(t, c);
     return 0;
 }
@@ -355,11 +354,10 @@ int FactionWarMgrBinding::triggerCampaign(lua_State* L)
     if (top == 4)
     {
         RootObjectBase* targetTown = checkObject<RootObjectBase>(L, 2, RootObjectBaseBinding::getMetatableName());
-        CampaignData* data = (CampaignData*)lua_touserdata(L, 3);
+        CampaignData* data = checkObject<CampaignData>(L, 3, CampaignDataBinding::getMetatableName());
         TownBase* home = checkObject<TownBase>(L, 4, TownBaseBinding::getMetatableName());
         CampaignInstance* result = instance->triggerCampaign(targetTown, data, home);
-        lua_pushlightuserdata(L, (void*)result);
-        return 1;
+        return pushObject<CampaignInstance>(L, result, CampaignInstanceBinding::getMetatableName());
     }
     else if (top == 8)
     {
@@ -394,8 +392,7 @@ int FactionWarMgrBinding::getCurrentCampaign(lua_State* L)
 
     Platoon* who = checkObject<Platoon>(L, 2, PlatoonBinding::getMetatableName());
     CampaignInstance* result = instance->getCurrentCampaign(who);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<CampaignInstance>(L, result, CampaignInstanceBinding::getMetatableName());
 }
 
 int FactionWarMgrBinding::getAITarget(lua_State* L)
@@ -472,8 +469,7 @@ int FactionWarMgrBinding::getActiveCampaign(lua_State* L)
 
     int uniqueID = (int)luaL_checkinteger(L, 2);
     CampaignInstance* result = instance->getActiveCampaign(uniqueID);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<CampaignInstance>(L, result, CampaignInstanceBinding::getMetatableName());
 }
 
 int FactionWarMgrBinding::setup(lua_State* L)
@@ -492,21 +488,13 @@ int FactionWarMgrBinding::_createCampaignData(lua_State* L)
 
     GameData* dat = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
     CampaignData* result = instance->_createCampaignData(dat);
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<CampaignData>(L, result, CampaignDataBinding::getMetatableName());
 }
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - FactionWarMgr_get_activeCampaigns / FactionWarMgr_set_activeCampaigns: lektor<CampaignInstance*> (unbound pointer type)
   - FactionWarMgr_get_biomeTerritories / FactionWarMgr_set_biomeTerritories: lektor<AreaBiomeGroup*> (unbound pointer type)
   - FactionWarMgr_get_biomeNoGoZones / FactionWarMgr_set_biomeNoGoZones: lektor<AreaBiomeGroup*> (unbound pointer type)
-  - FactionWarMgr_get_possibleCampaigns / FactionWarMgr_set_possibleCampaigns: lektor<CampaignData*> (unbound pointer type)
-  - FactionWarMgr_get_forces / FactionWarMgr_set_forces: std::map<Platoon*, CampaignInstance*> (unbound map type)
-  - FactionWarMgrBinding::triggerCampaign: CampaignInstance* (unbound pointer)
-  - FactionWarMgrBinding::getCurrentCampaign: CampaignInstance* (unbound pointer)
-  - FactionWarMgrBinding::getActiveCampaign: CampaignInstance* (unbound pointer)
-  - FactionWarMgrBinding::_createCampaignData: CampaignData* (unbound pointer)
 */
 
 int FactionWarMgrBinding::gc(lua_State* L)

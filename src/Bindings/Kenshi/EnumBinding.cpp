@@ -9,6 +9,7 @@
 #include "kenshi/Building/DoorStuff.h"
 #include "kenshi/Building/ProductionBuilding.h"
 #include "kenshi/Building/WallBuilding.h"
+#include "kenshi/Campaign.h"
 #include "kenshi/Character.h"
 #include "kenshi/CharMovement.h"
 #include "kenshi/Dialogue.h"
@@ -37,6 +38,10 @@
 #include "kenshi/Tasker.h"
 // Tasker.h must come before AI.h; see TaskDataBinding.cpp.
 #include "kenshi/AI/AI.h"
+// AIPackage.h and Blackboard.h both define BlackboardSignalFunctions, and Campaign.h
+// includes AIPackage.h, so take the enum from AIPackage.h and never include Blackboard.h.
+#include "kenshi/AI/AIPackage.h"
+#include "kenshi/AI/AITaskSystem.h"
 #include "kenshi/WorldEventStateQuery.h"
 #include "kenshi/ZoneManager.h"
 #include "kenshi/gui/CharacterEditWindow.h"
@@ -101,8 +106,113 @@ namespace KenshiLua
     }
 
     // ------------------------------------------
+    // AI/AITaskSystem.h
+    // ------------------------------------------
+
+    void registerTaskEndEvent(lua_State* L)
+    {
+        lua_createtable(L, 0, 3);
+
+        setEnum(L, "TEE_NOTHING", TaskEndEvent::TEE_NOTHING);
+        setEnum(L, "TEE_REMOVE_MINE_ONLY", TaskEndEvent::TEE_REMOVE_MINE_ONLY);
+        setEnum(L, "TEE_REMOVE_WHOLE_SQUADS", TaskEndEvent::TEE_REMOVE_WHOLE_SQUADS);
+
+        lua_setglobal(L, "TaskEndEvent");
+    }
+
+    void registerTaskTargetType(lua_State* L)
+    {
+        lua_createtable(L, 0, 5);
+
+        setEnum(L, "TARGET_SPECIFIC", TaskTargetType::TARGET_SPECIFIC);
+        setEnum(L, "TARGET_SELF", TaskTargetType::TARGET_SELF);
+        setEnum(L, "TARGET_LEADER", TaskTargetType::TARGET_LEADER);
+        setEnum(L, "TARGET_SQUAD_MISSION", TaskTargetType::TARGET_SQUAD_MISSION);
+        setEnum(L, "TARGET_HOME_GATE", TaskTargetType::TARGET_HOME_GATE);
+
+        lua_setglobal(L, "TaskTargetType");
+    }
+
+    // ------------------------------------------
+    // AI/AIPackage.h
+    // ------------------------------------------
+
+    void registerBlackboardSignalFunctions(lua_State* L)
+    {
+        lua_createtable(L, 0, 34);
+
+        setEnum(L, "SIGNAL_NONE", BlackboardSignalFunctions::SIGNAL_NONE);
+        setEnum(L, "SIG_RETREAT_CANNIBAL_RAID", BlackboardSignalFunctions::SIG_RETREAT_CANNIBAL_RAID);
+        setEnum(L, "SIG_AT_SAFE_TOWN", BlackboardSignalFunctions::SIG_AT_SAFE_TOWN);
+        setEnum(L, "SIG_AT_HOME_TOWN", BlackboardSignalFunctions::SIG_AT_HOME_TOWN);
+        setEnum(L, "SIG_CANNIBAL_START_PATROL", BlackboardSignalFunctions::SIG_CANNIBAL_START_PATROL);
+        setEnum(L, "SIG_SQUAD_NOT_INTACT", BlackboardSignalFunctions::SIG_SQUAD_NOT_INTACT);
+        setEnum(L, "SIG_START_PATROL", BlackboardSignalFunctions::SIG_START_PATROL);
+        setEnum(L, "SIG_DIPLOMAT_MISSION", BlackboardSignalFunctions::SIG_DIPLOMAT_MISSION);
+        setEnum(L, "SIG_DEFEAT_SQUAD", BlackboardSignalFunctions::SIG_DEFEAT_SQUAD);
+        setEnum(L, "SIG_HOME_OWNER_KEEP_LOCKED", BlackboardSignalFunctions::SIG_HOME_OWNER_KEEP_LOCKED);
+        setEnum(L, "SIG_GATHER_UP_ALL_LOCAL_PRISONERS", BlackboardSignalFunctions::SIG_GATHER_UP_ALL_LOCAL_PRISONERS);
+        setEnum(L, "SIG_SLAVER_SHIP_TO_WORKCAMPS", BlackboardSignalFunctions::SIG_SLAVER_SHIP_TO_WORKCAMPS);
+        setEnum(L, "SIG_BODYGUARD", BlackboardSignalFunctions::SIG_BODYGUARD);
+        setEnum(L, "SIG_BECOME_EX_SLAVE", BlackboardSignalFunctions::SIG_BECOME_EX_SLAVE);
+        setEnum(L, "SIG_OUT_OF_DANGER", BlackboardSignalFunctions::SIG_OUT_OF_DANGER);
+        setEnum(L, "SIG_DEFEND_PLAYER_TOWN_TIMED", BlackboardSignalFunctions::SIG_DEFEND_PLAYER_TOWN_TIMED);
+        setEnum(L, "SIG_WANDERING_TOWN_TO_TOWN", BlackboardSignalFunctions::SIG_WANDERING_TOWN_TO_TOWN);
+        setEnum(L, "SIG_HANG_OUT_AT_BAR", BlackboardSignalFunctions::SIG_HANG_OUT_AT_BAR);
+        setEnum(L, "SIG_RAIDING_WEAK_VILLAGES", BlackboardSignalFunctions::SIG_RAIDING_WEAK_VILLAGES);
+        setEnum(L, "WAR_GATHER_FORCES", BlackboardSignalFunctions::WAR_GATHER_FORCES);
+        setEnum(L, "WAR_ASSAULT_TOWN", BlackboardSignalFunctions::WAR_ASSAULT_TOWN);
+        setEnum(L, "WAR_BATTLE_MEETING", BlackboardSignalFunctions::WAR_BATTLE_MEETING);
+        setEnum(L, "SIG_REFUGEE_DISBAND", BlackboardSignalFunctions::SIG_REFUGEE_DISBAND);
+        setEnum(L, "SIG_START_PATROL_RUNNING", BlackboardSignalFunctions::SIG_START_PATROL_RUNNING);
+        setEnum(L, "SIG_GATHER_UP_ALL_LOCAL_PRISONERS_UNHOLY", BlackboardSignalFunctions::SIG_GATHER_UP_ALL_LOCAL_PRISONERS_UNHOLY);
+        setEnum(L, "SIG_RETREAT_CANNIBAL_RAID_TO_NEAREST_NEST", BlackboardSignalFunctions::SIG_RETREAT_CANNIBAL_RAID_TO_NEAREST_NEST);
+        setEnum(L, "SIG_HANG_OUT_OUTDOORS_ONLY", BlackboardSignalFunctions::SIG_HANG_OUT_OUTDOORS_ONLY);
+        setEnum(L, "SIG_CANNIBALS_AT_HOME", BlackboardSignalFunctions::SIG_CANNIBALS_AT_HOME);
+        setEnum(L, "SIG_SLAVER_SHIP_TO_ANYWHERE_CLOSE", BlackboardSignalFunctions::SIG_SLAVER_SHIP_TO_ANYWHERE_CLOSE);
+        setEnum(L, "SIG_PASSING_BY_TOWN_ASSAULT", BlackboardSignalFunctions::SIG_PASSING_BY_TOWN_ASSAULT);
+        setEnum(L, "SIG_OCCUPY_CONQUERED_TOWN", BlackboardSignalFunctions::SIG_OCCUPY_CONQUERED_TOWN);
+        setEnum(L, "SIG_DEFEND_PLAYER_TOWN_CAMPAIGN", BlackboardSignalFunctions::SIG_DEFEND_PLAYER_TOWN_CAMPAIGN);
+        setEnum(L, "WAR_ASSAULT_TOWN_CANNIBAL", BlackboardSignalFunctions::WAR_ASSAULT_TOWN_CANNIBAL);
+        setEnum(L, "SIG_TIMED_CONTRACT", BlackboardSignalFunctions::SIG_TIMED_CONTRACT);
+
+        lua_setglobal(L, "BlackboardSignalFunctions");
+    }
+
+    // ------------------------------------------
     // Animation/AnimationClass.h
     // ------------------------------------------
+
+    void registerAnimationLayerEnum(lua_State* L)
+    {
+        lua_createtable(L, 0, 6);
+
+        setEnum(L, "LOWER", AnimationLayerEnum::LOWER);
+        setEnum(L, "UPPER", AnimationLayerEnum::UPPER);
+        setEnum(L, "OVERLAY", AnimationLayerEnum::OVERLAY);
+        setEnum(L, "TAIL", AnimationLayerEnum::TAIL);
+        setEnum(L, "EARS", AnimationLayerEnum::EARS);
+        setEnum(L, "ALL", AnimationLayerEnum::ALL);
+
+        lua_setglobal(L, "AnimationLayerEnum");
+    }
+
+    void registerCharacterAnimCategory(lua_State* L)
+    {
+        lua_createtable(L, 0, 9);
+
+        setEnum(L, "ANIM_NORMAL", CharacterAnimCategory::ANIM_NORMAL);
+        setEnum(L, "ANIM_IMPRISONED", CharacterAnimCategory::ANIM_IMPRISONED);
+        setEnum(L, "ANIM_SLEEPING", CharacterAnimCategory::ANIM_SLEEPING);
+        setEnum(L, "ANIM_CARRIED", CharacterAnimCategory::ANIM_CARRIED);
+        setEnum(L, "ANIM_SWIMMING", CharacterAnimCategory::ANIM_SWIMMING);
+        setEnum(L, "ANIM_GROUNDED", CharacterAnimCategory::ANIM_GROUNDED);
+        setEnum(L, "ANIM_COMBAT", CharacterAnimCategory::ANIM_COMBAT);
+        setEnum(L, "ANIM_ATTACKS", CharacterAnimCategory::ANIM_ATTACKS);
+        setEnum(L, "ANIM_RANGED", CharacterAnimCategory::ANIM_RANGED);
+
+        lua_setglobal(L, "CharacterAnimCategory");
+    }
 
     void registerStanceEnum(lua_State* L)
     {
@@ -341,6 +451,36 @@ namespace KenshiLua
         setEnum(L, "WALLTYPE_SHORT", WallSectionLinkType::WALLTYPE_SHORT);
 
         lua_setglobal(L, "WallSectionLinkType");
+    }
+
+    // ------------------------------------------
+    // Campaign.h
+    // ------------------------------------------
+
+    void registerPhase(lua_State* L)
+    {
+        lua_createtable(L, 0, 6);
+
+        setEnum(L, "GATHERING", Phase::GATHERING);
+        setEnum(L, "ASSAULTING", Phase::ASSAULTING);
+        setEnum(L, "RETREATING", Phase::RETREATING);
+        setEnum(L, "VICTORY", Phase::VICTORY);
+        setEnum(L, "ASSAULT_2_HAPPY", Phase::ASSAULT_2_HAPPY);
+        setEnum(L, "ASSAULT_2_ANGRY", Phase::ASSAULT_2_ANGRY);
+
+        lua_setglobal(L, "Phase");
+    }
+
+    void registerWarCampaignEnum(lua_State* L)
+    {
+        lua_createtable(L, 0, 4);
+
+        setEnum(L, "ASSAULT_TOWN", WarCampaignEnum::ASSAULT_TOWN);
+        setEnum(L, "CONQUER_TOWN", WarCampaignEnum::CONQUER_TOWN);
+        setEnum(L, "DEFEND_TOWN", WarCampaignEnum::DEFEND_TOWN);
+        setEnum(L, "TRADER_VISIT", WarCampaignEnum::TRADER_VISIT);
+
+        lua_setglobal(L, "WarCampaignEnum");
     }
 
     // ------------------------------------------
@@ -2962,6 +3102,7 @@ namespace KenshiLua
     {
         registerAIAggressionOrders(L);
         registerAIManuverabilityOrders(L);
+        registerAnimationLayerEnum(L);
         registerAppearanceManagerDataCategory(L);
         registerAppearanceManagerGender(L);
         registerArmourClass(L);
@@ -2969,12 +3110,14 @@ namespace KenshiLua
         registerAttachSlot(L);
         registerAttackDirection(L);
         registerBinaryVersionKenshiPlatform(L);
+        registerBlackboardSignalFunctions(L);
         registerBuildingClassType(L);
         registerBuildingDesignation(L);
         registerBuildingFunction(L);
         registerBuildingPlacementGroundType(L);
         registerBuildingRotation(L);
         registerCharMessage(L);
+        registerCharacterAnimCategory(L);
         registerCharacterEditMode(L);
         registerCharacterMessage(L);
         registerCharacterPerceptionTagsLongTerm(L);
@@ -3035,6 +3178,7 @@ namespace KenshiLua
         registerNxShapeFlag(L);
         registerNxShapesType(L);
         registerPersonalityTags(L);
+        registerPhase(L);
         registerPlatoonCreationMessage(L);
         registerPreviewBuildingClassType(L);
         registerPreviewBuildingPlacementResult(L);
@@ -3060,6 +3204,8 @@ namespace KenshiLua
         registerSwordStateEnum(L);
         registerSysMessageEnum(L);
         registerTalker(L);
+        registerTaskEndEvent(L);
+        registerTaskTargetType(L);
         registerTaskType(L);
         registerTaskerPermajobType(L);
         registerTaskerStateType(L);
@@ -3071,6 +3217,7 @@ namespace KenshiLua
         registerTutorialGUIState(L);
         registerUnloadedPlatoonJob(L);
         registerUpdatePriority(L);
+        registerWarCampaignEnum(L);
         registerNxControllerAction(L);
         registerUseStuffState(L);
         registerWallSectionLinkType(L);

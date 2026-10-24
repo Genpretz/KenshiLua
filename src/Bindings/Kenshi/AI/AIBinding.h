@@ -37,6 +37,7 @@ public:
     static int getPlatoon(lua_State* L);
     static int getFaction(lua_State* L);
     static int _NV_getFaction(lua_State* L);
+    static int getBlackboard(lua_State* L);
     static int getHandle(lua_State* L);
     static int create(lua_State* L);
     static int update4Frame(lua_State* L);

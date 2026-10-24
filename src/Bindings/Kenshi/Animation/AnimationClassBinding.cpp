@@ -2,6 +2,7 @@
 #include "kenshi/Animation/AnimationClass.h"
 #include "AnimationClassBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
@@ -19,6 +20,7 @@ static_assert(offsetof(AnimationClass, appearance) == 0xE8, "AnimationClass::app
 static_assert(offsetof(AnimationClass, animationRequirements) == 0xF0, "AnimationClass::animationRequirements offset does not match the game");
 static_assert(offsetof(AnimationClass, strafeBlendFilter) == 0x2B8, "AnimationClass::strafeBlendFilter offset does not match the game");
 static_assert(offsetof(AnimationClass, me) == 0x2D8, "AnimationClass::me offset does not match the game");
+static_assert(offsetof(AnimationClass, defaultIdleAnimation) == 0x2E0, "AnimationClass::defaultIdleAnimation offset does not match the game");
 static_assert(offsetof(AnimationClass, ragdollParts) == 0x2F8, "AnimationClass::ragdollParts offset does not match the game");
 
 static AnimationClass* getInstance(lua_State* L, int idx)
@@ -80,6 +82,13 @@ static int AnimationClass_get_me(lua_State* L)
     return pushObject<Character>(L, instance->me, CharacterBinding::getMetatableName());
 }
 
+static int AnimationClass_get_defaultIdleAnimation(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    return pushObject<AnimationData>(L, instance->defaultIdleAnimation, AnimationDataBinding::getMetatableName());
+}
+
 static int AnimationClass_get_ragdollParts(lua_State* L)
 {
     AnimationClass* instance = getInstance(L, 1);
@@ -131,6 +140,15 @@ static int AnimationClass_set_me(lua_State* L)
     return 0;
 }
 
+// getIdleAnimation null-checks defaultIdleAnimation before using it.
+static int AnimationClass_set_defaultIdleAnimation(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    instance->defaultIdleAnimation = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    return 0;
+}
+
 static int AnimationClass_set_ragdollParts(lua_State* L)
 {
     AnimationClass* instance = getInstance(L, 1);
@@ -146,6 +164,17 @@ int AnimationClassBinding::debugGetAllAnimations(lua_State* L)
 
     DatapanelGUI* panel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
     instance->debugGetAllAnimations(panel);
+    return 0;
+}
+
+int AnimationClassBinding::startStumble(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    // startStumble ignores a null anim.
+    AnimationData* anim = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    instance->startStumble(anim);
     return 0;
 }
 
@@ -166,6 +195,15 @@ int AnimationClassBinding::currentlyStumbling(lua_State* L)
     bool result = instance->currentlyStumbling();
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
+}
+
+int AnimationClassBinding::getCurrentlyStumbleAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* result = instance->getCurrentlyStumbleAnim();
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
 }
 
 int AnimationClassBinding::isCurrentlyIncapableOfWaypointMovemode(lua_State* L)
@@ -376,7 +414,16 @@ int AnimationClassBinding::playAction(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string dataname = luaL_checkstring(L, 2);
+    if (AnimationData* anim = testObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName())) {
+        float speedMult = (float)luaL_checknumber(L, 3);
+        float initialWeight = (float)luaL_checknumber(L, 4);
+        bool isStumble = lua_toboolean(L, 5) != 0;
+        instance->playAction(anim, speedMult, initialWeight, isStumble);
+        return 0;
+    }
+    if (lua_type(L, 2) != LUA_TSTRING)
+        return luaL_error(L, "Argument 2 to playAction must be a string or AnimationData, got %s", luaL_typename(L, 2));
+    const std::string dataname = lua_tostring(L, 2);
     float speedMult = (float)luaL_checknumber(L, 3);
     float initialWeight = (float)luaL_checknumber(L, 4);
     bool isStumble = lua_toboolean(L, 5) != 0;
@@ -498,6 +545,18 @@ int AnimationClassBinding::isLinearAnimationDone_byName(lua_State* L)
 
     const std::string name = luaL_checkstring(L, 2);
     bool result = instance->isLinearAnimationDone_byName(name);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int AnimationClassBinding::isLinearAnimationDone(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    // isLinearAnimationDone returns true for a null anim.
+    AnimationData* anim = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    bool result = instance->isLinearAnimationDone(anim);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
 }
@@ -738,15 +797,48 @@ int AnimationClassBinding::rangedCombatModeUpdate(lua_State* L)
     return 0;
 }
 
+// AnimationData forms by argument count: (anim, speed, blend), (anim, speed, lay, blend), (anim, speed, lay, blend, ext).
 int AnimationClassBinding::runAnimation(lua_State* L)
 {
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    if (AnimationData* anim = testObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName())) {
+        float speed = (float)luaL_checknumber(L, 3);
+        int top = lua_gettop(L);
+        if (top <= 4) {
+            float blend = (float)luaL_checknumber(L, 4);
+            instance->runAnimation(anim, speed, blend);
+            return 0;
+        }
+        AnimationLayerEnum lay = (AnimationLayerEnum)luaL_checkinteger(L, 4);
+        float blend = (float)luaL_checknumber(L, 5);
+        if (top >= 6) {
+            const std::string ext = luaL_checkstring(L, 6);
+            instance->runAnimation(anim, speed, lay, blend, ext);
+        } else {
+            instance->runAnimation(anim, speed, lay, blend);
+        }
+        return 0;
+    }
+    if (lua_type(L, 2) != LUA_TSTRING)
+        return luaL_error(L, "Argument 2 to runAnimation must be a string or AnimationData, got %s", luaL_typename(L, 2));
+    const std::string name = lua_tostring(L, 2);
     float speed = (float)luaL_checknumber(L, 3);
     float blend = (float)luaL_checknumber(L, 4);
     instance->runAnimation(name, speed, blend);
+    return 0;
+}
+
+int AnimationClassBinding::runAnimation_manualTiming(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* anim = checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    float time01 = (float)luaL_checknumber(L, 3);
+    float blend = (float)luaL_checknumber(L, 4);
+    instance->runAnimation_manualTiming(anim, time01, blend);
     return 0;
 }
 
@@ -788,7 +880,15 @@ int AnimationClassBinding::startAnimation(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string anim = luaL_checkstring(L, 2);
+    if (AnimationData* dat = testObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName())) {
+        float speed = (float)luaL_checknumber(L, 3);
+        float startWeight = (float)luaL_checknumber(L, 4);
+        instance->startAnimation(dat, speed, startWeight);
+        return 0;
+    }
+    if (lua_type(L, 2) != LUA_TSTRING)
+        return luaL_error(L, "Argument 2 to startAnimation must be a string or AnimationData, got %s", luaL_typename(L, 2));
+    const std::string anim = lua_tostring(L, 2);
     float speed = (float)luaL_checknumber(L, 3);
     float startWeight = (float)luaL_checknumber(L, 4);
     instance->startAnimation(anim, speed, startWeight);
@@ -800,7 +900,13 @@ int AnimationClassBinding::stopAnimation(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string anim = luaL_checkstring(L, 2);
+    if (AnimationData* ad = testObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName())) {
+        instance->stopAnimation(ad);
+        return 0;
+    }
+    if (lua_type(L, 2) != LUA_TSTRING)
+        return luaL_error(L, "Argument 2 to stopAnimation must be a string or AnimationData, got %s", luaL_typename(L, 2));
+    const std::string anim = lua_tostring(L, 2);
     instance->stopAnimation(anim);
     return 0;
 }
@@ -812,6 +918,62 @@ int AnimationClassBinding::activateVisuals(lua_State* L)
 
     instance->activateVisuals();
     return 0;
+}
+
+// Both forms look the name up with operator[], so an unknown name adds a null entry to
+// myAnimList->allAnims; the engine's own iteration of allAnims skips null entries.
+int AnimationClassBinding::getAnimationData(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    if (lua_type(L, 2) == LUA_TSTRING) {
+        const std::string name = lua_tostring(L, 2);
+        AnimationData* result = instance->getAnimationData(name);
+        return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+    }
+    if (GameData* dat = testObject<GameData>(L, 2, GameDataBinding::getMetatableName())) {
+        AnimationData* result = instance->getAnimationData(dat);
+        return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+    }
+    return luaL_error(L, "Argument 2 to getAnimationData must be a string or GameData, got %s", luaL_typename(L, 2));
+}
+
+int AnimationClassBinding::_NV_getAnimationData(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    if (lua_type(L, 2) == LUA_TSTRING) {
+        const std::string name = lua_tostring(L, 2);
+        AnimationData* result = instance->_NV_getAnimationData(name);
+        return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+    }
+    if (GameData* dat = testObject<GameData>(L, 2, GameDataBinding::getMetatableName())) {
+        AnimationData* result = instance->_NV_getAnimationData(dat);
+        return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+    }
+    return luaL_error(L, "Argument 2 to _NV_getAnimationData must be a string or GameData, got %s", luaL_typename(L, 2));
+}
+
+int AnimationClassBinding::getAnimationDataByOgreName(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    const std::string name = luaL_checkstring(L, 2);
+    AnimationData* result = instance->getAnimationDataByOgreName(name);
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBinding::_NV_getAnimationDataByOgreName(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    const std::string name = luaL_checkstring(L, 2);
+    AnimationData* result = instance->_NV_getAnimationDataByOgreName(name);
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
 }
 
 int AnimationClassBinding::estimateAnimationTime(lua_State* L)
@@ -1191,6 +1353,73 @@ int AnimationClassBinding::_NV_getLookDirection(lua_State* L)
     return 1;
 }
 
+int AnimationClassBinding::chooseStumbleAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    // bodypart keys myAnimList's stumble map, which inserts an entry for a missing key.
+    GameData* bodypart = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
+    CutOrigination hitFrom = (CutOrigination)luaL_checkinteger(L, 3);
+    bool bigone = lua_toboolean(L, 4) != 0;
+    AnimationData* result = instance->chooseStumbleAnim(bodypart, hitFrom, bigone);
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBinding::getIdleAnimation(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* result = instance->getIdleAnimation();
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBinding::_NV_getIdleAnimation(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* result = instance->_NV_getIdleAnimation();
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBinding::getFloatingAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* result = instance->getFloatingAnim();
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBinding::_NV_getFloatingAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* result = instance->_NV_getFloatingAnim();
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBinding::getStandingUpAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* result = instance->getStandingUpAnim();
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
+int AnimationClassBinding::_NV_getStandingUpAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationData* result = instance->_NV_getStandingUpAnim();
+    return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
+}
+
 int AnimationClassBinding::hasAction(lua_State* L)
 {
     AnimationClass* instance = getInstance(L, 1);
@@ -1228,6 +1457,30 @@ int AnimationClassBinding::_NV_animationSelectionCombatMode(lua_State* L)
 
     float _TIME = (float)luaL_checknumber(L, 2);
     instance->_NV_animationSelectionCombatMode(_TIME);
+    return 0;
+}
+
+int AnimationClassBinding::runStrafe(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    // runStrafe clears the strafe weight for a null strafe.
+    AnimationData* strafe = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    float weightLimit = (float)luaL_checknumber(L, 3);
+    instance->runStrafe(strafe, weightLimit);
+    return 0;
+}
+
+int AnimationClassBinding::_NV_runStrafe(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    // runStrafe clears the strafe weight for a null strafe.
+    AnimationData* strafe = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    float weightLimit = (float)luaL_checknumber(L, 3);
+    instance->_NV_runStrafe(strafe, weightLimit);
     return 0;
 }
 
@@ -1293,42 +1546,17 @@ int AnimationClassBinding::_NV_breathing(lua_State* L)
 Skipped methods needing manual binding:
   line 411: AnimationClassHuman* isHuman(...) - unbound pointer
   line 413: bool create(...) - initialisation only; Lua cannot construct an AnimationClass, and AnimationClassBase::create appends new layers on a live instance
-  line 414: void startStumble(AnimationData*) - unbound pointer argument
-  line 417: AnimationData* getCurrentlyStumbleAnim(...) - unbound pointer
   line 436: void setBodyEntity(Ogre::Entity*) - unbound pointer argument
-  line 439: void playAction(AnimationData*, ...) - unbound pointer argument; the string overload is bound
-  line 454: bool isLinearAnimationDone(AnimationData*) - unbound pointer argument
   line 466: RagdollClass* getRagdoll(...) - unbound pointer
   line 467: RagdollClass* _NV_getRagdoll(...) - unbound pointer
   line 469: bool setupRagdoll(Scythe::SkeletonData*) - unbound pointer argument
-  line 482: void runAnimation(AnimationData*, float, AnimationLayerEnum, float) - unbound pointer argument; the string overload is bound
-  line 483: void runAnimation(AnimationData*, float, AnimationLayerEnum, float, const std::string&) - unbound pointer argument
-  line 484: void runAnimation(AnimationData*, float, float) - unbound pointer argument
-  line 486: void runAnimation_manualTiming(AnimationData*, ...) - unbound pointer argument
-  line 490: void startAnimation(AnimationData*, ...) - unbound pointer argument; the string overload is bound
-  line 493: void stopAnimation(AnimationData*) - unbound pointer argument; the string overload is bound
   line 494: AnimationEvents* getEvents(...) - unbound pointer
-  line 496: AnimationData* getAnimationData(const std::string&) - unbound pointer
-  line 497: AnimationData* _NV_getAnimationData(const std::string&) - unbound pointer
-  line 498: AnimationData* getAnimationData(GameData*) - unbound pointer
-  line 499: AnimationData* _NV_getAnimationData(GameData*) - unbound pointer
-  line 500: AnimationData* getAnimationDataByOgreName(...) - unbound pointer
-  line 501: AnimationData* _NV_getAnimationDataByOgreName(...) - unbound pointer
-  line 502: AnimsListsManager::AnimList* getAnimationDatasList(...) - unbound pointer
+  line 502: AnimsListsManager::AnimList* getAnimationDatasList(...) - AnimsListsManager::AnimList is unbound
   line 521: void setDesiredPainOverlayAnims(std::set<StringValuePair, ...>) - StringValuePair is unbound
   line 522: void _NV_setDesiredPainOverlayAnims(std::set<StringValuePair, ...>) - StringValuePair is unbound
-  line 541: AnimationData* chooseStumbleAnim(...) - unbound pointer
-  line 542: AnimationData* getIdleAnimation(...) - unbound pointer
-  line 543: AnimationData* _NV_getIdleAnimation(...) - unbound pointer
-  line 544: AnimationData* getFloatingAnim(...) - unbound pointer
-  line 545: AnimationData* _NV_getFloatingAnim(...) - unbound pointer
-  line 546: AnimationData* getStandingUpAnim(...) - unbound pointer
-  line 547: AnimationData* _NV_getStandingUpAnim(...) - unbound pointer
-  line 560: void runStrafe(AnimationData*, float) - unbound pointer argument
-  line 561: void _NV_runStrafe(AnimationData*, float) - unbound pointer argument
   line 566: void chooseAnims(...) - AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound
   line 567: AnimationChoices chooseRandomAnim(...) - AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound
-  line 568: float scoreAnim(...) - AnimationData and AnimationRequirement are unbound
+  line 568: float scoreAnim(...) - AnimationRequirement is unbound
   line 569: void processMoveAnims(...) - lektor<AnimationData*> and AnimationRequirement are unbound
   line 570: bool processActionAnims(...) - boost::unordered_map<std::string, AnimationData*> and AnimationRequirement are unbound
   line 571: void processIdleAnims(...) - lektor<AnimationData*> and AnimationRequirement are unbound
@@ -1339,7 +1567,6 @@ Skipped methods needing manual binding:
 Skipped properties needing manual binding:
   line 549: animationRequirements (AnimationRequirement) - unbound type
   line 551: myAnimList (AnimsListsManager::AnimList*) - unbound pointer
-  line 575: defaultIdleAnimation (AnimationData*) - unbound pointer
   line 576: ragdoll (RagdollClass*) - unbound pointer
   line 577: ragdollAnimation (RagdollAnimation*) - unbound pointer; ~AnimationClass deletes it
 */
@@ -1366,8 +1593,10 @@ void AnimationClassBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "debugGetAllAnimations", AnimationClassBinding::debugGetAllAnimations },
+        { "startStumble", AnimationClassBinding::startStumble },
         { "endStumble", AnimationClassBinding::endStumble },
         { "currentlyStumbling", AnimationClassBinding::currentlyStumbling },
+        { "getCurrentlyStumbleAnim", AnimationClassBinding::getCurrentlyStumbleAnim },
         { "isCurrentlyIncapableOfWaypointMovemode", AnimationClassBinding::isCurrentlyIncapableOfWaypointMovemode },
         { "threadSafeRagdollUpdateUT", AnimationClassBinding::threadSafeRagdollUpdateUT },
         { "update", AnimationClassBinding::update },
@@ -1398,6 +1627,7 @@ void AnimationClassBinding::registerBinding(lua_State* L)
         { "setMaximumSpeed", AnimationClassBinding::setMaximumSpeed },
         { "getMaximumSpeed", AnimationClassBinding::getMaximumSpeed },
         { "isLinearAnimationDone_byName", AnimationClassBinding::isLinearAnimationDone_byName },
+        { "isLinearAnimationDone", AnimationClassBinding::isLinearAnimationDone },
         { "getFootHeight", AnimationClassBinding::getFootHeight },
         { "calculateFeetHeight", AnimationClassBinding::calculateFeetHeight },
         { "setBootHeight", AnimationClassBinding::setBootHeight },
@@ -1421,12 +1651,17 @@ void AnimationClassBinding::registerBinding(lua_State* L)
         { "beingCarriedUpdate", AnimationClassBinding::beingCarriedUpdate },
         { "rangedCombatModeUpdate", AnimationClassBinding::rangedCombatModeUpdate },
         { "runAnimation", AnimationClassBinding::runAnimation },
+        { "runAnimation_manualTiming", AnimationClassBinding::runAnimation_manualTiming },
         { "endCombatAnimation", AnimationClassBinding::endCombatAnimation },
         { "runCombatAnimation", AnimationClassBinding::runCombatAnimation },
         { "startCombatAnimation", AnimationClassBinding::startCombatAnimation },
         { "startAnimation", AnimationClassBinding::startAnimation },
         { "stopAnimation", AnimationClassBinding::stopAnimation },
         { "activateVisuals", AnimationClassBinding::activateVisuals },
+        { "getAnimationData", AnimationClassBinding::getAnimationData },
+        { "_NV_getAnimationData", AnimationClassBinding::_NV_getAnimationData },
+        { "getAnimationDataByOgreName", AnimationClassBinding::getAnimationDataByOgreName },
+        { "_NV_getAnimationDataByOgreName", AnimationClassBinding::_NV_getAnimationDataByOgreName },
         { "estimateAnimationTime", AnimationClassBinding::estimateAnimationTime },
         { "notifyRelocatedAnimLoop", AnimationClassBinding::notifyRelocatedAnimLoop },
         { "serialiseAppearance", AnimationClassBinding::serialiseAppearance },
@@ -1463,10 +1698,19 @@ void AnimationClassBinding::registerBinding(lua_State* L)
         { "_NV_lookAt", AnimationClassBinding::_NV_lookAt },
         { "getLookDirection", AnimationClassBinding::getLookDirection },
         { "_NV_getLookDirection", AnimationClassBinding::_NV_getLookDirection },
+        { "chooseStumbleAnim", AnimationClassBinding::chooseStumbleAnim },
+        { "getIdleAnimation", AnimationClassBinding::getIdleAnimation },
+        { "_NV_getIdleAnimation", AnimationClassBinding::_NV_getIdleAnimation },
+        { "getFloatingAnim", AnimationClassBinding::getFloatingAnim },
+        { "_NV_getFloatingAnim", AnimationClassBinding::_NV_getFloatingAnim },
+        { "getStandingUpAnim", AnimationClassBinding::getStandingUpAnim },
+        { "_NV_getStandingUpAnim", AnimationClassBinding::_NV_getStandingUpAnim },
         { "hasAction", AnimationClassBinding::hasAction },
         { "animationSelection", AnimationClassBinding::animationSelection },
         { "animationSelectionCombatMode", AnimationClassBinding::animationSelectionCombatMode },
         { "_NV_animationSelectionCombatMode", AnimationClassBinding::_NV_animationSelectionCombatMode },
+        { "runStrafe", AnimationClassBinding::runStrafe },
+        { "_NV_runStrafe", AnimationClassBinding::_NV_runStrafe },
         { "overlaidAnimationSelection", AnimationClassBinding::overlaidAnimationSelection },
         { "_NV_overlaidAnimationSelection", AnimationClassBinding::_NV_overlaidAnimationSelection },
         { "processTurnAnim", AnimationClassBinding::processTurnAnim },
@@ -1494,6 +1738,7 @@ void AnimationClassBinding::registerBinding(lua_State* L)
     registerGetter(L, "totalActionWeight", AnimationClass_get_totalActionWeight);
     registerGetter(L, "disableRagdollKinematics", AnimationClass_get_disableRagdollKinematics);
     registerGetter(L, "me", AnimationClass_get_me);
+    registerGetter(L, "defaultIdleAnimation", AnimationClass_get_defaultIdleAnimation);
     registerGetter(L, "ragdollParts", AnimationClass_get_ragdollParts);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
@@ -1503,6 +1748,7 @@ void AnimationClassBinding::registerBinding(lua_State* L)
     registerSetter(L, "totalActionWeight", AnimationClass_set_totalActionWeight);
     registerSetter(L, "disableRagdollKinematics", AnimationClass_set_disableRagdollKinematics);
     registerSetter(L, "me", AnimationClass_set_me);
+    registerSetter(L, "defaultIdleAnimation", AnimationClass_set_defaultIdleAnimation);
     registerSetter(L, "ragdollParts", AnimationClass_set_ragdollParts);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
