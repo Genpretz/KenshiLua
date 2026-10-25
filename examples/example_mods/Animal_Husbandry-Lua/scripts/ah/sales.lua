@@ -30,7 +30,8 @@ function S.priceOf(entry)
         return AH.priceOf(entry)
     end
     local base = (entry.def and entry.def.basePrice) or scfg().defaultBasePrice
-    return math.floor((AH.age(entry.animal) + 0.1) * base)
+    local mult = scfg().resaleMultiplier or 0.50
+    return math.floor((AH.age(entry.animal) + 0.1) * base * mult)
 end
 
 -- Returns the buyer (the NPC) and the seller (the player character) of a

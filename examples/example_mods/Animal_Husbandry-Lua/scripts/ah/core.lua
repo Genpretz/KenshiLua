@@ -64,6 +64,7 @@ local CONSTANT_MAP = {
     { section = "harvest",  field = "maxVisibleProducts",  key = "harvest.maxVisibleProducts" },
     { section = "sales",    field = "defaultBasePrice",    key = "sales.defaultBasePrice" },
     { section = "sales",    field = "maxDistance",         key = "sales.maxDistance" },
+    { section = "sales",    field = "resaleMultiplier",    key = "sales.resaleMultiplier" },
 }
 
 local function getGameConstantsSettings()
@@ -148,7 +149,7 @@ local FCS_DEFAULTS = {
 }
 
 -- val2 of an "animal products" reference.
-AH.PRODUCT_SEX = { [0] = "male", [1] = "female", [2] = "both" }
+AH.PRODUCT_SEX = { [0] = "both", [1] = "male", [2] = "female" }
 
 AH.defCache = {}
 
@@ -404,7 +405,8 @@ function AH.priceOf(entry)
     end
     local defaultBase = (AH.config and AH.config.sales and AH.config.sales.defaultBasePrice) or 14000
     local base = (entry.def and entry.def.basePrice) or defaultBase
-    return math.floor((AH.age(entry.animal) + 0.1) * base)
+    local mult = (AH.config and AH.config.sales and AH.config.sales.resaleMultiplier) or 0.50
+    return math.floor((AH.age(entry.animal) + 0.1) * base * mult)
 end
 
 function AH.isFemale(c)

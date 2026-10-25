@@ -24,7 +24,7 @@ The mod has no gameplay mod dependencies.
 
 Once per in-game day, each eligible female in the player faction can become pregnant when a compatible male is nearby.
 
-- Both animals must be Adult or older, fertile, healthy, fed, conscious, out of combat, and within 50 units of each other.
+- Both animals must be Adult or older, fertile, healthy, fed, conscious, out of combat, and within 200 units of each other.
 - Animals can mate when they share a race, character record, or non-empty `mating group`.
 - Pregnancy chance, duration, offspring count, and recovery time come from the mother's `ANIMAL_CHARACTER` record.
 - Birth waits when the mother's squad or the player faction has no room.
@@ -34,7 +34,7 @@ Once per in-game day, each eligible female in the player faction can become preg
 
 Select one of your humanoid characters, right-click an animal in the player faction, and choose **Husbandry**. While the window is open, selecting another animal in your faction switches its portrait, details, and products. Selecting a humanoid leaves the displayed animal unchanged.
 
-The character who opened the window remains its harvester and must be within 50 units of the displayed animal to harvest. Close the window and open it with another humanoid to change harvesters.
+The character who opened the window remains its harvester and must be within 200 units of the displayed animal to harvest. Close the window and open it with another humanoid to change harvesters.
 
 The Husbandry window shows the animal's sex, age, value, breeding state, and available products. A product can be harvested when the animal meets its age and sex requirements, is out of combat, and its cooldown has expired. Items go into the harvester's inventory or drop beside them if the inventory is full.
 
@@ -87,7 +87,7 @@ Supported traders have dialogue options for buying nearby animals. The sale wind
 
 Animals qualify when they are alive, belong to the player, and are within 250 units of the seller, buyer, or the building containing the buyer. Individual dialogue scripts can further restrict which animal records a buyer accepts.
 
-The sale price is `(age + 0.1) × base price`, matching Kenshi's animal-trader formula. The animal's `base price` comes from its record or defaults to 14,000 cats.
+The sale price is `(age + 0.1) × base price × resaleMultiplier`, scaling base price by age and applying the resale multiplier (default 0.50, matching player-crafted weapon production). The animal's `base price` comes from its record or defaults to 14,000 cats.
 
 ## Configuration
 
@@ -104,6 +104,7 @@ Global defaults are defined in [`scripts/ah/config.lua`](scripts/ah/config.lua).
 | `harvest.maxVisibleProducts` | 4 | Product rows shown before scrolling |
 | `sales.defaultBasePrice` | 14000 | Price base when an animal record has none |
 | `sales.maxDistance` | 250.0 | Maximum sale distance |
+| `sales.resaleMultiplier` | 0.50 | Resale multiplier applied when selling animals to vendors |
 
 Life stages use the engine age scale: Pup begins at 0.0, Teen at 0.4, Adult at 0.6, and Elder at 1.1.
 
@@ -118,7 +119,7 @@ Animal settings are fields on each `ANIMAL_CHARACTER` record. Add `Animal_Husban
 | `pregnancy period` | 1.0 | In-game days from pregnancy to birth |
 | `chance of pregnancy` | 1.0 | Percent chance during each breeding check |
 | `time between pregnancy` | 1.0 | Recovery days after birth |
-| `animal products` | None | Product references: val0 quantity, val1 cooldown days, val2 sex (`0` male, `1` female, `2` both) |
+| `animal products` | None | Product references: val0 quantity, val1 cooldown days, val2 sex (`0` both, `1` male, `2` female) |
 | `base price` | 14000 | Base used by the sale-price formula |
 | `mating group` | Empty | Case-insensitive group for mating across different races or records |
 
