@@ -143,5 +143,13 @@ public:
     static int breathing(lua_State* L);
     static int _NV_breathing(lua_State* L);
     static int isHuman(lua_State* L);
+    static int getEvents(lua_State* L);
+    static int getAnimationDatasList(lua_State* L);
+    static int chooseAnims(lua_State* L);
+    static int chooseRandomAnim(lua_State* L);
+    static int scoreAnim(lua_State* L);
+    static int processMoveAnims(lua_State* L);
+    static int processIdleAnims(lua_State* L);
+    static int processCombatIdleAnims(lua_State* L);
 };
 }

@@ -14563,6 +14563,78 @@
       "source": "src/Bindings/Kenshi/AnimalInventoryLayoutBinding.cpp"
     },
     {
+      "binding": "AnimationChoicesBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationChoices",
+      "metatable": "KenshiLua.AnimationChoices",
+      "methods": [
+        {
+          "callback": "AnimationChoicesBinding::normaliseWeights",
+          "name": "normaliseWeights",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationChoicesBinding::calculateSpeedOfMoveAnims",
+          "name": "calculateSpeedOfMoveAnims",
+          "signature": {
+            "params": [
+              {
+                "name": "travelSpeed",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "characterHeight",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationChoicesBinding::chooseHighestScore",
+          "name": "chooseHighestScore",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData",
+              "nil"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "anims",
+          "type": "Lektor<AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "weights",
+          "type": "Lektor<number>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationChoicesBinding.cpp"
+    },
+    {
       "binding": "AnimationClassAnimalBinding",
       "global_names": [],
       "has_constructor": false,
@@ -15137,6 +15209,60 @@
             ]
           },
           "static": false
+        },
+        {
+          "callback": "AnimationClassBaseBinding::getAnimationPlaying_animName",
+          "name": "getAnimationPlaying_animName",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBaseBinding::getAnimationPlaying_datName",
+          "name": "getAnimationPlaying_datName",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBaseBinding::getAnimationPlaying",
+          "name": "getAnimationPlaying",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "AnimationData|CombatTechniqueData"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ]
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -15185,6 +15311,11 @@
           "type": "table"
         },
         {
+          "access": "readonly",
+          "name": "layer",
+          "type": "Lektor<AnimationClassBase.AnimationLayer>"
+        },
+        {
           "access": "readwrite",
           "name": "masterSpeed",
           "type": "number"
@@ -15214,6 +15345,676 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Animation/AnimationClassBaseBinding.cpp"
+    },
+    {
+      "binding": "AnimationClassBase_AnimationLayerBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationClassBase.AnimationLayer",
+      "metatable": "KenshiLua.AnimationClassBase.AnimationLayer",
+      "methods": [
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::addToRemoveList",
+          "name": "addToRemoveList",
+          "signature": {
+            "params": [
+              {
+                "name": "anim",
+                "optional": false,
+                "type": "AnimationClassBase.SingleAnimation|SingleAnimation"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::clearLists",
+          "name": "clearLists",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::_clearListsSafe",
+          "name": "_clearListsSafe",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::randomiseAnimationPosition",
+          "name": "randomiseAnimationPosition",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::isAnimationInRemoveList",
+          "name": "isAnimationInRemoveList",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "AnimationData"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::isAnimationInAddList",
+          "name": "isAnimationInAddList",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "AnimationData|CombatTechniqueData|string"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::isAnimationInAddList_Datname",
+          "name": "isAnimationInAddList_Datname",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::takeFromRemoveList",
+          "name": "takeFromRemoveList",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::takeFromAddList",
+          "name": "takeFromAddList",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "AnimationData|string"
+              }
+            ],
+            "returns": [
+              "AnimationClassBase.SingleAnimation",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::getTotalAnimationWeight",
+          "name": "getTotalAnimationWeight",
+          "signature": {
+            "params": [
+              {
+                "name": "thisLayer",
+                "optional": false,
+                "type": "boolean|integer"
+              },
+              {
+                "name": "wholeBody",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "includeRemovelist",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::getTotalActionAnimationWeight",
+          "name": "getTotalActionAnimationWeight",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::stillPlayingAnActionOrSomething",
+          "name": "stillPlayingAnActionOrSomething",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::getCurrentAnimationWeight",
+          "name": "getCurrentAnimationWeight",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::updateAnimationSpeed",
+          "name": "updateAnimationSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "speed",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::removeAnimation",
+          "name": "removeAnimation",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "AnimationData|string"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::update2frame",
+          "name": "update2frame",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::moveAllToRemoveList",
+          "name": "moveAllToRemoveList",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::endAllAnimations",
+          "name": "endAllAnimations",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::stopActionAnimations",
+          "name": "stopActionAnimations",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::stopAllAnimation",
+          "name": "stopAllAnimation",
+          "signature": {
+            "params": [
+              {
+                "name": "hardStop",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::stopAllAnimationThatMovesFromOrigin",
+          "name": "stopAllAnimationThatMovesFromOrigin",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::clearAllAnimationUT",
+          "name": "clearAllAnimationUT",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::getAnimTime",
+          "name": "getAnimTime",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::usingRightArm",
+          "name": "usingRightArm",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_AnimationLayerBinding::usingLeftArm",
+          "name": "usingLeftArm",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readonly",
+          "name": "addList",
+          "type": "Lektor<AnimationClassBase.SingleAnimation>"
+        },
+        {
+          "access": "readwrite",
+          "name": "animationClass",
+          "type": "AnimationClassBase|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "body",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "fadeRate",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "movement",
+          "type": "CharMovement|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "removeList",
+          "type": "Lektor<AnimationClassBase.SingleAnimation>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationClassBase_AnimationLayerBinding.cpp"
+    },
+    {
+      "binding": "AnimationClassBase_SingleAnimationBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationClassBase.SingleAnimation",
+      "metatable": "KenshiLua.AnimationClassBase.SingleAnimation",
+      "methods": [
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::getAnimTime",
+          "name": "getAnimTime",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::hasSound",
+          "name": "hasSound",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::_disable",
+          "name": "_disable",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::disable",
+          "name": "disable",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::notStartedYet",
+          "name": "notStartedYet",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::isACombatAnimation",
+          "name": "isACombatAnimation",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::isABlockAnimation",
+          "name": "isABlockAnimation",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::initialiseMainState",
+          "name": "initialiseMainState",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::fade",
+          "name": "fade",
+          "signature": {
+            "params": [
+              {
+                "name": "frameTIME",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "blendrate",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBase_SingleAnimationBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "masterTime",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "frameTIME",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "playSounds",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "_breakWhenEnded",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "acceptableEndTime01",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "animName",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "animationClass",
+          "type": "AnimationClassBase|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "animationData",
+          "type": "AnimationData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "autoRemove",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentFrameTime",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentFrameTime01",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "desiredWeight",
+          "type": "number"
+        },
+        {
+          "access": "readonly",
+          "name": "events",
+          "type": "AnimationEvents"
+        },
+        {
+          "access": "readwrite",
+          "name": "isAWholeBodyAction",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "looped",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "mainState",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "movesFromOrigin",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "msgHardStop",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "msgSetToReversePosition",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "normalise",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "reversePlayOnFadeOut",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "speed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "stillWanted",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "synchOffset",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "synchSlave",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "usingLeftArm",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "usingRightArm",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "weight",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationClassBase_SingleAnimationBinding.cpp"
     },
     {
       "binding": "AnimationClassBinding",
@@ -17233,11 +18034,226 @@
             ]
           },
           "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getEvents",
+          "name": "getEvents",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "AnimationEvents",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::getAnimationDatasList",
+          "name": "getAnimationDatasList",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimsListsManager.AnimList",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::chooseAnims",
+          "name": "chooseAnims",
+          "signature": {
+            "params": [
+              {
+                "name": "result",
+                "optional": false,
+                "type": "AnimationChoices"
+              },
+              {
+                "name": "candidates",
+                "optional": false,
+                "type": "Lektor<AnimationData>"
+              },
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              },
+              {
+                "name": "isUpperBody",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "isIdles",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::chooseRandomAnim",
+          "name": "chooseRandomAnim",
+          "signature": {
+            "params": [
+              {
+                "name": "candidates",
+                "optional": false,
+                "type": "Lektor<AnimationData>"
+              },
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              },
+              {
+                "name": "skipCarryModes",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "AnimationChoices"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::scoreAnim",
+          "name": "scoreAnim",
+          "signature": {
+            "params": [
+              {
+                "name": "candidate",
+                "optional": false,
+                "type": "AnimationData"
+              },
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              },
+              {
+                "name": "skipCarryModes",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::processMoveAnims",
+          "name": "processMoveAnims",
+          "signature": {
+            "params": [
+              {
+                "name": "listAnims",
+                "optional": false,
+                "type": "Lektor<AnimationData>"
+              },
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              },
+              {
+                "name": "isUpperBody",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "weightHack",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::processIdleAnims",
+          "name": "processIdleAnims",
+          "signature": {
+            "params": [
+              {
+                "name": "list",
+                "optional": false,
+                "type": "Lektor<AnimationData>"
+              },
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              },
+              {
+                "name": "frameTIME",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::processCombatIdleAnims",
+          "name": "processCombatIdleAnims",
+          "signature": {
+            "params": [
+              {
+                "name": "list",
+                "optional": false,
+                "type": "Lektor<AnimationData>"
+              },
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              },
+              {
+                "name": "frameTIME",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "weightLimit",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "AnimationClassBaseBinding",
       "parent_metatable": "KenshiLua.AnimationClassBase",
       "properties": [
+        {
+          "access": "readonly",
+          "name": "animationRequirements",
+          "type": "AnimationRequirement"
+        },
         {
           "access": "readonly",
           "name": "appearance",
@@ -17267,6 +18283,11 @@
           "access": "readwrite",
           "name": "me",
           "type": "Character"
+        },
+        {
+          "access": "readwrite",
+          "name": "myAnimList",
+          "type": "AnimsListsManager.AnimList|nil"
         },
         {
           "access": "readonly",
@@ -17693,6 +18714,107 @@
       "source": "src/Bindings/Kenshi/Animation/AnimationEventBinding.cpp"
     },
     {
+      "binding": "AnimationEventsBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationEvents",
+      "metatable": "KenshiLua.AnimationEvents",
+      "methods": [
+        {
+          "callback": "AnimationEventsBinding::setInitialFrame",
+          "name": "setInitialFrame",
+          "signature": {
+            "params": [
+              {
+                "name": "f",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventsBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "frame",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "sound",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventsBinding::addEvent",
+          "name": "addEvent",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "AnimationEvent|GameData"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventsBinding::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "character",
+          "type": "Character|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "lastFrame",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "nextEvent",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationEventsBinding.cpp"
+    },
+    {
       "binding": "AnimationGroundEventBinding",
       "global_names": [],
       "has_constructor": false,
@@ -17817,6 +18939,280 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Animation/AnimationReloadEventBinding.cpp"
+    },
+    {
+      "binding": "AnimationRequirementBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationRequirement",
+      "metatable": "KenshiLua.AnimationRequirement",
+      "methods": [
+        {
+          "callback": "AnimationRequirementBinding::isUpperBodyOnlyAction",
+          "name": "isUpperBodyOnlyAction",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationRequirementBinding::hasAction",
+          "name": "hasAction",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationRequirementBinding::clearAction",
+          "name": "clearAction",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "_currentAction",
+          "type": "AnimationData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "_currentCombatTechnique",
+          "type": "CombatTechniqueData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "actionSpeedMult",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "attachRootToMastersBone",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "carried",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "carryingLeft",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "carryingRight",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "crouched",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentAnimCategory",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentStumble",
+          "type": "AnimationData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentWeapon",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "desiredPainOverlayAnimationOverride",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "doWeatherAnimation",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "filterFW",
+          "type": "MedianFilter"
+        },
+        {
+          "access": "readwrite",
+          "name": "filterStrafe",
+          "type": "MedianFilter"
+        },
+        {
+          "access": "readwrite",
+          "name": "forcedSlaveLoop",
+          "type": "AnimationData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "holdBreath",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "idle",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "idleState",
+          "type": "AnimationData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "idleTimer",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "isActionSlave",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "isAnimal",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "isCombatMode",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "isStealthMode",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "isStrafeMode",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "lastStrafeWeight",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageL",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legDamageR",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "legsIdle",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "maxSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "moveSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "pos",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "prone",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "slaveHandle",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "slaveSync",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "smoothedMoveSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "stance",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "stateTimer",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "strafeSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "turnSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "upperIdle",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "weaponL",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "weaponR",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherStrength",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "weatherType",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationRequirementBinding.cpp"
     },
     {
       "binding": "AnimationSFXEventBinding",
@@ -17946,6 +19342,186 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Animation/AnimationSFXEventBinding.cpp"
+    },
+    {
+      "binding": "AnimsListsManagerBinding",
+      "global_names": [
+        "AnimsListsManager"
+      ],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimsListsManager",
+      "metatable": "KenshiLua.AnimsListsManager",
+      "methods": [
+        {
+          "callback": "AnimsListsManagerBinding::getAnimalList",
+          "name": "getAnimalList",
+          "signature": {
+            "params": [
+              {
+                "name": "race",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "animationData",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [
+              "AnimsListsManager.AnimList",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimsListsManagerBinding::getCharacterList",
+          "name": "getCharacterList",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimsListsManager.AnimList",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimsListsManagerBinding::setupCharacterList",
+          "name": "setupCharacterList",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimsListsManagerBinding::setupAnimalList",
+          "name": "setupAnimalList",
+          "signature": {
+            "params": [
+              {
+                "name": "animalRace",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "getAnimsFrom",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readonly",
+          "name": "characterAnimations",
+          "type": "AnimsListsManager.AnimList"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimsListsManagerBinding.cpp"
+    },
+    {
+      "binding": "AnimsListsManager_AnimListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimsListsManager.AnimList",
+      "metatable": "KenshiLua.AnimsListsManager.AnimList",
+      "methods": [
+        {
+          "callback": "AnimsListsManager_AnimListBinding::getStumbles",
+          "name": "getStumbles",
+          "signature": {
+            "params": [
+              {
+                "name": "bodypart",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [
+              "Lektor<AnimationData>",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimsListsManager_AnimListBinding::getStrafe",
+          "name": "getStrafe",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData",
+              "nil"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "actionAnims",
+          "type": "BoostUnorderedMap<string, AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "allAnims",
+          "type": "BoostUnorderedMap<string, AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "attacks",
+          "type": "Lektor<AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "idleAnims",
+          "type": "Lektor<AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "movementAnimsBase",
+          "type": "Lektor<AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "movementAnimsUpper",
+          "type": "Lektor<AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "strafeAnims",
+          "type": "Lektor<AnimationData>"
+        },
+        {
+          "access": "readwrite",
+          "name": "turningAnim",
+          "type": "AnimationData|nil"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimsListsManager_AnimListBinding.cpp"
     },
     {
       "binding": "AppearanceAnimalBinding",
@@ -146826,6 +148402,116 @@
       ]
     },
     {
+      "binding": "AnimStringMapBinding",
+      "element_refs": [
+        null,
+        "binding:AnimationDataBinding"
+      ],
+      "element_types": {
+        "key": "string",
+        "value": "AnimationData"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "string",
+        "type": "AnimationData|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "BoostUnorderedMap<string, AnimationData>",
+      "metatable": "boost_unordered_map<std::string, AnimationData*>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<string, AnimationData>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AnimsListsManager_AnimListBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/Animation/AnimsListsManager_AnimListBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/BoostUnorderedBinding.h",
+      "template": "BoostUnorderedMapBinding",
+      "template_args": [
+        "std::string",
+        "AnimationData*",
+        "boost::hash<std::string>",
+        "std::equal_to<std::string>",
+        "Ogre::STLAllocator<std::pair<std::string const, AnimationData*>, Ogre::GeneralAllocPolicy>"
+      ]
+    },
+    {
       "binding": "AnimationDataFastArrayBinding",
       "element_refs": [
         "binding:AnimationDataBinding"
@@ -152217,6 +153903,232 @@
       ]
     },
     {
+      "binding": "LektorPtrBinding<AnimationClassBase::AnimationLayer*>",
+      "element_refs": [
+        "binding:AnimationClassBase_AnimationLayerBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "AnimationClassBase.AnimationLayer"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "AnimationClassBase.AnimationLayer|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<AnimationClassBase.AnimationLayer>",
+      "metatable": "lektor<AnimationClassBase::AnimationLayer*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "AnimationClassBase.AnimationLayer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationClassBase.AnimationLayer|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, AnimationClassBase.AnimationLayer>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AnimationClassBaseBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/Animation/AnimationClassBaseBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "AnimationClassBase::AnimationLayer*"
+      ]
+    },
+    {
+      "binding": "LektorPtrBinding<AnimationData*>",
+      "element_refs": [
+        "binding:AnimationDataBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "AnimationData"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "AnimationData|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<AnimationData>",
+      "metatable": "lektor<AnimationData*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "AnimationData"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationData|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, AnimationData>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AnimationChoicesBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/Animation/AnimationChoicesBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "AnimationData*"
+      ]
+    },
+    {
       "binding": "LektorPtrBinding<Armour*>",
       "element_refs": [
         "binding:ArmourBinding"
@@ -155391,6 +157303,119 @@
       ]
     },
     {
+      "binding": "LektorPtrBinding<SingleAnimation*>",
+      "element_refs": [
+        "binding:AnimationClassBase_SingleAnimationBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "AnimationClassBase.SingleAnimation"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "AnimationClassBase.SingleAnimation|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<AnimationClassBase.SingleAnimation>",
+      "metatable": "lektor<SingleAnimation*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "AnimationClassBase.SingleAnimation"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationClassBase.SingleAnimation|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, AnimationClassBase.SingleAnimation>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AnimationClassBase_AnimationLayerBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/Animation/AnimationClassBase_AnimationLayerBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "SingleAnimation*"
+      ]
+    },
+    {
       "binding": "LektorPtrBinding<StorageBuilding::ConsumptionItem*>",
       "binding_aliases": [
         "LektorValueBinding<StorageBuilding::ConsumptionItem>"
@@ -156411,6 +158436,119 @@
       "template": "LektorValueBinding",
       "template_args": [
         "TownBase::ResidentData"
+      ]
+    },
+    {
+      "binding": "LektorValueBinding<float>",
+      "element_refs": [
+        null
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "number"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "number|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<number>",
+      "metatable": "lektor<float>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "nil|number"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, number>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "AnimationChoicesBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/Animation/AnimationChoicesBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorValueBinding",
+      "template_args": [
+        "float"
       ]
     },
     {

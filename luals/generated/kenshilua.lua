@@ -14052,6 +14052,14 @@ taskPriority = {
 --- The tasks, as a live `std::deque<Tasker*>`. Read-only; edit it in place.
 ---@field list StdDeque<Tasker>
 
+--- Engine class `AnimationChoices`.
+---@class AnimationChoices
+---@field normaliseWeights fun(self: AnimationChoices)
+---@field calculateSpeedOfMoveAnims fun(self: AnimationChoices, travelSpeed: number, characterHeight: number): number
+---@field chooseHighestScore fun(self: AnimationChoices): AnimationData|nil
+---@field anims Lektor<AnimationData>
+---@field weights Lektor<number>
+
 --- Engine class `AnimationClassAnimal`.
 ---@class AnimationClassAnimal : AnimationClass
 --- Flag indicating sharp angle turning threshold exceeded.
@@ -14135,6 +14143,12 @@ taskPriority = {
 --- Resolves the appropriate lockpicking animation track based on lock mechanism height and character posture (standing vs kneeling).
 ---@field getAnimation_Lockpick fun(self: AnimationClassBase, inwhat: hand): AnimationData
 ---@field getAnimationData fun(self: AnimationClassBase, arg1: string): AnimationData
+--- Searches all animation layers for an active `SingleAnimation*` matching the given internal clip name.
+---@field getAnimationPlaying_animName fun(self: AnimationClassBase, arg1: string): AnimationClassBase.SingleAnimation|nil
+--- Searches all animation layers for an active `SingleAnimation*` matching the FCS template identifier string.
+---@field getAnimationPlaying_datName fun(self: AnimationClassBase, arg1: string): AnimationClassBase.SingleAnimation|nil
+--- Searches all animation layers for an active `SingleAnimation*` executing the specified combat technique.
+---@field getAnimationPlaying fun(self: AnimationClassBase, arg1: AnimationData|CombatTechniqueData): AnimationClassBase.SingleAnimation|nil
 --- Activation request transition marker.
 ---@field activateFlag boolean
 --- Cached base rest-pose world bone orientations.
@@ -14151,6 +14165,8 @@ taskPriority = {
 ---@field isVisible boolean
 --- Root motion delta translation accumulator.
 ---@field lastAnimRelocation table
+--- Dynamic animation layer track container.
+---@field layer Lektor<AnimationClassBase.AnimationLayer>
 --- Global animation playback speed scale multiplier.
 ---@field masterSpeed number
 --- Master animation timeline clock in seconds.
@@ -14161,6 +14177,78 @@ taskPriority = {
 ---@field rootBonePosition table
 --- Blending reset toggle flag.
 ---@field zeroOutTheBlending boolean
+
+--- Engine class `AnimationClassBase.AnimationLayer`.
+---@class AnimationClassBase.AnimationLayer
+---@field addToRemoveList fun(self: AnimationClassBase.AnimationLayer, anim: AnimationClassBase.SingleAnimation|SingleAnimation)
+---@field clearLists fun(self: AnimationClassBase.AnimationLayer)
+---@field _clearListsSafe fun(self: AnimationClassBase.AnimationLayer)
+---@field randomiseAnimationPosition fun(self: AnimationClassBase.AnimationLayer, arg1: string)
+---@field isAnimationInRemoveList fun(self: AnimationClassBase.AnimationLayer, state: AnimationData): AnimationClassBase.SingleAnimation|nil
+---@field isAnimationInAddList fun(self: AnimationClassBase.AnimationLayer, arg1: AnimationData|CombatTechniqueData|string): AnimationClassBase.SingleAnimation|nil
+---@field isAnimationInAddList_Datname fun(self: AnimationClassBase.AnimationLayer, arg1: string): AnimationClassBase.SingleAnimation|nil
+---@field takeFromRemoveList fun(self: AnimationClassBase.AnimationLayer, arg1: string): AnimationClassBase.SingleAnimation|nil
+---@field takeFromAddList fun(self: AnimationClassBase.AnimationLayer, arg1: AnimationData|string): AnimationClassBase.SingleAnimation|nil
+---@field getTotalAnimationWeight fun(self: AnimationClassBase.AnimationLayer, thisLayer: boolean|integer, wholeBody?: boolean, includeRemovelist?: boolean): number
+---@field getTotalActionAnimationWeight fun(self: AnimationClassBase.AnimationLayer): number
+---@field stillPlayingAnActionOrSomething fun(self: AnimationClassBase.AnimationLayer): boolean
+---@field getCurrentAnimationWeight fun(self: AnimationClassBase.AnimationLayer, arg1: string): number
+---@field updateAnimationSpeed fun(self: AnimationClassBase.AnimationLayer, arg1: string, speed: number)
+---@field removeAnimation fun(self: AnimationClassBase.AnimationLayer, arg1: AnimationData|string)
+---@field update2frame fun(self: AnimationClassBase.AnimationLayer)
+---@field moveAllToRemoveList fun(self: AnimationClassBase.AnimationLayer)
+---@field endAllAnimations fun(self: AnimationClassBase.AnimationLayer)
+---@field stopActionAnimations fun(self: AnimationClassBase.AnimationLayer)
+---@field stopAllAnimation fun(self: AnimationClassBase.AnimationLayer, hardStop?: boolean)
+---@field stopAllAnimationThatMovesFromOrigin fun(self: AnimationClassBase.AnimationLayer)
+---@field clearAllAnimationUT fun(self: AnimationClassBase.AnimationLayer)
+---@field getAnimTime fun(self: AnimationClassBase.AnimationLayer): number
+---@field usingRightArm fun(self: AnimationClassBase.AnimationLayer): boolean
+---@field usingLeftArm fun(self: AnimationClassBase.AnimationLayer): boolean
+---@field addList Lektor<AnimationClassBase.SingleAnimation>
+---@field animationClass AnimationClassBase|nil
+---@field body lightuserdata|nil
+---@field fadeRate number
+---@field movement CharMovement|nil
+---@field removeList Lektor<AnimationClassBase.SingleAnimation>
+
+--- Engine class `AnimationClassBase.SingleAnimation`.
+---@class AnimationClassBase.SingleAnimation
+---@field getAnimTime fun(self: AnimationClassBase.SingleAnimation): number
+---@field hasSound fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field _disable fun(self: AnimationClassBase.SingleAnimation)
+---@field disable fun(self: AnimationClassBase.SingleAnimation)
+---@field notStartedYet fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field isACombatAnimation fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field isABlockAnimation fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field initialiseMainState fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field fade fun(self: AnimationClassBase.SingleAnimation, frameTIME: number, blendrate: number): boolean
+---@field update fun(self: AnimationClassBase.SingleAnimation, masterTime: number, frameTIME: number, playSounds?: boolean)
+---@field _breakWhenEnded boolean
+---@field acceptableEndTime01 number
+---@field animName string
+---@field animationClass AnimationClassBase|nil
+---@field animationData AnimationData|nil
+---@field autoRemove boolean
+---@field currentFrameTime number
+---@field currentFrameTime01 number
+---@field desiredWeight number
+---@field events AnimationEvents
+---@field isAWholeBodyAction boolean
+---@field looped boolean
+---@field mainState lightuserdata|nil
+---@field movesFromOrigin boolean
+---@field msgHardStop boolean
+---@field msgSetToReversePosition boolean
+---@field normalise boolean
+---@field reversePlayOnFadeOut boolean
+---@field speed number
+---@field stillWanted boolean
+---@field synchOffset number
+---@field synchSlave boolean
+---@field usingLeftArm boolean
+---@field usingRightArm boolean
+---@field weight number
 
 --- Core skeletal animation controller and locomotion blending coordinator governing character poses, movement cycles, combat techniques, stumbles, and ragdoll transitions. Manages Ogre3D skeletal animation layers, motion smoothing filters, pain overlay blend masks, and physics ragdoll kinematics coupling. Interacts directly with `Character` for actor state, `CharMovement` for locomotion velocity and steering, `AppearanceBase` for skeletal mesh scaling and body morphs, and `CombatClass` for attack and parry sequence timing.
 ---@class AnimationClass : AnimationClassBase
@@ -14414,6 +14502,24 @@ taskPriority = {
 --- Override dispatch for `breathing`. Advances and applies subtle skeletal breathing morph animations to chest and shoulder bones during idles.
 ---@field _NV_breathing fun(self: AnimationClass, armsToo?: boolean)
 ---@field isHuman fun(self: AnimationClass): AnimationClassHuman|nil
+--- Returns the active event notification callbacks registered for current animation tracks.
+---@field getEvents fun(self: AnimationClass, arg1: string): AnimationEvents|nil
+--- Returns the list of all `AnimationData` records registered for this skeletal rig.
+---@field getAnimationDatasList fun(self: AnimationClass): AnimsListsManager.AnimList|nil
+--- Evaluates available animation clips matching current character stance, speed, and held equipment requirements.
+---@field chooseAnims fun(self: AnimationClass, result: AnimationChoices, candidates: Lektor<AnimationData>, requirements: AnimationRequirement, isUpperBody?: boolean, isIdles?: boolean)
+--- Selects a random animation variant from a matching group of candidate clips.
+---@field chooseRandomAnim fun(self: AnimationClass, candidates: Lektor<AnimationData>, requirements: AnimationRequirement, skipCarryModes?: boolean): AnimationChoices
+--- Calculates compatibility score of candidate animation against current movement speed, weapon held, and injury state.
+---@field scoreAnim fun(self: AnimationClass, candidate: AnimationData, requirements: AnimationRequirement, skipCarryModes?: boolean): number
+--- Blends walk, jog, and run locomotion tracks based on current horizontal velocity.
+---@field processMoveAnims fun(self: AnimationClass, listAnims: Lektor<AnimationData>, requirements: AnimationRequirement, isUpperBody?: boolean, weightHack: number)
+--- Blends ambient idle fidgets and posture shifts when the character is standing still.
+---@field processIdleAnims fun(self: AnimationClass, list: Lektor<AnimationData>, requirements: AnimationRequirement, frameTIME: number)
+--- Blends breathing, fidgets, and weapon swaying for combat ready stances.
+---@field processCombatIdleAnims fun(self: AnimationClass, list: Lektor<AnimationData>, requirements: AnimationRequirement, frameTIME: number, weightLimit: number)
+--- Cached character stance, movement speed, weapon held, and injury state flags.
+---@field animationRequirements AnimationRequirement
 --- Character cosmetic appearance, skeletal proportions, and body morph target controller.
 ---@field appearance AppearanceBase
 --- Footwear sole thickness compensation offset preventing ground mesh penetration.
@@ -14426,6 +14532,8 @@ taskPriority = {
 ---@field feetHeight number
 --- Back-pointer to owning character actor entity.
 ---@field me Character
+--- Active race/character animation library package containing moves, idles, and combat clips.
+---@field myAnimList AnimsListsManager.AnimList|nil
 --- Skeletal bone kinematic ragdoll blending coupler.
 ---@field ragdollAnimation RagdollAnimation|nil
 --- Ragdoll component collision bitmask identifying active physics limbs.
@@ -14556,6 +14664,23 @@ taskPriority = {
 ---@field toString fun(self: AnimationEvent): string
 ---@field _NV_toString fun(self: AnimationEvent): string
 
+--- Engine class `AnimationEvents`.
+---@class AnimationEvents
+--- Initializes the starting frame value to correctly begin interval checking for events. Used when resetting an animation or initially binding an animation timeline.
+---@field setInitialFrame fun(self: AnimationEvents, f: number)
+--- Progresses the animation event interval checker to the provided frame. It fires all animation event callbacks for any sequenced events that have been passed between the `lastFrame` and the current `frame`.
+---@field update fun(self: AnimationEvents, frame: number, sound?: boolean)
+--- Inserts a new `AnimationEvent` into the sorted array of sequenced events. Reallocates the internal tracking array dynamically if its capacity is exceeded, inserting the event sequentially based on its trigger time.
+---@field addEvent fun(self: AnimationEvents, arg1: AnimationEvent|GameData, arg2: number)
+--- Retrieves the count of events currently queued within the sequence array.
+---@field size fun(self: AnimationEvents): integer
+--- Bound character actor receiving event callbacks.
+---@field character Character|nil
+--- Previous animation frame position for interval checking.
+---@field lastFrame number
+--- Index of the upcoming event in the sorted event sequence.
+---@field nextEvent integer
+
 --- Engine class `AnimationGroundEvent`.
 ---@class AnimationGroundEvent : AnimationEvent
 ---@field trigger fun(self: AnimationGroundEvent, character: Character)
@@ -14568,6 +14693,57 @@ taskPriority = {
 ---@class AnimationReloadEvent : AnimationEvent
 ---@field trigger fun(self: AnimationReloadEvent, character: Character)
 ---@field _NV_trigger fun(self: AnimationReloadEvent, character: Character)
+
+--- Engine class `AnimationRequirement`.
+---@class AnimationRequirement
+---@field isUpperBodyOnlyAction fun(self: AnimationRequirement): boolean
+---@field hasAction fun(self: AnimationRequirement): boolean
+---@field clearAction fun(self: AnimationRequirement)
+---@field _currentAction AnimationData|nil
+---@field _currentCombatTechnique CombatTechniqueData|nil
+---@field actionSpeedMult number
+---@field attachRootToMastersBone string
+---@field carried boolean
+---@field carryingLeft boolean
+---@field carryingRight boolean
+---@field crouched boolean
+---@field currentAnimCategory integer
+---@field currentStumble AnimationData|nil
+---@field currentWeapon integer
+---@field desiredPainOverlayAnimationOverride string
+---@field doWeatherAnimation boolean
+---@field filterFW MedianFilter
+---@field filterStrafe MedianFilter
+---@field forcedSlaveLoop AnimationData|nil
+---@field holdBreath boolean
+---@field idle boolean
+---@field idleState AnimationData|nil
+---@field idleTimer number
+---@field isActionSlave boolean
+---@field isAnimal boolean
+---@field isCombatMode integer
+---@field isStealthMode integer
+---@field isStrafeMode boolean
+---@field lastStrafeWeight number
+---@field legDamageL number
+---@field legDamageR number
+---@field legsIdle boolean
+---@field maxSpeed number
+---@field moveSpeed number
+---@field pos table
+---@field prone boolean
+---@field slaveHandle hand
+---@field slaveSync number
+---@field smoothedMoveSpeed number
+---@field stance integer
+---@field stateTimer number
+---@field strafeSpeed number
+---@field turnSpeed number
+---@field upperIdle boolean
+---@field weaponL boolean
+---@field weaponR boolean
+---@field weatherStrength number
+---@field weatherType integer
 
 --- Engine class `AnimationSFXEvent`.
 ---@class AnimationSFXEvent : AnimationEvent
@@ -14582,6 +14758,27 @@ taskPriority = {
 ---@field name string
 ---@field stop string
 ---@field value string
+
+--- Engine class `AnimsListsManager`.
+---@class AnimsListsManager
+---@field getAnimalList fun(self: AnimsListsManager, race: GameData, animationData: GameData): AnimsListsManager.AnimList|nil
+---@field getCharacterList fun(self: AnimsListsManager): AnimsListsManager.AnimList|nil
+---@field setupCharacterList fun(self: AnimsListsManager)
+---@field setupAnimalList fun(self: AnimsListsManager, animalRace: GameData, getAnimsFrom: GameData)
+---@field characterAnimations AnimsListsManager.AnimList
+
+--- Engine class `AnimsListsManager.AnimList`.
+---@class AnimsListsManager.AnimList
+---@field getStumbles fun(self: AnimsListsManager.AnimList, bodypart: GameData): Lektor<AnimationData>|nil
+---@field getStrafe fun(self: AnimsListsManager.AnimList): AnimationData|nil
+---@field actionAnims BoostUnorderedMap<string, AnimationData>
+---@field allAnims BoostUnorderedMap<string, AnimationData>
+---@field attacks Lektor<AnimationData>
+---@field idleAnims Lektor<AnimationData>
+---@field movementAnimsBase Lektor<AnimationData>
+---@field movementAnimsUpper Lektor<AnimationData>
+---@field strafeAnims Lektor<AnimationData>
+---@field turningAnim AnimationData|nil
 
 --- Humanoid character appearance specialist managing facial features, hair/beard styling, gender dimorphism, chest/waist proportions, and skin normal overlays.
 ---@class AppearanceHuman : AppearanceBase
@@ -26932,6 +27129,9 @@ taskPriority = {
 --- Returns the number of elements.
 ---@field size fun(self: StdSet<T>): integer
 
+--- Static functions registered on the `AnimsListsManager` global table.
+---@class AnimsListsManagerStatics
+
 --- Static functions registered on the `AppearanceManager` global table.
 ---@class AppearanceManagerStatics
 --- Static method returning the singleton AppearanceManager instance.
@@ -27496,6 +27696,11 @@ root = nil
 --- Conditional SharedKing alias registered at Lua startup. Prefer getSharedKing().
 ---@type SharedKing|nil
 shou = nil
+
+--- Global table of static functions for `AnimsListsManager`.
+---@type AnimsListsManagerStatics
+---@diagnostic disable-next-line: missing-fields
+AnimsListsManager = {}
 
 --- Global table of static functions for `AppearanceManager`.
 ---@type AppearanceManagerStatics
@@ -28591,6 +28796,10 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "int"): Lektor<integer>
 ---@overload fun(typeName: "lektor<AIPackage*>"): Lektor<AIPackage>
 ---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
+---@overload fun(typeName: "lektor<AnimationClassBase::AnimationLayer*>"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer*"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "lektor<AnimationData*>"): Lektor<AnimationData>
+---@overload fun(typeName: "AnimationData*"): Lektor<AnimationData>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
 ---@overload fun(typeName: "Armour*"): Lektor<Armour>
 ---@overload fun(typeName: "lektor<Building*>"): Lektor<Building>
@@ -28649,6 +28858,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
+---@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
@@ -28671,6 +28882,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "StringPair"): Lektor<StringPair>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
+---@overload fun(typeName: "lektor<float>"): Lektor<number>
+---@overload fun(typeName: "float"): Lektor<number>
 ---@overload fun(typeName: "lektor<hand>"): Lektor<hand>
 ---@overload fun(typeName: "hand"): Lektor<hand>
 ---@overload fun(typeName: "lektor<iVector2>"): Lektor<iVector2>
@@ -28688,6 +28901,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
 ---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
 ---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationData"): Lektor<AnimationData>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
@@ -28715,6 +28930,7 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
 ---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "SingleAnimation"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
@@ -28728,6 +28944,10 @@ lektor = {}
 ---@overload fun(typeName: "int"): Lektor<integer>
 ---@overload fun(typeName: "lektor<AIPackage*>"): Lektor<AIPackage>
 ---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
+---@overload fun(typeName: "lektor<AnimationClassBase::AnimationLayer*>"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer*"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "lektor<AnimationData*>"): Lektor<AnimationData>
+---@overload fun(typeName: "AnimationData*"): Lektor<AnimationData>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
 ---@overload fun(typeName: "Armour*"): Lektor<Armour>
 ---@overload fun(typeName: "lektor<Building*>"): Lektor<Building>
@@ -28786,6 +29006,8 @@ lektor = {}
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
+---@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
@@ -28808,6 +29030,8 @@ lektor = {}
 ---@overload fun(typeName: "StringPair"): Lektor<StringPair>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
+---@overload fun(typeName: "lektor<float>"): Lektor<number>
+---@overload fun(typeName: "float"): Lektor<number>
 ---@overload fun(typeName: "lektor<hand>"): Lektor<hand>
 ---@overload fun(typeName: "hand"): Lektor<hand>
 ---@overload fun(typeName: "lektor<iVector2>"): Lektor<iVector2>
@@ -28825,6 +29049,8 @@ lektor = {}
 ---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
 ---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
 ---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationData"): Lektor<AnimationData>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
@@ -28852,6 +29078,7 @@ lektor = {}
 ---@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
 ---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "SingleAnimation"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>

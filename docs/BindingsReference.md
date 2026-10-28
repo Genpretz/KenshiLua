@@ -28,15 +28,22 @@
 - [`AkSoundPosition`](#aksoundposition)
 - [`AkVector`](#akvector)
 - [`AnimalInventoryLayout`](#animalinventorylayout)
+- [`AnimationChoices`](#animationchoices)
 - [`AnimationClass`](#animationclass)
 - [`AnimationClassAnimal`](#animationclassanimal)
 - [`AnimationClassBase`](#animationclassbase)
+  - [`AnimationClassBase::AnimationLayer`](#animationclassbase::animationlayer)
+  - [`AnimationClassBase::SingleAnimation`](#animationclassbase::singleanimation)
 - [`AnimationClassHuman`](#animationclasshuman)
 - [`AnimationData`](#animationdata)
 - [`AnimationEvent`](#animationevent)
+- [`AnimationEvents`](#animationevents)
 - [`AnimationGroundEvent`](#animationgroundevent)
 - [`AnimationReloadEvent`](#animationreloadevent)
+- [`AnimationRequirement`](#animationrequirement)
 - [`AnimationSFXEvent`](#animationsfxevent)
+- [`AnimsListsManager`](#animslistsmanager)
+  - [`AnimsListsManager::AnimList`](#animslistsmanager::animlist)
 - [`AppearanceAnimal`](#appearanceanimal)
 - [`AppearanceBase`](#appearancebase)
 - [`AppearanceHuman`](#appearancehuman)
@@ -1312,6 +1319,23 @@
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
 
+## AnimationChoices
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationChoices`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| anims | `lektor<AnimationData*>` | RW | `obj.anims = <value>` |
+| weights | `lektor<float>` | RW | `obj.weights = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| normaliseWeights | `` | `void` | `obj:normaliseWeights()` |
+| calculateSpeedOfMoveAnims | `travelSpeed: number, characterHeight: number` | `number` | `obj:calculateSpeedOfMoveAnims(travelSpeed, characterHeight)` |
+| chooseHighestScore | `` | `AnimationData` | `obj:chooseHighestScore()` |
+
 ## AnimationClass
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
 **Metatable:** `KenshiLua.AnimationClass`
@@ -1329,6 +1353,8 @@
 | defaultIdleAnimation | `AnimationData` | RW | `obj.defaultIdleAnimation = <value>` |
 | ragdollAnimation | `RagdollAnimation` | R | `obj.ragdollAnimation` |
 | ragdollParts | `RagdollPart::Enum` | RW | `obj.ragdollParts = <value>` |
+| animationRequirements | `AnimationRequirement` | R | `obj.animationRequirements` |
+| myAnimList | `AnimsListsManager::AnimList` | RW | `obj.myAnimList = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -1443,6 +1469,14 @@
 | processTurnAnim | `` | `boolean` | `obj:processTurnAnim()` |
 | breathing | `armsToo: boolean` | `void` | `obj:breathing(armsToo)` |
 | isHuman | `` | `AnimationClassHuman` | `obj:isHuman()` |
+| getEvents | `animName: string` | `AnimationEvents` | `obj:getEvents(animName)` |
+| getAnimationDatasList | `` | `AnimsListsManager::AnimList` | `obj:getAnimationDatasList()` |
+| chooseAnims | `choices: AnimationChoices, anims: lektor<AnimationData*>, req: AnimationRequirement, isUpperBody: boolean, isIdles: boolean` | `void` | `obj:chooseAnims(choices, anims, req, isUpperBody, isIdles)` |
+| chooseRandomAnim | `anims: lektor<AnimationData*>, req: AnimationRequirement, skipCarryModes: boolean` | `AnimationChoices` | `obj:chooseRandomAnim(anims, req, skipCarryModes)` |
+| scoreAnim | `anim: AnimationData, req: AnimationRequirement, skipCarryModes: boolean` | `number` | `obj:scoreAnim(anim, req, skipCarryModes)` |
+| processMoveAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, isUpperBody: boolean, weightHack: number` | `void` | `obj:processMoveAnims(anims, req, isUpperBody, weightHack)` |
+| processIdleAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, frameTIME: number` | `void` | `obj:processIdleAnims(anims, req, frameTIME)` |
+| processCombatIdleAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, frameTIME: number, weightLimit: number` | `void` | `obj:processCombatIdleAnims(anims, req, frameTIME, weightLimit)` |
 
 ## AnimationClassAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassAnimal.h`
@@ -1475,6 +1509,7 @@
 | movement | `CharMovement` | RW | `obj.movement = <value>` |
 | masterTime | `number` | RW | `obj.masterTime = <value>` |
 | masterSpeed | `number` | RW | `obj.masterSpeed = <value>` |
+| layer | `lektor<AnimationClassBase::AnimationLayer*>` | R | `obj.layer` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -1517,6 +1552,68 @@
 | getAnimation_Medic | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Medic(inwhat)` |
 | getAnimation_Lockpick | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Lockpick(inwhat)` |
 | getAnimationData | `name: string` | `AnimationData` | `obj:getAnimationData(name)` |
+| getAnimationPlaying_animName | `s: string` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying_animName(s)` |
+| getAnimationPlaying_datName | `s: string` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying_datName(s)` |
+| getAnimationPlaying [1] | `name: CombatTechniqueData` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying(name)` |
+| getAnimationPlaying [2] | `name: AnimationData` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying(name)` |
+
+## AnimationClassBase::AnimationLayer
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Parent Class:** [`AnimationClassBase`](#animationclassbase)
+**Metatable:** `KenshiLua.AnimationClassBase.AnimationLayer`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| addToRemoveList | `anim: SingleAnimation` | `void` | `obj:addToRemoveList(anim)` |
+| clearLists | `` | `void` | `obj:clearLists()` |
+| _clearListsSafe | `` | `void` | `obj:_clearListsSafe()` |
+| randomiseAnimationPosition | `name: string` | `void` | `obj:randomiseAnimationPosition(name)` |
+| isAnimationInRemoveList | `ad: AnimationData` | `SingleAnimation` | `obj:isAnimationInRemoveList(ad)` |
+| isAnimationInAddList [1] | `state: string` | `AnimationClassBase::SingleAnimation` | `obj:isAnimationInAddList(state)` |
+| isAnimationInAddList [2] | `state: CombatTechniqueData` | `AnimationClassBase::SingleAnimation` | `obj:isAnimationInAddList(state)` |
+| isAnimationInAddList [3] | `state: AnimationData` | `AnimationClassBase::SingleAnimation` | `obj:isAnimationInAddList(state)` |
+| isAnimationInAddList_Datname | `s: string` | `SingleAnimation` | `obj:isAnimationInAddList_Datname(s)` |
+| takeFromRemoveList | `s: string` | `SingleAnimation` | `obj:takeFromRemoveList(s)` |
+| takeFromAddList [1] | `what: AnimationData` | `AnimationClassBase::SingleAnimation` | `obj:takeFromAddList(what)` |
+| takeFromAddList [2] | `what: string` | `AnimationClassBase::SingleAnimation` | `obj:takeFromAddList(what)` |
+| getTotalAnimationWeight [1] | `thisLayer: boolean, wholeBody: boolean, includeRemovelist: boolean` | `number` | `obj:getTotalAnimationWeight(thisLayer, wholeBody, includeRemovelist)` |
+| getTotalAnimationWeight [2] | `cat: CharacterAnimCategory` | `number` | `obj:getTotalAnimationWeight(cat)` |
+| getTotalActionAnimationWeight | `` | `number` | `obj:getTotalActionAnimationWeight()` |
+| stillPlayingAnActionOrSomething | `` | `boolean` | `obj:stillPlayingAnActionOrSomething()` |
+| getCurrentAnimationWeight | `s: string` | `number` | `obj:getCurrentAnimationWeight(s)` |
+| updateAnimationSpeed | `s: string, speed: number` | `void` | `obj:updateAnimationSpeed(s, speed)` |
+| removeAnimation [1] | `anim: AnimationData` | `void` | `obj:removeAnimation(anim)` |
+| removeAnimation [2] | `name: string` | `void` | `obj:removeAnimation(name)` |
+| update2frame | `` | `void` | `obj:update2frame()` |
+| moveAllToRemoveList | `` | `void` | `obj:moveAllToRemoveList()` |
+| endAllAnimations | `` | `void` | `obj:endAllAnimations()` |
+| stopActionAnimations | `` | `void` | `obj:stopActionAnimations()` |
+| stopAllAnimation | `hardStop: boolean` | `void` | `obj:stopAllAnimation(hardStop)` |
+| stopAllAnimationThatMovesFromOrigin | `` | `void` | `obj:stopAllAnimationThatMovesFromOrigin()` |
+| clearAllAnimationUT | `` | `void` | `obj:clearAllAnimationUT()` |
+| getAnimTime | `` | `number` | `obj:getAnimTime()` |
+| usingRightArm | `` | `boolean` | `obj:usingRightArm()` |
+| usingLeftArm | `` | `boolean` | `obj:usingLeftArm()` |
+
+## AnimationClassBase::SingleAnimation
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Parent Class:** [`AnimationClassBase`](#animationclassbase)
+**Metatable:** `KenshiLua.AnimationClassBase.SingleAnimation`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getAnimTime | `` | `number` | `obj:getAnimTime()` |
+| hasSound | `` | `boolean` | `obj:hasSound()` |
+| _disable | `` | `void` | `obj:_disable()` |
+| disable | `` | `void` | `obj:disable()` |
+| notStartedYet | `` | `boolean` | `obj:notStartedYet()` |
+| isACombatAnimation | `` | `boolean` | `obj:isACombatAnimation()` |
+| isABlockAnimation | `` | `boolean` | `obj:isABlockAnimation()` |
+| initialiseMainState | `` | `boolean` | `obj:initialiseMainState()` |
+| fade | `frameTIME: number, blendrate: number` | `boolean` | `obj:fade(frameTIME, blendrate)` |
+| update | `masterTime: number, frameTIME: number, playSounds: boolean` | `void` | `obj:update(masterTime, frameTIME, playSounds)` |
 
 ## AnimationClassHuman
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassHuman.h`
@@ -1598,6 +1695,26 @@
 | finish | `c: Character` | `void` | `obj:finish(c)` |
 | toString | `` | `string` | `obj:toString()` |
 
+## AnimationEvents
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationEvents`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| lastFrame | `number` | RW | `obj.lastFrame = <value>` |
+| nextEvent | `integer` | RW | `obj.nextEvent = <value>` |
+| character | `Character` | RW | `obj.character = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setInitialFrame | `f: number` | `void` | `obj:setInitialFrame(f)` |
+| update | `frame: number, sound: boolean` | `void` | `obj:update(frame, sound)` |
+| addEvent [1] | `e: AnimationEvent, time: number` | `void` | `obj:addEvent(e, time)` |
+| addEvent [2] | `data: GameData, time: number` | `void` | `obj:addEvent(data, time)` |
+| size | `` | `integer` | `obj:size()` |
+
 ## AnimationGroundEvent
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
 **Metatable:** `KenshiLua.AnimationGroundEvent`
@@ -1622,6 +1739,66 @@
 |---|---|---|---|
 | trigger | `character: Character` | `void` | `obj:trigger(character)` |
 
+## AnimationRequirement
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationRequirement`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| currentAnimCategory | `CharacterAnimCategory` | RW | `obj.currentAnimCategory = <value>` |
+| filterFW | `MedianFilter` | RW | `obj.filterFW = <value>` |
+| filterStrafe | `MedianFilter` | RW | `obj.filterStrafe = <value>` |
+| moveSpeed | `number` | RW | `obj.moveSpeed = <value>` |
+| turnSpeed | `number` | RW | `obj.turnSpeed = <value>` |
+| smoothedMoveSpeed | `number` | RW | `obj.smoothedMoveSpeed = <value>` |
+| strafeSpeed | `number` | RW | `obj.strafeSpeed = <value>` |
+| lastStrafeWeight | `number` | RW | `obj.lastStrafeWeight = <value>` |
+| isStrafeMode | `boolean` | RW | `obj.isStrafeMode = <value>` |
+| weaponL | `boolean` | RW | `obj.weaponL = <value>` |
+| weaponR | `boolean` | RW | `obj.weaponR = <value>` |
+| isAnimal | `boolean` | RW | `obj.isAnimal = <value>` |
+| doWeatherAnimation | `boolean` | RW | `obj.doWeatherAnimation = <value>` |
+| holdBreath | `boolean` | RW | `obj.holdBreath = <value>` |
+| stance | `StanceEnum` | RW | `obj.stance = <value>` |
+| weatherType | `WeatherAffecting` | RW | `obj.weatherType = <value>` |
+| maxSpeed | `number` | RW | `obj.maxSpeed = <value>` |
+| weatherStrength | `number` | RW | `obj.weatherStrength = <value>` |
+| actionSpeedMult | `number` | RW | `obj.actionSpeedMult = <value>` |
+| isActionSlave | `boolean` | RW | `obj.isActionSlave = <value>` |
+| attachRootToMastersBone | `string` | RW | `obj.attachRootToMastersBone = <value>` |
+| slaveSync | `number` | RW | `obj.slaveSync = <value>` |
+| slaveHandle | `hand` | RW | `obj.slaveHandle = <value>` |
+| forcedSlaveLoop | `AnimationData` | RW | `obj.forcedSlaveLoop = <value>` |
+| _currentCombatTechnique | `CombatTechniqueData` | RW | `obj._currentCombatTechnique = <value>` |
+| _currentAction | `AnimationData` | RW | `obj._currentAction = <value>` |
+| stateTimer | `number` | RW | `obj.stateTimer = <value>` |
+| crouched | `boolean` | RW | `obj.crouched = <value>` |
+| prone | `boolean` | RW | `obj.prone = <value>` |
+| carryingLeft | `boolean` | RW | `obj.carryingLeft = <value>` |
+| carryingRight | `boolean` | RW | `obj.carryingRight = <value>` |
+| carried | `boolean` | RW | `obj.carried = <value>` |
+| currentStumble | `AnimationData` | RW | `obj.currentStumble = <value>` |
+| idle | `boolean` | RW | `obj.idle = <value>` |
+| idleState | `AnimationData` | RW | `obj.idleState = <value>` |
+| idleTimer | `number` | RW | `obj.idleTimer = <value>` |
+| isCombatMode | `integer` | RW | `obj.isCombatMode = <value>` |
+| isStealthMode | `integer` | RW | `obj.isStealthMode = <value>` |
+| legsIdle | `boolean` | RW | `obj.legsIdle = <value>` |
+| upperIdle | `boolean` | RW | `obj.upperIdle = <value>` |
+| legDamageR | `number` | RW | `obj.legDamageR = <value>` |
+| legDamageL | `number` | RW | `obj.legDamageL = <value>` |
+| pos | `Vector3` | RW | `obj.pos = <value>` |
+| currentWeapon | `WeaponCategory` | RW | `obj.currentWeapon = <value>` |
+| desiredPainOverlayAnimationOverride | `string` | RW | `obj.desiredPainOverlayAnimationOverride = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isUpperBodyOnlyAction | `` | `boolean` | `obj:isUpperBodyOnlyAction()` |
+| hasAction | `` | `boolean` | `obj:hasAction()` |
+| clearAction | `` | `void` | `obj:clearAction()` |
+
 ## AnimationSFXEvent
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
 **Metatable:** `KenshiLua.AnimationSFXEvent`
@@ -1641,6 +1818,34 @@
 | trigger | `character: Character` | `void` | `obj:trigger(character)` |
 | finish | `character: Character` | `void` | `obj:finish(character)` |
 | toString | `` | `string` | `obj:toString()` |
+
+## AnimsListsManager
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimsListsManager`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| characterAnimations | `AnimsListsManager::AnimList` | R | `obj.characterAnimations` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getAnimalList | `race: GameData, animData: GameData` | `AnimsListsManager::AnimList` | `obj:getAnimalList(race, animData)` |
+| getCharacterList | `` | `AnimsListsManager::AnimList` | `obj:getCharacterList()` |
+| setupCharacterList | `` | `void` | `obj:setupCharacterList()` |
+| setupAnimalList | `animalRace: GameData, getAnimsFrom: GameData` | `void` | `obj:setupAnimalList(animalRace, getAnimsFrom)` |
+
+## AnimsListsManager::AnimList
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Parent Class:** [`AnimsListsManager`](#animslistsmanager)
+**Metatable:** `KenshiLua.AnimsListsManager.AnimList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getStumbles | `bp: GameData` | `lektor<AnimationData*>` | `obj:getStumbles(bp)` |
+| getStrafe | `` | `AnimationData` | `obj:getStrafe()` |
 
 ## AppearanceAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`

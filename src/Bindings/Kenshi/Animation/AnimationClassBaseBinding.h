@@ -54,5 +54,8 @@ public:
     static int getAnimation_Medic(lua_State* L);
     static int getAnimation_Lockpick(lua_State* L);
     static int getAnimationData(lua_State* L);
+    static int getAnimationPlaying_animName(lua_State* L);
+    static int getAnimationPlaying_datName(lua_State* L);
+    static int getAnimationPlaying(lua_State* L);
 };
 }

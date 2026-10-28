@@ -2963,6 +2963,24 @@
       "member": "boneInitialWorldPositions"
     },
     {
+      "category": "unmapped_header_type",
+      "class": "AnimationClassBase.AnimationLayer",
+      "expected": "?Ogre::Entity*",
+      "header": "Ogre::Entity*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "body"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "AnimationClassBase.SingleAnimation",
+      "expected": "?Ogre::AnimationState*",
+      "header": "Ogre::AnimationState*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "mainState"
+    },
+    {
       "category": "enum_typed_as_integer",
       "class": "AnimationData",
       "expected": "CharacterAnimCategory",
@@ -2997,6 +3015,78 @@
       "kind": "property",
       "lua": "integer",
       "member": "weatherType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationRequirement",
+      "expected": "CharacterAnimCategory",
+      "header": "CharacterAnimCategory",
+      "kind": "property",
+      "lua": "integer",
+      "member": "currentAnimCategory"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationRequirement",
+      "expected": "WeaponCategory",
+      "header": "WeaponCategory",
+      "kind": "property",
+      "lua": "integer",
+      "member": "currentWeapon"
+    },
+    {
+      "category": "binding_converts",
+      "class": "AnimationRequirement",
+      "expected": "YesNoMaybeValue",
+      "header": "YesNoMaybe",
+      "kind": "property",
+      "lua": "integer",
+      "member": "isCombatMode"
+    },
+    {
+      "category": "binding_converts",
+      "class": "AnimationRequirement",
+      "expected": "YesNoMaybeValue",
+      "header": "YesNoMaybe",
+      "kind": "property",
+      "lua": "integer",
+      "member": "isStealthMode"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationRequirement",
+      "expected": "StanceEnum",
+      "header": "StanceEnum",
+      "kind": "property",
+      "lua": "integer",
+      "member": "stance"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "AnimationRequirement",
+      "expected": "WeatherAffecting",
+      "header": "WeatherAffecting",
+      "kind": "property",
+      "lua": "integer",
+      "member": "weatherType"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "AnimsListsManager.AnimList",
+      "expected": "?boost::unordered::unordered_map<std::string,AnimationData*,boost::hash<std::string>,std::equal_to<std::string>,Ogre::STLAllocator<std::pair<std::string ,AnimationData*>,Ogre::GeneralAllocPolicy>>",
+      "header": "boost::unordered::unordered_map<std::string,AnimationData*,boost::hash<std::string>,std::equal_to<std::string>,Ogre::STLAllocator<std::pair<std::string const,AnimationData*>,Ogre::GeneralAllocPolicy>>",
+      "kind": "property",
+      "lua": "BoostUnorderedMap<string, AnimationData>",
+      "member": "actionAnims"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "AnimsListsManager.AnimList",
+      "expected": "?boost::unordered::unordered_map<std::string,AnimationData*,boost::hash<std::string>,std::equal_to<std::string>,Ogre::STLAllocator<std::pair<std::string ,AnimationData*>,Ogre::GeneralAllocPolicy>>",
+      "header": "boost::unordered::unordered_map<std::string,AnimationData*,boost::hash<std::string>,std::equal_to<std::string>,Ogre::STLAllocator<std::pair<std::string const,AnimationData*>,Ogre::GeneralAllocPolicy>>",
+      "kind": "property",
+      "lua": "BoostUnorderedMap<string, AnimationData>",
+      "member": "allAnims"
     },
     {
       "category": "unmapped_header_type",
@@ -21667,17 +21757,17 @@
   ],
   "schema_version": 1,
   "summary": {
-    "binding_converts": 55,
+    "binding_converts": 57,
     "binding_pushes_raw_pointer": 50,
     "binding_shape_differs": 206,
     "blocking_issues": 0,
-    "container_methods_typed": 1076,
-    "enum_typed_as_integer": 526,
-    "methods": 8630,
-    "methods_matching_header": 6552,
+    "container_methods_typed": 1105,
+    "enum_typed_as_integer": 530,
+    "methods": 8721,
+    "methods_matching_header": 6614,
     "no_header_declaration": 278,
-    "properties": 3596,
-    "properties_matching_header": 3036,
-    "unmapped_header_type": 464
+    "properties": 3689,
+    "properties_matching_header": 3119,
+    "unmapped_header_type": 468
   }
 }

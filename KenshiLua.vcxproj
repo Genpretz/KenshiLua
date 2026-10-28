@@ -621,6 +621,13 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\AI\TaskRequestBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AIOptionsBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationChoicesBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBase_AnimationLayerBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBase_SingleAnimationBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationEventsBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationRequirementBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimsListsManagerBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimsListsManager_AnimListBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.h" />
@@ -1169,6 +1176,13 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\AI\TaskRequestBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AIOptionsBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationChoicesBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBase_AnimationLayerBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBase_SingleAnimationBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationEventsBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationRequirementBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimsListsManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimsListsManager_AnimListBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.cpp" />

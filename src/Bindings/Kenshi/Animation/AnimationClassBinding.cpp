@@ -5,6 +5,11 @@
 #include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
 #include "Bindings/Kenshi/Animation/RagdollAnimationBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassHumanBinding.h"
+#include "AnimationEventsBinding.h"
+#include "AnimsListsManager_AnimListBinding.h"
+#include "AnimationChoicesBinding.h"
+#include "AnimationRequirementBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h" 
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
@@ -1566,32 +1571,134 @@ int AnimationClassBinding::isHuman(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 411: AnimationClassHuman* isHuman(...) - unbound pointer
   line 413: bool create(...) - initialisation only; Lua cannot construct an AnimationClass, and AnimationClassBase::create appends new layers on a live instance
   line 436: void setBodyEntity(Ogre::Entity*) - unbound pointer argument
   line 466: RagdollClass* getRagdoll(...) - unbound pointer
   line 467: RagdollClass* _NV_getRagdoll(...) - unbound pointer
   line 469: bool setupRagdoll(Scythe::SkeletonData*) - unbound pointer argument
-  line 494: AnimationEvents* getEvents(...) - unbound pointer
-  line 502: AnimsListsManager::AnimList* getAnimationDatasList(...) - AnimsListsManager::AnimList is unbound
   line 521: void setDesiredPainOverlayAnims(std::set<StringValuePair, ...>) - StringValuePair is unbound
   line 522: void _NV_setDesiredPainOverlayAnims(std::set<StringValuePair, ...>) - StringValuePair is unbound
-  line 566: void chooseAnims(...) - AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound
-  line 567: AnimationChoices chooseRandomAnim(...) - AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound
-  line 568: float scoreAnim(...) - AnimationRequirement is unbound
-  line 569: void processMoveAnims(...) - lektor<AnimationData*> and AnimationRequirement are unbound
   line 570: bool processActionAnims(...) - boost::unordered_map<std::string, AnimationData*> and AnimationRequirement are unbound
-  line 571: void processIdleAnims(...) - lektor<AnimationData*> and AnimationRequirement are unbound
-  line 572: void processCombatIdleAnims(...) - lektor<AnimationData*> and AnimationRequirement are unbound
 */
 
 /*
 Skipped properties needing manual binding:
-  line 549: animationRequirements (AnimationRequirement) - unbound type
-  line 551: myAnimList (AnimsListsManager::AnimList*) - unbound pointer
   line 576: ragdoll (RagdollClass*) - unbound pointer
   line 577: ragdollAnimation (RagdollAnimation*) - unbound pointer; ~AnimationClass deletes it
 */
+
+int AnimationClassBinding::getEvents(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    const char* animName = luaL_checkstring(L, 2);
+    AnimationEvents* res = instance->getEvents(animName ? animName : "");
+    if (!res) { lua_pushnil(L); return 1; }
+    return pushObject<AnimationEvents>(L, res, AnimationEventsBinding::getMetatableName());
+}
+
+int AnimationClassBinding::getAnimationDatasList(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    AnimsListsManager::AnimList* res = instance->getAnimationDatasList();
+    if (!res) { lua_pushnil(L); return 1; }
+    return pushObject<AnimsListsManager::AnimList>(L, res, AnimsListsManager_AnimListBinding::getMetatableName());
+}
+
+int AnimationClassBinding::chooseAnims(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    AnimationChoices* choices = checkObject<AnimationChoices>(L, 2, AnimationChoicesBinding::getMetatableName());
+    auto* anims = checkObject<lektor<AnimationData*>>(L, 3, "lektor<AnimationData*>");
+    AnimationRequirement* req = checkObject<AnimationRequirement>(L, 4, AnimationRequirementBinding::getMetatableName());
+    bool isUpperBody = lua_toboolean(L, 5) != 0;
+    bool isIdles = lua_toboolean(L, 6) != 0;
+    instance->chooseAnims(*choices, anims, *req, isUpperBody, isIdles);
+    return 0;
+}
+
+int AnimationClassBinding::chooseRandomAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    auto* anims = checkObject<lektor<AnimationData*>>(L, 2, "lektor<AnimationData*>");
+    AnimationRequirement* req = checkObject<AnimationRequirement>(L, 3, AnimationRequirementBinding::getMetatableName());
+    bool skipCarryModes = lua_toboolean(L, 4) != 0;
+    AnimationChoices res = instance->chooseRandomAnim(anims, *req, skipCarryModes);
+    return pushValue<AnimationChoices>(L, res, AnimationChoicesBinding::getMetatableName());
+}
+
+int AnimationClassBinding::scoreAnim(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    AnimationData* anim = checkObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    AnimationRequirement* req = checkObject<AnimationRequirement>(L, 3, AnimationRequirementBinding::getMetatableName());
+    bool skipCarryModes = lua_toboolean(L, 4) != 0;
+    float res = instance->scoreAnim(anim, *req, skipCarryModes);
+    lua_pushnumber(L, (lua_Number)res);
+    return 1;
+}
+
+int AnimationClassBinding::processMoveAnims(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    auto* anims = checkObject<lektor<AnimationData*>>(L, 2, "lektor<AnimationData*>");
+    AnimationRequirement* req = checkObject<AnimationRequirement>(L, 3, AnimationRequirementBinding::getMetatableName());
+    bool isUpperBody = lua_toboolean(L, 4) != 0;
+    float weightHack = (float)luaL_checknumber(L, 5);
+    instance->processMoveAnims(anims, *req, isUpperBody, weightHack);
+    return 0;
+}
+
+int AnimationClassBinding::processIdleAnims(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    auto* anims = checkObject<lektor<AnimationData*>>(L, 2, "lektor<AnimationData*>");
+    AnimationRequirement* req = checkObject<AnimationRequirement>(L, 3, AnimationRequirementBinding::getMetatableName());
+    float frameTIME = (float)luaL_checknumber(L, 4);
+    instance->processIdleAnims(anims, *req, frameTIME);
+    return 0;
+}
+
+int AnimationClassBinding::processCombatIdleAnims(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    auto* anims = checkObject<lektor<AnimationData*>>(L, 2, "lektor<AnimationData*>");
+    AnimationRequirement* req = checkObject<AnimationRequirement>(L, 3, AnimationRequirementBinding::getMetatableName());
+    float frameTIME = (float)luaL_checknumber(L, 4);
+    float weightLimit = (float)luaL_checknumber(L, 5);
+    instance->processCombatIdleAnims(anims, *req, frameTIME, weightLimit);
+    return 0;
+}
+
+static int AnimationClass_get_animationRequirements(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    return pushObject<AnimationRequirement>(L, &instance->animationRequirements, AnimationRequirementBinding::getMetatableName());
+}
+
+static int AnimationClass_get_myAnimList(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    if (!instance->myAnimList) { lua_pushnil(L); return 1; }
+    return pushObject<AnimsListsManager::AnimList>(L, instance->myAnimList, AnimsListsManager_AnimListBinding::getMetatableName());
+}
+
+static int AnimationClass_set_myAnimList(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    instance->myAnimList = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimsListsManager::AnimList>(L, 2, AnimsListsManager_AnimListBinding::getMetatableName());
+    return 0;
+}
 
 int AnimationClassBinding::gc(lua_State* L)
 {
@@ -1740,6 +1847,14 @@ void AnimationClassBinding::registerBinding(lua_State* L)
         { "breathing", AnimationClassBinding::breathing },
         { "_NV_breathing", AnimationClassBinding::_NV_breathing },
         { "isHuman", AnimationClassBinding::isHuman },
+        { "getEvents", AnimationClassBinding::getEvents },
+        { "getAnimationDatasList", AnimationClassBinding::getAnimationDatasList },
+        { "chooseAnims", AnimationClassBinding::chooseAnims },
+        { "chooseRandomAnim", AnimationClassBinding::chooseRandomAnim },
+        { "scoreAnim", AnimationClassBinding::scoreAnim },
+        { "processMoveAnims", AnimationClassBinding::processMoveAnims },
+        { "processIdleAnims", AnimationClassBinding::processIdleAnims },
+        { "processCombatIdleAnims", AnimationClassBinding::processCombatIdleAnims },
         { 0, 0 }
     };
 
@@ -1764,6 +1879,8 @@ void AnimationClassBinding::registerBinding(lua_State* L)
     registerGetter(L, "defaultIdleAnimation", AnimationClass_get_defaultIdleAnimation);
     registerGetter(L, "ragdollAnimation", AnimationClass_get_ragdollAnimation);
     registerGetter(L, "ragdollParts", AnimationClass_get_ragdollParts);
+    registerGetter(L, "animationRequirements", AnimationClass_get_animationRequirements);
+    registerGetter(L, "myAnimList", AnimationClass_get_myAnimList);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -1774,6 +1891,7 @@ void AnimationClassBinding::registerBinding(lua_State* L)
     registerSetter(L, "me", AnimationClass_set_me);
     registerSetter(L, "defaultIdleAnimation", AnimationClass_set_defaultIdleAnimation);
     registerSetter(L, "ragdollParts", AnimationClass_set_ragdollParts);
+    registerSetter(L, "myAnimList", AnimationClass_set_myAnimList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack

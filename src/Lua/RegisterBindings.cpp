@@ -30,7 +30,14 @@
 #include "Bindings/Kenshi/AkSoundPositionBinding.h"
 #include "Bindings/Kenshi/AkVectorBinding.h"
 #include "Bindings/Kenshi/AnimalInventoryLayoutBinding.h"
-#include "Bindings/Kenshi/Animation/AnimationClassAnimalBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationChoicesBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBase_AnimationLayerBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBase_SingleAnimationBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationEventsBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationRequirementBinding.h"
+#include "Bindings/Kenshi/Animation/AnimsListsManagerBinding.h"
+#include "Bindings/Kenshi/Animation/AnimsListsManager_AnimListBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassAnimalBinding.h" 
 #include "Bindings/Kenshi/Animation/AnimationClassBaseBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassHumanBinding.h"
@@ -870,6 +877,13 @@ void LuaBindings::registerClasses(lua_State* L)
     AkSoundPositionBinding::registerBinding(L);
     AkVectorBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);
+    AnimationChoicesBinding::registerBinding(L);
+    AnimationClassBase_AnimationLayerBinding::registerBinding(L);
+    AnimationClassBase_SingleAnimationBinding::registerBinding(L);
+    AnimationEventsBinding::registerBinding(L);
+    AnimationRequirementBinding::registerBinding(L);
+    AnimsListsManagerBinding::registerBinding(L);
+    AnimsListsManager_AnimListBinding::registerBinding(L);
     AnimationClassAnimalBinding::registerBinding(L);
     AnimationClassBaseBinding::registerBinding(L);
     AnimationClassBinding::registerBinding(L);

@@ -3,6 +3,10 @@
 #include "AnimationClassBaseBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
+#include "AnimationClassBase_SingleAnimationBinding.h"
+#include "AnimationClassBase_AnimationLayerBinding.h"
+#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h" 
 #include "Bindings/Kenshi/CharMovementBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
@@ -649,6 +653,53 @@ Skipped properties needing manual binding:
   line 249: layer (lektor<AnimationClassBase::AnimationLayer*>) - AnimationLayer is unbound; the destructor deletes each layer
 */
 
+
+int AnimationClassBaseBinding::getAnimationPlaying_animName(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+    const char* s = luaL_checkstring(L, 2);
+    AnimationClassBase::SingleAnimation* res = instance->getAnimationPlaying_animName(s ? s : "");
+    if (!res) { lua_pushnil(L); return 1; }
+    return pushObject<AnimationClassBase::SingleAnimation>(L, res, AnimationClassBase_SingleAnimationBinding::getMetatableName());
+}
+
+int AnimationClassBaseBinding::getAnimationPlaying_datName(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+    const char* s = luaL_checkstring(L, 2);
+    AnimationClassBase::SingleAnimation* res = instance->getAnimationPlaying_datName(s ? s : "");
+    if (!res) { lua_pushnil(L); return 1; }
+    return pushObject<AnimationClassBase::SingleAnimation>(L, res, AnimationClassBase_SingleAnimationBinding::getMetatableName());
+}
+
+int AnimationClassBaseBinding::getAnimationPlaying(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+    CombatTechniqueData* ctd = testObject<CombatTechniqueData>(L, 2, CombatTechniqueDataBinding::getMetatableName());
+    if (ctd) {
+        AnimationClassBase::SingleAnimation* res = instance->getAnimationPlaying(ctd);
+        if (!res) { lua_pushnil(L); return 1; }
+        return pushObject<AnimationClassBase::SingleAnimation>(L, res, AnimationClassBase_SingleAnimationBinding::getMetatableName());
+    }
+    AnimationData* ad = testObject<AnimationData>(L, 2, AnimationDataBinding::getMetatableName());
+    if (ad) {
+        AnimationClassBase::SingleAnimation* res = instance->getAnimationPlaying(ad);
+        if (!res) { lua_pushnil(L); return 1; }
+        return pushObject<AnimationClassBase::SingleAnimation>(L, res, AnimationClassBase_SingleAnimationBinding::getMetatableName());
+    }
+    return luaL_error(L, "Argument 2 to getAnimationPlaying must be CombatTechniqueData or AnimationData");
+}
+
+static int AnimationClassBase_get_layer(lua_State* L)
+{
+    AnimationClassBase* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClassBase is nil");
+    return pushObject<lektor<AnimationClassBase::AnimationLayer*>>(L, &instance->layer, "lektor<AnimationClassBase::AnimationLayer*>");
+}
+
 int AnimationClassBaseBinding::gc(lua_State* L)
 {
     // Borrowed from the owning Character
@@ -707,6 +758,9 @@ void AnimationClassBaseBinding::registerBinding(lua_State* L)
         { "getAnimation_Medic", AnimationClassBaseBinding::getAnimation_Medic },
         { "getAnimation_Lockpick", AnimationClassBaseBinding::getAnimation_Lockpick },
         { "getAnimationData", AnimationClassBaseBinding::getAnimationData },
+        { "getAnimationPlaying_animName", AnimationClassBaseBinding::getAnimationPlaying_animName },
+        { "getAnimationPlaying_datName", AnimationClassBaseBinding::getAnimationPlaying_datName },
+        { "getAnimationPlaying", AnimationClassBaseBinding::getAnimationPlaying },
         { 0, 0 }
     };
 
@@ -734,6 +788,7 @@ void AnimationClassBaseBinding::registerBinding(lua_State* L)
     registerGetter(L, "movement", AnimationClassBase_get_movement);
     registerGetter(L, "masterTime", AnimationClassBase_get_masterTime);
     registerGetter(L, "masterSpeed", AnimationClassBase_get_masterSpeed);
+    registerGetter(L, "layer", AnimationClassBase_get_layer);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
@@ -753,6 +808,8 @@ void AnimationClassBaseBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
     lua_pop(L, 1); // Pop the metatable off the stack
+
+    LektorPtrBinding<AnimationClassBase::AnimationLayer*>::registerBinding(L, "lektor<AnimationClassBase::AnimationLayer*>", AnimationClassBase_AnimationLayerBinding::getMetatableName());
 }
 
 } // namespace KenshiLua
