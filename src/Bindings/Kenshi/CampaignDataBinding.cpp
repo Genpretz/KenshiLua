@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "GameDataScoredListBinding.h"
 #include "CampaignDataBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/CampaignTriggerDataBinding.h"
@@ -137,13 +138,11 @@ static int CampaignData_get_specificLeaderCharacter(lua_State* L)
     return pushObject<lektor<GameData*> >(L, &instance->specificLeaderCharacter, LektorPtrBinding<GameData*>::metaName);
 }
 
-// GameDataScoredList adds no members to its FitnessSelector<GameData*> base (both 0x60 bytes).
 static int CampaignData_get_spawns(lua_State* L)
 {
     CampaignData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignData is nil");
-    FitnessSelector<GameData*>* spawns = &instance->spawns;
-    return pushObject<FitnessSelector<GameData*> >(L, spawns, FitnessSelectorBinding<GameData*>::metaName);
+    return pushObject<GameDataScoredList>(L, &instance->spawns, GameDataScoredListBinding::getMetatableName());
 }
 
 static int CampaignData_get_repeatLimit(lua_State* L)

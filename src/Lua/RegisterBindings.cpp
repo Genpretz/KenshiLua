@@ -412,6 +412,15 @@
 #include "Bindings/Kenshi/TownBaseBinding.h"
 #include "Bindings/Kenshi/TownBase_ResidentDataBinding.h"
 #include "Bindings/Kenshi/TownBinding.h"
+#include "Bindings/Kenshi/TownListBinding.h"
+#include "Bindings/Kenshi/FormationBinding.h"
+#include "Bindings/Kenshi/GameDataScoredListBinding.h"
+#include "Bindings/Kenshi/BlueprintItemBinding.h"
+#include "Bindings/Kenshi/MapItemBinding.h"
+#include "Bindings/Kenshi/MoneyItemBinding.h"
+#include "Bindings/Kenshi/NestItemBinding.h"
+#include "Bindings/Kenshi/SeveredLimbItemBinding.h"
+
 #include "Bindings/Kenshi/TownBuildingsManagerBinding.h"
 #include "Bindings/Kenshi/TownBuildingsManager_BuildingInfoBinding.h"
 #include "Bindings/Kenshi/TownPositionCacherBinding.h"
@@ -612,6 +621,13 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, RendererBinding::getMetatableName(),                          RendererTBinding::getMetatableName());
     setMetatableParent(L, RobotLimbItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
     setMetatableParent(L, RootObjectBinding::getMetatableName(),                        RootObjectBaseBinding::getMetatableName());
+        setMetatableParent(L, TownListBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
+    setMetatableParent(L, GameDataScoredListBinding::getMetatableName(),            "FitnessSelector<GameData*>");
+    setMetatableParent(L, BlueprintItemBinding::getMetatableName(),                 ItemBinding::getMetatableName());
+    setMetatableParent(L, MapItemBinding::getMetatableName(),                       ItemBinding::getMetatableName());
+    setMetatableParent(L, MoneyItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
+    setMetatableParent(L, NestItemBinding::getMetatableName(),                      ItemBinding::getMetatableName());
+    setMetatableParent(L, SeveredLimbItemBinding::getMetatableName(),               ItemBinding::getMetatableName());
     setMetatableParent(L, RootObjectContainerBinding::getMetatableName(),               DataObjectContainerBinding::getMetatableName());
     setMetatableParent(L, RotatingEntBinding::getMetatableName(),                       StaticEntBinding::getMetatableName());
     setMetatableParent(L, SaveFileSystemBinding::getMetatableName(),                    ThreadClassBinding::getMetatableName());
@@ -1248,6 +1264,15 @@ void LuaBindings::registerClasses(lua_State* L)
     TownBaseBinding::registerBinding(L);
     TownBase_ResidentDataBinding::registerBinding(L);
     TownBinding::registerBinding(L);
+    TownListBinding::registerBinding(L);
+    FormationBinding::registerBinding(L);
+    GameDataScoredListBinding::registerBinding(L);
+    BlueprintItemBinding::registerBinding(L);
+    MapItemBinding::registerBinding(L);
+    MoneyItemBinding::registerBinding(L);
+    NestItemBinding::registerBinding(L);
+    SeveredLimbItemBinding::registerBinding(L);
+
     TownBuildingsManagerBinding::registerBinding(L);
     TownBuildingsManager_BuildingInfoBinding::registerBinding(L);
     TownListWindowBinding::registerBinding(L);

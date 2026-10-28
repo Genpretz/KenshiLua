@@ -1020,6 +1020,15 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\ThreadWannabeBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\TownBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\TownBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\TownListBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\FormationBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\GameDataScoredListBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\BlueprintItemBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\MapItemBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\MoneyItemBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\NestItemBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\SeveredLimbItemBinding.h" />
+
     <ClInclude Include="src\Bindings\Kenshi\TownBuildingsManagerBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\TownPositionCacherBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\TradeCultureBinding.h" />
@@ -1573,6 +1582,15 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\ThreadWannabeBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\TownBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\TownBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\TownListBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\FormationBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\GameDataScoredListBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\BlueprintItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\MapItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\MoneyItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\NestItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\SeveredLimbItemBinding.cpp" />
+
     <ClCompile Include="src\Bindings\Kenshi\TownBuildingsManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\TownPositionCacherBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\TradeCultureBinding.cpp" />

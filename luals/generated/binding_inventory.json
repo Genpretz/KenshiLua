@@ -24955,6 +24955,174 @@
       "source": "src/Bindings/Kenshi/AI/Blackboard_TaskInfoBinding.cpp"
     },
     {
+      "binding": "BlueprintItemBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "BlueprintItem",
+      "metatable": "KenshiLua.BlueprintItem",
+      "methods": [
+        {
+          "callback": "BlueprintItemBinding::getClassType",
+          "name": "getClassType",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::_NV_getClassType",
+          "name": "_NV_getClassType",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::getItemWeight",
+          "name": "getItemWeight",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::_NV_getItemWeight",
+          "name": "_NV_getItemWeight",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::getValueSingle",
+          "name": "getValueSingle",
+          "signature": {
+            "params": [
+              {
+                "name": "isPlayer",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::_NV_getValueSingle",
+          "name": "_NV_getValueSingle",
+          "signature": {
+            "params": [
+              {
+                "name": "isPlayer",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::getResearchData",
+          "name": "getResearchData",
+          "signature": {
+            "params": [],
+            "returns": [
+              "GameData",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::learnResearch",
+          "name": "learnResearch",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::getGUIData",
+          "name": "getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "datapanel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              },
+              {
+                "name": "category",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BlueprintItemBinding::_NV_getGUIData",
+          "name": "_NV_getGUIData",
+          "signature": {
+            "params": [
+              {
+                "name": "datapanel",
+                "optional": false,
+                "type": "DatapanelGUI"
+              },
+              {
+                "name": "category",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "ItemBinding",
+      "parent_metatable": "KenshiLua.Item",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "value",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/BlueprintItemBinding.cpp"
+    },
+    {
       "binding": "BoundsViolationBinding",
       "global_names": [],
       "has_constructor": false,
@@ -31545,7 +31713,7 @@
         {
           "access": "readonly",
           "name": "spawns",
-          "type": "GameDataFitnessSelector"
+          "type": "GameDataScoredList"
         },
         {
           "access": "readonly",
@@ -38443,7 +38611,8 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "Formation",
+              "nil"
             ]
           },
           "static": false
@@ -38454,7 +38623,8 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "Formation",
+              "nil"
             ]
           },
           "static": false
@@ -38465,7 +38635,8 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "Formation",
+              "nil"
             ]
           },
           "static": false
@@ -38476,7 +38647,8 @@
           "signature": {
             "params": [],
             "returns": [
-              "lightuserdata"
+              "Formation",
+              "nil"
             ]
           },
           "static": false
@@ -70672,6 +70844,148 @@
       "source": "src/Bindings/Kenshi/Gui/ForgottenGUIBinding.cpp"
     },
     {
+      "binding": "FormationBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Formation",
+      "metatable": "KenshiLua.Formation",
+      "methods": [
+        {
+          "callback": "FormationBinding::addToFormation",
+          "name": "addToFormation",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FormationBinding::_NV_addToFormation",
+          "name": "_NV_addToFormation",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FormationBinding::removeFromFormation",
+          "name": "removeFromFormation",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FormationBinding::_NV_removeFromFormation",
+          "name": "_NV_removeFromFormation",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FormationBinding::getFormationPos",
+          "name": "getFormationPos",
+          "signature": {
+            "params": [
+              {
+                "name": "id",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "tightness",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "table"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FormationBinding::_NV_getFormationPos",
+          "name": "_NV_getFormationPos",
+          "signature": {
+            "params": [
+              {
+                "name": "id",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "tightness",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "table"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "character",
+          "type": "RootObject"
+        },
+        {
+          "access": "readonly",
+          "name": "followers",
+          "type": "Lektor<hand>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/FormationBinding.cpp"
+    },
+    {
       "binding": "FormationMoverBinding",
       "global_names": [],
       "has_constructor": false,
@@ -73431,6 +73745,49 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/GameDataReferenceBinding.cpp"
+    },
+    {
+      "binding": "GameDataScoredListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "GameDataScoredList",
+      "metatable": "KenshiLua.GameDataScoredList",
+      "methods": [
+        {
+          "callback": "GameDataScoredListBinding::setupFromData",
+          "name": "setupFromData",
+          "signature": {
+            "params": [
+              {
+                "name": "spawnData",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "listname",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "typ",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/GameDataScoredListBinding.cpp"
     },
     {
       "binding": "GameDataValuePairBinding",
@@ -93546,6 +93903,215 @@
       "source": "src/Bindings/Kenshi/ManagementScreen_TechItemViewDataBinding.cpp"
     },
     {
+      "binding": "MapItemBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "MapItem",
+      "metatable": "KenshiLua.MapItem",
+      "methods": [
+        {
+          "callback": "MapItemBinding::getItemWeight",
+          "name": "getItemWeight",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::_NV_getItemWeight",
+          "name": "_NV_getItemWeight",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::getValueSingle",
+          "name": "getValueSingle",
+          "signature": {
+            "params": [
+              {
+                "name": "isPlayer",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::_NV_getValueSingle",
+          "name": "_NV_getValueSingle",
+          "signature": {
+            "params": [
+              {
+                "name": "isPlayer",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::selectTowns",
+          "name": "selectTowns",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::consume",
+          "name": "consume",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::getTownsDiscovered",
+          "name": "getTownsDiscovered",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::_loadFromSerialise",
+          "name": "_loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::_NV__loadFromSerialise",
+          "name": "_NV__loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::_serialise",
+          "name": "_serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "GameData",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MapItemBinding::_NV__serialise",
+          "name": "_NV__serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "GameData",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "ItemBinding",
+      "parent_metatable": "KenshiLua.Item",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "townsDiscoveredCount",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "value",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/MapItemBinding.cpp"
+    },
+    {
       "binding": "MapMarkerCharacterBinding",
       "global_names": [],
       "has_constructor": false,
@@ -96948,6 +97514,70 @@
       "source": "src/Bindings/Kenshi/ModInfoBinding.cpp"
     },
     {
+      "binding": "MoneyItemBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "MoneyItem",
+      "metatable": "KenshiLua.MoneyItem",
+      "methods": [
+        {
+          "callback": "MoneyItemBinding::getValueSingle",
+          "name": "getValueSingle",
+          "signature": {
+            "params": [
+              {
+                "name": "isPlayer",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MoneyItemBinding::_NV_getValueSingle",
+          "name": "_NV_getValueSingle",
+          "signature": {
+            "params": [
+              {
+                "name": "isPlayer",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MoneyItemBinding::consume",
+          "name": "consume",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "ItemBinding",
+      "parent_metatable": "KenshiLua.Item",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/MoneyItemBinding.cpp"
+    },
+    {
       "binding": "MotionFilterBinding",
       "global_names": [],
       "has_constructor": false,
@@ -98775,6 +99405,67 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/NavMesh_NavMeshMessageBinding.cpp"
+    },
+    {
+      "binding": "NestItemBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "NestItem",
+      "metatable": "KenshiLua.NestItem",
+      "methods": [
+        {
+          "callback": "NestItemBinding::getClassType",
+          "name": "getClassType",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "NestItemBinding::_NV_getClassType",
+          "name": "_NV_getClassType",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "NestItemBinding::getModelName",
+          "name": "getModelName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "NestItemBinding::_NV_getModelName",
+          "name": "_NV_getModelName",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "ItemBinding",
+      "parent_metatable": "KenshiLua.Item",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/NestItemBinding.cpp"
     },
     {
       "binding": "NewGameOptionsWindowBinding",
@@ -120723,6 +121414,205 @@
       "source": "src/Bindings/Kenshi/SerialisableBinding.cpp"
     },
     {
+      "binding": "SeveredLimbItemBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "SeveredLimbItem",
+      "metatable": "KenshiLua.SeveredLimbItem",
+      "methods": [
+        {
+          "callback": "SeveredLimbItemBinding::setupFromCharacter",
+          "name": "setupFromCharacter",
+          "signature": {
+            "params": [
+              {
+                "name": "c",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "limb",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "force",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::_serialise",
+          "name": "_serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "GameData",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::_NV__serialise",
+          "name": "_NV__serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "GameData",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::_loadFromSerialise",
+          "name": "_loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::_NV__loadFromSerialise",
+          "name": "_NV__loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::getTimeout",
+          "name": "getTimeout",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TimeOfDay"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::_NV_getTimeout",
+          "name": "_NV_getTimeout",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TimeOfDay"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::destroyPhysical",
+          "name": "destroyPhysical",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "SeveredLimbItemBinding::_NV_destroyPhysical",
+          "name": "_NV_destroyPhysical",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "ItemBinding",
+      "parent_metatable": "KenshiLua.Item",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "blood",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "impulse",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "limbScale",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "skinTone",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "timeout",
+          "type": "TimeOfDay"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/SeveredLimbItemBinding.cpp"
+    },
+    {
       "binding": "SharedKingBinding",
       "global_names": [],
       "has_constructor": false,
@@ -120753,7 +121643,7 @@
         {
           "access": "readonly",
           "name": "townList",
-          "type": "lightuserdata"
+          "type": "TownList|nil"
         },
         {
           "access": "readwrite",
@@ -133362,6 +134252,864 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/TownHandleContainerListBinding.cpp"
+    },
+    {
+      "binding": "TownListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "TownList",
+      "metatable": "KenshiLua.TownList",
+      "methods": [
+        {
+          "callback": "TownListBinding::addActiveObject",
+          "name": "addActiveObject",
+          "signature": {
+            "params": [
+              {
+                "name": "b",
+                "optional": false,
+                "type": "RootObject"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::_NV_addActiveObject",
+          "name": "_NV_addActiveObject",
+          "signature": {
+            "params": [
+              {
+                "name": "b",
+                "optional": false,
+                "type": "RootObject"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::updateTownCoverage",
+          "name": "updateTownCoverage",
+          "signature": {
+            "params": [
+              {
+                "name": "n",
+                "optional": false,
+                "type": "TownBase"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::_clearAll",
+          "name": "_clearAll",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::_resetGame",
+          "name": "_resetGame",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::destroyAllTheNests",
+          "name": "destroyAllTheNests",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::destroy",
+          "name": "destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "TownBase"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getTown",
+          "name": "getTown",
+          "signature": {
+            "params": [
+              {
+                "name": "instanceID",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getTownBySID",
+          "name": "getTownBySID",
+          "signature": {
+            "params": [
+              {
+                "name": "name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNearestPlayerTown",
+          "name": "getNearestPlayerTown",
+          "signature": {
+            "params": [
+              {
+                "name": "position",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "includePlayerResidenceTowns",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "maxDistance",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNearestTown",
+          "name": "getNearestTown",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "townOwner",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "Town"
+              },
+              {
+                "name": "myFaction",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNearestTownWithBuildingDesignation",
+          "name": "getNearestTownWithBuildingDesignation",
+          "signature": {
+            "params": [
+              {
+                "name": "what",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "townFactionWanted",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "Town"
+              },
+              {
+                "name": "notEnemiesOf",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "maxDistanceSquared",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNearestNest",
+          "name": "getNearestNest",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "f",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "TownBase"
+              }
+            ],
+            "returns": [
+              "lightuserdata"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNearest",
+          "name": "getNearest",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "f",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "TownBase"
+              }
+            ],
+            "returns": [
+              "TownBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNearestWithinItsRadius",
+          "name": "getNearestWithinItsRadius",
+          "signature": {
+            "params": [
+              {
+                "name": "position",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "skipPlayerTowns",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "TownBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getRetreatTown",
+          "name": "getRetreatTown",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "owner",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "Town"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::createNewPlayerTown",
+          "name": "createNewPlayerTown",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getDistToNearestTown",
+          "name": "getDistToNearestTown",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "Town"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getSquaredDistToNearestTown",
+          "name": "getSquaredDistToNearestTown",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "Town"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNearishTown",
+          "name": "getNearishTown",
+          "signature": {
+            "params": [
+              {
+                "name": "myFaction",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "owner",
+                "optional": true,
+                "type": "Faction"
+              },
+              {
+                "name": "except",
+                "optional": true,
+                "type": "TownBase"
+              },
+              {
+                "name": "publicOnly",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "types",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getAllTowns",
+          "name": "getAllTowns",
+          "signature": {
+            "params": [],
+            "returns": [
+              "Lektor<RootObject>"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::getNullTown",
+          "name": "getNullTown",
+          "signature": {
+            "params": [],
+            "returns": [
+              "TownBase",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::_NV_update",
+          "name": "_NV_update",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::updateTownsDiscovery",
+          "name": "updateTownsDiscovery",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::setAllTownsDebugVisible",
+          "name": "setAllTownsDebugVisible",
+          "signature": {
+            "params": [
+              {
+                "name": "on",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::saveToDisk",
+          "name": "saveToDisk",
+          "signature": {
+            "params": [
+              {
+                "name": "levelEditor",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "forceFilename",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::_NV_saveToDisk",
+          "name": "_NV_saveToDisk",
+          "signature": {
+            "params": [
+              {
+                "name": "levelEditor",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "forceFilename",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::loadFromDisk",
+          "name": "loadFromDisk",
+          "signature": {
+            "params": [
+              {
+                "name": "force",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "extra",
+                "optional": true,
+                "type": "Serialisable"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::_NV_loadFromDisk",
+          "name": "_NV_loadFromDisk",
+          "signature": {
+            "params": [
+              {
+                "name": "force",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "extra",
+                "optional": true,
+                "type": "Serialisable"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::saveState",
+          "name": "saveState",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::loadState",
+          "name": "loadState",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "isImportSoPlayerOnly",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::loadStateDiscovery",
+          "name": "loadStateDiscovery",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "importOverride",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::loadLevelData",
+          "name": "loadLevelData",
+          "signature": {
+            "params": [
+              {
+                "name": "newGame",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::_saveLevelData",
+          "name": "_saveLevelData",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "mod",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::saveUniqueTownsAndNests",
+          "name": "saveUniqueTownsAndNests",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::listUniqueTownsFromPlayerOwnership",
+          "name": "listUniqueTownsFromPlayerOwnership",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::loadAllTowns_worldInit",
+          "name": "loadAllTowns_worldInit",
+          "signature": {
+            "params": [
+              {
+                "name": "saveSource",
+                "optional": false,
+                "type": "GameDataContainer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::addNest",
+          "name": "addNest",
+          "signature": {
+            "params": [
+              {
+                "name": "n",
+                "optional": false,
+                "type": "RootObject"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::reassessTownPositions",
+          "name": "reassessTownPositions",
+          "signature": {
+            "params": [
+              {
+                "name": "t",
+                "optional": false,
+                "type": "TownBase"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownListBinding::mergePlayerTowns",
+          "name": "mergePlayerTowns",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "Town"
+              },
+              {
+                "name": "b",
+                "optional": false,
+                "type": "Town"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "RootObjectContainerBinding",
+      "parent_metatable": "KenshiLua.RootObjectContainer",
+      "properties": [
+        {
+          "access": "readonly",
+          "name": "deletedTowns"
+        },
+        {
+          "access": "readonly",
+          "name": "nests",
+          "type": "Lektor<RootObject>"
+        },
+        {
+          "access": "readwrite",
+          "name": "newTownsDiscovered",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "noTown",
+          "type": "lightuserdata"
+        },
+        {
+          "access": "readonly",
+          "name": "uniqueTowns",
+          "type": "Lektor<RootObject>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/TownListBinding.cpp"
     },
     {
       "binding": "TownListWindowBinding",

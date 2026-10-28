@@ -10202,13 +10202,13 @@ taskPriority = {
 --- Non-virtual call of `getStateBroadcast`; returns this character's `StateBroadcastData`.
 ---@field _NV_getStateBroadcast fun(self: Character): StateBroadcastData
 --- Returns the movement `Formation` managing this character's squad positioning.
----@field getFormation fun(self: Character): lightuserdata
+---@field getFormation fun(self: Character): Formation|nil
 --- Override dispatch for `getFormation`. Returns the movement `Formation` managing this character's squad positioning.
----@field _NV_getFormation fun(self: Character): lightuserdata
+---@field _NV_getFormation fun(self: Character): Formation|nil
 --- Retrieves the opposing squad's combat formation controller.
----@field getEnemyFormation fun(self: Character): lightuserdata
+---@field getEnemyFormation fun(self: Character): Formation|nil
 --- Override dispatch for `getEnemyFormation`. Retrieves the opposing squad's combat formation controller.
----@field _NV_getEnemyFormation fun(self: Character): lightuserdata
+---@field _NV_getEnemyFormation fun(self: Character): Formation|nil
 --- Checks whether a target entity or navigation destination is located indoors or outdoors.
 ---@field AIDestinationIndoorOutdoorCheck fun(self: Character, who: RootObject): boolean
 --- Primary simulation tick updating AI arbitration, motor movement, medical wound bleeding, hunger progression, dialogue timers, and equipment state.
@@ -15372,6 +15372,28 @@ taskPriority = {
 --- The task, as a `TaskType` value.
 ---@field type integer
 
+--- Engine class `BlueprintItem`.
+---@class BlueprintItem : Item
+--- Inherited API from `Item`. Returns the base item type enumeration code (`itemType::ITEM`).
+---@field getClassType fun(self: BlueprintItem): integer
+--- Inherited API from `Item`. Override dispatch for `getClassType`. Returns the base item type enumeration code (`itemType::ITEM`).
+---@field _NV_getClassType fun(self: BlueprintItem): integer
+--- Inherited API from `InventoryItemBase`. Returns the total weight in kilograms of this item stack.
+---@field getItemWeight fun(self: BlueprintItem): number
+--- Inherited API from `InventoryItemBase`. Override dispatch for `getItemWeight`. Returns the total weight in kilograms of this item stack.
+---@field _NV_getItemWeight fun(self: BlueprintItem): number
+--- Inherited API from `InventoryItemBase`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field getValueSingle fun(self: BlueprintItem, isPlayer?: boolean): integer
+--- Inherited API from `InventoryItemBase`. Override dispatch for `getValueSingle`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field _NV_getValueSingle fun(self: BlueprintItem, isPlayer?: boolean): integer
+---@field getResearchData fun(self: BlueprintItem): GameData|nil
+---@field learnResearch fun(self: BlueprintItem): boolean
+--- Inherited API from `InventoryItemBase`. Populates the specified DatapanelGUI category with UI information lines for this item.
+---@field getGUIData fun(self: BlueprintItem, datapanel: DatapanelGUI, category: integer)
+--- Inherited API from `InventoryItemBase`. Override dispatch for `getGUIData`. Populates the specified DatapanelGUI category with UI information lines for this item.
+---@field _NV_getGUIData fun(self: BlueprintItem, datapanel: DatapanelGUI, category: integer)
+---@field value integer
+
 --- Individual faction criminal bounty record. Tracks monetary reward, accumulated crime bitflags, claim status, and timestamp when the bounty was posted.
 ---@class Bounty
 --- Adds the specified crime to the bounty record's committed crimes bitmask.
@@ -15721,7 +15743,7 @@ taskPriority = {
 --- The `Faction` that owns this campaign data. Cannot be set to nil.
 ---@field me Faction
 ---@field repeatLimit number
----@field spawns GameDataFitnessSelector
+---@field spawns GameDataScoredList
 ---@field specificLeaderCharacter Lektor<GameData>
 ---@field specificTargetCharacter Lektor<GameData>
 ---@field targetCharacters boolean
@@ -18903,6 +18925,17 @@ taskPriority = {
 --- The string identifier associated with this footprint node.
 ---@field nodeId string
 
+--- Engine class `Formation`.
+---@class Formation
+---@field addToFormation fun(self: Formation, h: hand): integer
+---@field _NV_addToFormation fun(self: Formation, h: hand): integer
+---@field removeFromFormation fun(self: Formation, h: hand)
+---@field _NV_removeFromFormation fun(self: Formation, h: hand)
+---@field getFormationPos fun(self: Formation, id: integer, tightness: number): table
+---@field _NV_getFormationPos fun(self: Formation, id: integer, tightness: number): table
+---@field character RootObject
+---@field followers Lektor<hand>
+
 --- Controls squad formation movement behavior, computing coordinated group spacing, facing direction, and speeds relative to a leader.
 ---@class FormationMover
 --- Updates formation movement logic, spacing, and target positioning for the current frame.
@@ -19067,6 +19100,10 @@ taskPriority = {
 ---@field sid string
 --- TripleInt table containing three integer parameters associated with this reference link.
 ---@field values TripleInt
+
+--- Engine class `GameDataScoredList`.
+---@class GameDataScoredList
+---@field setupFromData fun(self: GameDataScoredList, spawnData: GameData, listname: string, typ: integer)
 
 --- Holds per-save and new-game difficulty and gameplay multipliers (such as hunger rate, damage, nest spawns, and research/production speeds).
 ---@class GameplayOptions
@@ -20593,6 +20630,30 @@ taskPriority = {
 --- Root MyGUI::Window widget containing the management screen interface.
 ---@field window MyGUI.Window|nil
 
+--- Engine class `MapItem`.
+---@class MapItem : Item
+--- Inherited API from `InventoryItemBase`. Returns the total weight in kilograms of this item stack.
+---@field getItemWeight fun(self: MapItem): number
+--- Inherited API from `InventoryItemBase`. Override dispatch for `getItemWeight`. Returns the total weight in kilograms of this item stack.
+---@field _NV_getItemWeight fun(self: MapItem): number
+--- Inherited API from `InventoryItemBase`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field getValueSingle fun(self: MapItem, isPlayer?: boolean): integer
+--- Inherited API from `InventoryItemBase`. Override dispatch for `getValueSingle`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field _NV_getValueSingle fun(self: MapItem, isPlayer?: boolean): integer
+---@field selectTowns fun(self: MapItem): integer
+---@field consume fun(self: MapItem): boolean
+---@field getTownsDiscovered fun(self: MapItem): integer
+--- Inherited API from `Item`. Low-level deserialization routine restoring charges, quality, quantity, and stolen status from an FCS record.
+---@field _loadFromSerialise fun(self: MapItem, container: GameDataContainer, state: GameData)
+--- Inherited API from `Item`. Override dispatch for `_loadFromSerialise`. Low-level deserialization routine restoring charges, quality, quantity, and stolen status from an FCS record.
+---@field _NV__loadFromSerialise fun(self: MapItem, container: GameDataContainer, state: GameData)
+--- Inherited API from `Item`. Low-level serialization routine recording charges, quality, stolen owner handle, and persistence to an FCS record.
+---@field _serialise fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil
+--- Inherited API from `Item`. Override dispatch for `_serialise`. Low-level serialization routine recording charges, quality, stolen owner handle, and persistence to an FCS record.
+---@field _NV__serialise fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil
+---@field townsDiscoveredCount integer
+---@field value integer
+
 --- World map marker widget representing a town, settlement, or outpost on the map screen.
 ---@class MapMarkerTown
 --- Sets whether this town map marker is visible on the map.
@@ -21060,6 +21121,14 @@ taskPriority = {
 --- Full directory path where this mod is located on disk.
 ---@field path string
 
+--- Engine class `MoneyItem`.
+---@class MoneyItem : Item
+--- Inherited API from `InventoryItemBase`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field getValueSingle fun(self: MoneyItem, isPlayer?: boolean): integer
+--- Inherited API from `InventoryItemBase`. Override dispatch for `getValueSingle`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field _NV_getValueSingle fun(self: MoneyItem, isPlayer?: boolean): integer
+---@field consume fun(self: MoneyItem): boolean
+
 --- Character movement smoothing filter that maintains a rolling history buffer of motion weights and speeds.
 ---@class MotionFilter
 --- Sets the number of frames stored in the movement smoothing history buffer and initializes them with a fill value.
@@ -21282,6 +21351,17 @@ taskPriority = {
 ---@field next NavMesh_NavMeshMessage
 --- Pointer to the ZoneMap affected by this navmesh message.
 ---@field zone ZoneMap
+
+--- Engine class `NestItem`.
+---@class NestItem : Item
+--- Inherited API from `Item`. Returns the base item type enumeration code (`itemType::ITEM`).
+---@field getClassType fun(self: NestItem): integer
+--- Inherited API from `Item`. Override dispatch for `getClassType`. Returns the base item type enumeration code (`itemType::ITEM`).
+---@field _NV_getClassType fun(self: NestItem): integer
+--- Inherited API from `Item`. Resolves the 3D `.mesh` resource file path from the item's FCS blueprint record (`'mesh'`).
+---@field getModelName fun(self: NestItem): string
+--- Inherited API from `Item`. Override dispatch for `getModelName`. Resolves the 3D `.mesh` resource file path from the item's FCS blueprint record (`'mesh'`).
+---@field _NV_getModelName fun(self: NestItem): string
 
 --- GUI dialog window displaying customizable gameplay options (e.g. hunger rate, squad size limits, chance of death) when starting a new game.
 ---@class NewGameOptionsWindow : BaseLayout
@@ -23559,11 +23639,36 @@ taskPriority = {
 --- Engine interface for objects that can be written to and read from save streams. Its methods take C++ streams and are not exposed; the type is used for typed `Serialisable` arguments.
 ---@class Serialisable
 
+--- Engine class `SeveredLimbItem`.
+---@class SeveredLimbItem : Item
+---@field setupFromCharacter fun(self: SeveredLimbItem, c: Character, limb: integer, force: table)
+--- Inherited API from `Item`. Low-level serialization routine recording charges, quality, stolen owner handle, and persistence to an FCS record.
+---@field _serialise fun(self: SeveredLimbItem, container: GameDataContainer, type: integer): GameData|nil
+--- Inherited API from `Item`. Override dispatch for `_serialise`. Low-level serialization routine recording charges, quality, stolen owner handle, and persistence to an FCS record.
+---@field _NV__serialise fun(self: SeveredLimbItem, container: GameDataContainer, type: integer): GameData|nil
+--- Inherited API from `Item`. Low-level deserialization routine restoring charges, quality, quantity, and stolen status from an FCS record.
+---@field _loadFromSerialise fun(self: SeveredLimbItem, container: GameDataContainer, state: GameData)
+--- Inherited API from `Item`. Override dispatch for `_loadFromSerialise`. Low-level deserialization routine restoring charges, quality, quantity, and stolen status from an FCS record.
+---@field _NV__loadFromSerialise fun(self: SeveredLimbItem, container: GameDataContainer, state: GameData)
+--- Inherited API from `Item`. Returns the item's despawn or decay expiration timestamp.
+---@field getTimeout fun(self: SeveredLimbItem): TimeOfDay
+--- Inherited API from `Item`. Override dispatch for `getTimeout`. Returns the item's despawn or decay expiration timestamp.
+---@field _NV_getTimeout fun(self: SeveredLimbItem): TimeOfDay
+--- Inherited API from `Item`. Tears down active PhysX rigid bodies and OGRE visual meshes, unregistering the item from the spatial zone map (`ZoneMapContent`).
+---@field destroyPhysical fun(self: SeveredLimbItem)
+--- Inherited API from `Item`. Override dispatch for `destroyPhysical`. Tears down active PhysX rigid bodies and OGRE visual meshes, unregistering the item from the spatial zone map (`ZoneMapContent`).
+---@field _NV_destroyPhysical fun(self: SeveredLimbItem)
+---@field blood table
+---@field impulse table
+---@field limbScale table
+---@field skinTone table
+---@field timeout TimeOfDay
+
 --- Engine class `SharedKing`.
 ---@class SharedKing
 ---@field isLevelEditMode fun(self: SharedKing): boolean
 ---@field areasList lightuserdata
----@field townList lightuserdata
+---@field townList TownList|nil
 ---@field zoneMgr ZoneManagerInterfaceT|nil
 
 --- Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.
@@ -25128,6 +25233,59 @@ taskPriority = {
 
 --- Engine class `TownHandleContainerList`.
 ---@class TownHandleContainerList : HandleContainerList
+
+--- Engine class `TownList`.
+---@class TownList : RootObjectContainer
+--- Inherited API from `RootObjectContainer`. Adds an active RootObject to this container and returns true if added.
+---@field addActiveObject fun(self: TownList, b: RootObject): boolean
+--- Inherited API from `RootObjectContainer`. Override dispatch for `addActiveObject`. Adds an active RootObject to this container and returns true if added.
+---@field _NV_addActiveObject fun(self: TownList, b: RootObject): boolean
+---@field updateTownCoverage fun(self: TownList, n: TownBase)
+---@field _clearAll fun(self: TownList)
+---@field _resetGame fun(self: TownList)
+---@field destroyAllTheNests fun(self: TownList)
+---@field destroy fun(self: TownList, t: TownBase)
+---@field getTown fun(self: TownList, instanceID: string): Town|nil
+---@field getTownBySID fun(self: TownList, name: string): Town|nil
+---@field getNearestPlayerTown fun(self: TownList, position: table, includePlayerResidenceTowns?: boolean, maxDistance: number): Town|nil
+---@field getNearestTown fun(self: TownList, pos: table, townOwner?: Faction, except?: Town, myFaction?: Faction, type: integer): Town|nil
+---@field getNearestTownWithBuildingDesignation fun(self: TownList, what: integer, pos: table, townFactionWanted?: Faction, except?: Town, notEnemiesOf?: Faction, type: integer, maxDistanceSquared: number): Town|nil
+---@field getNearestNest fun(self: TownList, pos: table, f?: Faction, except?: TownBase): lightuserdata
+---@field getNearest fun(self: TownList, pos: table, f?: Faction, except?: TownBase): TownBase|nil
+---@field getNearestWithinItsRadius fun(self: TownList, position: table, skipPlayerTowns?: boolean): TownBase|nil
+---@field getRetreatTown fun(self: TownList, pos: table, owner?: Faction, except?: Town): Town|nil
+---@field createNewPlayerTown fun(self: TownList, pos: table): Town|nil
+---@field getDistToNearestTown fun(self: TownList, pos: table, except?: Town): number
+---@field getSquaredDistToNearestTown fun(self: TownList, pos: table, except?: Town): number
+---@field getNearishTown fun(self: TownList, myFaction?: Faction, pos: table, owner?: Faction, except?: TownBase, publicOnly?: boolean, types: integer): Town|nil
+---@field getAllTowns fun(self: TownList): Lektor<RootObject>
+---@field getNullTown fun(self: TownList): TownBase|nil
+--- Inherited API from `RootObjectContainer`. Updates the active objects in this container and returns true if active.
+---@field update fun(self: TownList): boolean
+--- Inherited API from `RootObjectContainer`. Override dispatch for `update`. Updates the active objects in this container and returns true if active.
+---@field _NV_update fun(self: TownList): boolean
+---@field updateTownsDiscovery fun(self: TownList)
+---@field setAllTownsDebugVisible fun(self: TownList, on?: boolean)
+---@field saveToDisk fun(self: TownList, levelEditor?: boolean, forceFilename: string)
+---@field _NV_saveToDisk fun(self: TownList, levelEditor?: boolean, forceFilename: string)
+---@field loadFromDisk fun(self: TownList, force?: boolean, extra?: Serialisable): boolean
+---@field _NV_loadFromDisk fun(self: TownList, force?: boolean, extra?: Serialisable): boolean
+---@field saveState fun(self: TownList, container: GameDataContainer)
+---@field loadState fun(self: TownList, container: GameDataContainer, isImportSoPlayerOnly?: boolean)
+---@field loadStateDiscovery fun(self: TownList, container: GameDataContainer, importOverride?: boolean)
+---@field loadLevelData fun(self: TownList, newGame?: boolean)
+---@field _saveLevelData fun(self: TownList, container: GameDataContainer, mod: string)
+---@field saveUniqueTownsAndNests fun(self: TownList, container: GameDataContainer)
+---@field listUniqueTownsFromPlayerOwnership fun(self: TownList)
+---@field loadAllTowns_worldInit fun(self: TownList, saveSource: GameDataContainer)
+---@field addNest fun(self: TownList, n: RootObject)
+---@field reassessTownPositions fun(self: TownList, t: TownBase)
+---@field mergePlayerTowns fun(self: TownList, a: Town, b: Town)
+---@field deletedTowns any
+---@field nests Lektor<RootObject>
+---@field newTownsDiscovered boolean
+---@field noTown lightuserdata
+---@field uniqueTowns Lektor<RootObject>
 
 --- Periodically caches town center positions and updates territorial boundaries over in-game time.
 ---@class TownPositionCacher

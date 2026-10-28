@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "TownListBinding.h"
 #include "kenshi/SharedKing.h"
 #include "SharedKingBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -28,8 +29,8 @@ static int SharedKing_get_townList(lua_State* L)
 {
     SharedKing* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SharedKing is nil");
-    lua_pushlightuserdata(L, (void*)instance->townList);
-    return 1;
+    if (!instance->townList) { lua_pushnil(L); return 1; }
+    return pushObject<TownList>(L, instance->townList, TownListBinding::getMetatableName());
 }
 
 static int SharedKing_get_zoneMgr(lua_State* L)

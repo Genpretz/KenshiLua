@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "FormationBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include "kenshi\Character.h"
@@ -1506,8 +1507,8 @@ int CharacterBinding::getFormation(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     Formation* result = instance->getFormation();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    if (!result) { lua_pushnil(L); return 1; }
+    return pushObject<Formation>(L, result, FormationBinding::getMetatableName());
 }
 
 int CharacterBinding::_NV_getFormation(lua_State* L)
@@ -1516,8 +1517,8 @@ int CharacterBinding::_NV_getFormation(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     Formation* result = instance->_NV_getFormation();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    if (!result) { lua_pushnil(L); return 1; }
+    return pushObject<Formation>(L, result, FormationBinding::getMetatableName());
 }
 
 int CharacterBinding::getEnemyFormation(lua_State* L)
@@ -1526,8 +1527,8 @@ int CharacterBinding::getEnemyFormation(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     Formation* result = instance->getEnemyFormation();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    if (!result) { lua_pushnil(L); return 1; }
+    return pushObject<Formation>(L, result, FormationBinding::getMetatableName());
 }
 
 int CharacterBinding::_NV_getEnemyFormation(lua_State* L)
@@ -1536,8 +1537,8 @@ int CharacterBinding::_NV_getEnemyFormation(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     Formation* result = instance->_NV_getEnemyFormation();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    if (!result) { lua_pushnil(L); return 1; }
+    return pushObject<Formation>(L, result, FormationBinding::getMetatableName());
 }
 
 int CharacterBinding::AIDestinationIndoorOutdoorCheck(lua_State* L)

@@ -4103,6 +4103,40 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "BlueprintItem",
+      "expected": "fun(): itemType",
+      "header": "itemType getClassType() const override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: BlueprintItem): integer",
+      "member": "getClassType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "BlueprintItem",
+      "expected": "fun(): itemType",
+      "header": "itemType _NV_getClassType() const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: BlueprintItem): integer",
+      "member": "_NV_getClassType"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "Bounty",
       "expected": "fun(CrimeEnum)",
       "header": "void addCrime(CrimeEnum what)",
@@ -4849,15 +4883,6 @@
       "member": "campaignType"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "CampaignData",
-      "expected": "?GameDataScoredList",
-      "header": "GameDataScoredList",
-      "kind": "property",
-      "lua": "GameDataFitnessSelector",
-      "member": "spawns"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "CampaignInstance",
       "expected": "fun(Phase)",
@@ -5132,18 +5157,18 @@
       "member": "clickHull"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "CharMovement",
-      "expected": "?Formation*",
+      "expected": "Formation|nil",
       "header": "Formation*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "enemyFormation"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "CharMovement",
-      "expected": "?Formation*",
+      "expected": "Formation|nil",
       "header": "Formation*",
       "kind": "property",
       "lua": "lightuserdata",
@@ -5664,74 +5689,6 @@
       "kind": "method",
       "lua": "fun(self: Character, memType: integer)",
       "member": "setSquadMemberType"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?Formation*",
-      "header": "Formation* getFormation() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Formation*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "getFormation"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?Formation*",
-      "header": "Formation* _NV_getFormation() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Formation*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "_NV_getFormation"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?Formation*",
-      "header": "Formation* getEnemyFormation() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Formation*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "getEnemyFormation"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?Formation*",
-      "header": "Formation* _NV_getEnemyFormation() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Formation*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "_NV_getEnemyFormation"
     },
     {
       "category": "enum_typed_as_integer",
@@ -6409,15 +6366,15 @@
       "member": "convertCutDirection"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "Character",
-      "expected": "fun(table, hand, table, ?Formation*)",
+      "expected": "fun(table, hand, table, Formation)",
       "header": "void formationUpdateCallback(const Ogre::Vector3& pos, const hand& target, const Ogre::Vector3& heading, Formation* from)",
       "issues": [
         {
           "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Formation*",
+          "category": "binding_pushes_raw_pointer",
+          "expected": "Formation",
           "position": "param 4"
         }
       ],
@@ -9717,6 +9674,23 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "GameDataScoredList",
+      "expected": "fun(GameData, string, itemType)",
+      "header": "void setupFromData(GameData* spawnData, const std::string& listname, itemType typ)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: GameDataScoredList, spawnData: GameData, listname: string, typ: integer)",
+      "member": "setupFromData"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "GameSaveState",
       "expected": "fun(itemType): string",
       "header": "std::string generateStateID(itemType type)",
@@ -11788,6 +11762,40 @@
       "kind": "property",
       "lua": "lightuserdata|nil",
       "member": "item"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "MapItem",
+      "expected": "fun(GameDataContainer, itemType): GameData|nil",
+      "header": "GameData* _serialise(GameDataContainer* container, itemType type) override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil",
+      "member": "_serialise"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "MapItem",
+      "expected": "fun(GameDataContainer, itemType): GameData|nil",
+      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil",
+      "member": "_NV__serialise"
     },
     {
       "category": "enum_typed_as_integer",
@@ -14870,6 +14878,40 @@
       "kind": "property",
       "lua": "integer",
       "member": "message"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "NestItem",
+      "expected": "fun(): itemType",
+      "header": "itemType getClassType() const override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: NestItem): integer",
+      "member": "getClassType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "NestItem",
+      "expected": "fun(): itemType",
+      "header": "itemType _NV_getClassType() const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: NestItem): integer",
+      "member": "_NV_getClassType"
     },
     {
       "category": "unmapped_header_type",
@@ -18154,6 +18196,40 @@
       "member": "threats"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "SeveredLimbItem",
+      "expected": "fun(GameDataContainer, itemType): GameData|nil",
+      "header": "GameData* _serialise(GameDataContainer* container, itemType type) override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: SeveredLimbItem, container: GameDataContainer, type: integer): GameData|nil",
+      "member": "_serialise"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "SeveredLimbItem",
+      "expected": "fun(GameDataContainer, itemType): GameData|nil",
+      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: SeveredLimbItem, container: GameDataContainer, type: integer): GameData|nil",
+      "member": "_NV__serialise"
+    },
+    {
       "category": "unmapped_header_type",
       "class": "SharedKing",
       "expected": "?AreasList*",
@@ -18161,15 +18237,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "areasList"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "SharedKing",
-      "expected": "?TownList*",
-      "header": "TownList*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "townList"
     },
     {
       "category": "enum_typed_as_integer",
@@ -19897,6 +19964,81 @@
       "kind": "property",
       "lua": "integer",
       "member": "flags"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TownList",
+      "expected": "fun(table, Faction, Town, Faction, TownType): Town|nil",
+      "header": "Town* getNearestTown(const Ogre::Vector3& pos, Faction* townOwner, Town* except, Faction* myFaction, TownType type) const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TownType",
+          "position": "param 5"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TownList, pos: table, townOwner?: Faction, except?: Town, myFaction?: Faction, type: integer): Town|nil",
+      "member": "getNearestTown"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "TownList",
+      "expected": "fun(BuildingDesignation, table, Faction, Town, Faction, TownType, number): Town|nil",
+      "header": "Town* getNearestTownWithBuildingDesignation(BuildingDesignation what, const Ogre::Vector3& pos, Faction* townFactionWanted, Town* except, Faction* notEnemiesOf, TownType type, float maxDistanceSquared)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "BuildingDesignation",
+          "position": "param 1"
+        },
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "TownType",
+          "position": "param 6"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TownList, what: integer, pos: table, townFactionWanted?: Faction, except?: Town, notEnemiesOf?: Faction, type: integer, maxDistanceSquared: number): Town|nil",
+      "member": "getNearestTownWithBuildingDesignation"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "TownList",
+      "expected": "fun(table, Faction, TownBase): ?Nest*",
+      "header": "Nest* getNearestNest(const Ogre::Vector3& pos, Faction* f, TownBase* except) const",
+      "issues": [
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?Nest*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TownList, pos: table, f?: Faction, except?: TownBase): lightuserdata",
+      "member": "getNearestNest"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "TownList",
+      "expected": "?lektor<Town*>",
+      "header": "lektor<Town*>",
+      "kind": "property",
+      "lua": "any",
+      "member": "deletedTowns"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "TownList",
+      "expected": "?TownNull*",
+      "header": "TownNull*",
+      "kind": "property",
+      "lua": "lightuserdata",
+      "member": "noTown"
     },
     {
       "category": "no_header_declaration",
@@ -21758,16 +21900,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 57,
-    "binding_pushes_raw_pointer": 50,
+    "binding_pushes_raw_pointer": 53,
     "binding_shape_differs": 206,
     "blocking_issues": 0,
     "container_methods_typed": 1105,
-    "enum_typed_as_integer": 530,
-    "methods": 8721,
-    "methods_matching_header": 6614,
+    "enum_typed_as_integer": 541,
+    "methods": 8806,
+    "methods_matching_header": 6691,
     "no_header_declaration": 278,
-    "properties": 3689,
-    "properties_matching_header": 3119,
-    "unmapped_header_type": 468
+    "properties": 3704,
+    "properties_matching_header": 3134,
+    "unmapped_header_type": 462
   }
 }

@@ -62,6 +62,7 @@
 - [`BadSize`](#badsize)
 - [`Blackboard`](#blackboard)
   - [`Blackboard::TaskInfo`](#blackboard::taskinfo)
+- [`BlueprintItem`](#blueprintitem)
 - [`BoundsViolation`](#boundsviolation)
 - [`Bounty`](#bounty)
 - [`BountyManager`](#bountymanager)
@@ -175,6 +176,7 @@
   - [`FoliageSystem::EntData`](#foliagesystem::entdata)
   - [`FoliageSystem::TreeData`](#foliagesystem::treedata)
 - [`ForgottenGUI`](#forgottengui)
+- [`Formation`](#formation)
 - [`FormationMover`](#formationmover)
 - [`FurnaceBuilding`](#furnacebuilding)
 - [`FurnaceInventoryLayout`](#furnaceinventorylayout)
@@ -189,6 +191,7 @@
 - [`GameDataHeader`](#gamedataheader)
 - [`GameDataManager`](#gamedatamanager)
 - [`GameDataReference`](#gamedatareference)
+- [`GameDataScoredList`](#gamedatascoredlist)
 - [`GameDataValuePair`](#gamedatavaluepair)
 - [`GameplayOptions`](#gameplayoptions)
 - [`GameSaveState`](#gamesavestate)
@@ -267,6 +270,7 @@
 - [`MainthreadStateReaderT`](#mainthreadstatereadert)
 - [`ManagementScreen`](#managementscreen)
   - [`ManagementScreen::TechItemViewData`](#managementscreen::techitemviewdata)
+- [`MapItem`](#mapitem)
 - [`MapScreen`](#mapscreen)
   - [`MapScreen::MapMarkerCharacter`](#mapscreen::mapmarkercharacter)
   - [`MapScreen::MapMarkerTown`](#mapscreen::mapmarkertown)
@@ -283,6 +287,7 @@
 - [`MessageQueue`](#messagequeue)
   - [`MessageQueue::Node`](#messagequeue::node)
 - [`ModInfo`](#modinfo)
+- [`MoneyItem`](#moneyitem)
 - [`MotionFilter`](#motionfilter)
 - [`MultiSlider`](#multislider)
 - [`MustEndWithSemiColon`](#mustendwithsemicolon)
@@ -294,6 +299,7 @@
   - [`NavMeshGenerator::Task`](#navmeshgenerator::task)
   - [`NavMeshGenerator::TaskQueue`](#navmeshgenerator::taskqueue)
 - [`NavMeshSeeds`](#navmeshseeds)
+- [`NestItem`](#nestitem)
 - [`NewGameOptionsWindow`](#newgameoptionswindow)
 - [`NewGameWindow`](#newgamewindow)
 - [`Nx9Real`](#nx9real)
@@ -387,6 +393,7 @@
   - [`SensoryData::SpottingPeopleMgr`](#sensorydata::spottingpeoplemgr)
   - [`SensoryData::SpottingPeopleMgr::Spot`](#sensorydata::spottingpeoplemgr::spot)
 - [`Serialisable`](#serialisable)
+- [`SeveredLimbItem`](#severedlimbitem)
 - [`SharedKing`](#sharedking)
 - [`ShopTrader`](#shoptrader)
 - [`ShopTraderInventory`](#shoptraderinventory)
@@ -441,6 +448,7 @@
 - [`TownBuildingsManager`](#townbuildingsmanager)
   - [`TownBuildingsManager::BuildingInfo`](#townbuildingsmanager::buildinginfo)
 - [`TownHandleContainerList`](#townhandlecontainerlist)
+- [`TownList`](#townlist)
 - [`TradeCulture`](#tradeculture)
 - [`TraderInventoryLayout`](#traderinventorylayout)
 - [`TransformWindow`](#transformwindow)
@@ -2340,6 +2348,25 @@
 |---|---|---|---|
 | Blackboard::TaskInfo | `` | `Blackboard::TaskInfo` | `local obj = Blackboard::TaskInfo()` |
 
+## BlueprintItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.BlueprintItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| value | `integer` | RW | `obj.value = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getClassType | `` | `integer` | `obj:getClassType()` |
+| getItemWeight | `` | `number` | `obj:getItemWeight()` |
+| getValueSingle | `isPlayer: boolean` | `integer` | `obj:getValueSingle(isPlayer)` |
+| getResearchData | `` | `GameData` | `obj:getResearchData()` |
+| learnResearch | `` | `boolean` | `obj:learnResearch()` |
+| getGUIData | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(datapanel, category)` |
+
 ## BoundsViolation
 **Header:** `extern/KenshiLib/Include/kenshi/util/Array2d.h`
 **Metatable:** `KenshiLua.BoundsViolation`
@@ -2935,7 +2962,7 @@
 | worldStateRequirements | `WorldEventStateQueryList` | R | `obj.worldStateRequirements` |
 | specificTargetCharacter | `lektor<GameData*>` | R | `obj.specificTargetCharacter` |
 | specificLeaderCharacter | `lektor<GameData*>` | R | `obj.specificLeaderCharacter` |
-| spawns | `FitnessSelector<GameData*>` | R | `obj.spawns` |
+| spawns | `GameDataScoredList` | R | `obj.spawns` |
 | repeatLimit | `number` | RW | `obj.repeatLimit = <value>` |
 | campaignType | `WarCampaignEnum` | RW | `obj.campaignType = <value>` |
 | lastTerritorialTrigger | `TimeOfDay` | RW | `obj.lastTerritorialTrigger = <value>` |
@@ -3154,8 +3181,8 @@
 | updateTimes | `` | `void` | `obj:updateTimes()` |
 | getSensoryData | `` | `SensoryData` | `obj:getSensoryData()` |
 | getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
-| getFormation | `` | `lightuserdata` | `obj:getFormation()` |
-| getEnemyFormation | `` | `lightuserdata` | `obj:getEnemyFormation()` |
+| getFormation | `` | `Formation` | `obj:getFormation()` |
+| getEnemyFormation | `` | `Formation` | `obj:getEnemyFormation()` |
 | AIDestinationIndoorOutdoorCheck | `who: RootObject` | `boolean` | `obj:AIDestinationIndoorOutdoorCheck(who)` |
 | update | `` | `void` | `obj:update()` |
 | postUpdate | `` | `void` | `obj:postUpdate()` |
@@ -6583,6 +6610,23 @@
 |---|---|---|---|
 | changeFontSize | `` | `void` | `ForgottenGUI.changeFontSize()`<br>`obj:changeFontSize()` |
 
+## Formation
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+**Metatable:** `KenshiLua.Formation`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| character | `RootObject` | RW | `obj.character = <value>` |
+| followers | `lektor<hand>` | R | `obj.followers` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| addToFormation | `h: hand` | `integer` | `obj:addToFormation(h)` |
+| removeFromFormation | `h: hand` | `void` | `obj:removeFromFormation(h)` |
+| getFormationPos | `id: integer, tightness: number` | `Vector3` | `obj:getFormationPos(id, tightness)` |
+
 ## FormationMover
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
 **Metatable:** `KenshiLua.FormationMover`
@@ -6881,6 +6925,15 @@
 |---|---|---|---|
 | operator_assign | `other: GameDataReference` | `void` | `obj:operator_assign(other)` |
 | getPtr | `source: GameDataContainer` | `GameData` | `obj:getPtr(source)` |
+
+## GameDataScoredList
+**Header:** `extern/KenshiLib/Include/kenshi/Campaign.h`
+**Metatable:** `KenshiLua.GameDataScoredList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupFromData | `spawnData: GameData, listname: string, typ: itemType` | `void` | `obj:setupFromData(spawnData, listname, typ)` |
 
 ## GameDataValuePair
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
@@ -9184,6 +9237,27 @@
 **Parent Class:** [`ManagementScreen`](#managementscreen)
 **Metatable:** `KenshiLua.ManagementScreen_TechItemViewData`
 
+## MapItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.MapItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| value | `integer` | RW | `obj.value = <value>` |
+| townsDiscoveredCount | `integer` | RW | `obj.townsDiscoveredCount = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getItemWeight | `` | `number` | `obj:getItemWeight()` |
+| getValueSingle | `isPlayer: boolean` | `integer` | `obj:getValueSingle(isPlayer)` |
+| selectTowns | `` | `integer` | `obj:selectTowns()` |
+| consume | `` | `boolean` | `obj:consume()` |
+| getTownsDiscovered | `` | `integer` | `obj:getTownsDiscovered()` |
+| _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
+| _serialise | `container: GameDataContainer, typ: itemType` | `GameData` | `obj:_serialise(container, typ)` |
+
 ## MapScreen
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
 **Metatable:** `KenshiLua.MapScreen`
@@ -9584,6 +9658,16 @@
 | operator_assign | `other: ModInfo` | `void` | `obj:operator_assign(other)` |
 | getLocale | `` | `boolean\|string` | `obj:getLocale()` |
 
+## MoneyItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.MoneyItem`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getValueSingle | `isPlayer: boolean` | `integer` | `obj:getValueSingle(isPlayer)` |
+| consume | `` | `boolean` | `obj:consume()` |
+
 ## MotionFilter
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
 **Metatable:** `KenshiLua.MotionFilter`
@@ -9770,6 +9854,16 @@
 | removeIsland | `pos: Vector3, radius: number` | `integer` | `obj:removeIsland(pos, radius)` |
 | projectToTerrain | `zone: ZoneMap` | `void` | `obj:projectToTerrain(zone)` |
 | getSeedPoints | `zone: ZoneMap` | `lightuserdata` | `obj:getSeedPoints(zone)` |
+
+## NestItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.NestItem`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getClassType | `` | `integer` | `obj:getClassType()` |
+| getModelName | `` | `string` | `obj:getModelName()` |
 
 ## NewGameOptionsWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/NewGameOptionsWindow.h`
@@ -12316,6 +12410,28 @@
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.Serialisable`
 
+## SeveredLimbItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.SeveredLimbItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| limbScale | `Vector3` | RW | `obj.limbScale = <value>` |
+| skinTone | `Vector4` | RW | `obj.skinTone = <value>` |
+| blood | `unknown` | RW | `obj.blood = <value>` |
+| impulse | `Vector3` | RW | `obj.impulse = <value>` |
+| timeout | `TimeOfDay` | RW | `obj.timeout = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupFromCharacter | `c: Character, limb: integer, force: Vector3` | `void` | `obj:setupFromCharacter(c, limb, force)` |
+| _serialise | `container: GameDataContainer, typ: itemType` | `GameData` | `obj:_serialise(container, typ)` |
+| _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
+| getTimeout | `` | `TimeOfDay` | `obj:getTimeout()` |
+| destroyPhysical | `` | `void` | `obj:destroyPhysical()` |
+
 ## SharedKing
 **Header:** `extern/KenshiLib/Include/kenshi/SharedKing.h`
 **Metatable:** `KenshiLua.SharedKing`
@@ -12324,7 +12440,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | areasList | `lightuserdata` | R | `obj.areasList` |
-| townList | `lightuserdata` | R | `obj.townList` |
+| townList | `TownList` | R | `obj.townList` |
 | zoneMgr | `ZoneManagerInterfaceT` | RW | `obj.zoneMgr = <value>` |
 
 ### Methods
@@ -13654,6 +13770,60 @@
 ## TownHandleContainerList
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.TownHandleContainerList`
+
+## TownList
+**Header:** `extern/KenshiLib/Include/kenshi/Town.h`
+**Metatable:** `KenshiLua.TownList`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| newTownsDiscovered | `boolean` | RW | `obj.newTownsDiscovered = <value>` |
+| noTown | `lightuserdata` | R | `obj.noTown` |
+| uniqueTowns | `lektor<RootObject*>` | R | `obj.uniqueTowns` |
+| nests | `lektor<RootObject*>` | R | `obj.nests` |
+| deletedTowns | `lektor<Town*>` | R | `obj.deletedTowns` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| addActiveObject | `b: RootObject` | `boolean` | `obj:addActiveObject(b)` |
+| updateTownCoverage | `n: TownBase` | `void` | `obj:updateTownCoverage(n)` |
+| _clearAll | `` | `void` | `obj:_clearAll()` |
+| _resetGame | `` | `void` | `obj:_resetGame()` |
+| destroyAllTheNests | `` | `void` | `obj:destroyAllTheNests()` |
+| destroy | `t: TownBase` | `void` | `obj:destroy(t)` |
+| getTown | `instanceID: string` | `Town` | `obj:getTown(instanceID)` |
+| getTownBySID | `name: string` | `Town` | `obj:getTownBySID(name)` |
+| getNearestPlayerTown | `position: Vector3, includePlayerResidenceTowns: boolean, maxDistance: number` | `Town` | `obj:getNearestPlayerTown(position, includePlayerResidenceTowns, maxDistance)` |
+| getNearestTown | `pos: Vector3, townOwner: Faction, except: Town, myFaction: Faction, type: TownType` | `Town` | `obj:getNearestTown(pos, townOwner, except, myFaction, type)` |
+| getNearestTownWithBuildingDesignation | `what: BuildingDesignation, pos: Vector3, townFactionWanted: Faction, except: Town, notEnemiesOf: Faction, type: TownType, maxDistanceSquared: number` | `Town` | `obj:getNearestTownWithBuildingDesignation(what, pos, townFactionWanted, except, notEnemiesOf, type, maxDistanceSquared)` |
+| getNearestNest | `pos: Vector3, f: Faction, except: TownBase` | `lightuserdata` | `obj:getNearestNest(pos, f, except)` |
+| getNearest | `pos: Vector3, f: Faction, except: TownBase` | `TownBase` | `obj:getNearest(pos, f, except)` |
+| getNearestWithinItsRadius | `position: Vector3, skipPlayerTowns: boolean` | `TownBase` | `obj:getNearestWithinItsRadius(position, skipPlayerTowns)` |
+| getRetreatTown | `pos: Vector3, owner: Faction, except: Town` | `Town` | `obj:getRetreatTown(pos, owner, except)` |
+| createNewPlayerTown | `pos: Vector3` | `Town` | `obj:createNewPlayerTown(pos)` |
+| getDistToNearestTown | `pos: Vector3, except: Town` | `number` | `obj:getDistToNearestTown(pos, except)` |
+| getSquaredDistToNearestTown | `pos: Vector3, except: Town` | `number` | `obj:getSquaredDistToNearestTown(pos, except)` |
+| getNearishTown | `myFaction: Faction, pos: Vector3, owner: Faction, except: TownBase, publicOnly: boolean, types: integer` | `Town` | `obj:getNearishTown(myFaction, pos, owner, except, publicOnly, types)` |
+| getAllTowns | `` | `lektor<RootObject*>` | `obj:getAllTowns()` |
+| getNullTown | `` | `TownBase` | `obj:getNullTown()` |
+| update | `` | `boolean` | `obj:update()` |
+| updateTownsDiscovery | `` | `void` | `obj:updateTownsDiscovery()` |
+| setAllTownsDebugVisible | `on: boolean` | `void` | `obj:setAllTownsDebugVisible(on)` |
+| saveToDisk | `levelEditor: boolean, forceFilename: string` | `void` | `obj:saveToDisk(levelEditor, forceFilename)` |
+| loadFromDisk | `force: boolean, extra: Serialisable` | `boolean` | `obj:loadFromDisk(force, extra)` |
+| saveState | `container: GameDataContainer` | `void` | `obj:saveState(container)` |
+| loadState | `container: GameDataContainer, isImportSoPlayerOnly: boolean` | `void` | `obj:loadState(container, isImportSoPlayerOnly)` |
+| loadStateDiscovery | `container: GameDataContainer, importOverride: boolean` | `void` | `obj:loadStateDiscovery(container, importOverride)` |
+| loadLevelData | `newGame: boolean` | `void` | `obj:loadLevelData(newGame)` |
+| _saveLevelData | `container: GameDataContainer, mod: string` | `void` | `obj:_saveLevelData(container, mod)` |
+| saveUniqueTownsAndNests | `container: GameDataContainer` | `void` | `obj:saveUniqueTownsAndNests(container)` |
+| listUniqueTownsFromPlayerOwnership | `` | `void` | `obj:listUniqueTownsFromPlayerOwnership()` |
+| loadAllTowns_worldInit | `saveSource: GameDataContainer` | `void` | `obj:loadAllTowns_worldInit(saveSource)` |
+| addNest | `n: RootObject` | `void` | `obj:addNest(n)` |
+| reassessTownPositions | `t: TownBase` | `void` | `obj:reassessTownPositions(t)` |
+| mergePlayerTowns | `a: Town, b: Town` | `void` | `obj:mergePlayerTowns(a, b)` |
 
 ## TradeCulture
 **Header:** `extern/KenshiLib/Include/kenshi/TradeCulture.h`
