@@ -125,9 +125,9 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const std::string&` | 3 |
 | `const type_info&` | 3 |
 | `const void*` | 1 |
-| `float` | 14 |
+| `float` | 13 |
 | `float (AI::*` | 1 |
-| `float&` | 14 |
+| `float&` | 13 |
 | `hand&` | 3 |
 | `hkArray<EdgePathNode, hkContainerHeapAllocator>&` | 5 |
 | `hkArray<unsigned int, hkContainerHeapAllocator>&` | 2 |
@@ -149,8 +149,8 @@ This document registers all C++ SDK classes and complex types that are currently
 | `unsigned char` | 1 |
 | `unsigned int` | 8 |
 | `unsigned int&` | 8 |
-| `void*` | 252 |
-| `void**` | 252 |
+| `void*` | 248 |
+| `void**` | 248 |
 
 ## Unsupported Properties Detail
 
@@ -176,25 +176,12 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | _getBone | `Ogre::OldBone*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | create | `void` | appends five new AnimationLayers each call; Lua cannot construct an AnimationClassBase, and calling it on a live instance duplicates the layers |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimation | `Ogre::Animation*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying | `AnimationClassBase::SingleAnimation*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying | `AnimationClassBase::SingleAnimation*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying_animName | `AnimationClassBase::SingleAnimation*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationPlaying_datName | `AnimationClassBase::SingleAnimation*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBaseBinding.cpp | getAnimationState | `Ogre::AnimationState*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | _NV_getRagdoll | `RagdollClass*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | _NV_setDesiredPainOverlayAnims | `void` | StringValuePair is unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | chooseAnims | `void` | AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | chooseRandomAnim | `AnimationChoices` | AnimationChoices, lektor<AnimationData*>, and AnimationRequirement are unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | create | `bool` | initialisation only; Lua cannot construct an AnimationClass, and AnimationClassBase::create appends new layers on a live instance |
-| Kenshi/Animation/AnimationClassBinding.cpp | getAnimationDatasList | `AnimsListsManager::AnimList*` | AnimsListsManager::AnimList is unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | getEvents | `AnimationEvents*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | getRagdoll | `RagdollClass*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | isHuman | `AnimationClassHuman*` | unbound pointer |
 | Kenshi/Animation/AnimationClassBinding.cpp | processActionAnims | `bool` | boost::unordered_map<std::string, AnimationData*> and AnimationRequirement are unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | processCombatIdleAnims | `void` | lektor<AnimationData*> and AnimationRequirement are unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | processIdleAnims | `void` | lektor<AnimationData*> and AnimationRequirement are unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | processMoveAnims | `void` | lektor<AnimationData*> and AnimationRequirement are unbound |
-| Kenshi/Animation/AnimationClassBinding.cpp | scoreAnim | `float` | AnimationRequirement is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | setBodyEntity | `void` | unbound pointer argument |
 | Kenshi/Animation/AnimationClassBinding.cpp | setDesiredPainOverlayAnims | `void` | StringValuePair is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | setupRagdoll | `bool` | unbound pointer argument |
