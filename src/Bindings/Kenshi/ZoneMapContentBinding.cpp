@@ -11,12 +11,14 @@
 #include "Bindings/Kenshi/RootObjectBinding.h"
 #include "Bindings/Kenshi/TownBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
+#include "Bindings/Kenshi/HandleListBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
 
 namespace KenshiLua
 {
 
 static_assert(offsetof(ZoneMapContent, periodicUpdateIndex) == 0x68, "ZoneMapContent::periodicUpdateIndex offset mismatch");
+static_assert(offsetof(ZoneMapContent, myHandles) == 0x98, "ZoneMapContent::myHandles offset mismatch");
 static_assert(offsetof(ZoneMapContent, newGameFirstTimeLoaded) == 0xA8, "ZoneMapContent::newGameFirstTimeLoaded offset mismatch");
 static_assert(offsetof(ZoneMapContent, toUpdateList) == 0xB8, "ZoneMapContent::toUpdateList offset mismatch");
 static_assert(offsetof(ZoneMapContent, zoneMap) == 0xD0, "ZoneMapContent::zoneMap offset mismatch");
@@ -43,6 +45,22 @@ static int ZoneMapContent_set_periodicUpdateIndex(lua_State* L)
     ZoneMapContent* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneMapContent is nil");
     instance->periodicUpdateIndex = (int)luaL_checkinteger(L, 2);
+    return 0;
+}
+
+static int ZoneMapContent_get_myHandles(lua_State* L)
+{
+    ZoneMapContent* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMapContent is nil");
+    if (!instance->myHandles) { lua_pushnil(L); return 1; }
+    return pushObject<HandleList>(L, instance->myHandles, HandleListBinding::getMetatableName());
+}
+
+static int ZoneMapContent_set_myHandles(lua_State* L)
+{
+    ZoneMapContent* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMapContent is nil");
+    instance->myHandles = lua_isnoneornil(L, 2) ? nullptr : checkObject<HandleList>(L, 2, HandleListBinding::getMetatableName());
     return 0;
 }
 
@@ -496,6 +514,7 @@ void ZoneMapContentBinding::registerBinding(lua_State* L)
     luaL_getmetatable(L, ZoneMapContentBinding::getMetatableName());
     lua_newtable(L);
     registerGetter(L, "periodicUpdateIndex", ZoneMapContent_get_periodicUpdateIndex);
+    registerGetter(L, "myHandles", ZoneMapContent_get_myHandles);
     registerGetter(L, "newGameFirstTimeLoaded", ZoneMapContent_get_newGameFirstTimeLoaded);
     registerGetter(L, "toUpdateList", ZoneMapContent_get_toUpdateList);
     registerGetter(L, "zoneMap", ZoneMapContent_get_zoneMap);
@@ -507,6 +526,7 @@ void ZoneMapContentBinding::registerBinding(lua_State* L)
 
     lua_newtable(L);
     registerSetter(L, "periodicUpdateIndex", ZoneMapContent_set_periodicUpdateIndex);
+    registerSetter(L, "myHandles", ZoneMapContent_set_myHandles);
     registerSetter(L, "newGameFirstTimeLoaded", ZoneMapContent_set_newGameFirstTimeLoaded);
     registerSetter(L, "zoneMap", ZoneMapContent_set_zoneMap);
     registerSetter(L, "loaded", ZoneMapContent_set_loaded);

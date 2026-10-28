@@ -2843,9 +2843,9 @@
       "member": "_myMemory"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "ActivePlatoon",
-      "expected": "?HandleList*",
+      "expected": "HandleList|nil",
       "header": "HandleList*",
       "kind": "property",
       "lua": "lightuserdata",
@@ -9934,6 +9934,15 @@
       "member": "_NV__serialise"
     },
     {
+      "category": "unmapped_header_type",
+      "class": "HandleList",
+      "expected": "?std::map<unsigned __int64,unsigned int,std::less<unsigned __int64>,Ogre::STLAllocator<std::pair<unsigned __int64 ,unsigned int>,Ogre::GeneralAllocPolicy>>",
+      "header": "std::map<unsigned __int64,unsigned int,std::less<unsigned __int64>,Ogre::STLAllocator<std::pair<unsigned __int64 const,unsigned int>,Ogre::GeneralAllocPolicy>>",
+      "kind": "property",
+      "lua": "StdMap<integer, integer>",
+      "member": "handleShift"
+    },
+    {
       "category": "enum_typed_as_integer",
       "class": "HavokCharacter",
       "expected": "fun(): CharacterState",
@@ -11290,6 +11299,33 @@
       "kind": "method",
       "lua": "fun(self: LoadSaveWindow, w: MyGUI.Widget, key: integer, arg3?: integer)",
       "member": "keyPressed"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "LocaleInfo",
+      "expected": "?std::wstring",
+      "header": "std::wstring",
+      "kind": "property",
+      "lua": "string",
+      "member": "name"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "LocaleManager",
+      "expected": "?Ogre::FastArray<LocaleInfo>",
+      "header": "Ogre::FastArray<LocaleInfo>",
+      "kind": "property",
+      "lua": "OgreFastArray<LocaleInfo>",
+      "member": "localeList"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "LocaleManager",
+      "expected": "?boost::filesystem::path",
+      "header": "boost::filesystem::path",
+      "kind": "property",
+      "lua": "string",
+      "member": "localePath"
     },
     {
       "category": "enum_typed_as_integer",
@@ -21271,16 +21307,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 55,
-    "binding_pushes_raw_pointer": 48,
+    "binding_pushes_raw_pointer": 49,
     "binding_shape_differs": 205,
     "blocking_issues": 0,
-    "container_methods_typed": 1045,
+    "container_methods_typed": 1070,
     "enum_typed_as_integer": 523,
-    "methods": 8487,
-    "methods_matching_header": 6457,
+    "methods": 8579,
+    "methods_matching_header": 6524,
     "no_header_declaration": 278,
-    "properties": 3555,
-    "properties_matching_header": 3007,
-    "unmapped_header_type": 441
+    "properties": 3577,
+    "properties_matching_header": 3025,
+    "unmapped_header_type": 444
   }
 }

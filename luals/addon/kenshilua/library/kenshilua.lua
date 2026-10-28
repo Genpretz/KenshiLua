@@ -19066,6 +19066,94 @@ taskPriority = {
 --- Pointer to the associated turret building structure.
 ---@field turretBuilding TurretBuilding|nil
 
+--- Engine class `HandleContainerList`.
+---@class HandleContainerList : HandleListBase
+---@field add fun(self: HandleContainerList, o: RootObjectBase): hand
+---@field _NV_add fun(self: HandleContainerList, o: RootObjectBase): hand
+
+--- Engine class `HandleListBase`.
+---@class HandleListBase : Serialisable
+---@field clearToZero fun(self: HandleListBase)
+---@field _NV_clearToZero fun(self: HandleListBase)
+---@field get fun(self: HandleListBase, handle: hand): RootObjectBase|nil
+---@field _NV_get fun(self: HandleListBase, handle: hand): RootObjectBase|nil
+---@field isUnloadedNotDead fun(self: HandleListBase, handle: hand): boolean
+---@field _NV_isUnloadedNotDead fun(self: HandleListBase, handle: hand): boolean
+---@field addExisting fun(self: HandleListBase, o: RootObjectBase, _handle: hand): hand
+---@field _NV_addExisting fun(self: HandleListBase, o: RootObjectBase, _handle: hand): hand
+---@field setUnloaded fun(self: HandleListBase, handle: hand)
+---@field _NV_setUnloaded fun(self: HandleListBase, handle: hand)
+---@field destroy fun(self: HandleListBase, handle: hand)
+---@field _NV_destroy fun(self: HandleListBase, handle: hand)
+---@field lastID integer
+---@field maxSize integer
+
+--- Engine class `HandleList`.
+---@class HandleList : HandleListBase
+---@field add fun(self: HandleList, o: RootObjectBase): hand
+---@field _NV_add fun(self: HandleList, o: RootObjectBase): hand
+---@field get fun(self: HandleList, handle: hand): RootObjectBase|nil
+---@field _NV_get fun(self: HandleList, handle: hand): RootObjectBase|nil
+---@field addExisting fun(self: HandleList, o: RootObjectBase, _handle: hand): hand
+---@field _NV_addExisting fun(self: HandleList, o: RootObjectBase, _handle: hand): hand
+---@field addExistingAndForceContainer fun(self: HandleList, o: RootObjectBase, _handle: hand): hand
+---@field _NV_addExistingAndForceContainer fun(self: HandleList, o: RootObjectBase, _handle: hand): hand
+---@field destroy fun(self: HandleList, handle: hand)
+---@field _NV_destroy fun(self: HandleList, handle: hand)
+---@field containerHandle hand
+---@field handleShift StdMap<integer, integer>
+
+--- Universal object handle resolver decoupling weak entity references from raw heap pointers, coordinating memory lifetime, serialisation tombstones, and unloaded entity paging.
+---@class HandleManager : Serialisable
+--- Follows handle redirect chains to find the current active replacement handle.
+---@field getRedirect fun(self: HandleManager, h: hand): hand
+--- Removes a redirect mapping that forwarded references from an obsolete handle ID to a replacement object.
+---@field removeRedirect fun(self: HandleManager, h: hand)
+--- Clears any pointer forwarding or redirection entry registered for the specified object handle.
+---@field clearRedirectForHandle fun(self: HandleManager, h: hand)
+--- Clears all active handles, redirects, and registered zone lookups, resetting the manager to an empty state.
+---@field reset fun(self: HandleManager)
+--- Marks the entity identified by the handle as unloaded and paged out to disk.
+---@field setUnloaded fun(self: HandleManager, handle: hand)
+--- Tears down the handle manager, releasing all registered handle mappings, redirects, and deferred delete lists.
+---@field destroy fun(self: HandleManager, handle: hand, reason?: string)
+--- Resolves an object handle to any live entity (`RootObjectBase*`).
+---@field getAnything fun(self: HandleManager, handle: hand, deadOnes?: boolean): RootObjectBase|nil
+--- Resolves an object handle to its underlying `TownBase` settlement instance.
+---@field getTownBase fun(self: HandleManager, handle: hand, backupPos?: table): TownBase|nil
+--- Resolves an object handle to its corresponding `Town` entity pointer.
+---@field getTown fun(self: HandleManager, handle: hand, backupPos?: table): Town|nil
+--- Resolves an object handle to an active entity pointer, excluding base classes.
+---@field getAnythingButBase fun(self: HandleManager, handle: hand, deadOnes?: boolean): RootObject|nil
+--- Resolves an object handle to the merchant or shopkeeper character associated with it.
+---@field getShopTrader fun(self: HandleManager, handle: hand): Character|nil
+--- Resolves an object handle to its corresponding `Building` pointer, or nullptr if destroyed or unloaded.
+---@field getBuilding fun(self: HandleManager, handle: hand): Building|nil
+--- Resolves an object handle specifically to an interactive or usable building structure.
+---@field getBuilding_UseableStuff fun(self: HandleManager, handle: hand): UseableStuff|nil
+--- Resolves an object handle to its corresponding `Character` pointer, or nullptr if unloaded or dead.
+---@field getCharacter fun(self: HandleManager, handle: hand, deadOnes?: boolean, redirect?: boolean): Character|nil
+--- Resolves an object handle to its corresponding `Platoon` pointer.
+---@field getPlatoon fun(self: HandleManager, handle: hand): Platoon|nil
+--- Resolves an object handle to its corresponding `Item` pointer.
+---@field getItem fun(self: HandleManager, handle: hand): Item|nil
+--- Returns true if the entity referenced by the handle belongs to the player faction.
+---@field isPlayerFaction fun(self: HandleManager, h: hand): boolean
+--- Associates an existing object handle with its containing zone map for spatial tracking and paging.
+---@field addExistingObjectHandleToZone fun(self: HandleManager, handle: hand): boolean
+--- Looks up a character handle in the death parade queue awaiting destruction.
+---@field getFromDeathParade fun(self: HandleManager, handle: hand): Character|nil
+--- Item physical instance handle container.
+---@field items ItemHandleList
+---@field mapfeatures HandleContainerList
+---@field nodes ItemHandleList
+--- Platoon handle resolution container.
+---@field platoons PlatoonHandleContainerList
+---@field redirect OgreUnorderedMap<hand, hand>
+--- Town settlement handle resolution container.
+---@field towns TownHandleContainerList
+---@field zones ZoneMapHandleContainerList
+
 --- Autonomous navigation agent and kinematic path follower bridging character locomotion kinematics (`CharMovement`) to Havok AI navigation meshes (`hkaiNavMesh`). Executes string-pulling portal funneling across NavMesh edge corridors (`EdgePathNode`), local obstacle avoidance steering, dynamic obstacle cylinder-sweep collision detection (`EdgeCache`), and water immersion speed damping.
 ---@class HavokCharacter
 --- Sets the agent's spatial position and updates the current NavMesh polygon face key. Marks `positionChanged = true` to force edge cache and spatial partition updates.
@@ -19567,6 +19655,11 @@ taskPriority = {
 --- True if this field is visible in the editor UI.
 ---@field visible boolean
 
+--- Engine class `ItemHandleList`.
+---@class ItemHandleList : HandleList
+---@field setUnloaded fun(self: ItemHandleList, handle: hand)
+---@field _NV_setUnloaded fun(self: ItemHandleList, handle: hand)
+
 --- In-game level editor controlling world object placement, terrain tools, navmesh generation, and mod authoring.
 ---@class LevelEditor
 --- Closes the level editor window.
@@ -19863,6 +19956,42 @@ taskPriority = {
 ---@field loadingText MyGUI.Widget
 --- The MyGUI::EditBox widget displaying gameplay tips.
 ---@field messageText MyGUI.EditBox|nil
+
+--- Engine class `LocaleInfo`.
+---@class LocaleInfo
+---@field operator_assign fun(self: LocaleInfo, arg1: LocaleInfo): LocaleInfo
+---@field id string
+---@field isBase boolean
+---@field isMod boolean
+---@field name string
+---@field steamCode string
+
+--- Internationalization and localization manager handling language catalogs, translation dictionaries, East Asian typography fallbacks, and mod translation packs.
+---@class LocaleManager
+--- Initializes the localization system, detecting available language catalogs, system locale settings, and translation resource paths.
+---@field init fun(self: LocaleManager)
+--- Returns the currently active localization language code (e.g. 'en', 'es', 'ja').
+---@field getCurrentLocale fun(self: LocaleManager): LocaleInfo|nil
+--- Sets the active UI and dialogue localization language.
+---@field setCurrentLocale fun(self: LocaleManager, locale?: LocaleInfo)
+--- Attempts to switch the active game locale using a translation package or locale override supplied by an active mod.
+---@field trySetCurrentLocaleFromMod fun(self: LocaleManager, mod: ModInfo): boolean
+--- Returns the filesystem path to the current language's translation folder.
+---@field getCurrentLocalePath fun(self: LocaleManager): string
+--- Returns the active translation mod name supplying UI strings.
+---@field getCurrentLocaleMod fun(self: LocaleManager): string
+--- Returns a list of language codes and localization directory paths available for selection.
+---@field getAvailableLanguages fun(self: LocaleManager): OgreFastArray<LocaleInfo>
+--- List of active available language pointers.
+---@field availableLanguages OgreFastArray<LocaleInfo>
+--- Currently active language profile.
+---@field currentLocale LocaleInfo|nil
+--- Flat storage array of all available language profiles.
+---@field localeList OgreFastArray<LocaleInfo>
+--- Disk path to localization po/mo translation dictionaries.
+---@field localePath string
+--- Custom locale override supplied by active translation mod.
+---@field modLocale LocaleInfo|nil
 
 --- `LockedArmour` is a specialized subclass of `Armour` that incorporates a lock mechanism, primarily used for slave shackles and similar items.
 ---@class LockedArmour : Armour
@@ -21601,6 +21730,16 @@ taskPriority = {
 ---@field nWorld lightuserdata
 --- Shared mutex protecting access to _queuesClear.
 ---@field queuesClearMuto lightuserdata
+
+--- Engine class `PlatoonHandleContainerList`.
+---@class PlatoonHandleContainerList : HandleContainerList
+---@field getCharacterOrZero fun(self: PlatoonHandleContainerList, handle: hand): RootObject|nil
+---@field getCharacterOrPlatoon fun(self: PlatoonHandleContainerList, handle: hand): RootObjectBase|nil
+---@field getActivePlatoon fun(self: PlatoonHandleContainerList, handle: hand): ActivePlatoon|nil
+---@field setUnloaded fun(self: PlatoonHandleContainerList, handle: hand)
+---@field _NV_setUnloaded fun(self: PlatoonHandleContainerList, handle: hand)
+---@field destroy fun(self: PlatoonHandleContainerList, handle: hand)
+---@field _NV_destroy fun(self: PlatoonHandleContainerList, handle: hand)
 
 --- Maintains UI state, status overlays, and update triggers for a character portrait in squad lists.
 ---@class PortraitData
@@ -24723,6 +24862,9 @@ taskPriority = {
 --- Parent settlement controller pointer.
 ---@field town TownBase
 
+--- Engine class `TownHandleContainerList`.
+---@class TownHandleContainerList : HandleContainerList
+
 --- Periodically caches town center positions and updates territorial boundaries over in-game time.
 ---@class TownPositionCacher
 --- Updates the last update timestamp to the current game world time.
@@ -26333,10 +26475,21 @@ taskPriority = {
 ---@field foliageSystem FoliageSystem|nil
 ---@field items OgreUnorderedSet<hand>
 ---@field loaded boolean
+---@field myHandles HandleList|nil
 ---@field newGameFirstTimeLoaded boolean
 ---@field periodicUpdateIndex integer
 ---@field toUpdateList Lektor<RootObject>
 ---@field zoneMap ZoneMap|nil
+
+--- Engine class `ZoneMapHandleContainerList`.
+---@class ZoneMapHandleContainerList : HandleContainerList
+---@field getZoneMap fun(self: ZoneMapHandleContainerList, handle: hand): ZoneMapContent|nil
+---@field getObject fun(self: ZoneMapHandleContainerList, handle: hand): RootObject|nil
+---@field setUnloaded fun(self: ZoneMapHandleContainerList, handle: hand)
+---@field _NV_setUnloaded fun(self: ZoneMapHandleContainerList, handle: hand)
+---@field destroy fun(self: ZoneMapHandleContainerList, handle: hand)
+---@field _NV_destroy fun(self: ZoneMapHandleContainerList, handle: hand)
+---@field getCorrectHandleList fun(self: ZoneMapHandleContainerList, h: hand): HandleList|nil
 
 --- Engine class `ZoneSmell`.
 ---@class ZoneSmell
@@ -28668,6 +28821,8 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
+---@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
@@ -28762,6 +28917,8 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
+---@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>

@@ -199,6 +199,10 @@
 - [`GunClassPersonal`](#gunclasspersonal)
 - [`GunClassTurret`](#gunclassturret)
 - [`Hand`](#hand)
+- [`HandleContainerList`](#handlecontainerlist)
+- [`HandleList`](#handlelist)
+- [`HandleListBase`](#handlelistbase)
+- [`HandleManager`](#handlemanager)
 - [`HavokCharacter`](#havokcharacter)
 - [`hkArray`](#hkarray)
 - [`hkArrayBase`](#hkarraybase)
@@ -231,6 +235,7 @@
 - [`InventorySectionGUI`](#inventorysectiongui)
 - [`InventoryTraderGUI`](#inventorytradergui)
 - [`Item`](#item)
+- [`ItemHandleList`](#itemhandlelist)
 - [`iVector2`](#ivector2)
 - [`KenshiLib::BinaryVersion`](#kenshilib::binaryversion)
 - [`LevelEditor`](#leveleditor)
@@ -245,6 +250,8 @@
 - [`ListScrollBar`](#listscrollbar)
 - [`LoadingWindow`](#loadingwindow)
 - [`LoadSaveWindow`](#loadsavewindow)
+- [`LocaleInfo`](#localeinfo)
+- [`LocaleManager`](#localemanager)
 - [`LockedArmour`](#lockedarmour)
 - [`Logger`](#logger)
 - [`MainBarGUI`](#mainbargui)
@@ -310,6 +317,7 @@
   - [`PhysicsCollection::StaticEnt`](#physicscollection::staticent)
 - [`PhysicsInterface`](#physicsinterface)
 - [`Platoon`](#platoon)
+- [`PlatoonHandleContainerList`](#platoonhandlecontainerlist)
 - [`PlayerInterface`](#playerinterface)
   - [`PlayerInterface::AIOptions`](#playerinterface::aioptions)
 - [`PortraitData`](#portraitdata)
@@ -421,6 +429,7 @@
   - [`TownBase::TownPositionCacher`](#townbase::townpositioncacher)
 - [`TownBuildingsManager`](#townbuildingsmanager)
   - [`TownBuildingsManager::BuildingInfo`](#townbuildingsmanager::buildinginfo)
+- [`TownHandleContainerList`](#townhandlecontainerlist)
 - [`TradeCulture`](#tradeculture)
 - [`TraderInventoryLayout`](#traderinventorylayout)
 - [`TransformWindow`](#transformwindow)
@@ -454,6 +463,7 @@
 - [`ZoneMap`](#zonemap)
   - [`ZoneMap::StateT`](#zonemap::statet)
 - [`ZoneMapContent`](#zonemapcontent)
+- [`ZoneMapHandleContainerList`](#zonemaphandlecontainerlist)
 - [`ZoneSmell`](#zonesmell)
   - [`ZoneSmell::Smell`](#zonesmell::smell)
   - [`ZoneSmell::SmellMsg`](#zonesmell::smellmsg)
@@ -7196,6 +7206,92 @@
 | canCastToRootObject | `` | `boolean` | `obj:canCastToRootObject()` |
 | squadMatch | `` | `boolean` | `obj:squadMatch()` |
 
+## HandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleContainerList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| add | `o: RootObjectBase` | `hand` | `obj:add(o)` |
+
+## HandleList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleList`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| containerHandle | `hand` | RW | `obj.containerHandle = <value>` |
+| handleShift | `std::map<unsigned __int64, unsigned int>` | RW | `obj.handleShift = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| add | `o: RootObjectBase` | `hand` | `obj:add(o)` |
+| get | `h: hand` | `RootObjectBase` | `obj:get(h)` |
+| addExisting | `o: RootObjectBase, h: hand` | `hand` | `obj:addExisting(o, h)` |
+| addExistingAndForceContainer | `o: RootObjectBase, h: hand` | `hand` | `obj:addExistingAndForceContainer(o, h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
+
+## HandleListBase
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleListBase`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| maxSize | `integer` | RW | `obj.maxSize = <value>` |
+| lastID | `integer` | RW | `obj.lastID = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| clearToZero | `` | `void` | `obj:clearToZero()` |
+| get | `h: hand` | `RootObjectBase` | `obj:get(h)` |
+| isUnloadedNotDead | `h: hand` | `boolean` | `obj:isUnloadedNotDead(h)` |
+| addExisting | `o: RootObjectBase, h: hand` | `hand` | `obj:addExisting(o, h)` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
+
+## HandleManager
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleManager`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| platoons | `PlatoonHandleContainerList` | R | `obj.platoons` |
+| zones | `ZoneMapHandleContainerList` | R | `obj.zones` |
+| towns | `TownHandleContainerList` | R | `obj.towns` |
+| items | `ItemHandleList` | R | `obj.items` |
+| nodes | `ItemHandleList` | R | `obj.nodes` |
+| mapfeatures | `HandleContainerList` | R | `obj.mapfeatures` |
+| redirect | `ogre_unordered_map<hand, hand>` | RW | `obj.redirect = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getRedirect | `h: hand` | `hand` | `obj:getRedirect(h)` |
+| removeRedirect | `h: hand` | `void` | `obj:removeRedirect(h)` |
+| clearRedirectForHandle | `h: hand` | `void` | `obj:clearRedirectForHandle(h)` |
+| reset | `` | `void` | `obj:reset()` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand, reason: string` | `void` | `obj:destroy(h, reason)` |
+| getAnything | `h: hand, deadOnes: boolean` | `RootObjectBase` | `obj:getAnything(h, deadOnes)` |
+| getTownBase | `h: hand, backupPos: Vector3` | `TownBase` | `obj:getTownBase(h, backupPos)` |
+| getTown | `h: hand, backupPos: Vector3` | `Town` | `obj:getTown(h, backupPos)` |
+| getAnythingButBase | `h: hand, deadOnes: boolean` | `RootObject` | `obj:getAnythingButBase(h, deadOnes)` |
+| getShopTrader | `h: hand` | `Character` | `obj:getShopTrader(h)` |
+| getBuilding | `h: hand` | `Building` | `obj:getBuilding(h)` |
+| getBuilding_UseableStuff | `h: hand` | `UseableStuff` | `obj:getBuilding_UseableStuff(h)` |
+| getCharacter | `h: hand, deadOnes: boolean, redirect: boolean` | `Character` | `obj:getCharacter(h, deadOnes, redirect)` |
+| getPlatoon | `h: hand` | `Platoon` | `obj:getPlatoon(h)` |
+| getItem | `h: hand` | `Item` | `obj:getItem(h)` |
+| isPlayerFaction | `h: hand` | `boolean` | `obj:isPlayerFaction(h)` |
+| addExistingObjectHandleToZone | `h: hand` | `boolean` | `obj:addExistingObjectHandleToZone(h)` |
+| getFromDeathParade | `h: hand` | `Character` | `obj:getFromDeathParade(h)` |
+
 ## HavokCharacter
 **Header:** `extern/KenshiLib/Include/kenshi/HavokCharacter.h`
 **Metatable:** `KenshiLua.HavokCharacter`
@@ -8227,6 +8323,15 @@
 | setPersistant [2] | `p: boolean` | `void` | `obj:setPersistant(p)` |
 | itemEntityCreated | `ent: userdata` | `void` | `obj:itemEntityCreated(ent)` |
 
+## ItemHandleList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.ItemHandleList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+
 ## iVector2
 **Header:** `extern/KenshiLib/Include/kenshi/util/iVector2.h`
 **Metatable:** `KenshiLua.iVector2`
@@ -8548,6 +8653,48 @@
 | toggleCheck | `sender: MyGUI::Widget` | `void` | `obj:toggleCheck(sender)` |
 | createInfo | `panel: MyGUI::Widget` | `void` | `obj:createInfo(panel)` |
 | updateInfo | `index: integer` | `void` | `obj:updateInfo(index)` |
+
+## LocaleInfo
+**Header:** `extern/KenshiLib/Include/kenshi/LocaleInfo.h`
+**Metatable:** `KenshiLua.LocaleInfo`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| isBase | `boolean` | RW | `obj.isBase = <value>` |
+| id | `string` | RW | `obj.id = <value>` |
+| name | `string` | RW | `obj.name = <value>` |
+| steamCode | `string` | RW | `obj.steamCode = <value>` |
+| isMod | `boolean` | RW | `obj.isMod = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_assign | `other: LocaleInfo` | `LocaleInfo` | `obj:operator_assign(other)` |
+
+## LocaleManager
+**Header:** `extern/KenshiLib/Include/kenshi/LocaleInfo.h`
+**Metatable:** `KenshiLua.LocaleManager`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| currentLocale | `LocaleInfo` | RW | `obj.currentLocale = <value>` |
+| modLocale | `LocaleInfo` | RW | `obj.modLocale = <value>` |
+| localePath | `string` | RW | `obj.localePath = <value>` |
+| availableLanguages | `Ogre::FastArray<LocaleInfo*>` | RW | `obj.availableLanguages = <value>` |
+| localeList | `Ogre::FastArray<LocaleInfo>` | RW | `obj.localeList = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| init | `` | `void` | `obj:init()` |
+| getCurrentLocale | `` | `LocaleInfo` | `obj:getCurrentLocale()` |
+| setCurrentLocale | `locale: LocaleInfo` | `void` | `obj:setCurrentLocale(locale)` |
+| trySetCurrentLocaleFromMod | `mod: ModInfo` | `boolean` | `obj:trySetCurrentLocaleFromMod(mod)` |
+| getCurrentLocalePath | `` | `string` | `obj:getCurrentLocalePath()` |
+| getCurrentLocaleMod | `` | `string` | `obj:getCurrentLocaleMod()` |
+| getAvailableLanguages | `` | `LocaleInfoPtrFastArrayBinding::ArrayType` | `obj:getAvailableLanguages()` |
 
 ## LockedArmour
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
@@ -10240,6 +10387,19 @@
 | serialise | `container: GameDataContainer, refList: GameData, offset: userdata` | `GameSaveState` | `obj:serialise(container, refList, offset)` |
 | setRoamingMapArea | `a: userdata` | `void` | `obj:setRoamingMapArea(a)` |
 | getSquadLeader_theRealOne | `` | `hand` | `obj:getSquadLeader_theRealOne()` |
+
+## PlatoonHandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.PlatoonHandleContainerList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getCharacterOrZero | `h: hand` | `RootObject` | `obj:getCharacterOrZero(h)` |
+| getCharacterOrPlatoon | `h: hand` | `RootObjectBase` | `obj:getCharacterOrPlatoon(h)` |
+| getActivePlatoon | `h: hand` | `ActivePlatoon` | `obj:getActivePlatoon(h)` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
 
 ## PlayerInterface
 **Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
@@ -13176,6 +13336,10 @@
 **Parent Class:** [`TownBuildingsManager`](#townbuildingsmanager)
 **Metatable:** `KenshiLua.TownBuildingsManager_BuildingInfo`
 
+## TownHandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.TownHandleContainerList`
+
 ## TradeCulture
 **Header:** `extern/KenshiLib/Include/kenshi/TradeCulture.h`
 **Metatable:** `KenshiLua.TradeCulture`
@@ -14234,6 +14398,7 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | periodicUpdateIndex | `integer` | RW | `obj.periodicUpdateIndex = <value>` |
+| myHandles | `HandleList` | RW | `obj.myHandles = <value>` |
 | newGameFirstTimeLoaded | `boolean` | RW | `obj.newGameFirstTimeLoaded = <value>` |
 | toUpdateList | `lektor<RootObject*>` | R | `obj.toUpdateList` |
 | zoneMap | `ZoneMap` | RW | `obj.zoneMap = <value>` |
@@ -14275,6 +14440,19 @@
 | _activate | `` | `void` | `obj:_activate()` |
 | createLoadedItems | `` | `void` | `obj:createLoadedItems()` |
 | setLoadedT | `t: boolean` | `void` | `obj:setLoadedT(t)` |
+
+## ZoneMapHandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.ZoneMapHandleContainerList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getZoneMap | `h: hand` | `ZoneMapContent` | `obj:getZoneMap(h)` |
+| getObject | `h: hand` | `RootObject` | `obj:getObject(h)` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
+| getCorrectHandleList | `h: hand` | `HandleList` | `obj:getCorrectHandleList(h)` |
 
 ## ZoneSmell
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`

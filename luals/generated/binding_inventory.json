@@ -75928,6 +75928,939 @@
       "source": "src/Bindings/Kenshi/Util/HandBinding.cpp"
     },
     {
+      "binding": "HandleContainerListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "HandleContainerList",
+      "metatable": "KenshiLua.HandleContainerList",
+      "methods": [
+        {
+          "callback": "HandleContainerListBinding::add",
+          "name": "add",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleContainerListBinding::_NV_add",
+          "name": "_NV_add",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "HandleListBaseBinding",
+      "parent_metatable": "KenshiLua.HandleListBase",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/HandleContainerListBinding.cpp"
+    },
+    {
+      "binding": "HandleListBaseBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "HandleListBase",
+      "metatable": "KenshiLua.HandleListBase",
+      "methods": [
+        {
+          "callback": "HandleListBaseBinding::clearToZero",
+          "name": "clearToZero",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::_NV_clearToZero",
+          "name": "_NV_clearToZero",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::get",
+          "name": "get",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "RootObjectBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::_NV_get",
+          "name": "_NV_get",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "RootObjectBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::isUnloadedNotDead",
+          "name": "isUnloadedNotDead",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::_NV_isUnloadedNotDead",
+          "name": "_NV_isUnloadedNotDead",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::addExisting",
+          "name": "addExisting",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              },
+              {
+                "name": "_handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::_NV_addExisting",
+          "name": "_NV_addExisting",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              },
+              {
+                "name": "_handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::setUnloaded",
+          "name": "setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::_NV_setUnloaded",
+          "name": "_NV_setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::destroy",
+          "name": "destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBaseBinding::_NV_destroy",
+          "name": "_NV_destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "SerialisableBinding",
+      "parent_metatable": "KenshiLua.Serialisable",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "lastID",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "maxSize",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/HandleListBaseBinding.cpp"
+    },
+    {
+      "binding": "HandleListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "HandleList",
+      "metatable": "KenshiLua.HandleList",
+      "methods": [
+        {
+          "callback": "HandleListBinding::add",
+          "name": "add",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::_NV_add",
+          "name": "_NV_add",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::get",
+          "name": "get",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "RootObjectBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::_NV_get",
+          "name": "_NV_get",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "RootObjectBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::addExisting",
+          "name": "addExisting",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              },
+              {
+                "name": "_handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::_NV_addExisting",
+          "name": "_NV_addExisting",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              },
+              {
+                "name": "_handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::addExistingAndForceContainer",
+          "name": "addExistingAndForceContainer",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              },
+              {
+                "name": "_handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::_NV_addExistingAndForceContainer",
+          "name": "_NV_addExistingAndForceContainer",
+          "signature": {
+            "params": [
+              {
+                "name": "o",
+                "optional": false,
+                "type": "RootObjectBase"
+              },
+              {
+                "name": "_handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::destroy",
+          "name": "destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleListBinding::_NV_destroy",
+          "name": "_NV_destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "HandleListBaseBinding",
+      "parent_metatable": "KenshiLua.HandleListBase",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "containerHandle",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "handleShift",
+          "type": "StdMap<integer, integer>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/HandleListBinding.cpp"
+    },
+    {
+      "binding": "HandleManagerBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "HandleManager",
+      "metatable": "KenshiLua.HandleManager",
+      "methods": [
+        {
+          "callback": "HandleManagerBinding::getRedirect",
+          "name": "getRedirect",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::removeRedirect",
+          "name": "removeRedirect",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::clearRedirectForHandle",
+          "name": "clearRedirectForHandle",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::reset",
+          "name": "reset",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::setUnloaded",
+          "name": "setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::destroy",
+          "name": "destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "reason",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getAnything",
+          "name": "getAnything",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "deadOnes",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "RootObjectBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getTownBase",
+          "name": "getTownBase",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "backupPos",
+                "optional": true,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "TownBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getTown",
+          "name": "getTown",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "backupPos",
+                "optional": true,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "Town",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getAnythingButBase",
+          "name": "getAnythingButBase",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "deadOnes",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "RootObject",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getShopTrader",
+          "name": "getShopTrader",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "Character",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getBuilding",
+          "name": "getBuilding",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "Building",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getBuilding_UseableStuff",
+          "name": "getBuilding_UseableStuff",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "UseableStuff",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getCharacter",
+          "name": "getCharacter",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "deadOnes",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "redirect",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "Character",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getPlatoon",
+          "name": "getPlatoon",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "Platoon",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getItem",
+          "name": "getItem",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "Item",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::isPlayerFaction",
+          "name": "isPlayerFaction",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::addExistingObjectHandleToZone",
+          "name": "addExistingObjectHandleToZone",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "HandleManagerBinding::getFromDeathParade",
+          "name": "getFromDeathParade",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "Character",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "SerialisableBinding",
+      "parent_metatable": "KenshiLua.Serialisable",
+      "properties": [
+        {
+          "access": "readonly",
+          "name": "items",
+          "type": "ItemHandleList"
+        },
+        {
+          "access": "readonly",
+          "name": "mapfeatures",
+          "type": "HandleContainerList"
+        },
+        {
+          "access": "readonly",
+          "name": "nodes",
+          "type": "ItemHandleList"
+        },
+        {
+          "access": "readonly",
+          "name": "platoons",
+          "type": "PlatoonHandleContainerList"
+        },
+        {
+          "access": "readwrite",
+          "name": "redirect",
+          "type": "OgreUnorderedMap<hand, hand>"
+        },
+        {
+          "access": "readonly",
+          "name": "towns",
+          "type": "TownHandleContainerList"
+        },
+        {
+          "access": "readonly",
+          "name": "zones",
+          "type": "ZoneMapHandleContainerList"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/HandleManagerBinding.cpp"
+    },
+    {
       "binding": "HavokCharacterBinding",
       "global_names": [
         "HavokCharacter"
@@ -85910,6 +86843,55 @@
       "source": "src/Bindings/Kenshi/ItemDataBinding.cpp"
     },
     {
+      "binding": "ItemHandleListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "ItemHandleList",
+      "metatable": "KenshiLua.ItemHandleList",
+      "methods": [
+        {
+          "callback": "ItemHandleListBinding::setUnloaded",
+          "name": "setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ItemHandleListBinding::_NV_setUnloaded",
+          "name": "_NV_setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "HandleListBinding",
+      "parent_metatable": "KenshiLua.HandleList",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/ItemHandleListBinding.cpp"
+    },
+    {
       "binding": "ItemListWindowBinding",
       "global_names": [],
       "has_constructor": false,
@@ -88419,6 +89401,197 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Gui/LoadingWindowBinding.cpp"
+    },
+    {
+      "binding": "LocaleInfoBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "LocaleInfo",
+      "metatable": "KenshiLua.LocaleInfo",
+      "methods": [
+        {
+          "callback": "LocaleInfoBinding::operator_assign",
+          "name": "operator_assign",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "LocaleInfo"
+              }
+            ],
+            "returns": [
+              "LocaleInfo"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "id",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "isBase",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "isMod",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "steamCode",
+          "type": "string"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/LocaleInfoBinding.cpp"
+    },
+    {
+      "binding": "LocaleManagerBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "LocaleManager",
+      "metatable": "KenshiLua.LocaleManager",
+      "methods": [
+        {
+          "callback": "LocaleManagerBinding::init",
+          "name": "init",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "LocaleManagerBinding::getCurrentLocale",
+          "name": "getCurrentLocale",
+          "signature": {
+            "params": [],
+            "returns": [
+              "LocaleInfo",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "LocaleManagerBinding::setCurrentLocale",
+          "name": "setCurrentLocale",
+          "signature": {
+            "params": [
+              {
+                "name": "locale",
+                "optional": true,
+                "type": "LocaleInfo"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "LocaleManagerBinding::trySetCurrentLocaleFromMod",
+          "name": "trySetCurrentLocaleFromMod",
+          "signature": {
+            "params": [
+              {
+                "name": "mod",
+                "optional": false,
+                "type": "ModInfo"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "LocaleManagerBinding::getCurrentLocalePath",
+          "name": "getCurrentLocalePath",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "LocaleManagerBinding::getCurrentLocaleMod",
+          "name": "getCurrentLocaleMod",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "LocaleManagerBinding::getAvailableLanguages",
+          "name": "getAvailableLanguages",
+          "signature": {
+            "params": [],
+            "returns": [
+              "OgreFastArray<LocaleInfo>"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "availableLanguages",
+          "type": "OgreFastArray<LocaleInfo>"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentLocale",
+          "type": "LocaleInfo|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "localeList",
+          "type": "OgreFastArray<LocaleInfo>"
+        },
+        {
+          "access": "readwrite",
+          "name": "localePath",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "modLocale",
+          "type": "LocaleInfo|nil"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/LocaleManagerBinding.cpp"
     },
     {
       "binding": "LockedArmourBinding",
@@ -102265,6 +103438,144 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/PlatoonBinding.cpp"
+    },
+    {
+      "binding": "PlatoonHandleContainerListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "PlatoonHandleContainerList",
+      "metatable": "KenshiLua.PlatoonHandleContainerList",
+      "methods": [
+        {
+          "callback": "PlatoonHandleContainerListBinding::getCharacterOrZero",
+          "name": "getCharacterOrZero",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "RootObject",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PlatoonHandleContainerListBinding::getCharacterOrPlatoon",
+          "name": "getCharacterOrPlatoon",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "RootObjectBase",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PlatoonHandleContainerListBinding::getActivePlatoon",
+          "name": "getActivePlatoon",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "ActivePlatoon",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PlatoonHandleContainerListBinding::setUnloaded",
+          "name": "setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PlatoonHandleContainerListBinding::_NV_setUnloaded",
+          "name": "_NV_setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PlatoonHandleContainerListBinding::destroy",
+          "name": "destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PlatoonHandleContainerListBinding::_NV_destroy",
+          "name": "_NV_destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "HandleContainerListBinding",
+      "parent_metatable": "KenshiLua.HandleContainerList",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/PlatoonHandleContainerListBinding.cpp"
     },
     {
       "binding": "PlayerInterfaceBinding",
@@ -129686,6 +130997,22 @@
       "source": "src/Bindings/Kenshi/TownBuildingsManager_BuildingInfoBinding.cpp"
     },
     {
+      "binding": "TownHandleContainerListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "TownHandleContainerList",
+      "metatable": "KenshiLua.TownHandleContainerList",
+      "methods": [],
+      "parent_binding": "HandleContainerListBinding",
+      "parent_metatable": "KenshiLua.HandleContainerList",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/TownHandleContainerListBinding.cpp"
+    },
+    {
       "binding": "TownListWindowBinding",
       "global_names": [],
       "has_constructor": false,
@@ -141924,6 +143251,11 @@
         },
         {
           "access": "readwrite",
+          "name": "myHandles",
+          "type": "HandleList|nil"
+        },
+        {
+          "access": "readwrite",
           "name": "newGameFirstTimeLoaded",
           "type": "boolean"
         },
@@ -141947,6 +143279,144 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/ZoneMapContentBinding.cpp"
+    },
+    {
+      "binding": "ZoneMapHandleContainerListBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "ZoneMapHandleContainerList",
+      "metatable": "KenshiLua.ZoneMapHandleContainerList",
+      "methods": [
+        {
+          "callback": "ZoneMapHandleContainerListBinding::getZoneMap",
+          "name": "getZoneMap",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "ZoneMapContent",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapHandleContainerListBinding::getObject",
+          "name": "getObject",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "RootObject",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapHandleContainerListBinding::setUnloaded",
+          "name": "setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapHandleContainerListBinding::_NV_setUnloaded",
+          "name": "_NV_setUnloaded",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapHandleContainerListBinding::destroy",
+          "name": "destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapHandleContainerListBinding::_NV_destroy",
+          "name": "_NV_destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "handle",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapHandleContainerListBinding::getCorrectHandleList",
+          "name": "getCorrectHandleList",
+          "signature": {
+            "params": [
+              {
+                "name": "h",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "HandleList",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "HandleContainerListBinding",
+      "parent_metatable": "KenshiLua.HandleContainerList",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/ZoneMapHandleContainerListBinding.cpp"
     },
     {
       "binding": "ZoneSmellBinding",
@@ -148492,6 +149962,161 @@
       ]
     },
     {
+      "binding": "HandHandMapBinding",
+      "element_refs": [
+        "binding:HandBinding",
+        "binding:HandBinding"
+      ],
+      "element_types": {
+        "key": "hand",
+        "value": "hand"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "hand",
+        "type": "hand|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreUnorderedMap<hand, hand>",
+      "metatable": "ogre_unordered_map<hand, hand>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "has",
+          "name": "contains",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "erase",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<hand, hand>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pairs",
+          "name": "pairs",
+          "signature": {
+            "params": [],
+            "returns": [
+              "ContainerIterator<hand, hand>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "HandleManagerBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/HandleManagerBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
+      "template": "OgreUnorderedMapBinding",
+      "template_args": [
+        "hand",
+        "hand"
+      ]
+    },
+    {
       "binding": "HandTaskInfoMapBinding",
       "element_refs": [
         "binding:HandBinding",
@@ -148953,6 +150578,113 @@
       "template_args": [
         "hand",
         "Ogre::Vector3"
+      ]
+    },
+    {
+      "binding": "HandleShiftMapBinding",
+      "element_refs": [
+        null,
+        null
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "integer"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "integer|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "StdMap<integer, integer>",
+      "metatable": "std::map<unsigned __int64, unsigned int>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, integer>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "HandleListBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/HandleListBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
+      "template": "StdMapBinding",
+      "template_args": [
+        "unsigned __int64",
+        "unsigned int"
       ]
     },
     {
@@ -154058,6 +155790,205 @@
       "template": "LektorValueReadOnlyBinding",
       "template_args": [
         "GameDataValuePair"
+      ]
+    },
+    {
+      "binding": "LocaleInfoPtrFastArrayBinding",
+      "binding_aliases": [
+        "LocaleInfoValueFastArrayBinding"
+      ],
+      "element_refs": [
+        "binding:LocaleInfoBinding"
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "LocaleInfo"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "LocaleInfo|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "OgreFastArray<LocaleInfo>",
+      "metatable": "Ogre::FastArray<LocaleInfo*>",
+      "metatable_aliases": [
+        "Ogre::FastArray<LocaleInfo>"
+      ],
+      "methods": [
+        {
+          "callback": "push_back",
+          "name": "push_back",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "LocaleInfo"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "push_back",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "LocaleInfo"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop_back",
+          "name": "pop_back",
+          "signature": {
+            "params": [],
+            "returns": [
+              "LocaleInfo|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop_back",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "LocaleInfo|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "front",
+          "name": "front",
+          "signature": {
+            "params": [],
+            "returns": [
+              "LocaleInfo|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "back",
+          "name": "back",
+          "signature": {
+            "params": [],
+            "returns": [
+              "LocaleInfo|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "empty",
+          "name": "empty",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "reserve",
+          "name": "reserve",
+          "signature": {
+            "params": [
+              {
+                "name": "count",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, LocaleInfo>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LocaleManagerBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/LocaleManagerBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/OgreFastArrayBinding.h",
+      "template": "OgreFastArrayPtrBinding",
+      "template_args": [
+        "LocaleInfo*"
       ]
     },
     {

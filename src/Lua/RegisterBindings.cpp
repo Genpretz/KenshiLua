@@ -362,6 +362,16 @@
 #include "Bindings/Kenshi/SenseItrBinding.h"
 #include "Bindings/Kenshi/SensoryDataBinding.h"
 #include "Bindings/Kenshi/SerialisableBinding.h"
+#include "Bindings/Kenshi/HandleListBaseBinding.h"
+#include "Bindings/Kenshi/HandleContainerListBinding.h"
+#include "Bindings/Kenshi/PlatoonHandleContainerListBinding.h"
+#include "Bindings/Kenshi/ZoneMapHandleContainerListBinding.h"
+#include "Bindings/Kenshi/TownHandleContainerListBinding.h"
+#include "Bindings/Kenshi/HandleListBinding.h"
+#include "Bindings/Kenshi/ItemHandleListBinding.h"
+#include "Bindings/Kenshi/HandleManagerBinding.h"
+#include "Bindings/Kenshi/LocaleInfoBinding.h"
+#include "Bindings/Kenshi/LocaleManagerBinding.h"
 #include "Bindings/Kenshi/SharedKingBinding.h"
 #include "Bindings/Kenshi/ShopTraderBinding.h"
 #include "Bindings/Kenshi/ShopTraderInventoryBinding.h"
@@ -540,6 +550,14 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, GenericInventoryLayoutBinding::getMetatableName(),            InventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, GunClassPersonalBinding::getMetatableName(),                  GunClassBinding::getMetatableName());
     setMetatableParent(L, GunClassTurretBinding::getMetatableName(),                    GunClassBinding::getMetatableName());
+    setMetatableParent(L, HandleListBaseBinding::getMetatableName(),             SerialisableBinding::getMetatableName());
+    setMetatableParent(L, HandleContainerListBinding::getMetatableName(),        HandleListBaseBinding::getMetatableName());
+    setMetatableParent(L, PlatoonHandleContainerListBinding::getMetatableName(), HandleContainerListBinding::getMetatableName());
+    setMetatableParent(L, ZoneMapHandleContainerListBinding::getMetatableName(), HandleContainerListBinding::getMetatableName());
+    setMetatableParent(L, TownHandleContainerListBinding::getMetatableName(),    HandleContainerListBinding::getMetatableName());
+    setMetatableParent(L, HandleListBinding::getMetatableName(),                 HandleListBaseBinding::getMetatableName());
+    setMetatableParent(L, ItemHandleListBinding::getMetatableName(),             HandleListBinding::getMetatableName());
+    setMetatableParent(L, HandleManagerBinding::getMetatableName(),              SerialisableBinding::getMetatableName());
     setMetatableParent(L, hkContainerHeapAllocator_AllocatorBinding::getMetatableName(), hkMemoryAllocatorBinding::getMetatableName());
     setMetatableParent(L, ImportGameMenuBinding::getMetatableName(),                    LoadSaveWindowBinding::getMetatableName());
     setMetatableParent(L, InteriorModeButtonWindowBinding::getMetatableName(),          BaseLayoutBinding::getMetatableName());
@@ -1143,6 +1161,16 @@ void LuaBindings::registerClasses(lua_State* L)
     SenseItrBinding::registerBinding(L);
     SensoryDataBinding::registerBinding(L);
     SerialisableBinding::registerBinding(L);
+    HandleListBaseBinding::registerBinding(L);
+    HandleContainerListBinding::registerBinding(L);
+    PlatoonHandleContainerListBinding::registerBinding(L);
+    ZoneMapHandleContainerListBinding::registerBinding(L);
+    TownHandleContainerListBinding::registerBinding(L);
+    HandleListBinding::registerBinding(L);
+    ItemHandleListBinding::registerBinding(L);
+    HandleManagerBinding::registerBinding(L);
+    LocaleInfoBinding::registerBinding(L);
+    LocaleManagerBinding::registerBinding(L);
     SharedKingBinding::registerBinding(L);
     ShopTraderBinding::registerBinding(L);
     ShopTraderInventoryBinding::registerBinding(L);
