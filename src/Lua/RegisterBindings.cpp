@@ -750,6 +750,7 @@ void LuaBindings::registerStdMap(lua_State* L)
     StdMapBinding<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData* const, bool>>>::registerBinding(L, "std::map<GameData*, bool>", GameDataBinding::getMetatableName(), nullptr);
     StdMapBinding<std::string, Ogre::Quaternion>::registerBinding(L, "std::map<std::string, Quaternion>");
     StdMapBinding<Platoon*, CampaignInstance*>::registerBinding(L, "std::map<Platoon*, CampaignInstance*>", PlatoonBinding::getMetatableName(), CampaignInstanceBinding::getMetatableName());
+    StdMapBinding<float, Tasker*>::registerBinding(L, "std::map<float, Tasker*>", nullptr, TaskerBinding::getMetatableName());
 }
 
 void LuaBindings::registerStdDeque(lua_State* L)

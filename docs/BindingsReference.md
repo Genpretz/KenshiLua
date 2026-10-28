@@ -1166,6 +1166,7 @@
 | autoEjectEnemiesTask1 | `Tasker` | RW | `obj.autoEjectEnemiesTask1 = <value>` |
 | autoEjectEnemiesTask2 | `Tasker` | RW | `obj.autoEjectEnemiesTask2 = <value>` |
 | requestsList | `lektor<Tasker*>` | R | `obj.requestsList` |
+| orderedGoals | `OrderedGoalsMap` | R | `obj.orderedGoals` |
 | actions | `AITaskSytem::ActionsListMgr` | R | `obj.actions` |
 | actionsTryList | `AITaskSytem::ActionsListMgr` | R | `obj.actionsTryList` |
 | failedGOAPGoalDebugString | `lstring` | RW | `obj.failedGOAPGoalDebugString = <value>` |
@@ -1213,7 +1214,10 @@
 | checkOrders | `` | `boolean` | `obj:checkOrders()` |
 | chooseGoal | `timedLockOnCurrentGoal: boolean` | `void` | `obj:chooseGoal(timedLockOnCurrentGoal)` |
 | _chooseGoal | `priority: taskPriority, squadMemberType: SquadMemberType` | `boolean` | `obj:_chooseGoal(priority, squadMemberType)` |
+| chooseGoalFrom | `goals: OrderedGoalsMap, match: TaskMatch, listIn: lektor<Tasker*>, theseAreBlackboard: boolean` | `void` | `obj:chooseGoalFrom(goals, match, listIn, theseAreBlackboard)` |
+| choosePermaJob | `goals: OrderedGoalsMap, match: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean` | `void` | `obj:choosePermaJob(goals, match, urgentOnes, jobsEnabled)` |
 | setupParametersForCurrentGoal | `` | `void` | `obj:setupParametersForCurrentGoal()` |
+| runGoals | `goals: OrderedGoalsMap, playerOrder: boolean` | `boolean` | `obj:runGoals(goals, playerOrder)` |
 | clearRequestsList | `` | `void` | `obj:clearRequestsList()` |
 | bodyTaskComplete | `` | `void` | `obj:bodyTaskComplete()` |
 | popFromOrders | `what: Tasker` | `void` | `obj:popFromOrders(what)` |

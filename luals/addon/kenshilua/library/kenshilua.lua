@@ -13752,8 +13752,11 @@ taskPriority = {
 ---@field chooseGoal fun(self: AITaskSytem, timedLockOnCurrentGoal?: boolean)
 --- Chooses a goal of the priority for the squad member type and returns whether one was set.
 ---@field _chooseGoal fun(self: AITaskSytem, priority: integer, squadMemberType: integer): boolean
+---@field chooseGoalFrom fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, alreadyHasGoal: TaskMatch, goalListIn: Lektor<Tasker>, theseAreBlackboard?: boolean)
+---@field choosePermaJob fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, alreadyHasGoal: TaskMatch, urgentOnes?: boolean, _jobsEnabled?: boolean)
 --- Sets up the parameters of the current goal.
 ---@field setupParametersForCurrentGoal fun(self: AITaskSytem)
+---@field runGoals fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, playerOrder?: boolean): boolean
 --- Clears `requestsList`.
 ---@field clearRequestsList fun(self: AITaskSytem)
 --- Handles completion of the body's task.
@@ -13808,6 +13811,7 @@ taskPriority = {
 ---@field failedGOAPGoalDebugString string
 --- Time of the last infrequent check.
 ---@field infrequentTimeStamp number
+---@field orderedGoals StdMap<number, Tasker>
 --- Recent path failures by target handle, as a live map. Read-only; edit it in place.
 ---@field pathFailures OgreUnorderedMap<hand, number>
 --- Position of the character at the last update.

@@ -2426,6 +2426,57 @@
       "member": "_chooseGoal"
     },
     {
+      "category": "binding_converts",
+      "class": "AITaskSytem",
+      "expected": "fun(StdMap<number, Tasker>, TaskMatch, Lektor<Tasker>, boolean)",
+      "header": "void chooseGoalFrom(std::map<float, Tasker*, std::less<float>, Ogre::STLAllocator<std::pair<float const, Tasker*>, Ogre::GeneralAllocPolicy > >& orderedGoals, TaskMatch& alreadyHasGoal, lektor<Tasker*>& goalListIn, bool theseAreBlackboard)",
+      "issues": [
+        {
+          "actual": "OrderedGoalsMap",
+          "category": "binding_converts",
+          "expected": "StdMap<number, Tasker>",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, alreadyHasGoal: TaskMatch, goalListIn: Lektor<Tasker>, theseAreBlackboard?: boolean)",
+      "member": "chooseGoalFrom"
+    },
+    {
+      "category": "binding_converts",
+      "class": "AITaskSytem",
+      "expected": "fun(StdMap<number, Tasker>, TaskMatch, boolean, boolean)",
+      "header": "void choosePermaJob(std::map<float, Tasker*, std::less<float>, Ogre::STLAllocator<std::pair<float const, Tasker*>, Ogre::GeneralAllocPolicy > >& orderedGoals, TaskMatch& alreadyHasGoal, bool urgentOnes, bool _jobsEnabled)",
+      "issues": [
+        {
+          "actual": "OrderedGoalsMap",
+          "category": "binding_converts",
+          "expected": "StdMap<number, Tasker>",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, alreadyHasGoal: TaskMatch, urgentOnes?: boolean, _jobsEnabled?: boolean)",
+      "member": "choosePermaJob"
+    },
+    {
+      "category": "binding_converts",
+      "class": "AITaskSytem",
+      "expected": "fun(StdMap<number, Tasker>, boolean): boolean",
+      "header": "bool runGoals(std::map<float, Tasker*, std::less<float>, Ogre::STLAllocator<std::pair<float const, Tasker*>, Ogre::GeneralAllocPolicy > >& orderedGoals, bool playerOrder)",
+      "issues": [
+        {
+          "actual": "OrderedGoalsMap",
+          "category": "binding_converts",
+          "expected": "StdMap<number, Tasker>",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, playerOrder?: boolean): boolean",
+      "member": "runGoals"
+    },
+    {
       "category": "enum_typed_as_integer",
       "class": "AITaskSytem",
       "expected": "EventTriggerEnum",
@@ -12859,13 +12910,13 @@
     {
       "category": "binding_shape_differs",
       "class": "MyGUI.ItemBox",
-      "expected": "fun(integer, ?Any)",
-      "header": "void insertItemAt(size_t _index, Any _data = Any::Null)",
+      "expected": "fun(integer, ?Any, boolean)",
+      "header": "void insertItemAt(size_t _index, Any _data = Any::Null, bool update = true)",
       "issues": [
         {
           "actual": 1,
           "category": "binding_shape_differs",
-          "expected": 2,
+          "expected": 3,
           "position": null
         }
       ],
@@ -12876,19 +12927,36 @@
     {
       "category": "binding_shape_differs",
       "class": "MyGUI.ItemBox",
-      "expected": "fun(?Any)",
-      "header": "void addItem(Any _data = Any::Null)",
+      "expected": "fun(?Any, boolean)",
+      "header": "void addItem(Any _data = Any::Null, bool update = true)",
       "issues": [
         {
           "actual": 0,
           "category": "binding_shape_differs",
-          "expected": 1,
+          "expected": 2,
           "position": null
         }
       ],
       "kind": "method",
       "lua": "fun(self: MyGUI.ItemBox)",
       "member": "addItem"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "MyGUI.ItemBox",
+      "expected": "fun(integer, boolean)",
+      "header": "void removeItemAt(size_t _index, bool update = true)",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 2,
+          "position": null
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MyGUI.ItemBox, index: integer)",
+      "member": "removeItemAt"
     },
     {
       "category": "no_header_declaration",
@@ -21078,17 +21146,17 @@
   ],
   "schema_version": 1,
   "summary": {
-    "binding_converts": 52,
+    "binding_converts": 55,
     "binding_pushes_raw_pointer": 43,
-    "binding_shape_differs": 204,
+    "binding_shape_differs": 205,
     "blocking_issues": 0,
-    "container_methods_typed": 1040,
+    "container_methods_typed": 1045,
     "enum_typed_as_integer": 516,
-    "methods": 8350,
-    "methods_matching_header": 6334,
+    "methods": 8358,
+    "methods_matching_header": 6333,
     "no_header_declaration": 278,
-    "properties": 3449,
-    "properties_matching_header": 2904,
+    "properties": 3450,
+    "properties_matching_header": 2905,
     "unmapped_header_type": 445
   }
 }

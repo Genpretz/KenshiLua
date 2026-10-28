@@ -11863,11 +11863,96 @@
           "static": false
         },
         {
+          "callback": "AITaskSytemBinding::chooseGoalFrom",
+          "name": "chooseGoalFrom",
+          "signature": {
+            "params": [
+              {
+                "name": "orderedGoals",
+                "optional": false,
+                "type": "OrderedGoalsMap"
+              },
+              {
+                "name": "alreadyHasGoal",
+                "optional": false,
+                "type": "TaskMatch"
+              },
+              {
+                "name": "goalListIn",
+                "optional": false,
+                "type": "Lektor<Tasker>"
+              },
+              {
+                "name": "theseAreBlackboard",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::choosePermaJob",
+          "name": "choosePermaJob",
+          "signature": {
+            "params": [
+              {
+                "name": "orderedGoals",
+                "optional": false,
+                "type": "OrderedGoalsMap"
+              },
+              {
+                "name": "alreadyHasGoal",
+                "optional": false,
+                "type": "TaskMatch"
+              },
+              {
+                "name": "urgentOnes",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "_jobsEnabled",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "AITaskSytemBinding::setupParametersForCurrentGoal",
           "name": "setupParametersForCurrentGoal",
           "signature": {
             "params": [],
             "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AITaskSytemBinding::runGoals",
+          "name": "runGoals",
+          "signature": {
+            "params": [
+              {
+                "name": "orderedGoals",
+                "optional": false,
+                "type": "OrderedGoalsMap"
+              },
+              {
+                "name": "playerOrder",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -12064,6 +12149,12 @@
           "access": "readwrite",
           "name": "infrequentTimeStamp",
           "type": "number"
+        },
+        {
+          "access": "readonly",
+          "name": "orderedGoals",
+          "type": "StdMap<number, Tasker>",
+          "type_source": "header"
         },
         {
           "access": "readonly",
@@ -158214,6 +158305,113 @@
       "template_args": [
         "float",
         "GameData*"
+      ]
+    },
+    {
+      "binding": "StdMapBinding<float,Tasker*>",
+      "element_refs": [
+        null,
+        "binding:TaskerBinding"
+      ],
+      "element_types": {
+        "key": "number",
+        "value": "Tasker"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "number",
+        "type": "Tasker|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "StdMap<number, Tasker>",
+      "metatable": "std::map<float, Tasker*>",
+      "methods": [
+        {
+          "callback": "has",
+          "name": "has",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "remove",
+          "name": "remove",
+          "signature": {
+            "params": [
+              {
+                "name": "key",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<number, Tasker>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "len",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "LuaBindings"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
+      "template": "StdMapBinding",
+      "template_args": [
+        "float",
+        "Tasker*"
       ]
     },
     {
