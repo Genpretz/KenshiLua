@@ -324,8 +324,11 @@
 - [`RangedCombatClass`](#rangedcombatclass)
 - [`rendHit`](#rendhit)
 - [`ReorderableList`](#reorderablelist)
+- [`Research`](#research)
+  - [`Research::BuildingUpgrades`](#research::buildingupgrades)
 - [`ResearchBuilding`](#researchbuilding)
 - [`ResearchBuildingInventoryLayout`](#researchbuildinginventorylayout)
+- [`ResearchItem`](#researchitem)
 - [`ResourceLoader`](#resourceloader)
   - [`ResourceLoader::MeshLoadData`](#resourceloader::meshloaddata)
   - [`ResourceLoader::ResourceLoadRequestMesh`](#resourceloader::resourceloadrequestmesh)
@@ -356,6 +359,7 @@
   - [`SensoryData::SpottingPeopleMgr`](#sensorydata::spottingpeoplemgr)
   - [`SensoryData::SpottingPeopleMgr::Spot`](#sensorydata::spottingpeoplemgr::spot)
 - [`Serialisable`](#serialisable)
+- [`SharedKing`](#sharedking)
 - [`ShopTrader`](#shoptrader)
 - [`ShopTraderInventory`](#shoptraderinventory)
 - [`ShopTraderInventorySection`](#shoptraderinventorysection)
@@ -439,6 +443,10 @@
 - [`ZoneManagerInterfaceT`](#zonemanagerinterfacet)
 - [`ZoneMap`](#zonemap)
   - [`ZoneMap::StateT`](#zonemap::statet)
+- [`ZoneMapContent`](#zonemapcontent)
+- [`ZoneSmell`](#zonesmell)
+  - [`ZoneSmell::Smell`](#zonesmell::smell)
+  - [`ZoneSmell::SmellMsg`](#zonesmell::smellmsg)
 - [`ZoneSpacialGrid`](#zonespacialgrid)
   - [`ZoneSpacialGrid::ZoneCell`](#zonespacialgrid::zonecell)
 
@@ -10122,7 +10130,7 @@
 |---|---|---|---|
 | factionName | `string` | RW | `obj.factionName = <value>` |
 | camera | `CameraClass` | RW | `obj.camera = <value>` |
-| technology | `lightuserdata` | RW | `obj.technology = <value>` |
+| technology | `Research` | RW | `obj.technology = <value>` |
 | selectedObjectsChangedThisFrame | `boolean` | RW | `obj.selectedObjectsChangedThisFrame = <value>` |
 | contextMenu | `ContextMenu` | RW | `obj.contextMenu = <value>` |
 | selectBox | `SelectionBox` | RW | `obj.selectBox = <value>` |
@@ -10824,6 +10832,65 @@
 | notifyEndDrop | `sender: integer, info: integer, result: boolean` | `void` | `obj:notifyEndDrop(sender, info, result)` |
 | notifyRemoved | `index: integer` | `void` | `obj:notifyRemoved(index)` |
 
+## Research
+**Header:** `extern/KenshiLib/Include/kenshi/Research.h`
+**Metatable:** `KenshiLua.Research`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| screen | `ManagementScreen` | RW | `obj.screen = <value>` |
+| theoreticalTechLevel | `integer` | RW | `obj.theoreticalTechLevel = <value>` |
+| changedSoUpdateGUI | `boolean` | RW | `obj.changedSoUpdateGUI = <value>` |
+| categories | `lektor<std::string>` | R | `obj.categories` |
+| paidFor | `lektor<std::string>` | R | `obj.paidFor` |
+| finished | `ogre_unordered_set<GameData*>` | R | `obj.finished` |
+| enabledObjects | `ogre_unordered_set<GameData*>` | R | `obj.enabledObjects` |
+| researchDeskLevel | `integer` | RW | `obj.researchDeskLevel = <value>` |
+| numResearchers | `integer` | RW | `obj.numResearchers = <value>` |
+| totalResearchThisFrame | `number` | RW | `obj.totalResearchThisFrame = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| _reset | `` | `void` | `obj:_reset()` |
+| _setup | `` | `void` | `obj:_setup()` |
+| getArmourCraftLevel | `armour: GameData, skill: integer, crit: boolean` | `integer` | `obj:getArmourCraftLevel(armour, skill, crit)` |
+| startResearch | `d: GameData` | `boolean` | `obj:startResearch(d)` |
+| stopResearch | `d: GameData` | `void` | `obj:stopResearch(d)` |
+| completeResearch | `d: GameData` | `void` | `obj:completeResearch(d)` |
+| isFinished | `what: GameData` | `boolean` | `obj:isFinished(what)` |
+| isBuildingResearched | `d: GameData` | `boolean` | `obj:isBuildingResearched(d)` |
+| getETA | `d: GameData, simple: boolean` | `string` | `obj:getETA(d, simple)` |
+| payCosts | `d: GameData` | `boolean` | `obj:payCosts(d)` |
+| canPayCosts | `data: GameData` | `boolean` | `obj:canPayCosts(data)` |
+| getBlueprintsFor | `item: GameData` | `GameData` | `obj:getBlueprintsFor(item)` |
+| staticUpdate | `` | `void` | `obj:staticUpdate()` |
+| getCurrentResearchRate | `` | `number` | `obj:getCurrentResearchRate()` |
+| serialise | `data: GameData` | `void` | `obj:serialise(data)` |
+| load | `data: GameData` | `void` | `obj:load(data)` |
+| progressResearch | `amount: number` | `void` | `obj:progressResearch(amount)` |
+| checkRequirementsForInvisibility | `what: GameData, twoLevels: boolean` | `boolean` | `obj:checkRequirementsForInvisibility(what, twoLevels)` |
+| checkRequirements | `what: GameData, twoLevels: boolean, checkCost: boolean` | `boolean` | `obj:checkRequirements(what, twoLevels, checkCost)` |
+| checkRequirements_andQueue | `what: GameData` | `boolean` | `obj:checkRequirements_andQueue(what)` |
+| isInQueue | `what: GameData` | `boolean` | `obj:isInQueue(what)` |
+| _updateTheAllList | `` | `void` | `obj:_updateTheAllList()` |
+| setResearchDeskLevel | `level: integer` | `void` | `obj:setResearchDeskLevel(level)` |
+| refreshTheoreticalTechLevel | `` | `void` | `obj:refreshTheoreticalTechLevel()` |
+| needsATechBench | `d: GameData` | `integer` | `obj:needsATechBench(d)` |
+| hasPaidFor | `d: GameData` | `boolean` | `obj:hasPaidFor(d)` |
+| getResearchDeskLevel | `` | `integer` | `obj:getResearchDeskLevel()` |
+| hasArtifact | `artifact: GameData, quantity: integer` | `boolean` | `obj:hasArtifact(artifact, quantity)` |
+| getResearchItem | `d: GameData` | `ResearchItem` | `obj:getResearchItem(d)` |
+| getResearchProgress [1] | `d: GameData` | `number` | `obj:getResearchProgress(d)` |
+| getResearchProgress [2] | `d: ResearchItem` | `number` | `obj:getResearchProgress(d)` |
+| getCategories | `` | `lektor<std::string>` | `obj:getCategories()` |
+
+## Research::BuildingUpgrades
+**Header:** `extern/KenshiLib/Include/kenshi/Research.h`
+**Parent Class:** [`Research`](#research)
+**Metatable:** `KenshiLua.Research_BuildingUpgrades`
+
 ## ResearchBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ResearchBuilding.h`
 **Metatable:** `KenshiLua.ResearchBuilding`
@@ -10855,6 +10922,23 @@
 |---|---|---|---|
 | getResearchButton | `` | `MyGUI::Widget` | `obj:getResearchButton()` |
 | setupSections | `inventoryGUI: InventoryGUI, sections: SectionsMap, inventory: Inventory` | `void` | `obj:setupSections(inventoryGUI, sections, inventory)` |
+
+## ResearchItem
+**Header:** `extern/KenshiLib/Include/kenshi/Research.h`
+**Metatable:** `KenshiLua.ResearchItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| data | `GameData` | RW | `obj.data = <value>` |
+| progress | `number` | RW | `obj.progress = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getCostItem | `id: integer` | `GameData` | `obj:getCostItem(id)` |
+| getCostItemQuantity | `id: integer` | `integer` | `obj:getCostItemQuantity(id)` |
+| getNumDifferentCostItems | `` | `integer` | `obj:getNumDifferentCostItems()` |
 
 ## ResourceLoader
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
@@ -11606,6 +11690,22 @@
 ## Serialisable
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.Serialisable`
+
+## SharedKing
+**Header:** `extern/KenshiLib/Include/kenshi/SharedKing.h`
+**Metatable:** `KenshiLua.SharedKing`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| areasList | `lightuserdata` | R | `obj.areasList` |
+| townList | `lightuserdata` | R | `obj.townList` |
+| zoneMgr | `ZoneManagerInterfaceT` | RW | `obj.zoneMgr = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isLevelEditMode | `` | `boolean` | `obj:isLevelEditMode()` |
 
 ## ShopTrader
 **Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
@@ -13894,9 +13994,9 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| mapContent | `lightuserdata` | R | `obj.mapContent` |
+| mapContent | `ZoneMapContent` | R | `obj.mapContent` |
 | mapFeatures | `lightuserdata` | R | `obj.mapFeatures` |
-| zoneSmell | `lightuserdata` | R | `obj.zoneSmell` |
+| zoneSmell | `ZoneSmell` | R | `obj.zoneSmell` |
 | coordinates | `iVector2` | RW | `obj.coordinates = <value>` |
 | island | `integer` | RW | `obj.island = <value>` |
 | hasFile | `boolean` | RW | `obj.hasFile = <value>` |
@@ -13958,6 +14058,92 @@
 |---|---|---|---|
 | _zoneBeingLoaded | `boolean` | RW | `obj._zoneBeingLoaded = <value>` |
 | _zoneIsLoaded | `boolean` | RW | `obj._zoneIsLoaded = <value>` |
+
+## ZoneMapContent
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
+**Metatable:** `KenshiLua.ZoneMapContent`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| periodicUpdateIndex | `integer` | RW | `obj.periodicUpdateIndex = <value>` |
+| newGameFirstTimeLoaded | `boolean` | RW | `obj.newGameFirstTimeLoaded = <value>` |
+| toUpdateList | `lektor<RootObject*>` | R | `obj.toUpdateList` |
+| zoneMap | `ZoneMap` | RW | `obj.zoneMap = <value>` |
+| loaded | `boolean` | RW | `obj.loaded = <value>` |
+| foliageSystem | `FoliageSystem` | RW | `obj.foliageSystem = <value>` |
+| activationFlag | `boolean` | RW | `obj.activationFlag = <value>` |
+| items | `ogre_unordered_set<hand>` | R | `obj.items` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isLoadedT | `` | `boolean` | `obj:isLoadedT()` |
+| update | `` | `boolean` | `obj:update()` |
+| threadedUpdate | `` | `void` | `obj:threadedUpdate()` |
+| addToUpdateList | `b: RootObject` | `void` | `obj:addToUpdateList(b)` |
+| _reloadAllFoliage | `` | `void` | `obj:_reloadAllFoliage()` |
+| getOverlayPixelCoord | `` | `iVector2` | `obj:getOverlayPixelCoord()` |
+| clearOverlay | `channel: integer` | `void` | `obj:clearOverlay(channel)` |
+| generateDirtMap | `channel: integer` | `integer` | `obj:generateDirtMap(channel)` |
+| addLoadedBuilding | `buildingInstanceData: GameSaveState, isActiveLevelFile: boolean` | `void` | `obj:addLoadedBuilding(buildingInstanceData, isActiveLevelFile)` |
+| loadItems | `source: GameDataContainer` | `boolean` | `obj:loadItems(source)` |
+| saveItems | `dest: GameDataContainer, allItems: boolean` | `void` | `obj:saveItems(dest, allItems)` |
+| saveLevelData | `all: boolean, modName: string, pathOverride: string` | `void` | `obj:saveLevelData(all, modName, pathOverride)` |
+| saveToDisk | `path: string` | `void` | `obj:saveToDisk(path)` |
+| activate | `` | `void` | `obj:activate()` |
+| deactivate | `saveZoneState: boolean` | `void` | `obj:deactivate(saveZoneState)` |
+| reFactionBuildingsFromTown | `` | `void` | `obj:reFactionBuildingsFromTown()` |
+| updateItemsVisibility | `` | `void` | `obj:updateItemsVisibility()` |
+| _setEnabledStaticGeometry | `enable: boolean` | `void` | `obj:_setEnabledStaticGeometry(enable)` |
+| findBuildingTypePublic | `t: Town` | `Building` | `obj:findBuildingTypePublic(t)` |
+| findBuildingByDataPosition | `data: GameData, x: number, z: number` | `Building` | `obj:findBuildingByDataPosition(data, x, z)` |
+| _populateTownsOnNewGame | `` | `void` | `obj:_populateTownsOnNewGame()` |
+| forceLoadAllTheBuildingInteriorVisuals | `` | `void` | `obj:forceLoadAllTheBuildingInteriorVisuals()` |
+| addItem | `item: Item` | `void` | `obj:addItem(item)` |
+| removeItem | `item: Item` | `void` | `obj:removeItem(item)` |
+| changeItemZone | `item: Item, moveTo: ZoneMap` | `boolean` | `obj:changeItemZone(item, moveTo)` |
+| removeObject | `obj: RootObject` | `boolean` | `obj:removeObject(obj)` |
+| getFoliageSystem | `` | `FoliageSystem` | `obj:getFoliageSystem()` |
+| _activate | `` | `void` | `obj:_activate()` |
+| createLoadedItems | `` | `void` | `obj:createLoadedItems()` |
+| setLoadedT | `t: boolean` | `void` | `obj:setLoadedT(t)` |
+
+## ZoneSmell
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
+**Metatable:** `KenshiLua.ZoneSmell`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| smell_bloodAndCorpses | `ZoneSmell::Smell` | R | `obj.smell_bloodAndCorpses` |
+| smell_eggs | `ZoneSmell::Smell` | R | `obj.smell_eggs` |
+| zoneMap | `ZoneMap` | RW | `obj.zoneMap = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| _getSmell | `t: SmellType` | `ZoneSmell::Smell` | `obj:_getSmell(t)` |
+| isEmpty | `` | `boolean` | `obj:isEmpty()` |
+| getSmell | `pos: Vector3, type: SmellType` | `Vector3` | `obj:getSmell(pos, type)` |
+| getGeneralSmellLevel | `type: SmellType` | `number` | `obj:getGeneralSmellLevel(type)` |
+| periodicUpdate | `time: number` | `void` | `obj:periodicUpdate(time)` |
+| addSmell | `type: ZoneSmell::SmellMessageType, key: userdata, pos: Vector3` | `void` | `obj:addSmell(type, key, pos)` |
+
+## ZoneSmell::Smell
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
+**Parent Class:** [`ZoneSmell`](#zonesmell)
+**Metatable:** `KenshiLua.ZoneSmell_Smell`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| update | `time: number` | `void` | `obj:update(time)` |
+
+## ZoneSmell::SmellMsg
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
+**Parent Class:** [`ZoneSmell`](#zonesmell)
+**Metatable:** `KenshiLua.ZoneSmell_SmellMsg`
 
 ## ZoneSpacialGrid
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`

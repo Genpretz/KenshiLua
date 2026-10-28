@@ -517,6 +517,7 @@ class BindingInventoryTests(unittest.TestCase):
             "getGlobalConstants",
             "getOptionsHolder",
             "getForgottenGUI",
+            "getSharedKing",
             "print",
         }
         self.assertEqual(expected, functions)

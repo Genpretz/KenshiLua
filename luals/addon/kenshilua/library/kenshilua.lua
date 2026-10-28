@@ -1724,6 +1724,14 @@ SlaveStateEnum = {
     EX_SLAVE = 3,
 }
 
+--- Engine enum `SmellType`.
+---@enum SmellType
+SmellType = {
+    SMELL_NULL = 0,
+    SMELL_BLOOD_AND_CORPSES = 1,
+    SMELL_EGG = 2,
+}
+
 --- Acoustic propagation distance tier for sound emitter events.
 ---@enum SoundRange
 SoundRange = {
@@ -4996,7 +5004,7 @@ taskPriority = {
 --- Active reference retention counter.
 ---@field loadCount integer
 --- Content data container for spawns, items, foliage, and buildings.
----@field mapContent lightuserdata
+---@field mapContent ZoneMapContent|nil
 --- Placed geographical features and landmarks.
 ---@field mapFeatures lightuserdata
 --- Orthogonal adjacent zone neighbors (N, S, E, W).
@@ -5006,7 +5014,7 @@ taskPriority = {
 --- PhysX heightfield collision mesh sector.
 ---@field terrainCollision lightuserdata
 --- Predator scent and tracking trail manager.
----@field zoneSmell lightuserdata
+---@field zoneSmell ZoneSmell|nil
 --- Nested enum table `ZoneMap.ZONE_MESSAGE`.
 ---@field ZONE_MESSAGE ZoneMap.ZONE_MESSAGE
 
@@ -5715,7 +5723,7 @@ taskPriority = {
 --- Whether the set of selected objects changed during the current frame.
 ---@field selectedObjectsChangedThisFrame boolean
 --- Raw pointer (lightuserdata) to the player faction's Research technology manager.
----@field technology lightuserdata
+---@field technology Research|nil
 --- Set (ogre_unordered_set<TownBase*>) of towns currently active near the player.
 ---@field townsActive OgreUnorderedSet<TownBase>
 --- The floor number of the character currently tracked by the camera.
@@ -22289,6 +22297,50 @@ taskPriority = {
 --- Whether open war is active with the target faction.
 ---@field war boolean
 
+--- Engine class `Research`.
+---@class Research
+---@field _reset fun(self: Research)
+---@field _setup fun(self: Research)
+---@field getArmourCraftLevel fun(self: Research, armour: GameData, skill: integer, crit?: boolean): integer
+---@field startResearch fun(self: Research, d: GameData): boolean
+---@field stopResearch fun(self: Research, d: GameData)
+---@field completeResearch fun(self: Research, d: GameData)
+---@field isFinished fun(self: Research, what: GameData): boolean
+---@field isBuildingResearched fun(self: Research, d: GameData): boolean
+---@field getETA fun(self: Research, d: GameData, simple?: boolean): string
+---@field payCosts fun(self: Research, d: GameData): boolean
+---@field canPayCosts fun(self: Research, data: GameData): boolean
+---@field getBlueprintsFor fun(self: Research, item: GameData): GameData
+---@field staticUpdate fun(self: Research)
+---@field getCurrentResearchRate fun(self: Research): number
+---@field serialise fun(self: Research, data: GameData)
+---@field load fun(self: Research, data: GameData)
+---@field progressResearch fun(self: Research, amount: number)
+---@field checkRequirementsForInvisibility fun(self: Research, what: GameData, twoLevels?: boolean): boolean
+---@field checkRequirements fun(self: Research, what: GameData, twoLevels?: boolean, checkCost?: boolean): boolean
+---@field checkRequirements_andQueue fun(self: Research, what: GameData): boolean
+---@field isInQueue fun(self: Research, what: GameData): boolean
+---@field _updateTheAllList fun(self: Research)
+---@field setResearchDeskLevel fun(self: Research, level: integer)
+---@field refreshTheoreticalTechLevel fun(self: Research)
+---@field needsATechBench fun(self: Research, d: GameData): integer
+---@field hasPaidFor fun(self: Research, d: GameData): boolean
+---@field getResearchDeskLevel fun(self: Research): integer
+---@field hasArtifact fun(self: Research, artifact: GameData, quantity: integer): boolean
+---@field getResearchItem fun(self: Research, d: GameData): ResearchItem
+---@field getResearchProgress fun(self: Research, arg1: GameData|ResearchItem): number
+---@field getCategories fun(self: Research): Lektor<string>
+---@field categories Lektor<string>
+---@field changedSoUpdateGUI boolean
+---@field enabledObjects OgreUnorderedSet<GameData>
+---@field finished OgreUnorderedSet<GameData>
+---@field numResearchers integer
+---@field paidFor Lektor<string>
+---@field researchDeskLevel integer
+---@field screen ManagementScreen
+---@field theoreticalTechLevel integer
+---@field totalResearchThisFrame number
+
 --- Specialized UseableStuff building representing a research bench where characters conduct technology research and store research artifacts.
 ---@class ResearchBuilding : UseableStuff
 --- Returns true if no technology is currently queued for research or if required research materials are missing.
@@ -22325,6 +22377,20 @@ taskPriority = {
 ---@field _NV_getGUIData fun(self: ResearchBuilding, datapanel: DatapanelGUI, category: integer)
 --- Opens the faction research screen in response to a MyGUI.Widget button event.
 ---@field showResearchWindow fun(self: ResearchBuilding, arg1: MyGUI.Widget)
+
+--- Engine class `ResearchItem`.
+---@class ResearchItem
+---@field getCostItem fun(self: ResearchItem, id: integer): GameData
+---@field getCostItemQuantity fun(self: ResearchItem, id: integer): integer
+---@field getNumDifferentCostItems fun(self: ResearchItem): integer
+---@field data GameData
+---@field progress number
+
+--- Engine class `Research_BuildingUpgrades`.
+---@class Research_BuildingUpgrades
+---@field powerBoost number
+---@field powerCapacity number
+---@field productionMult number
 
 --- Multithreaded background resource streaming manager for loading meshes, textures, and scene assets.
 ---@class ResourceLoader : ThreadClass
@@ -22978,6 +23044,13 @@ taskPriority = {
 
 --- Engine interface for objects that can be written to and read from save streams. Its methods take C++ streams and are not exposed; the type is used for typed `Serialisable` arguments.
 ---@class Serialisable
+
+--- Engine class `SharedKing`.
+---@class SharedKing
+---@field isLevelEditMode fun(self: SharedKing): boolean
+---@field areasList lightuserdata
+---@field townList lightuserdata
+---@field zoneMgr ZoneManagerInterfaceT|nil
 
 --- Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.
 ---@class ShopTrader : RootObject
@@ -26095,6 +26168,82 @@ taskPriority = {
 --- Array (1-indexed table or indexed lookup) of 5 spawn probabilities for each ground effect.
 ---@field probabilities number|number[]
 
+--- Engine class `ZoneMapContent`.
+---@class ZoneMapContent : RootObjectContainer
+---@field isLoadedT fun(self: ZoneMapContent): boolean
+--- Inherited API from `RootObjectContainer`. Updates the active objects in this container and returns true if active.
+---@field update fun(self: ZoneMapContent): boolean
+--- Inherited API from `RootObjectContainer`. Override dispatch for `update`. Updates the active objects in this container and returns true if active.
+---@field _NV_update fun(self: ZoneMapContent): boolean
+---@field threadedUpdate fun(self: ZoneMapContent)
+---@field addToUpdateList fun(self: ZoneMapContent, b: RootObject)
+---@field _reloadAllFoliage fun(self: ZoneMapContent)
+---@field getOverlayPixelCoord fun(self: ZoneMapContent): iVector2
+---@field clearOverlay fun(self: ZoneMapContent, channel: integer)
+---@field generateDirtMap fun(self: ZoneMapContent, channel: integer): integer
+---@field addLoadedBuilding fun(self: ZoneMapContent, buildingInstanceData: GameSaveState, isActiveLevelFile?: boolean)
+---@field loadItems fun(self: ZoneMapContent, source: GameDataContainer): boolean
+---@field saveItems fun(self: ZoneMapContent, dest: GameDataContainer, allItems?: boolean)
+---@field saveLevelData fun(self: ZoneMapContent, all?: boolean, modName: string, pathOverride: string)
+---@field saveToDisk fun(self: ZoneMapContent, path: string)
+---@field activate fun(self: ZoneMapContent)
+---@field deactivate fun(self: ZoneMapContent, saveZoneState?: boolean)
+---@field reFactionBuildingsFromTown fun(self: ZoneMapContent)
+---@field updateItemsVisibility fun(self: ZoneMapContent)
+---@field _setEnabledStaticGeometry fun(self: ZoneMapContent, enable?: boolean)
+---@field findBuildingTypePublic fun(self: ZoneMapContent, t: Town): Building
+---@field findBuildingByDataPosition fun(self: ZoneMapContent, data: GameData, x: number, z: number): Building
+---@field _populateTownsOnNewGame fun(self: ZoneMapContent)
+---@field forceLoadAllTheBuildingInteriorVisuals fun(self: ZoneMapContent)
+---@field addItem fun(self: ZoneMapContent, item: Item)
+---@field removeItem fun(self: ZoneMapContent, item: Item)
+---@field changeItemZone fun(self: ZoneMapContent, item: Item, moveTo: ZoneMap): boolean
+--- Inherited API from `RootObjectContainer`. Removes the specified RootObject from this container and returns true if removed.
+---@field removeObject fun(self: ZoneMapContent, obj: RootObject): boolean
+--- Inherited API from `RootObjectContainer`. Override dispatch for `removeObject`. Removes the specified RootObject from this container and returns true if removed.
+---@field _NV_removeObject fun(self: ZoneMapContent, obj: RootObject): boolean
+---@field getFoliageSystem fun(self: ZoneMapContent): FoliageSystem
+---@field _activate fun(self: ZoneMapContent)
+---@field createLoadedItems fun(self: ZoneMapContent)
+---@field setLoadedT fun(self: ZoneMapContent, t?: boolean)
+---@field activationFlag boolean
+---@field foliageSystem FoliageSystem|nil
+---@field items OgreUnorderedSet<hand>
+---@field loaded boolean
+---@field newGameFirstTimeLoaded boolean
+---@field periodicUpdateIndex integer
+---@field toUpdateList Lektor<RootObject>
+---@field zoneMap ZoneMap|nil
+
+--- Engine class `ZoneSmell`.
+---@class ZoneSmell
+---@field _getSmell fun(self: ZoneSmell, t: integer): ZoneSmell_Smell|nil
+---@field isEmpty fun(self: ZoneSmell): boolean
+---@field getSmell fun(self: ZoneSmell, posInOut: table, type: integer): number, table
+---@field getGeneralSmellLevel fun(self: ZoneSmell, type: integer): number
+---@field periodicUpdate fun(self: ZoneSmell, time: number)
+---@field addSmell fun(self: ZoneSmell, type: integer, key: lightuserdata, _pos: table)
+---@field smell_bloodAndCorpses ZoneSmell_Smell|nil
+---@field smell_eggs ZoneSmell_Smell|nil
+---@field zoneMap ZoneMap|nil
+--- Nested enum table `ZoneSmell.SmellMessageType`.
+---@field SmellMessageType ZoneSmell.SmellMessageType
+
+--- Engine class `ZoneSmell_Smell`.
+---@class ZoneSmell_Smell
+---@field update fun(self: ZoneSmell_Smell, time: number)
+---@field _NV_update fun(self: ZoneSmell_Smell, time: number)
+---@field decreaseRate number
+---@field increaseRate number
+---@field numSources number
+---@field pos table
+---@field strength number
+
+--- Engine class `ZoneSmell_SmellMsg`.
+---@class ZoneSmell_SmellMsg
+---@field pos table
+---@field type integer
+
 --- Spatial partitioning grid used by the engine to efficiently query, track, and update world entities across zones and cells.
 ---@class ZoneSpacialGrid
 --- Inserts a RootObject into the spatial grid, returning its resulting spatial cell key.
@@ -26772,45 +26921,135 @@ taskPriority = {
 --- Nested enum table `KenshiLib.BinaryVersion`.
 ---@field BinaryVersion KenshiLib.BinaryVersion
 
---- KenshiLua runtime API: script reloading, logging, profiling, and diagnostics.
----@type KenshiLua.Api
+--- Global Building binding table.
+---@type Building
 ---@diagnostic disable-next-line: missing-fields
-KenshiLua = {}
+Building = {}
 
---- Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.
----@type KenshiLua.Events
+--- Global CharStats binding table.
+---@type CharStats
 ---@diagnostic disable-next-line: missing-fields
-Events = {}
-
---- Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned.
----@type MyGUI.Api
----@diagnostic disable-next-line: missing-fields
-MyGUI = {}
-
---- Global table exposing the MyGUI Gui singleton.
----@type MyGUI.GuiStatic
----@diagnostic disable-next-line: missing-fields
-Gui = {}
-
---- Global table exposing the MyGUI input-manager singleton.
----@type MyGUI.InputManagerStatic
----@diagnostic disable-next-line: missing-fields
-InputManager = {}
-
---- Global table exposing the MyGUI pointer-manager singleton.
----@type MyGUI.PointerManagerStatic
----@diagnostic disable-next-line: missing-fields
-PointerManager = {}
+CharStats = {}
 
 --- Global table exposing the MyGUI clipboard-manager singleton.
 ---@type MyGUI.ClipboardManagerStatic
 ---@diagnostic disable-next-line: missing-fields
 ClipboardManager = {}
 
+--- Global alias of MyGUI.Colour.
+---@type MyGUI.ColourConstructor
+---@diagnostic disable-next-line: missing-fields
+Colour = {}
+
+--- Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.
+---@type KenshiLua.Events
+---@diagnostic disable-next-line: missing-fields
+Events = {}
+
+--- Global alias of MyGUI.FloatCoord.
+---@type MyGUI.FloatCoordConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatCoord = {}
+
+--- Global alias of MyGUI.FloatPoint.
+---@type MyGUI.FloatPointConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatPoint = {}
+
+--- Global alias of MyGUI.FloatRect.
+---@type MyGUI.FloatRectConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatRect = {}
+
+--- Global alias of MyGUI.FloatSize.
+---@type MyGUI.FloatSizeConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatSize = {}
+
+--- Global table exposing the MyGUI Gui singleton.
+---@type MyGUI.GuiStatic
+---@diagnostic disable-next-line: missing-fields
+Gui = {}
+
+--- Static utility table for HavokCharacter physics controllers.
+---@type HavokCharacterStatic
+---@diagnostic disable-next-line: missing-fields
+HavokCharacter = {}
+
+--- Global table exposing the MyGUI input-manager singleton.
+---@type MyGUI.InputManagerStatic
+---@diagnostic disable-next-line: missing-fields
+InputManager = {}
+
+--- Global alias of MyGUI.IntCoord.
+---@type MyGUI.IntCoordConstructor
+---@diagnostic disable-next-line: missing-fields
+IntCoord = {}
+
+--- Global alias of MyGUI.IntPoint.
+---@type MyGUI.IntPointConstructor
+---@diagnostic disable-next-line: missing-fields
+IntPoint = {}
+
+--- Global alias of MyGUI.IntRect.
+---@type MyGUI.IntRectConstructor
+---@diagnostic disable-next-line: missing-fields
+IntRect = {}
+
+--- Global alias of MyGUI.IntSize.
+---@type MyGUI.IntSizeConstructor
+---@diagnostic disable-next-line: missing-fields
+IntSize = {}
+
+--- Static utility table for inventory layouts.
+---@type InventoryLayoutStatic
+---@diagnostic disable-next-line: missing-fields
+InventoryLayout = {}
+
+--- KenshiLua runtime API: script reloading, logging, profiling, and diagnostics.
+---@type KenshiLua.Api
+---@diagnostic disable-next-line: missing-fields
+KenshiLua = {}
+
+--- Global table exposing the MyGUI layer-manager singleton.
+---@type MyGUI.LayerManagerStatic
+---@diagnostic disable-next-line: missing-fields
+LayerManager = {}
+
 --- Global table exposing the MyGUI layout-manager singleton.
 ---@type MyGUI.LayoutManagerStatic
 ---@diagnostic disable-next-line: missing-fields
 LayoutManager = {}
+
+--- Static manager table for in-game modal message boxes.
+---@type MessageBoxManagerStatic
+---@diagnostic disable-next-line: missing-fields
+MessageBoxManager = {}
+
+--- Static factory table for MessageForB messages.
+---@type MessageForBStatic
+---@diagnostic disable-next-line: missing-fields
+MessageForB = {}
+
+--- Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned.
+---@type MyGUI.Api
+---@diagnostic disable-next-line: missing-fields
+MyGUI = {}
+
+--- Static utility table for PhysX NxMat33 matrices.
+---@type NxMat33Static
+---@diagnostic disable-next-line: missing-fields
+NxMat33 = {}
+
+--- Static utility table for PhysX NxVec3 vectors.
+---@type NxVec3Static
+---@diagnostic disable-next-line: missing-fields
+NxVec3 = {}
+
+--- Global table exposing the MyGUI pointer-manager singleton.
+---@type MyGUI.PointerManagerStatic
+---@diagnostic disable-next-line: missing-fields
+PointerManager = {}
 
 --- Global table exposing the MyGUI render-manager singleton.
 ---@type MyGUI.RenderManagerStatic
@@ -26822,55 +27061,24 @@ RenderManager = {}
 ---@diagnostic disable-next-line: missing-fields
 SkinManager = {}
 
---- Global table exposing the MyGUI layer-manager singleton.
----@type MyGUI.LayerManagerStatic
+--- Global TownBase binding table.
+---@type TownBase
 ---@diagnostic disable-next-line: missing-fields
-LayerManager = {}
+TownBase = {}
 
---- Global alias of MyGUI.IntPoint.
----@type MyGUI.IntPointConstructor
+--- Static helper table for TradeResult transaction outcomes.
+---@type TradeResultStatic
 ---@diagnostic disable-next-line: missing-fields
-IntPoint = {}
+TradeResult = {}
 
---- Global alias of MyGUI.IntSize.
----@type MyGUI.IntSizeConstructor
+--- Static query table for world event states.
+---@type WorldEventStateQueryStatic
 ---@diagnostic disable-next-line: missing-fields
-IntSize = {}
+WorldEventStateQuery = {}
 
---- Global alias of MyGUI.IntCoord.
----@type MyGUI.IntCoordConstructor
----@diagnostic disable-next-line: missing-fields
-IntCoord = {}
-
---- Global alias of MyGUI.IntRect.
----@type MyGUI.IntRectConstructor
----@diagnostic disable-next-line: missing-fields
-IntRect = {}
-
---- Global alias of MyGUI.FloatPoint.
----@type MyGUI.FloatPointConstructor
----@diagnostic disable-next-line: missing-fields
-FloatPoint = {}
-
---- Global alias of MyGUI.FloatSize.
----@type MyGUI.FloatSizeConstructor
----@diagnostic disable-next-line: missing-fields
-FloatSize = {}
-
---- Global alias of MyGUI.FloatCoord.
----@type MyGUI.FloatCoordConstructor
----@diagnostic disable-next-line: missing-fields
-FloatCoord = {}
-
---- Global alias of MyGUI.FloatRect.
----@type MyGUI.FloatRectConstructor
----@diagnostic disable-next-line: missing-fields
-FloatRect = {}
-
---- Global alias of MyGUI.Colour.
----@type MyGUI.ColourConstructor
----@diagnostic disable-next-line: missing-fields
-Colour = {}
+--- Conditional constants alias registered at Lua startup. Prefer getGlobalConstants().
+---@type GlobalConstants|nil
+con = nil
 
 --- Injected only during synchronous dialogue-script execution; the wrapped object is borrowed.
 ---@type Dialogue|nil
@@ -26880,43 +27088,9 @@ currentDialogue = nil
 ---@type DialogLineData|nil
 currentDialogueLine = nil
 
---- Conditional game-world alias registered at Lua startup. Prefer getGameWorld().
----@type GameWorld|nil
-ou = nil
-
---- Conditional player-interface alias registered at Lua startup. Prefer getPlayerInterface().
----@type PlayerInterface|nil
-player = nil
-
---- Conditional input-handler alias registered at Lua startup. Prefer getInputHandler().
----@type InputHandler|nil
-key = nil
-
---- Conditional root-object-factory alias registered at Lua startup. Prefer getRootObjectFactory().
----@type RootObjectFactory|nil
-root = nil
-
---- Conditional constants alias registered at Lua startup. Prefer getGlobalConstants().
----@type GlobalConstants|nil
-con = nil
-
---- Conditional options alias registered at Lua startup. Prefer getOptionsHolder().
----@type OptionsHolder|nil
-options = nil
-
 --- Conditional ForgottenGUI alias registered at Lua startup. Prefer getForgottenGUI().
 ---@type ForgottenGUI|nil
 gui = nil
-
---- Static utility table for PhysX NxVec3 vectors.
----@type NxVec3Static
----@diagnostic disable-next-line: missing-fields
-NxVec3 = {}
-
---- Static utility table for PhysX NxMat33 matrices.
----@type NxMat33Static
----@diagnostic disable-next-line: missing-fields
-NxMat33 = {}
 
 --- Static utility table for Havok hkVector4f vectors.
 ---@type hkVector4fStatic
@@ -26928,50 +27102,29 @@ hkVector4f = {}
 ---@diagnostic disable-next-line: missing-fields
 hkVector4fComparison = {}
 
---- Static utility table for HavokCharacter physics controllers.
----@type HavokCharacterStatic
----@diagnostic disable-next-line: missing-fields
-HavokCharacter = {}
+--- Conditional input-handler alias registered at Lua startup. Prefer getInputHandler().
+---@type InputHandler|nil
+key = nil
 
---- Static utility table for inventory layouts.
----@type InventoryLayoutStatic
----@diagnostic disable-next-line: missing-fields
-InventoryLayout = {}
+--- Conditional options alias registered at Lua startup. Prefer getOptionsHolder().
+---@type OptionsHolder|nil
+options = nil
 
---- Static query table for world event states.
----@type WorldEventStateQueryStatic
----@diagnostic disable-next-line: missing-fields
-WorldEventStateQuery = {}
+--- Conditional game-world alias registered at Lua startup. Prefer getGameWorld().
+---@type GameWorld|nil
+ou = nil
 
---- Static factory table for MessageForB messages.
----@type MessageForBStatic
----@diagnostic disable-next-line: missing-fields
-MessageForB = {}
+--- Conditional player-interface alias registered at Lua startup. Prefer getPlayerInterface().
+---@type PlayerInterface|nil
+player = nil
 
---- Static manager table for in-game modal message boxes.
----@type MessageBoxManagerStatic
----@diagnostic disable-next-line: missing-fields
-MessageBoxManager = {}
+--- Conditional root-object-factory alias registered at Lua startup. Prefer getRootObjectFactory().
+---@type RootObjectFactory|nil
+root = nil
 
---- Static helper table for TradeResult transaction outcomes.
----@type TradeResultStatic
----@diagnostic disable-next-line: missing-fields
-TradeResult = {}
-
---- Global Building binding table.
----@type Building
----@diagnostic disable-next-line: missing-fields
-Building = {}
-
---- Global TownBase binding table.
----@type TownBase
----@diagnostic disable-next-line: missing-fields
-TownBase = {}
-
---- Global CharStats binding table.
----@type CharStats
----@diagnostic disable-next-line: missing-fields
-CharStats = {}
+--- Conditional SharedKing alias registered at Lua startup. Prefer getSharedKing().
+---@type SharedKing|nil
+shou = nil
 
 --- Global table of static functions for `AppearanceManager`.
 ---@type AppearanceManagerStatics
@@ -27332,6 +27485,11 @@ YesNoMaybe = {}
 ---@type ZoneMap
 ---@diagnostic disable-next-line: missing-fields
 ZoneMap = {}
+
+--- Namespace table enclosing nested `ZoneSmell` enums.
+---@type ZoneSmell
+---@diagnostic disable-next-line: missing-fields
+ZoneSmell = {}
 
 --- Namespace table enclosing nested `ZoneSpacialGrid` enums.
 ---@type ZoneSpacialGrid
@@ -28001,6 +28159,15 @@ ZoneMap.ZONE_MESSAGE = {
     BEING_LOADED_TRUE = 1,
 }
 
+--- Engine enum `ZoneSmell.SmellMessageType`.
+---@enum ZoneSmell.SmellMessageType
+ZoneSmell.SmellMessageType = {
+    SMELLMSG_NONE = 0,
+    SMELLMSG_CORPSE = 1,
+    SMELLMSG_BLOOD = 2,
+    SMELLMSG_EGG = 3,
+}
+
 --- Spatial partition grid movement result (unchanged, changed cell, changed zone).
 ---@enum ZoneSpacialGrid.Result
 ZoneSpacialGrid.Result = {
@@ -28557,6 +28724,54 @@ ogre_unordered_map = {}
 ---@return OgreUnorderedMap<any, any>
 function ogre_unordered_map.new(keyType, valueType) end
 
+--- Returns the game's main GUI object, or nil before it exists.
+---@return ForgottenGUI|nil
+function getForgottenGUI() end
+
+--- Returns the game world, or nil before it exists.
+---@return GameWorld|nil
+function getGameWorld() end
+
+--- Returns the engine's global constants, or nil before they are loaded.
+---@return GlobalConstants|nil
+function getGlobalConstants() end
+
+--- Returns the engine input handler, or nil before it exists.
+---@return InputHandler|nil
+function getInputHandler() end
+
+--- Returns the game options, or nil before they are loaded.
+---@return OptionsHolder|nil
+function getOptionsHolder() end
+
+--- Returns the player interface, or nil before the game world and player exist.
+---@return PlayerInterface|nil
+function getPlayerInterface() end
+
+--- Returns the game world's object factory, or nil before it exists.
+---@return RootObjectFactory|nil
+function getRootObjectFactory() end
+
+--- Returns the player's selected character, or nil when none is selected or the game world is not ready.
+---@return Character|nil
+function getSelectedCharacter() end
+
+--- Returns the game's shared king object, or nil before it exists.
+---@return SharedKing|nil
+function getSharedKing() end
+
+--- Calls function or callable table f with the given arguments in protected mode (LuaJIT).
+---@overload fun(callable: any, ...: any): boolean, any
+---@param f fun(...: any): ...any
+---@param ... any
+---@return boolean
+---@return any
+function pcall(f, ...) end
+
+--- Prints values through the KenshiLua logger and GUI console/editor.
+---@param ... any
+function print(...) end
+
 --- Compatibility alias for `Events.on`.
 ---@param eventName KenshiLua.EventName|string
 ---@param handler KenshiLua.EventHandler
@@ -28566,47 +28781,3 @@ function registerHandler(eventName, handler) end
 --- Compatibility alias for `Events.off`.
 ---@param handlerId integer
 function unregisterHandler(handlerId) end
-
---- Returns the game world, or nil before it exists.
----@return GameWorld|nil
-function getGameWorld() end
-
---- Returns the player interface, or nil before the game world and player exist.
----@return PlayerInterface|nil
-function getPlayerInterface() end
-
---- Returns the engine input handler, or nil before it exists.
----@return InputHandler|nil
-function getInputHandler() end
-
---- Returns the player's selected character, or nil when none is selected or the game world is not ready.
----@return Character|nil
-function getSelectedCharacter() end
-
---- Returns the game world's object factory, or nil before it exists.
----@return RootObjectFactory|nil
-function getRootObjectFactory() end
-
---- Returns the engine's global constants, or nil before they are loaded.
----@return GlobalConstants|nil
-function getGlobalConstants() end
-
---- Returns the game options, or nil before they are loaded.
----@return OptionsHolder|nil
-function getOptionsHolder() end
-
---- Returns the game's main GUI object, or nil before it exists.
----@return ForgottenGUI|nil
-function getForgottenGUI() end
-
---- Prints values through the KenshiLua logger and GUI console/editor.
----@param ... any
-function print(...) end
-
---- Calls function or callable table f with the given arguments in protected mode (LuaJIT).
----@overload fun(callable: any, ...: any): boolean, any
----@param f fun(...: any): ...any
----@param ... any
----@return boolean
----@return any
-function pcall(f, ...) end

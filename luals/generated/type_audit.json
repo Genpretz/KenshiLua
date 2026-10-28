@@ -4141,9 +4141,9 @@
       "member": "playerBuildMode"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "BuildModeWindow",
-      "expected": "?Research*",
+      "expected": "Research|nil",
       "header": "Research*",
       "kind": "property",
       "lua": "lightuserdata",
@@ -11613,9 +11613,9 @@
       "member": "todoList"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "ManagementScreen_TechItemViewData",
-      "expected": "?ResearchItem*",
+      "expected": "ResearchItem|nil",
       "header": "ResearchItem*",
       "kind": "property",
       "lua": "lightuserdata|nil",
@@ -16082,15 +16082,6 @@
       "member": "placementObject"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "PlayerInterface",
-      "expected": "?Research*",
-      "header": "Research*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "technology"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "PortraitData",
       "expected": "State",
@@ -17652,6 +17643,24 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "threats"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "SharedKing",
+      "expected": "?AreasList*",
+      "header": "AreasList*",
+      "kind": "property",
+      "lua": "lightuserdata",
+      "member": "areasList"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "SharedKing",
+      "expected": "?TownList*",
+      "header": "TownList*",
+      "kind": "property",
+      "lua": "lightuserdata",
+      "member": "townList"
     },
     {
       "category": "enum_typed_as_integer",
@@ -20723,15 +20732,6 @@
     {
       "category": "unmapped_header_type",
       "class": "ZoneMap",
-      "expected": "?ZoneMapContent*",
-      "header": "ZoneMapContent*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "mapContent"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ZoneMap",
       "expected": "?MapFeatureList*",
       "header": "MapFeatureList*",
       "kind": "property",
@@ -20748,13 +20748,81 @@
       "member": "terrainCollision"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "ZoneMap",
-      "expected": "?ZoneSmell*",
-      "header": "ZoneSmell*",
+      "category": "enum_typed_as_integer",
+      "class": "ZoneSmell",
+      "expected": "fun(SmellType): ZoneSmell_Smell|nil",
+      "header": "ZoneSmell::Smell* _getSmell(SmellType t)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SmellType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ZoneSmell, t: integer): ZoneSmell_Smell|nil",
+      "member": "_getSmell"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "ZoneSmell",
+      "expected": "fun(table, SmellType): number, table",
+      "header": "float getSmell(Ogre::Vector3& posInOut, SmellType type)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SmellType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ZoneSmell, posInOut: table, type: integer): number, table",
+      "member": "getSmell"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "ZoneSmell",
+      "expected": "fun(SmellType): number",
+      "header": "float getGeneralSmellLevel(SmellType type)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SmellType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ZoneSmell, type: integer): number",
+      "member": "getGeneralSmellLevel"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "ZoneSmell",
+      "expected": "fun(SmellMessageType, lightuserdata, table)",
+      "header": "void addSmell(ZoneSmell::SmellMessageType type, void* key, const Ogre::Vector3& _pos)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "SmellMessageType",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ZoneSmell, type: integer, key: lightuserdata, _pos: table)",
+      "member": "addSmell"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "ZoneSmell_SmellMsg",
+      "expected": "SmellMessageType",
+      "header": "ZoneSmell::SmellMessageType",
       "kind": "property",
-      "lua": "lightuserdata",
-      "member": "zoneSmell"
+      "lua": "integer",
+      "member": "type"
     },
     {
       "category": "enum_typed_as_integer",
@@ -21147,16 +21215,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 55,
-    "binding_pushes_raw_pointer": 44,
+    "binding_pushes_raw_pointer": 46,
     "binding_shape_differs": 205,
     "blocking_issues": 0,
     "container_methods_typed": 1045,
-    "enum_typed_as_integer": 518,
-    "methods": 8359,
-    "methods_matching_header": 6334,
+    "enum_typed_as_integer": 523,
+    "methods": 8434,
+    "methods_matching_header": 6405,
     "no_header_declaration": 278,
-    "properties": 3493,
-    "properties_matching_header": 2948,
-    "unmapped_header_type": 442
+    "properties": 3529,
+    "properties_matching_header": 2984,
+    "unmapped_header_type": 439
   }
 }

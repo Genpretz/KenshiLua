@@ -417,6 +417,9 @@
     <ClCompile Include="src\Bindings\Kenshi\RaceLimiterBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\RelationDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\RepetitionCounterBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ResearchBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ResearchItemBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Research_BuildingUpgradesBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ResourceLoaderBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ResourceLoadRequestMeshBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ResourceLoadRequestTextureBinding.cpp" />
@@ -435,6 +438,7 @@
     <ClCompile Include="src\Bindings\Kenshi\SenseItrBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SensoryDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SerialisableBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\SharedKingBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderInventoryBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderInventorySectionBinding.cpp" />
@@ -494,6 +498,10 @@
     <ClCompile Include="src\Bindings\Kenshi\ZoneManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ZoneManagerInterfaceTBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ZoneMapBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ZoneMapContentBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ZoneSmellBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ZoneSmell_SmellBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ZoneSmell_SmellMsgBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ZoneSpacialGridBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AkSoundPositionBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AkVectorBinding.cpp" />
@@ -1367,6 +1375,9 @@
     <ClInclude Include="src\Bindings\Kenshi\RaceLimiterBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\RelationDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\RepetitionCounterBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ResearchBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ResearchItemBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Research_BuildingUpgradesBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ResourceLoaderBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ResourceLoadRequestMeshBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ResourceLoadRequestTextureBinding.h" />
@@ -1385,6 +1396,7 @@
     <ClInclude Include="src\Bindings\Kenshi\SenseItrBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SensoryDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SerialisableBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\SharedKingBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderInventoryBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderInventorySectionBinding.h" />
@@ -1454,6 +1466,10 @@
     <ClInclude Include="src\Bindings\Kenshi\ZoneManagerBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ZoneManagerInterfaceTBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ZoneMapBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ZoneMapContentBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ZoneSmellBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ZoneSmell_SmellBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ZoneSmell_SmellMsgBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ZoneSpacialGridBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AkSoundPositionBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AkVectorBinding.h" />
