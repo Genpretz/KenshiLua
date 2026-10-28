@@ -14563,6 +14563,38 @@
       "source": "src/Bindings/Kenshi/AnimalInventoryLayoutBinding.cpp"
     },
     {
+      "binding": "AnimationClassAnimalBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationClassAnimal",
+      "metatable": "KenshiLua.AnimationClassAnimal",
+      "methods": [],
+      "parent_binding": "AnimationClassBinding",
+      "parent_metatable": "KenshiLua.AnimationClass",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "_isTurningFar",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "lastRot",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "maxTurnSpeed",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationClassAnimalBinding.cpp"
+    },
+    {
       "binding": "AnimationClassBaseBinding",
       "global_names": [],
       "has_constructor": false,
@@ -17189,6 +17221,18 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "AnimationClassBinding::isHuman",
+          "name": "isHuman",
+          "signature": {
+            "params": [],
+            "returns": [
+              "AnimationClassHuman",
+              "nil"
+            ]
+          },
+          "static": false
         }
       ],
       "parent_binding": "AnimationClassBaseBinding",
@@ -17244,6 +17288,63 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Animation/AnimationClassBinding.cpp"
+    },
+    {
+      "binding": "AnimationClassHumanBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationClassHuman",
+      "metatable": "KenshiLua.AnimationClassHuman",
+      "methods": [],
+      "parent_binding": "AnimationClassBinding",
+      "parent_metatable": "KenshiLua.AnimationClass",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "breatheTimer",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "disabledLeftArm",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "disabledRightArm",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "hipspos",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "lookDirection",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "stanceAnimation",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "usingLeftArm",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "usingRightArm",
+          "type": "boolean"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationClassHumanBinding.cpp"
     },
     {
       "binding": "AnimationDataBinding",
@@ -42541,7 +42642,7 @@
         {
           "access": "readwrite",
           "name": "rangedCombat",
-          "type": "lightuserdata"
+          "type": "RangedCombatClass|nil"
         },
         {
           "access": "readwrite",
@@ -74640,6 +74741,187 @@
         "src/Bindings/MyGUI/MyGUIBinding.cpp"
       ],
       "source": "src/Bindings/MyGUI/GuiBinding.cpp"
+    },
+    {
+      "binding": "GunClassBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "GunClass",
+      "metatable": "KenshiLua.GunClass",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "accuracyDeviationBase",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "accuracySkillRequired",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "active",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "aimSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "ammoType",
+          "type": "GameData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "gunBarrelOffsetPos",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "gunData",
+          "type": "GameData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "maxRange",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "numShotsCurrent",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "numShotsMax",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "orientation",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "position",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "reloadAnimation",
+          "type": "GameData|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "reloadState",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "reloadTimeMax",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "reloadTimeMin",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "shotSpeed",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "user",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "userSkill01",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "visible",
+          "type": "boolean"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/GunClassBinding.cpp"
+    },
+    {
+      "binding": "GunClassPersonalBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "GunClassPersonal",
+      "metatable": "KenshiLua.GunClassPersonal",
+      "methods": [],
+      "parent_binding": "GunClassBinding",
+      "parent_metatable": "KenshiLua.GunClass",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "animReadyToShoot",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "character",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "maxDamage",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "minDamage",
+          "type": "integer"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/GunClassPersonalBinding.cpp"
+    },
+    {
+      "binding": "GunClassTurretBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "GunClassTurret",
+      "metatable": "KenshiLua.GunClassTurret",
+      "methods": [],
+      "parent_binding": "GunClassBinding",
+      "parent_metatable": "KenshiLua.GunClass",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "lastTarget",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "turretBuilding",
+          "type": "TurretBuilding|nil"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/GunClassTurretBinding.cpp"
     },
     {
       "binding": "HandBinding",
@@ -107403,6 +107685,53 @@
       "source": "src/Bindings/Kenshi/Building/RainCollectorBuildingBinding.cpp"
     },
     {
+      "binding": "RangedCombatClassBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "RangedCombatClass",
+      "metatable": "KenshiLua.RangedCombatClass",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "_lastAimAheadAmount",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "currentStat",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "gun",
+          "type": "GunClass|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "state",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "turret",
+          "type": "hand"
+        },
+        {
+          "access": "readwrite",
+          "name": "updateNeededMsg",
+          "type": "boolean"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/RangedCombatClassBinding.cpp"
+    },
+    {
       "binding": "RelationDataBinding",
       "global_names": [],
       "has_constructor": false,
@@ -129198,7 +129527,7 @@
         {
           "access": "readwrite",
           "name": "gunClass",
-          "type": "lightuserdata"
+          "type": "GunClassTurret|nil"
         },
         {
           "access": "readwrite",

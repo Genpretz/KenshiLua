@@ -142,5 +142,6 @@ public:
     static int _NV_processTurnAnim(lua_State* L);
     static int breathing(lua_State* L);
     static int _NV_breathing(lua_State* L);
+    static int isHuman(lua_State* L);
 };
 }

@@ -11080,7 +11080,7 @@ taskPriority = {
 --- Cached safe navmesh recovery coordinate for ragdoll physics.
 ---@field ragdollNavmeshPosition table
 --- Crossbow reloading, aim tracking, and projectile calculations.
----@field rangedCombat lightuserdata
+---@field rangedCombat RangedCombatClass|nil
 --- Queued message flag requesting visibility change notification.
 ---@field setVisibleMsg boolean
 --- Gender string identifier ('male' or 'female').
@@ -14044,6 +14044,15 @@ taskPriority = {
 --- The tasks, as a live `std::deque<Tasker*>`. Read-only; edit it in place.
 ---@field list StdDeque<Tasker>
 
+--- Engine class `AnimationClassAnimal`.
+---@class AnimationClassAnimal : AnimationClass
+--- Flag indicating sharp angle turning threshold exceeded.
+---@field _isTurningFar boolean
+--- Previous frame orientation for delta yaw calculation.
+---@field lastRot table
+--- Maximum angular rotational turn velocity.
+---@field maxTurnSpeed number
+
 --- Core skeletal animation subsystem base class for characters and creatures in Kenshi. Manages skeletal bone queries, world-space and local-space bone caching, animation track blending across layered channels (`AnimationLayer`), root motion relocation, and playback timing synchronization with the locomotion kinematic controller (`CharMovement`).
 ---@class AnimationClassBase
 --- Controls visibility of the underlying Ogre 3D mesh entity (`body`) and associated scene graph node.
@@ -14396,6 +14405,7 @@ taskPriority = {
 ---@field breathing fun(self: AnimationClass, armsToo?: boolean)
 --- Override dispatch for `breathing`. Advances and applies subtle skeletal breathing morph animations to chest and shoulder bones during idles.
 ---@field _NV_breathing fun(self: AnimationClass, armsToo?: boolean)
+---@field isHuman fun(self: AnimationClass): AnimationClassHuman|nil
 --- Character cosmetic appearance, skeletal proportions, and body morph target controller.
 ---@field appearance AppearanceBase
 --- Footwear sole thickness compensation offset preventing ground mesh penetration.
@@ -14414,6 +14424,25 @@ taskPriority = {
 ---@field strafeBlendFilter MotionFilter
 --- Summed blend weight scalar across all active upper-body action clips.
 ---@field totalActionWeight number
+
+--- Engine class `AnimationClassHuman`.
+---@class AnimationClassHuman : AnimationClass
+--- Procedural idle chest breathing phase timer.
+---@field breatheTimer number
+--- Left arm crippled or severed flag.
+---@field disabledLeftArm boolean
+--- Right arm crippled or severed flag.
+---@field disabledRightArm boolean
+--- Cached pelvis/hips origin in skeletal space.
+---@field hipspos table
+--- Procedural head-tracking gaze direction.
+---@field lookDirection table
+--- Active stance animation resource name.
+---@field stanceAnimation string
+--- Whether left arm is actively occupied.
+---@field usingLeftArm boolean
+--- Whether right arm is actively occupied by a primary action.
+---@field usingRightArm boolean
 
 --- Animation clip record storing character animation data and mode requirements.
 ---@class AnimationData
@@ -18895,6 +18924,67 @@ taskPriority = {
 --- Override dispatch for `getInputValue`. Retrieves `InputValue` for this `GeneratorBuilding` instance.
 ---@field _NV_getInputValue fun(self: GeneratorBuilding, item: Item): number
 
+--- Base ranged weapon subsystem in Kenshi managing both handheld crossbows (`GunClassPersonal`) and mounted building turrets (`GunClassTurret`). Encapsulates projectile ballistics raycasting (`physHit`), aiming kinematics, reload cycle progression, elevation/wall bonus computations, bowstring rendering states, and visual projectile tracer streams (`ConstantTracerT`).
+---@class GunClass
+--- Base angular trajectory cone spread in radians.
+---@field accuracyDeviationBase number
+--- Skill threshold required to achieve nominal accuracy.
+---@field accuracySkillRequired number
+--- Active operational readiness toggle flag.
+---@field active boolean
+--- Tracking angular steering rate towards targets.
+---@field aimSpeed number
+--- Required ammunition item data descriptor.
+---@field ammoType GameData|nil
+--- Local relative offset vector from root node to muzzle tip.
+---@field gunBarrelOffsetPos table
+--- Core weapon configuration GameData record.
+---@field gunData GameData|nil
+--- Maximum effective firing range in meters.
+---@field maxRange number
+--- Currently loaded remaining shots in magazine.
+---@field numShotsCurrent integer
+--- Internal magazine ammunition capacity.
+---@field numShotsMax integer
+--- World-space orientation quaternion.
+---@field orientation table
+--- World-space origin coordinate.
+---@field position table
+--- Animation asset definition governing reloading posture.
+---@field reloadAnimation GameData|nil
+--- Normalized reload progression progress (0.0 to 1.0).
+---@field reloadState number
+--- Maximum reload duration at zero operator skill.
+---@field reloadTimeMax number
+--- Minimum possible reload duration at max operator skill.
+---@field reloadTimeMin number
+--- Projectile flight velocity scalar in m/s.
+---@field shotSpeed number
+--- Entity handle of operating character.
+---@field user hand
+--- Normalized operator proficiency skill scalar (0.0 to 1.0).
+---@field userSkill01 number
+--- Visual rendering visibility toggle flag.
+---@field visible boolean
+
+--- A specialized implementation of `GunClass` representing ranged weapons wielded personally by characters (e.g., crossbows). It manages character-specific weapon mechanics, animation states, and entity material bindings.
+---@class GunClassPersonal : GunClass
+--- State flag indicating if the character's animation is ready to fire.
+---@field animReadyToShoot boolean
+--- Bound character handle.
+---@field character hand
+--- Cached maximum pierce damage calculation.
+---@field maxDamage integer
+--- Cached minimum pierce damage calculation.
+---@field minDamage integer
+
+--- `GunClassTurret` represents a mounted turret weapon in the game world. It inherits from `GunClass` and links directly to a `TurretBuilding` entity, handling the physical representation, aiming, and target scoring specific to stationary defenses.
+---@class GunClassTurret : GunClass
+--- The last targeted position.
+---@field lastTarget table
+--- Pointer to the associated turret building structure.
+---@field turretBuilding TurretBuilding|nil
+
 --- Autonomous navigation agent and kinematic path follower bridging character locomotion kinematics (`CharMovement`) to Havok AI navigation meshes (`hkaiNavMesh`). Executes string-pulling portal funneling across NavMesh edge corridors (`EdgePathNode`), local obstacle avoidance steering, dynamic obstacle cylinder-sweep collision detection (`EdgeCache`), and water immersion speed damping.
 ---@class HavokCharacter
 --- Sets the agent's spatial position and updates the current NavMesh polygon face key. Marks `positionChanged = true` to force edge cache and spatial partition updates.
@@ -22157,6 +22247,23 @@ taskPriority = {
 --- Override dispatch for `getGUIToolTipForGroundResourceEfficiency`. Populates the provided Lektor<StringPair> container with tooltip lines describing rainfall collection efficiency.
 ---@field _NV_getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: Lektor<StringPair>|RainCollectorBuilding)
 
+--- Ballistic weapon controller governing personal crossbows and mounted defensive turrets. Manages predictive target leading (`getAimPos`), friendly-fire raycast clearances (`takeTheShotCheck`), ammunition consumption and reloading cycles (`reloadCheck`), elevation range multipliers (`getGunRange`), and targeting priority arbitration (`scoreTarget`).
+---@class RangedCombatClass
+--- Calculated lead distance offset applied to target coordinates based on linear velocity.
+---@field _lastAimAheadAmount number
+--- Active governing combat skill (`TURRETS` or `CROSSBOWS`).
+---@field currentStat integer
+--- Pointer to active ballistic firearm controller handling muzzle physics, spread, and bolts.
+---@field gun GunClass|nil
+--- Current state machine phase (`SHOOTING`, `MOVING`, `RELOADING`, `WAITING`, `THINKING`).
+---@field state integer
+--- Handle referencing mounted turret building entity when manning stationary defenses.
+---@field turret hand
+--- Dirty flag requesting animation re-evaluation on next frame.
+---@field updateNeededMsg boolean
+--- Nested enum table `RangedCombatClass.RangedState`.
+---@field RangedState RangedCombatClass.RangedState
+
 --- Stores diplomatic relation state, trust values, perceived strength, and treaty/war flags between two factions (wrapping `FactionRelations::RelationData`).
 ---@class RelationData
 --- Saves this relation data entry into `factionsList` (`GameData`) under key `ID` for faction `who` (`Faction`).
@@ -24656,7 +24763,7 @@ taskPriority = {
 --- World position of tracked target point.
 ---@field currentAimTarget table
 --- Embedded turret ballistic and firing controller.
----@field gunClass lightuserdata
+---@field gunClass GunClassTurret|nil
 --- Elevation vertical gun pitch joint.
 ---@field gunPart lightuserdata
 --- Azimuth horizontal rotation joint.
@@ -27181,6 +27288,11 @@ ProductionBuilding = {}
 ---@diagnostic disable-next-line: missing-fields
 RagdollPart = {}
 
+--- Namespace table enclosing nested `RangedCombatClass` enums.
+---@type RangedCombatClass
+---@diagnostic disable-next-line: missing-fields
+RangedCombatClass = {}
+
 --- Namespace table enclosing nested `RobotLimbs` enums.
 ---@type RobotLimbs
 ---@diagnostic disable-next-line: missing-fields
@@ -27724,6 +27836,16 @@ RagdollPart.Enum = {
     ARMS = 6,
     LEGS = 48,
     ALL = 4294934528,
+}
+
+--- Engine enum `RangedCombatClass.RangedState`.
+---@enum RangedCombatClass.RangedState
+RangedCombatClass.RangedState = {
+    SHOOTING = 0,
+    MOVING = 1,
+    RELOADING = 2,
+    WAITING = 3,
+    THINKING = 4,
 }
 
 --- Prosthetic and robotic limb anatomy identifier.

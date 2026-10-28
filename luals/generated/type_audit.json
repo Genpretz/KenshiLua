@@ -6571,15 +6571,6 @@
     {
       "category": "unmapped_header_type",
       "class": "Character",
-      "expected": "?RangedCombatClass*",
-      "header": "RangedCombatClass*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "rangedCombat"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
       "expected": "?ogre_unordered_map<hand,Character::WhoSeesMe>::type",
       "header": "ogre_unordered_map<hand,Character::WhoSeesMe>::type",
       "kind": "property",
@@ -7573,9 +7564,9 @@
       "member": "_NV_getClassType"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "Crossbow",
-      "expected": "?GunClass*",
+      "expected": "GunClass|nil",
       "header": "GunClass*",
       "kind": "property",
       "lua": "lightuserdata",
@@ -16647,6 +16638,24 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "RangedCombatClass",
+      "expected": "StatsEnumerated",
+      "header": "StatsEnumerated",
+      "kind": "property",
+      "lua": "integer",
+      "member": "currentStat"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "RangedCombatClass",
+      "expected": "RangedState",
+      "header": "RangedCombatClass::RangedState",
+      "kind": "property",
+      "lua": "integer",
+      "member": "state"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "RepetitionCounter",
       "expected": "fun(EventTriggerEnum): boolean",
       "header": "bool count(EventTriggerEnum ev)",
@@ -19572,15 +19581,6 @@
       "member": "_NV_serialise"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "TurretBuilding",
-      "expected": "?GunClassTurret*",
-      "header": "GunClassTurret*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "gunClass"
-    },
-    {
       "category": "binding_pushes_raw_pointer",
       "class": "TurretBuilding",
       "expected": "RotatingEnt|nil",
@@ -21147,16 +21147,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 55,
-    "binding_pushes_raw_pointer": 43,
+    "binding_pushes_raw_pointer": 44,
     "binding_shape_differs": 205,
     "blocking_issues": 0,
     "container_methods_typed": 1045,
-    "enum_typed_as_integer": 516,
-    "methods": 8358,
-    "methods_matching_header": 6333,
+    "enum_typed_as_integer": 518,
+    "methods": 8359,
+    "methods_matching_header": 6334,
     "no_header_declaration": 278,
-    "properties": 3450,
-    "properties_matching_header": 2905,
-    "unmapped_header_type": 445
+    "properties": 3493,
+    "properties_matching_header": 2948,
+    "unmapped_header_type": 442
   }
 }

@@ -28,6 +28,7 @@
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Kenshi/GameSaveStateBinding.h"
 #include "Bindings/Kenshi/InventoryBinding.h"
+#include "Bindings/Kenshi/RangedCombatClassBinding.h"
 #include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
 #include "Bindings/Kenshi/ItemBinding.h"
 #include "Bindings/Kenshi/LockedArmourBinding.h"
@@ -313,8 +314,8 @@ static int Character_get_rangedCombat(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    lua_pushlightuserdata(L, (void*)instance->rangedCombat);
-    return 1;
+    if (!instance->rangedCombat) { lua_pushnil(L); return 1; }
+    return pushObject<RangedCombatClass>(L, instance->rangedCombat, RangedCombatClassBinding::getMetatableName());
 }
 
 static int Character_get_inWhat(lua_State* L)
@@ -5280,7 +5281,7 @@ static int Character_set_rangedCombat(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    instance->rangedCombat = (RangedCombatClass*)lua_touserdata(L, 2);
+    instance->rangedCombat = lua_isnoneornil(L, 2) ? nullptr : checkObject<RangedCombatClass>(L, 2, RangedCombatClassBinding::getMetatableName());
     return 0;
 }
 

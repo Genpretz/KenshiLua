@@ -621,8 +621,10 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\AI\TaskRequestBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AIOptionsBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationClassHumanBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Animation\AnimationDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceAnimalBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\AppearanceBaseBinding.h" />
@@ -737,6 +739,9 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\GearBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\GlobalBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\GlobalConstantsBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\GunClassBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\GunClassPersonalBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\GunClassTurretBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Gui\BackpackInventoryLayoutBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Gui\BaseLayoutBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\Gui\BoxBinding.h" />
@@ -935,6 +940,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\Kenshi\ProsperityManagerBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\RaceDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\RaceLimiterBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\RangedCombatClassBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\RelationDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\RepetitionCounterBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ResourceLoaderBinding.h" />
@@ -1129,8 +1135,10 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\AI\TaskRequestBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AIOptionsBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AnimalInventoryLayoutBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBaseBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationClassHumanBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Animation\AnimationDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceAnimalBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\AppearanceBaseBinding.cpp" />
@@ -1244,6 +1252,9 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\GearBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\GlobalBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\GlobalConstantsBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\GunClassBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\GunClassPersonalBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\GunClassTurretBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Gui\BackpackInventoryLayoutBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Gui\BaseLayoutBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\Gui\BoxBinding.cpp" />
@@ -1441,6 +1452,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\Kenshi\ProsperityManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\RaceDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\RaceLimiterBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\RangedCombatClassBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\RelationDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\RepetitionCounterBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ResourceLoaderBinding.cpp" />

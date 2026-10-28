@@ -3,6 +3,7 @@
 #include "AnimationClassBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassHumanBinding.h"
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
@@ -1542,6 +1543,17 @@ int AnimationClassBinding::_NV_breathing(lua_State* L)
     return 0;
 }
 
+int AnimationClassBinding::isHuman(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+
+    AnimationClassHuman* result = instance->isHuman();
+    if (!result) { lua_pushnil(L); return 1; }
+    return pushObject<AnimationClassHuman>(L, result, AnimationClassHumanBinding::getMetatableName());
+}
+
+
 /*
 Skipped methods needing manual binding:
   line 411: AnimationClassHuman* isHuman(...) - unbound pointer
@@ -1717,6 +1729,7 @@ void AnimationClassBinding::registerBinding(lua_State* L)
         { "_NV_processTurnAnim", AnimationClassBinding::_NV_processTurnAnim },
         { "breathing", AnimationClassBinding::breathing },
         { "_NV_breathing", AnimationClassBinding::_NV_breathing },
+        { "isHuman", AnimationClassBinding::isHuman },
         { 0, 0 }
     };
 

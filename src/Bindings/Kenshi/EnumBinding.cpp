@@ -58,6 +58,7 @@
 #include "kenshi/Kenshi.h"
 #include "kenshi/Logger.h"
 #include "kenshi/util/YesNoMaybe.h"
+#include "kenshi/combat/RangedCombatClass.h"
 
 #include <lua.hpp>
 
@@ -3116,6 +3117,23 @@ namespace KenshiLua
     }
 
     // ------------------------------------------
+    // combat/RangedCombatClass.h
+    // ------------------------------------------
+    void registerRangedCombatClassRangedState(lua_State* L)
+    {
+        lua_createtable(L, 0, 5);
+
+        setEnum(L, "SHOOTING", RangedCombatClass::RangedState::SHOOTING);
+        setEnum(L, "MOVING", RangedCombatClass::RangedState::MOVING);
+        setEnum(L, "RELOADING", RangedCombatClass::RangedState::RELOADING);
+        setEnum(L, "WAITING", RangedCombatClass::RangedState::WAITING);
+        setEnum(L, "THINKING", RangedCombatClass::RangedState::THINKING);
+
+        setNestedClassTable(L, "RangedCombatClass", "RangedState");
+        lua_pop(L, 1);
+    }
+
+    // ------------------------------------------
     // Registration Entry Point
     // ------------------------------------------
 
@@ -3208,6 +3226,7 @@ namespace KenshiLua
         registerProneState(L);
         registerRagdollPart(L);
         registerRobotLimbs(L);
+        registerRangedCombatClassRangedState(L);
         registerSaveFileSystemState(L);
         registerSaveFileSystemMessageType(L);
         registerSaveManagerFlags(L);

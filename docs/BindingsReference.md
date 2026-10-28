@@ -29,7 +29,9 @@
 - [`AkVector`](#akvector)
 - [`AnimalInventoryLayout`](#animalinventorylayout)
 - [`AnimationClass`](#animationclass)
+- [`AnimationClassAnimal`](#animationclassanimal)
 - [`AnimationClassBase`](#animationclassbase)
+- [`AnimationClassHuman`](#animationclasshuman)
 - [`AnimationData`](#animationdata)
 - [`AppearanceAnimal`](#appearanceanimal)
 - [`AppearanceBase`](#appearancebase)
@@ -186,6 +188,9 @@
 - [`Global`](#global)
 - [`GlobalConstants`](#globalconstants)
 - [`GUIWindow`](#guiwindow)
+- [`GunClass`](#gunclass)
+- [`GunClassPersonal`](#gunclasspersonal)
+- [`GunClassTurret`](#gunclassturret)
 - [`Hand`](#hand)
 - [`HavokCharacter`](#havokcharacter)
 - [`hkArray`](#hkarray)
@@ -316,6 +321,7 @@
 - [`RaceLimiter`](#racelimiter)
   - [`RaceLimiter::Limiter`](#racelimiter::limiter)
 - [`RainCollectorBuilding`](#raincollectorbuilding)
+- [`RangedCombatClass`](#rangedcombatclass)
 - [`rendHit`](#rendhit)
 - [`ReorderableList`](#reorderablelist)
 - [`ResearchBuilding`](#researchbuilding)
@@ -1401,6 +1407,18 @@
 | overlaidAnimationSelection | `` | `void` | `obj:overlaidAnimationSelection()` |
 | processTurnAnim | `` | `boolean` | `obj:processTurnAnim()` |
 | breathing | `armsToo: boolean` | `void` | `obj:breathing(armsToo)` |
+| isHuman | `` | `AnimationClassHuman` | `obj:isHuman()` |
+
+## AnimationClassAnimal
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassAnimal.h`
+**Metatable:** `KenshiLua.AnimationClassAnimal`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| maxTurnSpeed | `number` | RW | `obj.maxTurnSpeed = <value>` |
+| _isTurningFar | `boolean` | RW | `obj._isTurningFar = <value>` |
+| lastRot | `Quaternion` | RW | `obj.lastRot = <value>` |
 
 ## AnimationClassBase
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
@@ -1464,6 +1482,22 @@
 | getAnimation_Medic | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Medic(inwhat)` |
 | getAnimation_Lockpick | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Lockpick(inwhat)` |
 | getAnimationData | `name: string` | `AnimationData` | `obj:getAnimationData(name)` |
+
+## AnimationClassHuman
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassHuman.h`
+**Metatable:** `KenshiLua.AnimationClassHuman`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| usingRightArm | `boolean` | RW | `obj.usingRightArm = <value>` |
+| usingLeftArm | `boolean` | RW | `obj.usingLeftArm = <value>` |
+| disabledRightArm | `boolean` | RW | `obj.disabledRightArm = <value>` |
+| disabledLeftArm | `boolean` | RW | `obj.disabledLeftArm = <value>` |
+| stanceAnimation | `lstring` | RW | `obj.stanceAnimation = <value>` |
+| lookDirection | `Vector3` | RW | `obj.lookDirection = <value>` |
+| hipspos | `Vector3` | RW | `obj.hipspos = <value>` |
+| breatheTimer | `number` | RW | `obj.breatheTimer = <value>` |
 
 ## AnimationData
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
@@ -2726,7 +2760,7 @@
 | lastGuyWhoDefeatedMe | `hand` | RW | `obj.lastGuyWhoDefeatedMe = <value>` |
 | myRace | `RaceData` | RW | `obj.myRace = <value>` |
 | inventory | `Inventory` | RW | `obj.inventory = <value>` |
-| rangedCombat | `lightuserdata` | RW | `obj.rangedCombat = <value>` |
+| rangedCombat | `RangedCombatClass` | RW | `obj.rangedCombat = <value>` |
 | inWhat | `hand` | RW | `obj.inWhat = <value>` |
 | isChained | `boolean` | RW | `obj.isChained = <value>` |
 | slaveOwner | `hand` | RW | `obj.slaveOwner = <value>` |
@@ -6955,6 +6989,56 @@
 | getWidget | `` | `MyGUI::Widget` | `obj:getWidget()` |
 | resize | `w: integer, h: integer` | `void` | `obj:resize(w, h)` |
 
+## GunClass
+**Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
+**Metatable:** `KenshiLua.GunClass`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| maxRange | `number` | RW | `obj.maxRange = <value>` |
+| accuracySkillRequired | `number` | RW | `obj.accuracySkillRequired = <value>` |
+| accuracyDeviationBase | `number` | RW | `obj.accuracyDeviationBase = <value>` |
+| aimSpeed | `number` | RW | `obj.aimSpeed = <value>` |
+| shotSpeed | `number` | RW | `obj.shotSpeed = <value>` |
+| numShotsMax | `integer` | RW | `obj.numShotsMax = <value>` |
+| numShotsCurrent | `integer` | RW | `obj.numShotsCurrent = <value>` |
+| reloadTimeMin | `number` | RW | `obj.reloadTimeMin = <value>` |
+| reloadTimeMax | `number` | RW | `obj.reloadTimeMax = <value>` |
+| userSkill01 | `number` | RW | `obj.userSkill01 = <value>` |
+| user | `hand` | RW | `obj.user = <value>` |
+| reloadAnimation | `GameData` | RW | `obj.reloadAnimation = <value>` |
+| ammoType | `GameData` | RW | `obj.ammoType = <value>` |
+| active | `boolean` | RW | `obj.active = <value>` |
+| visible | `boolean` | RW | `obj.visible = <value>` |
+| gunData | `GameData` | RW | `obj.gunData = <value>` |
+| gunBarrelOffsetPos | `Vector3` | RW | `obj.gunBarrelOffsetPos = <value>` |
+| reloadState | `number` | RW | `obj.reloadState = <value>` |
+| position | `Vector3` | RW | `obj.position = <value>` |
+| orientation | `Quaternion` | RW | `obj.orientation = <value>` |
+
+## GunClassPersonal
+**Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
+**Metatable:** `KenshiLua.GunClassPersonal`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| minDamage | `integer` | RW | `obj.minDamage = <value>` |
+| maxDamage | `integer` | RW | `obj.maxDamage = <value>` |
+| animReadyToShoot | `boolean` | RW | `obj.animReadyToShoot = <value>` |
+| character | `hand` | RW | `obj.character = <value>` |
+
+## GunClassTurret
+**Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
+**Metatable:** `KenshiLua.GunClassTurret`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| lastTarget | `Vector3` | RW | `obj.lastTarget = <value>` |
+| turretBuilding | `TurretBuilding` | RW | `obj.turretBuilding = <value>` |
+
 ## Hand
 **Header:** `extern/KenshiLib/Include/kenshi/util/hand.h`
 **Metatable:** `KenshiLua.hand`
@@ -10699,6 +10783,20 @@
 | getGUIState | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIState(datapanel, category)` |
 | getGUIToolTipForGroundResourceEfficiency | `` | `void` | `obj:getGUIToolTipForGroundResourceEfficiency()` |
 
+## RangedCombatClass
+**Header:** `extern/KenshiLib/Include/kenshi/combat/RangedCombatClass.h`
+**Metatable:** `KenshiLua.RangedCombatClass`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| state | `RangedCombatClass::RangedState` | RW | `obj.state = <value>` |
+| _lastAimAheadAmount | `number` | RW | `obj._lastAimAheadAmount = <value>` |
+| turret | `hand` | RW | `obj.turret = <value>` |
+| gun | `GunClass` | RW | `obj.gun = <value>` |
+| currentStat | `StatsEnumerated` | RW | `obj.currentStat = <value>` |
+| updateNeededMsg | `boolean` | RW | `obj.updateNeededMsg = <value>` |
+
 ## rendHit
 **Header:** `extern/KenshiLib/Include/kenshi/util/UtilityT.h`
 **Metatable:** `KenshiLua.rendHit`
@@ -12947,7 +13045,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| gunClass | `lightuserdata` | R | `obj.gunClass` |
+| gunClass | `GunClassTurret` | RW | `obj.gunClass = <value>` |
 | aimDistInDegrees | `number` | RW | `obj.aimDistInDegrees = <value>` |
 | currentAimDir | `Vector3` | RW | `obj.currentAimDir = <value>` |
 | rootAimDir | `Vector3` | RW | `obj.rootAimDir = <value>` |
