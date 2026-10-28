@@ -7008,7 +7008,7 @@
     {
       "category": "multiple",
       "class": "CombatClass",
-      "expected": "fun(swordStateEnum): ?CombatState*",
+      "expected": "fun(swordStateEnum): CombatState|nil",
       "header": "CombatState* getStateClass(swordStateEnum state)",
       "issues": [
         {
@@ -7019,8 +7019,8 @@
         },
         {
           "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CombatState*",
+          "category": "binding_pushes_raw_pointer",
+          "expected": "CombatState|nil",
           "position": "return 1"
         }
       ],
@@ -7031,7 +7031,7 @@
     {
       "category": "multiple",
       "class": "CombatClass",
-      "expected": "fun(swordStateEnum): ?CombatState*",
+      "expected": "fun(swordStateEnum): CombatState|nil",
       "header": "CombatState* _NV_getStateClass(swordStateEnum state)",
       "issues": [
         {
@@ -7042,8 +7042,8 @@
         },
         {
           "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?CombatState*",
+          "category": "binding_pushes_raw_pointer",
+          "expected": "CombatState|nil",
           "position": "return 1"
         }
       ],
@@ -16628,6 +16628,62 @@
       "member": "weatherImmunities"
     },
     {
+      "category": "unmapped_header_type",
+      "class": "RagdollAnimation",
+      "expected": "fun(?Ogre::Entity*, ?Ogre::OldSkeletonInstance*, ?Ogre::Animation*, number)",
+      "header": "void setTargetAnimation(Ogre::Entity* ent, Ogre::OldSkeletonInstance* skel, Ogre::Animation* animation, float duration)",
+      "issues": [
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Entity*",
+          "position": "param 1"
+        },
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::OldSkeletonInstance*",
+          "position": "param 2"
+        },
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Animation*",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: RagdollAnimation, ent: lightuserdata, skel: lightuserdata, animation: lightuserdata, duration: number)",
+      "member": "setTargetAnimation"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "RagdollAnimation",
+      "expected": "?Ogre::Entity*",
+      "header": "Ogre::Entity*",
+      "kind": "property",
+      "lua": "lightuserdata",
+      "member": "entity"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "RagdollAnimation",
+      "expected": "?Ogre::OldSkeletonInstance*",
+      "header": "Ogre::OldSkeletonInstance*",
+      "kind": "property",
+      "lua": "lightuserdata",
+      "member": "skeleton"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "RagdollAnimation.RagdollAnimationTrack",
+      "expected": "?Ogre::OldBone*",
+      "header": "Ogre::OldBone*",
+      "kind": "property",
+      "lua": "lightuserdata",
+      "member": "bone"
+    },
+    {
       "category": "enum_typed_as_integer",
       "class": "RangedCombatClass",
       "expected": "StatsEnumerated",
@@ -21215,16 +21271,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 55,
-    "binding_pushes_raw_pointer": 46,
+    "binding_pushes_raw_pointer": 48,
     "binding_shape_differs": 205,
     "blocking_issues": 0,
     "container_methods_typed": 1045,
     "enum_typed_as_integer": 523,
-    "methods": 8434,
-    "methods_matching_header": 6405,
+    "methods": 8487,
+    "methods_matching_header": 6457,
     "no_header_declaration": 278,
-    "properties": 3529,
-    "properties_matching_header": 2984,
-    "unmapped_header_type": 439
+    "properties": 3555,
+    "properties_matching_header": 3007,
+    "unmapped_header_type": 441
   }
 }

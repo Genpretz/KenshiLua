@@ -14426,6 +14426,8 @@ taskPriority = {
 ---@field feetHeight number
 --- Back-pointer to owning character actor entity.
 ---@field me Character
+--- Skeletal bone kinematic ragdoll blending coupler.
+---@field ragdollAnimation RagdollAnimation|nil
 --- Ragdoll component collision bitmask identifying active physics limbs.
 ---@field ragdollParts integer
 --- Directional strafe blending and velocity smoothing motion filter.
@@ -14544,6 +14546,42 @@ taskPriority = {
 ---@field weatherType integer
 --- Override all skeletal blend layers.
 ---@field wholeBodyAllLayer boolean
+
+--- Engine class `AnimationEvent`.
+---@class AnimationEvent
+---@field trigger fun(self: AnimationEvent, arg1: Character)
+---@field _NV_trigger fun(self: AnimationEvent, arg1: Character)
+---@field finish fun(self: AnimationEvent, arg1: Character)
+---@field _NV_finish fun(self: AnimationEvent, arg1: Character)
+---@field toString fun(self: AnimationEvent): string
+---@field _NV_toString fun(self: AnimationEvent): string
+
+--- Engine class `AnimationGroundEvent`.
+---@class AnimationGroundEvent : AnimationEvent
+---@field trigger fun(self: AnimationGroundEvent, character: Character)
+---@field _NV_trigger fun(self: AnimationGroundEvent, character: Character)
+---@field toString fun(self: AnimationGroundEvent): string
+---@field _NV_toString fun(self: AnimationGroundEvent): string
+---@field bone string
+
+--- Engine class `AnimationReloadEvent`.
+---@class AnimationReloadEvent : AnimationEvent
+---@field trigger fun(self: AnimationReloadEvent, character: Character)
+---@field _NV_trigger fun(self: AnimationReloadEvent, character: Character)
+
+--- Engine class `AnimationSFXEvent`.
+---@class AnimationSFXEvent : AnimationEvent
+---@field trigger fun(self: AnimationSFXEvent, character: Character)
+---@field _NV_trigger fun(self: AnimationSFXEvent, character: Character)
+---@field finish fun(self: AnimationSFXEvent, character: Character)
+---@field _NV_finish fun(self: AnimationSFXEvent, character: Character)
+---@field toString fun(self: AnimationSFXEvent): string
+---@field _NV_toString fun(self: AnimationSFXEvent): string
+---@field isFootstep boolean
+---@field key string
+---@field name string
+---@field stop string
+---@field value string
 
 --- Humanoid character appearance specialist managing facial features, hair/beard styling, gender dimorphism, chest/waist proportions, and skin normal overlays.
 ---@class AppearanceHuman : AppearanceBase
@@ -14933,6 +14971,19 @@ taskPriority = {
 ---@field combatClass CombatClass
 --- Owner character whose immediate combat perimeter is governed by this slot manager.
 ---@field me Character
+
+--- Engine class `AttackState`.
+---@class AttackState : CombatState
+---@field validate fun(self: AttackState): boolean
+---@field _NV_validate fun(self: AttackState): boolean
+---@field initialiseAttack fun(self: AttackState, target: Character): boolean
+---@field initialise fun(self: AttackState): boolean
+---@field _NV_initialise fun(self: AttackState): boolean
+---@field update fun(self: AttackState, time: number)
+---@field _NV_update fun(self: AttackState, time: number)
+---@field end fun(self: AttackState)
+---@field _NV_end fun(self: AttackState)
+---@field techniqueIntegrityCheckTimer number
 
 --- Thread-safe message queue template used to transfer notifications and state changes from background worker threads to the main engine thread.
 ---@class BackThreadMessagesToMainT
@@ -16284,6 +16335,19 @@ taskPriority = {
 --- Raw pointer (lightuserdata) to the CharacterTradingHandler managing the trading transaction.
 ---@field tradingHandler lightuserdata
 
+--- Engine class `CircleStateAI`.
+---@class CircleStateAI : CombatState
+---@field amOverCrowded fun(self: CircleStateAI): boolean
+---@field validate fun(self: CircleStateAI): boolean
+---@field _NV_validate fun(self: CircleStateAI): boolean
+---@field initialise fun(self: CircleStateAI): boolean
+---@field _NV_initialise fun(self: CircleStateAI): boolean
+---@field update fun(self: CircleStateAI, time: number)
+---@field _NV_update fun(self: CircleStateAI, time: number)
+---@field end fun(self: CircleStateAI)
+---@field _NV_end fun(self: CircleStateAI)
+---@field circlingDirection number
+
 --- Master tactical melee combat controller governing realtime weapon exchanges, directional swing trajectories, defensive blocking arcs, damage mitigations, and attack slot reservations. Coordinates directly with `AnimationClass` for skeletal motion, `CharStats` for combat formulas and weapon skills, `MedicalSystem` for anatomical trauma, and `CharMovement` for combat spacing.
 ---@class CombatClass
 --- Queries whether this combat controller instance is governed by AI automation rather than direct player commands.
@@ -16525,7 +16589,7 @@ taskPriority = {
 --- Attack slot overflow counter (buffer 2) tracking enemies queued for an engagement slot.
 ---@field numEnemiesWaitingForMe2 integer
 --- Hash map associating discrete combat state enums (`CHOP_WEAPON`, `BLOCK`, `STUMBLE`) with state handler objects.
----@field stateMap OgreUnorderedMap<integer, lightuserdata>
+---@field stateMap OgreUnorderedMap<integer, CombatState>
 --- Elapsed simulation time accumulator for current combat state phase.
 ---@field stateTimer number
 --- Character attributes, skill levels (Melee Attack, Melee Defense, Dexterity, Strength), and weapon masteries.
@@ -16664,6 +16728,15 @@ taskPriority = {
 ---@field strafeStateTimer number
 --- Whether the character is currently strafing.
 ---@field strafing boolean
+
+--- Engine class `CombatState`.
+---@class CombatState
+---@field validate fun(self: CombatState): boolean
+---@field initialise fun(self: CombatState): boolean
+---@field update fun(self: CombatState, arg1: number)
+---@field end fun(self: CombatState)
+---@field combat CombatClass|nil
+---@field stateTimer number
 
 --- Combat technique animation data, defining attack trajectory, speed, distance, and hit timings.
 ---@class CombatTechniqueData
@@ -22238,6 +22311,44 @@ taskPriority = {
 --- Map (ogre_unordered_map<GameData*, RaceLimiter::Limiter>) of item game data to race restriction limiter rules.
 ---@field limits OgreUnorderedMap<GameData, Limiter>
 
+--- Engine class `RagdollAnimation`.
+---@class RagdollAnimation
+--- Checks if the ragdoll recovery blend is actively interpolating. Returns the value of the internal `animating` flag.
+---@field isAnimating fun(self: RagdollAnimation): boolean
+--- Performs the per-frame tick for the ragdoll-to-animation blend. If it's the first update, bones are set to manually controlled. It interpolates bone orientations and positions using `nlerp`, and restores regular animation control once the blend duration completes.
+---@field update fun(self: RagdollAnimation)
+--- Configures the blend sequence by evaluating a target `Ogre::Animation` and matching its track data against the ragdoll bones. It computes the start offsets and target orientations for the transition.
+---@field setTargetAnimation fun(self: RagdollAnimation, ent: lightuserdata, skel: lightuserdata, animation: lightuserdata, duration: number)
+--- Returns the name of the target animation clip that the ragdoll is blending towards. Used to queue the standard animation state machine upon blend completion.
+---@field getTargetAnimation fun(self: RagdollAnimation): string
+--- Retrieves the currently elapsed time within the ragdoll transition blend. Represents the active progress of the blend transition.
+---@field getAnimationTime fun(self: RagdollAnimation): number
+--- Whether ragdoll-to-keyframe blend is actively interpolating.
+---@field animating boolean
+--- Bound owner animation coordinator.
+---@field animationClass AnimationClass|nil
+--- Current elapsed blend transition timer.
+---@field curTime number
+--- Total blend transition duration.
+---@field endTime number
+--- Visual 3D actor entity mesh.
+---@field entity lightuserdata
+--- Initialization tick marker flag.
+---@field firstUpdate boolean
+--- Skeletal rig instance being blended.
+---@field skeleton lightuserdata
+--- Target recovery animation clip name (e.g. get up from ground).
+---@field targetAnimationName string
+
+--- Engine class `RagdollAnimation.RagdollAnimationTrack`.
+---@class RagdollAnimation.RagdollAnimationTrack
+---@field active boolean
+---@field bone lightuserdata
+---@field endPosition table
+---@field endRotation table
+---@field startPosition table
+---@field startRotation table
+
 --- Specialized ProductionBuilding that passively collects water from rainfall at a rate determined by local weather conditions.
 ---@class RainCollectorBuilding : ProductionBuilding
 --- Calculates and returns the water collection efficiency multiplier based on current rainfall.
@@ -25517,6 +25628,18 @@ taskPriority = {
 --- Distance from the observer to the perceived entity.
 ---@field range number
 
+--- Engine class `WaitingStateAI`.
+---@class WaitingStateAI : CombatState
+---@field validate fun(self: WaitingStateAI): boolean
+---@field _NV_validate fun(self: WaitingStateAI): boolean
+---@field initialise fun(self: WaitingStateAI): boolean
+---@field _NV_initialise fun(self: WaitingStateAI): boolean
+---@field update fun(self: WaitingStateAI, time: number)
+---@field _NV_update fun(self: WaitingStateAI, time: number)
+---@field end fun(self: WaitingStateAI)
+---@field _NV_end fun(self: WaitingStateAI)
+---@field circlingDirection number
+
 --- Defensive wall fortification piece governing perimeter segment connections, rampart walkway placement, shared construction scaffolds, and structural upgrades. Derived from `Building`, `WallBuilding` coordinates directly with `ZoneMapContent` for neighboring structural discovery, `TurretBuilding` for mounted rampart defenses, and `DatapanelGUI` for fortification upgrade and demolition controls.
 ---@class WallBuilding : Building
 --- Returns associated `UseableStuff` pointer if wall includes operable rampart machinery (nullptr for passive wall sections).
@@ -28595,8 +28718,8 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "int", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<itemType, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
----@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, lightuserdata>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, CombatState>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
@@ -28624,7 +28747,7 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "hand", valueType: "InventorySection"): OgreUnorderedMap<hand, InventorySection>
 ---@overload fun(keyType: "int", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(keyType: string|table, valueType: string|table): OgreUnorderedMap<any, any>
 ogre_unordered_map = {}
 
@@ -28689,8 +28812,8 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "int", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<itemType, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
----@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, lightuserdata>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, CombatState>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
@@ -28718,7 +28841,7 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "hand", valueType: "InventorySection"): OgreUnorderedMap<hand, InventorySection>
 ---@overload fun(keyType: "int", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, CombatState>
 ---@param keyType string|table
 ---@param valueType string|table
 ---@return OgreUnorderedMap<any, any>

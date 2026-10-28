@@ -33,6 +33,10 @@
 - [`AnimationClassBase`](#animationclassbase)
 - [`AnimationClassHuman`](#animationclasshuman)
 - [`AnimationData`](#animationdata)
+- [`AnimationEvent`](#animationevent)
+- [`AnimationGroundEvent`](#animationgroundevent)
+- [`AnimationReloadEvent`](#animationreloadevent)
+- [`AnimationSFXEvent`](#animationsfxevent)
 - [`AppearanceAnimal`](#appearanceanimal)
 - [`AppearanceBase`](#appearancebase)
 - [`AppearanceHuman`](#appearancehuman)
@@ -45,6 +49,7 @@
   - [`AppearanceManager::Gender`](#appearancemanager::gender)
 - [`Armour`](#armour)
 - [`Array2d`](#array2d)
+- [`AttackState`](#attackstate)
 - [`BackpackInventoryLayout`](#backpackinventorylayout)
 - [`BackThreadMessagesToMainT`](#backthreadmessagestomaint)
 - [`BadSize`](#badsize)
@@ -82,11 +87,13 @@
 - [`CharBody`](#charbody)
 - [`CharMovement`](#charmovement)
 - [`CharStats`](#charstats)
+- [`CircleStateAI`](#circlestateai)
 - [`CombatClass`](#combatclass)
   - [`CombatClass::AttackSlotManager`](#combatclass::attackslotmanager)
   - [`CombatClass::AttackSlotManager::SlotData`](#combatclass::attackslotmanager::slotdata)
   - [`CombatClass::EffectData`](#combatclass::effectdata)
 - [`CombatMovementController`](#combatmovementcontroller)
+- [`CombatState`](#combatstate)
 - [`CombatTechniqueData`](#combattechniquedata)
   - [`CombatTechniqueData::ImpactPoint`](#combattechniquedata::impactpoint)
 - [`ContainerItem`](#containeritem)
@@ -320,6 +327,8 @@
 - [`RaceData`](#racedata)
 - [`RaceLimiter`](#racelimiter)
   - [`RaceLimiter::Limiter`](#racelimiter::limiter)
+- [`RagdollAnimation`](#ragdollanimation)
+  - [`RagdollAnimation::RagdollAnimationTrack`](#ragdollanimation::ragdollanimationtrack)
 - [`RainCollectorBuilding`](#raincollectorbuilding)
 - [`RangedCombatClass`](#rangedcombatclass)
 - [`rendHit`](#rendhit)
@@ -425,6 +434,7 @@
 - [`UseableStuff`](#useablestuff)
 - [`UtilityT`](#utilityt)
 - [`VisibleObjectInfo`](#visibleobjectinfo)
+- [`WaitingStateAI`](#waitingstateai)
 - [`WallBuilding`](#wallbuilding)
 - [`Weapon`](#weapon)
 - [`Weather`](#weather)
@@ -1301,6 +1311,7 @@
 | disableRagdollKinematics | `integer` | RW | `obj.disableRagdollKinematics = <value>` |
 | me | `Character` | RW | `obj.me = <value>` |
 | defaultIdleAnimation | `AnimationData` | RW | `obj.defaultIdleAnimation = <value>` |
+| ragdollAnimation | `RagdollAnimation` | R | `obj.ragdollAnimation` |
 | ragdollParts | `RagdollPart::Enum` | RW | `obj.ragdollParts = <value>` |
 
 ### Methods
@@ -1559,6 +1570,61 @@
 | stumbleOrigination | `CutOrigination` | RW | `obj.stumbleOrigination = <value>` |
 | bigStumble | `boolean` | RW | `obj.bigStumble = <value>` |
 | stumbleRarityMult | `number` | RW | `obj.stumbleRarityMult = <value>` |
+
+## AnimationEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationEvent`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `c: Character` | `void` | `obj:trigger(c)` |
+| finish | `c: Character` | `void` | `obj:finish(c)` |
+| toString | `` | `string` | `obj:toString()` |
+
+## AnimationGroundEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationGroundEvent`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| bone | `string` | RW | `obj.bone = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `character: Character` | `void` | `obj:trigger(character)` |
+| toString | `` | `string` | `obj:toString()` |
+
+## AnimationReloadEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationReloadEvent`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `character: Character` | `void` | `obj:trigger(character)` |
+
+## AnimationSFXEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationSFXEvent`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| name | `string` | RW | `obj.name = <value>` |
+| key | `string` | RW | `obj.key = <value>` |
+| value | `string` | RW | `obj.value = <value>` |
+| stop | `string` | RW | `obj.stop = <value>` |
+| isFootstep | `boolean` | RW | `obj.isFootstep = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `character: Character` | `void` | `obj:trigger(character)` |
+| finish | `character: Character` | `void` | `obj:finish(character)` |
+| toString | `` | `string` | `obj:toString()` |
 
 ## AppearanceAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -1887,6 +1953,24 @@
 ## Array2d
 **Header:** `extern/KenshiLib/Include/kenshi/util/array2d.h`
 **Metatable:** `KenshiLua.Array2d`
+
+## AttackState
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.AttackState`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| techniqueIntegrityCheckTimer | `number` | RW | `obj.techniqueIntegrityCheckTimer = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| validate | `` | `boolean` | `obj:validate()` |
+| initialiseAttack | `target: Character` | `boolean` | `obj:initialiseAttack(target)` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
 
 ## BackpackInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
@@ -3889,6 +3973,24 @@
 | convertBluntMultiplierToWeaponWeight | `` | `number` | `CharStats.convertBluntMultiplierToWeaponWeight()`<br>`obj:convertBluntMultiplierToWeaponWeight()` |
 | setupCombatTechniques | `` | `void` | `CharStats.setupCombatTechniques()`<br>`obj:setupCombatTechniques()` |
 
+## CircleStateAI
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.CircleStateAI`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| circlingDirection | `number` | RW | `obj.circlingDirection = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| amOverCrowded | `` | `boolean` | `obj:amOverCrowded()` |
+| validate | `` | `boolean` | `obj:validate()` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
+
 ## CombatClass
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
 **Metatable:** `KenshiLua.CombatClass`
@@ -4121,6 +4223,24 @@
 | getGUIData | `panel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(panel, category)` |
 | combatMovementOffensive | `target: hand, minDistance: number, maxDistance: number, circle: number, power: boolean, speedLimit: number` | `void` | `obj:combatMovementOffensive(target, minDistance, maxDistance, circle, power, speedLimit)` |
 | disable | `` | `void` | `obj:disable()` |
+
+## CombatState
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.CombatState`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| combat | `CombatClass` | RW | `obj.combat = <value>` |
+| stateTimer | `number` | RW | `obj.stateTimer = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| validate | `` | `boolean` | `obj:validate()` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
 
 ## CombatTechniqueData
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatTechniqueData.h`
@@ -10779,6 +10899,36 @@
 |---|---|---|---|
 | canEquip | `race: RaceData, isAnimal: boolean` | `boolean` | `obj:canEquip(race, isAnimal)` |
 
+## RagdollAnimation
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/RagdollAnimation.h`
+**Metatable:** `KenshiLua.RagdollAnimation`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| animationClass | `AnimationClass` | R | `obj.animationClass` |
+| targetAnimationName | `string` | RW | `obj.targetAnimationName = <value>` |
+| skeleton | `lightuserdata` | R | `obj.skeleton` |
+| entity | `lightuserdata` | R | `obj.entity` |
+| firstUpdate | `boolean` | RW | `obj.firstUpdate = <value>` |
+| animating | `boolean` | RW | `obj.animating = <value>` |
+| endTime | `number` | RW | `obj.endTime = <value>` |
+| curTime | `number` | RW | `obj.curTime = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isAnimating | `` | `boolean` | `obj:isAnimating()` |
+| update | `` | `void` | `obj:update()` |
+| setTargetAnimation | `ent: userdata, skel: userdata, animation: userdata, duration: number` | `void` | `obj:setTargetAnimation(ent, skel, animation, duration)` |
+| getTargetAnimation | `` | `string` | `obj:getTargetAnimation()` |
+| getAnimationTime | `` | `number` | `obj:getAnimationTime()` |
+
+## RagdollAnimation::RagdollAnimationTrack
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/RagdollAnimation.h`
+**Parent Class:** [`RagdollAnimation`](#ragdollanimation)
+**Metatable:** `KenshiLua.RagdollAnimation.RagdollAnimationTrack`
+
 ## RainCollectorBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/RainCollectorBuilding.h`
 **Metatable:** `KenshiLua.RainCollectorBuilding`
@@ -13530,6 +13680,23 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | operator_assign | `other: VisibleObjectInfo` | `void` | `obj:operator_assign(other)` |
+
+## WaitingStateAI
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.WaitingStateAI`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| circlingDirection | `number` | RW | `obj.circlingDirection = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| validate | `` | `boolean` | `obj:validate()` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
 
 ## WallBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/WallBuilding.h`

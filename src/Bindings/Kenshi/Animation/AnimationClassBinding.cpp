@@ -3,6 +3,7 @@
 #include "AnimationClassBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
+#include "Bindings/Kenshi/Animation/RagdollAnimationBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassHumanBinding.h"
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
@@ -22,6 +23,7 @@ static_assert(offsetof(AnimationClass, animationRequirements) == 0xF0, "Animatio
 static_assert(offsetof(AnimationClass, strafeBlendFilter) == 0x2B8, "AnimationClass::strafeBlendFilter offset does not match the game");
 static_assert(offsetof(AnimationClass, me) == 0x2D8, "AnimationClass::me offset does not match the game");
 static_assert(offsetof(AnimationClass, defaultIdleAnimation) == 0x2E0, "AnimationClass::defaultIdleAnimation offset does not match the game");
+static_assert(offsetof(AnimationClass, ragdollAnimation) == 0x2F0, "AnimationClass::ragdollAnimation offset does not match the game");
 static_assert(offsetof(AnimationClass, ragdollParts) == 0x2F8, "AnimationClass::ragdollParts offset does not match the game");
 
 static AnimationClass* getInstance(lua_State* L, int idx)
@@ -88,6 +90,14 @@ static int AnimationClass_get_defaultIdleAnimation(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
     return pushObject<AnimationData>(L, instance->defaultIdleAnimation, AnimationDataBinding::getMetatableName());
+}
+
+static int AnimationClass_get_ragdollAnimation(lua_State* L)
+{
+    AnimationClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationClass is nil");
+    if (!instance->ragdollAnimation) { lua_pushnil(L); return 1; }
+    return pushObject<RagdollAnimation>(L, instance->ragdollAnimation, RagdollAnimationBinding::getMetatableName());
 }
 
 static int AnimationClass_get_ragdollParts(lua_State* L)
@@ -1752,6 +1762,7 @@ void AnimationClassBinding::registerBinding(lua_State* L)
     registerGetter(L, "disableRagdollKinematics", AnimationClass_get_disableRagdollKinematics);
     registerGetter(L, "me", AnimationClass_get_me);
     registerGetter(L, "defaultIdleAnimation", AnimationClass_get_defaultIdleAnimation);
+    registerGetter(L, "ragdollAnimation", AnimationClass_get_ragdollAnimation);
     registerGetter(L, "ragdollParts", AnimationClass_get_ragdollParts);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 

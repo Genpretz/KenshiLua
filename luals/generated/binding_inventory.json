@@ -17269,6 +17269,11 @@
           "type": "Character"
         },
         {
+          "access": "readonly",
+          "name": "ragdollAnimation",
+          "type": "RagdollAnimation|nil"
+        },
+        {
           "access": "readwrite",
           "name": "ragdollParts",
           "type": "integer"
@@ -17587,6 +17592,360 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/Animation/AnimationDataBinding.cpp"
+    },
+    {
+      "binding": "AnimationEventBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationEvent",
+      "metatable": "KenshiLua.AnimationEvent",
+      "methods": [
+        {
+          "callback": "AnimationEventBinding::trigger",
+          "name": "trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventBinding::_NV_trigger",
+          "name": "_NV_trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventBinding::finish",
+          "name": "finish",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventBinding::_NV_finish",
+          "name": "_NV_finish",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventBinding::toString",
+          "name": "toString",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationEventBinding::_NV_toString",
+          "name": "_NV_toString",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationEventBinding.cpp"
+    },
+    {
+      "binding": "AnimationGroundEventBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationGroundEvent",
+      "metatable": "KenshiLua.AnimationGroundEvent",
+      "methods": [
+        {
+          "callback": "AnimationGroundEventBinding::trigger",
+          "name": "trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationGroundEventBinding::_NV_trigger",
+          "name": "_NV_trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationGroundEventBinding::toString",
+          "name": "toString",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationGroundEventBinding::_NV_toString",
+          "name": "_NV_toString",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "AnimationEventBinding",
+      "parent_metatable": "KenshiLua.AnimationEvent",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "bone",
+          "type": "string"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationGroundEventBinding.cpp"
+    },
+    {
+      "binding": "AnimationReloadEventBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationReloadEvent",
+      "metatable": "KenshiLua.AnimationReloadEvent",
+      "methods": [
+        {
+          "callback": "AnimationReloadEventBinding::trigger",
+          "name": "trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationReloadEventBinding::_NV_trigger",
+          "name": "_NV_trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "AnimationEventBinding",
+      "parent_metatable": "KenshiLua.AnimationEvent",
+      "properties": [],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationReloadEventBinding.cpp"
+    },
+    {
+      "binding": "AnimationSFXEventBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AnimationSFXEvent",
+      "metatable": "KenshiLua.AnimationSFXEvent",
+      "methods": [
+        {
+          "callback": "AnimationSFXEventBinding::trigger",
+          "name": "trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationSFXEventBinding::_NV_trigger",
+          "name": "_NV_trigger",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationSFXEventBinding::finish",
+          "name": "finish",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationSFXEventBinding::_NV_finish",
+          "name": "_NV_finish",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationSFXEventBinding::toString",
+          "name": "toString",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationSFXEventBinding::_NV_toString",
+          "name": "_NV_toString",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "AnimationEventBinding",
+      "parent_metatable": "KenshiLua.AnimationEvent",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "isFootstep",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "key",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "stop",
+          "type": "string"
+        },
+        {
+          "access": "readwrite",
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/AnimationSFXEventBinding.cpp"
     },
     {
       "binding": "AppearanceAnimalBinding",
@@ -20996,6 +21355,141 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/AttackSlotManagerBinding.cpp"
+    },
+    {
+      "binding": "AttackStateBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "AttackState",
+      "metatable": "KenshiLua.AttackState",
+      "methods": [
+        {
+          "callback": "AttackStateBinding::validate",
+          "name": "validate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::_NV_validate",
+          "name": "_NV_validate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::initialiseAttack",
+          "name": "initialiseAttack",
+          "signature": {
+            "params": [
+              {
+                "name": "target",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::initialise",
+          "name": "initialise",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::_NV_initialise",
+          "name": "_NV_initialise",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::_NV_update",
+          "name": "_NV_update",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::end",
+          "name": "end",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "AttackStateBinding::_NV_end",
+          "name": "_NV_end",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "CombatStateBinding",
+      "parent_metatable": "KenshiLua.CombatState",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "techniqueIntegrityCheckTimer",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/AttackStateBinding.cpp"
     },
     {
       "binding": "BackThreadMessagesToMainTBinding",
@@ -44842,6 +45336,134 @@
       "source": "src/Bindings/Kenshi/Character_RagdollMsgBinding.cpp"
     },
     {
+      "binding": "CircleStateAIBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "CircleStateAI",
+      "metatable": "KenshiLua.CircleStateAI",
+      "methods": [
+        {
+          "callback": "CircleStateAIBinding::amOverCrowded",
+          "name": "amOverCrowded",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::validate",
+          "name": "validate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::_NV_validate",
+          "name": "_NV_validate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::initialise",
+          "name": "initialise",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::_NV_initialise",
+          "name": "_NV_initialise",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::_NV_update",
+          "name": "_NV_update",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::end",
+          "name": "end",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CircleStateAIBinding::_NV_end",
+          "name": "_NV_end",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "CombatStateBinding",
+      "parent_metatable": "KenshiLua.CombatState",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "circlingDirection",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/CircleStateAIBinding.cpp"
+    },
+    {
       "binding": "ClipboardManagerBinding",
       "global_names": [
         "ClipboardManager"
@@ -46494,7 +47116,7 @@
         {
           "access": "readwrite",
           "name": "stateMap",
-          "type": "OgreUnorderedMap<integer, lightuserdata>"
+          "type": "OgreUnorderedMap<integer, CombatState>"
         },
         {
           "access": "readwrite",
@@ -47217,6 +47839,80 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/CombatMovementControllerBinding.cpp"
+    },
+    {
+      "binding": "CombatStateBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "CombatState",
+      "metatable": "KenshiLua.CombatState",
+      "methods": [
+        {
+          "callback": "CombatStateBinding::validate",
+          "name": "validate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CombatStateBinding::initialise",
+          "name": "initialise",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "CombatStateBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "CombatStateBinding::end",
+          "name": "end",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "combat",
+          "type": "CombatClass|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "stateTimer",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/CombatStateBinding.cpp"
     },
     {
       "binding": "CombatTechniqueDataBinding",
@@ -107561,6 +108257,184 @@
       "source": "src/Bindings/Kenshi/RaceLimiterBinding.cpp"
     },
     {
+      "binding": "RagdollAnimationBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "RagdollAnimation",
+      "metatable": "KenshiLua.RagdollAnimation",
+      "methods": [
+        {
+          "callback": "RagdollAnimationBinding::isAnimating",
+          "name": "isAnimating",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RagdollAnimationBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "RagdollAnimationBinding::setTargetAnimation",
+          "name": "setTargetAnimation",
+          "signature": {
+            "params": [
+              {
+                "name": "ent",
+                "optional": false,
+                "type": "lightuserdata"
+              },
+              {
+                "name": "skel",
+                "optional": false,
+                "type": "lightuserdata"
+              },
+              {
+                "name": "animation",
+                "optional": false,
+                "type": "lightuserdata"
+              },
+              {
+                "name": "duration",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RagdollAnimationBinding::getTargetAnimation",
+          "name": "getTargetAnimation",
+          "signature": {
+            "params": [],
+            "returns": [
+              "string"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RagdollAnimationBinding::getAnimationTime",
+          "name": "getAnimationTime",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "animating",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "animationClass",
+          "type": "AnimationClass|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "curTime",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "endTime",
+          "type": "number"
+        },
+        {
+          "access": "readonly",
+          "name": "entity",
+          "type": "lightuserdata"
+        },
+        {
+          "access": "readwrite",
+          "name": "firstUpdate",
+          "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "skeleton",
+          "type": "lightuserdata"
+        },
+        {
+          "access": "readwrite",
+          "name": "targetAnimationName",
+          "type": "string"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/RagdollAnimationBinding.cpp"
+    },
+    {
+      "binding": "RagdollAnimation_RagdollAnimationTrackBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "RagdollAnimation.RagdollAnimationTrack",
+      "metatable": "KenshiLua.RagdollAnimation.RagdollAnimationTrack",
+      "methods": [],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "active",
+          "type": "boolean"
+        },
+        {
+          "access": "readwrite",
+          "name": "bone",
+          "type": "lightuserdata"
+        },
+        {
+          "access": "readwrite",
+          "name": "endPosition",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "endRotation",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "startPosition",
+          "type": "table"
+        },
+        {
+          "access": "readwrite",
+          "name": "startRotation",
+          "type": "table"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Animation/RagdollAnimation_RagdollAnimationTrackBinding.cpp"
+    },
+    {
       "binding": "RainCollectorBuildingBinding",
       "global_names": [],
       "has_constructor": false,
@@ -134594,6 +135468,123 @@
       "source": "src/Bindings/Kenshi/VisibleObjectInfoBinding.cpp"
     },
     {
+      "binding": "WaitingStateAIBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "WaitingStateAI",
+      "metatable": "KenshiLua.WaitingStateAI",
+      "methods": [
+        {
+          "callback": "WaitingStateAIBinding::validate",
+          "name": "validate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WaitingStateAIBinding::_NV_validate",
+          "name": "_NV_validate",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WaitingStateAIBinding::initialise",
+          "name": "initialise",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WaitingStateAIBinding::_NV_initialise",
+          "name": "_NV_initialise",
+          "signature": {
+            "params": [],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "WaitingStateAIBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "WaitingStateAIBinding::_NV_update",
+          "name": "_NV_update",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "WaitingStateAIBinding::end",
+          "name": "end",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "WaitingStateAIBinding::_NV_end",
+          "name": "_NV_end",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "CombatStateBinding",
+      "parent_metatable": "KenshiLua.CombatState",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "circlingDirection",
+          "type": "number"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/WaitingStateAIBinding.cpp"
+    },
+    {
       "binding": "WallBuildingBinding",
       "global_names": [],
       "has_constructor": false,
@@ -161154,16 +162145,16 @@
       ],
       "element_types": {
         "key": "integer",
-        "value": "lightuserdata"
+        "value": "CombatState"
       },
       "global_names": [],
       "has_constructor": false,
       "indexer": {
         "key": "integer",
-        "type": "lightuserdata|nil"
+        "type": "CombatState|nil"
       },
       "kind": "template_instance",
-      "lua_type": "OgreUnorderedMap<integer, lightuserdata>",
+      "lua_type": "OgreUnorderedMap<integer, CombatState>",
       "metatable": "ogre_unordered_map<swordStateEnum, CombatState*>",
       "methods": [
         {
@@ -161254,7 +162245,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "table<integer, lightuserdata>"
+              "table<integer, CombatState>"
             ],
             "type_source": "container"
           },
@@ -161278,7 +162269,7 @@
           "signature": {
             "params": [],
             "returns": [
-              "ContainerIterator<integer, lightuserdata>"
+              "ContainerIterator<integer, CombatState>"
             ],
             "type_source": "container"
           },

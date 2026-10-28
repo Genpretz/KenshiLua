@@ -35,6 +35,12 @@
 #include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassHumanBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationEventBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationGroundEventBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationReloadEventBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationSFXEventBinding.h"
+#include "Bindings/Kenshi/Animation/RagdollAnimationBinding.h"
+#include "Bindings/Kenshi/Animation/RagdollAnimation_RagdollAnimationTrackBinding.h"
 #include "Bindings/Kenshi/AppearanceAnimalBinding.h"
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/AppearanceHumanBinding.h"
@@ -109,6 +115,10 @@
 #include "Bindings/Kenshi/CombatClass_EffectDataBinding.h"
 #include "Bindings/Kenshi/CombatMovementControllerBinding.h"
 #include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/CombatStateBinding.h"
+#include "Bindings/Kenshi/AttackStateBinding.h"
+#include "Bindings/Kenshi/CircleStateAIBinding.h"
+#include "Bindings/Kenshi/WaitingStateAIBinding.h"
 #include "Bindings/Kenshi/ContainerItemBinding.h"
 #include "Bindings/Kenshi/CreatelistItemBinding.h"
 #include "Bindings/Kenshi/CrossbowBinding.h"
@@ -463,10 +473,14 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, AnimationClassAnimalBinding::getMetatableName(),              AnimationClassBinding::getMetatableName());
     setMetatableParent(L, AnimationClassBinding::getMetatableName(),                    AnimationClassBaseBinding::getMetatableName());
     setMetatableParent(L, AnimationClassHumanBinding::getMetatableName(),               AnimationClassBinding::getMetatableName());
+    setMetatableParent(L, AnimationGroundEventBinding::getMetatableName(),              AnimationEventBinding::getMetatableName());
+    setMetatableParent(L, AnimationReloadEventBinding::getMetatableName(),              AnimationEventBinding::getMetatableName());
+    setMetatableParent(L, AnimationSFXEventBinding::getMetatableName(),                 AnimationEventBinding::getMetatableName());
     setMetatableParent(L, AppearanceAnimalBinding::getMetatableName(),                  AppearanceBaseBinding::getMetatableName());
     setMetatableParent(L, AppearanceHumanBinding::getMetatableName(),                   AppearanceBaseBinding::getMetatableName());
     setMetatableParent(L, AppearanceManager_DataRangePoseBinding::getMetatableName(),   AppearanceManager_DataRangeBinding::getMetatableName());
     setMetatableParent(L, AppearanceManager_DataRangeVectorBinding::getMetatableName(), AppearanceManager_DataRangeBinding::getMetatableName());
+    setMetatableParent(L, AttackStateBinding::getMetatableName(),                       CombatStateBinding::getMetatableName());
     setMetatableParent(L, ArmourBinding::getMetatableName(),                            GearBinding::getMetatableName());
     setMetatableParent(L, BackpackInventoryLayoutBinding::getMetatableName(),           GenericFixedInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, BoxBinding::getMetatableName(),                               BaseLayoutBinding::getMetatableName());
@@ -476,6 +490,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, BuildingContainerInventoryLayoutBinding::getMetatableName(),  GenericInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, CPerfTimerTBinding::getMetatableName(),                       CPerfTimerBinding::getMetatableName());
     setMetatableParent(L, CharMovementBinding::getMetatableName(),                      AbstractMovementBaseBinding::getMetatableName());
+    setMetatableParent(L, CircleStateAIBinding::getMetatableName(),                     CombatStateBinding::getMetatableName());
     setMetatableParent(L, CharacterAnimalBinding::getMetatableName(),                   CharacterBinding::getMetatableName());
     setMetatableParent(L, CharacterBinding::getMetatableName(),                         RootObjectBinding::getMetatableName());
     setMetatableParent(L, CharacterEditWindowBinding::getMetatableName(),               BaseLayoutBinding::getMetatableName());
@@ -599,6 +614,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, UseableStuffBinding::getMetatableName(),                      BuildingBinding::getMetatableName());
     setMetatableParent(L, WallBuildingBinding::getMetatableName(),                      BuildingBinding::getMetatableName());
     setMetatableParent(L, WeaponBinding::getMetatableName(),                            GearBinding::getMetatableName());
+    setMetatableParent(L, WaitingStateAIBinding::getMetatableName(),                    CombatStateBinding::getMetatableName());
     setMetatableParent(L, WindGeneratorBuildingBinding::getMetatableName(),             GeneratorBuildingBinding::getMetatableName());
     setMetatableParent(L, ZoneManagerBinding::getMetatableName(),                       ZoneManagerInterfaceTBinding::getMetatableName());
     setMetatableParent(L, ZoneMapContentBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
@@ -832,6 +848,10 @@ void LuaBindings::registerClasses(lua_State* L)
     AnimationClassBinding::registerBinding(L);
     AnimationClassHumanBinding::registerBinding(L);
     AnimationDataBinding::registerBinding(L);
+    AnimationEventBinding::registerBinding(L);
+    AnimationGroundEventBinding::registerBinding(L);
+    AnimationReloadEventBinding::registerBinding(L);
+    AnimationSFXEventBinding::registerBinding(L);
     AppearanceAnimalBinding::registerBinding(L);
     AppearanceBaseBinding::registerBinding(L);
     AppearanceHumanBinding::registerBinding(L);
@@ -843,6 +863,7 @@ void LuaBindings::registerClasses(lua_State* L)
     AppearanceManager_DataRangeVectorBinding::registerBinding(L);
     AppearanceManager_GenderBinding::registerBinding(L);
     ArmourBinding::registerBinding(L);
+    AttackStateBinding::registerBinding(L);
     AttachedArrowManagerBinding::registerBinding(L);
     AttackSlotManagerBinding::registerBinding(L);
     BackThreadMessagesToMainTBinding::registerBinding(L);
@@ -871,6 +892,7 @@ void LuaBindings::registerClasses(lua_State* L)
     CampaignTriggerDataBinding::registerBinding(L);
     CharBodyBinding::registerBinding(L);
     CharMovementBinding::registerBinding(L);
+    CircleStateAIBinding::registerBinding(L);
     CharStatsBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
     CharacterBinding::registerBinding(L);
@@ -885,6 +907,7 @@ void LuaBindings::registerClasses(lua_State* L)
     CombatClass_AttackSlotManager_SlotDataBinding::registerBinding(L);
     CombatClass_EffectDataBinding::registerBinding(L);
     CombatMovementControllerBinding::registerBinding(L);
+    CombatStateBinding::registerBinding(L);
     CombatTechniqueDataBinding::registerBinding(L);
     ConstructionStateBinding::registerBinding(L);
     ConsumptionItemBinding::registerBinding(L);
@@ -1084,6 +1107,8 @@ void LuaBindings::registerClasses(lua_State* L)
     ProsperityManagerBinding::registerBinding(L);
     RaceDataBinding::registerBinding(L);
     RaceLimiterBinding::registerBinding(L);
+    RagdollAnimationBinding::registerBinding(L);
+    RagdollAnimation_RagdollAnimationTrackBinding::registerBinding(L);
     RainCollectorBuildingBinding::registerBinding(L);
     RangedCombatClassBinding::registerBinding(L);
     RelationDataBinding::registerBinding(L);
@@ -1191,6 +1216,7 @@ void LuaBindings::registerClasses(lua_State* L)
     UseableStuffBinding::registerBinding(L);
     UtilityTBinding::registerBinding(L);
     VisibleObjectInfoBinding::registerBinding(L);
+    WaitingStateAIBinding::registerBinding(L);
     WallBuildingBinding::registerBinding(L);
     WeaponBinding::registerBinding(L);
     WeatherBinding::registerBinding(L);
