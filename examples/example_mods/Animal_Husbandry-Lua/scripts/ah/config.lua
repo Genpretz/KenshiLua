@@ -31,8 +31,6 @@ return {
         minAge = 0.6,
         -- Maximum distance between the harvester and animal.
         maxDistance = 200,
-        -- Product rows visible before scrolling.
-        maxVisibleProducts = 4,
     },
 
     sales = {
@@ -40,5 +38,7 @@ return {
         maxDistance = 250,
         -- Used when an ANIMAL_CHARACTER record has no base price.
         defaultBasePrice = 14000,
+        -- Resale price multiplier applied when selling animals to vendors (0.50 matches player-crafted weapon production).
+        resaleMultiplier = 0.50,
     },
 }

@@ -61,7 +61,6 @@ local CONSTANT_MAP = {
     { section = "breeding", field = "minAge",              key = "breeding.minAge" },
     { section = "harvest",  field = "minAge",              key = "harvest.minAge" },
     { section = "harvest",  field = "maxDistance",         key = "harvest.maxDistance" },
-    { section = "harvest",  field = "maxVisibleProducts",  key = "harvest.maxVisibleProducts" },
     { section = "sales",    field = "defaultBasePrice",    key = "sales.defaultBasePrice" },
     { section = "sales",    field = "maxDistance",         key = "sales.maxDistance" },
 }
@@ -148,7 +147,7 @@ local FCS_DEFAULTS = {
 }
 
 -- val2 of an "animal products" reference.
-AH.PRODUCT_SEX = { [0] = "male", [1] = "female", [2] = "both" }
+AH.PRODUCT_SEX = { [0] = "both", [1] = "male", [2] = "female" }
 
 AH.defCache = {}
 
