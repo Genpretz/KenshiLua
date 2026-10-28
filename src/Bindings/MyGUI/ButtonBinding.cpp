@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Bindings/MyGUI/ButtonBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -8,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::Button* ButtonBinding::getButton(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::Button>(false);
+    return MyGUIBindings::checkWidget<MyGUI::Button>(L, idx);
 }
 
 int ButtonBinding::setStateSelected(lua_State* L)
@@ -53,37 +52,10 @@ int ButtonBinding::setImageResource(lua_State* L)
     return 0;
 }
 
-static int Button_index(lua_State* L)
-{
-    MyGUI::Button* b = ButtonBinding::getButton(L, 1);
-    if (!b) return luaL_error(L, "Button is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "stateSelected") == 0 || strcmp(key, "selected") == 0)
-    {
-        lua_pushboolean(L, b->getStateSelected() ? 1 : 0);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int Button_newindex(lua_State* L)
-{
-    MyGUI::Button* b = ButtonBinding::getButton(L, 1);
-    if (!b) return luaL_error(L, "Button is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "stateSelected") == 0 || strcmp(key, "selected") == 0)
-    {
-        b->setStateSelected(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int Button_tostring(lua_State* L)
 {
-    MyGUI::Button* b = ButtonBinding::getButton(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::Button* b = w ? w->castType<MyGUI::Button>(false) : nullptr;
     char buf[128];
     if (b)
     {
@@ -112,7 +84,20 @@ void ButtonBinding::registerBinding(lua_State* L)
         { "setImageResource", setImageResource },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, Button_index, Button_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "stateSelected", ButtonBinding::getStateSelected);
+    registerGetter(L, "selected", ButtonBinding::getStateSelected);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "stateSelected", ButtonBinding::setStateSelected);
+    registerSetter(L, "selected", ButtonBinding::setStateSelected);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), WidgetBinding::getMetatableName());
 }
 

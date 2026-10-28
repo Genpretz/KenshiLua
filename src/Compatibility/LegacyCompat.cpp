@@ -1754,5 +1754,14 @@ namespace KenshiLua
             InstallMyGUICompatibility(L);
             InstallEventCompatibility(L);
         }
+
+        void ResetWarnings(lua_State* L)
+        {
+            if (!L) return;
+            lua_pushnil(L);
+            lua_setfield(L, LUA_REGISTRYINDEX, "KenshiLua.LegacyEnumWarnings");
+            lua_pushnil(L);
+            lua_setfield(L, LUA_REGISTRYINDEX, "KenshiLua.LegacyApiWarnings");
+        }
     }
 }

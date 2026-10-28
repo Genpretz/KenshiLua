@@ -49,7 +49,7 @@ static int ScreenLabelInterface_set_position(lua_State* L)
 {
     ScreenLabelInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ScreenLabelInterface is nil");
-    readVector3(L, 2, instance->position);
+    if (!readVector3(L, 2, instance->position)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

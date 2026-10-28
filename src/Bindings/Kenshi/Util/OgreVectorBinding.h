@@ -65,6 +65,11 @@ namespace KenshiLua
                 return luaL_error(L, "vector: only numeric indices are writable");
 
             size_t i = (size_t)lua_tointeger(L, 2);
+            if (i < 1 || i > vec->size() + 1)
+            {
+                return luaL_error(L, "vector: index %u out of range (size=%u)", (unsigned int)i, (unsigned int)vec->size());
+            }
+
             T val;
             if (elemMetaName)
             {
@@ -77,17 +82,13 @@ namespace KenshiLua
                 val = LuaCodec<T>::read(L, 3, nullptr);
             }
 
-            if (i >= 1 && i <= vec->size())
+            if (i <= vec->size())
             {
                 (*vec)[i - 1] = val;
                 return 0;
             }
-            if (i == vec->size() + 1)
-            {
-                vec->push_back(val);
-                return 0;
-            }
-            return luaL_error(L, "vector: index %u out of range (size=%u)", i, (unsigned int)vec->size());
+            vec->push_back(val);
+            return 0;
         }
 
         static int push_back(lua_State* L)

@@ -99,6 +99,9 @@ public:
 
 private:
     LuaWidgetCallbackManager() : m_L(nullptr), m_nextCallbackId(1) {}
+    void attachDelegate(MyGUI::Widget* widget, EventType type);
+    void detachDelegate(MyGUI::Widget* widget, EventType type);
+
     std::map<CallbackKey, CallbackValue> m_callbacks;
     std::map<int, CallbackKey> m_idToKey;
     int m_nextCallbackId;

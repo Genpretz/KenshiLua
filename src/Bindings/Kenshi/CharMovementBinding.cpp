@@ -229,7 +229,7 @@ static int CharMovement_set_flockingVector(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    readVector3(L, 2, instance->flockingVector);
+    if (!readVector3(L, 2, instance->flockingVector)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -357,7 +357,7 @@ static int CharMovement_set_trackingAnimRelocationVector(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    readVector3(L, 2, instance->trackingAnimRelocationVector);
+    if (!readVector3(L, 2, instance->trackingAnimRelocationVector)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -365,7 +365,7 @@ static int CharMovement_set_desiredMotion(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    readVector3(L, 2, instance->desiredMotion);
+    if (!readVector3(L, 2, instance->desiredMotion)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

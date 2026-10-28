@@ -312,7 +312,7 @@ int ShopTraderBinding::equipItem(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTrader is nil");
-    std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->equipItem(sectionName, item);
     return 0;
@@ -322,7 +322,7 @@ int ShopTraderBinding::_NV_equipItem(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTrader is nil");
-    std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_equipItem(sectionName, item);
     return 0;
@@ -332,7 +332,7 @@ int ShopTraderBinding::unequipItem(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTrader is nil");
-    std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->unequipItem(sectionName, item);
     return 0;
@@ -342,7 +342,7 @@ int ShopTraderBinding::_NV_unequipItem(lua_State* L)
 {
     ShopTrader* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTrader is nil");
-    std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_unequipItem(sectionName, item);
     return 0;

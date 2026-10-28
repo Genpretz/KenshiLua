@@ -2,6 +2,7 @@
 #include "Bindings/MyGUI/MenuBarBinding.h"
 #include "Bindings/MyGUI/MenuControlBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -9,14 +10,13 @@ namespace KenshiLua
 
 MyGUI::MenuBar* MenuBarBinding::getMenuBar(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::MenuBar>(false);
+    return MyGUIBindings::checkWidget<MyGUI::MenuBar>(L, idx);
 }
 
 static int MenuBar_tostring(lua_State* L)
 {
-    MyGUI::MenuBar* mb = MenuBarBinding::getMenuBar(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::MenuBar* mb = w ? w->castType<MyGUI::MenuBar>(false) : nullptr;
     char buf[128];
     if (mb)
     {

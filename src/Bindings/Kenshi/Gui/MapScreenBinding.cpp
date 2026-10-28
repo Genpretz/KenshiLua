@@ -415,7 +415,7 @@ static int MapScreen_set_mapMarkerMovementPosition(lua_State* L)
 {
     MapScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MapScreen is nil");
-    readVector3(L, 2, instance->mapMarkerMovementPosition);
+    if (!readVector3(L, 2, instance->mapMarkerMovementPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

@@ -11,9 +11,7 @@ namespace KenshiLua
 
 MyGUI::MenuItem* MenuItemBinding::getMenuItem(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::MenuItem>(false);
+    return MyGUIBindings::checkWidget<MyGUI::MenuItem>(L, idx);
 }
 
 int MenuItemBinding::setItemName(lua_State* L)
@@ -162,57 +160,10 @@ int MenuItemBinding::getItemChecked(lua_State* L)
     return 1;
 }
 
-static int MenuItem_index(lua_State* L)
-{
-    MyGUI::MenuItem* mi = MenuItemBinding::getMenuItem(L, 1);
-    if (!mi) return luaL_error(L, "MenuItem is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "itemName") == 0)
-    {
-        lua_pushstring(L, mi->getItemName().asUTF8().c_str());
-        return 1;
-    }
-    if (strcmp(key, "itemId") == 0)
-    {
-        lua_pushstring(L, mi->getItemId().c_str());
-        return 1;
-    }
-    if (strcmp(key, "checked") == 0)
-    {
-        lua_pushboolean(L, mi->getItemChecked() ? 1 : 0);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int MenuItem_newindex(lua_State* L)
-{
-    MyGUI::MenuItem* mi = MenuItemBinding::getMenuItem(L, 1);
-    if (!mi) return luaL_error(L, "MenuItem is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "itemName") == 0)
-    {
-        mi->setItemName(luaL_checkstring(L, 3));
-        return 0;
-    }
-    if (strcmp(key, "itemId") == 0)
-    {
-        mi->setItemId(luaL_checkstring(L, 3));
-        return 0;
-    }
-    if (strcmp(key, "checked") == 0)
-    {
-        mi->setItemChecked(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int MenuItem_tostring(lua_State* L)
 {
-    MyGUI::MenuItem* mi = MenuItemBinding::getMenuItem(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::MenuItem* mi = w ? w->castType<MyGUI::MenuItem>(false) : nullptr;
     char buf[128];
     if (mi)
     {
@@ -251,7 +202,22 @@ void MenuItemBinding::registerBinding(lua_State* L)
         { "getItemChecked",      getItemChecked },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, MenuItem_index, MenuItem_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "itemName", MenuItemBinding::getItemName);
+    registerGetter(L, "itemId", MenuItemBinding::getItemId);
+    registerGetter(L, "checked", MenuItemBinding::getItemChecked);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "itemName", MenuItemBinding::setItemName);
+    registerSetter(L, "itemId", MenuItemBinding::setItemId);
+    registerSetter(L, "checked", MenuItemBinding::setItemChecked);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), ButtonBinding::getMetatableName());
 }
 

@@ -358,7 +358,7 @@ int CampaignDataBinding::_setupPackages(lua_State* L)
     if (!instance) return luaL_error(L, "CampaignData is nil");
 
     GameData* d = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    std::string listname = luaL_checkstring(L, 3);
+    const char* listname = luaL_checkstring(L, 3);
     Phase state = (Phase)luaL_checkinteger(L, 4);
     instance->_setupPackages(d, listname, state);
     return 0;

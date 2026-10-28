@@ -388,7 +388,7 @@ int InventoryGUIBinding::RClickAutoTrade(lua_State* L)
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
 
-    const std::string invSectionName = luaL_checkstring(L, 2);
+    const char* invSectionName = luaL_checkstring(L, 2);
     int x = (int)luaL_checkinteger(L, 3);
     int y = (int)luaL_checkinteger(L, 4);
     InventoryGUI* sendingTo = checkObject<InventoryGUI>(L, 5, InventoryGUIBinding::getMetatableName());
@@ -404,7 +404,7 @@ int InventoryGUIBinding::RClickAutoTradeAll(lua_State* L)
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
 
-    const std::string invSectionName = luaL_checkstring(L, 2);
+    const char* invSectionName = luaL_checkstring(L, 2);
     int x = (int)luaL_checkinteger(L, 3);
     int y = (int)luaL_checkinteger(L, 4);
     InventoryGUI* sendingTo = checkObject<InventoryGUI>(L, 5, InventoryGUIBinding::getMetatableName());
@@ -466,9 +466,9 @@ int InventoryGUIBinding::playSound(lua_State* L)
     InventoryGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryGUI is nil");
 
-    const std::string eventId = luaL_checkstring(L, 2);
+    const char* eventId = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
-    instance->playSound(eventId.c_str(), item);
+    instance->playSound(eventId, item);
     return 0;
 }
 
@@ -680,7 +680,7 @@ int InventoryGUIBinding::getSection(lua_State* L)
 
     if (lua_isstring(L, 2))
     {
-        std::string sectionName = luaL_checkstring(L, 2);
+        const char* sectionName = luaL_checkstring(L, 2);
         InventorySection* result = instance->getSection(sectionName);
         return pushObject<InventorySection>(L, result, InventorySectionBinding::getMetatableName());
     }

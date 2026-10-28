@@ -11,9 +11,7 @@ namespace KenshiLua
 
 MyGUI::Window* WindowBinding::getWindow(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::Window>(false);
+    return MyGUIBindings::checkWidget<MyGUI::Window>(L, idx);
 }
 
 int WindowBinding::setVisibleSmooth(lua_State* L)
@@ -176,57 +174,10 @@ int WindowBinding::getCaptionWidget(lua_State* L)
     return 1;
 }
 
-static int Window_index(lua_State* L)
-{
-    MyGUI::Window* win = WindowBinding::getWindow(L, 1);
-    if (!win) return luaL_error(L, "Window is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "movable") == 0)
-    {
-        lua_pushboolean(L, win->getMovable() ? 1 : 0);
-        return 1;
-    }
-    if (strcmp(key, "autoAlpha") == 0)
-    {
-        lua_pushboolean(L, win->getAutoAlpha() ? 1 : 0);
-        return 1;
-    }
-    if (strcmp(key, "snap") == 0)
-    {
-        lua_pushboolean(L, win->getSnap() ? 1 : 0);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int Window_newindex(lua_State* L)
-{
-    MyGUI::Window* win = WindowBinding::getWindow(L, 1);
-    if (!win) return luaL_error(L, "Window is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "movable") == 0)
-    {
-        win->setMovable(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "autoAlpha") == 0)
-    {
-        win->setAutoAlpha(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "snap") == 0)
-    {
-        win->setSnap(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int Window_tostring(lua_State* L)
 {
-    MyGUI::Window* win = WindowBinding::getWindow(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::Window* win = w ? w->castType<MyGUI::Window>(false) : nullptr;
     char buf[128];
     if (win)
     {
@@ -264,7 +215,22 @@ void WindowBinding::registerBinding(lua_State* L)
         { "getCaptionWidget", getCaptionWidget },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, Window_index, Window_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "movable", WindowBinding::getMovable);
+    registerGetter(L, "autoAlpha", WindowBinding::getAutoAlpha);
+    registerGetter(L, "snap", WindowBinding::getSnap);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "movable", WindowBinding::setMovable);
+    registerSetter(L, "autoAlpha", WindowBinding::setAutoAlpha);
+    registerSetter(L, "snap", WindowBinding::setSnap);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), TextBoxBinding::getMetatableName());
 }
 

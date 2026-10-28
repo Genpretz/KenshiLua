@@ -193,7 +193,7 @@ static int Terrain_set_mCameraPosition(lua_State* L)
 {
     Terrain* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Terrain is nil");
-    readVector3(L, 2, instance->mCameraPosition);
+    if (!readVector3(L, 2, instance->mCameraPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

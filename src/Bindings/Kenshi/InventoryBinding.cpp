@@ -124,7 +124,7 @@ int InventoryBinding::initialiseNewSection(lua_State* L)
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     int w = (int)luaL_checkinteger(L, 3);
     int h = (int)luaL_checkinteger(L, 4);
     AttachSlot limitSlot = (AttachSlot)luaL_checkinteger(L, 5);
@@ -141,7 +141,7 @@ int InventoryBinding::_NV_initialiseNewSection(lua_State* L)
     Inventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Inventory is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     int w = (int)luaL_checkinteger(L, 3);
     int h = (int)luaL_checkinteger(L, 4);
     AttachSlot limitSlot = (AttachSlot)luaL_checkinteger(L, 5);

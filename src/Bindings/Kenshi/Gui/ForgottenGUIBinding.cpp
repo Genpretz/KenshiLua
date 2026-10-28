@@ -976,12 +976,12 @@ int ForgottenGUIBinding::createPanel(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
     float height = (float)luaL_checknumber(L, 6);
-    std::string layer = luaL_checkstring(L, 7);
+    const char* layer = luaL_checkstring(L, 7);
     std::string skin = luaL_checkstring(L, 8);
     MyGUI::Window* result = instance->createPanel(name, top, left, width, height, layer, skin);
     return MyGUIBindings::pushWidget(L, result);
@@ -992,12 +992,12 @@ int ForgottenGUIBinding::createPanelAbs(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
     float height = (float)luaL_checknumber(L, 6);
-    std::string layer = luaL_checkstring(L, 7);
+    const char* layer = luaL_checkstring(L, 7);
     std::string skin = luaL_checkstring(L, 8);
     MyGUI::Window* result = instance->createPanelAbs(name, top, left, width, height, layer, skin);
     return MyGUIBindings::pushWidget(L, result);
@@ -1008,12 +1008,12 @@ int ForgottenGUIBinding::createTabPanel(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
     float height = (float)luaL_checknumber(L, 6);
-    const std::string layer = luaL_checkstring(L, 7);
+    const char* layer = luaL_checkstring(L, 7);
     const std::string skin = luaL_checkstring(L, 8);
     MyGUI::TabControl* result = instance->createTabPanel(name, top, left, width, height, layer, skin);
     return MyGUIBindings::pushWidget(L, result);
@@ -1024,7 +1024,7 @@ int ForgottenGUIBinding::createFloatingImage(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    const std::string image = luaL_checkstring(L, 2);
+    const char* image = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
@@ -1039,7 +1039,7 @@ int ForgottenGUIBinding::createFloatingImageAbs(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    const std::string image = luaL_checkstring(L, 2);
+    const char* image = luaL_checkstring(L, 2);
     float top = (float)luaL_checknumber(L, 3);
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
@@ -1063,7 +1063,7 @@ int ForgottenGUIBinding::createScreenLabel(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    const std::string text = luaL_checkstring(L, 2);
+    const char* text = luaL_checkstring(L, 2);
     MyGUI::Colour textColour = MyGUIBindings::readColour(L, 3);
     ScreenLabel::LabelSize textSize = (ScreenLabel::LabelSize)luaL_checkinteger(L, 4);
     ScreenLabel::RisingSpeed risingSpeed = (ScreenLabel::RisingSpeed)luaL_checkinteger(L, 5);
@@ -1076,7 +1076,7 @@ int ForgottenGUIBinding::createScreenLabelD(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
 
-    const std::string text = luaL_checkstring(L, 2);
+    const char* text = luaL_checkstring(L, 2);
     float time = (float)luaL_checknumber(L, 3);
     ScreenLabelDebug* result = instance->createScreenLabelD(text, time);
     lua_pushlightuserdata(L, (void*)result);
@@ -1289,7 +1289,7 @@ int ForgottenGUIBinding::createDatapanel(lua_State* L)
     if (lua_type(L, 2) == LUA_TSTRING)
     {
         // createDatapanel(name, win, scrolls)
-        std::string name = luaL_checkstring(L, 2);
+        const char* name = luaL_checkstring(L, 2);
         MyGUI::Widget* win = WidgetBinding::getWidget(L, 3);
         if (!win) return luaL_argerror(L, 3, "ForgottenGUI:createDatapanel expects a MyGUI widget");
         bool scrolls = lua_toboolean(L, 4) != 0;
@@ -1304,7 +1304,7 @@ int ForgottenGUIBinding::createDatapanel(lua_State* L)
         float width = (float)luaL_checknumber(L, 4);
         float height = (float)luaL_checknumber(L, 5);
         bool scrolls = lua_toboolean(L, 6) != 0;
-        std::string layer = luaL_checkstring(L, 7);
+        const char* layer = luaL_checkstring(L, 7);
         bool window = lua_toboolean(L, 8) != 0;
         DatapanelGUI* result = instance->createDatapanel(top, left, width, height, scrolls, layer, window);
         return pushObject<DatapanelGUI>(L, result, DatapanelGUIBinding::getMetatableName());
@@ -1471,7 +1471,7 @@ int ForgottenGUIBinding::createFloatingLabel(lua_State* L)
     float left = (float)luaL_checknumber(L, 3);
     float width = (float)luaL_checknumber(L, 4);
     float height = (float)luaL_checknumber(L, 5);
-    const std::string text = luaL_checkstring(L, 6);
+    const char* text = luaL_checkstring(L, 6);
     MyGUI::Align a = MyGUI::Align::Enum((int)luaL_checkinteger(L, 7));
     std::string layer = luaL_checkstring(L, 8);
     MyGUI::Window* result = instance->createFloatingLabel(top, left, width, height, text, a, layer);
@@ -1529,8 +1529,8 @@ int ForgottenGUIBinding::createButton(lua_State* L)
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
     float height = (float)luaL_checknumber(L, 6);
-    const std::string name = luaL_checkstring(L, 7);
-    const std::string text = luaL_checkstring(L, 8);
+    const char* name = luaL_checkstring(L, 7);
+    const char* text = luaL_checkstring(L, 8);
     const std::string skin = luaL_optstring(L, 9, "");
     MyGUI::Button* result = instance->createButton(parent, top, left, width, height, name, text, skin);
     return MyGUIBindings::pushWidget(L, result);
@@ -1545,8 +1545,8 @@ int ForgottenGUIBinding::createButtonAbs(lua_State* L)
     int left = (int)luaL_checkinteger(L, 4);
     int width = (int)luaL_checkinteger(L, 5);
     int height = (int)luaL_checkinteger(L, 6);
-    const std::string name = luaL_checkstring(L, 7);
-    const std::string text = luaL_checkstring(L, 8);
+    const char* name = luaL_checkstring(L, 7);
+    const char* text = luaL_checkstring(L, 8);
     const std::string skin = luaL_optstring(L, 9, "");
     MyGUI::Button* result = instance->createButtonAbs(parent, top, left, width, height, name, text, skin);
     return MyGUIBindings::pushWidget(L, result);
@@ -1571,7 +1571,7 @@ int ForgottenGUIBinding::createDropBox(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
-    const std::string name = luaL_checkstring(L, 3);
+    const char* name = luaL_checkstring(L, 3);
     float top = (float)luaL_checknumber(L, 4);
     float left = (float)luaL_checknumber(L, 5);
     float width = (float)luaL_checknumber(L, 6);
@@ -1585,7 +1585,7 @@ int ForgottenGUIBinding::createDropBoxAbs(lua_State* L)
     ForgottenGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ForgottenGUI is nil");
     MyGUI::Widget* parent = lua_isnoneornil(L, 2) ? nullptr : checkObject<MyGUI::Widget>(L, 2, WidgetBinding::getMetatableName());
-    const std::string name = luaL_checkstring(L, 3);
+    const char* name = luaL_checkstring(L, 3);
     int top = (int)luaL_checkinteger(L, 4);
     int left = (int)luaL_checkinteger(L, 5);
     int width = (int)luaL_checkinteger(L, 6);
@@ -1631,7 +1631,7 @@ int ForgottenGUIBinding::createLabel(lua_State* L)
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
     float height = (float)luaL_checknumber(L, 6);
-    const std::string text = luaL_checkstring(L, 7);
+    const char* text = luaL_checkstring(L, 7);
     if (lua_isnumber(L, 8))
     {
         MyGUI::Align a = MyGUI::Align::Enum((int)luaL_checkinteger(L, 8));
@@ -1655,7 +1655,7 @@ int ForgottenGUIBinding::createLabelAbs(lua_State* L)
     int left = (int)luaL_checkinteger(L, 4);
     int width = (int)luaL_checkinteger(L, 5);
     int height = (int)luaL_checkinteger(L, 6);
-    const std::string text = luaL_checkstring(L, 7);
+    const char* text = luaL_checkstring(L, 7);
     if (lua_isnumber(L, 8))
     {
         MyGUI::Align a = MyGUI::Align::Enum((int)luaL_checkinteger(L, 8));
@@ -1707,7 +1707,7 @@ int ForgottenGUIBinding::createEditBox(lua_State* L)
     float left = (float)luaL_checknumber(L, 4);
     float width = (float)luaL_checknumber(L, 5);
     float height = (float)luaL_checknumber(L, 6);
-    const std::string name = luaL_checkstring(L, 7);
+    const char* name = luaL_checkstring(L, 7);
     if (lua_gettop(L) >= 9)
     {
         const std::string skin = luaL_checkstring(L, 8);
@@ -1732,7 +1732,7 @@ int ForgottenGUIBinding::createEditBoxAbs(lua_State* L)
     int left = (int)luaL_checkinteger(L, 4);
     int width = (int)luaL_checkinteger(L, 5);
     int height = (int)luaL_checkinteger(L, 6);
-    const std::string name = luaL_checkstring(L, 7);
+    const char* name = luaL_checkstring(L, 7);
     if (lua_gettop(L) >= 9)
     {
         const std::string skin = luaL_checkstring(L, 8);

@@ -403,8 +403,8 @@ int CharacterStatsWindowBinding::addStat(lua_State* L)
 {
     int idx = (testObject<CharacterStatsWindow>(L, 1, CharacterStatsWindowBinding::getMetatableName()) != nullptr) ? 2 : 1;
     StatsEnumerated type = (StatsEnumerated)luaL_checkinteger(L, idx);
-    std::string id = luaL_checkstring(L, idx + 1);
-    std::string name = luaL_checkstring(L, idx + 2);
+    const char* id = luaL_checkstring(L, idx + 1);
+    const char* name = luaL_checkstring(L, idx + 2);
     bool active = lua_toboolean(L, idx + 3) != 0;
     std::string description = luaL_checkstring(L, idx + 4);
 

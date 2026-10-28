@@ -124,7 +124,7 @@ int RootObjectContainerBinding::addActiveObject(lua_State* L)
         Ogre::Quaternion rotOffset;
         readQuaternion(L, 4, rotOffset);
         FactoryCallbackInterface* callback = checkObject<FactoryCallbackInterface>(L, 5, FactoryCallbackInterfaceBinding::getMetatableName());
-        const std::string specificSID = luaL_checkstring(L, 6);
+        const char* specificSID = luaL_checkstring(L, 6);
         GameDataContainer* externalContainer = checkObject<GameDataContainer>(L, 7, GameDataContainerBinding::getMetatableName());
         RootObjectContainer::SpecificItemLoadFirst* skipperClass = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObjectContainer::SpecificItemLoadFirst>(L, 8, SpecificItemLoadFirstBinding::getMetatableName());
         instance->loadToReality(skipSaveState, positionMoved, rotOffset, callback, specificSID, externalContainer, skipperClass);
@@ -142,7 +142,7 @@ int RootObjectContainerBinding::addActiveObject(lua_State* L)
         Ogre::Quaternion rotOffset;
         readQuaternion(L, 4, rotOffset);
         FactoryCallbackInterface* callback = checkObject<FactoryCallbackInterface>(L, 5, FactoryCallbackInterfaceBinding::getMetatableName());
-        const std::string specificSID = luaL_checkstring(L, 6);
+        const char* specificSID = luaL_checkstring(L, 6);
         GameDataContainer* externalContainer = checkObject<GameDataContainer>(L, 7, GameDataContainerBinding::getMetatableName());
         RootObjectContainer::SpecificItemLoadFirst* skipperClass = lua_isnoneornil(L, 8) ? nullptr : checkObject<RootObjectContainer::SpecificItemLoadFirst>(L, 8, SpecificItemLoadFirstBinding::getMetatableName());
         instance->_NV_loadToReality(skipSaveState, positionMoved, rotOffset, callback, specificSID, externalContainer, skipperClass);
@@ -256,7 +256,7 @@ int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
             GameData* gd = lua_isnoneornil(L, 3) ? nullptr : checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
             GameDataContainer* source = lua_isnoneornil(L, 4) ? nullptr : checkObject<GameDataContainer>(L, 4, GameDataContainerBinding::getMetatableName());
             PosRotPair* offset = lua_isnoneornil(L, 5) ? nullptr : (PosRotPair*)lua_touserdata(L, 5);
-            std::string mod = luaL_checkstring(L, 6);
+            const char* mod = luaL_checkstring(L, 6);
 
             instance->serialiseThings(*_things, gd, source, offset, mod);
             return 0;

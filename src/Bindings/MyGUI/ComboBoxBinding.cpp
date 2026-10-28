@@ -10,9 +10,7 @@ namespace KenshiLua
 
 MyGUI::ComboBox* ComboBoxBinding::getComboBox(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::ComboBox>(false);
+    return MyGUIBindings::checkWidget<MyGUI::ComboBox>(L, idx);
 }
 
 int ComboBoxBinding::getItemCount(lua_State* L)
@@ -219,56 +217,10 @@ int ComboBoxBinding::getFlowDirection(lua_State* L)
     return 1;
 }
 
-static int ComboBox_index(lua_State* L)
-{
-    MyGUI::ComboBox* cb = ComboBoxBinding::getComboBox(L, 1);
-    if (!cb) return luaL_error(L, "ComboBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "itemCount") == 0 || strcmp(key, "count") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)cb->getItemCount());
-        return 1;
-    }
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        size_t idx = cb->getIndexSelected();
-        if (idx == MyGUI::ITEM_NONE) lua_pushinteger(L, -1);
-        else lua_pushinteger(L, (lua_Integer)idx);
-        return 1;
-    }
-    if (strcmp(key, "comboModeDrop") == 0 || strcmp(key, "modeDrop") == 0)
-    {
-        lua_pushboolean(L, cb->getComboModeDrop() ? 1 : 0);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int ComboBox_newindex(lua_State* L)
-{
-    MyGUI::ComboBox* cb = ComboBoxBinding::getComboBox(L, 1);
-    if (!cb) return luaL_error(L, "ComboBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        lua_Integer idx = luaL_checkinteger(L, 3);
-        if (idx < 0) cb->clearIndexSelected();
-        else cb->setIndexSelected((size_t)idx);
-        return 0;
-    }
-    if (strcmp(key, "comboModeDrop") == 0 || strcmp(key, "modeDrop") == 0)
-    {
-        cb->setComboModeDrop(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int ComboBox_tostring(lua_State* L)
 {
-    MyGUI::ComboBox* cb = ComboBoxBinding::getComboBox(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::ComboBox* cb = w ? w->castType<MyGUI::ComboBox>(false) : nullptr;
     char buf[128];
     if (cb)
     {
@@ -315,7 +267,26 @@ void ComboBoxBinding::registerBinding(lua_State* L)
         { "getFlowDirection",    getFlowDirection },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, ComboBox_index, ComboBox_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "itemCount", ComboBoxBinding::getItemCount);
+    registerGetter(L, "count", ComboBoxBinding::getItemCount);
+    registerGetter(L, "indexSelected", ComboBoxBinding::getIndexSelected);
+    registerGetter(L, "selectedIndex", ComboBoxBinding::getIndexSelected);
+    registerGetter(L, "comboModeDrop", ComboBoxBinding::getComboModeDrop);
+    registerGetter(L, "modeDrop", ComboBoxBinding::getComboModeDrop);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "indexSelected", ComboBoxBinding::setIndexSelected);
+    registerSetter(L, "selectedIndex", ComboBoxBinding::setIndexSelected);
+    registerSetter(L, "comboModeDrop", ComboBoxBinding::setComboModeDrop);
+    registerSetter(L, "modeDrop", ComboBoxBinding::setComboModeDrop);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), EditBoxBinding::getMetatableName());
 }
 

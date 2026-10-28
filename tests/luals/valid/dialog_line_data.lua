@@ -26,7 +26,7 @@ local function checkDialogLineData(line, other, data, dataList, pairs, campaign,
     assert(type(line:checkTags(character, character)) == "boolean")
     assert(type(line:getName()) == "string" and type(line:saidItBefore()) == "boolean")
     assert(type(line:willTalkToEnemies()) == "boolean")
-    assert(type(line:isEmptyNode()) == "boolean" and type(line:_NV_isEmptyNode()) == "boolean")
+    assert(type(line:isEmptyNode()) == "boolean")
     assert(type(line:isAnnouncement()) == "boolean")
     line:stampLastTimeSaid()
     assert(type(line:getScore(character)) == "number")

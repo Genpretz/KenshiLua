@@ -301,7 +301,7 @@ def push_statement(type_text, expr, info, extra_enums, known_bindings, allow_ref
     t = base_type(type_text)
     
     if t == "hand":
-        return "return handBinding::push(L, %s);" % expr
+        return "return HandBinding::push(L, %s);" % expr
         
     fast_array_match = re.match(r"^(?:const\s+)?Ogre::FastArray<(.+)>(?:\s*&)?$", normalize_type(type_text))
     if fast_array_match:
@@ -379,7 +379,6 @@ def generate_method_stub(info, method, extra_enums, known_bindings):
     out.append("int %sBinding::%s(lua_State* L)" % (info.name, cpp_identifier(method.name)))
     out.append("{")
     out.append("    %s* instance = getInstance(L, 1);" % info.name)
-    out.append("    if (!instance) return luaL_error(L, \"%s is nil\");" % info.name)
     out.append("")
 
     arg_names = []
@@ -398,7 +397,10 @@ def generate_method_stub(info, method, extra_enums, known_bindings):
             else:
                 struct_name = "Quaternion"
             out.append(f"    {t} {local_name};")
-            out.append(f"    read{struct_name}(L, {i}, {local_name});")
+            out.append(f"    check{struct_name}(L, {i}, {local_name});")
+        elif is_string_type(arg.type):
+            expr = read_expression(arg.type, i, info, extra_enums, known_bindings)
+            out.append(f"    const char* {local_name} = {expr};")
         else:
             expr = read_expression(arg.type, i, info, extra_enums, known_bindings)
             var_type = arg.type.replace("&", "").strip()
@@ -517,7 +519,6 @@ def generate_property_getters(info, members, extra_enums, known_bindings):
         out.append(f"static int {info.name}_get_{member.name}(lua_State* L)")
         out.append("{")
         out.append(f"    {info.name}* instance = getInstance(L, 1);")
-        out.append(f"    if (!instance) return luaL_error(L, \"{info.name} is nil\");")
         
         stmt = push_statement(member.type, "instance->" + member.name, info, extra_enums, known_bindings)
         if stmt.startswith("return "):
@@ -536,7 +537,6 @@ def generate_property_setters(info, members, extra_enums, known_bindings):
             out.append(f"static int {info.name}_set_{member.name}(lua_State* L)")
             out.append("{")
             out.append(f"    {info.name}* instance = getInstance(L, 1);")
-            out.append(f"    if (!instance) return luaL_error(L, \"{info.name} is nil\");")
             
             fast_array_match = re.match(r"^(?:const\s+)?Ogre::FastArray<(.+)>(?:\s*&)?$", normalize_type(member.type))
             if fast_array_match:
@@ -564,7 +564,7 @@ def generate_property_setters(info, members, extra_enums, known_bindings):
                     struct_name = "Vector4"
                 else:
                     struct_name = "Quaternion"
-                out.append(f"    read{struct_name}(L, 2, instance->{member.name});")
+                out.append(f"    check{struct_name}(L, 2, instance->{member.name});")
                 out.append("    return 0;")
             else:
                 binding = binding_for_type(member.type, known_bindings)

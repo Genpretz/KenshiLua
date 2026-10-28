@@ -326,6 +326,23 @@ def apply_description_overlays(metadata):
     return metadata
 
 
+def hide_internal_dispatch_methods(metadata):
+    """Keep KenshiLib's direct-dispatch helpers out of LuaLS completion.
+
+    ``_NV_*`` methods remain registered at runtime for compatibility and stay
+    in the binding inventory for auditing. They are an implementation detail
+    for addressing non-virtual function bodies, rather than the public Lua
+    call path. Event names are emitted separately and are not affected.
+    """
+    for class_entry in metadata.get("classes", []):
+        class_entry["fields"] = [
+            field
+            for field in class_entry.get("fields", [])
+            if not field["name"].startswith("_NV_")
+        ]
+    return metadata
+
+
 def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
     """Declare referenced engine object types even before their full API audit."""
     inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
@@ -460,6 +477,7 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
     metadata = add_inventory_forward_declarations(metadata, global_enums, nested_enums)
     metadata = expand_inventory_fields(metadata)
     metadata = apply_description_overlays(metadata)
+    metadata = hide_internal_dispatch_methods(metadata)
 
     nested_table_fields = {
         parent: {field: parent + "." + field for field in fields}

@@ -117,7 +117,7 @@ static int Tasker_set_location(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    readVector3(L, 2, instance->location);
+    if (!readVector3(L, 2, instance->location)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -404,7 +404,7 @@ int TaskerBinding::getNextSubTarget(lua_State* L)
     if (!instance) return luaL_error(L, "Tasker is nil");
     AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     hand res = instance->getNextSubTarget(ai);
-    return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
+    return HandBinding::push(L, res);
 }
 
 

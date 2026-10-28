@@ -11,7 +11,7 @@ namespace KenshiLua
 
 MyGUI::Widget* WidgetBinding::getWidget(lua_State* L, int idx)
 {
-    return testObject<MyGUI::Widget>(L, idx, WidgetBinding::getMetatableName());
+    return MyGUIBindings::checkWidget<MyGUI::Widget>(L, idx);
 }
 
 int WidgetBinding::setPosition(lua_State* L)
@@ -855,86 +855,9 @@ int WidgetBinding::upLayerItem(lua_State* L)
     return 0;
 }
 
-static int widget_index(lua_State* L)
-{
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
-    if (!w) return luaL_error(L, "Widget is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "caption") == 0 || strcmp(key, "text") == 0)
-    {
-        return WidgetBinding::getCaption(L);
-    }
-    if (strcmp(key, "visible") == 0)
-    {
-        lua_pushboolean(L, w->getVisible() ? 1 : 0);
-        return 1;
-    }
-    if (strcmp(key, "enabled") == 0)
-    {
-        lua_pushboolean(L, w->getEnabled() ? 1 : 0);
-        return 1;
-    }
-    if (strcmp(key, "alpha") == 0)
-    {
-        lua_pushnumber(L, w->getAlpha());
-        return 1;
-    }
-    if (strcmp(key, "name") == 0)
-    {
-        lua_pushstring(L, w->getName().c_str());
-        return 1;
-    }
-    if (strcmp(key, "type") == 0)
-    {
-        lua_pushstring(L, w->getTypeName().c_str());
-        return 1;
-    }
-
-    return genericPropertyIndex(L);
-}
-
-static int widget_newindex(lua_State* L)
-{
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
-    if (!w) return luaL_error(L, "Widget is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "caption") == 0 || strcmp(key, "text") == 0)
-    {
-        const char* val = luaL_checkstring(L, 3);
-        if (MyGUI::TextBox* tb = w->castType<MyGUI::TextBox>(false))
-            tb->setCaption(val);
-        else if (MyGUI::Window* win = w->castType<MyGUI::Window>(false))
-            win->setCaption(val);
-        else if (MyGUI::Button* btn = w->castType<MyGUI::Button>(false))
-            btn->setCaption(val);
-        else
-            w->setProperty("Caption", val);
-        return 0;
-    }
-    if (strcmp(key, "visible") == 0)
-    {
-        w->setVisible(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "enabled") == 0)
-    {
-        w->setEnabled(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "alpha") == 0)
-    {
-        w->setAlpha((float)luaL_checknumber(L, 3));
-        return 0;
-    }
-
-    return genericPropertyNewIndex(L);
-}
-
 static int widget_tostring(lua_State* L)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
     char buf[128];
     if (w)
     {
@@ -1029,7 +952,28 @@ void WidgetBinding::registerBinding(lua_State* L)
         { "bringToFront",         upLayerItem },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, widget_index, widget_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "caption", WidgetBinding::getCaption);
+    registerGetter(L, "text", WidgetBinding::getCaption);
+    registerGetter(L, "visible", WidgetBinding::getVisible);
+    registerGetter(L, "enabled", WidgetBinding::getEnabled);
+    registerGetter(L, "alpha", WidgetBinding::getAlpha);
+    registerGetter(L, "name", WidgetBinding::getName);
+    registerGetter(L, "type", WidgetBinding::getType);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "caption", WidgetBinding::setCaption);
+    registerSetter(L, "text", WidgetBinding::setCaption);
+    registerSetter(L, "visible", WidgetBinding::setVisible);
+    registerSetter(L, "enabled", WidgetBinding::setEnabled);
+    registerSetter(L, "alpha", WidgetBinding::setAlpha);
+    lua_setfield(L, -2, "__setters");
+
+    lua_pop(L, 1);
 }
 
 } // namespace KenshiLua

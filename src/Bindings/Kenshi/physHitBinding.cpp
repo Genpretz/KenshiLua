@@ -155,7 +155,7 @@ static int physHit_set_position(lua_State* L)
 {
     physHit* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "physHit is nil");
-    readVector3(L, 2, instance->position);
+    if (!readVector3(L, 2, instance->position)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -163,7 +163,7 @@ static int physHit_set_normal(lua_State* L)
 {
     physHit* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "physHit is nil");
-    readVector3(L, 2, instance->normal);
+    if (!readVector3(L, 2, instance->normal)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

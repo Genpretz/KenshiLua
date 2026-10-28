@@ -1055,7 +1055,7 @@ int GameWorldBinding::logDebug(lua_State* L)
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
 
-    std::string line = luaL_checkstring(L, 2);
+    const char* line = luaL_checkstring(L, 2);
     if (lua_gettop(L) >= 3)
     {
         std::string logname = luaL_checkstring(L, 3);

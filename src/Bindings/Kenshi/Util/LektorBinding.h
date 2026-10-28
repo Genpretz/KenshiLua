@@ -487,20 +487,20 @@ namespace KenshiLua
                 return luaL_error(L, "lektor: only numeric indices are writable");
 
             uint32_t i = (uint32_t)lua_tointeger(L, 2);
-            T val = Policy::readElement(L, 3, Base::elemMetaName);
+            if (i < 1 || i > lek->count + 1)
+            {
+                return luaL_error(L, "lektor: index %u out of range (size=%u, can append at %u)",
+                    i, lek->count, lek->count + 1);
+            }
 
-            if (i >= 1 && i <= lek->count)
+            T val = Policy::readElement(L, 3, Base::elemMetaName);
+            if (i <= lek->count)
             {
                 lek->stuff[i - 1] = val;
                 return 0;
             }
-            if (i == lek->count + 1)
-            {
-                lektor_push_back(*lek, val);
-                return 0;
-            }
-            return luaL_error(L, "lektor: index %u out of range (size=%u, can append at %u)",
-                i, lek->count, lek->count + 1);
+            lektor_push_back(*lek, val);
+            return 0;
         }
 
         static int pushMethod(lua_State* L)
@@ -608,21 +608,12 @@ namespace KenshiLua
     {
     };
 
-    inline int lua_lektor_new(lua_State* L)
+    inline LektorFactoryFn resolveLektorFactory(const std::string& typeName)
     {
-        std::string typeName = extractContainerTypeName(L, 1);
-
-        if (typeName.empty())
-        {
-            return luaL_error(L, "lektor.new: expected type name or class table as argument 1, got %s", luaL_typename(L, 1));
-        }
-
         std::unordered_map<std::string, LektorFactoryFn>& factories = getLektorFactories();
         std::unordered_map<std::string, LektorFactoryFn>::iterator it = factories.find(typeName);
         if (it != factories.end())
-        {
-            return it->second(L);
-        }
+            return it->second;
 
         // 1. If wrapped in lektor<...>, extract inner
         if (typeName.length() > 8 && typeName.rfind("lektor<", 0) == 0 && typeName.back() == '>')
@@ -630,47 +621,66 @@ namespace KenshiLua
             std::string inner = typeName.substr(7, typeName.length() - 8);
             it = factories.find(inner);
             if (it != factories.end())
-                return it->second(L);
+                return it->second;
 
             if (inner.back() != '*')
             {
                 it = factories.find(inner + "*");
                 if (it != factories.end())
-                    return it->second(L);
+                    return it->second;
             }
         }
 
         // 2. Try appending '*'
         it = factories.find(typeName + "*");
         if (it != factories.end())
-        {
-            return it->second(L);
-        }
+            return it->second;
 
         // 3. Try removing '*'
         if (!typeName.empty() && typeName.back() == '*')
         {
             it = factories.find(typeName.substr(0, typeName.length() - 1));
             if (it != factories.end())
-                return it->second(L);
+                return it->second;
         }
 
         // 4. Try wrapping with lektor<...>
         it = factories.find("lektor<" + typeName + ">");
         if (it != factories.end())
-        {
-            return it->second(L);
-        }
+            return it->second;
 
         // 5. A pointer element named without '*' ("Character" -> lektor<Character*>)
         if (typeName.back() != '*')
         {
             it = factories.find("lektor<" + typeName + "*>");
             if (it != factories.end())
-                return it->second(L);
+                return it->second;
         }
 
-        return luaL_error(L, "lektor.new: unsupported or unknown type '%s'", typeName.c_str());
+        return NULL;
+    }
+
+    inline int lua_lektor_new(lua_State* L)
+    {
+        LektorFactoryFn fn = NULL;
+        {
+            std::string typeName = extractContainerTypeName(L, 1);
+            if (typeName.empty())
+            {
+                lua_pushfstring(L, "lektor.new: expected type name or class table as argument 1, got %s", luaL_typename(L, 1));
+            }
+            else
+            {
+                fn = resolveLektorFactory(typeName);
+                if (!fn)
+                {
+                    lua_pushfstring(L, "lektor.new: unsupported or unknown type '%s'", typeName.c_str());
+                }
+            }
+        }
+        if (!fn)
+            return lua_error(L);
+        return fn(L);
     }
 
     inline int lua_lektor_call(lua_State* L)

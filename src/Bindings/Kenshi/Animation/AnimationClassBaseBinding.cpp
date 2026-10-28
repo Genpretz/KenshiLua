@@ -160,7 +160,7 @@ static int AnimationClassBase_set_desiredOrientation(lua_State* L)
 {
     AnimationClassBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClassBase is nil");
-    readQuaternion(L, 2, instance->desiredOrientation);
+    if (!readQuaternion(L, 2, instance->desiredOrientation)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 
@@ -184,7 +184,7 @@ static int AnimationClassBase_set_lastAnimRelocation(lua_State* L)
 {
     AnimationClassBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClassBase is nil");
-    readVector3(L, 2, instance->lastAnimRelocation);
+    if (!readVector3(L, 2, instance->lastAnimRelocation)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -192,7 +192,7 @@ static int AnimationClassBase_set_rootBonePosition(lua_State* L)
 {
     AnimationClassBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClassBase is nil");
-    readVector3(L, 2, instance->rootBonePosition);
+    if (!readVector3(L, 2, instance->rootBonePosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -293,7 +293,7 @@ int AnimationClassBaseBinding::getBoneWorldPosition(lua_State* L)
     AnimationClassBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClassBase is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     float scale = (float)luaL_checknumber(L, 3);
     Ogre::Vector3 result = instance->getBoneWorldPosition(name, scale);
     pushVector3(L, result);
@@ -443,7 +443,7 @@ int AnimationClassBaseBinding::getAnimationProgress(lua_State* L)
     if (!instance) return luaL_error(L, "AnimationClassBase is nil");
 
     if (lua_type(L, 2) == LUA_TSTRING) {
-        const std::string name = lua_tostring(L, 2);
+        const char* name = lua_tostring(L, 2);
         lua_pushnumber(L, instance->getAnimationProgress(name));
         return 1;
     }

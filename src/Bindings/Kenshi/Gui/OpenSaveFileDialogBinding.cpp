@@ -157,7 +157,7 @@ int OpenSaveFileDialogBinding::setDialogInfo(lua_State* L)
     OpenSaveFileDialog* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "OpenSaveFileDialog is nil");
 
-    std::string _caption = luaL_checkstring(L, 2);
+    const char* _caption = luaL_checkstring(L, 2);
     std::string _button = luaL_checkstring(L, 3);
     bool _folderMode = lua_toboolean(L, 4) != 0;
     instance->setDialogInfo(_caption, _button, _folderMode);

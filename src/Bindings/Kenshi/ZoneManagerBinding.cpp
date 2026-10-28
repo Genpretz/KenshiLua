@@ -555,7 +555,7 @@ int ZoneManagerBinding::saveLevelData(lua_State* L)
     ZoneManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ZoneManager is nil");
 
-    const std::string path = luaL_checkstring(L, 2);
+    const char* path = luaL_checkstring(L, 2);
     const std::string modName = luaL_checkstring(L, 3);
     instance->saveLevelData(path, modName);
     return 0;

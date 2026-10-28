@@ -83,7 +83,7 @@ static int DelayedSpawnMsg_set_pos(lua_State* L)
 {
     DelayedSpawnMsg* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DelayedSpawnMsg is nil");
-    readVector3(L, 2, instance->pos);
+    if (!readVector3(L, 2, instance->pos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

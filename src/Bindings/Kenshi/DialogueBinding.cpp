@@ -599,7 +599,7 @@ int DialogueBinding::getWordSwap(lua_State* L)
     Dialogue* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Dialogue is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     Character* _target = checkObject<Character>(L, 3, CharacterBinding::getMetatableName());
     bool _a3 = lua_toboolean(L, 4) != 0;
     DialogLineData* _line = checkObject<DialogLineData>(L, 5, DialogLineDataBinding::getMetatableName());
@@ -1234,7 +1234,7 @@ int DialogueBinding::say(lua_State* L)
 
     if (lua_isstring(L, 2))
     {
-        const std::string text = luaL_checkstring(L, 2);
+        const char* text = luaL_checkstring(L, 2);
         DialogLineData* line = checkObject<DialogLineData>(L, 3, DialogLineDataBinding::getMetatableName());
         instance->say(text, line);
     }

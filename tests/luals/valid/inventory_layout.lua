@@ -32,7 +32,6 @@ local function checkInventoryLayout(base, layout, gui, sections, inventory, sect
 
     layout.window = layout:getWindow()
     layout.datapanel = layout:getDatapanel()
-    layout.datapanel = layout:_NV_getDatapanel()
     layout.dataPanelInfos = layout.dataPanelInfos
     layout:setupDataPanelInfos("fixture")
     local widget = layout:getWidget("fixture")
@@ -71,10 +70,8 @@ local function checkInventoryLayout(base, layout, gui, sections, inventory, sect
     sectionGui:update()
 
     fixed:setSize(10, 10)
-    fixed:_NV_setSize(10, 10)
     backpack:setupSections(gui, sections, inventory)
     generic:setSize(10, 10, true, true)
-    generic:_NV_setSize(10, 10, true, true)
     generic.arrangeButton = widget
     container:setCapacity(100, false)
     container:setupSections(gui, sections, inventory)
@@ -92,7 +89,6 @@ local function checkInventoryLayout(base, layout, gui, sections, inventory, sect
     assert(production ~= nil)
 
     build:setupSections(gui, sections, inventory)
-    build:_NV_setupSections(gui, sections, inventory)
     build:setInput(0, "input", "ready")
     build:setOutput("output")
     build:setInputProgress(0, 0.5)
@@ -120,7 +116,6 @@ local function checkInventoryLayout(base, layout, gui, sections, inventory, sect
     build.outputs = 1
 
     crafting:setupSections(gui, sections, inventory)
-    crafting:_NV_setupSections(gui, sections, inventory)
     crafting:refresh()
     crafting:setOutputType(0)
     crafting:setCraftingName("fixture")

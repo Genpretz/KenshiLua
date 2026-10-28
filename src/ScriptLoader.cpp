@@ -2,6 +2,7 @@
 #include "ScriptLoader.h"
 #include "Logger.h"
 #include "EventSystem.h"
+#include "Compatibility/LegacyCompat.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Util/PathUtils.h"
 
@@ -45,8 +46,6 @@ static std::string lowerPath(std::string value)
     std::transform(value.begin(), value.end(), value.begin(), lowerPathCharacter);
     return value;
 }
-
-static std::unordered_map<std::string, std::string> s_activeModRootCache;
 
 static bool canonicalDirectory(const fs::path& candidate, std::string& resolved)
 {
@@ -161,13 +160,13 @@ static bool resolveActiveModRoot(const ModInfo* mod, std::string& resolved)
     std::string cacheKey = lowerPath(mod->name) + "|" + lowerPath(mod->path)
         + (mod->isWorkshop ? "|workshop" : "|local");
     std::unordered_map<std::string, std::string>::iterator cached =
-        s_activeModRootCache.find(cacheKey);
-    if (cached != s_activeModRootCache.end()) {
+        ScriptLoader::get().activeModRootCache().find(cacheKey);
+    if (cached != ScriptLoader::get().activeModRootCache().end()) {
         if (canonicalDirectory(fs::path(cached->second), resolved)) {
             cached->second = resolved;
             return true;
         }
-        s_activeModRootCache.erase(cached);
+        ScriptLoader::get().activeModRootCache().erase(cached);
     }
 
     fs::path gameDirectory;
@@ -178,7 +177,7 @@ static bool resolveActiveModRoot(const ModInfo* mod, std::string& resolved)
 
     fs::path declaredPath(mod->path);
     if (declaredPath.is_absolute() && canonicalDirectory(declaredPath, resolved)) {
-        s_activeModRootCache[cacheKey] = resolved;
+        ScriptLoader::get().activeModRootCache()[cacheKey] = resolved;
         return true;
     }
 
@@ -190,7 +189,7 @@ static bool resolveActiveModRoot(const ModInfo* mod, std::string& resolved)
     if (trustRelativeDeclaredPath && hasGameDirectory && !declaredPath.empty()) {
         fs::path gameRelativePath = gameDirectory / declaredPath;
         if (canonicalDirectory(gameRelativePath, resolved)) {
-            s_activeModRootCache[cacheKey] = resolved;
+            ScriptLoader::get().activeModRootCache()[cacheKey] = resolved;
             return true;
         }
     }
@@ -198,7 +197,7 @@ static bool resolveActiveModRoot(const ModInfo* mod, std::string& resolved)
     fs::path currentRelativePath = declaredPath;
     if (trustRelativeDeclaredPath && !declaredPath.empty() &&
         canonicalDirectory(currentRelativePath, resolved)) {
-        s_activeModRootCache[cacheKey] = resolved;
+        ScriptLoader::get().activeModRootCache()[cacheKey] = resolved;
         return true;
     }
 
@@ -220,7 +219,7 @@ static bool resolveActiveModRoot(const ModInfo* mod, std::string& resolved)
     if (!found)
         return false;
 
-    s_activeModRootCache[cacheKey] = resolved;
+    ScriptLoader::get().activeModRootCache()[cacheKey] = resolved;
     return true;
 }
 
@@ -415,18 +414,21 @@ static int sandboxLoadFile(lua_State* L)
 static int sandboxDoFile(lua_State* L)
 {
     const char* filename = luaL_checkstring(L, 1);
-    std::string requestedName(filename);
-    SandboxPathContext context = getSandboxPathContextFromUpvalue(L, 1);
-    std::string resolved;
-    if (!resolveSandboxFile(context, requestedName, resolved)) {
-        std::string error = makeSandboxFileNotFoundError(context, requestedName);
-        lua_settop(L, 0);
-        lua_pushlstring(L, error.c_str(), error.size());
-        return lua_error(L);
+    int status = LUA_OK;
+    {
+        std::string requestedName(filename);
+        SandboxPathContext context = getSandboxPathContextFromUpvalue(L, 1);
+        std::string resolved;
+        if (!resolveSandboxFile(context, requestedName, resolved)) {
+            std::string error = makeSandboxFileNotFoundError(context, requestedName);
+            lua_settop(L, 0);
+            lua_pushlstring(L, error.c_str(), error.size());
+            status = LUA_ERRFILE;
+        } else {
+            lua_settop(L, 0);
+            status = luaL_loadfile(L, resolved.c_str());
+        }
     }
-
-    lua_settop(L, 0);
-    int status = luaL_loadfile(L, resolved.c_str());
     if (status != LUA_OK)
         return lua_error(L);
 
@@ -452,32 +454,40 @@ static int sandboxRequire(lua_State* L)
         return 1;
     lua_pop(L, 2);
 
-    SandboxPathContext context = getSandboxPathContextFromUpvalue(L, 2);
-    std::string resolved;
-    if (!resolveSandboxModule(context, moduleName, resolved)) {
+    int loadStatus = LUA_OK;
+    bool foundInSandbox = false;
+    {
+        SandboxPathContext context = getSandboxPathContextFromUpvalue(L, 2);
+        std::string resolved;
+        if (resolveSandboxModule(context, moduleName, resolved)) {
+            foundInSandbox = true;
+            lua_pushvalue(L, lua_upvalueindex(4));
+            lua_pushlightuserdata(L, &s_loadingModuleMarker);
+            lua_setfield(L, -2, moduleName);
+            lua_pop(L, 1);
+
+            loadStatus = luaL_loadfile(L, resolved.c_str());
+            if (loadStatus != LUA_OK) {
+                const char* detail = lua_tostring(L, -1);
+                std::string error = "error loading module '" + std::string(moduleName)
+                    + "' from file '" + resolved + "':\n\t" + (detail ? detail : "load error");
+                lua_pop(L, 1);
+                lua_pushvalue(L, lua_upvalueindex(4));
+                lua_pushnil(L);
+                lua_setfield(L, -2, moduleName);
+                lua_pop(L, 1);
+                lua_pushlstring(L, error.c_str(), error.size());
+            }
+        }
+    }
+    if (!foundInSandbox) {
         lua_pushvalue(L, lua_upvalueindex(1));
         lua_pushvalue(L, 1);
         lua_call(L, 1, 1);
         return 1;
     }
-
-    lua_pushvalue(L, lua_upvalueindex(4));
-    lua_pushlightuserdata(L, &s_loadingModuleMarker);
-    lua_setfield(L, -2, moduleName);
-    lua_pop(L, 1);
-
-    int loadStatus = luaL_loadfile(L, resolved.c_str());
-    if (loadStatus != LUA_OK) {
-        const char* detail = lua_tostring(L, -1);
-        std::string error = "error loading module '" + std::string(moduleName)
-            + "' from file '" + resolved + "':\n\t" + (detail ? detail : "load error");
-        lua_pop(L, 1);
-        lua_pushvalue(L, lua_upvalueindex(4));
-        lua_pushnil(L);
-        lua_setfield(L, -2, moduleName);
-        lua_pop(L, 1);
-        return luaL_error(L, "%s", error.c_str());
-    }
+    if (loadStatus != LUA_OK)
+        return lua_error(L);
 
     lua_pushvalue(L, lua_upvalueindex(3));
     lua_setfenv(L, -2);
@@ -619,96 +629,123 @@ void ScriptLoader::clearProviderEnvironments(lua_State* L)
     lua_rawset(L, LUA_REGISTRYINDEX);
 }
 
-int ScriptLoader::requireFromMod(lua_State* L, const std::string& modName,
-    const std::string& moduleName)
+int ScriptLoader::requireFromMod(lua_State* L, const char* modName,
+    const char* moduleName)
 {
-    std::string scriptsDirectory;
-    std::string error;
-    if (!getActiveModScriptsDirectory(modName, scriptsDirectory, error))
-        return luaL_error(L, "KenshiLua.requireFromMod: %s", error.c_str());
-
-    SandboxPathContext context;
-    context.scriptsDirectory = scriptsDirectory;
-    std::string resolved;
-    if (!resolveSandboxModule(context, moduleName, resolved)) {
-        return luaL_error(L,
-            "KenshiLua.requireFromMod: module '%s' was not found under active mod '%s' scripts directory",
-            moduleName.c_str(), modName.c_str());
-    }
-
     int base = lua_gettop(L);
-    pushProviderEnvironment(L, scriptsDirectory);
-    int envIndex = lua_gettop(L);
-    lua_getfield(L, envIndex, "require");
-    lua_pushlstring(L, moduleName.c_str(), moduleName.size());
+    int envIndex = 0;
+    bool ok = false;
+    {
+        std::string modNameStr(modName ? modName : "");
+        std::string moduleNameStr(moduleName ? moduleName : "");
+        std::string scriptsDirectory;
+        std::string error;
+        if (!getActiveModScriptsDirectory(modNameStr, scriptsDirectory, error)) {
+            lua_pushfstring(L, "KenshiLua.requireFromMod: %s", error.c_str());
+        } else {
+            SandboxPathContext context;
+            context.scriptsDirectory = scriptsDirectory;
+            std::string resolved;
+            if (!resolveSandboxModule(context, moduleNameStr, resolved)) {
+                lua_pushfstring(L,
+                    "KenshiLua.requireFromMod: module '%s' was not found under active mod '%s' scripts directory",
+                    moduleNameStr.c_str(), modNameStr.c_str());
+            } else {
+                pushProviderEnvironment(L, scriptsDirectory);
+                envIndex = lua_gettop(L);
+                lua_getfield(L, envIndex, "require");
+                lua_pushlstring(L, moduleNameStr.c_str(), moduleNameStr.size());
+                ok = true;
+            }
+        }
+    }
+    if (!ok)
+        return lua_error(L);
+
     lua_call(L, 1, 1);
     lua_remove(L, envIndex);
     return lua_gettop(L) - base;
 }
 
-int ScriptLoader::dofileFromMod(lua_State* L, const std::string& modName,
-    const std::string& filename)
+int ScriptLoader::dofileFromMod(lua_State* L, const char* modName,
+    const char* filename)
 {
-    std::string scriptsDirectory;
-    std::string error;
-    if (!getActiveModScriptsDirectory(modName, scriptsDirectory, error))
-        return luaL_error(L, "KenshiLua.dofileFromMod: %s", error.c_str());
-    if (fs::path(filename).is_absolute())
-        return luaL_error(L, "KenshiLua.dofileFromMod: filename must be relative to the target mod's scripts directory");
-
-    SandboxPathContext context;
-    context.scriptsDirectory = scriptsDirectory;
-    std::string resolved;
-    if (!resolveSandboxFile(context, filename, resolved)) {
-        return luaL_error(L,
-            "KenshiLua.dofileFromMod: file '%s' was not found under active mod '%s' scripts directory",
-            filename.c_str(), modName.c_str());
-    }
-
     int base = lua_gettop(L);
-    pushProviderEnvironment(L, scriptsDirectory);
-    int envIndex = lua_gettop(L);
-    lua_getfield(L, envIndex, "dofile");
-    lua_pushlstring(L, filename.c_str(), filename.size());
+    int envIndex = 0;
+    bool ok = false;
+    {
+        std::string modNameStr(modName ? modName : "");
+        std::string filenameStr(filename ? filename : "");
+        std::string scriptsDirectory;
+        std::string error;
+        if (!getActiveModScriptsDirectory(modNameStr, scriptsDirectory, error)) {
+            lua_pushfstring(L, "KenshiLua.dofileFromMod: %s", error.c_str());
+        } else if (fs::path(filenameStr).is_absolute()) {
+            lua_pushliteral(L, "KenshiLua.dofileFromMod: filename must be relative to the target mod's scripts directory");
+        } else {
+            SandboxPathContext context;
+            context.scriptsDirectory = scriptsDirectory;
+            std::string resolved;
+            if (!resolveSandboxFile(context, filenameStr, resolved)) {
+                lua_pushfstring(L,
+                    "KenshiLua.dofileFromMod: file '%s' was not found under active mod '%s' scripts directory",
+                    filenameStr.c_str(), modNameStr.c_str());
+            } else {
+                pushProviderEnvironment(L, scriptsDirectory);
+                envIndex = lua_gettop(L);
+                lua_getfield(L, envIndex, "dofile");
+                lua_pushlstring(L, filenameStr.c_str(), filenameStr.size());
+                ok = true;
+            }
+        }
+    }
+    if (!ok)
+        return lua_error(L);
+
     lua_call(L, 1, LUA_MULTRET);
     int results = lua_gettop(L) - base - 1;
     lua_remove(L, envIndex);
     return results;
 }
 
-int ScriptLoader::loadfileFromMod(lua_State* L, const std::string& modName,
-    const std::string& filename)
+int ScriptLoader::loadfileFromMod(lua_State* L, const char* modName,
+    const char* filename)
 {
-    std::string scriptsDirectory;
-    std::string error;
-    if (!getActiveModScriptsDirectory(modName, scriptsDirectory, error)) {
-        lua_pushnil(L);
-        std::string message = "KenshiLua.loadfileFromMod: " + error;
-        lua_pushlstring(L, message.c_str(), message.size());
-        return 2;
-    }
-    if (fs::path(filename).is_absolute()) {
-        lua_pushnil(L);
-        lua_pushliteral(L, "KenshiLua.loadfileFromMod: filename must be relative to the target mod's scripts directory");
-        return 2;
-    }
-
-    SandboxPathContext context;
-    context.scriptsDirectory = scriptsDirectory;
-    std::string resolved;
-    if (!resolveSandboxFile(context, filename, resolved)) {
-        lua_pushnil(L);
-        std::string message = "KenshiLua.loadfileFromMod: file '" + filename
-            + "' was not found under active mod '" + modName + "' scripts directory";
-        lua_pushlstring(L, message.c_str(), message.size());
-        return 2;
-    }
-
     int base = lua_gettop(L);
-    pushProviderEnvironment(L, scriptsDirectory);
-    int envIndex = lua_gettop(L);
-    lua_getfield(L, envIndex, "loadfile");
-    lua_pushlstring(L, filename.c_str(), filename.size());
+    int envIndex = 0;
+    {
+        std::string modNameStr(modName ? modName : "");
+        std::string filenameStr(filename ? filename : "");
+        std::string scriptsDirectory;
+        std::string error;
+        if (!getActiveModScriptsDirectory(modNameStr, scriptsDirectory, error)) {
+            lua_pushnil(L);
+            std::string message = "KenshiLua.loadfileFromMod: " + error;
+            lua_pushlstring(L, message.c_str(), message.size());
+            return 2;
+        }
+        if (fs::path(filenameStr).is_absolute()) {
+            lua_pushnil(L);
+            lua_pushliteral(L, "KenshiLua.loadfileFromMod: filename must be relative to the target mod's scripts directory");
+            return 2;
+        }
+
+        SandboxPathContext context;
+        context.scriptsDirectory = scriptsDirectory;
+        std::string resolved;
+        if (!resolveSandboxFile(context, filenameStr, resolved)) {
+            lua_pushnil(L);
+            std::string message = "KenshiLua.loadfileFromMod: file '" + filenameStr
+                + "' was not found under active mod '" + modNameStr + "' scripts directory";
+            lua_pushlstring(L, message.c_str(), message.size());
+            return 2;
+        }
+
+        pushProviderEnvironment(L, scriptsDirectory);
+        envIndex = lua_gettop(L);
+        lua_getfield(L, envIndex, "loadfile");
+        lua_pushlstring(L, filenameStr.c_str(), filenameStr.size());
+    }
     lua_call(L, 1, LUA_MULTRET);
     int results = lua_gettop(L) - base - 1;
     lua_remove(L, envIndex);
@@ -717,7 +754,7 @@ int ScriptLoader::loadfileFromMod(lua_State* L, const std::string& modName,
 
 void ScriptLoader::discover()
 {
-    s_activeModRootCache.clear();
+    m_activeModRootCache.clear();
 
     // Save existing running state
     std::unordered_map<std::string, std::pair<bool, std::string>> runningState;
@@ -878,11 +915,17 @@ bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absoluteP
     return true;
 }
 
+void ScriptLoader::cleanupScriptResources(const std::string& chunkName)
+{
+    if (chunkName.empty()) return;
+    EventSystem::get().unregisterHandlersBySource(chunkName);
+    MyGUIBinding::destroyWidgetsBySource(chunkName);
+}
+
 bool ScriptLoader::runScript(lua_State* L, LoadedScript& s)
 {
     // Clean up any previously registered event handlers and MyGUI widgets from this script
-    EventSystem::get().unregisterHandlersBySource(s.chunkName);
-    MyGUIBinding::destroyWidgetsBySource(s.chunkName);
+    cleanupScriptResources(s.chunkName);
 
     bool res = runScriptSandboxed(L, s.absolutePath, s.chunkName, &s.lastError);
     s.loaded = res;
@@ -916,8 +959,15 @@ void ScriptLoader::reloadAll(lua_State* L)
 {
     if (!L) return;
     clearProviderEnvironments(L);
+    LegacyCompat::ResetWarnings(L);
+    for (size_t i = 0; i < m_scripts.size(); ++i) {
+        cleanupScriptResources(m_scripts[i].chunkName);
+    }
     m_resolvedScriptPaths.clear();
     discover();
+    for (size_t i = 0; i < m_scripts.size(); ++i) {
+        cleanupScriptResources(m_scripts[i].chunkName);
+    }
     for (size_t i = 0; i < m_scripts.size(); ++i) {
         m_scripts[i].loaded = false;
         m_scripts[i].lastError.clear();
@@ -947,6 +997,7 @@ bool ScriptLoader::reloadSingleScript(lua_State* L, const std::string& absoluteP
 {
     if (!L) return false;
     clearProviderEnvironments(L);
+    LegacyCompat::ResetWarnings(L);
 
     for (size_t i = 0; i < m_scripts.size(); ++i) {
         if (isSameScriptFile(m_scripts[i].absolutePath, absolutePath)) {
@@ -975,7 +1026,7 @@ bool ScriptLoader::reloadSingleScript(lua_State* L, const std::string& absoluteP
 
 void ScriptLoader::reset()
 {
-    s_activeModRootCache.clear();
+    m_activeModRootCache.clear();
     m_scripts.clear();
     m_activeModNames.clear();
     m_resolvedScriptPaths.clear();

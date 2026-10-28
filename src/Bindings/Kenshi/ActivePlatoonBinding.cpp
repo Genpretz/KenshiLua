@@ -223,7 +223,7 @@ static int ActivePlatoon_set_workingPos(lua_State* L)
 {
     ActivePlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ActivePlatoon is nil");
-    readVector3(L, 2, instance->workingPos);
+    if (!readVector3(L, 2, instance->workingPos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -239,7 +239,7 @@ static int ActivePlatoon_set_positionMoved(lua_State* L)
 {
     ActivePlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ActivePlatoon is nil");
-    readVector3(L, 2, instance->positionMoved);
+    if (!readVector3(L, 2, instance->positionMoved)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -247,7 +247,7 @@ static int ActivePlatoon_set_teleportTo(lua_State* L)
 {
     ActivePlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ActivePlatoon is nil");
-    readVector3(L, 2, instance->teleportTo);
+    if (!readVector3(L, 2, instance->teleportTo)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

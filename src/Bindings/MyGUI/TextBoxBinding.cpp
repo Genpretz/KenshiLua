@@ -10,9 +10,7 @@ namespace KenshiLua
 
 MyGUI::TextBox* TextBoxBinding::getTextBox(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::TextBox>(false);
+    return MyGUIBindings::checkWidget<MyGUI::TextBox>(L, idx);
 }
 
 int TextBoxBinding::getTextRegion(lua_State* L)
@@ -132,47 +130,10 @@ int TextBoxBinding::setCaptionWithReplacing(lua_State* L)
     return 0;
 }
 
-static int TextBox_index(lua_State* L)
-{
-    MyGUI::TextBox* tb = TextBoxBinding::getTextBox(L, 1);
-    if (!tb) return luaL_error(L, "TextBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "fontName") == 0)
-    {
-        lua_pushstring(L, tb->getFontName().c_str());
-        return 1;
-    }
-    if (strcmp(key, "fontHeight") == 0)
-    {
-        lua_pushinteger(L, tb->getFontHeight());
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int TextBox_newindex(lua_State* L)
-{
-    MyGUI::TextBox* tb = TextBoxBinding::getTextBox(L, 1);
-    if (!tb) return luaL_error(L, "TextBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "fontName") == 0)
-    {
-        tb->setFontName(luaL_checkstring(L, 3));
-        return 0;
-    }
-    if (strcmp(key, "fontHeight") == 0)
-    {
-        tb->setFontHeight((int)luaL_checkinteger(L, 3));
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int TextBox_tostring(lua_State* L)
 {
-    MyGUI::TextBox* tb = TextBoxBinding::getTextBox(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::TextBox* tb = w ? w->castType<MyGUI::TextBox>(false) : nullptr;
     char buf[128];
     if (tb)
     {
@@ -207,7 +168,20 @@ void TextBoxBinding::registerBinding(lua_State* L)
         { "setCaptionWithReplacing",  setCaptionWithReplacing },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, TextBox_index, TextBox_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "fontName", TextBoxBinding::getFontName);
+    registerGetter(L, "fontHeight", TextBoxBinding::getFontHeight);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "fontName", TextBoxBinding::setFontName);
+    registerSetter(L, "fontHeight", TextBoxBinding::setFontHeight);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), WidgetBinding::getMetatableName());
 }
 

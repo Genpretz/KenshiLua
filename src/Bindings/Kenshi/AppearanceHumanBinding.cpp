@@ -92,7 +92,7 @@ static int AppearanceHuman_set_lastPhysiqueStats(lua_State* L)
 {
     AppearanceHuman* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AppearanceHuman is nil");
-    readVector3(L, 2, instance->lastPhysiqueStats);
+    if (!readVector3(L, 2, instance->lastPhysiqueStats)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

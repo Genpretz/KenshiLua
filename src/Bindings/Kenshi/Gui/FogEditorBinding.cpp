@@ -145,7 +145,7 @@ static int FogEditor_set_colour(lua_State* L)
 {
     FogEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FogEditor is nil");
-    readVector3(L, 2, instance->colour);
+    if (!readVector3(L, 2, instance->colour)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -177,7 +177,7 @@ static int FogEditor_set_editPos(lua_State* L)
 {
     FogEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FogEditor is nil");
-    readVector3(L, 2, instance->editPos);
+    if (!readVector3(L, 2, instance->editPos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -185,7 +185,7 @@ static int FogEditor_set_editRot(lua_State* L)
 {
     FogEditor* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FogEditor is nil");
-    readQuaternion(L, 2, instance->editRot);
+    if (!readQuaternion(L, 2, instance->editRot)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 

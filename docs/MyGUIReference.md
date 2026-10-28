@@ -1031,10 +1031,10 @@ Managers provide global control over input, cursor pointer, skins, layout templa
 #### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| `injectMouseMove` | `absy: integer, absz: integer` | `boolean` | `mgr:injectMouseMove(absy, absz)` |
-| `injectMousePress` | `absy: integer, btn: integer` | `boolean` | `mgr:injectMousePress(absy, btn)` |
-| `injectMouseRelease` | `absy: integer, btn: integer` | `boolean` | `mgr:injectMouseRelease(absy, btn)` |
-| `injectKeyPress` | `text: integer` | `boolean` | `mgr:injectKeyPress(text)` |
+| `injectMouseMove` | `` | `boolean` | `mgr:injectMouseMove()` |
+| `injectMousePress` | `` | `boolean` | `mgr:injectMousePress()` |
+| `injectMouseRelease` | `` | `boolean` | `mgr:injectMouseRelease()` |
+| `injectKeyPress` | `` | `boolean` | `mgr:injectKeyPress()` |
 | `injectKeyRelease` | `` | `boolean` | `mgr:injectKeyRelease()` |
 | `isControlPressed` | `` | `boolean` | `mgr:isControlPressed()` |
 | `isShiftPressed` | `` | `boolean` | `mgr:isShiftPressed()` |

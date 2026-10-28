@@ -133,7 +133,7 @@ static int Footprint_set_pos(lua_State* L)
 {
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
-    readVector3(L, 2, instance->pos);
+    if (!readVector3(L, 2, instance->pos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -141,7 +141,7 @@ static int Footprint_set_rot(lua_State* L)
 {
     Footprint* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Footprint is nil");
-    readQuaternion(L, 2, instance->rot);
+    if (!readQuaternion(L, 2, instance->rot)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 

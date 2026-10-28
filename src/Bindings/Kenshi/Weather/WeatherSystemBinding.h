@@ -25,6 +25,9 @@ public:
     static int updateUT(lua_State* L);
     static int addWeatherListener(lua_State* L);
     static int removeWeatherListener(lua_State* L);
+    static int getPositionGlobalEffects(lua_State* L);
+    static int addWeatherEffect(lua_State* L);
+    static int removeWeatherEffect(lua_State* L);
     static int setDustShaderValue(lua_State* L);
 };
 }

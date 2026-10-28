@@ -891,7 +891,7 @@ static int Character_set_ragdollNavmeshPosition(lua_State* L)
 {
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
-    readVector3(L, 2, instance->ragdollNavmeshPosition);
+    if (!readVector3(L, 2, instance->ragdollNavmeshPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -2886,7 +2886,7 @@ int CharacterBinding::updateGUIStatsDetails(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     DatapanelGUI* datapanel = checkObject<DatapanelGUI>(L, 2, DatapanelGUIBinding::getMetatableName());
-    const std::string name = luaL_checkstring(L, 3);
+    const char* name = luaL_checkstring(L, 3);
     int statId = (int)luaL_checkinteger(L, 4);
     instance->updateGUIStatsDetails(datapanel, name, statId);
     return 0;
@@ -4488,7 +4488,7 @@ int CharacterBinding::runSlaveAnim(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    const std::string anim = luaL_checkstring(L, 2);
+    const char* anim = luaL_checkstring(L, 2);
     float speed = (float)luaL_checknumber(L, 3);
     float sync = (float)luaL_checknumber(L, 4);
     instance->runSlaveAnim(anim, speed, sync);
@@ -4905,7 +4905,7 @@ int CharacterBinding::equipItem(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    const std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->equipItem(sectionName, item);
     return 0;
@@ -4916,7 +4916,7 @@ int CharacterBinding::_NV_equipItem(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    const std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_equipItem(sectionName, item);
     return 0;
@@ -4927,7 +4927,7 @@ int CharacterBinding::unequipItem(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    const std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->unequipItem(sectionName, item);
     return 0;
@@ -4938,7 +4938,7 @@ int CharacterBinding::_NV_unequipItem(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    const std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_unequipItem(sectionName, item);
     return 0;
@@ -5368,79 +5368,85 @@ int CharacterBinding::rememberCharacter(lua_State* L)
     }
     else if (lua_isstring(L, 3))
     {
-        std::string str = lua_tostring(L, 3);
-        
-        std::string target = "";
-        for (size_t i = 0; i < str.length(); ++i) {
-            char c = str[i];
-            if (c >= 'a' && c <= 'z') target += (c - 'a' + 'A');
-            else if (c == '_' || c == ' ' || c == '-') { /* skip */ }
-            else target += c;
-        }
-
-        // Try Short-Term first
-        lua_getglobal(L, "CharacterPerceptionTags_ShortTerm");
-        if (lua_istable(L, -1))
+        const char* str = lua_tostring(L, 3);
+        bool resolvedTag = false;
         {
-            lua_pushnil(L);
-            while (lua_next(L, -2) != 0)
+            std::string target = "";
+            for (size_t i = 0; str && str[i] != '\0'; ++i) {
+                char c = str[i];
+                if (c >= 'a' && c <= 'z') target += (c - 'a' + 'A');
+                else if (c == '_' || c == ' ' || c == '-') { /* skip */ }
+                else target += c;
+            }
+
+            // Try Short-Term first
+            lua_getglobal(L, "CharacterPerceptionTags_ShortTerm");
+            if (lua_istable(L, -1))
             {
-                if (lua_isstring(L, -2))
+                lua_pushnil(L);
+                while (lua_next(L, -2) != 0)
                 {
-                    std::string key = lua_tostring(L, -2);
-                    std::string norm_key = "";
-                    for (size_t j = 0; j < key.length(); ++j) {
-                        char c = key[j];
-                        if (c >= 'a' && c <= 'z') norm_key += (c - 'a' + 'A');
-                        else if (c == '_' || c == ' ' || c == '-') { /* skip */ }
-                        else norm_key += c;
-                    }
-                    if (norm_key == target)
+                    if (lua_isstring(L, -2))
                     {
-                        st_tag = (CharacterPerceptionTags_ShortTerm)lua_tointeger(L, -1);
-                        lua_pop(L, 3); // pop value, key, and table
-                        is_long_term = false;
-                        goto resolved;
+                        const char* key = lua_tostring(L, -2);
+                        std::string norm_key = "";
+                        for (size_t j = 0; key && key[j] != '\0'; ++j) {
+                            char c = key[j];
+                            if (c >= 'a' && c <= 'z') norm_key += (c - 'a' + 'A');
+                            else if (c == '_' || c == ' ' || c == '-') { /* skip */ }
+                            else norm_key += c;
+                        }
+                        if (norm_key == target)
+                        {
+                            st_tag = (CharacterPerceptionTags_ShortTerm)lua_tointeger(L, -1);
+                            lua_pop(L, 3); // pop value, key, and table
+                            is_long_term = false;
+                            resolvedTag = true;
+                            break;
+                        }
+                    }
+                    lua_pop(L, 1);
+                }
+            }
+            if (!resolvedTag)
+            {
+                lua_pop(L, 1);
+
+                // Try Long-Term
+                lua_getglobal(L, "CharacterPerceptionTags_LongTerm");
+                if (lua_istable(L, -1))
+                {
+                    lua_pushnil(L);
+                    while (lua_next(L, -2) != 0)
+                    {
+                        if (lua_isstring(L, -2))
+                        {
+                            const char* key = lua_tostring(L, -2);
+                            std::string norm_key = "";
+                            for (size_t j = 0; key && key[j] != '\0'; ++j) {
+                                char c = key[j];
+                                if (c >= 'a' && c <= 'z') norm_key += (c - 'a' + 'A');
+                                else if (c == '_' || c == ' ' || c == '-') { /* skip */ }
+                                else norm_key += c;
+                            }
+                            if (norm_key == target)
+                            {
+                                lt_tag = (CharacterPerceptionTags_LongTerm)lua_tointeger(L, -1);
+                                lua_pop(L, 3); // pop value, key, and table
+                                is_long_term = true;
+                                resolvedTag = true;
+                                break;
+                            }
+                        }
+                        lua_pop(L, 1);
                     }
                 }
-                lua_pop(L, 1);
+                if (!resolvedTag)
+                    lua_pop(L, 1);
             }
         }
-        lua_pop(L, 1);
-
-        // Try Long-Term
-        lua_getglobal(L, "CharacterPerceptionTags_LongTerm");
-        if (lua_istable(L, -1))
-        {
-            lua_pushnil(L);
-            while (lua_next(L, -2) != 0)
-            {
-                if (lua_isstring(L, -2))
-                {
-                    std::string key = lua_tostring(L, -2);
-                    std::string norm_key = "";
-                    for (size_t j = 0; j < key.length(); ++j) {
-                        char c = key[j];
-                        if (c >= 'a' && c <= 'z') norm_key += (c - 'a' + 'A');
-                        else if (c == '_' || c == ' ' || c == '-') { /* skip */ }
-                        else norm_key += c;
-                    }
-                    if (norm_key == target)
-                    {
-                        lt_tag = (CharacterPerceptionTags_LongTerm)lua_tointeger(L, -1);
-                        lua_pop(L, 3); // pop value, key, and table
-                        is_long_term = true;
-                        goto resolved;
-                    }
-                }
-                lua_pop(L, 1);
-            }
-        }
-        lua_pop(L, 1);
-
-        return luaL_error(L, "Unknown perception tag: %s", str.c_str());
-
-    resolved:;
+        if (!resolvedTag)
+            return luaL_error(L, "Unknown perception tag: %s", str ? str : "");
     }
     else
     {

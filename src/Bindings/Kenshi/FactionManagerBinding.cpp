@@ -115,8 +115,8 @@ int FactionManagerBinding::getOrCreateFaction(lua_State* L)
 
     if (lua_isstring(L, 2))
     {
-        std::string id = luaL_checkstring(L, 2);
-        std::string name = luaL_checkstring(L, 3);
+        const char* id = luaL_checkstring(L, 2);
+        const char* name = luaL_checkstring(L, 3);
         Faction* result = instance->getOrCreateFaction(id, name);
         return pushObject<Faction>(L, result, FactionBinding::getMetatableName());
     }

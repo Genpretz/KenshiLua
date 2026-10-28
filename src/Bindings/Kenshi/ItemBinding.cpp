@@ -1001,13 +1001,13 @@ int ItemBinding::findProperOwner(lua_State* L)
     {
         hand* h = checkObject<hand>(L, 1, HandBinding::getMetatableName());
         hand res = Item::findProperOwner(*h);
-        return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
+        return HandBinding::push(L, res);
     }
     else
     {
         RootObject* obj = checkObject<RootObject>(L, 1, RootObjectBinding::getMetatableName());
         hand res = Item::findProperOwner(obj);
-        return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
+        return HandBinding::push(L, res);
     }
 }
 

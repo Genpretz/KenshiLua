@@ -666,6 +666,41 @@ static int DialogLineData_set_lineCount(lua_State* L)
     return 0;
 }
 
+static std::set<std::string*>& dialogLineOwnedTextArrays()
+{
+    static std::set<std::string*> s_owned;
+    return s_owned;
+}
+
+static void resizeDialogLineTexts(DialogLineData* instance, int len)
+{
+    if (len <= 0)
+    {
+        if (instance->texts && dialogLineOwnedTextArrays().erase(instance->texts) > 0)
+        {
+            delete[] instance->texts;
+            instance->texts = nullptr;
+        }
+        instance->lineCount = 0;
+        return;
+    }
+
+    if (instance->texts && len <= instance->lineCount)
+    {
+        instance->lineCount = len;
+        return;
+    }
+
+    if (instance->texts && dialogLineOwnedTextArrays().erase(instance->texts) > 0)
+    {
+        delete[] instance->texts;
+    }
+
+    instance->texts = new std::string[len];
+    dialogLineOwnedTextArrays().insert(instance->texts);
+    instance->lineCount = len;
+}
+
 static int DialogLineData_set_texts(lua_State* L)
 {
     DialogLineData* instance = getInstance(L, 1);
@@ -673,22 +708,39 @@ static int DialogLineData_set_texts(lua_State* L)
     if (lua_istable(L, 2))
     {
         int len = (int)lua_objlen(L, 2);
-        delete[] instance->texts;
-        instance->lineCount = len;
-        instance->texts = new std::string[len];
         for (int i = 1; i <= len; ++i)
         {
             lua_rawgeti(L, 2, i);
-            instance->texts[i - 1] = luaL_optstring(L, -1, "");
+            int t = lua_type(L, -1);
+            lua_pop(L, 1);
+            if (t != LUA_TNIL && t != LUA_TSTRING && t != LUA_TNUMBER)
+            {
+                return luaL_argerror(L, 2, "table of strings expected for DialogLineData.texts");
+            }
+        }
+        resizeDialogLineTexts(instance, len);
+        for (int i = 1; i <= len; ++i)
+        {
+            lua_rawgeti(L, 2, i);
+            size_t sLen = 0;
+            const char* s = lua_tolstring(L, -1, &sLen);
+            if (s)
+                instance->texts[i - 1].assign(s, sLen);
+            else
+                instance->texts[i - 1].clear();
             lua_pop(L, 1);
         }
     }
-    else if (lua_isstring(L, 2))
+    else if (lua_type(L, 2) == LUA_TSTRING || lua_type(L, 2) == LUA_TNUMBER)
     {
-        delete[] instance->texts;
-        instance->lineCount = 1;
-        instance->texts = new std::string[1];
-        instance->texts[0] = luaL_checkstring(L, 2);
+        size_t sLen = 0;
+        const char* s = luaL_checklstring(L, 2, &sLen);
+        resizeDialogLineTexts(instance, 1);
+        instance->texts[0].assign(s, sLen);
+    }
+    else
+    {
+        return luaL_argerror(L, 2, "string or table of strings expected for DialogLineData.texts");
     }
     return 0;
 }

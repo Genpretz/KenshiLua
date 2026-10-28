@@ -243,7 +243,6 @@ def generate_struct_cpp(header_rel_path: str, info: StructInfo) -> str:
         for m in info.members:
             out.append(f'static int {info.name}_get_{m.name}(lua_State* L)\n{{\n')
             out.append(f'    auto* inst = getInstance(L, 1);\n')
-            out.append(f'    if (!inst) return luaL_error(L, "{info.cpp_full_name} is nil");\n')
 
             if m.array_size:
                 arr_len = m.array_size
@@ -301,7 +300,6 @@ def generate_struct_cpp(header_rel_path: str, info: StructInfo) -> str:
         for m in info.members:
             out.append(f'static int {info.name}_set_{m.name}(lua_State* L)\n{{\n')
             out.append(f'    auto* inst = getInstance(L, 1);\n')
-            out.append(f'    if (!inst) return luaL_error(L, "{info.cpp_full_name} is nil");\n')
 
             if m.array_size:
                 arr_len = m.array_size
@@ -336,9 +334,9 @@ def generate_struct_cpp(header_rel_path: str, info: StructInfo) -> str:
                     read_fmt = SCALAR_TYPES[m.type][1]
                     out.append(f'    inst->{m.name} = {read_fmt.format(idx=2)};\n')
                 elif m.type in ("Ogre::Vector3", "Vector3"):
-                    out.append(f'    inst->{m.name} = readVector3(L, 2);\n')
+                    out.append(f'    checkVector3(L, 2, inst->{m.name});\n')
                 elif m.type in ("Ogre::Quaternion", "Quaternion"):
-                    out.append(f'    inst->{m.name} = readQuaternion(L, 2);\n')
+                    out.append(f'    checkQuaternion(L, 2, inst->{m.name});\n')
                 elif m.type in info.enums or m.type.endswith("::Enum") or "Enum" in m.type:
                     out.append(f'    inst->{m.name} = ({m.type})luaL_checkinteger(L, 2);\n')
                 elif m.type.endswith("*"):

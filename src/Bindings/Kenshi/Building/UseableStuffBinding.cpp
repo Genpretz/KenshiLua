@@ -1295,7 +1295,7 @@ int UseableStuffBinding::equipItem(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    std::string slot = luaL_checkstring(L, 2);
+    const char* slot = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->equipItem(slot, item);
     return 0;
@@ -1305,7 +1305,7 @@ int UseableStuffBinding::_NV_equipItem(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    std::string slot = luaL_checkstring(L, 2);
+    const char* slot = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_equipItem(slot, item);
     return 0;
@@ -1315,7 +1315,7 @@ int UseableStuffBinding::unequipItem(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    std::string slot = luaL_checkstring(L, 2);
+    const char* slot = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->unequipItem(slot, item);
     return 0;
@@ -1325,7 +1325,7 @@ int UseableStuffBinding::_NV_unequipItem(lua_State* L)
 {
     UseableStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UseableStuff is nil");
-    std::string slot = luaL_checkstring(L, 2);
+    const char* slot = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_unequipItem(slot, item);
     return 0;

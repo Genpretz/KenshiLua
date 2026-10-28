@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Bindings/MyGUI/ProgressBarBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -8,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::ProgressBar* ProgressBarBinding::getProgressBar(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::ProgressBar>(false);
+    return MyGUIBindings::checkWidget<MyGUI::ProgressBar>(L, idx);
 }
 
 int ProgressBarBinding::setProgressRange(lua_State* L)
@@ -77,47 +76,10 @@ int ProgressBarBinding::getFlowDirection(lua_State* L)
     return 1;
 }
 
-static int ProgressBar_index(lua_State* L)
-{
-    MyGUI::ProgressBar* pb = ProgressBarBinding::getProgressBar(L, 1);
-    if (!pb) return luaL_error(L, "ProgressBar is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "progressPosition") == 0 || strcmp(key, "position") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)pb->getProgressPosition());
-        return 1;
-    }
-    if (strcmp(key, "progressRange") == 0 || strcmp(key, "range") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)pb->getProgressRange());
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int ProgressBar_newindex(lua_State* L)
-{
-    MyGUI::ProgressBar* pb = ProgressBarBinding::getProgressBar(L, 1);
-    if (!pb) return luaL_error(L, "ProgressBar is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "progressPosition") == 0 || strcmp(key, "position") == 0)
-    {
-        pb->setProgressPosition((size_t)luaL_checkinteger(L, 3));
-        return 0;
-    }
-    if (strcmp(key, "progressRange") == 0 || strcmp(key, "range") == 0)
-    {
-        pb->setProgressRange((size_t)luaL_checkinteger(L, 3));
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int ProgressBar_tostring(lua_State* L)
 {
-    MyGUI::ProgressBar* pb = ProgressBarBinding::getProgressBar(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::ProgressBar* pb = w ? w->castType<MyGUI::ProgressBar>(false) : nullptr;
     char buf[128];
     if (pb)
     {
@@ -149,7 +111,24 @@ void ProgressBarBinding::registerBinding(lua_State* L)
         { "getFlowDirection",     getFlowDirection },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, ProgressBar_index, ProgressBar_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "progressPosition", ProgressBarBinding::getProgressPosition);
+    registerGetter(L, "position", ProgressBarBinding::getProgressPosition);
+    registerGetter(L, "progressRange", ProgressBarBinding::getProgressRange);
+    registerGetter(L, "range", ProgressBarBinding::getProgressRange);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "progressPosition", ProgressBarBinding::setProgressPosition);
+    registerSetter(L, "position", ProgressBarBinding::setProgressPosition);
+    registerSetter(L, "progressRange", ProgressBarBinding::setProgressRange);
+    registerSetter(L, "range", ProgressBarBinding::setProgressRange);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), WidgetBinding::getMetatableName());
 }
 

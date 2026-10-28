@@ -1493,7 +1493,7 @@ int PlayerInterfaceBinding::getDeadSquadHandle(lua_State* L)
     PlayerInterface* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "PlayerInterface is nil");
     const hand& res = instance->getDeadSquadHandle();
-    return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
+    return HandBinding::push(L, res);
 }
 
 

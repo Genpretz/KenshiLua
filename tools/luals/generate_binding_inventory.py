@@ -27,6 +27,7 @@ from kenshilib_headers import (  # noqa: E402,F401
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 REGISTER_BINDINGS_PATH = PROJECT_ROOT / "src" / "Lua" / "RegisterBindings.cpp"
+REGISTER_CONTAINERS_PATH = PROJECT_ROOT / "src" / "Lua" / "RegisterContainers.cpp"
 VERSION_PATH = PROJECT_ROOT / "src" / "Version.h"
 OUTPUT_PATH = PROJECT_ROOT / "luals" / "generated" / "binding_inventory.json"
 
@@ -175,12 +176,13 @@ def parse_template_instances(reached, implementations):
     # the first metatable registered under a name, so a central registration
     # defines the runtime type of every later registration that shares its
     # name (lektor<hand> is LektorValueBinding<hand>, not the read-only one).
-    central_text = strip_cpp_comments(REGISTER_BINDINGS_PATH.read_text(encoding="utf-8", errors="ignore"))
+    central_source_path = REGISTER_CONTAINERS_PATH if REGISTER_CONTAINERS_PATH.exists() else REGISTER_BINDINGS_PATH
+    central_text = strip_cpp_comments(central_source_path.read_text(encoding="utf-8", errors="ignore"))
     central_body = "".join(
         find_function_body(central_text, "void LuaBindings::" + name + "(lua_State* L)")
         for name in CENTRAL_CONTAINER_REGISTRATIONS
     )
-    central = {"path": relative(REGISTER_BINDINGS_PATH)}
+    central = {"path": relative(central_source_path)}
     central_metatables = set()
     for template, args, metatable, rest in direct_pattern.findall(central_body):
         if template not in definitions:

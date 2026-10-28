@@ -297,7 +297,7 @@ int SaveManagerBinding::saveExists(lua_State* L)
     SaveManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveManager is nil");
 
-    std::string location = luaL_checkstring(L, 2);
+    const char* location = luaL_checkstring(L, 2);
     std::string name = luaL_checkstring(L, 3);
     bool result = instance->saveExists(location, name);
     lua_pushboolean(L, result ? 1 : 0);
@@ -347,7 +347,7 @@ int SaveManagerBinding::saveGame(lua_State* L)
     SaveManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveManager is nil");
 
-    std::string location = luaL_checkstring(L, 2);
+    const char* location = luaL_checkstring(L, 2);
     std::string name = luaL_checkstring(L, 3);
     int result = instance->saveGame(location, name);
     lua_pushinteger(L, result);
@@ -359,7 +359,7 @@ int SaveManagerBinding::loadGame(lua_State* L)
     SaveManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveManager is nil");
 
-    std::string location = luaL_checkstring(L, 2);
+    const char* location = luaL_checkstring(L, 2);
     std::string name = luaL_checkstring(L, 3);
     int result = instance->loadGame(location, name);
     lua_pushinteger(L, result);
@@ -371,8 +371,8 @@ int SaveManagerBinding::importGame(lua_State* L)
     SaveManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveManager is nil");
 
-    std::string location = luaL_checkstring(L, 2);
-    std::string name = luaL_checkstring(L, 3);
+    const char* location = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 3);
     int flags = (int)luaL_checkinteger(L, 4);
     int result = instance->importGame(location, name, flags);
     lua_pushinteger(L, result);
@@ -384,7 +384,7 @@ int SaveManagerBinding::importPlayerBuildings(lua_State* L)
     SaveManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveManager is nil");
 
-    std::string path = luaL_checkstring(L, 2);
+    const char* path = luaL_checkstring(L, 2);
     std::string file = luaL_checkstring(L, 3);
     int result = instance->importPlayerBuildings(path, file);
     lua_pushinteger(L, result);
@@ -396,7 +396,7 @@ int SaveManagerBinding::importOldPlayerBuildings(lua_State* L)
     SaveManager* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveManager is nil");
 
-    std::string path = luaL_checkstring(L, 2);
+    const char* path = luaL_checkstring(L, 2);
     std::string name = luaL_checkstring(L, 3);
     int result = instance->importOldPlayerBuildings(path, name);
     lua_pushinteger(L, result);
@@ -416,7 +416,7 @@ int SaveManagerBinding::load(lua_State* L)
 
     if (lua_isstring(L, 2))
     {
-        std::string name = luaL_checkstring(L, 2);
+        const char* name = luaL_checkstring(L, 2);
         instance->load(name);
         return 0;
     }
@@ -487,7 +487,7 @@ int SaveManagerBinding::scanGames(lua_State* L)
 
     if (lua_isstring(L, 2) && !lua_isuserdata(L, 2))
     {
-        std::string location = luaL_checkstring(L, 2);
+        const char* location = luaL_checkstring(L, 2);
         lektor<SaveInfo>* list = LektorValueBinding<SaveInfo>::getInstance(L, 3);
         if (!list) return luaL_error(L, "Argument 2 must be lektor<SaveInfo>");
         bool loadDetails = lua_toboolean(L, 4) != 0;

@@ -160,7 +160,7 @@ int InstanceIDBinding::getModIndex(lua_State* L)
 {
     if (lua_isstring(L, 1))
     {
-        std::string s = luaL_checkstring(L, 1);
+        const char* s = luaL_checkstring(L, 1);
         short result = InstanceID::getModIndex(s);
         lua_pushinteger(L, result);
         return 1;
@@ -170,7 +170,7 @@ int InstanceIDBinding::getModIndex(lua_State* L)
     {
         if (lua_isstring(L, 2))
         {
-            std::string s = luaL_checkstring(L, 2);
+            const char* s = luaL_checkstring(L, 2);
             short result = InstanceID::getModIndex(s);
             lua_pushinteger(L, result);
             return 1;

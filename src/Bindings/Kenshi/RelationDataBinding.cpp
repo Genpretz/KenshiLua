@@ -149,7 +149,7 @@ int RelationDataBinding::save(lua_State* L)
     if (!instance) return luaL_error(L, "RelationData is nil");
 
     GameData* factionsList = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    const std::string ID = luaL_checkstring(L, 3);
+    const char* ID = luaL_checkstring(L, 3);
     Faction* who = checkObject<Faction>(L, 4, FactionBinding::getMetatableName());
     instance->save(factionsList, ID, who);
     return 0;
@@ -161,7 +161,7 @@ int RelationDataBinding::load(lua_State* L)
     if (!instance) return luaL_error(L, "RelationData is nil");
 
     GameData* gamestate_faction = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    const std::string ID = luaL_checkstring(L, 3);
+    const char* ID = luaL_checkstring(L, 3);
     Faction* who = checkObject<Faction>(L, 4, FactionBinding::getMetatableName());
     instance->load(gamestate_faction, ID, who);
     return 0;
