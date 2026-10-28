@@ -9711,15 +9711,15 @@
       "member": "states"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "GameWorld",
-      "expected": "fun(?RendererT*): boolean",
+      "expected": "fun(RendererT): boolean",
       "header": "bool start(RendererT* _rend)",
       "issues": [
         {
           "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?RendererT*",
+          "category": "binding_pushes_raw_pointer",
+          "expected": "RendererT",
           "position": "param 1"
         }
       ],
@@ -9871,15 +9871,6 @@
       "kind": "property",
       "lua": "lightuserdata",
       "member": "ogreLogger"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "GameWorld",
-      "expected": "?RendererT*",
-      "header": "RendererT*",
-      "kind": "property",
-      "lua": "lightuserdata",
-      "member": "render"
     },
     {
       "category": "binding_converts",
@@ -11160,6 +11151,57 @@
       "kind": "property",
       "lua": "integer",
       "member": "objectType"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "KingOfRenderThread",
+      "expected": "fun(string, ?Ogre::Entity*)",
+      "header": "void analyseModel(const std::string& name, Ogre::Entity* model)",
+      "issues": [
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Entity*",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: KingOfRenderThread, arg1: string, model: lightuserdata)",
+      "member": "analyseModel"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "KingOfRenderThread",
+      "expected": "fun(string, string, Dir): Lektor<integer>",
+      "header": "const lektor<int>& getBonesVertices(const std::string& modelName, const std::string& boneName, MeshDataLookup::Dir facing) const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "Dir",
+          "position": "param 3"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: KingOfRenderThread, arg1: string, arg2: string, facing: integer): Lektor<integer>",
+      "member": "getBonesVertices"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "KingOfRenderThread",
+      "expected": "fun(number, number, number, ?Ogre::Radian, iVector2, string, boolean)",
+      "header": "void addTerrainBloodSplat(const float x, const float z, const float rad, const Ogre::Radian rotationAngle, const iVector2 UVOffset, const std::string material, bool slowSpreading)",
+      "issues": [
+        {
+          "actual": "number",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Radian",
+          "position": "param 4"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: KingOfRenderThread, x: number, z: number, rad: number, arg4: number, UVOffset: iVector2, arg6: string, slowSpreading?: boolean)",
+      "member": "addTerrainBloodSplat"
     },
     {
       "category": "unmapped_header_type",
@@ -16738,6 +16780,291 @@
       "member": "state"
     },
     {
+      "category": "binding_shape_differs",
+      "class": "RenderToTextureotron",
+      "expected": "fun(Item, string, iVector2): string, iVector2",
+      "header": "void renderItem(Item* item, std::string& filename, iVector2& size)",
+      "issues": [
+        {
+          "actual": "string",
+          "category": "binding_shape_differs",
+          "expected": "string, iVector2",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: RenderToTextureotron, item: Item, arg2: string, size: iVector2): string",
+      "member": "renderItem"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "RenderToTextureotron",
+      "expected": "?Ogre::Camera*",
+      "header": "Ogre::Camera*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "camera"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "RenderToTextureotron",
+      "expected": "?Ogre::SceneManager*",
+      "header": "Ogre::SceneManager*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "sceneManager"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(GameData, boolean, integer): ?Ogre::Light*",
+      "header": "Ogre::Light* createLight(GameData* data, bool indoors, int floor)",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Light*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer, data?: GameData, indoors?: boolean, floor?: integer): lightuserdata|nil",
+      "member": "createLight"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(table, table): ?Ogre::Entity*",
+      "header": "Ogre::Entity* createDebugBox(Ogre::Vector3 a, Ogre::Vector3 b)",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Entity*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer, a: table, b: table): lightuserdata|nil",
+      "member": "createDebugBox"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(?Ogre::SceneNode*, boolean)",
+      "header": "void destroy(Ogre::SceneNode* node, bool destroyAttached)",
+      "issues": [
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::SceneNode*",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer, node: lightuserdata, destroyAttached?: boolean)",
+      "member": "destroy"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(): ?Ogre::SceneManager*",
+      "header": "Ogre::SceneManager* getSceneManager() const",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::SceneManager*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer): lightuserdata|nil",
+      "member": "getSceneManager"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(): ?Ogre::RenderSystem*",
+      "header": "Ogre::RenderSystem* getRenderSystem() const",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::RenderSystem*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer): lightuserdata|nil",
+      "member": "getRenderSystem"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(): ?Ogre::SceneNode*",
+      "header": "Ogre::SceneNode* getRootSceneNode() const",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::SceneNode*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer): lightuserdata|nil",
+      "member": "getRootSceneNode"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(): ?Ogre::Camera*",
+      "header": "Ogre::Camera* getCamera() const",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Camera*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer): lightuserdata|nil",
+      "member": "getCamera"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(): ?Ogre::Viewport*",
+      "header": "Ogre::Viewport* getViewport() const",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Viewport*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer): lightuserdata|nil",
+      "member": "getViewport"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(): ?Ogre::Root*",
+      "header": "Ogre::Root* getRoot() const",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::Root*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer): lightuserdata|nil",
+      "member": "getRoot"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(): ?Ogre::CompositorWorkspace*",
+      "header": "Ogre::CompositorWorkspace* getWorkspace() const",
+      "issues": [
+        {
+          "actual": "lightuserdata|nil",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::CompositorWorkspace*",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer): lightuserdata|nil",
+      "member": "getWorkspace"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "fun(?Ogre::IdString)",
+      "header": "void setupPostProcessing(const Ogre::IdString& definitionName)",
+      "issues": [
+        {
+          "actual": "string",
+          "category": "unmapped_header_type",
+          "expected": "?Ogre::IdString",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Renderer, arg1: string)",
+      "member": "setupPostProcessing"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "?Ogre::Camera*",
+      "header": "Ogre::Camera*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "camera"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "?Ogre::Root*",
+      "header": "Ogre::Root*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "root"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "?Ogre::SceneManager*",
+      "header": "Ogre::SceneManager*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "scene"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "?TerrainDecalsManager*",
+      "header": "TerrainDecalsManager*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "terrainDecalManager"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "?Ogre::Viewport*",
+      "header": "Ogre::Viewport*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "viewport"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "?Ogre::RenderWindow*",
+      "header": "Ogre::RenderWindow*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "window"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "Renderer",
+      "expected": "?Ogre::CompositorWorkspace*",
+      "header": "Ogre::CompositorWorkspace*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "workspace"
+    },
+    {
       "category": "enum_typed_as_integer",
       "class": "RepetitionCounter",
       "expected": "fun(EventTriggerEnum): boolean",
@@ -20841,6 +21168,40 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "ZoneMapContent.HandleDummy",
+      "expected": "fun(): itemType",
+      "header": "itemType getDataType() const override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ZoneMapContent.HandleDummy): integer",
+      "member": "getDataType"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "ZoneMapContent.HandleDummy",
+      "expected": "fun(): itemType",
+      "header": "itemType _NV_getDataType() const",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ZoneMapContent.HandleDummy): integer",
+      "member": "_NV_getDataType"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "ZoneSmell",
       "expected": "fun(SmellType): ZoneSmell_Smell|nil",
       "header": "ZoneSmell::Smell* _getSmell(SmellType t)",
@@ -21307,16 +21668,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 55,
-    "binding_pushes_raw_pointer": 49,
-    "binding_shape_differs": 205,
+    "binding_pushes_raw_pointer": 50,
+    "binding_shape_differs": 206,
     "blocking_issues": 0,
-    "container_methods_typed": 1070,
-    "enum_typed_as_integer": 523,
-    "methods": 8579,
-    "methods_matching_header": 6524,
+    "container_methods_typed": 1076,
+    "enum_typed_as_integer": 526,
+    "methods": 8630,
+    "methods_matching_header": 6552,
     "no_header_declaration": 278,
-    "properties": 3577,
-    "properties_matching_header": 3025,
-    "unmapped_header_type": 444
+    "properties": 3596,
+    "properties_matching_header": 3036,
+    "unmapped_header_type": 464
   }
 }

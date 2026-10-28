@@ -518,6 +518,7 @@ class BindingInventoryTests(unittest.TestCase):
             "getOptionsHolder",
             "getForgottenGUI",
             "getSharedKing",
+            "getKingOfRenderThread",
             "print",
         }
         self.assertEqual(expected, functions)

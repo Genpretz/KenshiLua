@@ -5462,7 +5462,7 @@ taskPriority = {
 --- PhysX physics engine pipeline interface.
 ---@field physics PhysicsInterface
 --- OGRE 3D graphics rendering subsystem coordinator.
----@field render lightuserdata
+---@field render RendererT|nil
 --- Runtime modified dynamic object state database.
 ---@field savedata GameDataManager
 --- Flag indicating Steam Workshop integration status.
@@ -19660,6 +19660,27 @@ taskPriority = {
 ---@field setUnloaded fun(self: ItemHandleList, handle: hand)
 ---@field _NV_setUnloaded fun(self: ItemHandleList, handle: hand)
 
+--- Engine class `KingOfRenderThread`.
+---@class KingOfRenderThread
+---@field startup fun(self: KingOfRenderThread)
+---@field initialisation fun(self: KingOfRenderThread)
+---@field mainloop fun(self: KingOfRenderThread, time: number)
+---@field newGame fun(self: KingOfRenderThread, arg1?: MyGUI.Widget)
+---@field newGameWithCharEdit fun(self: KingOfRenderThread, starter?: GameData)
+---@field error fun(self: KingOfRenderThread, arg1: string)
+---@field errorD fun(self: KingOfRenderThread, arg1: string)
+---@field loadTerrain fun(self: KingOfRenderThread, arg1: string)
+---@field analyseModel fun(self: KingOfRenderThread, arg1: string, model: lightuserdata)
+---@field getBonesVertices fun(self: KingOfRenderThread, arg1: string, arg2: string, facing: integer): Lektor<integer>
+---@field getMeshData fun(self: KingOfRenderThread, arg1: string): MeshDataLookup|nil
+---@field addTerrainBloodSplat fun(self: KingOfRenderThread, x: number, z: number, rad: number, arg4: number, UVOffset: iVector2, arg6: string, slowSpreading?: boolean)
+---@field deleteTitleScreen fun(self: KingOfRenderThread)
+---@field TIME number
+---@field camera CameraClass|nil
+---@field render Renderer|nil
+---@field terrain Terrain|nil
+---@field titleScreen TitleScreen|nil
+
 --- In-game level editor controlling world object placement, terrain tools, navmesh generation, and mod authoring.
 ---@class LevelEditor
 --- Closes the level editor window.
@@ -22546,6 +22567,52 @@ taskPriority = {
 ---@field trustPositives number
 --- Whether open war is active with the target faction.
 ---@field war boolean
+
+--- Engine class `RenderToTextureotron`.
+---@class RenderToTextureotron
+---@field renderItem fun(self: RenderToTextureotron, item: Item, arg2: string, size: iVector2): string
+---@field renderBuilding fun(self: RenderToTextureotron, data: GameData, arg2: string, size: iVector2, yaw: number, pitch: number): string
+---@field renderCharacterNPC fun(self: RenderToTextureotron, character: Character, size: iVector2, distance: number): string
+---@field buildAllItemsIcons fun(self: RenderToTextureotron)
+---@field camera lightuserdata|nil
+---@field sceneManager lightuserdata|nil
+
+--- Engine class `Renderer`.
+---@class Renderer : RendererT
+---@field shutDown fun(self: Renderer)
+---@field update fun(self: Renderer)
+---@field _NV_update fun(self: Renderer)
+---@field createLight fun(self: Renderer, data?: GameData, indoors?: boolean, floor?: integer): lightuserdata|nil
+---@field go fun(self: Renderer)
+---@field initialiseScene fun(self: Renderer)
+---@field createDebugBox fun(self: Renderer, a: table, b: table): lightuserdata|nil
+---@field destroy fun(self: Renderer, node: lightuserdata, destroyAttached?: boolean)
+---@field getSceneManager fun(self: Renderer): lightuserdata|nil
+---@field getRenderSystem fun(self: Renderer): lightuserdata|nil
+---@field getRootSceneNode fun(self: Renderer): lightuserdata|nil
+---@field getCamera fun(self: Renderer): lightuserdata|nil
+---@field getViewport fun(self: Renderer): lightuserdata|nil
+---@field getRoot fun(self: Renderer): lightuserdata|nil
+---@field getScreenWidth fun(self: Renderer): number
+---@field getScreenHeight fun(self: Renderer): number
+---@field getWorkspace fun(self: Renderer): lightuserdata|nil
+---@field getSceneRelativeOrigin fun(self: Renderer): table
+---@field validateCompositor fun(self: Renderer, arg1: string): boolean
+---@field setupPostProcessing fun(self: Renderer, arg1: string)
+---@field refreshActiveCompositor fun(self: Renderer)
+---@field camera lightuserdata|nil
+---@field renderToTextureIconMachine RenderToTextureotron|nil
+---@field root lightuserdata|nil
+---@field scene lightuserdata|nil
+---@field terrainDecalManager lightuserdata|nil
+---@field viewport lightuserdata|nil
+---@field window lightuserdata|nil
+---@field workspace lightuserdata|nil
+
+--- Engine class `RendererT`.
+---@class RendererT
+---@field update fun(self: RendererT)
+---@field debugEntsUpdateListT Lektor<lightuserdata>
 
 --- Engine class `Research`.
 ---@class Research
@@ -26473,6 +26540,7 @@ taskPriority = {
 ---@field setLoadedT fun(self: ZoneMapContent, t?: boolean)
 ---@field activationFlag boolean
 ---@field foliageSystem FoliageSystem|nil
+---@field handleDummy ZoneMapContent.HandleDummy|nil
 ---@field items OgreUnorderedSet<hand>
 ---@field loaded boolean
 ---@field myHandles HandleList|nil
@@ -26480,6 +26548,26 @@ taskPriority = {
 ---@field periodicUpdateIndex integer
 ---@field toUpdateList Lektor<RootObject>
 ---@field zoneMap ZoneMap|nil
+
+--- Engine class `ZoneMapContent.HandleDummy`.
+---@class ZoneMapContent.HandleDummy : RootObjectBase
+--- Inherited API from `RootObjectBase`. Returns the itemType enum identifying the runtime category of this object.
+---@field getDataType fun(self: ZoneMapContent.HandleDummy): integer
+--- Inherited API from `RootObjectBase`. Override dispatch for `getDataType`. Returns the itemType enum identifying the runtime category of this object.
+---@field _NV_getDataType fun(self: ZoneMapContent.HandleDummy): integer
+--- Inherited API from `RootObjectBase`. Restores this object's state from the provided GameSaveState.
+---@field loadFromSerialise fun(self: ZoneMapContent.HandleDummy, state: GameSaveState)
+--- Inherited API from `RootObjectBase`. Override dispatch for `loadFromSerialise`. Restores this object's state from the provided GameSaveState.
+---@field _NV_loadFromSerialise fun(self: ZoneMapContent.HandleDummy, state: GameSaveState)
+---@field me ZoneMapContent|nil
+
+--- Engine class `ZoneMapContent.ZoneMapContentOrderLoader`.
+---@class ZoneMapContent.ZoneMapContentOrderLoader : SpecificItemLoadFirst
+--- Inherited API from `SpecificItemLoadFirst`. Evaluates whether loading of the specified game save state entry should be deferred.
+---@field shouldSkip fun(self: ZoneMapContent.ZoneMapContentOrderLoader, state: GameSaveState): boolean
+--- Inherited API from `SpecificItemLoadFirst`. Override dispatch for `shouldSkip`. Evaluates whether loading of the specified game save state entry should be deferred.
+---@field _NV_shouldSkip fun(self: ZoneMapContent.ZoneMapContentOrderLoader, state: GameSaveState): boolean
+---@field newGameFirstTimeLoaded boolean
 
 --- Engine class `ZoneMapHandleContainerList`.
 ---@class ZoneMapHandleContainerList : HandleContainerList
@@ -26973,6 +27061,9 @@ taskPriority = {
 --- Returns the singleton LoadingWindow instance; can also be called statically.
 ---@field getInstance fun(): LoadingWindow
 
+--- Static functions registered on the `LocaleManager` global table.
+---@class LocaleManagerStatics
+
 --- Static functions registered on the `Logger` global table.
 ---@class LoggerStatics
 --- Nested enum table `Logger.Severity`.
@@ -27364,6 +27455,10 @@ currentDialogue = nil
 ---@type DialogLineData|nil
 currentDialogueLine = nil
 
+--- Conditional KingOfRenderThread alias registered at Lua startup. Prefer getKingOfRenderThread().
+---@type KingOfRenderThread|nil
+au = nil
+
 --- Conditional ForgottenGUI alias registered at Lua startup. Prefer getForgottenGUI().
 ---@type ForgottenGUI|nil
 gui = nil
@@ -27476,6 +27571,11 @@ InventoryIcon = {}
 ---@type LoadingWindowStatics
 ---@diagnostic disable-next-line: missing-fields
 LoadingWindow = {}
+
+--- Global table of static functions for `LocaleManager`.
+---@type LocaleManagerStatics
+---@diagnostic disable-next-line: missing-fields
+LocaleManager = {}
 
 --- Global table of static functions for `Logger`.
 ---@type LoggerStatics
@@ -28543,6 +28643,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "MyGUI::Button*"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "lektor<Platoon*>"): Lektor<Platoon>
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
+---@overload fun(typeName: "lektor<RenderEntityT*>"): Lektor<lightuserdata>
+---@overload fun(typeName: "RenderEntityT*"): Lektor<lightuserdata>
 ---@overload fun(typeName: "lektor<RootObject*>"): Lektor<RootObject>
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
@@ -28610,6 +28712,7 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "HealthPartStatus"): Lektor<MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "Platoon"): Lektor<Platoon>
+---@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
 ---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
@@ -28677,6 +28780,8 @@ lektor = {}
 ---@overload fun(typeName: "MyGUI::Button*"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "lektor<Platoon*>"): Lektor<Platoon>
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
+---@overload fun(typeName: "lektor<RenderEntityT*>"): Lektor<lightuserdata>
+---@overload fun(typeName: "RenderEntityT*"): Lektor<lightuserdata>
 ---@overload fun(typeName: "lektor<RootObject*>"): Lektor<RootObject>
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
@@ -28744,6 +28849,7 @@ lektor = {}
 ---@overload fun(typeName: "HealthPartStatus"): Lektor<MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "Platoon"): Lektor<Platoon>
+---@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
 ---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
@@ -29039,6 +29145,10 @@ function getSelectedCharacter() end
 --- Returns the game's shared king object, or nil before it exists.
 ---@return SharedKing|nil
 function getSharedKing() end
+
+--- Returns the game's king of render thread object, or nil before it exists.
+---@return KingOfRenderThread|nil
+function getKingOfRenderThread() end
 
 --- Calls function or callable table f with the given arguments in protected mode (LuaJIT).
 ---@overload fun(callable: any, ...: any): boolean, any

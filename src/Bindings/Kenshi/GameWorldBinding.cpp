@@ -19,6 +19,7 @@
 #include "Bindings/Kenshi/Util/TimeOfDayBinding.h"
 #include "Bindings/Kenshi/TownBuildingsManagerBinding.h"
 #include "Bindings/Kenshi/ZoneManagerBinding.h"
+#include "Bindings/Kenshi/RendererTBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
@@ -58,8 +59,8 @@ static int GameWorld_get_render(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    lua_pushlightuserdata(L, (void*)instance->render);
-    return 1;
+    if (!instance->render) { lua_pushnil(L); return 1; }
+    return pushObject<RendererT>(L, instance->render, RendererTBinding::getMetatableName());
 }
 
 static int GameWorld_get_physics(lua_State* L)

@@ -1073,6 +1073,7 @@ def validate_inventory(inventory):
         "getOptionsHolder",
         "getForgottenGUI",
         "getSharedKing",
+        "getKingOfRenderThread",
         "print",
     }
     if not required_functions.issubset(global_functions):

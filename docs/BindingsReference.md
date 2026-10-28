@@ -238,6 +238,7 @@
 - [`ItemHandleList`](#itemhandlelist)
 - [`iVector2`](#ivector2)
 - [`KenshiLib::BinaryVersion`](#kenshilib::binaryversion)
+- [`KingOfRenderThread`](#kingofrenderthread)
 - [`LevelEditor`](#leveleditor)
   - [`LevelEditor::FactionListWindow`](#leveleditor::factionlistwindow)
   - [`LevelEditor::GamedataSelectionList`](#leveleditor::gamedataselectionlist)
@@ -339,6 +340,9 @@
   - [`RagdollAnimation::RagdollAnimationTrack`](#ragdollanimation::ragdollanimationtrack)
 - [`RainCollectorBuilding`](#raincollectorbuilding)
 - [`RangedCombatClass`](#rangedcombatclass)
+- [`Renderer`](#renderer)
+- [`RendererT`](#renderert)
+- [`RenderToTextureotron`](#rendertotextureotron)
 - [`rendHit`](#rendhit)
 - [`ReorderableList`](#reorderablelist)
 - [`Research`](#research)
@@ -463,6 +467,8 @@
 - [`ZoneMap`](#zonemap)
   - [`ZoneMap::StateT`](#zonemap::statet)
 - [`ZoneMapContent`](#zonemapcontent)
+  - [`ZoneMapContent::HandleDummy`](#zonemapcontent::handledummy)
+  - [`ZoneMapContent::ZoneMapContentOrderLoader`](#zonemapcontent::zonemapcontentorderloader)
 - [`ZoneMapHandleContainerList`](#zonemaphandlecontainerlist)
 - [`ZoneSmell`](#zonesmell)
   - [`ZoneSmell::Smell`](#zonesmell::smell)
@@ -6750,7 +6756,7 @@
 |---|---|---|---|
 | tempSpawnsDisableTimer | `number` | RW | `obj.tempSpawnsDisableTimer = <value>` |
 | initialized | `boolean` | RW | `obj.initialized = <value>` |
-| render | `lightuserdata` | RW | `obj.render = <value>` |
+| render | `RendererT` | RW | `obj.render = <value>` |
 | physics | `PhysicsInterface` | RW | `obj.physics = <value>` |
 | gamedata | `GameDataManager` | RW | `obj.gamedata = <value>` |
 | leveldata | `GameDataManager` | RW | `obj.leveldata = <value>` |
@@ -8378,6 +8384,36 @@
 | GetKenshiVersion | `` | `KenshiLib::BinaryVersion` | `KenshiLib::BinaryVersion.GetKenshiVersion()`<br>`obj:GetKenshiVersion()` |
 | getKenshiVersion | `` | `KenshiLib::BinaryVersion` | `KenshiLib::BinaryVersion.getKenshiVersion()`<br>`obj:getKenshiVersion()` |
 | new | `` | `KenshiLib::BinaryVersion` | `KenshiLib::BinaryVersion.new()`<br>`obj:new()` |
+
+## KingOfRenderThread
+**Header:** `extern/KenshiLib/Include/kenshi/KingOfRenderThread.h`
+**Metatable:** `KenshiLua.KingOfRenderThread`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| TIME | `number` | RW | `obj.TIME = <value>` |
+| render | `Renderer` | RW | `obj.render = <value>` |
+| camera | `CameraClass` | RW | `obj.camera = <value>` |
+| terrain | `Terrain` | RW | `obj.terrain = <value>` |
+| titleScreen | `TitleScreen` | RW | `obj.titleScreen = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| startup | `` | `void` | `obj:startup()` |
+| initialisation | `` | `void` | `obj:initialisation()` |
+| mainloop | `time: number` | `void` | `obj:mainloop(time)` |
+| newGame | `w: MyGUI::Widget` | `void` | `obj:newGame(w)` |
+| newGameWithCharEdit | `starter: GameData` | `void` | `obj:newGameWithCharEdit(starter)` |
+| error | `msg: string` | `void` | `obj:error(msg)` |
+| errorD | `msg: string` | `void` | `obj:errorD(msg)` |
+| loadTerrain | `name: string` | `void` | `obj:loadTerrain(name)` |
+| analyseModel | `name: string, model: userdata` | `void` | `obj:analyseModel(name, model)` |
+| getBonesVertices | `modelName: string, boneName: string, facing: MeshDataLookup::Dir` | `lektor<int>` | `obj:getBonesVertices(modelName, boneName, facing)` |
+| getMeshData | `meshName: string` | `MeshDataLookup` | `obj:getMeshData(meshName)` |
+| addTerrainBloodSplat | `x: number, z: number, rad: number, angle: number, uvOffset: iVector2, mat: string, slow: boolean` | `void` | `obj:addTerrainBloodSplat(x, z, rad, angle, uvOffset, mat, slow)` |
+| deleteTitleScreen | `` | `void` | `obj:deleteTitleScreen()` |
 
 ## LevelEditor
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
@@ -11114,6 +11150,80 @@
 | gun | `GunClass` | RW | `obj.gun = <value>` |
 | currentStat | `StatsEnumerated` | RW | `obj.currentStat = <value>` |
 | updateNeededMsg | `boolean` | RW | `obj.updateNeededMsg = <value>` |
+
+## Renderer
+**Header:** `extern/KenshiLib/Include/kenshi/Renderer.h`
+**Metatable:** `KenshiLua.Renderer`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| terrainDecalManager | `lightuserdata` | R | `obj.terrainDecalManager` |
+| renderToTextureIconMachine | `RenderToTextureotron` | RW | `obj.renderToTextureIconMachine = <value>` |
+| camera | `lightuserdata` | R | `obj.camera` |
+| scene | `lightuserdata` | R | `obj.scene` |
+| root | `lightuserdata` | R | `obj.root` |
+| viewport | `lightuserdata` | R | `obj.viewport` |
+| window | `lightuserdata` | R | `obj.window` |
+| workspace | `lightuserdata` | R | `obj.workspace` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| shutDown | `` | `void` | `obj:shutDown()` |
+| update | `` | `void` | `obj:update()` |
+| createLight | `data: GameData, indoors: boolean, floor: integer` | `lightuserdata` | `obj:createLight(data, indoors, floor)` |
+| go | `` | `void` | `obj:go()` |
+| initialiseScene | `` | `void` | `obj:initialiseScene()` |
+| createDebugBox | `a: Vector3, b: Vector3` | `lightuserdata` | `obj:createDebugBox(a, b)` |
+| destroy [1] | `node: Ogre::SceneNode, destroyAttached: boolean` | `void` | `obj:destroy(node, destroyAttached)` |
+| destroy [2] | `light: Ogre::Light` | `void` | `obj:destroy(light)` |
+| getSceneManager | `` | `lightuserdata` | `obj:getSceneManager()` |
+| getRenderSystem | `` | `lightuserdata` | `obj:getRenderSystem()` |
+| getRootSceneNode | `` | `lightuserdata` | `obj:getRootSceneNode()` |
+| getCamera | `` | `lightuserdata` | `obj:getCamera()` |
+| getViewport | `` | `lightuserdata` | `obj:getViewport()` |
+| getRoot | `` | `lightuserdata` | `obj:getRoot()` |
+| getScreenWidth | `` | `number` | `obj:getScreenWidth()` |
+| getScreenHeight | `` | `number` | `obj:getScreenHeight()` |
+| getWorkspace | `` | `lightuserdata` | `obj:getWorkspace()` |
+| getSceneRelativeOrigin | `` | `Vector3` | `obj:getSceneRelativeOrigin()` |
+| validateCompositor | `node: string` | `boolean` | `obj:validateCompositor(node)` |
+| setupPostProcessing | `str: string` | `void` | `obj:setupPostProcessing(str)` |
+| refreshActiveCompositor | `` | `void` | `obj:refreshActiveCompositor()` |
+
+## RendererT
+**Header:** `extern/KenshiLib/Include/kenshi/Renderer.h`
+**Metatable:** `KenshiLua.RendererT`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| debugEntsUpdateListT | `lektor<RenderEntityT*>` | RW | `obj.debugEntsUpdateListT = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| update | `` | `void` | `obj:update()` |
+
+## RenderToTextureotron
+**Header:** `extern/KenshiLib/Include/kenshi/RenderToTextureotron.h`
+**Metatable:** `KenshiLua.RenderToTextureotron`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| sceneManager | `lightuserdata` | R | `obj.sceneManager` |
+| camera | `lightuserdata` | R | `obj.camera` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| renderItem [1] | `item: Item, data: GameData, filename: string, imgSize: iVector2, textureSize: iVector2, pitch: number, yaw: number, roll: number, zoom: number` | `boolean` | `obj:renderItem(item, data, filename, imgSize, textureSize, pitch, yaw, roll, zoom)` |
+| renderItem [2] | `item: Item, filename: string, size: iVector2` | `void` | `obj:renderItem(item, filename, size)` |
+| renderBuilding | `data: GameData, fileStr: string, size: iVector2, yaw: number, pitch: number` | `string` | `obj:renderBuilding(data, fileStr, size, yaw, pitch)` |
+| renderCharacterNPC | `character: Character, size: iVector2, distance: number` | `string` | `obj:renderCharacterNPC(character, size, distance)` |
+| buildAllItemsIcons | `` | `void` | `obj:buildAllItemsIcons()` |
 
 ## rendHit
 **Header:** `extern/KenshiLib/Include/kenshi/util/UtilityT.h`
@@ -14399,6 +14509,7 @@
 |---|---|---|---|
 | periodicUpdateIndex | `integer` | RW | `obj.periodicUpdateIndex = <value>` |
 | myHandles | `HandleList` | RW | `obj.myHandles = <value>` |
+| handleDummy | `ZoneMapContent::HandleDummy` | RW | `obj.handleDummy = <value>` |
 | newGameFirstTimeLoaded | `boolean` | RW | `obj.newGameFirstTimeLoaded = <value>` |
 | toUpdateList | `lektor<RootObject*>` | R | `obj.toUpdateList` |
 | zoneMap | `ZoneMap` | RW | `obj.zoneMap = <value>` |
@@ -14440,6 +14551,27 @@
 | _activate | `` | `void` | `obj:_activate()` |
 | createLoadedItems | `` | `void` | `obj:createLoadedItems()` |
 | setLoadedT | `t: boolean` | `void` | `obj:setLoadedT(t)` |
+
+## ZoneMapContent::HandleDummy
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
+**Parent Class:** [`ZoneMapContent`](#zonemapcontent)
+**Metatable:** `KenshiLua.ZoneMapContent.HandleDummy`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getDataType | `` | `integer` | `obj:getDataType()` |
+| loadFromSerialise | `state: GameSaveState` | `void` | `obj:loadFromSerialise(state)` |
+
+## ZoneMapContent::ZoneMapContentOrderLoader
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
+**Parent Class:** [`ZoneMapContent`](#zonemapcontent)
+**Metatable:** `KenshiLua.ZoneMapContent.ZoneMapContentOrderLoader`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| shouldSkip | `state: GameSaveState` | `boolean` | `obj:shouldSkip(state)` |
 
 ## ZoneMapHandleContainerList
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`

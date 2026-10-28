@@ -7938,6 +7938,16 @@
       ]
     },
     {
+      "description": "Returns the game's king of render thread object, or nil before it exists.",
+      "name": "getKingOfRenderThread",
+      "params": [],
+      "returns": [
+        {
+          "type": "KingOfRenderThread|nil"
+        }
+      ]
+    },
+    {
       "description": "Calls function or callable table f with the given arguments in protected mode (LuaJIT).",
       "name": "pcall",
       "overloads": [
@@ -8209,6 +8219,12 @@
       "initialValue": "nil",
       "name": "currentDialogueLine",
       "type": "DialogLineData|nil"
+    },
+    {
+      "description": "Conditional KingOfRenderThread alias registered at Lua startup. Prefer getKingOfRenderThread().",
+      "initialValue": "nil",
+      "name": "au",
+      "type": "KingOfRenderThread|nil"
     },
     {
       "description": "Conditional ForgottenGUI alias registered at Lua startup. Prefer getForgottenGUI().",

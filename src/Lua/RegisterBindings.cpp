@@ -285,6 +285,7 @@
 #include "Bindings/Kenshi/InventorySectionBinding.h"
 #include "Bindings/Kenshi/ItemBinding.h"
 #include "Bindings/Kenshi/ItemDataBinding.h"
+#include "Bindings/Kenshi/KingOfRenderThreadBinding.h"
 #include "Bindings/Kenshi/LightEntBinding.h"
 #include "Bindings/Kenshi/LimbsInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/RaceLimiter_LimiterBinding.h"
@@ -338,6 +339,9 @@
 #include "Bindings/Kenshi/RaceLimiterBinding.h"
 #include "Bindings/Kenshi/RangedCombatClassBinding.h"
 #include "Bindings/Kenshi/RelationDataBinding.h"
+#include "Bindings/Kenshi/RenderToTextureotronBinding.h"
+#include "Bindings/Kenshi/RendererBinding.h"
+#include "Bindings/Kenshi/RendererTBinding.h"
 #include "Bindings/Kenshi/RepetitionCounterBinding.h"
 #include "Bindings/Kenshi/ResearchBinding.h"
 #include "Bindings/Kenshi/ResearchItemBinding.h"
@@ -450,6 +454,8 @@
 #include "Bindings/Kenshi/ZoneManager_BiomeGroundEffectsBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
 #include "Bindings/Kenshi/ZoneMapContentBinding.h"
+#include "Bindings/Kenshi/ZoneMapContent_HandleDummyBinding.h"
+#include "Bindings/Kenshi/ZoneMapContent_ZoneMapContentOrderLoaderBinding.h"
 #include "Bindings/Kenshi/ZoneSmellBinding.h"
 #include "Bindings/Kenshi/ZoneSmell_SmellBinding.h"
 #include "Bindings/Kenshi/ZoneSmell_SmellMsgBinding.h"
@@ -596,6 +602,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(),   GenericInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, ResourceLinePanelBinding::getMetatableName(),                 BaseLayoutBinding::getMetatableName());
     setMetatableParent(L, ResourceLoaderBinding::getMetatableName(),                    ThreadClassBinding::getMetatableName());
+    setMetatableParent(L, RendererBinding::getMetatableName(),                          RendererTBinding::getMetatableName());
     setMetatableParent(L, RobotLimbItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
     setMetatableParent(L, RootObjectBinding::getMetatableName(),                        RootObjectBaseBinding::getMetatableName());
     setMetatableParent(L, RootObjectContainerBinding::getMetatableName(),               DataObjectContainerBinding::getMetatableName());
@@ -636,6 +643,8 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, WindGeneratorBuildingBinding::getMetatableName(),             GeneratorBuildingBinding::getMetatableName());
     setMetatableParent(L, ZoneManagerBinding::getMetatableName(),                       ZoneManagerInterfaceTBinding::getMetatableName());
     setMetatableParent(L, ZoneMapContentBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
+    setMetatableParent(L, ZoneMapContent_HandleDummyBinding::getMetatableName(),        RootObjectBaseBinding::getMetatableName());
+    setMetatableParent(L, ZoneMapContent_ZoneMapContentOrderLoaderBinding::getMetatableName(), SpecificItemLoadFirstBinding::getMetatableName());
 
 // --- FUTURE / COMMENTED-OUT INHERITANCE ---
     // setMetatableParent(L, AbstractMovementBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
@@ -1040,6 +1049,7 @@ void LuaBindings::registerClasses(lua_State* L)
     InventoryTraderGUIBinding::registerBinding(L);
     ItemBinding::registerBinding(L);
     ItemDataBinding::registerBinding(L);
+    KingOfRenderThreadBinding::registerBinding(L);
     ItemListWindowBinding::registerBinding(L);
     GamedataSelectionListBinding::registerBinding(L);
     LevelEditorBinding::registerBinding(L);
@@ -1130,6 +1140,9 @@ void LuaBindings::registerClasses(lua_State* L)
     RainCollectorBuildingBinding::registerBinding(L);
     RangedCombatClassBinding::registerBinding(L);
     RelationDataBinding::registerBinding(L);
+    RenderToTextureotronBinding::registerBinding(L);
+    RendererTBinding::registerBinding(L);
+    RendererBinding::registerBinding(L);
     RepetitionCounterBinding::registerBinding(L);
     ResearchBinding::registerBinding(L);
     ResearchItemBinding::registerBinding(L);
@@ -1263,6 +1276,8 @@ void LuaBindings::registerClasses(lua_State* L)
     ZoneManager_BiomeGroundEffectsBinding::registerBinding(L);
     ZoneMapBinding::registerBinding(L);
     ZoneMapContentBinding::registerBinding(L);
+    ZoneMapContent_HandleDummyBinding::registerBinding(L);
+    ZoneMapContent_ZoneMapContentOrderLoaderBinding::registerBinding(L);
     ZoneSmellBinding::registerBinding(L);
     ZoneSmell_SmellBinding::registerBinding(L);
     ZoneSmell_SmellMsgBinding::registerBinding(L);

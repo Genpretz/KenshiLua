@@ -73630,7 +73630,7 @@
         {
           "access": "readonly",
           "name": "render",
-          "type": "lightuserdata"
+          "type": "RendererT|nil"
         },
         {
           "access": "readwrite",
@@ -86941,6 +86941,281 @@
       "source": "src/Bindings/Kenshi/Gui/ItemListWindowBinding.cpp"
     },
     {
+      "binding": "KingOfRenderThreadBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "KingOfRenderThread",
+      "metatable": "KenshiLua.KingOfRenderThread",
+      "methods": [
+        {
+          "callback": "KingOfRenderThreadBinding::startup",
+          "name": "startup",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::initialisation",
+          "name": "initialisation",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::mainloop",
+          "name": "mainloop",
+          "signature": {
+            "params": [
+              {
+                "name": "time",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::newGame",
+          "name": "newGame",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": true,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::newGameWithCharEdit",
+          "name": "newGameWithCharEdit",
+          "signature": {
+            "params": [
+              {
+                "name": "starter",
+                "optional": true,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::error",
+          "name": "error",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::errorD",
+          "name": "errorD",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::loadTerrain",
+          "name": "loadTerrain",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::analyseModel",
+          "name": "analyseModel",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "model",
+                "optional": false,
+                "type": "lightuserdata"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::getBonesVertices",
+          "name": "getBonesVertices",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "facing",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "Lektor<integer>"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::getMeshData",
+          "name": "getMeshData",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "MeshDataLookup",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::addTerrainBloodSplat",
+          "name": "addTerrainBloodSplat",
+          "signature": {
+            "params": [
+              {
+                "name": "x",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "z",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "rad",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "arg4",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "UVOffset",
+                "optional": false,
+                "type": "iVector2"
+              },
+              {
+                "name": "arg6",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "slowSpreading",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "KingOfRenderThreadBinding::deleteTitleScreen",
+          "name": "deleteTitleScreen",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "TIME",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "camera",
+          "type": "CameraClass|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "render",
+          "type": "Renderer|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "terrain",
+          "type": "Terrain|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "titleScreen",
+          "type": "TitleScreen|nil"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/KingOfRenderThreadBinding.cpp"
+    },
+    {
       "binding": "LayerManagerBinding",
       "global_names": [
         "LayerManager"
@@ -89464,7 +89739,9 @@
     },
     {
       "binding": "LocaleManagerBinding",
-      "global_names": [],
+      "global_names": [
+        "LocaleManager"
+      ],
       "has_constructor": false,
       "kind": "class",
       "lua_type": "LocaleManager",
@@ -110108,6 +110385,504 @@
         "src/Bindings/MyGUI/MyGUIBinding.cpp"
       ],
       "source": "src/Bindings/MyGUI/RenderManagerBinding.cpp"
+    },
+    {
+      "binding": "RenderToTextureotronBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "RenderToTextureotron",
+      "metatable": "KenshiLua.RenderToTextureotron",
+      "methods": [
+        {
+          "callback": "RenderToTextureotronBinding::renderItem",
+          "name": "renderItem",
+          "signature": {
+            "params": [
+              {
+                "name": "item",
+                "optional": false,
+                "type": "Item"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "size",
+                "optional": false,
+                "type": "iVector2"
+              }
+            ],
+            "returns": [
+              "string"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RenderToTextureotronBinding::renderBuilding",
+          "name": "renderBuilding",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": false,
+                "type": "GameData"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "size",
+                "optional": false,
+                "type": "iVector2"
+              },
+              {
+                "name": "yaw",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "pitch",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "string"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RenderToTextureotronBinding::renderCharacterNPC",
+          "name": "renderCharacterNPC",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              },
+              {
+                "name": "size",
+                "optional": false,
+                "type": "iVector2"
+              },
+              {
+                "name": "distance",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "string"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RenderToTextureotronBinding::buildAllItemsIcons",
+          "name": "buildAllItemsIcons",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readonly",
+          "name": "camera",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "sceneManager",
+          "type": "lightuserdata|nil"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/RenderToTextureotronBinding.cpp"
+    },
+    {
+      "binding": "RendererBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "Renderer",
+      "metatable": "KenshiLua.Renderer",
+      "methods": [
+        {
+          "callback": "RendererBinding::shutDown",
+          "name": "shutDown",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::_NV_update",
+          "name": "_NV_update",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::createLight",
+          "name": "createLight",
+          "signature": {
+            "params": [
+              {
+                "name": "data",
+                "optional": true,
+                "type": "GameData"
+              },
+              {
+                "name": "indoors",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "floor",
+                "optional": true,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::go",
+          "name": "go",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::initialiseScene",
+          "name": "initialiseScene",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::createDebugBox",
+          "name": "createDebugBox",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "b",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::destroy",
+          "name": "destroy",
+          "signature": {
+            "params": [
+              {
+                "name": "node",
+                "optional": false,
+                "type": "lightuserdata"
+              },
+              {
+                "name": "destroyAttached",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getSceneManager",
+          "name": "getSceneManager",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getRenderSystem",
+          "name": "getRenderSystem",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getRootSceneNode",
+          "name": "getRootSceneNode",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getCamera",
+          "name": "getCamera",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getViewport",
+          "name": "getViewport",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getRoot",
+          "name": "getRoot",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getScreenWidth",
+          "name": "getScreenWidth",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getScreenHeight",
+          "name": "getScreenHeight",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getWorkspace",
+          "name": "getWorkspace",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata",
+              "nil"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::getSceneRelativeOrigin",
+          "name": "getSceneRelativeOrigin",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::validateCompositor",
+          "name": "validateCompositor",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::setupPostProcessing",
+          "name": "setupPostProcessing",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "RendererBinding::refreshActiveCompositor",
+          "name": "refreshActiveCompositor",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "RendererTBinding",
+      "parent_metatable": "KenshiLua.RendererT",
+      "properties": [
+        {
+          "access": "readonly",
+          "name": "camera",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readwrite",
+          "name": "renderToTextureIconMachine",
+          "type": "RenderToTextureotron|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "root",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "scene",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "terrainDecalManager",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "viewport",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "window",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "access": "readonly",
+          "name": "workspace",
+          "type": "lightuserdata|nil"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/RendererBinding.cpp"
+    },
+    {
+      "binding": "RendererTBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "RendererT",
+      "metatable": "KenshiLua.RendererT",
+      "methods": [
+        {
+          "callback": "RendererTBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "debugEntsUpdateListT",
+          "type": "Lektor<lightuserdata>"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/RendererTBinding.cpp"
     },
     {
       "binding": "RepetitionCounterBinding",
@@ -143240,6 +144015,11 @@
           "type": "FoliageSystem|nil"
         },
         {
+          "access": "readwrite",
+          "name": "handleDummy",
+          "type": "ZoneMapContent.HandleDummy|nil"
+        },
+        {
           "access": "readonly",
           "name": "items",
           "type": "OgreUnorderedSet<hand>"
@@ -143279,6 +144059,142 @@
         "src/Lua/RegisterBindings.cpp"
       ],
       "source": "src/Bindings/Kenshi/ZoneMapContentBinding.cpp"
+    },
+    {
+      "binding": "ZoneMapContent_HandleDummyBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "ZoneMapContent.HandleDummy",
+      "metatable": "KenshiLua.ZoneMapContent.HandleDummy",
+      "methods": [
+        {
+          "callback": "ZoneMapContent_HandleDummyBinding::getDataType",
+          "name": "getDataType",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapContent_HandleDummyBinding::_NV_getDataType",
+          "name": "_NV_getDataType",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapContent_HandleDummyBinding::loadFromSerialise",
+          "name": "loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameSaveState"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapContent_HandleDummyBinding::_NV_loadFromSerialise",
+          "name": "_NV_loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameSaveState"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "RootObjectBaseBinding",
+      "parent_metatable": "KenshiLua.RootObjectBase",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "me",
+          "type": "ZoneMapContent|nil"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/ZoneMapContent_HandleDummyBinding.cpp"
+    },
+    {
+      "binding": "ZoneMapContent_ZoneMapContentOrderLoaderBinding",
+      "global_names": [],
+      "has_constructor": false,
+      "kind": "class",
+      "lua_type": "ZoneMapContent.ZoneMapContentOrderLoader",
+      "metatable": "KenshiLua.ZoneMapContent.ZoneMapContentOrderLoader",
+      "methods": [
+        {
+          "callback": "ZoneMapContent_ZoneMapContentOrderLoaderBinding::shouldSkip",
+          "name": "shouldSkip",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameSaveState"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneMapContent_ZoneMapContentOrderLoaderBinding::_NV_shouldSkip",
+          "name": "_NV_shouldSkip",
+          "signature": {
+            "params": [
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameSaveState"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "SpecificItemLoadFirstBinding",
+      "parent_metatable": "KenshiLua.SpecificItemLoadFirst",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "newGameFirstTimeLoaded",
+          "type": "boolean"
+        }
+      ],
+      "registered_from": [
+        "src/Lua/RegisterBindings.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/ZoneMapContent_ZoneMapContentOrderLoaderBinding.cpp"
     },
     {
       "binding": "ZoneMapHandleContainerListBinding",
@@ -154133,6 +155049,119 @@
       "template": "LektorPtrBinding",
       "template_args": [
         "Platoon*"
+      ]
+    },
+    {
+      "binding": "LektorPtrBinding<RenderEntityT*>",
+      "element_refs": [
+        null
+      ],
+      "element_types": {
+        "key": "integer",
+        "value": "lightuserdata"
+      },
+      "global_names": [],
+      "has_constructor": false,
+      "indexer": {
+        "key": "integer",
+        "type": "lightuserdata|nil"
+      },
+      "kind": "template_instance",
+      "lua_type": "Lektor<lightuserdata>",
+      "metatable": "lektor<RenderEntityT*>",
+      "methods": [
+        {
+          "callback": "pushMethod",
+          "name": "push",
+          "signature": {
+            "params": [
+              {
+                "name": "value",
+                "optional": false,
+                "type": "lightuserdata"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "pop",
+          "name": "pop",
+          "signature": {
+            "params": [],
+            "returns": [
+              "lightuserdata|nil"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "removeAt",
+          "name": "removeAt",
+          "signature": {
+            "params": [
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "clear",
+          "name": "clear",
+          "signature": {
+            "params": [],
+            "returns": [],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::size",
+          "name": "size",
+          "signature": {
+            "params": [],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        },
+        {
+          "callback": "Base::toTable",
+          "name": "toTable",
+          "signature": {
+            "params": [],
+            "returns": [
+              "table<integer, lightuserdata>"
+            ],
+            "type_source": "container"
+          },
+          "static": false
+        }
+      ],
+      "owners": [
+        "RendererTBinding"
+      ],
+      "parent_binding": null,
+      "parent_metatable": "",
+      "properties": [],
+      "registered_from": [
+        "src/Bindings/Kenshi/RendererTBinding.cpp"
+      ],
+      "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
+      "template": "LektorPtrBinding",
+      "template_args": [
+        "RenderEntityT*"
       ]
     },
     {
@@ -166002,6 +167031,15 @@
         "luaGetInputHandler"
       ],
       "name": "getInputHandler",
+      "sources": [
+        "src/Bindings/Kenshi/GlobalBinding.cpp"
+      ]
+    },
+    {
+      "callbacks": [
+        "luaGetKingOfRenderThread"
+      ],
+      "name": "getKingOfRenderThread",
       "sources": [
         "src/Bindings/Kenshi/GlobalBinding.cpp"
       ]

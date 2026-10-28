@@ -457,6 +457,12 @@
     <ClCompile Include="src\Bindings\Kenshi\HandleManagerBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\LocaleInfoBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\LocaleManagerBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\KingOfRenderThreadBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\RenderToTextureotronBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\RendererBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\RendererTBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ZoneMapContent_HandleDummyBinding.cpp" />
+    <ClCompile Include="src\Bindings\Kenshi\ZoneMapContent_ZoneMapContentOrderLoaderBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\SharedKingBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\ShopTraderInventoryBinding.cpp" />
@@ -1435,6 +1441,12 @@
     <ClInclude Include="src\Bindings\Kenshi\HandleManagerBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\LocaleInfoBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\LocaleManagerBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\KingOfRenderThreadBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\RenderToTextureotronBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\RendererBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\RendererTBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ZoneMapContent_HandleDummyBinding.h" />
+    <ClInclude Include="src\Bindings\Kenshi\ZoneMapContent_ZoneMapContentOrderLoaderBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\SharedKingBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\ShopTraderInventoryBinding.h" />
