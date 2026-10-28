@@ -11765,8 +11765,28 @@
 | loadImage | `` | `void` | `obj:loadImage()` |
 
 ## RobotLimbItem
-**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.RobotLimbItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| statMults | `ogre_unordered_map<StatsEnumerated, float>::type` | RW | `obj.statMults = <value>` |
+| maxHP | `number` | RW | `obj.maxHP = <value>` |
+| currentDamage | `number` | RW | `obj.currentDamage = <value>` |
+| wearDamage | `number` | RW | `obj.wearDamage = <value>` |
+| stunDamage | `number` | RW | `obj.stunDamage = <value>` |
+| unarmedDamage | `integer` | RW | `obj.unarmedDamage = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getStatMult | `stat: StatsEnumerated` | `number` | `obj:getStatMult(stat)` |
+| _serialise | `container: GameDataContainer, type: itemType` | `GameData` | `obj:_serialise(container, type)` |
+| _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
+| getCraftTime | `` | `number` | `obj:getCraftTime()` |
+| getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
+| getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 
 ## RobotLimbs
 **Header:** `extern/KenshiLib/Include/kenshi/MedicalSystem.h`

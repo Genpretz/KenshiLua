@@ -17373,6 +17373,66 @@
     },
     {
       "category": "enum_typed_as_integer",
+      "class": "RobotLimbItem",
+      "expected": "fun(StatsEnumerated): number",
+      "header": "float getStatMult(StatsEnumerated stat)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StatsEnumerated",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: RobotLimbItem, stat: integer): number",
+      "member": "getStatMult"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "RobotLimbItem",
+      "expected": "fun(GameDataContainer, itemType): GameData|nil",
+      "header": "GameData* _serialise(GameDataContainer* container, itemType type) override",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: RobotLimbItem, container: GameDataContainer, type: integer): GameData",
+      "member": "_serialise"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "RobotLimbItem",
+      "expected": "fun(GameDataContainer, itemType): GameData|nil",
+      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "itemType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: RobotLimbItem, container: GameDataContainer, type: integer): GameData",
+      "member": "_NV__serialise"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "RobotLimbItem",
+      "expected": "?ogre_unordered_map<StatsEnumerated,float>::type",
+      "header": "ogre_unordered_map<StatsEnumerated,float>::type",
+      "kind": "property",
+      "lua": "OgreUnorderedMap<integer, number>",
+      "member": "statMults"
+    },
+    {
+      "category": "enum_typed_as_integer",
       "class": "RobotLimbs",
       "expected": "fun(Limb): Item|nil",
       "header": "Item* getLimb(Limb limb) const",
@@ -21904,12 +21964,12 @@
     "binding_shape_differs": 206,
     "blocking_issues": 0,
     "container_methods_typed": 1105,
-    "enum_typed_as_integer": 541,
-    "methods": 8806,
-    "methods_matching_header": 6691,
+    "enum_typed_as_integer": 544,
+    "methods": 8817,
+    "methods_matching_header": 6699,
     "no_header_declaration": 278,
-    "properties": 3704,
-    "properties_matching_header": 3134,
-    "unmapped_header_type": 462
+    "properties": 3710,
+    "properties_matching_header": 3139,
+    "unmapped_header_type": 463
   }
 }

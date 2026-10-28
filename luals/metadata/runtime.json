@@ -6912,7 +6912,7 @@
     {
       "fields": [],
       "name": "RobotLimbItem",
-      "parent": "Item"
+      "parent": "Gear"
     },
     {
       "fields": [

@@ -114468,10 +114468,234 @@
       "kind": "class",
       "lua_type": "RobotLimbItem",
       "metatable": "KenshiLua.RobotLimbItem",
-      "methods": [],
-      "parent_binding": "ItemBinding",
-      "parent_metatable": "KenshiLua.Item",
-      "properties": [],
+      "methods": [
+        {
+          "callback": "RobotLimbItemBinding::getStatMult",
+          "name": "getStatMult",
+          "signature": {
+            "params": [
+              {
+                "name": "stat",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::_serialise",
+          "name": "_serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "GameData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::_NV__serialise",
+          "name": "_NV__serialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "GameData"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::_loadFromSerialise",
+          "name": "_loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::_NV__loadFromSerialise",
+          "name": "_NV__loadFromSerialise",
+          "signature": {
+            "params": [
+              {
+                "name": "container",
+                "optional": false,
+                "type": "GameDataContainer"
+              },
+              {
+                "name": "state",
+                "optional": false,
+                "type": "GameData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::getCraftTime",
+          "name": "getCraftTime",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::_NV_getCraftTime",
+          "name": "_NV_getCraftTime",
+          "signature": {
+            "params": [],
+            "returns": [
+              "number"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::getTooltipData1",
+          "name": "getTooltipData1",
+          "signature": {
+            "params": [
+              {
+                "name": "lines",
+                "optional": false,
+                "type": "OgreVector<StringPair>|RobotLimbItem"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::_NV_getTooltipData1",
+          "name": "_NV_getTooltipData1",
+          "signature": {
+            "params": [
+              {
+                "name": "lines",
+                "optional": false,
+                "type": "OgreVector<StringPair>|RobotLimbItem"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::getTooltipData2",
+          "name": "getTooltipData2",
+          "signature": {
+            "params": [
+              {
+                "name": "lines",
+                "optional": false,
+                "type": "OgreVector<StringPair>|RobotLimbItem"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RobotLimbItemBinding::_NV_getTooltipData2",
+          "name": "_NV_getTooltipData2",
+          "signature": {
+            "params": [
+              {
+                "name": "lines",
+                "optional": false,
+                "type": "OgreVector<StringPair>|RobotLimbItem"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
+      "parent_binding": "GearBinding",
+      "parent_metatable": "KenshiLua.Gear",
+      "properties": [
+        {
+          "access": "readwrite",
+          "name": "currentDamage",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "maxHP",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "statMults",
+          "type": "OgreUnorderedMap<integer, number>"
+        },
+        {
+          "access": "readwrite",
+          "name": "stunDamage",
+          "type": "number"
+        },
+        {
+          "access": "readwrite",
+          "name": "unarmedDamage",
+          "type": "integer"
+        },
+        {
+          "access": "readwrite",
+          "name": "wearDamage",
+          "type": "number"
+        }
+      ],
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
@@ -161935,14 +162159,16 @@
       ],
       "owners": [
         "FarmBuildingBinding",
-        "RaceDataBinding"
+        "RaceDataBinding",
+        "RobotLimbItemBinding"
       ],
       "parent_binding": null,
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
         "src/Bindings/Kenshi/Building/FarmBuildingBinding.cpp",
-        "src/Bindings/Kenshi/RaceDataBinding.cpp"
+        "src/Bindings/Kenshi/RaceDataBinding.cpp",
+        "src/Bindings/Kenshi/RobotLimbItemBinding.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",

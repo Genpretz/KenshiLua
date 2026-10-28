@@ -619,7 +619,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, ResourceLinePanelBinding::getMetatableName(),                 BaseLayoutBinding::getMetatableName());
     setMetatableParent(L, ResourceLoaderBinding::getMetatableName(),                    ThreadClassBinding::getMetatableName());
     setMetatableParent(L, RendererBinding::getMetatableName(),                          RendererTBinding::getMetatableName());
-    setMetatableParent(L, RobotLimbItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
+    setMetatableParent(L, RobotLimbItemBinding::getMetatableName(),                     GearBinding::getMetatableName());
     setMetatableParent(L, RootObjectBinding::getMetatableName(),                        RootObjectBaseBinding::getMetatableName());
         setMetatableParent(L, TownListBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
     setMetatableParent(L, GameDataScoredListBinding::getMetatableName(),            "FitnessSelector<GameData*>");

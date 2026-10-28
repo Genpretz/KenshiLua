@@ -9399,7 +9399,41 @@ taskPriority = {
 ---@field hit table
 
 --- A specialized `Gear` subclass that represents equippable robotic limb replacements. It handles tracking specific limb condition (damage, wear) and computing character stat multipliers (e.g. stealth, athletics, strength) based on the tier and type of the limb.
----@class RobotLimbItem : Item
+---@class RobotLimbItem : Gear
+--- Retrieves the multiplier for a specific character stat provided by this robotic limb.
+---@field getStatMult fun(self: RobotLimbItem, stat: integer): number
+--- Serializes the robotic limb item's state to a `GameData` instance.
+---@field _serialise fun(self: RobotLimbItem, container: GameDataContainer, type: integer): GameData
+--- Override dispatch for `_serialise`. Serializes the robotic limb item's state to a `GameData` instance.
+---@field _NV__serialise fun(self: RobotLimbItem, container: GameDataContainer, type: integer): GameData
+--- Deserializes and loads the item state from a `GameData` structure.
+---@field _loadFromSerialise fun(self: RobotLimbItem, container: GameDataContainer, state: GameData)
+--- Override dispatch for `_loadFromSerialise`. Deserializes and loads the item state from a `GameData` structure.
+---@field _NV__loadFromSerialise fun(self: RobotLimbItem, container: GameDataContainer, state: GameData)
+--- Retrieves the base time required to craft this robot limb item.
+---@field getCraftTime fun(self: RobotLimbItem): number
+--- Override dispatch for `getCraftTime`. Retrieves the base time required to craft this robot limb item.
+---@field _NV_getCraftTime fun(self: RobotLimbItem): number
+--- Populates primary tooltip strings displaying item statistics, effects, and multipliers for robotic limbs.
+---@field getTooltipData1 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+--- Override dispatch for `getTooltipData1`. Populates primary tooltip strings displaying item statistics, effects, and multipliers for robotic limbs.
+---@field _NV_getTooltipData1 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+--- Populates secondary tooltip strings, generally appending flavor text and item descriptions.
+---@field getTooltipData2 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+--- Override dispatch for `getTooltipData2`. Populates secondary tooltip strings, generally appending flavor text and item descriptions.
+---@field _NV_getTooltipData2 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+--- Current physical damage sustained.
+---@field currentDamage number
+--- Maximum structural hit points of the limb.
+---@field maxHP number
+--- Cached map of stat multipliers provided by this limb.
+---@field statMults OgreUnorderedMap<integer, number>
+--- Temporary stun/blunt damage.
+---@field stunDamage number
+--- Bonus damage applied to unarmed attacks.
+---@field unarmedDamage integer
+--- Wear and tear degradation over time.
+---@field wearDamage number
 
 --- High-resolution performance counter and benchmarking timer wrapping Windows QueryPerformanceCounter.
 ---@class CPerfTimer
