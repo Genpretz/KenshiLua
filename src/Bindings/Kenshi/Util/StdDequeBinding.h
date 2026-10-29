@@ -7,9 +7,10 @@
 
 namespace KenshiLua
 {
-    // Std Deque Binding for Bound Value/Struct Types (T = CraftingItem, Character::RagdollMsg, etc.)
+    // Std Deque Binding for Bound Value/Struct Types whose elements Lua may only view (T = CraftingItem, etc.)
+    // Elements are borrowed; nothing here copies, assigns, or destroys a T.
     template <typename T, typename Alloc = std::allocator<T>>
-    struct StdDequeValueBinding
+    struct StdDequeValueReadOnlyBinding
     {
         typedef std::deque<T, Alloc> DequeType;
         static const char* metaName;
@@ -50,75 +51,7 @@ namespace KenshiLua
 
         static int newindex(lua_State* L)
         {
-            DequeType* d = getInstance(L, 1);
-            if (!d) return luaL_error(L, "deque is nil");
-            if (!lua_isnumber(L, 2)) return luaL_error(L, "deque: index must be numeric");
-
-            size_t i = (size_t)lua_tointeger(L, 2);
-
-            if (i >= 1 && i <= d->size())
-            {
-                if (lua_isnil(L, 3))
-                    d->erase(d->begin() + (i - 1));
-                else
-                {
-                    T* ptr = checkObject<T>(L, 3, elemMetaName);
-                    if (!ptr) return luaL_error(L, "deque: expected valid object for assignment");
-                    (*d)[i - 1] = *ptr;
-                }
-                return 0;
-            }
-            if (i == d->size() + 1)
-            {
-                if (!lua_isnil(L, 3))
-                {
-                    T* ptr = checkObject<T>(L, 3, elemMetaName);
-                    if (!ptr) return luaL_error(L, "deque: expected valid object for assignment");
-                    d->push_back(*ptr);
-                }
-                return 0;
-            }
-            return luaL_error(L, "deque: index %u out of range (size=%u)", (unsigned int)i, (unsigned int)d->size());
-        }
-
-        static int push_back(lua_State* L)
-        {
-            DequeType* d = getInstance(L, 1);
-            if (!d) return luaL_error(L, "deque is nil");
-            T* ptr = checkObject<T>(L, 2, elemMetaName);
-            if (!ptr) return luaL_error(L, "deque: expected valid object for push");
-            d->push_back(*ptr);
-            return 0;
-        }
-
-        static int push_front(lua_State* L)
-        {
-            DequeType* d = getInstance(L, 1);
-            if (!d) return luaL_error(L, "deque is nil");
-            T* ptr = checkObject<T>(L, 2, elemMetaName);
-            if (!ptr) return luaL_error(L, "deque: expected valid object for push_front");
-            d->push_front(*ptr);
-            return 0;
-        }
-
-        static int pop_back(lua_State* L)
-        {
-            DequeType* d = getInstance(L, 1);
-            if (!d) return luaL_error(L, "deque is nil");
-            if (d->empty()) return luaL_error(L, "deque is empty");
-            T val = d->back();
-            d->pop_back();
-            return pushValue<T>(L, val, elemMetaName);
-        }
-
-        static int pop_front(lua_State* L)
-        {
-            DequeType* d = getInstance(L, 1);
-            if (!d) return luaL_error(L, "deque is nil");
-            if (d->empty()) return luaL_error(L, "deque is empty");
-            T val = d->front();
-            d->pop_front();
-            return pushValue<T>(L, val, elemMetaName);
+            return luaL_error(L, "%s is read-only", metaName);
         }
 
         static int front(lua_State* L)
@@ -133,23 +66,6 @@ namespace KenshiLua
             DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             return pushObject<T>(L, &d->back(), elemMetaName);
-        }
-
-        static int removeAt(lua_State* L)
-        {
-            DequeType* d = getInstance(L, 1);
-            if (!d) return luaL_error(L, "deque is nil");
-            size_t i = (size_t)luaL_checkinteger(L, 2);
-            if (i < 1 || i > d->size()) return luaL_error(L, "deque: removeAt index out of range");
-            d->erase(d->begin() + (i - 1));
-            return 0;
-        }
-
-        static int clear(lua_State* L)
-        {
-            DequeType* d = getInstance(L, 1);
-            if (d) d->clear();
-            return 0;
         }
 
         static int empty(lua_State* L)
@@ -210,17 +126,6 @@ namespace KenshiLua
                 { 0, 0 }
             };
             static const luaL_Reg methods[] = {
-                { "push_back",  push_back },
-                { "push_front", push_front },
-                { "push",       push_back },
-                { "pop_back",   pop_back },
-                { "pop_front",  pop_front },
-                { "pop",        pop_back },
-                { "front",      front },
-                { "back",       back },
-                { "removeAt",   removeAt },
-                { "clear",      clear },
-                { "empty",      empty },
                 { "size",       size },
                 { "toTable",    toTable },
                 { 0, 0 }
@@ -230,9 +135,140 @@ namespace KenshiLua
     };
 
     template <typename T, typename Alloc>
-    const char* StdDequeValueBinding<T, Alloc>::metaName = nullptr;
+    const char* StdDequeValueReadOnlyBinding<T, Alloc>::metaName = nullptr;
     template <typename T, typename Alloc>
-    const char* StdDequeValueBinding<T, Alloc>::elemMetaName = nullptr;
+    const char* StdDequeValueReadOnlyBinding<T, Alloc>::elemMetaName = nullptr;
+
+    // Std Deque Binding for Bound Value/Struct Types (T = Character::RagdollMsg, etc.)
+    template <typename T, typename Alloc = std::allocator<T>>
+    struct StdDequeValueBinding : public StdDequeValueReadOnlyBinding<T, Alloc>
+    {
+        typedef StdDequeValueReadOnlyBinding<T, Alloc> Base;
+        typedef typename Base::DequeType DequeType;
+
+        static int newindex(lua_State* L)
+        {
+            DequeType* d = Base::getInstance(L, 1);
+            if (!d) return luaL_error(L, "deque is nil");
+            if (!lua_isnumber(L, 2)) return luaL_error(L, "deque: index must be numeric");
+
+            size_t i = (size_t)lua_tointeger(L, 2);
+
+            if (i >= 1 && i <= d->size())
+            {
+                if (lua_isnil(L, 3))
+                    d->erase(d->begin() + (i - 1));
+                else
+                {
+                    T* ptr = checkObject<T>(L, 3, Base::elemMetaName);
+                    if (!ptr) return luaL_error(L, "deque: expected valid object for assignment");
+                    (*d)[i - 1] = *ptr;
+                }
+                return 0;
+            }
+            if (i == d->size() + 1)
+            {
+                if (!lua_isnil(L, 3))
+                {
+                    T* ptr = checkObject<T>(L, 3, Base::elemMetaName);
+                    if (!ptr) return luaL_error(L, "deque: expected valid object for assignment");
+                    d->push_back(*ptr);
+                }
+                return 0;
+            }
+            return luaL_error(L, "deque: index %u out of range (size=%u)", (unsigned int)i, (unsigned int)d->size());
+        }
+
+        static int push_back(lua_State* L)
+        {
+            DequeType* d = Base::getInstance(L, 1);
+            if (!d) return luaL_error(L, "deque is nil");
+            T* ptr = checkObject<T>(L, 2, Base::elemMetaName);
+            if (!ptr) return luaL_error(L, "deque: expected valid object for push");
+            d->push_back(*ptr);
+            return 0;
+        }
+
+        static int push_front(lua_State* L)
+        {
+            DequeType* d = Base::getInstance(L, 1);
+            if (!d) return luaL_error(L, "deque is nil");
+            T* ptr = checkObject<T>(L, 2, Base::elemMetaName);
+            if (!ptr) return luaL_error(L, "deque: expected valid object for push_front");
+            d->push_front(*ptr);
+            return 0;
+        }
+
+        static int pop_back(lua_State* L)
+        {
+            DequeType* d = Base::getInstance(L, 1);
+            if (!d) return luaL_error(L, "deque is nil");
+            if (d->empty()) return luaL_error(L, "deque is empty");
+            T val = d->back();
+            d->pop_back();
+            return pushValue<T>(L, val, Base::elemMetaName);
+        }
+
+        static int pop_front(lua_State* L)
+        {
+            DequeType* d = Base::getInstance(L, 1);
+            if (!d) return luaL_error(L, "deque is nil");
+            if (d->empty()) return luaL_error(L, "deque is empty");
+            T val = d->front();
+            d->pop_front();
+            return pushValue<T>(L, val, Base::elemMetaName);
+        }
+
+        static int removeAt(lua_State* L)
+        {
+            DequeType* d = Base::getInstance(L, 1);
+            if (!d) return luaL_error(L, "deque is nil");
+            size_t i = (size_t)luaL_checkinteger(L, 2);
+            if (i < 1 || i > d->size()) return luaL_error(L, "deque: removeAt index out of range");
+            d->erase(d->begin() + (i - 1));
+            return 0;
+        }
+
+        static int clear(lua_State* L)
+        {
+            DequeType* d = Base::getInstance(L, 1);
+            if (d) d->clear();
+            return 0;
+        }
+
+        static void registerBinding(lua_State* L, const char* name, const char* elemName)
+        {
+            Base::metaName = name;
+            Base::elemMetaName = elemName;
+
+            static const luaL_Reg meta[] = {
+                { "__gc",       Base::gc },
+                { "__len",      Base::len },
+                { "__index",    Base::index },
+                { "__newindex", newindex },
+                { "__pairs",    Base::pairs },
+                { "__ipairs",   Base::ipairs },
+                { 0, 0 }
+            };
+            static const luaL_Reg methods[] = {
+                { "push_back",  push_back },
+                { "push_front", push_front },
+                { "push",       push_back },
+                { "pop_back",   pop_back },
+                { "pop_front",  pop_front },
+                { "pop",        pop_back },
+                { "front",      Base::front },
+                { "back",       Base::back },
+                { "removeAt",   removeAt },
+                { "clear",      clear },
+                { "empty",      Base::empty },
+                { "size",       Base::size },
+                { "toTable",    Base::toTable },
+                { 0, 0 }
+            };
+            registerClass(L, Base::metaName, meta, methods, Base::index, newindex);
+        }
+    };
 
 
     // Std Deque Binding for Primitive Types (float, int, etc.)

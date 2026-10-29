@@ -22,5 +22,6 @@ public:
     static int getVisible(lua_State* L);
     static int setPosition(lua_State* L);
     static int update(lua_State* L);
+    static int setOptions(lua_State* L);
 };
 }

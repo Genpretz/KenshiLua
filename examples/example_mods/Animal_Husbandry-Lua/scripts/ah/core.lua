@@ -61,7 +61,6 @@ local CONSTANT_MAP = {
     { section = "breeding", field = "minAge",              key = "breeding.minAge" },
     { section = "harvest",  field = "minAge",              key = "harvest.minAge" },
     { section = "harvest",  field = "maxDistance",         key = "harvest.maxDistance" },
-    { section = "harvest",  field = "maxVisibleProducts",  key = "harvest.maxVisibleProducts" },
     { section = "sales",    field = "defaultBasePrice",    key = "sales.defaultBasePrice" },
     { section = "sales",    field = "maxDistance",         key = "sales.maxDistance" },
     { section = "sales",    field = "resaleMultiplier",    key = "sales.resaleMultiplier" },

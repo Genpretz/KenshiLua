@@ -24,6 +24,7 @@ public:
     static int getInt24W(lua_State* L);
     static int getInt16W(lua_State* L);
     static int setZero4(lua_State* L);
+    static int setNeg3(lua_State* L);
     static int normalize3(lua_State* L);
     static int getZero(lua_State* L);
     static int set(lua_State* L);
@@ -41,6 +42,7 @@ public:
     static int subMul(lua_State* L);
     static int setSubMul(lua_State* L);
     static int setCross(lua_State* L);
+    static int setPlaneConstant(lua_State* L);
     static int setXYZ_W(lua_State* L);
     static int setW(lua_State* L);
     static int setXYZ(lua_State* L);

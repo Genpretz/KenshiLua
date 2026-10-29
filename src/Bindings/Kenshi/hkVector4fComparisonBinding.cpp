@@ -198,7 +198,7 @@ int hkVector4fComparisonBinding::constructor(lua_State* L)
     }
 
     hkVector4fComparison comp;
-    comp.set(hkVector4fComparison::MASK_NONE);
+    comp.set(hkVector4ComparisonMask::MASK_NONE);
     return pushValue<hkVector4fComparison>(L, comp, hkVector4fComparisonBinding::getMetatableName());
 }
 

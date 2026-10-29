@@ -12,6 +12,7 @@
 #include "Bindings/Kenshi/PlayerInterfaceBinding.h"
 #include "Bindings/Kenshi/RootObjectBinding.h"
 #include "Bindings/Kenshi/RootObjectContainerBinding.h"
+#include "Bindings/Kenshi/SerialisableBinding.h"
 #include "Bindings/Kenshi/TaskerBinding.h"
 #include "Bindings/Kenshi/Util/YesNoMaybeBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
@@ -805,11 +806,7 @@ static int ActivePlatoon__NV_loadFromDisk(lua_State* L)
     ActivePlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ActivePlatoon is nil");
     bool force = lua_toboolean(L, 2) != 0;
-    Serialisable* extra = nullptr;
-    if (!lua_isnil(L, 3)) {
-        extra = (Serialisable*)lua_touserdata(L, 3);
-        if (!extra) return luaL_error(L, "Argument 3 must be lightuserdata (Serialisable*) or nil");
-    }
+    Serialisable* extra = lua_isnoneornil(L, 3) ? nullptr : checkObject<Serialisable>(L, 3, SerialisableBinding::getMetatableName());
     bool result = instance->_NV_loadFromDisk(force, extra);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
@@ -957,11 +954,7 @@ static int ActivePlatoon_loadFromDisk(lua_State* L)
     ActivePlatoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ActivePlatoon is nil");
     bool force = lua_toboolean(L, 2) != 0;
-    Serialisable* extra = nullptr;
-    if (!lua_isnil(L, 3)) {
-        extra = (Serialisable*)lua_touserdata(L, 3);
-        if (!extra) return luaL_error(L, "Argument 3 must be lightuserdata (Serialisable*) or nil");
-    }
+    Serialisable* extra = lua_isnoneornil(L, 3) ? nullptr : checkObject<Serialisable>(L, 3, SerialisableBinding::getMetatableName());
     bool result = instance->loadFromDisk(force, extra);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;

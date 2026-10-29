@@ -23,7 +23,6 @@ breeding.maxPairDistance: 200.0 "Maximum distance in world units between potenti
 breeding.minAge: 0.6 "Minimum age for both parents to breed (0.0 to 1.1 scale: 0.4 is Teen, 0.6 is Adult)"
 harvest.minAge: 0.6 "Minimum age of an animal before its products can be harvested (0.6 is Adult)"
 harvest.maxDistance: 200.0 "Maximum distance in world units between the harvester and the animal"
-harvest.maxVisibleProducts: 2 "Maximum number of product rows visible in the Husbandry window before scrolling"
 sales.defaultBasePrice: 14000 "Fallback base price in cats for animals without an FCS base price. Vanilla traders use 14000."
 sales.maxDistance: 200.0 "Maximum distance in world units between an animal and the buyer (or buyer's building) or seller"
 sales.resaleMultiplier: 0.50 "Resale price multiplier applied when selling animals to vendors (0.50 matches player-crafted weapon production)"

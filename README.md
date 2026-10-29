@@ -27,7 +27,7 @@ Loaded at runtime through RE_Kenshi, KenshiLua exposes selected portions of Kens
 
 ## How much of KenshiLib can be used from Lua?
 
-A large amount of KenshiLib has been exposed for use from Lua. This includes almost the entirety of KenshiLib 0.3.0.
+A large amount of KenshiLib has been exposed for use from Lua. KenshiLua is built against KenshiLib 0.5.0, the version RE_Kenshi ships. It covers almost all of the API that KenshiLib 0.3.0 provided, and the classes added in 0.5.0 are being bound in batches.
 * [BindingsReference.md](docs/BindingsReference.md) - View for a list of methods and properties available from Lua.
 * [EnumsReference.md](docs/EnumsReference.md) - View for a list of enums available from Lua.
 * [CallbacksReference.md](docs/CallbacksReference.md) - View for a list of event callbacks available from Lua.
@@ -36,7 +36,7 @@ A large amount of KenshiLib has been exposed for use from Lua. This includes alm
 * [InGameGUI.md](docs/InGameGUI.md) - Guide for using the in-game GUI, script manager, editor, console, and log viewer.
 * [DialogueScriptingBridge.md](docs/DialogueScriptingBridge.md) - Guide for executing Lua scripts from dialogue lines using FCS Extended.
 * [LuaLS.md](docs/LuaLS.md) - Configure Lua Language Server editor support for KenshiLua scripts.
-* [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.3.0 but are not currently exposed to Lua.
+* [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.5.0 but are not currently exposed to Lua.
 
 KenshiLib is a large and complex codebase, and while KenshiLua exposes a large portion of it, there are still many methods and properties that are not yet exposed to Lua. If you find that a method or property you need is not available, please open an issue on the KenshiLua GitHub repository.
 
@@ -132,31 +132,34 @@ Events.on("InputHandler::keyDownEvent", on_key_down)
 
 1. Clone the KenshiLua repository using the --recursive flag to ensure all dependencies are also cloned:
    `git clone --recursive https://github.com/Genpretz/KenshiLua.git`
-2. Several changes need to be made to KenshiLib v0.3.0's headers for KenshiLua to be able to compile. (This guide is not enough as of KenshiLua v0.3.4 and needs updating. The exact changes can be found described in [this pull request](https://github.com/BFrizzleFoShizzle/KenshiLib/pull/13).)
+2. Change the KenshiLib headers. KenshiLua pins the `extern/KenshiLib` submodule at `11cd65d`, KenshiLib 0.5.0, the version RE_Kenshi ships. Its headers need the changes below; paths are relative to `extern/KenshiLib/Include/`. To build a KenshiLua version that pins KenshiLib 0.3.0 (`v0.2.0-alpha` through `v0.3.9-alpha`), follow [Building KenshiLua with KenshiLib 0.3.0](docs/legacy/BuildingWithKenshiLib-0.3.0.md) instead.
 
-   * Add `#pragma once` to the top of every header file that doesn't already have it. These include:
-      - CharMovement.h
-      - DataPanelLine.h
-      - FarmBuilding.h
-   * MainBarGUI.h
-      - Forward declare class `MainBarGUI` before `class MainTabPortraitPlatoon : public Ogre::GeneralAllocatedObject`.
-   * ManagementScreen.h
-      - Add `#include <mygui/common/itembox/BaseItemBox.h>`
-      - Add `template<typename T> class ReorderableListItem;` before `class ReorderableList : public wraps::BaseItemBox<ReorderableListItem<T2> >, public Ogre::GeneralAllocatedObject`.
-      - Remove the `override` from `virtual ~ReorderableList() override;` in `class ReorderableList`.
-   * OrdersPanel.h
-      - Forward declare `class OrderData;` before `class OrderCellView : public wraps::BaseCellView<OrderData*>, public Ogre::GeneralAllocatedObject`
-   * Globals.h
-      - Remove the lines declaring `namespace FoliageSystem` and `class EntData`.
-   * NavMesh.h
-      - Remove `MessageQueue<T>::` prefix from the members within `class MessageQueue` and the nested struct `Node`.
-   * Platoon.h
-      - Remove the definition for `enum BuildingDesignation` and instead add `#include "Building/Building.h"` to the list of includes.
-   * PlayerInterface.h
-      - Add the following include, `#include "kenshi/gui/ContextMenu.h"` and remove the definition for `class ContextMenu`.
+   These classes are defined in two headers. Delete the duplicate and include the header that keeps the definition:
 
-3. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib and are not functional).
-4. `KenshiLua.vcxproj` includes a post-build event that will copy the built `KenshiLua.dll` along with all the other files and directories required for KenshiLua to run to `$(ProjectDir)bin/KenshiLua/`
+   | File | Change |
+   | --- | --- |
+   | `kenshi/Globals.h` | Delete the `namespace FoliageSystem { class EntData; }` block, which conflicts with `class FoliageSystem`, and add `#include "FoliageSystem.h"`. |
+   | `kenshi/SaveInfo.h` | Delete `class GameplayOptions { ... };` and add `#include "GameplayOptions.h"`. |
+   | `kenshi/PlayerInterface.h` | Delete `class ContextMenu { ... };` and add `#include "gui/ContextMenu.h"`. |
+   | `kenshi/Campaign.h` | Delete `class CampaignTriggerData { ... };` and add `#include "Dialogue.h"`. |
+   | `kenshi/PhysicsCollection.h` | Delete `class WeatherRegion { ... };` and add `#include "Weather.h"`. |
+   | `kenshi/ZoneManager.h`, `kenshi/combat/CombatClass.h` | Both define `class ParticlePool`. Move it into a new `kenshi/ParticlePool.h` ([contents](docs/legacy/BuildingWithKenshiLib-0.3.0.md#duplicate-definitions-still-present-in-050)), delete it from both headers, and include the new file: `#include <kenshi/ParticlePool.h>` in `ZoneManager.h` and `#include "../ParticlePool.h"` in `CombatClass.h`. |
+
+   These declarations disagree with the game or with the libraries KenshiLua links against:
+
+   | File | Change | Without it |
+   | --- | --- | --- |
+   | `kenshi/util/hand.h` | Move the `virtual bool operator==(const hand& a) const;` and `bool _NV_operator_equal(const hand& a) const;` lines above `virtual bool operator==(bool a) const;`. | KenshiLua still builds, but comparing two handles calls `hand::operator==(bool)`. MSVC places overloaded virtual functions in reverse declaration order, which swaps the two `operator==` vtable slots relative to the game. |
+   | `kenshi/Havok.h` | Move `enum Mask` out of `hkVector4fComparison` into a new `struct hkVector4ComparisonMask` declared just before it, and add `typedef hkVector4ComparisonMask::Mask Mask;` to `hkVector4fComparison`. | Link errors: KenshiLib exports the class's methods with `hkVector4ComparisonMask::Mask` parameters. |
+   | `mygui/MyGUI_ItemBox.h` | Add a trailing `bool update = true` parameter to `insertItemAt`, `addItem`, and `removeItemAt`. | KenshiLua imports `ItemBox` methods that Kenshi's `MyGUIEngine_x64.dll` does not export and fails to load. |
+   | `mygui/common/baselayout/BaseLayout.h` | Change `class __declspec(dllimport) BaseLayout` to `class BaseLayout`. | Link error: the linker expects `BaseLayout`'s constructor from a DLL. |
+
+3. Replace `extern/KenshiLib/Libraries/mygui/MyGUIEngine_x64.lib` with an import library generated from Kenshi's `MyGUIEngine_x64.dll`, following [Regenerate the MyGUI import library](docs/legacy/BuildingWithKenshiLib-0.3.0.md#3-regenerate-the-mygui-import-library). Kenshi uses a customized MyGUI, and the library in the KenshiLib repository does not match it.
+4. Build `extern/KenshiLib/KenshiLib.vcxproj` using its Release x64 configuration. KenshiLua links the resulting `extern/KenshiLib/x64/Release/KenshiLib.lib`.
+5. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib and are not functional).
+6. `KenshiLua.vcxproj` includes a post-build event that will copy the built `KenshiLua.dll` along with all the other files and directories required for KenshiLua to run to `$(ProjectDir)bin/KenshiLua/`
+
+At runtime, KenshiLua uses the `KenshiLib.dll` that RE_Kenshi installs in the game folder, not the one built in step 4. A build loads only if that DLL and Kenshi's `MyGUIEngine_x64.dll` export every symbol KenshiLua imports; compare `dumpbin /imports` of `KenshiLua.dll` with `dumpbin /exports` of each DLL to check. These changes are the set used for the builds tested in Kenshi 1.0.65 GOG and Steam on 2026-10-23; they have not been rebuilt from a clean checkout on their own.
 
 #### Notes on Toolchain Constraints
 * The game and KenshiLib are built against MSVC2010-era assumptions, including C++ ABI layout and runtime library behavior. KenshiLua and all ofther dependencies must match these constraints to ensure stable integration.

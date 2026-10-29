@@ -435,6 +435,18 @@
                 "tradingInfo": "Economic and merchant state tracking for barter and vendor operations."
             }
         },
+        "AIEventClass": {
+            "description": "Base of scripted AI events such as `AIPatrolToTown`. Abstract; no bound member returns one.",
+            "methods": {
+                "update": "Runs the event's update. Pure virtual."
+            },
+            "properties": {
+                "repeatRate": "Time between repeats.",
+                "repeatTimer": "Time until the next repeat.",
+                "sendWhoToDoIt": "Handle of the character or squad sent to carry out the event.",
+                "target": "Handle of the event's target."
+            }
+        },
         "AIOptions": {
             "description": "Stores player-configurable squad AI behavior toggles (such as auto-healing, rescuing allies, and sharing food) on PlayerInterface.",
             "methods": {
@@ -459,6 +471,7 @@
             "description": "",
             "methods": {
                 "AIPackage": "Initializes a new `AIPackage` instance. Sets default values for handles and nullifies pointers, preparing the object for configuration via its template data.",
+                "_NV_getMyTarget": "Non-virtual `getMyTarget`.",
                 "activateAndSetup": "Activates the AI package and prepares it for execution. This involves binding necessary platoon context and optionally triggering initial dialogs if an employer or target requires engagement.",
                 "assessEnemy": "Evaluates if a target should be forcibly treated as an enemy by this package. Overrides global diplomacy if the mission demands hostility (e.g. assassination contracts).",
                 "assessNeutral": "Evaluates if a target should be treated as neutral within the scope of this package. Allows packages to temporarily override standard faction diplomacy rules for mission targets.",
@@ -496,6 +509,131 @@
                 "squad": "Bound platoon squad pointer.",
                 "unloadedMode": "Behavior mode when platoon is streaming unloaded.",
                 "wasBetrayed": "Flag indicating contract betrayal occurred."
+            }
+        },
+        "AIPatrolToTown": {
+            "description": "AI event that sends a patrol to a town. Abstract; no bound member returns one.",
+            "methods": {
+                "update": "Runs the event's update. Pure virtual."
+            },
+            "properties": {}
+        },
+        "AITaskSytem": {
+            "description": "A character's AI task system, owned by its `AI` (`AI.taskSystemAI`). Inherits the orders and jobs of `OrdersReceiver`.",
+            "methods": {
+                "_NV_loadFromSerialise": "Non-virtual `loadFromSerialise`.",
+                "_NV_serialise": "Non-virtual `serialise`.",
+                "_NV_setCurrentGoal": "Non-virtual `setCurrentGoal`.",
+                "_NV_setNeedGOAP": "Non-virtual `setNeedGOAP`.",
+                "_chooseGoal": "Chooses a goal of the priority for the squad member type and returns whether one was set.",
+                "_forcedSetCurrentAction": "Sets the current action to the task with the score.",
+                "_logTheAI": "Writes the AI state to the debug log.",
+                "_notifyBodyTaskComplete": "Notifies the task system that the body finished its task.",
+                "_taskImpossible": "Marks the current task as impossible.",
+                "bodyTaskComplete": "Handles completion of the body's task.",
+                "callForUpdate": "Requests an update; `superUrgent` requests it immediately.",
+                "canIDoTheInfrequents": "Returns whether the infrequent checks are due.",
+                "checkOrders": "Checks the orders and returns whether one is active.",
+                "chooseGoal": "Chooses a new goal; `timedLockOnCurrentGoal` keeps a current timed goal.",
+                "clearAllTasks": "Removes every order, job, goal, and action.",
+                "clearRequestsList": "Clears `requestsList`.",
+                "currentActionChecks": "Runs the checks for the current action.",
+                "debugTargetInfo": "Records target debugging information for the task.",
+                "getCurrentDurationTimedTask": "Returns the current duration-based task, or nil.",
+                "getCurrentGoalString": "Returns a description of the current goal.",
+                "getGOalExpiryTimeRemaining": "Returns the time remaining before the current goal expires.",
+                "getGUIData": "Adds the task system's information to the `DatapanelGUI`.",
+                "getHandle": "Returns the handle of the character.",
+                "infrequentsStampCheck": "Updates the infrequent-check timestamp.",
+                "intendsToAttackTarget": "Returns whether the AI intends to attack the character.",
+                "isGoalExpired": "Returns whether the current goal has expired.",
+                "isPathImpossible": "Returns whether pathing to the target failed recently.",
+                "isTaskExpired": "Returns whether the current task has expired.",
+                "isThePlayer": "Returns whether the character is player-controlled.",
+                "loadFromSerialise": "Loads the task system from the `GameData`.",
+                "notifyPathImpossible": "Records that the target at `dest` could not be reached.",
+                "periodicUpdate": "Runs the periodic update.",
+                "popFromOrders": "Removes the task from the orders.",
+                "runGOAP": "Plans the task with GOAP and returns its score.",
+                "serialise": "Saves the task system to the `GameData`.",
+                "setCurrentGoal": "Sets the current goal to the task with the score and priority. The task cannot be nil.",
+                "setCurrentTask": "Takes the current task from the action list and returns whether one was set.",
+                "setDialogueDeliveryTag": "Sets `currentDialogueDelivery`.",
+                "setNeedGOAP": "Requests a new GOAP plan.",
+                "setTaskExpiryTimer": "Starts the current task's expiry timer.",
+                "setupParametersForCurrentGoal": "Sets up the parameters of the current goal.",
+                "taskImpossible": "Marks the current task as impossible.",
+                "tryAndRerunGOAP": "Plans the task again with GOAP and returns whether that succeeded.",
+                "update": "Updates the task system at the position for the frame time.",
+                "update4Frame": "Runs the four-frame update at the position.",
+                "updateStateBroadcast": "Updates the `StateBroadcastData` from the task system."
+            },
+            "properties": {
+                "_currentDialogueEnumQuery": "Dialogue event being queried, as an `EventTriggerEnum` value.",
+                "_debugBreak": "Debug break flag.",
+                "_squadMemberType": "Squad member type, as a `SquadMemberType` value.",
+                "_taskCompletedFlag": "True when the current task completed.",
+                "_taskImpossibleFlag": "True when the current task is impossible.",
+                "actions": "The current action list, borrowed. Read-only; ~AITaskSytem deletes its tasks.",
+                "actionsTryList": "The trial action list, borrowed. Read-only; ~AITaskSytem deletes its tasks.",
+                "autoDitchTask": "Automatic ditch task, or nil.",
+                "autoEjectEnemiesTask1": "First automatic eject-enemies task, or nil.",
+                "autoEjectEnemiesTask2": "Second automatic eject-enemies task, or nil.",
+                "autoGetupTask": "Automatic get-up task, or nil.",
+                "autoSitTask": "Automatic sit task, or nil.",
+                "autoSleepTask": "Automatic sleep task, or nil.",
+                "body": "The character's `CharBody`. nil is rejected.",
+                "character": "The `Character`. nil is rejected.",
+                "currentDialogueDelivery": "Dialogue event being delivered, as an `EventTriggerEnum` value.",
+                "currentGoalExpiryTime": "When the current goal expires.",
+                "currentTaskExpiryTime": "When the current task expires.",
+                "currentlySubTasking": "The task being run as a subtask, or nil.",
+                "debugCount": "Debug counter.",
+                "failedGOAPGoalDebugString": "Debug text of the last failed GOAP goal.",
+                "infrequentTimeStamp": "Time of the last infrequent check.",
+                "pathFailures": "Recent path failures by target handle, as a live map. Read-only; edit it in place.",
+                "pos": "Position of the character at the last update.",
+                "requestsList": "Pending requests, as a live `lektor<Tasker*>`. Read-only; edit it in place.",
+                "setTaskRecursionCounter": "Recursion counter of `setCurrentTask`.",
+                "taskRecursionLast": "Last task type seen by the recursion counter, as a `TaskType` value."
+            }
+        },
+        "AITaskSytem_ActionsListMgr": {
+            "description": "The `ActionDeque` of the task system's current and trial action lists, `AITaskSytem.actions` and `AITaskSytem.actionsTryList`.",
+            "methods": {
+                "addFrom": "Appends the tasks of another action list.",
+                "copyFrom": "Replaces the tasks with those of another action list.",
+                "get2TasksAfterCurrent": "Returns the task two after the current one, or nil.",
+                "getTaskAfterCurrent": "Returns the task after the current one, or nil."
+            },
+            "properties": {}
+        },
+        "AITaskSytem_FailedTask": {
+            "description": "The subject of a GOAP task that failed. No bound member returns one.",
+            "methods": {},
+            "properties": {
+                "subj": "Handle of the failed task's subject."
+            }
+        },
+        "AI_AIResultsCacher": {
+            "description": "Per-AI cache of task requirement checks, result checks, and resource sources. Embedded in `AI` and reached through `AI.resultsCache`.",
+            "methods": {
+                "cacheResult_reqs": "Stores a requirements check result for the `TaskMatch`.",
+                "cacheResult_results": "Stores a results check for the `TaskMatch`.",
+                "cacheResult_targetFinder": "Stores a target-finder result, a subject handle and score, for the `TaskMatch`.",
+                "getCacheResult_reqs": "Returns the cached requirements check for the `TaskMatch`.",
+                "getCacheResult_results": "Returns the cached results check for the `TaskMatch`.",
+                "getResourceSource": "Finds a source of the item `resourceNeeded`, skipping the `skip` storage building when given. Returns the score (0 or 1) and the handle of the source found.",
+                "hasCacheResult_reqs": "Returns whether a requirements check is cached for the `TaskMatch`.",
+                "hasCacheResult_results": "Returns whether a results check is cached for the `TaskMatch`.",
+                "resetAllCaches": "Clears every cached result.",
+                "resetSpecificTargetFinderCache": "Clears the cached target-finder result for the `TaskMatch`."
+            },
+            "properties": {
+                "ai": "The owning `AI`. nil is rejected.",
+                "requirementsCache": "Cached requirements checks by `TaskMatch`, as a live map.",
+                "resourceSourceCache": "Cached resource sources by item `GameData`, as a live map. Its hand values are copies.",
+                "resultsCache": "Cached results checks by `TaskMatch`, as a live map."
             }
         },
         "AbstractMovementBase": {
@@ -559,6 +697,25 @@
                 "walkSpeed": "Standard walking speed in world units per second."
             }
         },
+        "ActionDeque": {
+            "description": "Ordered list of `Tasker` actions. Embedded in `OrdersReceiver` as `orders` and in `AITaskSytem` as `actions` and `actionsTryList`; the owner deletes the tasks it holds.",
+            "methods": {
+                "addTask": "Appends a task. The deque takes ownership.",
+                "clearAndDelete": "Removes and deletes every task.",
+                "clearOnly": "Removes every task without deleting it.",
+                "getFirstTask": "Returns the first task, or nil.",
+                "getLastTask": "Returns the last task, or nil.",
+                "getSecondTask": "Returns the second task, or nil.",
+                "hasTask": "Returns whether a task matching the `TaskMatch` is in the list.",
+                "insertTask": "Inserts a task at the front. The deque takes ownership.",
+                "isEmpty": "Returns whether the deque holds no tasks.",
+                "isOnlyOne": "Returns whether the deque holds exactly one task.",
+                "passOnCurrentTask": "Removes the first task and returns it without deleting it, or returns nil when empty."
+            },
+            "properties": {
+                "list": "The tasks, as a live `std::deque<Tasker*>`. Read-only; edit it in place."
+            }
+        },
         "ActivePlatoon": {
             "description": "Active runtime squad controller managing spawned characters, shared group senses (GroupSense), character memory, squad leader selection, and disk serialization. Extends RootObjectContainer.",
             "methods": {
@@ -588,7 +745,7 @@
                 "isLoaded": "Returns true if this active platoon's characters are currently spawned and loaded.",
                 "isWholeSquadDown": "Returns true if all squad members (optionally excluding minusThis count) are unconscious, dead, or incapacitated.",
                 "loadCharacters": "Spawns the platoon's characters around position _a1 (Vector3 table), optionally notifying _a2 (FactoryCallbackInterface).",
-                "loadFromDisk": "Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (Serialisable* lightuserdata).",
+                "loadFromDisk": "Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (`Serialisable` or nil).",
                 "loadInstance": "Spawns a single character instance from state (GameSaveState) at pos (Vector3 table) and rot (Quaternion table), with skipSaveState, optional callback (FactoryCallbackInterface), and positionMoved offset (Vector3 table).",
                 "periodicUpdate": "Runs periodic squad AI, sensory, and zone checks.",
                 "putTheSpecialCharactersInNewSquads_captured": "Moves captured unique/special characters into separate squads before unloading.",
@@ -1471,11 +1628,15 @@
                 "_activateCurrentPackage": "Suspends or clears the currently executing package, resetting local tracking flags. Replaces it with the provided new `AIPackage` reference.",
                 "_addFromData": "Decodes a serialized behavior tree payload into local instances and loads them onto the active execution stack.",
                 "_addPackage": "Enqueues an AI task definition into the priority tier queues without immediately executing it. Allows complex queuing of behaviors over time.",
+                "_loadJobList": "Loads the job list from the `GameData` under the name.",
+                "_serialiseJobList": "Saves the job list to the `GameData` under the name.",
                 "_setContractJob": "Assigns an overriding mercenary contract task at a specific priority. Halts lower priority goals.",
                 "clearAllPackages": "Iterates through `packagesMain` queues and terminates all pending or active routines. Used during platoon destruction or combat override.",
                 "createNewPackage": "Constructs a new `AIPackage` derivative based on `typeId` (such as `Package_OccupyTown` or `CannibalRetreatFromRaid`). Connects relevant callback functions.",
                 "dialogEventsCheck": "Validates and polls conditions matching current dialog hooks against incoming game events. Often transitions an NPC's behavior state depending on dialog outcome.",
                 "endContractJob": "Concludes the currently active mercenary contract package. Triggers dialog/payment handlers for successful termination.",
+                "getJobList": "Returns the job list for the `SquadMemberType` as a live `lektor<TaskRequest>`, or nil.",
+                "getMissionTarget": "Returns the character's mission target as a new `TargetInfo`.",
                 "getPackage": "Searches the queued priority map for a specific task package by its internal string identifier.",
                 "getPackageList": "Retrieves the underlying queue struct associated with a requested priority level from `packagesMain`.",
                 "isMissionComplete": "Checks if the main directive tied to the squad's primary `AIPackage` has fulfilled its goal conditions.",
@@ -1491,8 +1652,26 @@
                 "cageMarkedForDeath": "Cage handle of target marked for execution.",
                 "currentPackage": "Currently executing squad package.",
                 "currentPackagePriorityLevel": "Active package priority tier.",
+                "currentTasks": "The members' current tasks by handle, as a live map of `Blackboard_TaskInfo`. Read-only; edit it in place.",
+                "leaderJobs": "Leader jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
                 "packagesMain": "Priority-indexed queues of behavior packages.",
-                "replacementAIPackageSID": "SID of package scheduled to replace current upon completion."
+                "replacementAIPackageSID": "SID of package scheduled to replace current upon completion.",
+                "requests": "Job requests by handle, as a live map of `TaskRequest`. Read-only; edit it in place.",
+                "signalJobs": "Signal jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
+                "slaveJobs": "Slave jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
+                "squadJobs": "Squad jobs, as a live `lektor<TaskRequest>`. Read-only; edit it in place.",
+                "squadJobs2": "Second squad job list, as a live `lektor<TaskRequest>`. Read-only; edit it in place."
+            }
+        },
+        "Blackboard_TaskInfo": {
+            "description": "The task a squad member is carrying out, as held in `Blackboard.currentTasks`. `Blackboard_TaskInfo()` and `Blackboard_TaskInfo(other)` create Lua-owned values.",
+            "methods": {
+                "operator_assign": "Copies another `Blackboard_TaskInfo` into this one and returns it."
+            },
+            "properties": {
+                "subTarget": "Handle of the task's secondary target.",
+                "subject": "Handle of the task's subject.",
+                "type": "The task, as a `TaskType` value."
             }
         },
         "BoundsViolation": {
@@ -2058,17 +2237,29 @@
                 "yaw": "Current camera yaw angle in degrees."
             }
         },
+        "CampaignData": {
+            "description": "A faction's definition of one war campaign type, owned by that faction's `FactionWarMgr` (`possibleCampaigns`).",
+            "methods": {},
+            "properties": {
+                "data": "The `GameData` record this campaign is built from. Cannot be set to nil.",
+                "factionOverride": "`Faction` that runs this campaign instead of the owner, or nil.",
+                "me": "The `Faction` that owns this campaign data. Cannot be set to nil."
+            }
+        },
         "CampaignInstance": {
             "description": "Active military expedition instance tracking marching forces, operational phases (Gathering, Assaulting, Retreating, Victory), destination waypoints, and casualties.",
             "methods": {
                 "CampaignInstance": "Constructs a new `CampaignInstance` initialized with participating factions and home territory.",
+                "_NV_getAITarget": "Non-virtual `getAITarget`.",
                 "changePhase": "Transitions the expedition into a new strategic operational phase.",
+                "getAITarget": "Returns the platoon's target as a new `TargetInfo`.",
                 "getData": "Retrieves the blueprint `CampaignData` record configuring this expedition.",
                 "loadState": "Restores campaign operational state, waypoint objectives, and troop census from save data.",
                 "saveState": "Serializes active campaign state, phases, and troop census into a savegame record.",
                 "~CampaignInstance": "Destructs the `CampaignInstance` and releases allocated military expedition resources."
             },
             "properties": {
+                "_target": "The campaign's target, borrowed. Assigning copies a `TargetInfo` into it.",
                 "_vftable": "Virtual method table pointer.",
                 "currentPhase": "Current strategic campaign state enum.",
                 "hasTriggeredSomething": "Trigger activation execution latch.",
@@ -2092,7 +2283,7 @@
                 "tryToChangeTarget": "Attempts to find and assign an alternative valid target for this campaign request, returning true if successful."
             },
             "properties": {
-                "data": "Read-only `lightuserdata` pointer to the underlying `CampaignData` object.",
+                "data": "Read-only `CampaignData` this request refers to.",
                 "enemy": "Target enemy `Faction` for this campaign request.",
                 "homeBase": "Handle (`hand`) to the home town or base launching the campaign.",
                 "numAttempts": "Number of attempts made to launch or retarget this campaign request.",
@@ -2218,7 +2409,7 @@
             "properties": {
                 "_combatMoveSpeedMult": "Cached combat movement speed multiplier.",
                 "_lastOffMeshCheck": "Timestamp of the last off-navmesh recovery check.",
-                "animation": "Pointer to the character's AnimationClass (exposed as lightuserdata).",
+                "animation": "The character's `AnimationClass`.",
                 "animationOverride": "Whether animation is overriding normal movement positioning.",
                 "building": "Handle (hand) of the building the character is currently inside or standing on.",
                 "character": "The Character that owns this CharMovement controller.",
@@ -2641,7 +2832,7 @@
                 "getSquadLeader": "Returns the leader character of this character's squad.",
                 "getSquadMissionTarget": "Returns the target object handle assigned for this character's squad mission.",
                 "getStandingOrder": "Returns true if the specified standing order toggle (e.g. passive, hold, block) is active.",
-                "getStateBroadcast": "Returns the `StateBroadcastData` structure used to broadcast sensory and alert states to nearby AI.",
+                "getStateBroadcast": "Returns this character's `StateBroadcastData`.",
                 "getStats": "Returns the `CharStats` component managing this character's skills and attributes.",
                 "getStealingSuccessChance": "Returns the probability of successfully stealing the specified item without detection, along with the potential detecting character.",
                 "getStealthKOChance": "Calculates the probability (0.0 to 1.0) of a successful stealth assassination knockout on the target.",
@@ -2827,7 +3018,8 @@
                 "wearingUniformOf": "Returns true if this character is wearing clothing or armour belonging to the specified faction.",
                 "weatherUpdate": "Applies environmental weather exposure and protective gear modifiers over the specified time delta.",
                 "willTalkToEnemies": "Returns true if this character is willing to converse with hostile characters.",
-                "~Character": "Virtual destructor unregistering character from platoon, tearing down AI controllers, destroying PhysX actors, releasing audio emitters, and freeing memory."
+                "~Character": "Virtual destructor unregistering character from platoon, tearing down AI controllers, destroying PhysX actors, releasing audio emitters, and freeing memory.",
+                "_NV_getStateBroadcast": "Non-virtual call of `getStateBroadcast`; returns this character's `StateBroadcastData`."
             },
             "properties": {
                 "_base": "Inherited base class state (world handle, transform scene node, scene placement).",
@@ -3385,6 +3577,7 @@
                 "checkCharacterCollision": "Returns true if moving from pos by movement (Vector3 tables) would collide with another character.",
                 "checkWeDontCollideWithCharacters": "Checks and adjusts movement from pos toward newpos (Vector3 tables) to avoid character overlap.",
                 "collisionUpdate": "Updates character collision timers over time seconds.",
+                "combatMovementOffensive": "Initiates offensive combat positioning toward target (hand) within [minDistance, maxDistance], with circling weight circle, powerThrough flag power, and speedLimit.",
                 "combatMovementUpdate": "Updates standing combat movement over frametime given currentPos, currentDirIn, isCurrentlyMoving, repulsionVector, facingDirOut, defensive flag, combatState (swordStateEnum), and raceSpeedMult.",
                 "combatMovementUpdate_crippleMode": "Updates crippled/crawling combat movement over frametime given currentPos, currentDirIn, isCurrentlyMoving, repulsionVector, facingDirOut, defensive flag, combatState (swordStateEnum), and raceSpeedMult.",
                 "create": "Initializes the combat movement controller with flock (FlockingTools), move (CharMovement), med (CharStats), and strafe capability flag.",
@@ -3580,11 +3773,93 @@
                 "valueCoords": "Coordinates and dimensions defining the layout of value and numeric labels."
             }
         },
+        "Contract_DefendPlayerBase": {
+            "description": "Hired-ally contract to defend the player's base.",
+            "methods": {
+                "_NV_activateAndSetup": "Non-virtual `activateAndSetup`.",
+                "_NV_assessNeutral": "Non-virtual `assessNeutral`.",
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_getGUIData": "Non-virtual `getGUIData`.",
+                "_NV_getMyTarget": "Non-virtual `getMyTarget`.",
+                "_NV_periodicUpdate": "Non-virtual `periodicUpdate`.",
+                "activateAndSetup": "Activates and sets up the contract.",
+                "assessNeutral": "Assesses the neutral character for the contract.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "getGUIData": "Adds the contract's information to the `DatapanelGUI` and returns whether it did.",
+                "getMyTarget": "Returns the character's target as a new `TargetInfo`.",
+                "periodicUpdate": "Runs the contract's periodic update."
+            },
+            "properties": {}
+        },
+        "Contract_HiredAlly": {
+            "description": "Timed contract for hired allies.",
+            "methods": {
+                "_NV_activateAndSetup": "Non-virtual `activateAndSetup`.",
+                "_NV_assessEnemy": "Non-virtual `assessEnemy`.",
+                "_NV_assessNeutral": "Non-virtual `assessNeutral`.",
+                "_NV_endPackage": "Non-virtual `endPackage`.",
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_getGUIData": "Non-virtual `getGUIData`.",
+                "_NV_notifyBetrayal": "Non-virtual `notifyBetrayal`.",
+                "_NV_periodicUpdate": "Non-virtual `periodicUpdate`.",
+                "_NV_showEndedMessage": "Non-virtual `showEndedMessage`.",
+                "_NV_showManagementPanelCallback": "Non-virtual `showManagementPanelCallback`.",
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "_NV_wantsRenewButton": "Non-virtual `wantsRenewButton`.",
+                "activateAndSetup": "Activates and sets up the contract.",
+                "assessEnemy": "Assesses whether the character is an enemy of the contract and returns the result.",
+                "assessNeutral": "Assesses the neutral character for the contract.",
+                "endPackage": "Ends the contract.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "getGUIData": "Adds the contract's information to the `DatapanelGUI` and returns whether it did.",
+                "notifyBetrayal": "Notifies the contract that `betrayer` betrayed it, witnessed by `me`, and returns the result.",
+                "periodicUpdate": "Runs the contract's periodic update.",
+                "showEndedMessage": "Shows the message for the contract ending.",
+                "showManagementPanelCallback": "Opens the contract's management panel.",
+                "signalEnd": "Returns whether the contract signals that it has ended.",
+                "wantsRenewButton": "Returns whether the contract offers a renew button."
+            },
+            "properties": {}
+        },
+        "Contract_Timed": {
+            "description": "Contract package that lasts for a set time. Packages are created and deleted by `Blackboard`.",
+            "methods": {
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "_NV_signalStart": "Non-virtual `signalStart`.",
+                "signalEnd": "Returns whether the contract signals that it has ended.",
+                "signalStart": "Returns whether the contract signals that it has started."
+            },
+            "properties": {}
+        },
+        "Contract_UntilExSlave": {
+            "description": "Contract that lasts while a character is an ex-slave.",
+            "methods": {
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "signalEnd": "Returns whether the contract signals that it has ended."
+            },
+            "properties": {}
+        },
+        "Contract_UntilOutOfDanger": {
+            "description": "Timed contract that lasts until the squad is out of danger.",
+            "methods": {
+                "_NV_activateAndSetup": "Non-virtual `activateAndSetup`.",
+                "_NV_getDesiredTravelSpeed": "Non-virtual `getDesiredTravelSpeed`.",
+                "_NV_periodicUpdate": "Non-virtual `periodicUpdate`.",
+                "_NV_signalEnd": "Non-virtual `signalEnd`.",
+                "activateAndSetup": "Activates and sets up the contract.",
+                "getDesiredTravelSpeed": "Returns the travel speed for the character, as a `MoveSpeed` value.",
+                "periodicUpdate": "Runs the contract's periodic update.",
+                "signalEnd": "Returns whether the contract signals that it has ended."
+            },
+            "properties": {}
+        },
         "CraftingBuilding": {
             "description": "`CraftingBuilding` extends `ProductionBuilding` to implement Kenshi's item creation system, powering weapon smithies, armour workbenches, crossbow fletchers, leather tanneries, robotics benches, and medical craft tables.",
             "methods": {
                 "CraftingBuilding": "Constructs a new `CraftingBuilding` workstation in the game world, initializing recipe queues, skill ceilings, and item category filters from blueprint data.",
-                "_addCraft": "Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time.",
+                "_addCraft": "Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time. Returns the new queue entry as a borrowed `CraftingItem`, or nil.",
                 "_removeCraft": "Cancels and removes a recipe order at the specified queue index, refunding unprocessed raw materials.",
                 "addFinishedCraftItem": "Deposits a newly fabricated item into the workbench output section or drops it on the floor if output space is filled.",
                 "calculateCriticalChance": "Calculates the percentage probability (0.0% - 50.0%) that the fabricated item will critically succeed to the next quality grade, based on the smith's skill exceeding the tier's minimum requirement.",
@@ -3592,7 +3867,7 @@
                 "createInventoryLayout": "Constructs a specialized `CraftingInventoryLayout` GUI controller managing recipe selection buttons, queue lists, and input/output inventory sections.",
                 "destroyProductionItem": "Destroys the temporary physical item template used during the crafting cycle.",
                 "getAvailableCrafts": "Collects all crafting recipes unlocked by the player faction's researched technology tree that are compatible with this workbench type.",
-                "getCraft": "Retrieves a queued recipe order item descriptor by zero-based index from the order deque.",
+                "getCraft": "Retrieves a queued recipe order by zero-based index from the order deque as a borrowed `CraftingItem`, or nil.",
                 "getCriticalSuccessWeapon": "Resolves the upgraded weapon model tier record awarded on a critical success roll, advancing from Refitted Blade to Catun, Mk, or Edge Type.",
                 "getCurrentProductionQuantity": "Returns the count of finished items resting in the output inventory grid.",
                 "getGUIData": "Renders telemetry data to the HUD Datapanel, displaying active crafting recipe name, completion percentage, and craftsman name.",
@@ -3622,7 +3897,7 @@
             "properties": {
                 "_base": "Inherited industrial production machine state.",
                 "biggestCraftableItem": "Size reference item record used for inventory footprint validation.",
-                "crafting": "Queued crafting recipe orders scheduled by the player.",
+                "crafting": "Queued crafting recipe orders scheduled by the player, as a read-only deque of borrowed `CraftingItem` entries. KenshiLib exports no `CraftingItem` copy or destructor, so the queue cannot be replaced or resized from Lua; edit an entry's fields instead.",
                 "failiureNotified": "Flag suppressing duplicate UI notifications when missing raw materials.",
                 "inItems": "Specific physical material items claimed from inventory during the active crafting cycle.",
                 "itemCrafted": "Flag set upon successful recipe cycle completion.",
@@ -3647,6 +3922,20 @@
                 "craftingName": "The MyGUI::TextBox widget displaying the active crafting name.",
                 "outputType": "The integer itemType enum value representing the crafted output item type.",
                 "queueBtn": "The MyGUI::Button widget representing the crafting queue toggle button."
+            }
+        },
+        "CraftingItem": {
+            "description": "One queued crafting order in a `CraftingBuilding`'s `crafting` queue. Instances are borrowed from the building's queue and become invalid when the engine removes the order.",
+            "methods": {},
+            "properties": {
+                "criticalSuccess": "`YesNoMaybe` recording whether this order rolled a critical success.",
+                "endTime": "End time value for this crafting order.",
+                "item": "The `Item` being crafted for this order. The order does not own it.",
+                "lastErrorCode": "Last crafting error for this order as a `CraftingItem::ErrorCode` integer: 0 = `CEC_NONE`, 1 = `CEC_BENCH_LEVEL`, 2 = `CEC_BENCH_NO_RESOURCES`, 3 = `CEC_BENCH_NO_WORKERS`.",
+                "name": "Display name of this crafting order.",
+                "progress01": "Crafting progress of this order, from 0 to 1.",
+                "rate": "Crafting rate applied to this order.",
+                "smithBench": "Handle of the crafting bench assigned to this order."
             }
         },
         "CreatelistItem": {
@@ -7811,7 +8100,7 @@
                 "changeDoorState": "Updates edge passability in the navigation mesh for doorways within the given bounding box.",
                 "checkCollision": "Tests for navigation mesh edge collision along a motion vector from the specified nav face.",
                 "checkLineOfSight": "Performs a raycast line-of-sight test across the navigation mesh between two characters or towards a target point.",
-                "countInteriors": "Returns the number of building interior navigation instances loaded within the specified zone coordinate.",
+                "countInteriors": "Returns the number of buildings with interiors in the zone at the specified zone coordinate, excluding some the engine filters out. Returns 0 when that zone's content is not loaded.",
                 "create": "Creates and initializes navigation mesh geometry for the given `ZoneMap` chunk.",
                 "createEdgePath": "Constructs an ordered list of edge path nodes traversing the specified faces.",
                 "createInstance": "Instantiates a Havok AI navigation instance for a building interior in the world.",
@@ -8026,6 +8315,7 @@
             "description": "GUI dialog window displaying customizable gameplay options (e.g. hunger rate, squad size limits, chance of death) when starting a new game.",
             "methods": {
                 "getVisible": "Returns whether the new game options window is currently visible.",
+                "setOptions": "Copies options (GameplayOptions) into the game's active gameplay options and refreshes each line of the options panel.",
                 "setPosition": "Sets the on-screen pixel coordinates (X and Y) of the options window.",
                 "setVisible": "Sets the visibility of the new game options window.",
                 "update": "Updates internal state and child widgets of the new game options window."
@@ -8422,6 +8712,10 @@
             "description": "Core task management, order arbitration, and player command dispatch subsystem in Kenshi. Manages player interactive action queues (`ActionDeque orders`), autonomous permanent jobs (`permajobs`), Goal-Oriented Action Planning goal priority tiers (`goals[5]`), squad AI packages (`squadAIPackage[5]`), and subordinate slave job delegations (`slaveJobs`).",
             "methods": {
                 "OrdersReceiver": "Primary constructor for `OrdersReceiver`. Links owner character and AI controller (`AI*`), initializes default combat aggro mode (`AI_AGGRESSIVE`), allocates empty FIFO order deque (`orders`), initializes permajob containers, goal priority queues, and resets GOAP flags.",
+                "_NV_loadFromSerialise": "Non-virtual `loadFromSerialise`.",
+                "_NV_serialise": "Non-virtual `serialise`.",
+                "_NV_setHoldPositionOrders": "Non-virtual `setHoldPositionOrders`.",
+                "_NV_setNeedGOAP": "Non-virtual `setNeedGOAP`.",
                 "_clearGoals": "Internal routine clearing and deallocating all goal descriptors across all 5 priority tiers in `goals`.",
                 "_forceOrderInsert": "Directly forces insertion of a high-priority order task into the front of the player action queue (`orders`), bypassing standard arbitration.",
                 "addGoal": "Inserts an AI goal task into the appropriate priority tier array in `goals[5]`, triggering GOAP re-evaluation.",
@@ -8479,6 +8773,17 @@
                 "slaveJobs": "Delegated slave/subordinate task request container.",
                 "squadAIPackage": "Five priority tier buckets of platoon/squad AI packages.",
                 "superDefenseMode": "Passive block / hold ground defense mode toggle."
+            }
+        },
+        "OrdersReceiver_TaskRequestSimple": {
+            "description": "A slave job entry in `OrdersReceiver.slaveJobs`. Borrowed from the receiver.",
+            "methods": {
+                "sameAs": "Returns whether the entry matches the `Tasker`."
+            },
+            "properties": {
+                "key": "The job, as a `TaskType` value.",
+                "subject": "Handle of the job's subject.",
+                "targeting": "How the job picks its target, as a `TaskTargetType` value."
             }
         },
         "Ownerships": {
@@ -8675,7 +8980,7 @@
                 "getSquadLeader": "Retrieves pointer to the character designated as current squad leader.",
                 "getSquadLeader_theRealOne": "Retrieves persistent entity handle referencing the true authoritative squad leader.",
                 "getSquadType": "Retrieves squad operational classification enum (e.g. MILITARY, CARAVAN, PATROL, HOME_DEFENSE).",
-                "getStateBroadcast": "Retrieves tactical broadcast state sharing crime alerts and target locks across nearby friendly units.",
+                "getStateBroadcast": "Returns the squad leader's `StateBroadcastData`, or nil when the platoon is not active or has no squad leader.",
                 "getUnloadedPlatoon": "Retrieves pointer to the `UnloadedPlatoon` container holding abstract background character data.",
                 "hasCampaign": "Checks if the squad is currently dispatched on an active war campaign or raid mission.",
                 "iBuyIllegalGoods": "Checks if merchants in this squad will trade in illegal outlawed goods (e.g. Hashish, Bloodrum).",
@@ -9585,7 +9890,7 @@
                 "getPosition": "Returns the current world position of this object as a Vector3 table {x, y, z}.",
                 "getPositionForWaypoint": "Returns the target waypoint Vector3 position for approaching this object from the given Vector3 origin.",
                 "getSensoryData": "Returns the SensoryData component for this object, or nil if not applicable.",
-                "getStateBroadcast": "Returns a raw pointer (lightuserdata) to this object's StateBroadcastData, or nil if not applicable.",
+                "getStateBroadcast": "Returns this object's `StateBroadcastData`, or nil if it has none.",
                 "hasFaction": "Returns true if this object belongs to a valid Faction.",
                 "isUnconcious": "Returns true if this object (character or platoon) is currently unconscious.",
                 "isValid": "Returns true if this object's validKey matches the engine's valid object key.",
@@ -9847,6 +10152,23 @@
                 "visible": "Whether this screen label is currently visible on screen."
             }
         },
+        "Season": {
+            "description": "One season of a `WeatherRegion`, with the weathers that can occur during it. Owned by the region; `~WeatherRegion` deletes its seasons.",
+            "methods": {
+                "getName": "Returns the name of the season's GameData record, or an empty string if it has none.",
+                "getNewWeather": "Picks one of this season's weathers and starts it on the region's `WeatherInstance`. Raises an error if the season has no weathers."
+            },
+            "properties": {
+                "durationInDays": "Length of the season in in-game days.",
+                "hasConditionalWeather": "True if weather selection depends on the time of day.",
+                "regionWeather": "The `WeatherRegion` this season belongs to. Cannot be set to nil.",
+                "seasonData": "The GameData record that defines this season, or nil.",
+                "sunlightColor": "Sunlight colour during this season.",
+                "weatherStrengthMax": "Maximum weather strength during this season.",
+                "weatherStrengthMin": "Minimum weather strength during this season.",
+                "weathers": "Table of the `Weather` profiles that can occur during this season. A copy of the list; the season owns its weathers."
+            }
+        },
         "SectionItem": {
             "description": "Inventory grid cell descriptor associating an Item with its grid coordinate position and slot footprint.",
             "methods": {},
@@ -9937,8 +10259,8 @@
                 "getIterator": "Returns a SenseItr iterator over perceived characters matching any bit in tagsAny (SenseFlags) and excluding bits in tagsNOT.",
                 "getLastKnownPositionOf": "Returns the last known world position (Vector3 table) of who (Character).",
                 "getNearestEnemyDistanceSq": "Returns the squared distance to the closest perceived enemy.",
-                "getStateBroadcast": "Returns the owning character's StateBroadcastData* as lightuserdata.",
-                "getStateBroadcastOf": "Returns the perceived StateBroadcastData* (as lightuserdata) of character who (hand), or nil if not seen.",
+                "getStateBroadcast": "Returns the owning character's `StateBroadcastData`.",
+                "getStateBroadcastOf": "Returns the `StateBroadcastData` of character who (hand) as perceived by this character, or nil if not seen.",
                 "getVisionRange": "Returns the character's effective vision range (inTown adjusts for town lighting/conditions).",
                 "isEscapee": "Returns true if who (Character) is recognized as an escaping prisoner or slave.",
                 "isInMyPrivate_Building": "Returns true if who (Character) is inside a private building owned by this character's faction.",
@@ -9983,6 +10305,11 @@
                 "totalThreatLevelAllies": "Combined strength/threat level of perceived allies.",
                 "totalThreatLevelPersonal": "Combined threat level of enemies targeting this character personally."
             }
+        },
+        "Serialisable": {
+            "description": "Engine interface for objects that can be written to and read from save streams. Its methods take C++ streams and are not exposed; the type is used for typed `Serialisable` arguments.",
+            "methods": {},
+            "properties": {}
         },
         "ShopTrader": {
             "description": "Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.",
@@ -10226,6 +10553,72 @@
                 "name": "Display title of the stat category."
             }
         },
+        "StateBroadcastData": {
+            "description": "Per-character state that a character broadcasts to nearby AI: slave status, current task target, strength and aggression estimates, disguise state, and what the character looks like to observers. Owned by its `Character`; a `Platoon` returns its squad leader's instance.",
+            "methods": {
+                "getApparentFaction": "Returns the `Faction` this character appears to belong to, accounting for disguise and hidden-identity slavery.",
+                "getSlaveState": "Returns the current slave state as a `SlaveStateEnum` integer.",
+                "getSlaveStateHoursRemaining": "Returns the number of in-game hours remaining in the current slave state.",
+                "isDisguiseBlown": "Returns true if this character's disguise has been blown.",
+                "isDisguised": "Returns the `Faction` this character is disguised as, or nil when not disguised.",
+                "isHiddenIdentitySlave": "Returns true if this character is a slave whose identity is hidden.",
+                "load": "Loads this broadcast state from state (GameData).",
+                "notifyDisguiseBlown": "Marks this character's disguise as blown.",
+                "periodicUpdate": "Runs the periodic update of this broadcast state.",
+                "save": "Saves this broadcast state into state (GameData).",
+                "setSlaveState": "Sets the slave state from s (`SlaveStateEnum` integer)."
+            },
+            "properties": {
+                "NPCType": "Character role as a `CharacterTypeEnum` integer.",
+                "_slaveState": "Raw slave state as a `SlaveStateEnum` integer. `setSlaveState` is the engine's setter.",
+                "_slaveStateChangedTime": "`TimeOfDay` when the slave state last changed.",
+                "actualStrength": "Actual combat strength estimate of this character.",
+                "aggressionTowardsTarget": "Aggression this character shows towards its current target.",
+                "apparentStrength": "Combat strength this character appears to have to observers.",
+                "combatTargetsFaction": "`Faction` of this character's combat targets, or nil.",
+                "currentTownLocation": "`TownBase` this character is currently in, or nil.",
+                "disguiseBlown": "Disguise-blown value for this character.",
+                "disguiseFaction": "`Faction` this character is disguised as, or nil.",
+                "disguiseQuality": "Quality of this character's disguise.",
+                "distress": "Distress level this character broadcasts.",
+                "followMe": "Follow-me signal strength this character broadcasts.",
+                "homeBuilding": "Handle of this character's home building.",
+                "intendedAggression": "Aggression this character intends.",
+                "intendedHelp": "Help this character intends to give.",
+                "intendsToAttack": "Handle of the target this character intends to attack.",
+                "isAggressor": "True if this character is flagged as the aggressor.",
+                "isAtHome": "True if this character is at home.",
+                "isEscapedPrisoner": "True if this character is an escaped prisoner.",
+                "isKidnapped": "True if this character is kidnapped.",
+                "isSitting": "True if this character is sitting.",
+                "isSlaveOf": "`Faction` this character is a slave of, or nil.",
+                "isSleeping": "`YesNoMaybe` sleeping state of this character.",
+                "isTemporaryNeutral": "True if this character is temporarily neutral.",
+                "lastSlept": "`TimeOfDay` when this character last slept.",
+                "looksLike_bounty": "How strongly this character looks like a bounty target to observers.",
+                "looksLike_clothingArchetype": "Character role suggested by this character's clothing, as a `CharacterTypeEnum` integer.",
+                "looksLike_escapedSlave": "How strongly this character looks like an escaped slave to observers.",
+                "looksLike_intruder": "How strongly this character looks like an intruder to observers.",
+                "me": "The `Character` that owns this broadcast state. Cannot be set to nil.",
+                "mobility": "Mobility value this character broadcasts.",
+                "myPersonality": "Personality as a `PersonalityTags` integer.",
+                "noise": "Noise level this character broadcasts.",
+                "pos": "Broadcast position of this character.",
+                "relativeAttackerStrength": "Strength of attackers relative to this character.",
+                "slaveGUI_gear": "Gear value shown in the slave GUI.",
+                "slaveGUI_min": "Minimum value shown in the slave GUI.",
+                "taskTarget": "Handle of this character's current task target.",
+                "unconcious": "True if this character is unconscious."
+            }
+        },
+        "StateFunctionList": {
+            "description": "Maps GOAP `StateType` values to the AI functions that test them. The engine's list is the static `AI::stateFuncs`, which KenshiLib does not export.",
+            "methods": {
+                "hasState": "Returns whether a test is registered for the `StateType`.",
+                "isTrue": "Evaluates the test registered for `key` for the AI, subject handle, and position; `desired` is the wanted result."
+            },
+            "properties": {}
+        },
         "StateT": {
             "description": "Internal state tracking structure in ZoneMap recording whether a zone is actively loading on a background thread or fully loaded.",
             "methods": {},
@@ -10322,9 +10715,39 @@
                 "target": "Persistent hand handle referencing the recipient object."
             }
         },
+        "TargetInfo": {
+            "description": "A mission or AI target: a handle, a position, and whether it names a town or a character. Values returned by the engine and by `TargetInfo(...)` are Lua-owned copies; `CampaignInstance._target` is borrowed.",
+            "methods": {
+                "getCharacter": "Returns the target as a `Character`, or nil.",
+                "getPositionForWaypoint": "Returns the position to travel to when approaching the target from `from`.",
+                "getTown": "Returns the target as a `TownBase`, or nil.",
+                "isCharacter": "Returns whether the target is a character.",
+                "isTown": "Returns whether the target is a town.",
+                "operator_assign": "Assigns a `hand` as the target (`operator=(const hand&)`) and returns this TargetInfo.",
+                "operator_bool": "Returns the SDK `operator bool` result.",
+                "setupType": "Sets `targetType` from the object `what` refers to."
+            },
+            "properties": {
+                "pos": "Target position.",
+                "targetType": "Whether the target is a town or a character, as a `TargetInfoType` value.",
+                "what": "Handle of the target object."
+            }
+        },
+        "TargetWithScore": {
+            "description": "A target handle paired with a score. `TargetWithScore(target, score)` and `TargetWithScore(other)` create Lua-owned values.",
+            "methods": {
+                "operator_assign": "Copies another `TargetWithScore` into this one and returns it."
+            },
+            "properties": {
+                "score": "Score of the target.",
+                "target": "Handle of the target."
+            }
+        },
         "TaskData": {
             "description": "Static definition and AI planner metadata for a task type (TaskType), including GOAP state requirements, state results, scoring function, and job characteristics.",
             "methods": {
+                "addRequirement": "Appends a GOAP state requirement with state key s (StateType), required value val, and progression-only flag progressional. The engine silently ignores the call when all 11 requirement slots are used.",
+                "addResult": "Appends a GOAP state result with state key s (StateType), resulting value val, and progression-only flag progressional. Raises a Lua error when all 11 result slots are used, because the engine does not check the bound.",
                 "getPermaJobAssociation": "Returns the primary associated TaskType when used as a permanent job.",
                 "getPermaJobAssociation_secondary": "Returns the secondary associated TaskType when used as a permanent job.",
                 "getPermaJobType": "Returns the canonical TaskType used when storing this task as a permanent job.",
@@ -10342,7 +10765,8 @@
                 "setInfrequentGoalChecks": "Marks this task to evaluate AI goals less frequently.",
                 "setPermaJob": "Configures permanent job behavior (on, fixedTarget, primary associate task, and associate2 secondary task).",
                 "setRequirementsCantEndActionPrematurely": "Marks this task so failing its state requirements mid-execution will not abort the action early.",
-                "setSelfRegulation": "Enables self-regulation so AI characters do not all choose this task simultaneously."
+                "setSelfRegulation": "Enables self-regulation so AI characters do not all choose this task simultaneously.",
+                "setSubTask": "Sets the sub-task state key (StateType) and required flag, creating the sub-task entry on first use, and clears hasAction."
             },
             "properties": {
                 "_findTarget": "Pointer to the C++ target-finder function object (exposed as read-only lightuserdata).",
@@ -10381,6 +10805,20 @@
                 "results": "TaskStateData pointer to the first element of the 8-element GOAP state results array.",
                 "scoreFunction": "Pointer to the C++ function object used to score this task (exposed as read-only lightuserdata).",
                 "subTask": "Child TaskType spawned by this task."
+            }
+        },
+        "TaskMatch": {
+            "description": "Identifies a task by its TaskData and subject/subtarget handles, used to match and compare AI tasks. Values created with `TaskMatch(...)` are owned by Lua.",
+            "methods": {
+                "getTaskData": "Returns the `TaskData` this match refers to, or nil.",
+                "key": "Returns the task type of this match as a `TaskType` integer.",
+                "reset": "Clears this match.",
+                "sameAs": "Returns true if this match refers to the same task as the given `Tasker`."
+            },
+            "properties": {
+                "subject": "Handle of the task subject.",
+                "subtarget": "Handle of the task subtarget.",
+                "taskData": "The `TaskData` this match refers to, or nil."
             }
         },
         "TaskPathfinder": {
@@ -10435,6 +10873,27 @@
                 "name": "Repertoire identifier name.",
                 "negativeResults": "Mapping of states negated to tasks that cancel them.",
                 "positiveResults": "Mapping of states achieved to tasks that produce them."
+            }
+        },
+        "TaskRequest": {
+            "description": "A job request held by value in the `Blackboard` job lists and request map. `TaskRequest()` and `TaskRequest(other)` create Lua-owned values.",
+            "methods": {
+                "operator_assign": "Copies another `TaskRequest` into this one and returns it.",
+                "operator_eq": "Returns the SDK `operator==` result for another `TaskRequest`.",
+                "sameAs": "Returns whether the request matches the `Tasker`."
+            },
+            "properties": {
+                "endEvent": "What happens to squad jobs when the task ends, as a `TaskEndEvent` value.",
+                "endTime": "End time of the request.",
+                "from": "Handle of the requester.",
+                "key": "The requested task, as a `TaskType` value.",
+                "priority": "Priority of the request, as a `taskPriority` value.",
+                "startTime": "Start time of the request.",
+                "subject": "Handle of the task's subject.",
+                "targeting": "How the task picks its target, as a `TaskTargetType` value.",
+                "timeout": "Timeout of the request.",
+                "to": "Handle of the character the request is for.",
+                "weight": "Weight of the request."
             }
         },
         "TaskStateData": {
@@ -11701,6 +12160,85 @@
                 "modAttack": "Flat modifier applied to the wielder's melee attack skill."
             }
         },
+        "Weather": {
+            "description": "A weather profile, such as a duststorm or acid rain, built from its GameData record. Owned by its `Season`, and shared by every region that uses that season.",
+            "methods": {
+                "getName": "Returns the name of the weather's GameData record."
+            },
+            "properties": {
+                "affectCharactersStrength": "Strength of the weather's effect on characters.",
+                "affectCharactersType": "Effect on characters, as a `WeatherAffecting` integer.",
+                "cloudsColor": "Cloud colour.",
+                "cloudsDensity": "Cloud density.",
+                "conditionEnd": "Hour of day when the weather stops being eligible, for seasons with conditional weather.",
+                "conditionStart": "Hour of day when the weather becomes eligible, for seasons with conditional weather.",
+                "dust": "Airborne dust amount.",
+                "dustInside": "Dust amount indoors.",
+                "dustSticky": "Dust that sticks to surfaces.",
+                "durationMax": "Maximum duration in minutes.",
+                "durationMin": "Minimum duration in minutes.",
+                "fogColor": "Fog colour.",
+                "fogDistanceMax": "Fog distance at the maximum fog wind speed.",
+                "fogDistanceMin": "Fog distance at the minimum fog wind speed.",
+                "fogEnabled": "True if the weather has fog.",
+                "fogWindSpeedMax": "Wind speed at which the fog distance reaches `fogDistanceMax`.",
+                "fogWindSpeedMin": "Wind speed at which the fog distance is `fogDistanceMin`.",
+                "heatHaze": "Heat haze strength.",
+                "probabilityOccurrence": "Relative chance of this weather being picked.",
+                "rainSound": "Rain sound volume.",
+                "season": "The `Season` that owns this weather. Cannot be set to nil.",
+                "weatherData": "The GameData record that defines this weather. Cannot be set to nil.",
+                "wetness": "Surface wetness.",
+                "windSound": "Wind sound volume.",
+                "windSpeedMax": "Maximum wind speed.",
+                "windSpeedMin": "Minimum wind speed.",
+                "windUpdateLimit": "Largest wind direction change, in degrees.",
+                "windUpdateTime": "Minutes between wind changes."
+            }
+        },
+        "WeatherInstance": {
+            "description": "The weather currently running in a `WeatherRegion`: its `Weather` profile, strength, wind, and timing. Owned by the region; `~WeatherRegion` deletes it.",
+            "methods": {
+                "getFogColour": "Returns the fog colour of the current `Weather`. Raises an error while no `Weather` is assigned.",
+                "getFogDistance": "Returns the fog distance, interpolated from the current wind speed between the `Weather`'s fog distance limits. Raises an error while no `Weather` is assigned.",
+                "getFogEnabled": "Returns true if the current `Weather` has fog. Raises an error while no `Weather` is assigned.",
+                "getFogVisible": "Returns true if the current `Weather` has fog. Raises an error while no `Weather` is assigned.",
+                "getGlobalEffectsStrength": "Returns `effectStrength`, the strength applied to the weather's global effects.",
+                "getHasEnded": "Returns true once the in-game time has passed `endTimeMinutes`.",
+                "getTime": "Returns `weatherTime`, the time this weather has been active.",
+                "getTimeNormalized": "Returns how far this weather is between `startTimeMinutes` and `endTimeMinutes`, from 0 to 1.",
+                "getWeather": "Returns the `Weather` profile in effect, or nil if none is assigned yet.",
+                "getWeatherBiome": "Returns the `WeatherRegion` this instance belongs to.",
+                "getWeatherStrength": "Returns `strength`, the normalized weather strength.",
+                "getWetness": "Returns the current `Weather`'s wetness. Raises an error while no `Weather` is assigned.",
+                "getWindDirection": "Returns the wind direction as a Vector3 table.",
+                "getWindForce": "Returns the wind direction scaled by the wind speed, as a Vector3 table.",
+                "getWindSpeed": "Returns the current wind speed.",
+                "load": "Loads this instance from data (GameData) under key, using newWeather (Weather) as its profile.",
+                "save": "Saves this instance into data (GameData) under key.",
+                "setupWeather": "Starts newWeather (Weather): picks its strength, duration, and wind. Changes the running weather.",
+                "update": "Advances the wind build-up and returns true while the wind is changing. Raises an error while no `Weather` is assigned."
+            },
+            "properties": {
+                "effectStrength": "Strength applied to the weather's global effects.",
+                "endTimeMinutes": "In-game time, in minutes, when this weather ends.",
+                "regionWeather": "The `WeatherRegion` this instance belongs to. Cannot be set to nil.",
+                "startTimeMinutes": "In-game time, in minutes, when this weather started.",
+                "strength": "Normalized weather strength.",
+                "updateTimeWindMinutes": "In-game time, in minutes, of the next wind change.",
+                "weather": "The `Weather` profile in effect, or nil before one is assigned. Cannot be set to nil.",
+                "weatherTime": "Time this weather has been active.",
+                "windBuildUpAngleEnd": "Wind angle at the end of the current wind change.",
+                "windBuildUpAngleStart": "Wind angle at the start of the current wind change.",
+                "windBuildUpEnd": "In-game time, in minutes, when the current wind change ends.",
+                "windBuildUpEnded": "True when no wind change is in progress.",
+                "windBuildUpSpeedEnd": "Wind speed at the end of the current wind change.",
+                "windBuildUpSpeedStart": "Wind speed at the start of the current wind change.",
+                "windBuildUpStart": "In-game time, in minutes, when the current wind change started.",
+                "windDirection": "Wind direction as a Vector3 table.",
+                "windSpeed": "Current wind speed."
+            }
+        },
         "WeatherRegion": {
             "description": "Manages seasonal progression, weather strength, active weather instances, and environmental effects for a biome group.",
             "methods": {
@@ -11708,7 +12246,7 @@
                 "addListener": "Registers a WeatherRegion::Listener pointer (passed as lightuserdata) for weather update notifications.",
                 "getNewSeason": "Advances or selects the next season for this weather region.",
                 "getNewWeatherStrength": "Calculates and returns a new randomized weather strength value within the region's multiplier bounds.",
-                "getWeatherInstance": "Returns a raw pointer (lightuserdata) to the active WeatherInstance for this region.",
+                "getWeatherInstance": "Returns this region's `WeatherInstance`.",
                 "load": "Loads this weather region's season and weather state from the given GameData under key.",
                 "removeListener": "Unregisters a WeatherRegion::Listener pointer (passed as lightuserdata).",
                 "reset": "Resets the weather region state and active effects.",
@@ -11723,15 +12261,72 @@
                 "activeCameraBiome": "Whether the player camera is currently inside this weather region's biome.",
                 "biomeGroup": "Read-only raw pointer (lightuserdata) to the AreaBiomeGroup associated with this weather region.",
                 "biomeGroupLoaded": "Whether the associated biome group is currently loaded.",
-                "currentSeason": "Read-only raw pointer (lightuserdata) to the current Season object.",
+                "currentSeason": "Read-only `Season` currently active in this region.",
                 "currentSeasonEndDay": "The in-game day number when the current season ends.",
                 "currentSeasonIndex": "The index of the currently active season in the region's season list.",
                 "instanceUpdated": "Whether the weather instance was updated.",
                 "requestUpdateEffects": "Flag requesting a refresh of weather effects on the next update.",
-                "weatherInstance": "Read-only raw pointer (lightuserdata) to the active WeatherInstance.",
+                "weatherInstance": "Read-only `WeatherInstance` running in this region. The region owns it.",
                 "weatherStrengthMultiplierMax": "Maximum multiplier bound for generated weather strength in this region.",
                 "weatherStrengthMultiplierMin": "Minimum multiplier bound for generated weather strength in this region.",
-                "weatherUpdated": "Whether the weather state has been updated."
+                "weatherUpdated": "Whether the weather state has been updated.",
+                "seasons": "Table of this region's `Season` objects. A copy of the list; the region owns its seasons."
+            }
+        },
+        "WeatherSystem": {
+            "description": "The game's weather coordinator: the region around the camera, fog blending between biomes, wind, rain, dust, and heat haze. A singleton; get it with `WeatherSystem.getInstance()`.",
+            "methods": {
+                "addWeatherListener": "Registers listener (`Listener`) with the weather region at position (Vector3 table) or for biome (GameData).",
+                "getInstance": "Returns the `WeatherSystem` singleton.",
+                "removeWeatherListener": "Unregisters listener (`Listener`).",
+                "reset": "Resets the weather system.",
+                "setDustShaderValue": "Sets the dust shader parameter from value (Vector3 table).",
+                "updateBT": "Runs the weather system's background-thread update.",
+                "updateMT": "Runs the weather system's main-thread update.",
+                "updateUT": "Runs the weather system's update-thread update."
+            },
+            "properties": {
+                "ActiveRegionWeather": "The `WeatherRegion` around the camera, or nil.",
+                "areaFog": "Table of the four `WeatherSystem_ZoneFog` states used to blend fog between neighbouring biomes. The elements can be edited in place.",
+                "currentDustAmount": "Dust amount passed to the dust shaders, as a Vector3 table.",
+                "currentFogValues": "Current blended fog values, as `WeatherSystem_FogValues`.",
+                "currentRainValue": "Current rain amount.",
+                "currentWindValue": "Current wind amount.",
+                "currentZoneFog": "Fog state being blended towards, as `WeatherSystem_ZoneFog`.",
+                "exitingBiome": "True while the camera is leaving a biome.",
+                "globalWetness": "Current surface wetness.",
+                "heatHazeUpdated": "True when the heat haze value needs to be sent to the shaders.",
+                "heatHazeValue": "Current heat haze strength.",
+                "previousBiomeAABB": "Bounds of the previous biome, as a Vector4 table.",
+                "previousPoint": "Previous camera sample position.",
+                "previousZoneFog": "Fog state being blended from, as `WeatherSystem_ZoneFog`.",
+                "rainValueUpdated": "True when the rain value changed and needs to be applied.",
+                "zoneFogBlendingPosition": "Position where fog blending is happening.",
+                "zoneFogBlendingType": "Fog blending mode."
+            }
+        },
+        "WeatherSystem_FogValues": {
+            "description": "Fog alpha, distance, and colour. Values returned by `WeatherSystem_ZoneFog:getCurrentValues` are copies owned by Lua; fields of `WeatherSystem` and `WeatherSystem_ZoneFog` are borrowed.",
+            "methods": {},
+            "properties": {
+                "alpha": "Fog opacity.",
+                "colour": "Fog colour.",
+                "distance": "Fog distance."
+            }
+        },
+        "WeatherSystem_ZoneFog": {
+            "description": "Fog state for one biome, blending from `prevFog` to `currFog`. Owned by the `WeatherSystem`.",
+            "methods": {
+                "clear": "Detaches the fog from its `WeatherInstance`.",
+                "getCurrentValues": "Returns the current fog values, blended while `blending` is true, as a new `WeatherSystem_FogValues`.",
+                "update": "Updates `currFog` from the attached `WeatherInstance`. Raises an error if that instance has no `Weather` assigned."
+            },
+            "properties": {
+                "blending": "True while the fog is blending between `prevFog` and `currFog`.",
+                "currFog": "Fog values being blended towards.",
+                "lastBlendValue": "Blend progress at the last update.",
+                "prevFog": "Fog values being blended from.",
+                "weatherInstance": "The `WeatherInstance` the fog follows, or nil. An instance without a `Weather` is rejected."
             }
         },
         "WhoSeesMe": {
@@ -12147,6 +12742,8 @@
                 "setMax": "Sets each component of this vector to the maximum of the corresponding components in vector a and vector b.",
                 "setMin": "Sets each component of this vector to the minimum of the corresponding components in vector a and vector b.",
                 "setMul": "Sets this vector to the component-wise product of vector arg1 and vector arg2.",
+                "setNeg3": "Sets the x, y, and z components of this vector to the negated x, y, and z components of vector v, and copies its w component unchanged.",
+                "setPlaneConstant": "Sets the W component to the negated 3D dot product of this vector's xyz components and point p, leaving xyz unchanged.",
                 "setReciprocal": "Sets this vector to the component-wise reciprocal (1.0 / a) of vector a.",
                 "setSelect": "Selects components from trueValue where comparison mask comp is true and from falseValue where false.",
                 "setSqrt": "Sets this vector to the component-wise square root of vector a.",
@@ -12237,12 +12834,16 @@
         }
     },
     "enums": {
+        "AI.AIAggressionOrders": "Combat aggression order for an `AI`, as used by `AI.ordersAggression` and `AI.setAggressionLevel`.",
+        "AI.AIManuverabilityOrders": "Movement freedom order for an `AI`, as used by `AI.ordersMovement` and `AI.setManuveringFreedomLevel`.",
+        "AnimationLayerEnum": "Animation layer an `AnimationData` plays on.",
         "AppearanceManager.DataCategory.Enum": "Character appearance customization section category (face, body, skin tone).",
         "AppearanceManager.Gender.Enum": "Gender enumeration for character anatomy and mesh selection.",
         "ArmourClass": "Armor weight classification determining base damage mitigation and combat speed encumbrance.",
         "ArmourType": "Equipment slot or layer category for armor (cloth, leather, chain, or plate).",
         "AttachSlot": "Visual and physical attachment slot for weapons, hair, backpacks, and equipment.",
         "AttackDirection.Enum": "Incoming attack angle relative to the defending character.",
+        "BlackboardSignalFunctions": "Signal raised on a squad `Blackboard` to drive AI package behaviour.",
         "BuildingClassType": "Functional categorization of buildings in the settlement simulation (doors, usable structures, fluff).",
         "BuildingDesignation": "Settlement zoning and building purpose classification (shop, barracks, hospital, residential).",
         "BuildingFunction": "Operational role or production utility of a building (mining, storage, crafting, housing).",
@@ -12252,6 +12853,7 @@
         "CharStats.GUIStatsDisplayMode": "Character stats panel display layout mode.",
         "Character.CharMessage": "Character status notifications dispatched during state changes and interaction.",
         "Character.DisguiseGUIFeedback": "Faction disguise evaluation outcome and recognition feedback.",
+        "CharacterAnimCategory": "Category of an `AnimationData`, such as normal, sleeping, or combat.",
         "CharacterEditMode": "Context mode for the character customization editor (new game, plastic surgeon mid-game, debug).",
         "CharacterMessage": "Character message types dispatched during melee combat and state changes.",
         "CharacterPerceptionTags_LongTerm": "Long-term persistent perception relationships between characters (e.g. lifesaver, intruder).",
@@ -12303,10 +12905,14 @@
         "NavMesh.MessageType": "NavMesh generation and modification event message type.",
         "NavMesh.State": "Runtime cache state of navigation mesh sectors.",
         "NavMeshGenerator.TaskType": "Asynchronous navigation mesh generation pipeline task type.",
+        "NodeType": "Kind of AI node, as used by `AI.findNode`.",
         "NxControllerAction": "Physics character controller collision response action.",
         "NxShapeFlag": "PhysX collision shape trigger and simulation flags.",
         "NxShapesType": "PhysX collision shape query filter category (static, dynamic, all).",
+        "OrdersReceiver.AggroType": "Aggression modes of an `OrdersReceiver`.",
         "PermajobType": "Persistent recurring task priority classification (normal work job, high-priority combat job).",
+        "PersonalityTags": "Personality tag assigned to a character, as stored in `StateBroadcastData.myPersonality`.",
+        "Phase": "Phase of a running `CampaignInstance`.",
         "PlatoonCreationMessage": "Lifecycle signal dispatched during squad or platoon instantiation.",
         "PortraitData.State": "UI portrait frame highlight and status badge state.",
         "PreviewBuilding.PlacementResult": "Construction holographic preview validity check result.",
@@ -12326,9 +12932,13 @@
         "SoundRange": "Acoustic propagation distance tier for sound emitter events.",
         "SquadMemberType": "Hierarchy rank of a member within a squad (leader, squad member 1, squad member 2).",
         "SquadType": "Organizational purpose and lifestyle classification of a squad (resident, roaming, patrol).",
+        "StanceEnum": "Character stance used by `AnimationClass.setStanceAnimation`.",
         "StateType": "AI state machine evaluation conditions and task completion predicates.",
         "StatsEnumerated": "Character attribute and weapon skill identifier enumeration.",
         "TalkerEnum": "Dialogue speaker identity reference (speaker, target, player target).",
+        "TargetInfoType": "Whether a `TargetInfo` names a town or a character.",
+        "TaskEndEvent": "What happens to squad jobs when a task ends.",
+        "TaskTargetType": "How a squad job chooses its target.",
         "TaskType": "AI task goal type defining character behaviors, work assignments, and sensory goals.",
         "ToolTip.Type": "GUI tooltip formatting and content rendering type.",
         "TownAlarmState": "Settlement security alarm condition (peaceful, intruder alert, prisoner escape).",
@@ -12340,6 +12950,7 @@
         "UpdatePriority": "Actor and physics simulation tick frequency priority tier.",
         "UseStuffState": "Furniture and station usage posture (sleeping in bed, locked in cage, operating turret).",
         "WallSectionLinkType": "Modular defensive wall section connection link geometry type.",
+        "WarCampaignEnum": "Type of a war campaign, as returned by `CampaignData.key`.",
         "WaterState.Enum": "Water submersion depth classification for characters and vehicles.",
         "WeaponCategory": "Weapon class and skill taxonomy (katanas, sabres, blunt, heavy weapons, polearms).",
         "WeatherAffecting": "Environmental hazard type applied to characters by the active weather system.",

@@ -10,6 +10,8 @@
 #include "Bindings/Kenshi/GlobalConstantsBinding.h"
 #include "Bindings/Kenshi/OptionsHolderBinding.h"
 #include "Bindings/Kenshi/Gui/ForgottenGUIBinding.h"
+#include "Bindings/Kenshi/SharedKingBinding.h"
+#include "Bindings/Kenshi/KingOfRenderThreadBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Logger.h"
 
@@ -21,6 +23,9 @@
 #include <kenshi/GlobalConstants.h>
 #include <kenshi/OptionsHolder.h>
 #include <kenshi/gui/ForgottenGUI.h>
+#include <kenshi/SharedKing.h>
+#include <kenshi/KingOfRenderThread.h>
+#include <kenshi/Globals.h>
 
 extern "C" {
 #include <lua.h>
@@ -109,6 +114,26 @@ namespace KenshiLua
         return 1;
     }
 
+static int luaGetKingOfRenderThread(lua_State* L)
+    {
+        if (::au) {
+            pushObject<KingOfRenderThread>(L, ::au, KingOfRenderThreadBinding::getMetatableName());
+        } else {
+            lua_pushnil(L);
+        }
+        return 1;
+    }
+
+    static int luaGetSharedKing(lua_State* L)
+    {
+        if (::shou) {
+            pushObject<SharedKing>(L, ::shou, SharedKingBinding::getMetatableName());
+        } else {
+            lua_pushnil(L);
+        }
+        return 1;
+    }
+
     void registerGlobals(lua_State* L)
     {
         lua_pushcfunction(L, luaGetGameWorld);
@@ -127,6 +152,10 @@ namespace KenshiLua
         lua_setglobal(L, "getOptionsHolder");
         lua_pushcfunction(L, luaGetForgottenGUI);
         lua_setglobal(L, "getForgottenGUI");
+        lua_pushcfunction(L, luaGetSharedKing);
+        lua_setglobal(L, "getSharedKing");
+        lua_pushcfunction(L, luaGetKingOfRenderThread);
+        lua_setglobal(L, "getKingOfRenderThread");
 
         // GameWorld
         if (::ou) {
@@ -182,6 +211,18 @@ namespace KenshiLua
             lua_setglobal(L, "gui"); 
             // pushObject<ForgottenGUI>(L, ::gui, ForgottenGUIBinding::getMetatableName()); 
             // lua_setglobal(L, "ForgottenGUI");
+        }
+
+        // KingOfRenderThread
+        if (::au) {
+            pushObject<KingOfRenderThread>(L, ::au, KingOfRenderThreadBinding::getMetatableName());
+            lua_setglobal(L, "au");
+        }
+
+        // SharedKing
+        if (::shou) {
+            pushObject<SharedKing>(L, ::shou, SharedKingBinding::getMetatableName());
+            lua_setglobal(L, "shou");
         }
     }
 

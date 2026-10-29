@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Hooks_Common.h"
-#include <kenshi/CombatTechniqueData.h>
-#include <kenshi/CombatClass.h>
+#include <kenshi/combat/CombatTechniqueData.h>
+#include <kenshi/combat/CombatClass.h>
 
 // ---------------------------------------------------------------------------
 // Hooks for CombatTechniqueData.h

@@ -98,6 +98,8 @@ python tools/testing/run_kenshi_tests.py --platform gog
 python tools/testing/run_kenshi_tests.py --platform steam
 ```
 
+Steam runs need the Steam client signed in; if it is not running, the runner starts Steam and waits up to 120 seconds for sign-in. Steam will not start the game while it counts Kenshi as running, which includes an FCS started through Steam, so the runner stops with an error in that case. The runner stages the DLL into the copy of the KenshiLua mod that Kenshi loads: a local `mods/KenshiLua` folder takes precedence over the Steam Workshop item.
+
 Filter test cases by name:
 
 ```powershell

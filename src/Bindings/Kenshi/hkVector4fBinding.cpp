@@ -72,6 +72,16 @@ int hkVector4fBinding::setZero4(lua_State* L)
     return 0;
 }
 
+int hkVector4fBinding::setNeg3(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* v = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->setNeg3(*v);
+    return 0;
+}
+
 int hkVector4fBinding::normalize3(lua_State* L)
 {
     hkVector4f* instance = getInstance(L, 1);
@@ -248,6 +258,16 @@ int hkVector4fBinding::setCross(lua_State* L)
     hkVector4f* v0 = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
     hkVector4f* v1 = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
     instance->setCross(*v0, *v1);
+    return 0;
+}
+
+int hkVector4fBinding::setPlaneConstant(lua_State* L)
+{
+    hkVector4f* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkVector4f is nil");
+
+    hkVector4f* p = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->setPlaneConstant(*p);
     return 0;
 }
 
@@ -758,7 +778,6 @@ Skipped methods needing manual binding:
   line 250: void _setTransformedInversePos(...) - overloaded method
   line 251: void _setTransformedInversePos(...) - overloaded method
   line 252: void _setTransformedInversePos(...) - overloaded method
-  line 253: void setPlaneConstant(...) - unsupported arg type
   line 254: const hkSimdFloat32 dot4xyz1(...) - unsupported return type
   line 255: const hkSimdFloat32 distanceTo(...) - unsupported return type
   line 256: const hkSimdFloat32 distanceToSquared(...) - unsupported return type
@@ -767,7 +786,6 @@ Skipped methods needing manual binding:
   line 277: void setComponent(...) - unsupported arg type
   line 282: const hkVector4f& getConstant(...) - unsupported return type
   line 293: hkSimdFloat32 dot3(...) - unsupported return type
-  line 318: void setNeg3(...) - unsupported arg type
   line 328: hkSimdFloat32 normalizeWithLength3(...) - unsupported return type
   line 335: hkSimdFloat32 length3(...) - unsupported return type
   line 337: hkSimdFloat32 lengthSquared3(...) - unsupported return type
@@ -822,6 +840,7 @@ void hkVector4fBinding::registerBinding(lua_State* L)
         { "getInt24W", hkVector4fBinding::getInt24W },
         { "getInt16W", hkVector4fBinding::getInt16W },
         { "setZero4", hkVector4fBinding::setZero4 },
+        { "setNeg3", hkVector4fBinding::setNeg3 },
         { "normalize3", hkVector4fBinding::normalize3 },
         { "getZero", hkVector4fBinding::getZero },
         { "set", hkVector4fBinding::set },
@@ -839,6 +858,7 @@ void hkVector4fBinding::registerBinding(lua_State* L)
         { "subMul", hkVector4fBinding::subMul },
         { "setSubMul", hkVector4fBinding::setSubMul },
         { "setCross", hkVector4fBinding::setCross },
+        { "setPlaneConstant", hkVector4fBinding::setPlaneConstant },
         { "setXYZ_W", hkVector4fBinding::setXYZ_W },
         { "setW", hkVector4fBinding::setW },
         { "setXYZ", hkVector4fBinding::setXYZ },

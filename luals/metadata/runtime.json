@@ -6169,15 +6169,15 @@
         },
         {
           "name": "loadGameDataReturn",
-          "type": "fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: lightuserdata): boolean"
+          "type": "fun(self: GameDataContainer, file: string, isActive: boolean, readOnly: boolean, moreData?: Serialisable): boolean"
         },
         {
           "name": "load",
-          "type": "fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: lightuserdata, keepDeletedInstances?: boolean): boolean"
+          "type": "fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: Serialisable, keepDeletedInstances?: boolean): boolean"
         },
         {
           "name": "save",
-          "type": "fun(self: GameDataContainer, filename: string, moreData?: lightuserdata): boolean"
+          "type": "fun(self: GameDataContainer, filename: string, moreData?: Serialisable): boolean"
         },
         {
           "description": "Static function exposed through the instance method table; call with dot syntax.",
@@ -6912,7 +6912,7 @@
     {
       "fields": [],
       "name": "RobotLimbItem",
-      "parent": "Item"
+      "parent": "Gear"
     },
     {
       "fields": [
@@ -7848,6 +7848,142 @@
   ],
   "functions": [
     {
+      "description": "Returns the game's main GUI object, or nil before it exists.",
+      "name": "getForgottenGUI",
+      "params": [],
+      "returns": [
+        {
+          "type": "ForgottenGUI|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the game world, or nil before it exists.",
+      "name": "getGameWorld",
+      "params": [],
+      "returns": [
+        {
+          "type": "GameWorld|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the engine's global constants, or nil before they are loaded.",
+      "name": "getGlobalConstants",
+      "params": [],
+      "returns": [
+        {
+          "type": "GlobalConstants|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the engine input handler, or nil before it exists.",
+      "name": "getInputHandler",
+      "params": [],
+      "returns": [
+        {
+          "type": "InputHandler|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the game options, or nil before they are loaded.",
+      "name": "getOptionsHolder",
+      "params": [],
+      "returns": [
+        {
+          "type": "OptionsHolder|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the player interface, or nil before the game world and player exist.",
+      "name": "getPlayerInterface",
+      "params": [],
+      "returns": [
+        {
+          "type": "PlayerInterface|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the game world's object factory, or nil before it exists.",
+      "name": "getRootObjectFactory",
+      "params": [],
+      "returns": [
+        {
+          "type": "RootObjectFactory|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the player's selected character, or nil when none is selected or the game world is not ready.",
+      "name": "getSelectedCharacter",
+      "params": [],
+      "returns": [
+        {
+          "type": "Character|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the game's shared king object, or nil before it exists.",
+      "name": "getSharedKing",
+      "params": [],
+      "returns": [
+        {
+          "type": "SharedKing|nil"
+        }
+      ]
+    },
+    {
+      "description": "Returns the game's king of render thread object, or nil before it exists.",
+      "name": "getKingOfRenderThread",
+      "params": [],
+      "returns": [
+        {
+          "type": "KingOfRenderThread|nil"
+        }
+      ]
+    },
+    {
+      "description": "Calls function or callable table f with the given arguments in protected mode (LuaJIT).",
+      "name": "pcall",
+      "overloads": [
+        "fun(callable: any, ...: any): boolean, any"
+      ],
+      "params": [
+        {
+          "name": "f",
+          "type": "fun(...: any): ...any"
+        },
+        {
+          "name": "...",
+          "type": "any"
+        }
+      ],
+      "returns": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "any"
+        }
+      ]
+    },
+    {
+      "description": "Prints values through the KenshiLua logger and GUI console/editor.",
+      "name": "print",
+      "params": [
+        {
+          "name": "...",
+          "type": "any"
+        }
+      ],
+      "returns": []
+    },
+    {
       "description": "Compatibility alias for `Events.on`.",
       "name": "registerHandler",
       "params": [
@@ -7877,160 +8013,20 @@
         }
       ],
       "returns": []
-    },
-    {
-      "description": "Returns the game world, or nil before it exists.",
-      "name": "getGameWorld",
-      "params": [],
-      "returns": [
-        {
-          "type": "GameWorld|nil"
-        }
-      ]
-    },
-    {
-      "description": "Returns the player interface, or nil before the game world and player exist.",
-      "name": "getPlayerInterface",
-      "params": [],
-      "returns": [
-        {
-          "type": "PlayerInterface|nil"
-        }
-      ]
-    },
-    {
-      "description": "Returns the engine input handler, or nil before it exists.",
-      "name": "getInputHandler",
-      "params": [],
-      "returns": [
-        {
-          "type": "InputHandler|nil"
-        }
-      ]
-    },
-    {
-      "description": "Returns the player's selected character, or nil when none is selected or the game world is not ready.",
-      "name": "getSelectedCharacter",
-      "params": [],
-      "returns": [
-        {
-          "type": "Character|nil"
-        }
-      ]
-    },
-    {
-      "description": "Returns the game world's object factory, or nil before it exists.",
-      "name": "getRootObjectFactory",
-      "params": [],
-      "returns": [
-        {
-          "type": "RootObjectFactory|nil"
-        }
-      ]
-    },
-    {
-      "description": "Returns the engine's global constants, or nil before they are loaded.",
-      "name": "getGlobalConstants",
-      "params": [],
-      "returns": [
-        {
-          "type": "GlobalConstants|nil"
-        }
-      ]
-    },
-    {
-      "description": "Returns the game options, or nil before they are loaded.",
-      "name": "getOptionsHolder",
-      "params": [],
-      "returns": [
-        {
-          "type": "OptionsHolder|nil"
-        }
-      ]
-    },
-    {
-      "description": "Returns the game's main GUI object, or nil before it exists.",
-      "name": "getForgottenGUI",
-      "params": [],
-      "returns": [
-        {
-          "type": "ForgottenGUI|nil"
-        }
-      ]
-    },
-    {
-      "description": "Prints values through the KenshiLua logger and GUI console/editor.",
-      "name": "print",
-      "params": [
-        {
-          "name": "...",
-          "type": "any"
-        }
-      ],
-      "returns": []
-    },
-    {
-      "description": "Calls function or callable table f with the given arguments in protected mode (LuaJIT).",
-      "name": "pcall",
-      "overloads": [
-        "fun(callable: any, ...: any): boolean, any"
-      ],
-      "params": [
-        {
-          "name": "f",
-          "type": "fun(...: any): ...any"
-        },
-        {
-          "name": "...",
-          "type": "any"
-        }
-      ],
-      "returns": [
-        {
-          "type": "boolean"
-        },
-        {
-          "type": "any"
-        }
-      ]
     }
   ],
   "globals": [
     {
-      "description": "KenshiLua runtime API: script reloading, logging, profiling, and diagnostics.",
+      "description": "Global Building binding table.",
       "initialValue": "{}",
-      "name": "KenshiLua",
-      "type": "KenshiLua.Api"
+      "name": "Building",
+      "type": "Building"
     },
     {
-      "description": "Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.",
+      "description": "Global CharStats binding table.",
       "initialValue": "{}",
-      "name": "Events",
-      "type": "KenshiLua.Events"
-    },
-    {
-      "description": "Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned.",
-      "initialValue": "{}",
-      "name": "MyGUI",
-      "type": "MyGUI.Api"
-    },
-    {
-      "description": "Global table exposing the MyGUI Gui singleton.",
-      "initialValue": "{}",
-      "name": "Gui",
-      "type": "MyGUI.GuiStatic"
-    },
-    {
-      "description": "Global table exposing the MyGUI input-manager singleton.",
-      "initialValue": "{}",
-      "name": "InputManager",
-      "type": "MyGUI.InputManagerStatic"
-    },
-    {
-      "description": "Global table exposing the MyGUI pointer-manager singleton.",
-      "initialValue": "{}",
-      "name": "PointerManager",
-      "type": "MyGUI.PointerManagerStatic"
+      "name": "CharStats",
+      "type": "CharStats"
     },
     {
       "description": "Global table exposing the MyGUI clipboard-manager singleton.",
@@ -8039,10 +8035,142 @@
       "type": "MyGUI.ClipboardManagerStatic"
     },
     {
+      "description": "Global alias of MyGUI.Colour.",
+      "initialValue": "{}",
+      "name": "Colour",
+      "type": "MyGUI.ColourConstructor"
+    },
+    {
+      "description": "Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.",
+      "initialValue": "{}",
+      "name": "Events",
+      "type": "KenshiLua.Events"
+    },
+    {
+      "description": "Global alias of MyGUI.FloatCoord.",
+      "initialValue": "{}",
+      "name": "FloatCoord",
+      "type": "MyGUI.FloatCoordConstructor"
+    },
+    {
+      "description": "Global alias of MyGUI.FloatPoint.",
+      "initialValue": "{}",
+      "name": "FloatPoint",
+      "type": "MyGUI.FloatPointConstructor"
+    },
+    {
+      "description": "Global alias of MyGUI.FloatRect.",
+      "initialValue": "{}",
+      "name": "FloatRect",
+      "type": "MyGUI.FloatRectConstructor"
+    },
+    {
+      "description": "Global alias of MyGUI.FloatSize.",
+      "initialValue": "{}",
+      "name": "FloatSize",
+      "type": "MyGUI.FloatSizeConstructor"
+    },
+    {
+      "description": "Global table exposing the MyGUI Gui singleton.",
+      "initialValue": "{}",
+      "name": "Gui",
+      "type": "MyGUI.GuiStatic"
+    },
+    {
+      "description": "Static utility table for HavokCharacter physics controllers.",
+      "initialValue": "{}",
+      "name": "HavokCharacter",
+      "type": "HavokCharacterStatic"
+    },
+    {
+      "description": "Global table exposing the MyGUI input-manager singleton.",
+      "initialValue": "{}",
+      "name": "InputManager",
+      "type": "MyGUI.InputManagerStatic"
+    },
+    {
+      "description": "Global alias of MyGUI.IntCoord.",
+      "initialValue": "{}",
+      "name": "IntCoord",
+      "type": "MyGUI.IntCoordConstructor"
+    },
+    {
+      "description": "Global alias of MyGUI.IntPoint.",
+      "initialValue": "{}",
+      "name": "IntPoint",
+      "type": "MyGUI.IntPointConstructor"
+    },
+    {
+      "description": "Global alias of MyGUI.IntRect.",
+      "initialValue": "{}",
+      "name": "IntRect",
+      "type": "MyGUI.IntRectConstructor"
+    },
+    {
+      "description": "Global alias of MyGUI.IntSize.",
+      "initialValue": "{}",
+      "name": "IntSize",
+      "type": "MyGUI.IntSizeConstructor"
+    },
+    {
+      "description": "Static utility table for inventory layouts.",
+      "initialValue": "{}",
+      "name": "InventoryLayout",
+      "type": "InventoryLayoutStatic"
+    },
+    {
+      "description": "KenshiLua runtime API: script reloading, logging, profiling, and diagnostics.",
+      "initialValue": "{}",
+      "name": "KenshiLua",
+      "type": "KenshiLua.Api"
+    },
+    {
+      "description": "Global table exposing the MyGUI layer-manager singleton.",
+      "initialValue": "{}",
+      "name": "LayerManager",
+      "type": "MyGUI.LayerManagerStatic"
+    },
+    {
       "description": "Global table exposing the MyGUI layout-manager singleton.",
       "initialValue": "{}",
       "name": "LayoutManager",
       "type": "MyGUI.LayoutManagerStatic"
+    },
+    {
+      "description": "Static manager table for in-game modal message boxes.",
+      "initialValue": "{}",
+      "name": "MessageBoxManager",
+      "type": "MessageBoxManagerStatic"
+    },
+    {
+      "description": "Static factory table for MessageForB messages.",
+      "initialValue": "{}",
+      "name": "MessageForB",
+      "type": "MessageForBStatic"
+    },
+    {
+      "description": "Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned.",
+      "initialValue": "{}",
+      "name": "MyGUI",
+      "type": "MyGUI.Api"
+    },
+    {
+      "description": "Static utility table for PhysX NxMat33 matrices.",
+      "initialValue": "{}",
+      "name": "NxMat33",
+      "type": "NxMat33Static"
+    },
+    {
+      "description": "Static utility table for PhysX NxVec3 vectors.",
+      "initialValue": "{}",
+      "name": "NxVec3",
+      "type": "NxVec3Static"
+    },
+    {
+      "description": "Global table exposing the MyGUI pointer-manager singleton.",
+      "initialValue": "{}",
+      "name": "PointerManager",
+      "type": "MyGUI.PointerManagerStatic"
     },
     {
       "description": "Global table exposing the MyGUI render-manager singleton.",
@@ -8057,64 +8185,28 @@
       "type": "MyGUI.SkinManagerStatic"
     },
     {
-      "description": "Global table exposing the MyGUI layer-manager singleton.",
+      "description": "Global TownBase binding table.",
       "initialValue": "{}",
-      "name": "LayerManager",
-      "type": "MyGUI.LayerManagerStatic"
+      "name": "TownBase",
+      "type": "TownBase"
     },
     {
-      "description": "Global alias of MyGUI.IntPoint.",
+      "description": "Static helper table for TradeResult transaction outcomes.",
       "initialValue": "{}",
-      "name": "IntPoint",
-      "type": "MyGUI.IntPointConstructor"
+      "name": "TradeResult",
+      "type": "TradeResultStatic"
     },
     {
-      "description": "Global alias of MyGUI.IntSize.",
+      "description": "Static query table for world event states.",
       "initialValue": "{}",
-      "name": "IntSize",
-      "type": "MyGUI.IntSizeConstructor"
+      "name": "WorldEventStateQuery",
+      "type": "WorldEventStateQueryStatic"
     },
     {
-      "description": "Global alias of MyGUI.IntCoord.",
-      "initialValue": "{}",
-      "name": "IntCoord",
-      "type": "MyGUI.IntCoordConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.IntRect.",
-      "initialValue": "{}",
-      "name": "IntRect",
-      "type": "MyGUI.IntRectConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.FloatPoint.",
-      "initialValue": "{}",
-      "name": "FloatPoint",
-      "type": "MyGUI.FloatPointConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.FloatSize.",
-      "initialValue": "{}",
-      "name": "FloatSize",
-      "type": "MyGUI.FloatSizeConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.FloatCoord.",
-      "initialValue": "{}",
-      "name": "FloatCoord",
-      "type": "MyGUI.FloatCoordConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.FloatRect.",
-      "initialValue": "{}",
-      "name": "FloatRect",
-      "type": "MyGUI.FloatRectConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.Colour.",
-      "initialValue": "{}",
-      "name": "Colour",
-      "type": "MyGUI.ColourConstructor"
+      "description": "Conditional constants alias registered at Lua startup. Prefer getGlobalConstants().",
+      "initialValue": "nil",
+      "name": "con",
+      "type": "GlobalConstants|nil"
     },
     {
       "description": "Injected only during synchronous dialogue-script execution; the wrapped object is borrowed.",
@@ -8129,58 +8221,16 @@
       "type": "DialogLineData|nil"
     },
     {
-      "description": "Conditional game-world alias registered at Lua startup. Prefer getGameWorld().",
+      "description": "Conditional KingOfRenderThread alias registered at Lua startup. Prefer getKingOfRenderThread().",
       "initialValue": "nil",
-      "name": "ou",
-      "type": "GameWorld|nil"
-    },
-    {
-      "description": "Conditional player-interface alias registered at Lua startup. Prefer getPlayerInterface().",
-      "initialValue": "nil",
-      "name": "player",
-      "type": "PlayerInterface|nil"
-    },
-    {
-      "description": "Conditional input-handler alias registered at Lua startup. Prefer getInputHandler().",
-      "initialValue": "nil",
-      "name": "key",
-      "type": "InputHandler|nil"
-    },
-    {
-      "description": "Conditional root-object-factory alias registered at Lua startup. Prefer getRootObjectFactory().",
-      "initialValue": "nil",
-      "name": "root",
-      "type": "RootObjectFactory|nil"
-    },
-    {
-      "description": "Conditional constants alias registered at Lua startup. Prefer getGlobalConstants().",
-      "initialValue": "nil",
-      "name": "con",
-      "type": "GlobalConstants|nil"
-    },
-    {
-      "description": "Conditional options alias registered at Lua startup. Prefer getOptionsHolder().",
-      "initialValue": "nil",
-      "name": "options",
-      "type": "OptionsHolder|nil"
+      "name": "au",
+      "type": "KingOfRenderThread|nil"
     },
     {
       "description": "Conditional ForgottenGUI alias registered at Lua startup. Prefer getForgottenGUI().",
       "initialValue": "nil",
       "name": "gui",
       "type": "ForgottenGUI|nil"
-    },
-    {
-      "description": "Static utility table for PhysX NxVec3 vectors.",
-      "initialValue": "{}",
-      "name": "NxVec3",
-      "type": "NxVec3Static"
-    },
-    {
-      "description": "Static utility table for PhysX NxMat33 matrices.",
-      "initialValue": "{}",
-      "name": "NxMat33",
-      "type": "NxMat33Static"
     },
     {
       "description": "Static utility table for Havok hkVector4f vectors.",
@@ -8195,58 +8245,40 @@
       "type": "hkVector4fComparisonStatic"
     },
     {
-      "description": "Static utility table for HavokCharacter physics controllers.",
-      "initialValue": "{}",
-      "name": "HavokCharacter",
-      "type": "HavokCharacterStatic"
+      "description": "Conditional input-handler alias registered at Lua startup. Prefer getInputHandler().",
+      "initialValue": "nil",
+      "name": "key",
+      "type": "InputHandler|nil"
     },
     {
-      "description": "Static utility table for inventory layouts.",
-      "initialValue": "{}",
-      "name": "InventoryLayout",
-      "type": "InventoryLayoutStatic"
+      "description": "Conditional options alias registered at Lua startup. Prefer getOptionsHolder().",
+      "initialValue": "nil",
+      "name": "options",
+      "type": "OptionsHolder|nil"
     },
     {
-      "description": "Static query table for world event states.",
-      "initialValue": "{}",
-      "name": "WorldEventStateQuery",
-      "type": "WorldEventStateQueryStatic"
+      "description": "Conditional game-world alias registered at Lua startup. Prefer getGameWorld().",
+      "initialValue": "nil",
+      "name": "ou",
+      "type": "GameWorld|nil"
     },
     {
-      "description": "Static factory table for MessageForB messages.",
-      "initialValue": "{}",
-      "name": "MessageForB",
-      "type": "MessageForBStatic"
+      "description": "Conditional player-interface alias registered at Lua startup. Prefer getPlayerInterface().",
+      "initialValue": "nil",
+      "name": "player",
+      "type": "PlayerInterface|nil"
     },
     {
-      "description": "Static manager table for in-game modal message boxes.",
-      "initialValue": "{}",
-      "name": "MessageBoxManager",
-      "type": "MessageBoxManagerStatic"
+      "description": "Conditional root-object-factory alias registered at Lua startup. Prefer getRootObjectFactory().",
+      "initialValue": "nil",
+      "name": "root",
+      "type": "RootObjectFactory|nil"
     },
     {
-      "description": "Static helper table for TradeResult transaction outcomes.",
-      "initialValue": "{}",
-      "name": "TradeResult",
-      "type": "TradeResultStatic"
-    },
-    {
-      "description": "Global Building binding table.",
-      "initialValue": "{}",
-      "name": "Building",
-      "type": "Building"
-    },
-    {
-      "description": "Global TownBase binding table.",
-      "initialValue": "{}",
-      "name": "TownBase",
-      "type": "TownBase"
-    },
-    {
-      "description": "Global CharStats binding table.",
-      "initialValue": "{}",
-      "name": "CharStats",
-      "type": "CharStats"
+      "description": "Conditional SharedKing alias registered at Lua startup. Prefer getSharedKing().",
+      "initialValue": "nil",
+      "name": "shou",
+      "type": "SharedKing|nil"
     }
   ],
   "schemaVersion": 1

@@ -8,6 +8,7 @@
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
 
 namespace KenshiLua
 {
@@ -377,11 +378,6 @@ static int AppearanceManager_set_characterIdleAnimations(lua_State* L)
 }
 
 /*
-LIGHTUSERDATA DEPENDENCIES:
-  - AnimationDataFastArrayBinding: AnimationData* (unbound pointer element)
-*/
-
-/*
 Skipped methods needing manual binding:
   line 171: getEditorData(boost::unordered::unordered_map<RaceGroupData*, Ogre::FastArray<GameData*>...>&, ...) - complex boost container signature
 */
@@ -452,7 +448,7 @@ void AppearanceManagerBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters");
 
     GameDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<GameData*>", GameDataBinding::getMetatableName());
-    AnimationDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<AnimationData*>", nullptr);
+    AnimationDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<AnimationData*>", AnimationDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop metatable
 

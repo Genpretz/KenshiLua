@@ -2,6 +2,7 @@
 #include "kenshi\Tasker.h"
 #include "TaskerBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/AI/AIBinding.h"
 #include "Bindings/Kenshi/CharBodyBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/TaskDataBinding.h"
@@ -401,7 +402,7 @@ int TaskerBinding::getNextSubTarget(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    AI* ai = (AI*)lua_touserdata(L, 2);
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     hand res = instance->getNextSubTarget(ai);
     return pushObject<hand>(L, new hand(res), HandBinding::getMetatableName());
 }
@@ -411,7 +412,7 @@ int TaskerBinding::getRequirementComplaint(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    AI* ai = (AI*)lua_touserdata(L, 2);
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     bool autoTargetFinder = lua_toboolean(L, 3) != 0;
     std::string res = instance->getRequirementComplaint(ai, autoTargetFinder);
     lua_pushstring(L, res.c_str());
@@ -423,7 +424,7 @@ int TaskerBinding::isRequirementsComplete(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    AI* ai = (AI*)lua_touserdata(L, 2);
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     bool autoTargetFinder = lua_toboolean(L, 3) != 0;
     bool res = instance->isRequirementsComplete(ai, autoTargetFinder);
     lua_pushboolean(L, res ? 1 : 0);
@@ -435,7 +436,7 @@ int TaskerBinding::isResultsComplete(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    AI* ai = (AI*)lua_touserdata(L, 2);
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     bool res = instance->isResultsComplete(ai);
     lua_pushboolean(L, res ? 1 : 0);
     return 1;
@@ -446,7 +447,7 @@ int TaskerBinding::isResultsComplete_ignoreSubtasker(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    AI* ai = (AI*)lua_touserdata(L, 2);
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     bool res = instance->isResultsComplete_ignoreSubtasker(ai);
     lua_pushboolean(L, res ? 1 : 0);
     return 1;
@@ -457,7 +458,7 @@ int TaskerBinding::score(lua_State* L)
 {
     Tasker* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Tasker is nil");
-    AI* ai = (AI*)lua_touserdata(L, 2);
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
     float res = instance->score(ai);
     lua_pushnumber(L, res);
     return 1;

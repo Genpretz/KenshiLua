@@ -5,7 +5,7 @@
 //
 // Provides struct/class definitions for types that are incomplete or only forward-
 // declared in KenshiLib SDK headers, but are required as complete types for:
-// - Standard container instantiation (e.g. std::deque<CraftingItem>)
+// - Standard container instantiation (e.g. std::deque<T>)
 // - Function parameter/return types
 // ============================================================================
 
@@ -15,4 +15,3 @@ class Layout {};
 class AreaBiomeGroup {};
 class PosRotPair {};
 class StaticBoxEntity {};
-class CraftingItem {};

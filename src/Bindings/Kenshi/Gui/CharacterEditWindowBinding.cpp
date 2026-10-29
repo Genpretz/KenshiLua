@@ -3,6 +3,7 @@
 #include "CharacterEditWindowBinding.h"
 #include "BaseLayoutBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
@@ -1145,7 +1146,6 @@ Skipped methods needing manual binding:
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
-  - AnimationDataFastArrayBinding: AnimationData* (unbound pointer element)
   - RaceGroupDataFastArrayBinding: RaceGroupData* (unbound pointer element)
 */
 
@@ -1333,7 +1333,7 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "initialPositions", CharacterEditWindow_set_initialPositions);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    AnimationDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<AnimationData*>", nullptr);
+    AnimationDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<AnimationData*>", AnimationDataBinding::getMetatableName());
     CharacterFastArrayBinding::registerBinding(L, "Ogre::FastArray<Character*>", CharacterBinding::getMetatableName());
     RaceGroupDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<RaceGroupData*>", nullptr);
     Vector3FastArrayBinding::registerBinding(L, "Ogre::FastArray<Ogre::Vector3>");

@@ -1,7 +1,9 @@
 #include "pch.h"
+#include "FormationBinding.h"
 #include "kenshi\CharMovement.h"
 #include "CharMovementBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 #include "Bindings/Kenshi/AbstractMovementBaseBinding.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
@@ -205,8 +207,7 @@ static int CharMovement_get_animation(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    lua_pushlightuserdata(L, (void*)instance->animation);
-    return 1;
+    return pushObject<AnimationClass>(L, instance->animation, AnimationClassBinding::getMetatableName());
 }
 
 static int CharMovement_get_character(lua_State* L)
@@ -421,7 +422,7 @@ static int CharMovement_set_animation(lua_State* L)
 {
     CharMovement* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharMovement is nil");
-    instance->animation = lua_isnoneornil(L, 2) ? nullptr : (AnimationClass*)lua_touserdata(L, 2);
+    instance->animation = lua_isnoneornil(L, 2) ? nullptr : checkObject<AnimationClass>(L, 2, AnimationClassBinding::getMetatableName());
     return 0;
 }
 
@@ -1118,7 +1119,6 @@ LIGHTUSERDATA DEPENDENCIES:
   - CharMovement_get_enemyFormation / CharMovement_set_enemyFormation: Formation* (unbound pointer)
   - CharMovement_get_havokCharacter / CharMovement_set_havokCharacter: HavokCharacter* (unbound pointer)
   - CharMovement_get_tracer / CharMovement_set_tracer: ConstantTracerT* (unbound pointer)
-  - CharMovement_get_animation / CharMovement_set_animation: AnimationClass* (unbound pointer)
   - CharMovement_get_clickHull / CharMovement_set_clickHull: PhysicsHullT* (unbound pointer)
 */
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kenshi/PhysicsCollection.h"
+#include "kenshi/Weather.h"
 
 extern "C" {
 #include <lua.h>

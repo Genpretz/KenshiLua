@@ -14,8 +14,8 @@ namespace KenshiLua
     // tens of seconds on large engine sets such as GameDataContainer::mainList.
     //
     // The snapshot holds the values that existed when pairs() was called. Values pushed
-    // as borrowed pointers into the container, such as map values, still refer to the
-    // container's storage and become invalid if their entries are erased.
+    // as borrowed pointers into the container, such as map values stored by value, still
+    // refer to the container's storage and become invalid if their entries are erased.
 
     // Generic-for iterator over a snapshot table.
     // Upvalue 1: snapshot table, with the i-th key at 2i - 1 and its value at 2i.

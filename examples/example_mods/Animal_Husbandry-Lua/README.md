@@ -38,6 +38,10 @@ The character who opened the window remains its harvester and must be within 200
 
 The Husbandry window shows the animal's sex, age, value, breeding state, and available products. A product can be harvested when the animal meets its age and sex requirements, is out of combat, and its cooldown has expired. Items go into the harvester's inventory or drop beside them if the inventory is full.
 
+The window scales uniformly from its compact 1920x1080 design size, stays within the screen, and keeps a readable minimum size on lower resolutions. Growth above 1080p is restrained so the window does not occupy excessive space at high resolutions. Its portrait, sections, and product rows preserve their proportions across aspect ratios. The product list fits two rows and adds vertical scrolling only when more rows overflow; it never uses horizontal scrolling.
+
+Inventory stacking follows the base game's material conventions. Consumables, raw wool, hair, fur, eggs, and other animal parts do not stack. Processed Cashmere and Mohair stack to 4, matching Leather.
+
 Included products:
 
 | Animal | Products |
@@ -101,7 +105,6 @@ Global defaults are defined in [`scripts/ah/config.lua`](scripts/ah/config.lua).
 | `breeding.minAge` | 0.6 | Minimum age for both parents |
 | `harvest.minAge` | 0.6 | Minimum harvesting age |
 | `harvest.maxDistance` | 200.0 | Maximum harvesting distance |
-| `harvest.maxVisibleProducts` | 4 | Product rows shown before scrolling |
 | `sales.defaultBasePrice` | 14000 | Price base when an animal record has none |
 | `sales.maxDistance` | 250.0 | Maximum sale distance |
 | `sales.resaleMultiplier` | 0.50 | Resale multiplier applied when selling animals to vendors |

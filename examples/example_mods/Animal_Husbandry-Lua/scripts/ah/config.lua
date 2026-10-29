@@ -31,8 +31,6 @@ return {
         minAge = 0.6,
         -- Maximum distance between the harvester and animal.
         maxDistance = 200,
-        -- Product rows visible before scrolling.
-        maxVisibleProducts = 4,
     },
 
     sales = {

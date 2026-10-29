@@ -44,6 +44,7 @@ FAMILIES = {
     "OgreFastArrayPrimitiveBinding": ("list", "OgreFastArray", ["Ogre::FastArray<{0}>"]),
     "StdDequePtrBinding": ("list", "StdDeque", ["std::deque<{0}>"]),
     "StdDequeValueBinding": ("list", "StdDeque", ["std::deque<{0}>"]),
+    "StdDequeValueReadOnlyBinding": ("readonly_list", "StdDequeReadOnly", ["std::deque<{0}>"]),
     "StdDequePrimitiveBinding": ("list", "StdDeque", ["std::deque<{0}>"]),
     "OgreVectorPtrBinding": ("list", "OgreVector", ["Ogre::vector<{0}>::type", "Ogre::vector<{0}>"]),
     "OgreVectorValueBinding": ("list", "OgreVector", ["Ogre::vector<{0}>::type", "Ogre::vector<{0}>"]),

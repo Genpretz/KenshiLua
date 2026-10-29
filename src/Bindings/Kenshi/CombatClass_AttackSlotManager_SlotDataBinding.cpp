@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Bindings/Kenshi/CombatClass_AttackSlotManager_SlotDataBinding.h"
 #include "Lua/BindingHelpers.h"
-#include <kenshi/CombatClass.h>
+#include <kenshi/combat/CombatClass.h>
 
 #include "Bindings/Kenshi/Util/HandBinding.h"
 

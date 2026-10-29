@@ -2,6 +2,7 @@
 #include <kenshi/Building/TurretBuilding.h>
 #include <kenshi/GameSaveState.h>
 #include "TurretBuildingBinding.h"
+#include "Bindings/Kenshi/GunClassTurretBinding.h"
 #include "UseableStuffBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/GameDataContainerBinding.h"
@@ -22,8 +23,8 @@ static int TurretBuilding_get_gunClass(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    lua_pushlightuserdata(L, (void*)instance->gunClass);
-    return 1;
+    if (!instance->gunClass) { lua_pushnil(L); return 1; }
+    return pushObject<GunClassTurret>(L, instance->gunClass, GunClassTurretBinding::getMetatableName());
 }
 
 static int TurretBuilding_get_aimDistInDegrees(lua_State* L)
@@ -110,7 +111,8 @@ static int TurretBuilding_set_gunClass(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    return luaL_error(L, "Read-only or unsupported setter type for gunClass");
+    instance->gunClass = lua_isnoneornil(L, 2) ? nullptr : checkObject<GunClassTurret>(L, 2, GunClassTurretBinding::getMetatableName());
+    return 0;
 }
 
 static int TurretBuilding_set_aimDistInDegrees(lua_State* L)

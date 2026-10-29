@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kenshi/CombatClass.h"
+#include "kenshi/combat/CombatClass.h"
 
 extern "C" {
 #include <lua.h>

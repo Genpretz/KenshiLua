@@ -5,6 +5,7 @@
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
 #include "Bindings/Kenshi/NavMeshGeneratorBinding.h"
+#include "Bindings/Kenshi/NavMeshSeedsBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
@@ -341,6 +342,18 @@ int NavMeshBinding::isGenerating(lua_State* L)
     return 1;
 }
 
+int NavMeshBinding::getSeedData(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    // The engine returns &generator->seedPoints without checking generator.
+    if (!instance->generator) return luaL_error(L, "NavMesh.getSeedData: generator is nil");
+
+    NavMeshSeeds& result = instance->getSeedData();
+    return pushObject<NavMeshSeeds>(L, &result, NavMeshSeedsBinding::getMetatableName());
+}
+
 int NavMeshBinding::getWorldShift(lua_State* L)
 {
     NavMesh* instance = getInstance(L, 1);
@@ -417,6 +430,17 @@ int NavMeshBinding::unloadBuilding(lua_State* L)
     hand h = *checkObject<hand>(L, 2, HandBinding::getMetatableName());
     instance->unloadBuilding(h);
     return 0;
+}
+
+int NavMeshBinding::countInteriors(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    iVector2* zone = checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    int result = instance->countInteriors(*zone);
+    lua_pushinteger(L, result);
+    return 1;
 }
 
 int NavMeshBinding::getUID(lua_State* L)
@@ -507,7 +531,6 @@ Skipped methods needing manual binding:
   line 106: bool isCharacterStuck(...) - unsupported arg type
   line 107: void postMessage(...) - unsupported arg type
   line 108: void cancelMessage(...) - unsupported arg type
-  line 114: NavMeshSeeds& getSeedData(...) - reference return type
   line 180: int saveZone(...) - unsupported arg type
   line 181: bool createZoneInstance(...) - unsupported arg type
   line 182: void deleteMesh(...) - overloaded method
@@ -520,7 +543,6 @@ Skipped methods needing manual binding:
   line 192: int getSectors(...) - unsupported arg type
   line 193: void createInstance(...) - unsupported arg type
   line 194: void deleteInstance(...) - unsupported arg type
-  line 195: int countInteriors(...) - non-string reference arg
   line 201: void shiftWorld(...) - unsupported arg type
   line 203: void changeDoorState(...) - unsupported arg type
   line 204: bool validateStreamingData(...) - unsupported arg type
@@ -593,6 +615,7 @@ void NavMeshBinding::registerBinding(lua_State* L)
         { "getPolygonID", NavMeshBinding::getPolygonID },
         { "validateFaceKey", NavMeshBinding::validateFaceKey },
         { "isGenerating", NavMeshBinding::isGenerating },
+        { "getSeedData", NavMeshBinding::getSeedData },
         { "getWorldShift", NavMeshBinding::getWorldShift },
         { "threadProc", NavMeshBinding::threadProc },
         { "_NV_threadProc", NavMeshBinding::_NV_threadProc },
@@ -602,6 +625,7 @@ void NavMeshBinding::registerBinding(lua_State* L)
         { "loadZone", NavMeshBinding::loadZone },
         { "unloadZone", NavMeshBinding::unloadZone },
         { "unloadBuilding", NavMeshBinding::unloadBuilding },
+        { "countInteriors", NavMeshBinding::countInteriors },
         { "getUID", NavMeshBinding::getUID },
         { "hashBuilding", NavMeshBinding::hashBuilding },
         { "hashInterior", NavMeshBinding::hashInterior },

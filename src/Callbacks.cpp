@@ -173,7 +173,7 @@
 #include <kenshi/Character.h>
 #include <kenshi/CharacterAnimal.h>
 #include <kenshi/CharacterHuman.h>
-#include <kenshi/CombatClass.h>
+#include <kenshi/combat/CombatClass.h>
 #include <kenshi/Damages.h>
 #include <kenshi/Dialogue.h>
 #include <kenshi/Faction.h>

@@ -554,6 +554,10 @@ local function finish_run(fatal_error)
                 append_event({ type = "exit_requested", method = "TitleScreen:exitGame" })
                 ts:exitGame(nil)
             end
+            append_event({ type = "exit_requested", method = "os.exit" })
+            if os and type(os.exit) == "function" then
+                os.exit(0)
+            end
         end)
         if not ok_exit then
             KenshiLua.logWarn("[KLTest] TitleScreen:exitGame error: " .. tostring(exit_err))

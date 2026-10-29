@@ -18,6 +18,9 @@
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "OwnershipsBinding.h"
+#include "Bindings/Kenshi/StateBroadcastDataBinding.h"
+#include "Bindings/Kenshi/CampaignInstanceBinding.h"
+#include "Bindings/Kenshi/AI/BlackboardBinding.h"
 #include "kenshi\GameSaveState.h"
 
 namespace KenshiLua
@@ -142,8 +145,7 @@ static int Platoon_get_blackboard(lua_State* L)
 {
     Platoon* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Platoon is nil");
-    lua_pushlightuserdata(L, (void*)instance->blackboard);
-    return 1;
+    return pushObject<Blackboard>(L, instance->blackboard, BlackboardBinding::getMetatableName());
 }
 
 static int Platoon_get__isIntact(lua_State* L)
@@ -561,8 +563,7 @@ int PlatoonBinding::hasCampaign(lua_State* L)
     if (!instance) return luaL_error(L, "Platoon is nil");
 
     CampaignInstance* result = instance->hasCampaign();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<CampaignInstance>(L, result, CampaignInstanceBinding::getMetatableName());
 }
 
 int PlatoonBinding::iBuyStolenGoods(lua_State* L)
@@ -653,8 +654,7 @@ int PlatoonBinding::getBlackboard(lua_State* L)
     if (!instance) return luaL_error(L, "Platoon is nil");
 
     Blackboard* result = instance->getBlackboard();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<Blackboard>(L, result, BlackboardBinding::getMetatableName());
 }
 
 int PlatoonBinding::getDataType(lua_State* L)
@@ -702,8 +702,7 @@ int PlatoonBinding::getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "Platoon is nil");
 
     StateBroadcastData* result = instance->getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int PlatoonBinding::_NV_getStateBroadcast(lua_State* L)
@@ -712,8 +711,7 @@ int PlatoonBinding::_NV_getStateBroadcast(lua_State* L)
     if (!instance) return luaL_error(L, "Platoon is nil");
 
     StateBroadcastData* result = instance->_NV_getStateBroadcast();
-    lua_pushlightuserdata(L, (void*)result);
-    return 1;
+    return pushObject<StateBroadcastData>(L, result, StateBroadcastDataBinding::getMetatableName());
 }
 
 int PlatoonBinding::serialiseEverything(lua_State* L)
@@ -1146,16 +1144,11 @@ int PlatoonBinding::getSquadLeader_theRealOne(lua_State* L)
 /*
 LIGHTUSERDATA DEPENDENCIES:
   - Platoon_get_locatorModel: Ogre::Entity* (unbound pointer)
-  - Platoon_get_blackboard: Blackboard* (unbound pointer)
   - Platoon_get_currentSpawnArea: AreaSector* (unbound pointer)
   - Platoon_get_unloadedPlatoon: UnloadedPlatoon* (unbound pointer)
   - Platoon_get_patrolSettings: PatrolInfo* (unbound pointer)
-  - PlatoonBinding::hasCampaign: CampaignInstance* (unbound pointer)
   - PlatoonBinding::isUnique: UniquePlatoon* (unbound pointer)
   - PlatoonBinding::_NV_isUnique: UniquePlatoon* (unbound pointer)
-  - PlatoonBinding::getBlackboard: Blackboard* (unbound pointer)
-  - PlatoonBinding::getStateBroadcast: StateBroadcastData* (unbound pointer)
-  - PlatoonBinding::_NV_getStateBroadcast: StateBroadcastData* (unbound pointer)
   - PlatoonBinding::getUnloadedPlatoon: UnloadedPlatoon* (unbound pointer)
   - PlatoonBinding::getPatrolInfo: PatrolInfo* (unbound pointer)
   - PlatoonBinding::getRoamingMapArea: AreaBiomeGroup* (unbound pointer)
@@ -1494,14 +1487,6 @@ static int Platoon_setRoamingMapArea(lua_State* L)
 }
 
 
-static int Platoon_set_blackboard(lua_State* L)
-{
-    Platoon* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "Platoon is nil");
-    instance->blackboard = (Blackboard*)lua_touserdata(L, 2);
-    return 0;
-}
-
 
 static int Platoon_set_currentSpawnArea(lua_State* L)
 {
@@ -1709,7 +1694,6 @@ void PlatoonBinding::registerBinding(lua_State* L)
     registerSetter(L, "imprisoned", Platoon_set_imprisoned);
     registerSetter(L, "index", Platoon_set_index);
     registerSetter(L, "traderInventoryRefreshTime", Platoon_set_traderInventoryRefreshTime);
-        registerSetter(L, "blackboard", Platoon_set_blackboard);
         registerSetter(L, "currentSpawnArea", Platoon_set_currentSpawnArea);
         registerSetter(L, "locatorModel", Platoon_set_locatorModel);
         registerSetter(L, "messageOnActivation", Platoon_set_messageOnActivation);
