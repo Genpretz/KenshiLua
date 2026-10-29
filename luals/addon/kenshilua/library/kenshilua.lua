@@ -10294,7 +10294,7 @@ taskPriority = {
 --- Returns true if this character is currently accompanying or traveling with the player.
 ---@field isWithThePlayer fun(self: Character): boolean
 --- Notifies the character that they have visually detected a sneaking actor.
----@field notifyICanSeeYouSneaking fun(self: Character, who: Character, seeing: YesNoMaybe|YesNoMaybeValue, maybeProgress01: number)
+---@field notifyICanSeeYouSneaking fun(self: Character, who: Character, seeing: YesNoMaybeValue, maybeProgress01: number)
 --- Returns true if no nearby hostiles make it unsafe to get up from playing dead or ragdoll.
 ---@field isItSafeToGetUp fun(self: Character): boolean
 --- Splits this character out of their current squad into a newly created independent squad.
@@ -12269,7 +12269,7 @@ taskPriority = {
 --- Awards athletics XP proportional to travel duration and velocity while running on foot.
 ---@field xpRunning fun(self: CharStats, time: number, speed: number)
 --- Grants stealth XP when moving undetected in proximity to hostile or neutral observers.
----@field xpStealth fun(self: CharStats, time: number, enemiesAbout?: boolean, seen: YesNoMaybe|YesNoMaybeValue, isMoving?: boolean)
+---@field xpStealth fun(self: CharStats, time: number, enemiesAbout?: boolean, seen: YesNoMaybeValue, isMoving?: boolean)
 --- Grants stealth XP upon successfully remaining unheard during an acoustic perception check.
 ---@field xpStealthHearCheckEvent fun(self: CharStats, enemiesAbout?: boolean, trespassing?: boolean, seen?: boolean)
 --- Returns display string pair indicating current stealth XP earning multiplier and group penalty.
@@ -13794,11 +13794,11 @@ taskPriority = {
 ---@field chooseGoal fun(self: AITaskSytem, timedLockOnCurrentGoal?: boolean)
 --- Chooses a goal of the priority for the squad member type and returns whether one was set.
 ---@field _chooseGoal fun(self: AITaskSytem, priority: integer, squadMemberType: integer): boolean
----@field chooseGoalFrom fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, alreadyHasGoal: TaskMatch, goalListIn: Lektor<Tasker>, theseAreBlackboard?: boolean)
----@field choosePermaJob fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, alreadyHasGoal: TaskMatch, urgentOnes?: boolean, _jobsEnabled?: boolean)
+---@field chooseGoalFrom fun(self: AITaskSytem, orderedGoals: StdMap<number, Tasker>, alreadyHasGoal: TaskMatch, goalListIn: Lektor<Tasker>, theseAreBlackboard?: boolean)
+---@field choosePermaJob fun(self: AITaskSytem, orderedGoals: StdMap<number, Tasker>, alreadyHasGoal: TaskMatch, urgentOnes?: boolean, _jobsEnabled?: boolean)
 --- Sets up the parameters of the current goal.
 ---@field setupParametersForCurrentGoal fun(self: AITaskSytem)
----@field runGoals fun(self: AITaskSytem, orderedGoals: OrderedGoalsMap, playerOrder?: boolean): boolean
+---@field runGoals fun(self: AITaskSytem, orderedGoals: StdMap<number, Tasker>, playerOrder?: boolean): boolean
 --- Clears `requestsList`.
 ---@field clearRequestsList fun(self: AITaskSytem)
 --- Handles completion of the body's task.
@@ -14214,7 +14214,7 @@ taskPriority = {
 
 --- Engine class `AnimationClassBase.AnimationLayer`.
 ---@class AnimationClassBase.AnimationLayer
----@field addToRemoveList fun(self: AnimationClassBase.AnimationLayer, anim: AnimationClassBase.SingleAnimation|SingleAnimation)
+---@field addToRemoveList fun(self: AnimationClassBase.AnimationLayer, anim: AnimationClassBase.SingleAnimation)
 ---@field clearLists fun(self: AnimationClassBase.AnimationLayer)
 ---@field _clearListsSafe fun(self: AnimationClassBase.AnimationLayer)
 ---@field randomiseAnimationPosition fun(self: AnimationClassBase.AnimationLayer, arg1: string)
@@ -26684,9 +26684,9 @@ taskPriority = {
 --- Tri-state boolean value wrapper in Kenshi (YesNoMaybe) representing YES, NO, or MAYBE states with boolean and integer conversions.
 ---@class YesNoMaybeValue
 --- Compares this YesNoMaybeValue against another YesNoMaybeValue, enum constant, or integer for equality.
----@field operator_eq fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|integer): boolean
+---@field operator_eq fun(self: YesNoMaybeValue, arg1?: YesNoMaybeValue|integer): boolean
 --- Compares this YesNoMaybeValue against another YesNoMaybeValue, enum constant, boolean, or integer for inequality.
----@field operator_ne fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|boolean|integer): boolean
+---@field operator_ne fun(self: YesNoMaybeValue, arg1?: YesNoMaybeValue|boolean|integer): boolean
 --- Returns the underlying integer representation of the tri-state value.
 ---@field toInt fun(self: YesNoMaybeValue): integer
 --- Evaluates the tri-state value and returns true if state is YES.

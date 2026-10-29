@@ -11870,7 +11870,7 @@
               {
                 "name": "orderedGoals",
                 "optional": false,
-                "type": "OrderedGoalsMap"
+                "type": "StdMap<number, Tasker>"
               },
               {
                 "name": "alreadyHasGoal",
@@ -11901,7 +11901,7 @@
               {
                 "name": "orderedGoals",
                 "optional": false,
-                "type": "OrderedGoalsMap"
+                "type": "StdMap<number, Tasker>"
               },
               {
                 "name": "alreadyHasGoal",
@@ -11941,7 +11941,7 @@
               {
                 "name": "orderedGoals",
                 "optional": false,
-                "type": "OrderedGoalsMap"
+                "type": "StdMap<number, Tasker>"
               },
               {
                 "name": "playerOrder",
@@ -12153,14 +12153,12 @@
         {
           "access": "readonly",
           "name": "orderedGoals",
-          "type": "StdMap<number, Tasker>",
-          "type_source": "header"
+          "type": "StdMap<number, Tasker>"
         },
         {
           "access": "readonly",
           "name": "pathFailures",
-          "type": "OgreUnorderedMap<hand, number>",
-          "type_source": "header"
+          "type": "OgreUnorderedMap<hand, number>"
         },
         {
           "access": "readwrite",
@@ -15276,8 +15274,7 @@
         {
           "access": "readwrite",
           "name": "boneInitialWorldOrientations",
-          "type": "StdMap<string, table>",
-          "type_source": "header"
+          "type": "StdMap<string, table>"
         },
         {
           "access": "readwrite",
@@ -15362,7 +15359,7 @@
               {
                 "name": "anim",
                 "optional": false,
-                "type": "AnimationClassBase.SingleAnimation|SingleAnimation"
+                "type": "AnimationClassBase.SingleAnimation"
               }
             ],
             "returns": [],
@@ -25799,7 +25796,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "SectionsMap|lightuserdata"
+                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -25825,7 +25822,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "SectionsMap|lightuserdata"
+                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -30297,7 +30294,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "SectionsMap|lightuserdata"
+                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -35833,7 +35830,7 @@
               {
                 "name": "seen",
                 "optional": false,
-                "type": "YesNoMaybe|YesNoMaybeValue"
+                "type": "YesNoMaybeValue"
               },
               {
                 "name": "isMoving",
@@ -38941,7 +38938,7 @@
               {
                 "name": "seeing",
                 "optional": false,
-                "type": "YesNoMaybe|YesNoMaybeValue"
+                "type": "YesNoMaybeValue"
               },
               {
                 "name": "maybeProgress01",
@@ -53038,7 +53035,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "SectionsMap|lightuserdata"
+                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -53064,7 +53061,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "SectionsMap|lightuserdata"
+                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -114086,7 +114083,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "SectionsMap|lightuserdata"
+                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -145027,7 +145024,7 @@
               {
                 "name": "arg1",
                 "optional": true,
-                "type": "YesNoMaybe|YesNoMaybeValue|integer"
+                "type": "YesNoMaybeValue|integer"
               }
             ],
             "returns": [
@@ -145044,7 +145041,7 @@
               {
                 "name": "arg1",
                 "optional": true,
-                "type": "YesNoMaybe|YesNoMaybeValue|boolean|integer"
+                "type": "YesNoMaybeValue|boolean|integer"
               }
             ],
             "returns": [
@@ -153636,6 +153633,9 @@
     },
     {
       "binding": "FitnessSelectorBinding<CombatTechniqueData*>",
+      "binding_aliases": [
+        "FitnessSelector_CombatTechniqueData_Binding"
+      ],
       "element_refs": [
         "binding:CombatTechniqueDataBinding",
         "metatable:std::map<float, CombatTechniqueData*>",
@@ -163884,6 +163884,9 @@
     },
     {
       "binding": "OgreUnorderedMapBinding<hand,float>",
+      "binding_aliases": [
+        "HandFloatMapBinding"
+      ],
       "element_refs": [
         "binding:HandBinding",
         null
@@ -167675,6 +167678,9 @@
     },
     {
       "binding": "StdMapBinding<GameData*,bool,std::less<GameData*>,std::allocator<std::pair<GameData*const,bool>>>",
+      "binding_aliases": [
+        "GameDataBoolStdMapBinding"
+      ],
       "element_refs": [
         "binding:GameDataBinding",
         null
@@ -168215,6 +168221,9 @@
     },
     {
       "binding": "StdMapBinding<float,Tasker*>",
+      "binding_aliases": [
+        "OrderedGoalsMapBinding"
+      ],
       "element_refs": [
         null,
         "binding:TaskerBinding"
@@ -168429,6 +168438,9 @@
     },
     {
       "binding": "StdMapBinding<std::string,Ogre::Quaternion>",
+      "binding_aliases": [
+        "BoneQuaternionMapBinding"
+      ],
       "element_refs": [],
       "element_types": {
         "key": "string",

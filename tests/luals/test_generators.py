@@ -318,6 +318,14 @@ class BindingInventoryTests(unittest.TestCase):
             [{"name": "value", "type": "MyGUI.Colour", "optional": False}],
             signature("ScreenLabel", "setColor"),
         )
+        self.assertEqual(
+            "StdMap<number, Tasker>",
+            signature("AITaskSytem", "chooseGoalFrom")[0]["type"],
+        )
+        self.assertEqual(
+            "AnimationClassBase.SingleAnimation",
+            signature("AnimationClassBase.AnimationLayer", "addToRemoveList")[0]["type"],
+        )
         # lua_pushlightuserdata hands Lua a raw pointer whatever the declared
         # NavMesh* type, so the header must not relabel it.
         self.assertEqual(

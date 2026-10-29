@@ -182,13 +182,16 @@ def parse_template_instances(reached, implementations):
     )
     central = {"path": relative(REGISTER_BINDINGS_PATH)}
     central_metatables = set()
+    central_metatables_by_binding = {}
     for template, args, metatable, rest in direct_pattern.findall(central_body):
         if template not in definitions:
             continue
-        direct_ids.setdefault(metatable, set()).add(template_binding_id(template, args))
+        binding_id = template_binding_id(template, args)
+        direct_ids.setdefault(metatable, set()).add(binding_id)
+        central_metatables_by_binding.setdefault(binding_id, set()).add(metatable)
         if metatable in central_metatables:
             continue
-        alias = direct_aliases.setdefault(metatable, template_binding_id(template, args))
+        alias = direct_aliases.setdefault(metatable, binding_id)
         record((alias, metatable), alias, metatable, template, args, rest, "LuaBindings", central)
         central_metatables.add(metatable)
 
@@ -201,6 +204,9 @@ def parse_template_instances(reached, implementations):
             for template, args, alias in typedef_pattern.findall(implementation["text"])
         }
         for alias, (template, args) in aliases.items():
+            binding_id = template_binding_id(template, args)
+            for metatable in central_metatables_by_binding.get(binding_id, ()):
+                direct_ids[metatable].add(alias)
             call_pattern = re.compile(
                 r"\b" + re.escape(alias) +
                 r"::registerBinding\s*\(\s*L\s*,\s*\"([^\"]+)\"([^;]*)\)\s*;"
@@ -1170,6 +1176,10 @@ def name_container_instances(classes, mapper):
                 method["signature"] = signature
         for spelling in container_contracts.cpp_spellings(template, args):
             mapper.cpp_to_lua[kenshilib_headers.TypeMapper.key(spelling)] = entry["lua_type"]
+        for binding_alias in [entry["binding"]] + entry.get("binding_aliases", []):
+            if re.fullmatch(r"[A-Za-z_]\w*Binding", binding_alias):
+                cpp_alias = binding_alias.removesuffix("Binding")
+                mapper.cpp_to_lua[kenshilib_headers.TypeMapper.key(cpp_alias)] = entry["lua_type"]
         # The mapper was built from the typedef names; repoint them.
         old_name = old_names.get(id(entry))
         if old_name:
@@ -1452,7 +1462,8 @@ def build_inventory():
             lookup = lua_types_by_binding if kind == "binding" else lua_types_by_metatable
             return lookup.get(name, "any")
         if not lua_type.startswith("array:"):
-            return lua_type
+            key = kenshilib_headers.TypeMapper.key(lua_type)
+            return mapper.cpp_to_lua.get(key, lua_type)
         elements = set()
         for ref in lua_type[len("array:"):].split(","):
             kind, _, name = ref.partition(":")

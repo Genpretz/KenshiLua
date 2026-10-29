@@ -1,7 +1,14 @@
 {
+  "$schema": "https://raw.githubusercontent.com/LuaLS/vscode-lua/master/setting/schema.json",
   "runtime.version": "LuaJIT",
+  "diagnostics.ignoredFiles": "Disable",
   "workspace.checkThirdParty": false,
   "workspace.ignoreDir": [
+    ".vscode",
+    "extern",
+    "bin",
+    "obj",
+    "scratch",
     "luals/addon"
   ],
   "workspace.library": [
