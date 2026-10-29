@@ -82,6 +82,7 @@ python tools/release/package_luals_addon.py --force
 | Script | Purpose | Output |
 | --- | --- | --- |
 | `testing/run_kenshi_tests.py` | Launches Kenshi, handles launcher dismissal, drives test suites via Lua coroutine harness, and records JUnit XML and event streams. | `scratch/kenshi-tests/<run_id>/` |
+| `testing/generate_binding_suite.py` | Generates the comprehensive binding inventory test suite verifying runtime registration of all classes, methods, properties, and enum constants. | `tests/in_game/harness/scripts/kltest/suites/binding_inventory.lua` |
 
 ### Basic usage
 

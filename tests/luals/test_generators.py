@@ -1046,5 +1046,16 @@ class TypeAuditTests(unittest.TestCase):
         self.assertEqual(expected, generate_type_audit.OUTPUT_PATH.read_text(encoding="utf-8"))
 
 
+
+
+class BindingSuiteGeneratorTests(unittest.TestCase):
+    def test_committed_binding_suite_is_reproducible(self):
+        sys.path.insert(0, str(PROJECT_ROOT / "tools" / "testing"))
+        import generate_binding_suite
+
+        generated = generate_binding_suite.generate_lua_code()
+        committed = generate_binding_suite.DEFAULT_OUTPUT_PATH.read_text(encoding="utf-8")
+        self.assertEqual(generated, committed)
+
 if __name__ == "__main__":
     unittest.main()
