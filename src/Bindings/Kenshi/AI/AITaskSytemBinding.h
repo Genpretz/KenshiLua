@@ -67,8 +67,5 @@ public:
     static int popFromOrders(lua_State* L);
     static int setCurrentTask(lua_State* L);
     static int runGOAP(lua_State* L);
-    static int chooseGoalFrom(lua_State* L);
-    static int choosePermaJob(lua_State* L);
-    static int runGoals(lua_State* L);
 };
 }
