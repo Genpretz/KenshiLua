@@ -5254,11 +5254,11 @@ taskPriority = {
 --- Returns the file path to the level data directory for the specified mod.
 ---@field getModLeveldataFolder fun(self: GameWorld, modName: string): string
 --- Performs a spherical spatial query, returning all world entities within the given radius.
----@field getObjectsWithinSphere fun(self: GameWorld, results: GameWorld|Lektor<RootObject>, spherePos: table, radius: number, type: integer, maxNumber: integer, skip?: RootObject)
+---@field getObjectsWithinSphere fun(self: GameWorld, results: Lektor<RootObject>, spherePos: table, radius: number, type: integer, maxNumber: integer, skip?: RootObject)
 --- Performs a spatial radial search, returning all character entities within the specified spherical bounds.
----@field getCharactersWithinSphere fun(self: GameWorld, results: GameWorld|Lektor<RootObject>, spherePos: table, farRadius: number, nearRadius: number, always: number, maxFar: integer, maxNear: integer, skip?: RootObject)
+---@field getCharactersWithinSphere fun(self: GameWorld, results: Lektor<RootObject>, spherePos: table, farRadius: number, nearRadius: number, always: number, maxFar: integer, maxNear: integer, skip?: RootObject)
 --- Performs an oriented bounding-box query, returning all world entities intersecting the volume.
----@field getObjectsWithinBox fun(self: GameWorld, results: GameWorld|Lektor<RootObject>, pos: table, size: table, rot: table, type: integer, maxNumber: integer, skip?: RootObject)
+---@field getObjectsWithinBox fun(self: GameWorld, results: Lektor<RootObject>, pos: table, size: table, rot: table, type: integer, maxNumber: integer, skip?: RootObject)
 --- Returns the set of all active character instances currently receiving frame simulation updates.
 ---@field getCharacterUpdateList fun(self: GameWorld): OgreUnorderedSet<Character>
 --- Enqueues an asynchronous inter-system message packet on the global messaging queue for deferred processing.
@@ -5625,7 +5625,7 @@ taskPriority = {
 --- Returns true if the specified RootObject is a character belonging to the player.
 ---@field _isPlayerCharacter fun(self: PlayerInterface, obj: RootObject): boolean
 --- Recruits a single Character or a lektor<Character*> into the player faction, optionally opening the character editor, and returns true on success.
----@field recruit fun(self: PlayerInterface, arg1: Character|Lektor<Character>|PlayerInterface, arg2?: boolean): boolean
+---@field recruit fun(self: PlayerInterface, arg1: Character|Lektor<Character>, arg2?: boolean): boolean
 --- Returns a copy of the hand handle referencing the dead player squad.
 ---@field getDeadSquadHandle fun(self: PlayerInterface): hand
 --- Replaces oldHandle with newHandle in the player's current selection set.
@@ -6559,9 +6559,9 @@ taskPriority = {
 --- Scans unloaded platoons and activates any squad whose coordinates intersect an active, streamed zone chunk.
 ---@field _activateUnloadedPlatoons fun(self: Faction)
 --- Finds all faction member characters within a spatial spherical radius around given world coordinates.
----@field getCharactersInArea fun(self: Faction, out: Faction|Lektor<RootObject>, pos: table, radius: number, standingOnly?: boolean)
+---@field getCharactersInArea fun(self: Faction, out: Lektor<RootObject>, pos: table, radius: number, standingOnly?: boolean)
 --- Collects player-selected or type-filtered root objects belonging to this faction.
----@field getSelectedObjects fun(self: Faction, out: Faction|Lektor<RootObject>, type: integer, selectedOnly?: boolean)
+---@field getSelectedObjects fun(self: Faction, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)
 --- Removes an entity object from its containing platoon and faction rosters.
 ---@field removeObject fun(self: Faction, c: RootObject)
 --- Destroys an entity object and unregisters it from all squads.
@@ -6785,7 +6785,7 @@ taskPriority = {
 --- Populates a datapanel with diplomatic standing, relation score, and alliance status for UI display.
 ---@field getGUIData fun(self: FactionRelations, panel: DatapanelGUI, category: integer)
 --- Populates a map of all tracked factions and their corresponding diplomatic relation scores.
----@field getRelationsData fun(self: FactionRelations, data: FactionRelations|OgreUnorderedMap<Faction, number>)
+---@field getRelationsData fun(self: FactionRelations, data: OgreUnorderedMap<Faction, number>)
 --- Evaluates a dialogue condition against another faction using a specified comparison operator and threshold value.
 ---@field checkStateCondition fun(self: FactionRelations, conditionName: integer, compareBy: integer, val: integer, yourFaction: Faction): boolean
 --- Map of target Faction pointers to their corresponding RelationData records.
@@ -7063,7 +7063,7 @@ taskPriority = {
 --- Loads the platoon's character data from disk, optionally forcing reload (force) and passing extra (`Serialisable` or nil).
 ---@field loadFromDisk fun(self: ActivePlatoon, force?: boolean, extra?: Serialisable): boolean
 --- Appends squad characters within radius of pos (Vector3 table) into out (lektor<RootObject*>), optionally filtering to standingOnly.
----@field getCharactersInArea fun(self: ActivePlatoon, out: ActivePlatoon|Lektor<RootObject>, pos: table, radius: number, standingOnly?: boolean)
+---@field getCharactersInArea fun(self: ActivePlatoon, out: Lektor<RootObject>, pos: table, radius: number, standingOnly?: boolean)
 --- Spawns a single character instance from state (GameSaveState) at pos (Vector3 table) and rot (Quaternion table), with skipSaveState, optional callback (FactoryCallbackInterface), and positionMoved offset (Vector3 table).
 ---@field loadInstance fun(self: ActivePlatoon, state: GameSaveState, skipSaveState?: boolean, pos: table, rot: table, callback?: FactoryCallbackInterface, positionMoved: table)
 --- Shared GroupSense* instance for the platoon (exposed as read-only lightuserdata).
@@ -7609,31 +7609,31 @@ taskPriority = {
 --- Deserializes inventory layout and item instances from an FCS savegame container.
 ---@field loadFrom fun(self: Inventory, container: GameDataContainer|GameSaveState, inventoryState?: GameData)
 --- Populates merchant inventory from an FCS vendor list blueprint, spawning items scaled by quality and vendor wealth.
----@field fillFromVendorList fun(self: Inventory, arg1: GameData|Inventory|Lektor<GameData>, arg2: Faction)
+---@field fillFromVendorList fun(self: Inventory, arg1: GameData|Lektor<GameData>, arg2: Faction)
 --- Populates output list with all sections configured with the given attachment slot type.
----@field getAllSectionsOfType fun(self: Inventory, out: Inventory|Lektor<InventorySection>, type: integer)
+---@field getAllSectionsOfType fun(self: Inventory, out: Lektor<InventorySection>, type: integer)
 --- Provides direct reference to the ordered array of registered sections.
 ---@field getAllSections fun(self: Inventory): Lektor<InventorySection>
 --- Identifies excess contraband or stolen gear for AI looting routines.
----@field getExcessLoot fun(self: Inventory, me: hand, out: Inventory|Lektor<Item>, justAsking?: boolean): boolean
+---@field getExcessLoot fun(self: Inventory, me: hand, out: Lektor<Item>, justAsking?: boolean): boolean
 --- Populates set with all raw material or trade commodity blueprints present in inventory.
----@field getResourceItems fun(self: Inventory, out: Inventory|OgreUnorderedSet<GameData>, buildingMatsToo?: boolean)
+---@field getResourceItems fun(self: Inventory, out: OgreUnorderedSet<GameData>, buildingMatsToo?: boolean)
 --- Returns the total accumulated quantity of items matching the given blueprint across all sections.
 ---@field getNumItems fun(self: Inventory, itemType?: GameData): integer
 --- Checks whether inventory contains at least `quantity` units of the given item blueprint.
 ---@field hasItem fun(self: Inventory, item: GameData|Item, quantity?: integer): boolean
 --- Gathers all items marked as stolen from factions.
----@field getAllStolenItems fun(self: Inventory, all: Inventory|Lektor<Item>, includeUnknown?: boolean)
+---@field getAllStolenItems fun(self: Inventory, all: Lektor<Item>, includeUnknown?: boolean)
 --- Collects all items belonging to the given type into the output array.
----@field getAllItemsOfType fun(self: Inventory, all: Inventory|Lektor<Item>, ty: integer, skipEquipped?: boolean)
+---@field getAllItemsOfType fun(self: Inventory, all: Lektor<Item>, ty: integer, skipEquipped?: boolean)
 --- Collects all weapons equipped in primary and secondary weapon slots.
----@field getEquippedWeapons fun(self: Inventory, all: Inventory|Lektor<Item>)
+---@field getEquippedWeapons fun(self: Inventory, all: Lektor<Item>)
 --- Collects all protective armor items currently equipped across Head, Body, Legs, and Boots sections.
----@field getEquippedArmour fun(self: Inventory, all: Inventory|Lektor<Item>)
+---@field getEquippedArmour fun(self: Inventory, all: Lektor<Item>)
 --- Extracts the complete stack of the specified item instance from its section.
 ---@field takeItem_EntireStack fun(self: Inventory, arg1: GameData|Item): Item|boolean|nil
 --- Collects all items possessing the specified functional capability.
----@field getAllItemsWithFunction fun(self: Inventory, out: Inventory|Lektor<Item>, type: integer)
+---@field getAllItemsWithFunction fun(self: Inventory, out: Lektor<Item>, type: integer)
 --- Finds an item matching blueprint with the fewest remaining charges to deplete partially used kits first.
 ---@field getBestItemWithLowestCharges fun(self: Inventory, arg1: GameData|integer): Item
 --- Provides direct read-only access to `_allItems`.
@@ -7726,13 +7726,13 @@ taskPriority = {
 --- Calculates a clamped valid position for the specified item nearest to the requested `(x, y)` coordinate, adjusting inward to prevent bounding overflow.
 ---@field getValidInventoryPosition fun(self: InventorySection, item: Item): boolean, integer, integer
 --- Collects all items in this section matching the concrete type category and characteristics of `item`.
----@field getAllItemsOfType fun(self: InventorySection, arg1: InventorySection|Lektor<Item>, arg2: Item|integer)
+---@field getAllItemsOfType fun(self: InventorySection, arg1: Lektor<Item>, arg2: Item|integer)
 --- Finds and appends all items whose display names match `itemName`.
----@field getAllItemsOfName fun(self: InventorySection, list: InventorySection|Lektor<Item>, itemName: string)
+---@field getAllItemsOfName fun(self: InventorySection, list: Lektor<Item>, itemName: string)
 --- Systematically scans the 2D grid row-by-row and column-by-column to locate the first free spatial footprint with zero item overlaps.
 ---@field findNearestPlaceForItem fun(self: InventorySection, item: Item): boolean, integer, integer
 --- Collects all distinct items whose bounding footprints intersect the rectangular boundary defined by `(x, y, itemWidth, itemHeight)`.
----@field getItemsInFootprint fun(self: InventorySection, out: InventorySection|Lektor<Item>, item: Item|integer, x: integer, y: integer, arg5?: integer): integer
+---@field getItemsInFootprint fun(self: InventorySection, out: Lektor<Item>, item: Item|integer, x: integer, y: integer, arg5?: integer): integer
 --- Provides direct const access to the internal list of placed section items and coordinates.
 ---@field getItems fun(self: InventorySection): OgreVector<SectionItem>
 --- Restricts acceptable items exclusively to wearable gear (`itemType::ARMOUR`).
@@ -7898,7 +7898,7 @@ taskPriority = {
 --- Serializes record attributes, references, and instances to disk file.
 ---@field saveToFile fun(self: GameData, path: string): boolean
 --- Serializes a set of runtime entity handles into record string lists.
----@field storeHandleList fun(self: GameData, arg1: GameData|Lektor<hand>, arg2: string)
+---@field storeHandleList fun(self: GameData, arg1: Lektor<hand>, arg2: string)
 --- Serializes a runtime `hand` entity handle into record attributes by storing its instance ID and target pointer.
 ---@field storeHandle fun(self: GameData, handle: hand, _name: string, redirect?: boolean)
 --- Deserializes a runtime `hand` entity handle from stored record attributes.
@@ -7940,7 +7940,7 @@ taskPriority = {
 --- Checks if the named reference list exists and contains at least one reference entry.
 ---@field listExistsAndNotEmpty fun(self: GameData, n: string): boolean
 --- Collects all target string IDs from the named reference list into an output vector.
----@field getAllFromList fun(self: GameData, n: string, list: GameData|Lektor<string>)
+---@field getAllFromList fun(self: GameData, n: string, list: Lektor<string>)
 --- Retrieves pointer to raw vector of `GameDataReference` objects, instantiating the list if absent.
 ---@field getReferenceList fun(self: GameData, listname: string): OgreVector<GameDataReference>
 --- Retrieves pointer to raw vector of `GameDataReference` objects if it exists, without creating it.
@@ -8122,7 +8122,7 @@ taskPriority = {
 --- Adds an editable text input line with optional multiline support and alignment.
 ---@field setLineTextEditable fun(self: DatapanelGUI, key: string, text: string, category: integer, showKey?: boolean, multiLine?: boolean, textAlign?: integer|string, width: number): DataPanelLine_TextEditable
 --- Populates the panel category from a collection of StringPair key-value entries.
----@field setLines fun(self: DatapanelGUI, data: DatapanelGUI|Lektor<StringPair>, category: integer)
+---@field setLines fun(self: DatapanelGUI, data: Lektor<StringPair>, category: integer)
 --- Automatically updates the inspected object when the player's selection changes to obj.
 ---@field autoChangeSelectedObject fun(self: DatapanelGUI, obj: hand)
 --- Sets the target game object (hand) inspected and displayed by this panel.
@@ -8520,9 +8520,9 @@ taskPriority = {
 --- Retrieves the world-space axis-aligned bounding box (`Ogre::Aabb`) enclosing the entity's physical geometry.
 ---@field getAABB fun(self: RootObject): lightuserdata
 --- Fills an output list with available datapanel tab categories supported by this entity.
----@field getGUIDataCategories fun(self: RootObject, out: Lektor<StringPair>|RootObject)
+---@field getGUIDataCategories fun(self: RootObject, out: Lektor<StringPair>)
 --- Retrieves the list of active GOAP tasks and permanent job orders assigned to this entity.
----@field getOrders fun(self: RootObject, arg1: Lektor<string>|RootObject)
+---@field getOrders fun(self: RootObject, arg1: Lektor<string>)
 --- Notification handler triggered when the entity crosses from the open world into an interior building space.
 ---@field notifyIndoors fun(self: RootObject, in: hand)
 --- Combat melee impact resolution hook invoked when a melee attack strikes this entity. Determines impact audio material, applies damage calculations, and initiates defensive reactions.
@@ -8983,9 +8983,9 @@ taskPriority = {
 --- Retrieves the base time required to craft this robot limb item.
 ---@field getCraftTime fun(self: RobotLimbItem): number
 --- Populates primary tooltip strings displaying item statistics, effects, and multipliers for robotic limbs.
----@field getTooltipData1 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+---@field getTooltipData1 fun(self: RobotLimbItem, lines: OgreVector<StringPair>)
 --- Populates secondary tooltip strings, generally appending flavor text and item descriptions.
----@field getTooltipData2 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+---@field getTooltipData2 fun(self: RobotLimbItem, lines: OgreVector<StringPair>)
 --- Current physical damage sustained.
 ---@field currentDamage number
 --- Maximum structural hit points of the limb.
@@ -9984,7 +9984,7 @@ taskPriority = {
 --- Returns true if this character is currently accompanying or traveling with the player.
 ---@field isWithThePlayer fun(self: Character): boolean
 --- Notifies the character that they have visually detected a sneaking actor.
----@field notifyICanSeeYouSneaking fun(self: Character, who: Character, seeing: YesNoMaybe|YesNoMaybeValue, maybeProgress01: number)
+---@field notifyICanSeeYouSneaking fun(self: Character, who: Character, seeing: YesNoMaybeValue, maybeProgress01: number)
 --- Returns true if no nearby hostiles make it unsafe to get up from playing dead or ragdoll.
 ---@field isItSafeToGetUp fun(self: Character): boolean
 --- Splits this character out of their current squad into a newly created independent squad.
@@ -10500,11 +10500,11 @@ taskPriority = {
 --- Serializes this character's state, inventory, and stats into a `GameSaveState`.
 ---@field serialise fun(self: Character, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState
 --- Returns true if the character carries items originating from the specified data record.
----@field hasItemsFrom fun(self: Character, from: StorageBuilding, allTheOnesWeHave: Character|OgreUnorderedSet<GameData>): boolean
+---@field hasItemsFrom fun(self: Character, from: StorageBuilding, allTheOnesWeHave: OgreUnorderedSet<GameData>): boolean
 --- Returns the calculated success chance for this character picking the specified lock.
 ---@field getLockpickChance fun(self: Character, victim: lightuserdata): number
 --- Renders visual debug indicators over the specified list of characters.
----@field debugIndicateCharacters fun(self: Character, list: Character|Lektor<Character>)
+---@field debugIndicateCharacters fun(self: Character, list: Lektor<Character>)
 --- Ranged projectile impact notification callback, resolving projectile kinetic damage, harpoon penetration, and friendly fire perception tags.
 ---@field iShotYou fun(self: Character, attacker: Character, poon: lightuserdata, onPurpose?: boolean): boolean
 --- Triggers a combat stumble reaction on the character from an incoming attack, applying directional hit animations.
@@ -10677,9 +10677,9 @@ taskPriority = {
 --- Returns the unshared, instance-specific `ConstructionState` for this structure.
 ---@field getBuildState_ActualNonShared fun(self: Building): ConstructionState
 --- Populates the provided collection with all child buildings or fixtures mounted on this structure.
----@field getMountedBuildings fun(self: Building, out?: Building|Lektor<Building>): integer
+---@field getMountedBuildings fun(self: Building, out?: Lektor<Building>): integer
 --- Populates the provided collection with all internal furniture items matching the given `BuildingFunction`.
----@field findAllFurnitureWithFunction fun(self: Building, out: Building|Lektor<Building>, func: integer)
+---@field findAllFurnitureWithFunction fun(self: Building, out: Lektor<Building>, func: integer)
 --- Handles player selection of this building in the world viewport, opening inspection UI and highlighting geometry.
 ---@field select fun(self: Building)
 --- Returns the `BuildingDesignation` settlement purpose category (e.g. shop, barracks, residential).
@@ -11469,7 +11469,7 @@ taskPriority = {
 --- Awards athletics XP proportional to travel duration and velocity while running on foot.
 ---@field xpRunning fun(self: CharStats, time: number, speed: number)
 --- Grants stealth XP when moving undetected in proximity to hostile or neutral observers.
----@field xpStealth fun(self: CharStats, time: number, enemiesAbout?: boolean, seen: YesNoMaybe|YesNoMaybeValue, isMoving?: boolean)
+---@field xpStealth fun(self: CharStats, time: number, enemiesAbout?: boolean, seen: YesNoMaybeValue, isMoving?: boolean)
 --- Grants stealth XP upon successfully remaining unheard during an acoustic perception check.
 ---@field xpStealthHearCheckEvent fun(self: CharStats, enemiesAbout?: boolean, trespassing?: boolean, seen?: boolean)
 --- Returns display string pair indicating current stealth XP earning multiplier and group penalty.
@@ -11577,7 +11577,7 @@ taskPriority = {
 --- Extracts itemized list of all active penalties (injuries, hunger, equipment, encumbrance) affecting a stat.
 ---@field getStatPenaltiesForGUI fun(self: CharStats, statName: string, stat: integer, dats: Lektor<StringPair>): boolean
 --- Populates possibleAttacks (FitnessSelector<CombatTechniqueData*>) with valid combat techniques for the given range, weapon reach, weapon category, and skill.
----@field chooseAttacks fun(self: CharStats, possibleAttacks: CharStats|CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)
+---@field chooseAttacks fun(self: CharStats, possibleAttacks: CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)
 --- Populates tooltip list describing calorie expenditure and hunger acceleration from heavy labor and combat.
 ---@field printExertionHungerMultTooltip fun(self: CharStats, dats: Lektor<StringPair>)
 --- Awards diminishing-returns training XP up to a designated skill cap when using practice dummies or training equipment.
@@ -13035,7 +13035,7 @@ taskPriority = {
 
 --- Engine class `AnimationClassBase.AnimationLayer`.
 ---@class AnimationClassBase.AnimationLayer
----@field addToRemoveList fun(self: AnimationClassBase.AnimationLayer, anim: AnimationClassBase.SingleAnimation|SingleAnimation)
+---@field addToRemoveList fun(self: AnimationClassBase.AnimationLayer, anim: AnimationClassBase.SingleAnimation)
 ---@field clearLists fun(self: AnimationClassBase.AnimationLayer)
 ---@field _clearListsSafe fun(self: AnimationClassBase.AnimationLayer)
 ---@field randomiseAnimationPosition fun(self: AnimationClassBase.AnimationLayer, arg1: string)
@@ -13841,9 +13841,9 @@ taskPriority = {
 --- A static utility method determining how quickly materials are consumed when crafting a specific piece of armour based on its total coverage.
 ---@field getArmourCraftingMaterialConsumptionRate fun(self: Armour): number
 --- Populates the primary block of the tooltip UI. This section usually includes the armour's name, class, quality grade, coverage lists, and base defense stats (cut/blunt/pierce).
----@field getTooltipData1 fun(self: Armour, lines: Armour|OgreVector<StringPair>)
+---@field getTooltipData1 fun(self: Armour, lines: OgreVector<StringPair>)
 --- Populates the secondary block of the tooltip UI. This section adds information on stat penalties/bonuses (stealth, combat speed, etc.), weight, monetary value, and environmental protections.
----@field getTooltipData2 fun(self: Armour, lines: Armour|OgreVector<StringPair>)
+---@field getTooltipData2 fun(self: Armour, lines: OgreVector<StringPair>)
 --- Weight classification of the armour (ArmourClass, such as cloth, light, medium, or heavy).
 ---@field armourClassEnum integer
 --- Multiplier applied to the wearer's assassination skill.
@@ -14415,7 +14415,7 @@ taskPriority = {
 --- Returns true if the given Vector3 position (and optional sphere radius) is within the camera view frustum.
 ---@field isVisible fun(self: CameraClass, pos: table, radius?: number): boolean
 --- Clamps camera bounds to remain within range of the provided lektor<Character*> character collection.
----@field restrictPosition fun(self: CameraClass, objects: CameraClass|Lektor<Character>)
+---@field restrictPosition fun(self: CameraClass, objects: Lektor<Character>)
 --- Current altitude offset of the camera above the terrain.
 ---@field altitude number
 --- Raw pointer (lightuserdata) to the underlying Ogre::Camera instance.
@@ -15525,7 +15525,7 @@ taskPriority = {
 --- Returns the total number of material units delivered to the construction site so far.
 ---@field getTotalMatsPresent fun(self: ConstructionState): number
 --- Populates the provided Lektor<BuildMaterial> out-parameter with still-needed materials, or returns a 1-indexed array table of BuildMaterial objects if called with no argument.
----@field getNeededMats fun(self: ConstructionState, out?: ConstructionState|Lektor<BuildMaterial>): BuildMaterial[]|nil
+---@field getNeededMats fun(self: ConstructionState, out?: Lektor<BuildMaterial>): BuildMaterial[]|nil
 --- Returns the remaining quantity of the specified material GameData needed for construction.
 ---@field needsMat fun(self: ConstructionState, what: GameData): integer
 --- Returns true if the construction site still requires additional materials to finish building.
@@ -15771,7 +15771,7 @@ taskPriority = {
 --- Retrieves the singleton FCS manufacturer template record representing player-crafted weapon branding and grade thresholds.
 ---@field playerManufacturerData fun(): GameData
 --- Collects all crafting recipes unlocked by the player faction's researched technology tree that are compatible with this workbench type.
----@field getAvailableCrafts fun(self: CraftingBuilding, out: CraftingBuilding|LektorReadOnly<GameDataGroup>)
+---@field getAvailableCrafts fun(self: CraftingBuilding, out: LektorReadOnly<GameDataGroup>)
 --- Enqueues a new crafting recipe order at the tail of the production queue, instantiating the item blueprint and setting base fabrication time. Returns the new queue entry as a borrowed `CraftingItem`, or nil.
 ---@field _addCraft fun(self: CraftingBuilding, basedata: GameData, matdata?: GameData, progress: number, crit: integer): CraftingItem
 --- Cancels and removes a recipe order at the specified queue index, refunding unprocessed raw materials.
@@ -15787,7 +15787,7 @@ taskPriority = {
 --- Resolves the upgraded weapon model tier record awarded on a critical success roll, advancing from Refitted Blade to Catun, Mk, or Edge Type.
 ---@field getCriticalSuccessWeapon fun(self: CraftingBuilding, normalWeaponLevel: integer): GameData
 --- Populates a list of finished crafted equipment ready to be hauled away to storage bins.
----@field getItemsWeWantRidOf fun(self: CraftingBuilding, out: CraftingBuilding|Lektor<GameData>, looting?: boolean)
+---@field getItemsWeWantRidOf fun(self: CraftingBuilding, out: Lektor<GameData>, looting?: boolean)
 --- Determines whether this workbench can accept the proposed item blueprint during hauling deposits, matching against ingredients for all queued recipes.
 ---@field canHaveSomeOfThese fun(self: CraftingBuilding, these: GameData): boolean
 --- Parses the FCS `BUILDING_FUNCTIONALITY` record, loading craftable item type filters, skill ceilings, and recipe categories.
@@ -15886,9 +15886,9 @@ taskPriority = {
 --- Sets whether the equipped crossbow 3D model is visible in the scene.
 ---@field setVisible fun(self: Crossbow, on?: boolean)
 --- Populates the primary tooltip section with crossbow weapon stats, damage ratings, and effective range.
----@field getTooltipData1 fun(self: Crossbow, lines: Crossbow|OgreVector<StringPair>)
+---@field getTooltipData1 fun(self: Crossbow, lines: OgreVector<StringPair>)
 --- Collects auxiliary text for the tooltip generation including localized descriptors or secondary attributes.
----@field getTooltipData2 fun(self: Crossbow, lines: Crossbow|OgreVector<StringPair>)
+---@field getTooltipData2 fun(self: Crossbow, lines: OgreVector<StringPair>)
 --- Ranged weapon runtime attributes.
 ---@field gunClass lightuserdata
 
@@ -16568,7 +16568,7 @@ taskPriority = {
 --- Assigns the specified `Character` as the new leader of the faction.
 ---@field setNewLeader fun(self: FactionLeader, arg1: Character)
 --- Populates the output `Lektor<RootObject>` (`out`) with valid enemy targets for the given `mission` (`GameData`).
----@field getEnemyMissionTargetList fun(self: FactionLeader, out: FactionLeader|Lektor<RootObject>, mission: GameData)
+---@field getEnemyMissionTargetList fun(self: FactionLeader, out: Lektor<RootObject>, mission: GameData)
 --- Populates the specified `DatapanelGUI` category (`cat`) with faction leader information.
 ---@field getGUIData fun(self: FactionLeader, arg1: DatapanelGUI, cat: integer)
 --- List (`Lektor<GameData>`) of biome group `GameData` territories claimed by the faction.
@@ -16655,7 +16655,7 @@ taskPriority = {
 --- Executes a debug routine to inspect or advance faction war manager state and campaign progression.
 ---@field debugButton fun(self: FactionWarMgr)
 --- Initiates or schedules a military campaign against a target town or outpost using specified campaign data and home base.
----@field triggerCampaign fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4?: boolean|number, arg5?: Faction|TownBase, arg6?: boolean, arg7?: Faction): CampaignInstance|nil
+---@field triggerCampaign fun(self: FactionWarMgr, targetTown: FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4?: boolean|number, arg5?: Faction|TownBase, arg6?: boolean, arg7?: Faction): CampaignInstance|nil
 --- Returns the `CampaignInstance` that the specified platoon is currently assigned to, or nullptr.
 ---@field getCurrentCampaign fun(self: FactionWarMgr, who: Platoon): CampaignInstance
 --- Returns the objective target `hand` assigned to the given platoon in its active campaign.
@@ -16667,9 +16667,9 @@ taskPriority = {
 --- Finds the closest faction-owned town to the given world coordinate position.
 ---@field getNearestTown fun(self: FactionWarMgr, p: table): TownBase
 --- Populates a list of all faction-owned settlements located within the specified biome region.
----@field getTownsInBiome fun(self: FactionWarMgr, out: FactionWarMgr|Lektor<TownBase>, b: lightuserdata)
+---@field getTownsInBiome fun(self: FactionWarMgr, out: Lektor<TownBase>, b: lightuserdata)
 --- Populates a list of faction-owned settlements that have sufficient free population to generate assault forces.
----@field getMyTownsWithEnoughFreePopulation fun(self: FactionWarMgr, out: FactionWarMgr|Lektor<TownBase>, popNeeded: integer)
+---@field getMyTownsWithEnoughFreePopulation fun(self: FactionWarMgr, out: Lektor<TownBase>, popNeeded: integer)
 --- Finds and returns the active `CampaignInstance` matching the given unique campaign ID, or nullptr.
 ---@field getActiveCampaign fun(self: FactionWarMgr, uniqueID: integer): CampaignInstance
 --- Internal initialization configuring faction territory biomes, valid campaign types, and town registries.
@@ -17183,9 +17183,9 @@ taskPriority = {
 --- Returns the smelt or fuel value contributed by the specified Item.
 ---@field getInputValue fun(self: FurnaceBuilding, item: Item): number
 --- Populates the provided Lektor<GameData> container with item types the furnace can accept while its input is not full.
----@field getResourcesNeededBecauseNotFull fun(self: FurnaceBuilding, out: FurnaceBuilding|Lektor<GameData>)
+---@field getResourcesNeededBecauseNotFull fun(self: FurnaceBuilding, out: Lektor<GameData>)
 --- Populates the provided Lektor<GameData> container with item types the furnace requires when its input is empty.
----@field getResourcesNeededBecauseEmpty fun(self: FurnaceBuilding, out: FurnaceBuilding|Lektor<GameData>)
+---@field getResourcesNeededBecauseEmpty fun(self: FurnaceBuilding, out: Lektor<GameData>)
 --- Returns true if the specified item GameData can be placed into this furnace.
 ---@field canHaveSomeOfThese fun(self: FurnaceBuilding, input: GameData): boolean
 --- GUI callback triggered by a DataPanelLine button to activate incineration of the furnace's contents.
@@ -18323,9 +18323,9 @@ taskPriority = {
 --- Deserializes the locked armour state from a save node. Extends the base `Gear` deserialization to restore the internal lock mechanism's configuration.
 ---@field _loadFromSerialise fun(self: LockedArmour, container: GameDataContainer, state: GameData)
 --- Generates the tooltip UI content for the locked armour, indicating whether it's locked, unlocked, or broken, and displays the required skill/strength limits for removal.
----@field getTooltipData1 fun(self: LockedArmour, lines: LockedArmour|OgreVector<StringPair>)
+---@field getTooltipData1 fun(self: LockedArmour, lines: OgreVector<StringPair>)
 --- Generates supplementary tooltip data. In the case of `LockedArmour`, this acts as a stub or secondary tooltip pass.
----@field getTooltipData2 fun(self: LockedArmour, lines: LockedArmour|OgreVector<StringPair>)
+---@field getTooltipData2 fun(self: LockedArmour, lines: OgreVector<StringPair>)
 --- Pointer to the DoorLock component securing these shackles or locked armour.
 ---@field lock lightuserdata
 
@@ -19858,15 +19858,15 @@ taskPriority = {
 --- Sets the home building hand handle and SquadType for this ownership.
 ---@field setHomeBuilding fun(self: Ownerships, h: hand, t: integer)
 --- Populates the provided lektor<hand> out-parameter with handles of all owned buildings.
----@field getOwnedBuildingsH fun(self: Ownerships, out: Lektor<hand>|Ownerships)
+---@field getOwnedBuildingsH fun(self: Ownerships, out: Lektor<hand>)
 --- Populates the provided lektor<Building*> out-parameter with pointers to owned buildings, optionally filtered to a specific TownBase.
----@field getOwnedBuildingPtrs fun(self: Ownerships, out: Lektor<Building>|Ownerships, town?: TownBase)
+---@field getOwnedBuildingPtrs fun(self: Ownerships, out: Lektor<Building>, town?: TownBase)
 --- Populates the provided lektor<Building*> out-parameter with furniture inside the home building matching the given BuildingFunction.
----@field getHomeFurnitureOfType fun(self: Ownerships, out: Lektor<Building>|Ownerships, type: integer)
+---@field getHomeFurnitureOfType fun(self: Ownerships, out: Lektor<Building>, type: integer)
 --- Populates the provided lektor<RootObject*> out-parameter with owned objects matching the given itemType and returns the count found.
----@field getOwnedPtrs fun(self: Ownerships, out: Lektor<RootObject>|Ownerships, type: integer): integer
+---@field getOwnedPtrs fun(self: Ownerships, out: Lektor<RootObject>, type: integer): integer
 --- Populates the provided lektor<Building*> out-parameter with owned buildings matching the specified BuildingFunction.
----@field getBuildingsWithFunction fun(self: Ownerships, out: Lektor<Building>|Ownerships, bf: integer)
+---@field getBuildingsWithFunction fun(self: Ownerships, out: Lektor<Building>, bf: integer)
 --- The hand handle referencing the designated home building.
 ---@field _homeBuilding hand
 --- The designated home TownBase.
@@ -20401,19 +20401,19 @@ taskPriority = {
 --- Renders telemetry data to the HUD Datapanel, displaying operating efficiency, power usage, and ground resource fertility.
 ---@field getGUIData fun(self: ProductionBuilding, datapanel: DatapanelGUI, category: integer)
 --- Generates localized tooltip text describing ground resource extraction efficiency and quality ratings.
----@field getGUIToolTipForGroundResourceEfficiency fun(self: ProductionBuilding, out: Lektor<StringPair>|ProductionBuilding)
+---@field getGUIToolTipForGroundResourceEfficiency fun(self: ProductionBuilding, out: Lektor<StringPair>)
 --- Restores production progress, active operational state, and input buffers from serialized savegame records.
 ---@field loadFromSerialise fun(self: ProductionBuilding, wholeState: GameSaveState)
 --- Calculates the raw material conversion value provided by a specific input item instance.
 ---@field getInputValue fun(self: ProductionBuilding, item: Item): number
 --- Gathers input raw materials that are completely exhausted, emitting high-priority hauling jobs for logistics workers.
----@field getResourcesNeededBecauseEmpty fun(self: ProductionBuilding, out: Lektor<GameData>|ProductionBuilding)
+---@field getResourcesNeededBecauseEmpty fun(self: ProductionBuilding, out: Lektor<GameData>)
 --- Gathers input raw materials that have available capacity in their respective input inventory sections to maintain continuous operation.
----@field getResourcesNeededBecauseNotFull fun(self: ProductionBuilding, out: Lektor<GameData>|ProductionBuilding)
+---@field getResourcesNeededBecauseNotFull fun(self: ProductionBuilding, out: Lektor<GameData>)
 --- Determines whether this machine's input sections can accept the proposed item blueprint during hauling deposits.
 ---@field canHaveSomeOfThese fun(self: ProductionBuilding, these: GameData): boolean
 --- Populates a list of finished manufactured items ready to be hauled away to storage bins or distribution stockpiles.
----@field getItemsWeWantRidOf fun(self: ProductionBuilding, out: Lektor<GameData>|ProductionBuilding, loot?: boolean)
+---@field getItemsWeWantRidOf fun(self: ProductionBuilding, out: Lektor<GameData>, loot?: boolean)
 --- Configures or switches the primary output product generated by this machine, updating recipe parameters and output capacity.
 ---@field setProductionItem fun(self: ProductionBuilding, _itemData: GameData, stack: integer, progress01: number)
 --- Renders ground resource fertility ratings to the Datapanel GUI.
@@ -20653,7 +20653,7 @@ taskPriority = {
 --- Populates the specified DatapanelGUI category with rain collector status and efficiency info.
 ---@field getGUIState fun(self: RainCollectorBuilding, datapanel: DatapanelGUI, category: integer)
 --- Populates the provided Lektor<StringPair> container with tooltip lines describing rainfall collection efficiency.
----@field getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: Lektor<StringPair>|RainCollectorBuilding)
+---@field getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: Lektor<StringPair>)
 
 --- Ballistic weapon controller governing personal crossbows and mounted defensive turrets. Manages predictive target leading (`getAimPos`), friendly-fire raycast clearances (`takeTheShotCheck`), ammunition consumption and reloading cycles (`reloadCheck`), elevation range multipliers (`getGunRange`), and targeting priority arbitration (`scoreTarget`).
 ---@class RangedCombatClass
@@ -20900,9 +20900,9 @@ taskPriority = {
 --- Instantiates saved objects from this container into the active world with optional position/rotation offsets, FactoryCallbackInterface, specific SID filter, external GameDataContainer, and SpecificItemLoadFirst filter.
 ---@field loadToReality fun(self: RootObjectContainer, skipSaveState?: boolean, positionMoved: table, rotOffset: table, callback: FactoryCallbackInterface, specificSID: string, externalContainer: GameDataContainer, skipperClass?: SpecificItemLoadFirst)
 --- Appends objects from this container matching the given itemType (and optionally only selected ones) into the provided lektor<RootObject*> out-parameter.
----@field getSelectedObjects fun(self: RootObjectContainer, out: Lektor<RootObject>|RootObjectContainer, type: integer, selectedOnly?: boolean)
+---@field getSelectedObjects fun(self: RootObjectContainer, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)
 --- Serializes either a provided lektor<RootObject*> or all objects in this container into the given instance collection GameData and GameDataContainer, applying an optional PosRotPair offset (lightuserdata) and mod name.
----@field serialiseThings fun(self: RootObjectContainer, _things?: GameData|RootObjectContainer, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod?: string)
+---@field serialiseThings fun(self: RootObjectContainer, _things?: GameData, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod?: string)
 --- Instantiates a single object from a GameSaveState into the world at the specified position and rotation.
 ---@field loadInstance fun(self: RootObjectContainer, state: GameSaveState, skipSaveState?: boolean, pos: table, rot: table, callback?: FactoryCallbackInterface, positionMoved: table)
 --- The lektor<RootObject*> list of active RootObject instances stored in this container.
@@ -21103,7 +21103,7 @@ taskPriority = {
 --- Returns the active filesystem directory path currently configured for saving and loading games.
 ---@field getSavePath fun(self: SaveManager): string
 --- Scans the default active save directory, populating `list` with `SaveInfo` descriptors for all discovered save slots.
----@field scanGames fun(self: SaveManager, location: Lektor<SaveInfo>|SaveManager|string, list?: Lektor<SaveInfo>|SaveManager|boolean, loadDetails?: boolean): integer
+---@field scanGames fun(self: SaveManager, location: Lektor<SaveInfo>|string, list?: Lektor<SaveInfo>|boolean, loadDetails?: boolean): integer
 --- Elapsed time counter tracking autosave trigger intervals.
 ---@field autoSaveTimer number
 --- Directory or slot identifier of currently active game session.
@@ -21854,15 +21854,15 @@ taskPriority = {
 --- Synchronizes the player's MyGUI container window with current stock levels, updating capacity text readouts and visual full indicators.
 ---@field updateInventoryWindow fun(self: StorageBuilding)
 --- Populates a list of item blueprint templates currently occupying this storage container that should be evacuated or hauled elsewhere. Excludes shop counters and terminal (`endOfTheLine`) containers unless forced by player looting commands.
----@field getItemsWeWantRidOf fun(self: StorageBuilding, out: Lektor<GameData>|StorageBuilding, forceLooting?: boolean)
+---@field getItemsWeWantRidOf fun(self: StorageBuilding, out: Lektor<GameData>, forceLooting?: boolean)
 --- Evaluates whether this container can accept the specified item. Validates structure construction completion, inventory section grid space, designated item category filters, and active capacity limits.
 ---@field canHaveSomeOfThese fun(self: StorageBuilding, input: GameData): boolean
 --- Identifies items urgently required by this container because its inventory section is currently empty or below required capacity. Emits hauling requests for logistics workers.
----@field getResourcesNeededBecauseEmpty fun(self: StorageBuilding, out: Lektor<GameData>|StorageBuilding)
+---@field getResourcesNeededBecauseEmpty fun(self: StorageBuilding, out: Lektor<GameData>)
 --- Identifies items that this container can still accept because it has not yet reached its maximum capacity. Used by AI hauling tasks to keep general supply bins topped off.
----@field getResourcesNeededBecauseNotFull fun(self: StorageBuilding, out: Lektor<GameData>|StorageBuilding)
+---@field getResourcesNeededBecauseNotFull fun(self: StorageBuilding, out: Lektor<GameData>)
 --- Filters all configured consumption item descriptors, appending only those that currently have physical items stocked in their designated inventory section.
----@field getConsumtionItems_inStock fun(self: StorageBuilding, out: Lektor<ConsumptionItem>|StorageBuilding)
+---@field getConsumtionItems_inStock fun(self: StorageBuilding, out: Lektor<ConsumptionItem>)
 --- Terminal storage flag preventing automated worker retrieval during hauling passes.
 ---@field endOfTheLine boolean
 --- Multi-item capacity limit configurations for containers accepting multiple designated items.
@@ -21883,9 +21883,9 @@ taskPriority = {
 --- Retrieves the indoor combat penalty or bonus for this specific weapon. Long weapons typically return a negative modifier here.
 ---@field getSkillModIndoors fun(self: Sword): integer
 --- Appends the primary functional stats of the weapon to the UI tooltip. This includes the weapon class, cutting and blunt damage values, armour penetration, and combat bonuses.
----@field getTooltipData1 fun(self: Sword, lines: OgreVector<StringPair>|Sword)
+---@field getTooltipData1 fun(self: Sword, lines: OgreVector<StringPair>)
 --- Appends the secondary lore and flavor text to the UI tooltip. This includes the item description, the manufacturer name, and potentially the specific smith who crafted it.
----@field getTooltipData2 fun(self: Sword, lines: OgreVector<StringPair>|Sword)
+---@field getTooltipData2 fun(self: Sword, lines: OgreVector<StringPair>)
 --- Blunt impact damage multiplier of this melee weapon.
 ---@field bluntDamage number
 --- Cutting slash damage multiplier of this melee weapon.
@@ -22401,7 +22401,7 @@ taskPriority = {
 --- Overload binding that sets up the tooltip for a target widget using a GameData item template.
 ---@field setup_gamedata fun(self: ToolTip, arg1: MyGUI.Widget, arg2: GameData)
 --- Overload binding that sets up the tooltip for a target widget using a lektor of StringPair key-value pairs.
----@field setup_stringpairs fun(self: ToolTip, arg1: MyGUI.Widget, arg2: Lektor<StringPair>|ToolTip)
+---@field setup_stringpairs fun(self: ToolTip, arg1: MyGUI.Widget, arg2: Lektor<StringPair>)
 --- Overload binding that sets up the tooltip for a target widget using a plain text string.
 ---@field setup_text fun(self: ToolTip, arg1: MyGUI.Widget, arg2: string)
 --- Clears tooltip data and hides the panel for the specified widget.
@@ -22673,9 +22673,9 @@ taskPriority = {
 --- Internal protected helper parsing resident definitions from specified FCS record, validating squad availability and building designation requirements.
 ---@field _initialiseResidentData fun(self: Town, residentSourceData: GameData)
 --- Distributes resident squad templates, merchants, and patrol groups across all available matching municipal buildings in the settlement.
----@field chooseResidents fun(self: Town, buildings: Lektor<Building>|Town)
+---@field chooseResidents fun(self: Town, buildings: Lektor<Building>)
 --- Selects the most suitable building from a candidate collection matching the architectural and functional requirements of a resident descriptor.
----@field chooseBuildingForResident fun(self: Town, buildings: Lektor<Building>|Town, resident: any): Building
+---@field chooseBuildingForResident fun(self: Town, buildings: Lektor<Building>, resident: any): Building
 --- Registers a defensive gateway structure entity handle into the town's perimeter gate management collection.
 ---@field addGate fun(self: Town, h: hand)
 --- Sets the persistent runtime entity handle assigned to this town object.
@@ -23371,7 +23371,7 @@ taskPriority = {
 --- Lists active workers operating this station and displays occupant portraits.
 ---@field getGUIWorkers fun(self: UseableStuff, datapanel: DatapanelGUI, category: integer)
 --- Generates contextual tooltips describing ground water, stone, or iron resource fertility underneath this resource extractor.
----@field getGUIToolTipForGroundResourceEfficiency fun(self: UseableStuff, out: Lektor<StringPair>|UseableStuff)
+---@field getGUIToolTipForGroundResourceEfficiency fun(self: UseableStuff, out: Lektor<StringPair>)
 --- Restores active machine state, battery charge, door locks, and inventory items from save data.
 ---@field loadFromSerialise fun(self: UseableStuff, wholeState: GameSaveState)
 --- Checks whether there is an unoccupied operator slot available for character assignment.
@@ -23552,11 +23552,11 @@ taskPriority = {
 --- Static or instance method converting RGBA color components into a formatted MyGUI color string.
 ---@field colorToGUIString fun(self: UtilityT, arg1: number, arg2: number, arg3: number, arg4?: number): string
 --- Populates lektor<std::string> out with files in dir matching extension filter type, returning true on success.
----@field getFilesInDir fun(self: UtilityT, out: Lektor<string>|UtilityT, dir: string, type: string): boolean
+---@field getFilesInDir fun(self: UtilityT, out: Lektor<string>, dir: string, type: string): boolean
 --- Populates lektor<std::string> out with files in game directory dir matching extension filter type, returning true on success.
----@field getFilesInGameDir fun(self: UtilityT, out: Lektor<string>|UtilityT, dir: string, type: string): boolean
+---@field getFilesInGameDir fun(self: UtilityT, out: Lektor<string>, dir: string, type: string): boolean
 --- Populates lektor<std::string> out with subdirectories found inside dir.
----@field getDirsInDir fun(self: UtilityT, out: Lektor<string>|UtilityT, dir: string)
+---@field getDirsInDir fun(self: UtilityT, out: Lektor<string>, dir: string)
 --- Reads and returns the entire contents of the file at path as a string, or nil on failure.
 ---@field readFile fun(self: UtilityT, path: string): nil|string
 --- Rounds floating-point input to the nearest integer multiple of roundTo.
@@ -23665,7 +23665,7 @@ taskPriority = {
 --- Fetches the indoor combat penalty or bonus specific to this weapon type. Base weapon implementation simply returns 0.
 ---@field getSkillModIndoors fun(self: Weapon): integer
 --- Populates the given Ogre::vector<StringPair> with primary weapon stat lines for UI tooltips.
----@field getTooltipData1 fun(self: Weapon, arg1: OgreVector<StringPair>|Weapon)
+---@field getTooltipData1 fun(self: Weapon, arg1: OgreVector<StringPair>)
 --- Blood loss multiplier inflicted by hits from this weapon.
 ---@field bleedDamage number
 --- Primary weapon skill and class category (WeaponCategory).
@@ -23914,9 +23914,9 @@ taskPriority = {
 --- Tri-state boolean value wrapper in Kenshi (YesNoMaybe) representing YES, NO, or MAYBE states with boolean and integer conversions.
 ---@class YesNoMaybeValue
 --- Compares this YesNoMaybeValue against another YesNoMaybeValue, enum constant, or integer for equality.
----@field operator_eq fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|integer): boolean
+---@field operator_eq fun(self: YesNoMaybeValue, arg1?: YesNoMaybeValue|integer): boolean
 --- Compares this YesNoMaybeValue against another YesNoMaybeValue, enum constant, boolean, or integer for inequality.
----@field operator_ne fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|boolean|integer): boolean
+---@field operator_ne fun(self: YesNoMaybeValue, arg1?: YesNoMaybeValue|boolean|integer): boolean
 --- Returns the underlying integer representation of the tri-state value.
 ---@field toInt fun(self: YesNoMaybeValue): integer
 --- Evaluates the tri-state value and returns true if state is YES.
@@ -23951,9 +23951,9 @@ taskPriority = {
 --- Deletes all selected objects across active zones in the in-game level editor.
 ---@field levelEditorDeleteAllSelectedObjects fun(self: ZoneManager)
 --- Retrieves all level editor selected objects matching the given item type.
----@field levelEditorGetAllSelectedObjects fun(self: ZoneManager, out: Lektor<RootObject>|ZoneManager, type: integer)
+---@field levelEditorGetAllSelectedObjects fun(self: ZoneManager, out: Lektor<RootObject>, type: integer)
 --- Populates an array with all `ZoneMap` chunks sharing the same connected topological island as the given zone.
----@field getIsland fun(self: ZoneManager, zone: ZoneMap, out: Lektor<ZoneMap>|ZoneManager)
+---@field getIsland fun(self: ZoneManager, zone: ZoneMap, out: Lektor<ZoneMap>)
 --- Returns the 2D zone grid coordinate `(X, Y)` corresponding to current camera position.
 ---@field getCurrentMapSector fun(self: ZoneManager): iVector2
 --- Returns the `ZoneMap` chunk currently containing the camera center position.
@@ -24065,7 +24065,7 @@ taskPriority = {
 --- Queries dynamic particle effect data and spawn probabilities for footsteps/impacts on ground surface.
 ---@field getGroundEffect fun(self: ZoneManager, position: table): boolean, GameData|nil, number, number
 --- Thread-safe retrieval of 2D sector coordinate indices for all active zones.
----@field getAllActiveZonesT fun(self: ZoneManager, out: Lektor<iVector2>|ZoneManager)
+---@field getAllActiveZonesT fun(self: ZoneManager, out: Lektor<iVector2>)
 --- Flag triggering topological zone island recalculation.
 ---@field _needCalculateIslands boolean
 --- Global world biome partition map and climate classifier.
@@ -24100,7 +24100,7 @@ taskPriority = {
 --- Returns the 2D bounding box (AABB2D) for the zone at the given 3D position or grid coordinate (iVector2).
 ---@field getZoneBoundsT fun(self: ZoneManagerInterfaceT, arg1: table): AABB2D
 --- Populates the provided vector (lektor<iVector2>) with grid coordinates of all currently active zones.
----@field getAllActiveZonesT fun(self: ZoneManagerInterfaceT, arg1: Lektor<iVector2>|ZoneManagerInterfaceT)
+---@field getAllActiveZonesT fun(self: ZoneManagerInterfaceT, arg1: Lektor<iVector2>)
 
 --- Configures ground particle and dust effects for a biome, specifying particle effect data, movement speed thresholds, and spawn probabilities.
 ---@class ZoneManager_BiomeGroundEffects

@@ -703,7 +703,8 @@ def is_static_style(body, binding):
 STACK_READ_PATTERNS = (
     (r"checkObject\s*<\s*([^>]+?)\s*>\s*\(\s*L\s*,\s*(\d+)", lambda m: lua_object_type(m.group(1))),
     # A second object of the binding's own class (operator_assign, compare).
-    (r"\bgetInstance\s*\(\s*L\s*,\s*(\d+)", lambda m: SELF_TYPE),
+    (r"(?<![:\w])getInstance\s*\(\s*L\s*,\s*(\d+)", lambda m: SELF_TYPE),
+    (r"\b([A-Za-z_]\w*Binding)::getInstance\s*\(\s*L\s*,\s*(\d+)", lambda m: "ref:binding:" + m.group(1)),
     (r"luaL_(?:check|opt)integer\s*\(\s*L\s*,\s*(\d+)", lambda m: "integer"),
     (r"luaL_(?:check|opt)number\s*\(\s*L\s*,\s*(\d+)", lambda m: "number"),
     (r"luaL_(?:check|opt)l?string\s*\(\s*L\s*,\s*(\d+)", lambda m: "string"),

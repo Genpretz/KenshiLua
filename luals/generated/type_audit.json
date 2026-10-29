@@ -4037,7 +4037,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Building, out: Building|Lektor<Building>, func: integer)",
+      "lua": "fun(self: Building, out: Lektor<Building>, func: integer)",
       "member": "findAllFurnitureWithFunction"
     },
     {
@@ -5138,7 +5138,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: CharStats, possibleAttacks: CharStats|CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)",
+      "lua": "fun(self: CharStats, possibleAttacks: CombatTechniqueDataFitnessSelector, range: number, weaponReach: number, lastAttack?: CombatTechniqueData, opponentIsStationary?: boolean, skipMedicals?: boolean, _weaponType: integer, _weaponSkill: number)",
       "member": "chooseAttacks"
     },
     {
@@ -6559,7 +6559,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: ConstructionState, out?: ConstructionState|Lektor<BuildMaterial>): BuildMaterial[]|nil",
+      "lua": "fun(self: ConstructionState, out?: Lektor<BuildMaterial>): BuildMaterial[]|nil",
       "member": "getNeededMats"
     },
     {
@@ -7817,7 +7817,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Faction, out: Faction|Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
+      "lua": "fun(self: Faction, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
       "member": "getSelectedObjects"
     },
     {
@@ -7926,7 +7926,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: FactionWarMgr, targetTown: FactionWarMgr|FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4?: boolean|number, arg5?: Faction|TownBase, arg6?: boolean, arg7?: Faction): CampaignInstance|nil",
+      "lua": "fun(self: FactionWarMgr, targetTown: FitnessSelectorCampaignTriggerData|RootObjectBase, data: CampaignData|GameData|RootObjectBase, home: TownBase|number, arg4?: boolean|number, arg5?: Faction|TownBase, arg6?: boolean, arg7?: Faction): CampaignInstance|nil",
       "member": "triggerCampaign"
     },
     {
@@ -7977,7 +7977,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: FactionWarMgr, out: FactionWarMgr|Lektor<TownBase>, b: lightuserdata)",
+      "lua": "fun(self: FactionWarMgr, out: Lektor<TownBase>, b: lightuserdata)",
       "member": "getTownsInBiome"
     },
     {
@@ -8863,7 +8863,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: GameWorld, results: GameWorld|Lektor<RootObject>, spherePos: table, radius: number, type: integer, maxNumber: integer, skip?: RootObject)",
+      "lua": "fun(self: GameWorld, results: Lektor<RootObject>, spherePos: table, radius: number, type: integer, maxNumber: integer, skip?: RootObject)",
       "member": "getObjectsWithinSphere"
     },
     {
@@ -8880,7 +8880,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: GameWorld, results: GameWorld|Lektor<RootObject>, pos: table, size: table, rot: table, type: integer, maxNumber: integer, skip?: RootObject)",
+      "lua": "fun(self: GameWorld, results: Lektor<RootObject>, pos: table, size: table, rot: table, type: integer, maxNumber: integer, skip?: RootObject)",
       "member": "getObjectsWithinBox"
     },
     {
@@ -9546,7 +9546,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Inventory, out: Inventory|Lektor<InventorySection>, type: integer)",
+      "lua": "fun(self: Inventory, out: Lektor<InventorySection>, type: integer)",
       "member": "getAllSectionsOfType"
     },
     {
@@ -9563,7 +9563,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Inventory, all: Inventory|Lektor<Item>, ty: integer, skipEquipped?: boolean)",
+      "lua": "fun(self: Inventory, all: Lektor<Item>, ty: integer, skipEquipped?: boolean)",
       "member": "getAllItemsOfType"
     },
     {
@@ -9580,7 +9580,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Inventory, out: Inventory|Lektor<Item>, type: integer)",
+      "lua": "fun(self: Inventory, out: Lektor<Item>, type: integer)",
       "member": "getAllItemsWithFunction"
     },
     {
@@ -14181,7 +14181,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Ownerships, out: Lektor<Building>|Ownerships, type: integer)",
+      "lua": "fun(self: Ownerships, out: Lektor<Building>, type: integer)",
       "member": "getHomeFurnitureOfType"
     },
     {
@@ -14198,7 +14198,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Ownerships, out: Lektor<RootObject>|Ownerships, type: integer): integer",
+      "lua": "fun(self: Ownerships, out: Lektor<RootObject>, type: integer): integer",
       "member": "getOwnedPtrs"
     },
     {
@@ -14215,7 +14215,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Ownerships, out: Lektor<Building>|Ownerships, bf: integer)",
+      "lua": "fun(self: Ownerships, out: Lektor<Building>, bf: integer)",
       "member": "getBuildingsWithFunction"
     },
     {
@@ -16002,7 +16002,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>|RootObjectContainer, type: integer, selectedOnly?: boolean)",
+      "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
       "member": "getSelectedObjects"
     },
     {
@@ -16012,7 +16012,7 @@
       "header": "void serialiseThings(const lektor<RootObject*>& _things, GameData* outputToInstanceCollectionOfSomeKind, GameDataContainer* source, PosRotPair* offsetPosToSubtract, const std::string& mod)",
       "issues": [
         {
-          "actual": "GameData|RootObjectContainer",
+          "actual": "GameData",
           "category": "binding_converts",
           "expected": "Lektor<RootObject>",
           "position": "param 1"
@@ -16025,7 +16025,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: RootObjectContainer, _things?: GameData|RootObjectContainer, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod?: string)",
+      "lua": "fun(self: RootObjectContainer, _things?: GameData, outputToInstanceCollectionOfSomeKind?: GameData|GameDataContainer, source?: GameDataContainer|lightuserdata, offsetPosToSubtract?: lightuserdata|string, mod?: string)",
       "member": "serialiseThings"
     },
     {
@@ -17464,7 +17464,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Town, buildings: Lektor<Building>|Town, resident: any): Building",
+      "lua": "fun(self: Town, buildings: Lektor<Building>, resident: any): Building",
       "member": "chooseBuildingForResident"
     },
     {
@@ -18706,14 +18706,14 @@
       "header": "bool operator==(YesNoMaybe::ynm a) const",
       "issues": [
         {
-          "actual": "YesNoMaybe|YesNoMaybeValue|integer",
+          "actual": "YesNoMaybeValue|integer",
           "category": "binding_converts",
           "expected": "ynm",
           "position": "param 1"
         }
       ],
       "kind": "method",
-      "lua": "fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|integer): boolean",
+      "lua": "fun(self: YesNoMaybeValue, arg1?: YesNoMaybeValue|integer): boolean",
       "member": "operator_eq"
     },
     {
@@ -18772,7 +18772,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: ZoneManager, out: Lektor<RootObject>|ZoneManager, type: integer)",
+      "lua": "fun(self: ZoneManager, out: Lektor<RootObject>, type: integer)",
       "member": "levelEditorGetAllSelectedObjects"
     },
     {
