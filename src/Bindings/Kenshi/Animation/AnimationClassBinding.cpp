@@ -1592,7 +1592,13 @@ int AnimationClassBinding::getEvents(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
     const char* animName = luaL_checkstring(L, 2);
-    AnimationEvents* res = instance->getEvents(animName ? animName : "");
+    std::string name(animName ? animName : "");
+    if (!instance->getAnimationData(name))
+    {
+        lua_pushnil(L);
+        return 1;
+    }
+    AnimationEvents* res = instance->getEvents(name);
     if (!res) { lua_pushnil(L); return 1; }
     return pushObject<AnimationEvents>(L, res, AnimationEventsBinding::getMetatableName());
 }
