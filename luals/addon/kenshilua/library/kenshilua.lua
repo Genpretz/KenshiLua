@@ -23928,6 +23928,8 @@ taskPriority = {
 
 --- Master spatial streaming manager governing the 64x64 continuous world zone grid (4,096 ZoneMap chunks). Coordinates background zone loading threads, distance activation, spatial grids, island topologies, biomes, and terrain splatmaps. Interacts directly with `ZoneMap` for individual sector terrain chunks and foliage, `BiomeMap` for regional environmental palettes, `Building` and `BuildingFinderClass` for structural spatial queries, and `Town` for settlement chunk registration.
 ---@class ZoneManager : ZoneManagerInterfaceT
+--- Returns the sound effect identifier corresponding to footstep impacts on the specified surface material.
+---@field getGroundSound (fun(self: ZoneManager, type: GroundType, barefoot?: boolean): string)|(fun(self: ZoneManager, pos: table): string)
 --- Thread-safe check returning true if the zone chunk containing the specified position is fully loaded.
 ---@field isZoneLoadedT fun(self: ZoneManager, pos: table): boolean
 --- Thread-safe check returning true if the zone chunk containing the specified position is currently being streamed.
@@ -24040,8 +24042,6 @@ taskPriority = {
 ---@field getZoneMap fun(self: ZoneManager, x: iVector2|integer|table, y?: integer): ZoneMap
 --- Looks up the `ZoneMap` chunk containing the specified building entity handle.
 ---@field getZoneMapFromBuildingHandle fun(self: ZoneManager, h: hand): ZoneMap
---- Returns the sound effect identifier corresponding to footstep impacts on the specified surface material.
----@field getGroundSound fun(arg1: ZoneManager|integer, type: boolean|integer|table, barefoot?: boolean): string
 --- Requests streaming and activation of a specific world zone chunk, queuing background mesh loading, building instantiation, and nest generation.
 ---@field activateZoneMap fun(self: ZoneManager, map: ZoneMap|iVector2, center: iVector2|integer, range: integer, type: boolean|integer, deactivationTimer?: number): boolean
 --- Searches for a building in the specified town matching faction, sale status, and function criteria.
@@ -24813,7 +24813,7 @@ taskPriority = {
 --- Static functions registered on the `ZoneManager` global table.
 ---@class ZoneManagerStatics
 --- Returns the sound effect identifier corresponding to footstep impacts on the specified surface material.
----@field getGroundSound fun(arg1: ZoneManager|integer, type: boolean|integer|table, barefoot?: boolean): string
+---@field getGroundSound fun(type: GroundType, barefoot?: boolean): string
 
 --- Namespace table enclosing nested `AppearanceManager.DataCategory` enums.
 ---@class AppearanceManager.DataCategory

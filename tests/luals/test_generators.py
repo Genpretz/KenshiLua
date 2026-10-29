@@ -136,6 +136,25 @@ class DefinitionGenerationTests(unittest.TestCase):
         self.assertNotRegex(generated, r"---@field _NV_[A-Za-z0-9_]+")
         self.assertIn('---| "Character::_NV_takeMoney"', generated)
 
+    def test_zone_manager_ground_sound_call_styles_stay_distinct(self):
+        generated = generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8")
+
+        self.assertIn(
+            "---@field getGroundSound "
+            "(fun(self: ZoneManager, type: GroundType, barefoot?: boolean): string)|"
+            "(fun(self: ZoneManager, pos: table): string)",
+            generated,
+        )
+        self.assertIn(
+            "---@field getGroundSound fun(type: GroundType, barefoot?: boolean): string",
+            generated,
+        )
+        self.assertNotIn(
+            "---@field getGroundSound fun(arg1: ZoneManager|integer, "
+            "type: boolean|integer|table, barefoot?: boolean): string",
+            generated,
+        )
+
 
 class BindingInventoryTests(unittest.TestCase):
     def test_commented_registrations_are_ignored(self):
@@ -957,6 +976,18 @@ class FixtureDiagnosticsTests(unittest.TestCase):
 
 
 class TypeAuditTests(unittest.TestCase):
+    def test_function_type_union_preserves_overloads(self):
+        parsed = generate_type_audit.parse_lua_functions(
+            "(fun(self: ZoneManager, type: GroundType, barefoot?: boolean): string)|"
+            "(fun(self: ZoneManager, pos: table): string)"
+        )
+
+        self.assertEqual(2, len(parsed))
+        self.assertEqual(["self", "type", "barefoot"], [p["name"] for p in parsed[0]["params"]])
+        self.assertEqual(["self", "pos"], [p["name"] for p in parsed[1]["params"]])
+        self.assertTrue(parsed[0]["params"][2]["optional"])
+        self.assertEqual(["string"], parsed[0]["returns"])
+
     def test_header_class_with_leading_declspec(self):
         headers = generate_type_audit.HeaderIndex()
         with tempfile.TemporaryDirectory() as temporary:

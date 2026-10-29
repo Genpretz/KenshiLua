@@ -18844,23 +18844,6 @@
       "member": "getResourceName"
     },
     {
-      "category": "binding_shape_differs",
-      "class": "ZoneManager",
-      "expected": "fun(GroundType, boolean): string",
-      "header": "const char* getGroundSound(GroundType type, bool barefoot)",
-      "issues": [
-        {
-          "actual": 3,
-          "category": "binding_shape_differs",
-          "expected": 2,
-          "position": null
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(arg1: ZoneManager|integer, type: boolean|integer|table, barefoot?: boolean): string",
-      "member": "getGroundSound"
-    },
-    {
       "category": "binding_converts",
       "class": "ZoneManager",
       "expected": "fun(ZoneMap, iVector2, integer, ZoneActivationType, number): boolean",
@@ -19728,12 +19711,12 @@
   "summary": {
     "binding_converts": 54,
     "binding_pushes_raw_pointer": 49,
-    "binding_shape_differs": 203,
+    "binding_shape_differs": 202,
     "blocking_issues": 0,
     "container_methods_typed": 1103,
     "enum_typed_as_integer": 467,
     "methods": 7377,
-    "methods_matching_header": 5392,
+    "methods_matching_header": 5393,
     "no_header_declaration": 228,
     "properties": 3716,
     "properties_matching_header": 3167,

@@ -62,6 +62,10 @@ def expand_inventory_fields(metadata, inventory):
                     "initialValue": "{}",
                 }
                 expanded["globals"].append(globals_[global_name])
+    override_by_inventory = {
+        entry["inventory"]: entry
+        for entry in expanded.get("inventoryFieldOverrides", [])
+    }
     for class_entry in expanded.get("classes", []):
         inventory_name = class_entry.get("inventory_fields") or class_entry.get("name")
         if inventory_name not in by_type:
@@ -70,6 +74,17 @@ def expand_inventory_fields(metadata, inventory):
         if not source:
             raise ValueError("inventory-backed class not found: " + inventory_name)
         fields = class_entry.setdefault("fields", [])
+        override = override_by_inventory.get(inventory_name, {})
+        existing_names = {field["name"] for field in fields}
+        for field in override.get("fields", []):
+            if field["name"] in existing_names:
+                raise ValueError(
+                    "duplicate inventory field override for {0}.{1}".format(
+                        class_entry["name"], field["name"]
+                    )
+                )
+            fields.append(field)
+            existing_names.add(field["name"])
         names = {field["name"] for field in fields}
         lua_type = class_entry["name"]
         for method in source.get("methods", []):

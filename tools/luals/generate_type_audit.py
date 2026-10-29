@@ -49,16 +49,51 @@ KNOWN_BUGS_PATH = PROJECT_ROOT / "luals" / "metadata" / "known_binding_bugs.json
 # Lua signature parsing and comparison
 
 
+def strip_outer_parentheses(text):
+    text = text.strip()
+    while text.startswith("(") and text.endswith(")"):
+        depth = 0
+        for index, char in enumerate(text):
+            if char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+                if depth == 0 and index != len(text) - 1:
+                    return text
+        text = text[1:-1].strip()
+    return text
+
+
+def parse_lua_functions(type_text):
+    """Parse one function type or a LuaCATS union of overloaded function types."""
+    parsed = []
+    text = type_text.strip()
+    # A single function may itself return a union. Overloaded function unions
+    # are parenthesized, so only split those at the outer pipe characters.
+    alternatives = split_top_level(text, "|") if text.startswith("(") else [text]
+    for alternative in alternatives:
+        match = re.match(
+            r"^fun\((.*?)\)\s*(?::\s*(.*))?$",
+            strip_outer_parentheses(alternative),
+        )
+        if not match:
+            return []
+        params = []
+        for item in split_top_level(match.group(1)):
+            name, _, lua_type = item.partition(":")
+            params.append({
+                "name": name.strip().rstrip("?"),
+                "optional": name.strip().endswith("?"),
+                "type": lua_type.strip(),
+            })
+        returns = split_top_level(match.group(2)) if match.group(2) else []
+        parsed.append({"params": params, "returns": returns})
+    return parsed
+
+
 def parse_lua_function(type_text):
-    match = re.match(r"^fun\((.*?)\)\s*(?::\s*(.*))?$", type_text)
-    if not match:
-        return None
-    params = []
-    for item in split_top_level(match.group(1)):
-        name, _, lua_type = item.partition(":")
-        params.append({"name": name.strip().rstrip("?"), "optional": name.strip().endswith("?"), "type": lua_type.strip()})
-    returns = split_top_level(match.group(2)) if match.group(2) else []
-    return {"params": params, "returns": returns}
+    parsed = parse_lua_functions(type_text)
+    return parsed[0] if parsed else None
 
 
 def type_set(lua_type):
@@ -95,13 +130,13 @@ def compare_type(actual, expected, lua_enums):
 
 
 def audit_method(lua_type, method, field_type, decls, mapper, lua_enums):
-    actual = parse_lua_function(field_type)
-    if not actual:
+    actuals = parse_lua_functions(field_type)
+    if not actuals:
         return {"category": "unparsed_lua_type"}
-    actual_params = [p for p in actual["params"] if p["name"] != "self"]
     best = None
-    variants = [(decl, outs) for decl in decls for outs in (False, True)]
-    for decl, outs in variants:
+    variants = [(actual, decl, outs) for actual in actuals for decl in decls for outs in (False, True)]
+    for actual, decl, outs in variants:
+        actual_params = [p for p in actual["params"] if p["name"] != "self"]
         params, returns = expected_signature(decl, mapper, outs)
         issues = []
         if len(params) != len(actual_params):
@@ -130,10 +165,11 @@ def audit_method(lua_type, method, field_type, decls, mapper, lua_enums):
                                    "actual": got, "expected": want})
         score = len(issues)
         if best is None or score < best[0]:
-            best = (score, issues, decl, params, returns)
-    _, issues, decl, params, returns = best
+            best = (score, issues, actual, decl, params, returns)
+    _, issues, actual, decl, params, returns = best
     return {
         "issues": issues,
+        "parsed": actual,
         "decl": decl["decl"],
         "expected": "fun(" + ", ".join(p["type"] for p in params) + ")" + (
             ": " + ", ".join(returns) if returns else ""
@@ -194,7 +230,8 @@ def classify_against_binding(issues, parsed, method, body, field_type):
     pushing a Lua boolean for ``hkBool``) are reported as non-blocking.
     """
     signature = method.get("signature", {})
-    static = method.get("static", False) or signature.get("no_self", False)
+    has_self = any(param["name"] == "self" for param in parsed["params"])
+    static = (method.get("static", False) or signature.get("no_self", False)) and not has_self
     body = reachable_body(normalize_dual_index(body, static))
     params = [param for param in parsed["params"] if param["name"] != "self"]
     returns = [item for item in parsed["returns"] if item not in ("nil",)]
@@ -346,7 +383,8 @@ def build_report():
             if not field_type:
                 record(dict(base, category="missing_field"), ["missing_field"])
                 continue
-            parsed = parse_lua_function(field_type)
+            parsed_variants = parse_lua_functions(field_type)
+            parsed = parsed_variants[0] if parsed_variants else None
             nil_only = bool(parsed) and parsed["returns"] == ["nil"]
             if binding.get("kind") == "template_instance":
                 element_types = set(binding.get("element_types", {}).values())
@@ -374,6 +412,7 @@ def build_report():
                             **({"issues": binding_issues} if binding_issues else {})), categories)
                 continue
             result = audit_method(lua_type, method, field_type, decls, mapper, lua_enums)
+            parsed = result.get("parsed", parsed)
             issues = classify_against_binding(
                 result.get("issues", []), parsed, method, body, field_type
             )

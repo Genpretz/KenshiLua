@@ -191,7 +191,8 @@ def expand_inventory_fields(metadata):
         for entry in metadata.get("classes", [])
         if entry.get("inventory_fields")
     }
-    if not requested:
+    overrides = metadata.get("inventoryFieldOverrides", [])
+    if not requested and not overrides:
         return metadata
     inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
     by_type = {entry["lua_type"]: entry for entry in inventory.get("classes", [])}
@@ -200,6 +201,7 @@ def expand_inventory_fields(metadata):
     if DESCRIPTION_PATH.exists():
         descriptions = json.loads(DESCRIPTION_PATH.read_text(encoding="utf-8")).get("classes", {})
     expanded = json.loads(json.dumps(metadata))
+    override_by_inventory = {entry["inventory"]: entry for entry in overrides}
     for class_entry in expanded.get("classes", []):
         inventory_name = class_entry.get("inventory_fields") or class_entry.get("name")
         if inventory_name not in by_type:
@@ -245,6 +247,18 @@ def expand_inventory_fields(metadata):
             return None
 
         fields = class_entry.setdefault("fields", [])
+        override = override_by_inventory.get(inventory_name, {})
+        override_fields = override.get("staticFields" if static_only else "fields", [])
+        existing_names = {field["name"] for field in fields}
+        for field in override_fields:
+            if field["name"] in existing_names:
+                raise ValueError(
+                    "duplicate inventory field override for {0}.{1}".format(
+                        class_entry["name"], field["name"]
+                    )
+                )
+            fields.append(field)
+            existing_names.add(field["name"])
         names = {field["name"] for field in fields}
         indexer = None if static_only else source.get("indexer")
         if indexer and "[" + indexer["key"] + "]" not in names:

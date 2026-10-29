@@ -8345,5 +8345,22 @@
       "type": "SharedKing|nil"
     }
   ],
+  "inventoryFieldOverrides": [
+    {
+      "fields": [
+        {
+          "name": "getGroundSound",
+          "type": "(fun(self: ZoneManager, type: GroundType, barefoot?: boolean): string)|(fun(self: ZoneManager, pos: table): string)"
+        }
+      ],
+      "inventory": "ZoneManager",
+      "staticFields": [
+        {
+          "name": "getGroundSound",
+          "type": "fun(type: GroundType, barefoot?: boolean): string"
+        }
+      ]
+    }
+  ],
   "schemaVersion": 1
 }
