@@ -168,7 +168,7 @@ int ToolTipBinding::addLine(lua_State* L)
     ToolTip* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ToolTip is nil");
 
-    const std::string textLeft = luaL_checkstring(L, 2);
+    const char* textLeft = luaL_checkstring(L, 2);
     const std::string textRight = luaL_checkstring(L, 3);
     instance->addLine(textLeft, textRight);
     return 0;

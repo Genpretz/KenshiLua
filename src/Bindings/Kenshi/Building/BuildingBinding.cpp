@@ -722,7 +722,7 @@ static int Building_set_positionMarker(lua_State* L)
 {
     Building* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Building is nil");
-    readVector3(L, 2, instance->positionMarker);
+    if (!readVector3(L, 2, instance->positionMarker)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -2789,7 +2789,7 @@ int BuildingBinding::setupLevelData(lua_State* L)
 
     Faction* f = checkObject<Faction>(L, 2, FactionBinding::getMetatableName());
     GameData* squad = checkObject<GameData>(L, 3, GameDataBinding::getMetatableName());
-    const std::string interior = luaL_checkstring(L, 4);
+    const char* interior = luaL_checkstring(L, 4);
     const std::string exterior = luaL_checkstring(L, 5);
     instance->setupLevelData(f, squad, interior, exterior);
     return 0;

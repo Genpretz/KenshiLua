@@ -1285,7 +1285,7 @@ int FactionBinding::_spawnASquad(lua_State* L)
     Faction* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Faction is nil");
 
-    const std::string listname = luaL_checkstring(L, 2);
+    const char* listname = luaL_checkstring(L, 2);
     float sizeMultiplier = (float)luaL_checknumber(L, 3);
     bool result = instance->_spawnASquad(listname, sizeMultiplier);
     lua_pushboolean(L, result ? 1 : 0);

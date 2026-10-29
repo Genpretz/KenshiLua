@@ -9,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::ImageBox* ImageBoxBinding::getImageBox(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::ImageBox>(false);
+    return MyGUIBindings::checkWidget<MyGUI::ImageBox>(L, idx);
 }
 
 int ImageBoxBinding::setImageTexture(lua_State* L)
@@ -127,7 +125,8 @@ int ImageBoxBinding::setItemResource(lua_State* L)
 
 static int ImageBox_tostring(lua_State* L)
 {
-    MyGUI::ImageBox* ib = ImageBoxBinding::getImageBox(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::ImageBox* ib = w ? w->castType<MyGUI::ImageBox>(false) : nullptr;
     char buf[128];
     if (ib)
     {

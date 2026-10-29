@@ -2,6 +2,7 @@
 #include "Bindings/MyGUI/PopupMenuBinding.h"
 #include "Bindings/MyGUI/MenuControlBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -9,14 +10,13 @@ namespace KenshiLua
 
 MyGUI::PopupMenu* PopupMenuBinding::getPopupMenu(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::PopupMenu>(false);
+    return MyGUIBindings::checkWidget<MyGUI::PopupMenu>(L, idx);
 }
 
 static int PopupMenu_tostring(lua_State* L)
 {
-    MyGUI::PopupMenu* pm = PopupMenuBinding::getPopupMenu(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::PopupMenu* pm = w ? w->castType<MyGUI::PopupMenu>(false) : nullptr;
     char buf[128];
     if (pm)
     {

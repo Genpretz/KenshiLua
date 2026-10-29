@@ -10,9 +10,7 @@ namespace KenshiLua
 
 MyGUI::MenuControl* MenuControlBinding::getMenuControl(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::MenuControl>(false);
+    return MyGUIBindings::checkWidget<MyGUI::MenuControl>(L, idx);
 }
 
 int MenuControlBinding::getItemCount(lua_State* L)
@@ -299,7 +297,8 @@ int MenuControlBinding::getVerticalAlignment(lua_State* L)
 
 static int MenuControl_tostring(lua_State* L)
 {
-    MyGUI::MenuControl* mc = MenuControlBinding::getMenuControl(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::MenuControl* mc = w ? w->castType<MyGUI::MenuControl>(false) : nullptr;
     char buf[128];
     if (mc)
     {

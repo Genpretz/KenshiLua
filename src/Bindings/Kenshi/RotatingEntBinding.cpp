@@ -132,7 +132,7 @@ static int RotatingEnt_set_rotAxis(lua_State* L)
 {
     RotatingEnt* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RotatingEnt is nil");
-    readVector3(L, 2, instance->rotAxis);
+    if (!readVector3(L, 2, instance->rotAxis)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -172,7 +172,7 @@ static int RotatingEnt_set_rotationBase(lua_State* L)
 {
     RotatingEnt* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RotatingEnt is nil");
-    readQuaternion(L, 2, instance->rotationBase);
+    if (!readQuaternion(L, 2, instance->rotationBase)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 
@@ -188,7 +188,7 @@ static int RotatingEnt_set_rotationSrc(lua_State* L)
 {
     RotatingEnt* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RotatingEnt is nil");
-    readQuaternion(L, 2, instance->rotationSrc);
+    if (!readQuaternion(L, 2, instance->rotationSrc)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 
@@ -196,7 +196,7 @@ static int RotatingEnt_set_rotationDst(lua_State* L)
 {
     RotatingEnt* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RotatingEnt is nil");
-    readQuaternion(L, 2, instance->rotationDst);
+    if (!readQuaternion(L, 2, instance->rotationDst)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 

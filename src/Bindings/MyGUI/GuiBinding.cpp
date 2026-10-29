@@ -142,7 +142,7 @@ int GuiBinding::destroyWidgets(lua_State* L)
         for (int i = 1; i <= len; ++i)
         {
             lua_rawgeti(L, idx, i);
-            MyGUI::Widget* w = WidgetBinding::getWidget(L, -1);
+            MyGUI::Widget* w = MyGUIBindings::toWidget(L, -1);
             if (w)
             {
                 MyGUIBindings::cleanupWidgetRecursive(w);

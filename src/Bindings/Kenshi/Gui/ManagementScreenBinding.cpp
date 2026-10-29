@@ -607,8 +607,8 @@ int ManagementScreenBinding::printResearch(lua_State* L)
     int idx = lua_isuserdata(L, 1) ? 2 : 1;
     DatapanelGUI* panel = checkObject<DatapanelGUI>(L, idx, DatapanelGUIBinding::getMetatableName());
     GameData* d = checkObject<GameData>(L, idx + 1, GameDataBinding::getMetatableName());
-    const std::string listname = luaL_checkstring(L, idx + 2);
-    const std::string displayname = luaL_checkstring(L, idx + 3);
+    const char* listname = luaL_checkstring(L, idx + 2);
+    const char* displayname = luaL_checkstring(L, idx + 3);
     int cat = (int)luaL_checkinteger(L, idx + 4);
 
     ManagementScreen::printResearch(panel, d, listname, displayname, cat);
@@ -620,8 +620,8 @@ int ManagementScreenBinding::addMessage(lua_State* L)
     ManagementScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ManagementScreen is nil");
 
-    const std::string owner = luaL_checkstring(L, 2);
-    const std::string message = luaL_checkstring(L, 3);
+    const char* owner = luaL_checkstring(L, 2);
+    const char* message = luaL_checkstring(L, 3);
     MessageLogColor isPlayer = (MessageLogColor)luaL_checkinteger(L, 4);
     instance->addMessage(owner, message, isPlayer);
     return 0;

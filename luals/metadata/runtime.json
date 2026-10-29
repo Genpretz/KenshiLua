@@ -7698,6 +7698,70 @@
     {
       "fields": [
         {
+          "name": "chooseGoalFrom",
+          "type": "fun(self: AITaskSytem, orderedGoals: StdMap<number, Tasker>, alreadyHasGoal: TaskMatch, goalListIn: Lektor<Tasker>, theseAreBlackboard: boolean)"
+        },
+        {
+          "name": "choosePermaJob",
+          "type": "fun(self: AITaskSytem, orderedGoals: StdMap<number, Tasker>, alreadyHasGoal: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean)"
+        },
+        {
+          "name": "runGoals",
+          "type": "fun(self: AITaskSytem, orderedGoals: StdMap<number, Tasker>, playerOrder: boolean): boolean"
+        },
+        {
+          "name": "orderedGoals",
+          "type": "StdMap<number, Tasker>"
+        }
+      ],
+      "inventory_fields": "AITaskSytem",
+      "name": "AITaskSytem"
+    },
+    {
+      "fields": [
+        {
+          "name": "getPositionGlobalEffects",
+          "type": "fun(self: WeatherSystem, position: table): { effect: EffectType.Enum, strength: number }[]"
+        },
+        {
+          "name": "addWeatherEffect",
+          "type": "fun(self: WeatherSystem, effect: lightuserdata)"
+        },
+        {
+          "name": "removeWeatherEffect",
+          "type": "fun(self: WeatherSystem, effect: lightuserdata)"
+        },
+        {
+          "name": "ActiveRegion",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "name": "activeEffects",
+          "type": "lightuserdata[]"
+        },
+        {
+          "name": "areaGroups",
+          "type": "(lightuserdata|nil)[]"
+        },
+        {
+          "name": "previousArea",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "name": "previousSector",
+          "type": "lightuserdata|nil"
+        },
+        {
+          "name": "weatherListeners",
+          "type": "{ listener: Listener|nil, region: WeatherRegion|nil }[]"
+        }
+      ],
+      "inventory_fields": "WeatherSystem",
+      "name": "WeatherSystem"
+    },
+    {
+      "fields": [
+        {
           "name": "createBody",
           "type": "fun(self: AppearanceAnimal)"
         },

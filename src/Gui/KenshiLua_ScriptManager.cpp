@@ -215,6 +215,7 @@ namespace KenshiLua
 		{
 			std::string err;
 			ScriptLoader::get().removeStoppedScript(script.absolutePath);
+			ScriptLoader::get().cleanupScriptResources(script.chunkName);
 			bool success = ScriptLoader::get().runScriptSandboxed(L, script.absolutePath, script.chunkName, &err);
 			if (success)
 			{

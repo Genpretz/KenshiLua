@@ -461,7 +461,7 @@ int RaceDataBinding::getRaceData(lua_State* L)
 {
     if (lua_isstring(L, 1))
     {
-        std::string stringID = luaL_checkstring(L, 1);
+        const char* stringID = luaL_checkstring(L, 1);
         RaceData* result = RaceData::getRaceData(stringID);
         return pushObject<RaceData>(L, result, RaceDataBinding::getMetatableName());
     }

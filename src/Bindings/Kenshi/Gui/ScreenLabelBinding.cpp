@@ -139,7 +139,7 @@ static int ScreenLabel_set_trackingOffset(lua_State* L)
 {
     ScreenLabel* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ScreenLabel is nil");
-    readVector3(L, 2, instance->trackingOffset);
+    if (!readVector3(L, 2, instance->trackingOffset)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

@@ -144,7 +144,7 @@ int UtilityTBinding::createFile(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    const std::string path = luaL_checkstring(L, 2);
+    const char* path = luaL_checkstring(L, 2);
     const std::string content = luaL_checkstring(L, 3);
     bool result = instance->createFile(path, content);
     lua_pushboolean(L, result ? 1 : 0);
@@ -156,7 +156,7 @@ int UtilityTBinding::writeFile(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    const std::string path = luaL_checkstring(L, 2);
+    const char* path = luaL_checkstring(L, 2);
     const std::string content = luaL_checkstring(L, 3);
     bool append = lua_toboolean(L, 4) != 0;
     bool result = instance->writeFile(path, content, append);
@@ -191,7 +191,7 @@ int UtilityTBinding::deleteFilesInFolder(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    const std::string dir = luaL_checkstring(L, 2);
+    const char* dir = luaL_checkstring(L, 2);
     const std::string filter = luaL_checkstring(L, 3);
     bool recursive = lua_toboolean(L, 4) != 0;
     instance->deleteFilesInFolder(dir, filter, recursive);
@@ -223,7 +223,7 @@ int UtilityTBinding::moveFile(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    const std::string from = luaL_checkstring(L, 2);
+    const char* from = luaL_checkstring(L, 2);
     const std::string to = luaL_checkstring(L, 3);
     bool result = instance->moveFile(from, to);
     lua_pushboolean(L, result ? 1 : 0);
@@ -235,7 +235,7 @@ int UtilityTBinding::copyFile(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    const std::string from = luaL_checkstring(L, 2);
+    const char* from = luaL_checkstring(L, 2);
     const std::string to = luaL_checkstring(L, 3);
     bool result = instance->copyFile(from, to);
     lua_pushboolean(L, result ? 1 : 0);
@@ -247,8 +247,8 @@ int UtilityTBinding::copyFilesInFolder(lua_State* L)
     UtilityT* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UtilityT is nil");
 
-    const std::string from = luaL_checkstring(L, 2);
-    const std::string to = luaL_checkstring(L, 3);
+    const char* from = luaL_checkstring(L, 2);
+    const char* to = luaL_checkstring(L, 3);
     const std::string filter = luaL_checkstring(L, 4);
     bool result = instance->copyFilesInFolder(from, to, filter);
     lua_pushboolean(L, result ? 1 : 0);
@@ -554,7 +554,7 @@ int UtilityTBinding::removeInvalidFileNameChars(lua_State* L)
 int UtilityTBinding::compareStringsCaseInsenstive(lua_State* L)
 {
     int offset = lua_isuserdata(L, 1) ? 1 : 0;
-    std::string a = luaL_checkstring(L, 1 + offset);
+    const char* a = luaL_checkstring(L, 1 + offset);
     std::string b = luaL_checkstring(L, 2 + offset);
     bool res = UtilityT::compareStringsCaseInsenstive(a, b);
     lua_pushboolean(L, res ? 1 : 0);
@@ -631,7 +631,7 @@ int UtilityTBinding::getFilesInDir(lua_State* L)
     lektor<std::string>* out = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getFilesInDir must be lektor<std::string>");
 
-    std::string dir = luaL_checkstring(L, 3);
+    const char* dir = luaL_checkstring(L, 3);
     std::string type = luaL_checkstring(L, 4);
     bool res = instance->getFilesInDir(*out, dir, type);
     lua_pushboolean(L, res ? 1 : 0);
@@ -646,7 +646,7 @@ int UtilityTBinding::getFilesInGameDir(lua_State* L)
     lektor<std::string>* out = LektorStringBinding<std::string>::getInstance(L, 2);
     if (!out) return luaL_error(L, "Argument 2 to getFilesInGameDir must be lektor<std::string>");
 
-    std::string dir = luaL_checkstring(L, 3);
+    const char* dir = luaL_checkstring(L, 3);
     std::string type = luaL_checkstring(L, 4);
     bool res = instance->getFilesInGameDir(*out, dir, type);
     lua_pushboolean(L, res ? 1 : 0);

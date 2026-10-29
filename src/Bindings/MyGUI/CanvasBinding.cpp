@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Bindings/MyGUI/CanvasBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -8,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::Canvas* CanvasBinding::getCanvas(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::Canvas>(false);
+    return MyGUIBindings::checkWidget<MyGUI::Canvas>(L, idx);
 }
 
 int CanvasBinding::createTexture(lua_State* L)
@@ -184,7 +183,8 @@ int CanvasBinding::getResizeMode(lua_State* L)
 
 static int Canvas_tostring(lua_State* L)
 {
-    MyGUI::Canvas* c = CanvasBinding::getCanvas(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::Canvas* c = w ? w->castType<MyGUI::Canvas>(false) : nullptr;
     char buf[128];
     if (c)
     {

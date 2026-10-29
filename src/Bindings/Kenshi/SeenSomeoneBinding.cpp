@@ -81,7 +81,7 @@ static int SeenSomeone_set_lastPosition(lua_State* L)
 {
     SeenSomeone* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SeenSomeone is nil");
-    readVector3(L, 2, instance->lastPosition);
+    if (!readVector3(L, 2, instance->lastPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

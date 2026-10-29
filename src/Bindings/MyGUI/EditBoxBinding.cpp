@@ -10,9 +10,7 @@ namespace KenshiLua
 
 MyGUI::EditBox* EditBoxBinding::getEditBox(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::EditBox>(false);
+    return MyGUIBindings::checkWidget<MyGUI::EditBox>(L, idx);
 }
 
 int EditBoxBinding::getTextSelection(lua_State* L)
@@ -319,57 +317,10 @@ int EditBoxBinding::setTextSelectionColour(lua_State* L)
     return 0;
 }
 
-static int EditBox_index(lua_State* L)
-{
-    MyGUI::EditBox* eb = EditBoxBinding::getEditBox(L, 1);
-    if (!eb) return luaL_error(L, "EditBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "readOnly") == 0)
-    {
-        lua_pushboolean(L, eb->getEditReadOnly() ? 1 : 0);
-        return 1;
-    }
-    if (strcmp(key, "multiLine") == 0)
-    {
-        lua_pushboolean(L, eb->getEditMultiLine() ? 1 : 0);
-        return 1;
-    }
-    if (strcmp(key, "wordWrap") == 0)
-    {
-        lua_pushboolean(L, eb->getEditWordWrap() ? 1 : 0);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int EditBox_newindex(lua_State* L)
-{
-    MyGUI::EditBox* eb = EditBoxBinding::getEditBox(L, 1);
-    if (!eb) return luaL_error(L, "EditBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "readOnly") == 0)
-    {
-        eb->setEditReadOnly(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "multiLine") == 0)
-    {
-        eb->setEditMultiLine(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    if (strcmp(key, "wordWrap") == 0)
-    {
-        eb->setEditWordWrap(lua_toboolean(L, 3) != 0);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int EditBox_tostring(lua_State* L)
 {
-    MyGUI::EditBox* eb = EditBoxBinding::getEditBox(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::EditBox* eb = w ? w->castType<MyGUI::EditBox>(false) : nullptr;
     char buf[128];
     if (eb)
     {
@@ -427,7 +378,22 @@ void EditBoxBinding::registerBinding(lua_State* L)
         { "setTextSelectionColour",  setTextSelectionColour },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, EditBox_index, EditBox_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "readOnly", EditBoxBinding::getEditReadOnly);
+    registerGetter(L, "multiLine", EditBoxBinding::getEditMultiLine);
+    registerGetter(L, "wordWrap", EditBoxBinding::getEditWordWrap);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "readOnly", EditBoxBinding::setEditReadOnly);
+    registerSetter(L, "multiLine", EditBoxBinding::setEditMultiLine);
+    registerSetter(L, "wordWrap", EditBoxBinding::setEditWordWrap);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), TextBoxBinding::getMetatableName());
 }
 

@@ -104,8 +104,8 @@ int LoadSaveWindowBinding::addOption(lua_State* L)
     if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
 
     int key = (int)luaL_checkinteger(L, 2);
-    const std::string check = luaL_checkstring(L, 3);
-    const std::string label = luaL_checkstring(L, 4);
+    const char* check = luaL_checkstring(L, 3);
+    const char* label = luaL_checkstring(L, 4);
     const std::string caption = luaL_checkstring(L, 5);
     instance->addOption(key, check, label, caption);
     return 0;

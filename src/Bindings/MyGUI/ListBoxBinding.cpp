@@ -9,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::ListBox* ListBoxBinding::getListBox(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::ListBox>(false);
+    return MyGUIBindings::checkWidget<MyGUI::ListBox>(L, idx);
 }
 
 int ListBoxBinding::getItemCount(lua_State* L)
@@ -219,46 +217,10 @@ int ListBoxBinding::getWidgetByIndex(lua_State* L)
     return 1;
 }
 
-static int ListBox_index(lua_State* L)
-{
-    MyGUI::ListBox* lb = ListBoxBinding::getListBox(L, 1);
-    if (!lb) return luaL_error(L, "ListBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "itemCount") == 0 || strcmp(key, "count") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)lb->getItemCount());
-        return 1;
-    }
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        size_t idx = lb->getIndexSelected();
-        if (idx == MyGUI::ITEM_NONE) lua_pushinteger(L, -1);
-        else lua_pushinteger(L, (lua_Integer)idx);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int ListBox_newindex(lua_State* L)
-{
-    MyGUI::ListBox* lb = ListBoxBinding::getListBox(L, 1);
-    if (!lb) return luaL_error(L, "ListBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        lua_Integer idx = luaL_checkinteger(L, 3);
-        if (idx < 0) lb->clearIndexSelected();
-        else lb->setIndexSelected((size_t)idx);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int ListBox_tostring(lua_State* L)
 {
-    MyGUI::ListBox* lb = ListBoxBinding::getListBox(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::ListBox* lb = w ? w->castType<MyGUI::ListBox>(false) : nullptr;
     char buf[128];
     if (lb)
     {
@@ -304,7 +266,22 @@ void ListBoxBinding::registerBinding(lua_State* L)
         { "getWidgetByIndex",       getWidgetByIndex },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, ListBox_index, ListBox_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "itemCount", ListBoxBinding::getItemCount);
+    registerGetter(L, "count", ListBoxBinding::getItemCount);
+    registerGetter(L, "indexSelected", ListBoxBinding::getIndexSelected);
+    registerGetter(L, "selectedIndex", ListBoxBinding::getIndexSelected);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "indexSelected", ListBoxBinding::setIndexSelected);
+    registerSetter(L, "selectedIndex", ListBoxBinding::setIndexSelected);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), WidgetBinding::getMetatableName());
 }
 

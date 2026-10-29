@@ -1379,7 +1379,7 @@ static int CharStats_set_holdLocation(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    readVector3(L, 2, instance->holdLocation);
+    if (!readVector3(L, 2, instance->holdLocation)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -1938,7 +1938,7 @@ int CharStatsBinding::getStatPenaltiesTotalForGUI(lua_State* L)
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
 
-    const std::string statName = luaL_checkstring(L, 2);
+    const char* statName = luaL_checkstring(L, 2);
     StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 3);
     int result = instance->getStatPenaltiesTotalForGUI(statName, stat);
     lua_pushinteger(L, result);
@@ -2971,17 +2971,6 @@ static int CharStats_set_pCurrentWeaponSkill(lua_State* L)
     return 0;
 }
 
-static int OwnedStringPair_gc(lua_State* L)
-{
-    void** ud = (void**)lua_touserdata(L, 1);
-    if (ud && *ud)
-    {
-        delete (StringPair*)*ud;
-        *ud = nullptr;
-    }
-    return 0;
-}
-
 int CharStatsBinding::_chooseAttacks(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
@@ -3159,7 +3148,7 @@ int CharStatsBinding::getStatPenaltiesForGUI(lua_State* L)
 {
     CharStats* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CharStats is nil");
-    std::string statName = luaL_checkstring(L, 2);
+    const char* statName = luaL_checkstring(L, 2);
     StatsEnumerated stat = (StatsEnumerated)luaL_checkinteger(L, 3);
     lektor<StringPair>* dats = checkObject<lektor<StringPair>>(L, 4, LektorValueBinding<StringPair>::metaName);
     if (!dats) return luaL_error(L, "Expected lektor<StringPair>");

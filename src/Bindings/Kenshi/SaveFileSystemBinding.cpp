@@ -135,7 +135,7 @@ int SaveFileSystemBinding::log(lua_State* L)
     SaveFileSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SaveFileSystem is nil");
 
-    std::string message = luaL_checkstring(L, 2);
+    const char* message = luaL_checkstring(L, 2);
     Logger::Severity level = (Logger::Severity)luaL_checkinteger(L, 3);
     instance->log(message, level);
     return 0;
@@ -317,7 +317,7 @@ int SaveFileSystemBinding::addMessage(lua_State* L)
     if (!instance) return luaL_error(L, "SaveFileSystem is nil");
 
     SaveFileSystem::MessageType type = (SaveFileSystem::MessageType)luaL_checkinteger(L, 2);
-    std::string src = luaL_checkstring(L, 3);
+    const char* src = luaL_checkstring(L, 3);
     std::string dst = luaL_checkstring(L, 4);
     instance->addMessage(type, src, dst);
     return 0;

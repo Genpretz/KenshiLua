@@ -69,12 +69,12 @@ public:
     // Explicit cross-mod loading APIs. The requested name accepts either the
     // active ModInfo::name or its .mod descriptor filename. Relative paths
     // are confined to that mod's scripts directory.
-    int requireFromMod(lua_State* L, const std::string& modName,
-        const std::string& moduleName);
-    int dofileFromMod(lua_State* L, const std::string& modName,
-        const std::string& filename);
-    int loadfileFromMod(lua_State* L, const std::string& modName,
-        const std::string& filename);
+    int requireFromMod(lua_State* L, const char* modName,
+        const char* moduleName);
+    int dofileFromMod(lua_State* L, const char* modName,
+        const char* filename);
+    int loadfileFromMod(lua_State* L, const char* modName,
+        const char* filename);
 
     // Centralized sandboxed runner for Lua script files.
     bool runScriptSandboxed(lua_State* L, const std::string& absolutePath,
@@ -89,6 +89,11 @@ public:
     // Walks ou->activeMods, discovers all *.lua files.
     void discover();
 
+    // Unregisters event handlers and destroys MyGUI widgets owned by a script chunk.
+    void cleanupScriptResources(const std::string& chunkName);
+
+    std::unordered_map<std::string, std::string>& activeModRootCache() { return m_activeModRootCache; }
+
 private:
     ScriptLoader(const ScriptLoader&);
     ScriptLoader& operator=(const ScriptLoader&);
@@ -99,6 +104,7 @@ private:
 
     std::vector<LoadedScript>  m_scripts;
     std::vector<std::string>   m_activeModNames;
+    std::unordered_map<std::string, std::string> m_activeModRootCache;
     std::unordered_map<std::string, std::string> m_resolvedScriptPaths;
     std::string                m_lastDiscoveredSummary;
     bool                       m_loaded;

@@ -127,7 +127,7 @@ static int TurretBuilding_set_currentAimDir(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    readVector3(L, 2, instance->currentAimDir);
+    if (!readVector3(L, 2, instance->currentAimDir)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -135,7 +135,7 @@ static int TurretBuilding_set_rootAimDir(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    readVector3(L, 2, instance->rootAimDir);
+    if (!readVector3(L, 2, instance->rootAimDir)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -151,7 +151,7 @@ static int TurretBuilding_set_currentAimTarget(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    readVector3(L, 2, instance->currentAimTarget);
+    if (!readVector3(L, 2, instance->currentAimTarget)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -183,7 +183,7 @@ static int TurretBuilding_set_aimTargetPos(lua_State* L)
 {
     TurretBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TurretBuilding is nil");
-    readVector3(L, 2, instance->aimTargetPos);
+    if (!readVector3(L, 2, instance->aimTargetPos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

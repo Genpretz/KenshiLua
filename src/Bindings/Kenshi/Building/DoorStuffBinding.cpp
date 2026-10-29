@@ -273,7 +273,7 @@ static int DoorStuff_set_actorClosedPosition(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    readVector3(L, 2, instance->actorClosedPosition);
+    if (!readVector3(L, 2, instance->actorClosedPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -281,7 +281,7 @@ static int DoorStuff_set_doorClosedPosition(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    readVector3(L, 2, instance->doorClosedPosition);
+    if (!readVector3(L, 2, instance->doorClosedPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -289,7 +289,7 @@ static int DoorStuff_set_doorClosedPositionOut(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    readVector3(L, 2, instance->doorClosedPositionOut);
+    if (!readVector3(L, 2, instance->doorClosedPositionOut)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -297,7 +297,7 @@ static int DoorStuff_set_doorClosedPositionIn(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    readVector3(L, 2, instance->doorClosedPositionIn);
+    if (!readVector3(L, 2, instance->doorClosedPositionIn)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -305,7 +305,7 @@ static int DoorStuff_set_axisH(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    readVector3(L, 2, instance->axisH);
+    if (!readVector3(L, 2, instance->axisH)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -313,7 +313,7 @@ static int DoorStuff_set_axisF(lua_State* L)
 {
     DoorStuff* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DoorStuff is nil");
-    readVector3(L, 2, instance->axisF);
+    if (!readVector3(L, 2, instance->axisF)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

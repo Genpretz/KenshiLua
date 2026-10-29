@@ -39,8 +39,8 @@ Skipped methods needing manual binding:
 int MessageBoxManagerBinding::createMessageBox(lua_State* L)
 {
     int idx = (lua_gettop(L) >= 2 && testObject<MessageBoxManager>(L, 1, MessageBoxManagerBinding::getMetatableName())) ? 2 : 1;
-    std::string title = luaL_checkstring(L, idx);
-    std::string message = luaL_checkstring(L, idx + 1);
+    const char* title = luaL_checkstring(L, idx);
+    const char* message = luaL_checkstring(L, idx + 1);
 
     std::vector<std::pair<std::string, int>, Ogre::STLAllocator<std::pair<std::string, int>, Ogre::GeneralAllocPolicy>> buttons;
     if (lua_istable(L, idx + 2))
@@ -55,7 +55,7 @@ int MessageBoxManagerBinding::createMessageBox(lua_State* L)
                 if (lua_istable(L, -1))
                 {
                     lua_rawgeti(L, -1, 1);
-                    std::string btnText = luaL_optstring(L, -1, "");
+                    const char* btnText = luaL_optstring(L, -1, "");
                     lua_pop(L, 1);
                     lua_rawgeti(L, -1, 2);
                     int btnVal = (int)luaL_optinteger(L, -1, i);

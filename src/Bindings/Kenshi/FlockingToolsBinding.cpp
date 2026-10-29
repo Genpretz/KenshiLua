@@ -58,7 +58,7 @@ static int FlockingTools_set_currentPosition(lua_State* L)
 {
     FlockingTools* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FlockingTools is nil");
-    readVector3(L, 2, instance->currentPosition);
+    if (!readVector3(L, 2, instance->currentPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

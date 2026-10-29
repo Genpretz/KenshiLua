@@ -314,7 +314,7 @@ static int CombatMovementController_set_forcedWP(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatMovementController is nil");
-    readVector3(L, 2, instance->forcedWP);
+    if (!readVector3(L, 2, instance->forcedWP)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

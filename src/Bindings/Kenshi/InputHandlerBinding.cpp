@@ -681,7 +681,7 @@ static int InputHandler_set_mSpeed(lua_State* L)
 {
     InputHandler* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InputHandler is nil");
-    readVector3(L, 2, instance->mSpeed);
+    if (!readVector3(L, 2, instance->mSpeed)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -847,7 +847,7 @@ int InputHandlerBinding::bind(lua_State* L)
     InputHandler* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InputHandler is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     int key = (int)luaL_checkinteger(L, 3);
     instance->bind(name, key);
     return 0;
@@ -968,7 +968,7 @@ int InputHandlerBinding::addCommand(lua_State* L)
 {
     InputHandler* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InputHandler is nil");
-    std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     int value = (int)luaL_checkinteger(L, 3);
     int key = (int)luaL_checkinteger(L, 4);
     int alt = (int)luaL_checkinteger(L, 5);

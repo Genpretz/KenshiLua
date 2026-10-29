@@ -342,7 +342,7 @@ int BuildInventoryLayoutBinding::setInput(lua_State* L)
     if (!instance) return luaL_error(L, "BuildInventoryLayout is nil");
 
     int inputIndex = (int)luaL_checkinteger(L, 2);
-    std::string name = luaL_checkstring(L, 3);
+    const char* name = luaL_checkstring(L, 3);
     std::string status = luaL_checkstring(L, 4);
     instance->setInput(inputIndex, name, status);
     return 0;

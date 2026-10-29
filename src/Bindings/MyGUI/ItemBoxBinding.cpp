@@ -10,9 +10,7 @@ namespace KenshiLua
 
 MyGUI::ItemBox* ItemBoxBinding::getItemBox(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::ItemBox>(false);
+    return MyGUIBindings::checkWidget<MyGUI::ItemBox>(L, idx);
 }
 
 int ItemBoxBinding::getItemCount(lua_State* L)
@@ -149,7 +147,8 @@ int ItemBoxBinding::getIndexByWidget(lua_State* L)
 
 static int ItemBox_tostring(lua_State* L)
 {
-    MyGUI::ItemBox* ib = ItemBoxBinding::getItemBox(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::ItemBox* ib = w ? w->castType<MyGUI::ItemBox>(false) : nullptr;
     char buf[128];
     if (ib)
     {

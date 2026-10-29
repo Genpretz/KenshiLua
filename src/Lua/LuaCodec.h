@@ -3,8 +3,11 @@
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 #include <kenshi/util/hand.h>
+#include <ogre/OgreVector2.h>
 #include <ogre/OgreVector3.h>
+#include <ogre/OgreVector4.h>
 #include <ogre/OgreQuaternion.h>
+#include <ogre/OgreColourValue.h>
 
 #include <type_traits>
 #include <string>
@@ -61,6 +64,15 @@ namespace KenshiLua
             if (meta) {
                 return checkObject<typename std::remove_pointer<T>::type>(L, idx, meta);
             } else {
+                if (lua_isnoneornil(L, idx)) {
+                    return nullptr;
+                }
+                if (!lua_islightuserdata(L, idx)) {
+                    const char* msg = lua_pushfstring(L, "lightuserdata expected, got %s",
+                        pushArgumentTypeName(L, idx));
+                    luaL_argerror(L, idx, msg);
+                    return nullptr;
+                }
                 return (T)lua_touserdata(L, idx);
             }
         }
@@ -143,7 +155,24 @@ namespace KenshiLua
         }
     };
 
-    // 7. Ogre::Vector3 type specialization
+    // 7. Ogre::Vector2 type specialization
+    template <>
+    struct LuaCodec<Ogre::Vector2>
+    {
+        static void push(lua_State* L, const Ogre::Vector2& val, const char* meta)
+        {
+            pushVector2(L, val);
+        }
+
+        static Ogre::Vector2 read(lua_State* L, int idx, const char* meta)
+        {
+            Ogre::Vector2 v(0.0f, 0.0f);
+            checkVector2(L, idx, v);
+            return v;
+        }
+    };
+
+    // 8. Ogre::Vector3 type specialization
     template <>
     struct LuaCodec<Ogre::Vector3>
     {
@@ -154,13 +183,30 @@ namespace KenshiLua
 
         static Ogre::Vector3 read(lua_State* L, int idx, const char* meta)
         {
-            Ogre::Vector3 v;
-            readVector3(L, idx, v);
+            Ogre::Vector3 v(0.0f, 0.0f, 0.0f);
+            checkVector3(L, idx, v);
             return v;
         }
     };
 
-    // 8. Ogre::Quaternion type specialization
+    // 9. Ogre::Vector4 type specialization
+    template <>
+    struct LuaCodec<Ogre::Vector4>
+    {
+        static void push(lua_State* L, const Ogre::Vector4& val, const char* meta)
+        {
+            pushVector4(L, val);
+        }
+
+        static Ogre::Vector4 read(lua_State* L, int idx, const char* meta)
+        {
+            Ogre::Vector4 v(0.0f, 0.0f, 0.0f, 0.0f);
+            checkVector4(L, idx, v);
+            return v;
+        }
+    };
+
+    // 10. Ogre::Quaternion type specialization
     template <>
     struct LuaCodec<Ogre::Quaternion>
     {
@@ -171,9 +217,26 @@ namespace KenshiLua
 
         static Ogre::Quaternion read(lua_State* L, int idx, const char* meta)
         {
-            Ogre::Quaternion q;
-            readQuaternion(L, idx, q);
+            Ogre::Quaternion q(1.0f, 0.0f, 0.0f, 0.0f);
+            checkQuaternion(L, idx, q);
             return q;
+        }
+    };
+
+    // 11. Ogre::ColourValue type specialization
+    template <>
+    struct LuaCodec<Ogre::ColourValue>
+    {
+        static void push(lua_State* L, const Ogre::ColourValue& val, const char* meta)
+        {
+            pushColourValue(L, val);
+        }
+
+        static Ogre::ColourValue read(lua_State* L, int idx, const char* meta)
+        {
+            Ogre::ColourValue c(0.0f, 0.0f, 0.0f, 1.0f);
+            checkColourValue(L, idx, c);
+            return c;
         }
     };
 }

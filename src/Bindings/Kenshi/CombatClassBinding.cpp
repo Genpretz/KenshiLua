@@ -521,7 +521,7 @@ static int CombatClass_set_attackStartPos(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    readVector3(L, 2, instance->attackStartPos);
+    if (!readVector3(L, 2, instance->attackStartPos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

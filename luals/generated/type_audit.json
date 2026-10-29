@@ -2319,23 +2319,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "AIPackage",
-      "expected": "fun(Character): MoveSpeed",
-      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AIPackage, me: Character): integer",
-      "member": "_NV_getDesiredTravelSpeed"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AIPackage",
       "expected": "BlackboardSignalFunctions",
       "header": "BlackboardSignalFunctions",
       "kind": "property",
@@ -2367,23 +2350,6 @@
       "kind": "method",
       "lua": "fun(self: AITaskSytem, t: Tasker, score: number, pri: integer)",
       "member": "setCurrentGoal"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AITaskSytem",
-      "expected": "fun(Tasker, number, taskPriority)",
-      "header": "void _NV_setCurrentGoal(Tasker* t, float score, taskPriority pri)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "taskPriority",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AITaskSytem, t: Tasker, score: number, pri: integer)",
-      "member": "_NV_setCurrentGoal"
     },
     {
       "category": "enum_typed_as_integer",
@@ -2504,23 +2470,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "AbstractMovementBase",
-      "expected": "fun(MoveSpeed)",
-      "header": "void _NV_setDesiredSpeed(MoveSpeed speed)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AbstractMovementBase, speed: integer)",
-      "member": "_NV_setDesiredSpeed"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AbstractMovementBase",
       "expected": "fun(): MoveSpeed",
       "header": "MoveSpeed getSpeedOrders() const",
       "issues": [
@@ -2551,23 +2500,6 @@
       "kind": "method",
       "lua": "fun(self: AbstractMovementBase, arg1: Building|Character|RootObjectBase|table, arg2?: integer, arg3?: boolean)",
       "member": "setDestination"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AbstractMovementBase",
-      "expected": "fun(table, UpdatePriority, boolean)",
-      "header": "void _NV_setDestination(const Ogre::Vector3& dest, UpdatePriority pri, bool _a3)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "UpdatePriority",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AbstractMovementBase, arg1: Building|Character|RootObjectBase|table, arg2?: integer, arg3?: boolean)",
-      "member": "_NV_setDestination"
     },
     {
       "category": "unmapped_header_type",
@@ -2604,23 +2536,6 @@
       "member": "setPatrolInput"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "AbstractMovementBase",
-      "expected": "fun(?PatrolInfo)",
-      "header": "void _NV_setPatrolInput(PatrolInfo& patrol)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PatrolInfo",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AbstractMovementBase, patrol: lightuserdata)",
-      "member": "_NV_setPatrolInput"
-    },
-    {
       "category": "multiple",
       "class": "AbstractMovementBase",
       "expected": "fun(?NxControllerShapeHit): NxControllerAction",
@@ -2646,29 +2561,6 @@
     {
       "category": "multiple",
       "class": "AbstractMovementBase",
-      "expected": "fun(?NxControllerShapeHit): NxControllerAction",
-      "header": "NxControllerAction _NV_onShapeHit(const NxControllerShapeHit& hit)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?NxControllerShapeHit",
-          "position": "param 1"
-        },
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "NxControllerAction",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AbstractMovementBase, hit: lightuserdata): integer",
-      "member": "_NV_onShapeHit"
-    },
-    {
-      "category": "multiple",
-      "class": "AbstractMovementBase",
       "expected": "fun(?NxControllersHit): NxControllerAction",
       "header": "NxControllerAction onControllerHit(const NxControllersHit& hit) override",
       "issues": [
@@ -2688,29 +2580,6 @@
       "kind": "method",
       "lua": "fun(self: AbstractMovementBase, hit: lightuserdata): integer",
       "member": "onControllerHit"
-    },
-    {
-      "category": "multiple",
-      "class": "AbstractMovementBase",
-      "expected": "fun(?NxControllersHit): NxControllerAction",
-      "header": "NxControllerAction _NV_onControllerHit(const NxControllersHit& hit)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?NxControllersHit",
-          "position": "param 1"
-        },
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "NxControllerAction",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AbstractMovementBase, hit: lightuserdata): integer",
-      "member": "_NV_onControllerHit"
     },
     {
       "category": "unmapped_header_type",
@@ -2867,23 +2736,6 @@
       "kind": "method",
       "lua": "fun(self: AnimationClass, arg1: integer)",
       "member": "setStanceAnimation"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "AnimationClass",
-      "expected": "fun(StanceEnum)",
-      "header": "void _NV_setStanceAnimation(StanceEnum _a1)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "StanceEnum",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: AnimationClass, arg1: integer)",
-      "member": "_NV_setStanceAnimation"
     },
     {
       "category": "enum_typed_as_integer",
@@ -3550,23 +3402,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Armour",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getClassType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Armour): integer",
-      "member": "_NV_getClassType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Armour",
       "expected": "fun(WeatherAffecting): number",
       "header": "float getWeatherProtection_simple(WeatherAffecting weather)",
       "issues": [
@@ -3650,23 +3485,6 @@
       "kind": "method",
       "lua": "fun(self: AttachedArrowManager, pos: table, targ: table, color: integer)",
       "member": "addArrow"
-    },
-    {
-      "category": "binding_shape_differs",
-      "class": "BackThreadMessagesToMainT",
-      "expected": "fun(): boolean",
-      "header": "bool _NV_flush()",
-      "issues": [
-        {
-          "actual": "(none)",
-          "category": "binding_shape_differs",
-          "expected": "boolean",
-          "position": "return"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: BackThreadMessagesToMainT)",
-      "member": "_NV_flush"
     },
     {
       "category": "unmapped_header_type",
@@ -4069,23 +3887,6 @@
     },
     {
       "category": "enum_typed_as_integer",
-      "class": "BlueprintItem",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getClassType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: BlueprintItem): integer",
-      "member": "_NV_getClassType"
-    },
-    {
-      "category": "enum_typed_as_integer",
       "class": "Bounty",
       "expected": "fun(CrimeEnum)",
       "header": "void addCrime(CrimeEnum what)",
@@ -4293,23 +4094,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Building",
-      "expected": "fun(): BuildingFunction",
-      "header": "BuildingFunction _NV_getSpecialFunction() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "BuildingFunction",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Building): integer",
-      "member": "_NV_getSpecialFunction"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Building",
       "expected": "fun(ItemFunction): boolean",
       "header": "bool hasShopCountersSelling(ItemFunction type)",
       "issues": [
@@ -4340,23 +4124,6 @@
       "kind": "method",
       "lua": "fun(self: Building): integer",
       "member": "getBuildingClass"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Building",
-      "expected": "fun(): BuildingClassType",
-      "header": "BuildingClassType _NV_getBuildingClass() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "BuildingClassType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Building): integer",
-      "member": "_NV_getBuildingClass"
     },
     {
       "category": "unmapped_header_type",
@@ -4393,23 +4160,6 @@
       "member": "getDoorLock"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Building",
-      "expected": "fun(): ?DoorLock*",
-      "header": "DoorLock* _NV_getDoorLock()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?DoorLock*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Building): lightuserdata",
-      "member": "_NV_getDoorLock"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "Building",
       "expected": "fun(): CursorType",
@@ -4429,23 +4179,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Building",
-      "expected": "fun(): CursorType",
-      "header": "CursorType _NV_getMouseCursor()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CursorType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Building): integer",
-      "member": "_NV_getMouseCursor"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Building",
       "expected": "fun(): TaskType",
       "header": "TaskType getDefaultTask()",
       "issues": [
@@ -4459,23 +4192,6 @@
       "kind": "method",
       "lua": "fun(self: Building): integer",
       "member": "getDefaultTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Building",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Building): integer",
-      "member": "_NV_getDefaultTask"
     },
     {
       "category": "enum_typed_as_integer",
@@ -4529,23 +4245,6 @@
       "member": "notifyEffect"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "Building",
-      "expected": "fun(integer, WeatherAffecting, number)",
-      "header": "void _NV_notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "WeatherAffecting",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Building, type: integer, what: integer, strength: number)",
-      "member": "_NV_notifyEffect"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "Building",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
@@ -4561,23 +4260,6 @@
       "kind": "method",
       "lua": "fun(self: Building, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Building",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Building, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -4885,23 +4567,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "CampaignInstance",
-      "expected": "fun(Platoon): UnloadedPlatoonJob",
-      "header": "UnloadedPlatoonJob _NV_getUnloadedPlatoonBehavior(Platoon* who)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "UnloadedPlatoonJob",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CampaignInstance, who: Platoon): integer",
-      "member": "_NV_getUnloadedPlatoonBehavior"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "CampaignInstance",
       "expected": "fun(): MoveSpeed",
       "header": "MoveSpeed getMoveSpeedUnloaded()",
       "issues": [
@@ -4920,23 +4585,6 @@
       "category": "enum_typed_as_integer",
       "class": "CampaignInstance",
       "expected": "fun(): MoveSpeed",
-      "header": "MoveSpeed _NV_getMoveSpeedUnloaded()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CampaignInstance): integer",
-      "member": "_NV_getMoveSpeedUnloaded"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "CampaignInstance",
-      "expected": "fun(): MoveSpeed",
       "header": "MoveSpeed getMoveSpeedLoaded()",
       "issues": [
         {
@@ -4949,23 +4597,6 @@
       "kind": "method",
       "lua": "fun(self: CampaignInstance): integer",
       "member": "getMoveSpeedLoaded"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "CampaignInstance",
-      "expected": "fun(): MoveSpeed",
-      "header": "MoveSpeed _NV_getMoveSpeedLoaded()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CampaignInstance): integer",
-      "member": "_NV_getMoveSpeedLoaded"
     },
     {
       "category": "enum_typed_as_integer",
@@ -5012,23 +4643,6 @@
       "member": "setCurrentAction"
     },
     {
-      "category": "binding_shape_differs",
-      "class": "CharBody",
-      "expected": "fun(Tasker): boolean",
-      "header": "bool _NV_setCurrentAction(Tasker* startActionMsg)",
-      "issues": [
-        {
-          "actual": 2,
-          "category": "binding_shape_differs",
-          "expected": 1,
-          "position": null
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharBody, t?: Tasker|integer, target?: RootObject): boolean",
-      "member": "_NV_setCurrentAction"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "CharBody",
       "expected": "fun(Tasker, integer, table, ?PatrolInfo*, AITaskSytem, TownBase)",
@@ -5061,23 +4675,6 @@
       "kind": "method",
       "lua": "fun(self: CharMovement, arg1: Building|Character|RootObjectBase|table, arg2?: integer, arg3?: boolean)",
       "member": "setDestination"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "CharMovement",
-      "expected": "fun(table, UpdatePriority, boolean)",
-      "header": "void _NV_setDestination(const Ogre::Vector3& dest, UpdatePriority priority, bool notVertical)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "UpdatePriority",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharMovement, arg1: Building|Character|RootObjectBase|table, arg2?: integer, arg3?: boolean)",
-      "member": "_NV_setDestination"
     },
     {
       "category": "enum_typed_as_integer",
@@ -5608,23 +5205,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Character",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getDataType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): integer",
-      "member": "_NV_getDataType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
       "expected": "fun(SquadMemberType)",
       "header": "void setSquadMemberType(SquadMemberType memType)",
       "issues": [
@@ -5693,23 +5273,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Character",
-      "expected": "fun(): MoveSpeed",
-      "header": "MoveSpeed _NV_getMovementSpeedOrders() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): integer",
-      "member": "_NV_getMovementSpeedOrders"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
       "expected": "fun(itemType): boolean",
       "header": "bool hasSimilarItem(itemType ty)",
       "issues": [
@@ -5727,23 +5290,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "Character",
-      "expected": "fun(itemType): boolean",
-      "header": "bool _NV_hasSimilarItem(itemType ty)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, ty: integer): boolean",
-      "member": "_NV_hasSimilarItem"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
       "expected": "fun(StandingOrder, boolean)",
       "header": "void setStandingOrder(MessageForB::StandingOrder orderID, bool on)",
       "issues": [
@@ -5757,23 +5303,6 @@
       "kind": "method",
       "lua": "fun(self: Character, orderID: integer, on?: boolean)",
       "member": "setStandingOrder"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(StandingOrder, boolean)",
-      "header": "void _NV_setStandingOrder(MessageForB::StandingOrder orderID, bool on)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "StandingOrder",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, orderID: integer, on?: boolean)",
-      "member": "_NV_setStandingOrder"
     },
     {
       "category": "enum_typed_as_integer",
@@ -5910,57 +5439,6 @@
       "kind": "method",
       "lua": "fun(self: Character, dest: Building, t: integer, subject: RootObject, location: table)",
       "member": "updateLastTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(Building, TaskType, RootObject, table)",
-      "header": "void _NV_updateLastTask(Building* dest, TaskType t, RootObject* subject, const Ogre::Vector3& location)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, dest: Building, t: integer, subject: RootObject, location: table)",
-      "member": "_NV_updateLastTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(): ProneState",
-      "header": "ProneState _NV_getProneState() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "ProneState",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): integer",
-      "member": "_NV_getProneState"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(ProneState)",
-      "header": "void _NV_setProneState(ProneState p)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "ProneState",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, p: integer)",
-      "member": "_NV_setProneState"
     },
     {
       "category": "enum_typed_as_integer",
@@ -6167,23 +5645,6 @@
       "member": "notifyEffect"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "Character",
-      "expected": "fun(integer, WeatherAffecting, number)",
-      "header": "void _NV_notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "WeatherAffecting",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, type: integer, what: integer, strength: number)",
-      "member": "_NV_notifyEffect"
-    },
-    {
       "category": "binding_shape_differs",
       "class": "Character",
       "expected": "fun(Character, CharacterPerceptionTags_ShortTerm)",
@@ -6216,23 +5677,6 @@
       "kind": "method",
       "lua": "fun(self: Character): lightuserdata",
       "member": "getAABB"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(): ?Ogre::Aabb",
-      "header": "const Ogre::Aabb& _NV_getAABB() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Ogre::Aabb",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character): lightuserdata",
-      "member": "_NV_getAABB"
     },
     {
       "category": "binding_shape_differs",
@@ -6347,23 +5791,6 @@
       "kind": "method",
       "lua": "fun(self: Character, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Character",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Character, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -6742,40 +6169,6 @@
       "member": "workspace"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "CharacterHuman",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract) override",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharacterHuman, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CharacterHuman",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CharacterHuman, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "CharacterStatsWindow",
       "expected": "fun(Group): DatapanelGUI|nil",
@@ -7025,29 +6418,6 @@
       "member": "getStateClass"
     },
     {
-      "category": "multiple",
-      "class": "CombatClass",
-      "expected": "fun(swordStateEnum): CombatState|nil",
-      "header": "CombatState* _NV_getStateClass(swordStateEnum state)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "swordStateEnum",
-          "position": "param 1"
-        },
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "CombatState|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CombatClass, state: integer): lightuserdata",
-      "member": "_NV_getStateClass"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "CombatClass",
       "expected": "fun(swordStateEnum)",
@@ -7212,23 +6582,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "ContainerItem",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getClassType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ContainerItem): integer",
-      "member": "_NV_getClassType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "ContainerItem",
       "expected": "fun(GameDataContainer, itemType): GameData|nil",
       "header": "GameData* _serialise(GameDataContainer* container, itemType type) override",
       "issues": [
@@ -7242,23 +6595,6 @@
       "kind": "method",
       "lua": "fun(self: ContainerItem, container: GameDataContainer, type: integer): GameData",
       "member": "_serialise"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "ContainerItem",
-      "expected": "fun(GameDataContainer, itemType): GameData|nil",
-      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ContainerItem, container: GameDataContainer, type: integer): GameData",
-      "member": "_NV__serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -7296,23 +6632,6 @@
     },
     {
       "category": "enum_typed_as_integer",
-      "class": "Contract_DefendPlayerBase",
-      "expected": "fun(Character): MoveSpeed",
-      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Contract_DefendPlayerBase, me: Character): integer",
-      "member": "_NV_getDesiredTravelSpeed"
-    },
-    {
-      "category": "enum_typed_as_integer",
       "class": "Contract_HiredAlly",
       "expected": "fun(Character): MoveSpeed",
       "header": "MoveSpeed getDesiredTravelSpeed(Character* me) override",
@@ -7327,23 +6646,6 @@
       "kind": "method",
       "lua": "fun(self: Contract_HiredAlly, me: Character): integer",
       "member": "getDesiredTravelSpeed"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Contract_HiredAlly",
-      "expected": "fun(Character): MoveSpeed",
-      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Contract_HiredAlly, me: Character): integer",
-      "member": "_NV_getDesiredTravelSpeed"
     },
     {
       "category": "enum_typed_as_integer",
@@ -7364,23 +6666,6 @@
     },
     {
       "category": "enum_typed_as_integer",
-      "class": "Contract_UntilExSlave",
-      "expected": "fun(Character): MoveSpeed",
-      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Contract_UntilExSlave, me: Character): integer",
-      "member": "_NV_getDesiredTravelSpeed"
-    },
-    {
-      "category": "enum_typed_as_integer",
       "class": "Contract_UntilOutOfDanger",
       "expected": "fun(Character): MoveSpeed",
       "header": "MoveSpeed getDesiredTravelSpeed(Character* me) override",
@@ -7395,23 +6680,6 @@
       "kind": "method",
       "lua": "fun(self: Contract_UntilOutOfDanger, me: Character): integer",
       "member": "getDesiredTravelSpeed"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Contract_UntilOutOfDanger",
-      "expected": "fun(Character): MoveSpeed",
-      "header": "MoveSpeed _NV_getDesiredTravelSpeed(Character* me)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MoveSpeed",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Contract_UntilOutOfDanger, me: Character): integer",
-      "member": "_NV_getDesiredTravelSpeed"
     },
     {
       "category": "unmapped_header_type",
@@ -7429,23 +6697,6 @@
       "kind": "method",
       "lua": "fun(self: CraftingBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "CraftingBuilding",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: CraftingBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "binding_converts",
@@ -7541,23 +6792,6 @@
       "kind": "method",
       "lua": "fun(self: Crossbow): integer",
       "member": "getClassType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Crossbow",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getClassType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Crossbow): integer",
-      "member": "_NV_getClassType"
     },
     {
       "category": "binding_pushes_raw_pointer",
@@ -8368,23 +7602,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "DoorStuff",
-      "expected": "fun(): CursorType",
-      "header": "CursorType _NV_getMouseCursor()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CursorType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DoorStuff): integer",
-      "member": "_NV_getMouseCursor"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "DoorStuff",
       "expected": "fun(): TaskType",
       "header": "TaskType getDefaultTask() override",
       "issues": [
@@ -8398,23 +7615,6 @@
       "kind": "method",
       "lua": "fun(self: DoorStuff): integer",
       "member": "getDefaultTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "DoorStuff",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DoorStuff): integer",
-      "member": "_NV_getDefaultTask"
     },
     {
       "category": "unmapped_header_type",
@@ -8432,23 +7632,6 @@
       "kind": "method",
       "lua": "fun(self: DoorStuff): lightuserdata|nil",
       "member": "getDoorLock"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "DoorStuff",
-      "expected": "fun(): ?DoorLock*",
-      "header": "DoorLock* _NV_getDoorLock()",
-      "issues": [
-        {
-          "actual": "lightuserdata|nil",
-          "category": "unmapped_header_type",
-          "expected": "?DoorLock*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DoorStuff): lightuserdata|nil",
-      "member": "_NV_getDoorLock"
     },
     {
       "category": "enum_typed_as_integer",
@@ -8506,29 +7689,6 @@
       "kind": "method",
       "lua": "fun(self: DoorStuff, dir: integer, damage: Damages, who: Character, attack: CombatTechniqueData, comboID: integer): integer",
       "member": "hitByMeleeAttack"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "DoorStuff",
-      "expected": "fun(CutDirection, Damages, Character, CombatTechniqueData, integer): HitMaterialType",
-      "header": "HitMaterialType _NV_hitByMeleeAttack(CutDirection dir, Damages& damage, Character* who, CombatTechniqueData* attack, int comboID)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CutDirection",
-          "position": "param 1"
-        },
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "HitMaterialType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: DoorStuff, dir: integer, damage: Damages, who: Character, attack: CombatTechniqueData, comboID: integer): integer",
-      "member": "_NV_hitByMeleeAttack"
     },
     {
       "category": "unmapped_header_type",
@@ -8659,23 +7819,6 @@
       "kind": "method",
       "lua": "fun(self: Faction, out: Faction|Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
       "member": "getSelectedObjects"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Faction",
-      "expected": "fun(Lektor<RootObject>, itemType, boolean)",
-      "header": "void _NV_getSelectedObjects(lektor<RootObject*>& out, itemType type, bool selectedOnly)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Faction, out: Faction|Lektor<RootObject>, type: integer, selectedOnly?: boolean)",
-      "member": "_NV_getSelectedObjects"
     },
     {
       "category": "enum_typed_as_integer",
@@ -8922,23 +8065,6 @@
       "kind": "method",
       "lua": "fun(self: FarmBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FarmBuilding",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FarmBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -9373,23 +8499,6 @@
       "kind": "method",
       "lua": "fun(self: FurnaceBuilding): integer",
       "member": "getDefaultTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "FurnaceBuilding",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: FurnaceBuilding): integer",
-      "member": "_NV_getDefaultTask"
     },
     {
       "category": "enum_typed_as_integer",
@@ -9921,23 +9030,6 @@
       "member": "_serialise"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "Gear",
-      "expected": "fun(GameDataContainer, itemType): GameData|nil",
-      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Gear, container: GameDataContainer, type: integer): GameData",
-      "member": "_NV__serialise"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "HandleList",
       "expected": "?std::map<unsigned __int64,unsigned int,std::less<unsigned __int64>,Ogre::STLAllocator<std::pair<unsigned __int64 ,unsigned int>,Ogre::GeneralAllocPolicy>>",
@@ -10337,23 +9429,6 @@
       "kind": "method",
       "lua": "fun(self: Inventory, name: string, w: integer, h: integer, limitSlot: integer, equipCallbacks?: boolean, isContainerSlot?: boolean, enabled?: boolean, limit: integer): InventorySection",
       "member": "initialiseNewSection"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Inventory",
-      "expected": "fun(string, integer, integer, AttachSlot, boolean, boolean, boolean, integer): InventorySection|nil",
-      "header": "InventorySection* _NV_initialiseNewSection(const std::string& name, int w, int h, AttachSlot limitSlot, bool equipCallbacks, bool isContainerSlot, bool enabled, int limit)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "AttachSlot",
-          "position": "param 4"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Inventory, name: string, w: integer, h: integer, limitSlot: integer, equipCallbacks?: boolean, isContainerSlot?: boolean, enabled?: boolean, limit: integer): InventorySection",
-      "member": "_NV_initialiseNewSection"
     },
     {
       "category": "enum_typed_as_integer",
@@ -10867,23 +9942,6 @@
       "member": "getClassType"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "Item",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getClassType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Item): integer",
-      "member": "_NV_getClassType"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "Item",
       "expected": "fun(): ?Ogre::Entity*",
@@ -10901,23 +9959,6 @@
       "member": "getEntity"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Item",
-      "expected": "fun(): ?Ogre::Entity*",
-      "header": "Ogre::Entity* _NV_getEntity() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Ogre::Entity*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Item): lightuserdata",
-      "member": "_NV_getEntity"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "Item",
       "expected": "fun(GameDataContainer, itemType): GameData|nil",
@@ -10933,23 +9974,6 @@
       "kind": "method",
       "lua": "fun(self: Item, container: GameDataContainer, type: integer): GameData",
       "member": "_serialise"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Item",
-      "expected": "fun(GameDataContainer, itemType): GameData|nil",
-      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Item, container: GameDataContainer, type: integer): GameData",
-      "member": "_NV__serialise"
     },
     {
       "category": "no_header_declaration",
@@ -10977,23 +10001,6 @@
       "member": "activate"
     },
     {
-      "category": "binding_shape_differs",
-      "class": "Item",
-      "expected": "fun(boolean, YesNoMaybeValue)",
-      "header": "void _NV_activate(bool createPhysical, YesNoMaybe bareWeapon)",
-      "issues": [
-        {
-          "actual": 6,
-          "category": "binding_shape_differs",
-          "expected": 2,
-          "position": null
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Item, createPhysical?: boolean, bareWeapon: integer|table, arg3: any, arg4?: boolean, arg5: integer, arg6?: boolean)",
-      "member": "_NV_activate"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "Item",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
@@ -11009,23 +10016,6 @@
       "kind": "method",
       "lua": "fun(self: Item, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Item",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Item, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -11051,29 +10041,6 @@
       "member": "createItemEntityCallback_Equipping"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Item",
-      "expected": "fun(?Ogre::Entity*, ?Ogre::SceneNode*)",
-      "header": "void _NV_createItemEntityCallback_Equipping(Ogre::Entity* ent, Ogre::SceneNode* node)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Ogre::Entity*",
-          "position": "param 1"
-        },
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Ogre::SceneNode*",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Item, ent: lightuserdata, node: lightuserdata)",
-      "member": "_NV_createItemEntityCallback_Equipping"
-    },
-    {
       "category": "no_header_declaration",
       "class": "Item",
       "cpp": "hand::findProperOwner",
@@ -11097,23 +10064,6 @@
       "kind": "method",
       "lua": "fun(self: Item, arg1: lightuserdata)",
       "member": "itemEntityCreated"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Item",
-      "expected": "fun(?Ogre::Entity*)",
-      "header": "void _NV_itemEntityCreated(Ogre::Entity* _a1)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Ogre::Entity*",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Item, arg1: lightuserdata)",
-      "member": "_NV_itemEntityCreated"
     },
     {
       "category": "unmapped_header_type",
@@ -11279,23 +10229,6 @@
       "member": "getMouseCursor"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "LightBuilding",
-      "expected": "fun(): CursorType",
-      "header": "CursorType _NV_getMouseCursor()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CursorType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: LightBuilding): integer",
-      "member": "_NV_getMouseCursor"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "LightBuilding",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
@@ -11311,23 +10244,6 @@
       "kind": "method",
       "lua": "fun(self: LightBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "LightBuilding",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: LightBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -11398,23 +10314,6 @@
       "kind": "method",
       "lua": "fun(self: LockedArmour, container: GameDataContainer, type: integer): GameData",
       "member": "_serialise"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "LockedArmour",
-      "expected": "fun(GameDataContainer, itemType): GameData|nil",
-      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: LockedArmour, container: GameDataContainer, type: integer): GameData",
-      "member": "_NV__serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -11568,23 +10467,6 @@
     {
       "category": "binding_shape_differs",
       "class": "MainthreadStateReaderT",
-      "expected": "fun(): boolean",
-      "header": "bool _NV_updateBackDataCheck()",
-      "issues": [
-        {
-          "actual": "(none)",
-          "category": "binding_shape_differs",
-          "expected": "boolean",
-          "position": "return"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: MainthreadStateReaderT)",
-      "member": "_NV_updateBackDataCheck"
-    },
-    {
-      "category": "binding_shape_differs",
-      "class": "MainthreadStateReaderT",
       "expected": "fun(): ?T",
       "header": "T& getMainData()",
       "issues": [
@@ -11728,23 +10610,6 @@
       "kind": "method",
       "lua": "fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil",
       "member": "_serialise"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "MapItem",
-      "expected": "fun(GameDataContainer, itemType): GameData|nil",
-      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil",
-      "member": "_NV__serialise"
     },
     {
       "category": "enum_typed_as_integer",
@@ -12666,162 +11531,78 @@
     {
       "category": "no_header_declaration",
       "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::getInstance",
+      "cpp": "MyGUI::InputManager::getInstance",
       "kind": "method",
       "lua": "fun(): MyGUI.InputManager|nil",
       "member": "getInstance"
     },
     {
-      "category": "no_header_declaration",
+      "category": "unmapped_header_type",
       "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::injectMouseMove",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager, x: integer, y: integer, wheel?: integer): boolean",
-      "member": "injectMouseMove"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::injectMousePress",
+      "expected": "fun(integer, integer, ?MouseButton): boolean",
+      "header": "bool injectMousePress(int _absx, int _absy, MouseButton _id)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "unmapped_header_type",
+          "expected": "?MouseButton",
+          "position": "param 3"
+        }
+      ],
       "kind": "method",
       "lua": "fun(self: MyGUI.InputManager, x: integer, y: integer, button?: integer): boolean",
       "member": "injectMousePress"
     },
     {
-      "category": "no_header_declaration",
+      "category": "unmapped_header_type",
       "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::injectMouseRelease",
+      "expected": "fun(integer, integer, ?MouseButton): boolean",
+      "header": "bool injectMouseRelease(int _absx, int _absy, MouseButton _id)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "unmapped_header_type",
+          "expected": "?MouseButton",
+          "position": "param 3"
+        }
+      ],
       "kind": "method",
       "lua": "fun(self: MyGUI.InputManager, x: integer, y: integer, button?: integer): boolean",
       "member": "injectMouseRelease"
     },
     {
-      "category": "no_header_declaration",
+      "category": "unmapped_header_type",
       "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::injectKeyPress",
+      "expected": "fun(integer, ?Char): boolean",
+      "header": "bool injectKeyPress(KeyCode _key, Char _text = 0)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "unmapped_header_type",
+          "expected": "?Char",
+          "position": "param 2"
+        }
+      ],
       "kind": "method",
       "lua": "fun(self: MyGUI.InputManager, key: integer, character?: integer): boolean",
       "member": "injectKeyPress"
     },
     {
-      "category": "no_header_declaration",
+      "category": "binding_shape_differs",
       "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::injectKeyRelease",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager, key: integer): boolean",
-      "member": "injectKeyRelease"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::isControlPressed",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): boolean",
-      "member": "isControlPressed"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::isShiftPressed",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): boolean",
-      "member": "isShiftPressed"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::isFocusMouse",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): boolean",
-      "member": "isFocusMouse"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::isFocusKey",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): boolean",
-      "member": "isFocusKey"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::isCaptureMouse",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): boolean",
-      "member": "isCaptureMouse"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::setKeyFocusWidget",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager, widget: MyGUI.Widget|nil)",
-      "member": "setKeyFocusWidget"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::resetKeyFocusWidget",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager, widget?: MyGUI.Widget)",
-      "member": "resetKeyFocusWidget"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::getMouseFocusWidget",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): MyGUI.Widget|nil",
-      "member": "getMouseFocusWidget"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::getKeyFocusWidget",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): MyGUI.Widget|nil",
-      "member": "getKeyFocusWidget"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::getMousePosition",
+      "expected": "fun(): MyGUI.IntPoint",
+      "header": "const IntPoint& getMousePosition() const",
+      "issues": [
+        {
+          "actual": "integer, integer",
+          "category": "binding_shape_differs",
+          "expected": "MyGUI.IntPoint",
+          "position": "return"
+        }
+      ],
       "kind": "method",
       "lua": "fun(self: MyGUI.InputManager): integer, integer",
       "member": "getMousePosition"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::addWidgetModal",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager, widget: MyGUI.Widget)",
-      "member": "addWidgetModal"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::removeWidgetModal",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager, widget: MyGUI.Widget)",
-      "member": "removeWidgetModal"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::isModalAny",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager): boolean",
-      "member": "isModalAny"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "MyGUI.InputManager",
-      "cpp": "MyGUI::Widget::resetMouseCaptureWidget",
-      "kind": "method",
-      "lua": "fun(self: MyGUI.InputManager)",
-      "member": "resetMouseCaptureWidget"
     },
     {
       "category": "no_header_declaration",
@@ -14846,23 +13627,6 @@
       "member": "getClassType"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "NestItem",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getClassType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: NestItem): integer",
-      "member": "_NV_getClassType"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "NxMat33",
       "expected": "fun(?float*)",
@@ -15819,23 +14583,6 @@
       "member": "isUnique"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "Platoon",
-      "expected": "fun(): ?UniquePlatoon*",
-      "header": "UniquePlatoon* _NV_isUnique()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?UniquePlatoon*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Platoon): lightuserdata",
-      "member": "_NV_isUnique"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "Platoon",
       "expected": "fun(): itemType",
@@ -15851,23 +14598,6 @@
       "kind": "method",
       "lua": "fun(self: Platoon): integer",
       "member": "getDataType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Platoon",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getDataType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Platoon): integer",
-      "member": "_NV_getDataType"
     },
     {
       "category": "unmapped_header_type",
@@ -15936,23 +14666,6 @@
       "kind": "method",
       "lua": "fun(self: Platoon, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Platoon",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Platoon, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -16296,23 +15009,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "PreviewBuilding",
-      "expected": "fun(): PreviewBuildingClassType",
-      "header": "PreviewBuilding::PreviewBuildingClassType _NV_type() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "PreviewBuildingClassType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: PreviewBuilding): integer",
-      "member": "_NV_type"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "PreviewBuilding",
       "expected": "fun(PlacementResult): string",
       "header": "const std::string& getPlacementResultMaterialName(PreviewBuilding::PlacementResult result)",
       "issues": [
@@ -16365,23 +15061,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "ProductionBuilding",
-      "expected": "fun(): CursorType",
-      "header": "CursorType _NV_getMouseCursor()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CursorType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ProductionBuilding): integer",
-      "member": "_NV_getMouseCursor"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "ProductionBuilding",
       "expected": "fun(): TaskType",
       "header": "TaskType getDefaultTask() override",
       "issues": [
@@ -16395,23 +15074,6 @@
       "kind": "method",
       "lua": "fun(self: ProductionBuilding): integer",
       "member": "getDefaultTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "ProductionBuilding",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ProductionBuilding): integer",
-      "member": "_NV_getDefaultTask"
     },
     {
       "category": "binding_pushes_raw_pointer",
@@ -16431,23 +15093,6 @@
       "member": "getConsumtionItems"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "ProductionBuilding",
-      "expected": "fun(integer): ConsumptionItem|nil",
-      "header": "StorageBuilding::ConsumptionItem* _NV_getConsumtionItems(int id)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "ConsumptionItem|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ProductionBuilding, id: integer): lightuserdata",
-      "member": "_NV_getConsumtionItems"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "ProductionBuilding",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
@@ -16463,23 +15108,6 @@
       "kind": "method",
       "lua": "fun(self: ProductionBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "ProductionBuilding",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ProductionBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -16535,14 +15163,6 @@
       "member": "resourceImage"
     },
     {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "cpp": "GameData::getRaceData",
-      "kind": "method",
-      "lua": "fun(arg1: GameData|string): RaceData",
-      "member": "getRaceData"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "RaceData",
       "expected": "fun(StatsEnumerated): number",
@@ -16577,214 +15197,31 @@
       "member": "isImmune"
     },
     {
-      "category": "no_header_declaration",
+      "category": "enum_typed_as_integer",
       "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "bleedRate"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "table",
-      "member": "bloodColour"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "canGoIndoors"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "carriable"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "GameData",
-      "member": "data"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "integer",
-      "member": "extraAttackSlots"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
+      "expected": "StatsEnumerated",
+      "header": "StatsEnumerated",
       "kind": "property",
       "lua": "integer",
       "member": "firstAidSkill"
     },
     {
-      "category": "no_header_declaration",
+      "category": "unmapped_header_type",
       "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "gigantic"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "healRate"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "hungerRate"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "noHats"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "noShirts"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "noShoes"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "originalBloodMax"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "originalBloodMin"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
+      "expected": "?RaceGroupData*",
+      "header": "RaceGroupData*",
       "kind": "property",
       "lua": "lightuserdata",
       "member": "raceGroup"
     },
     {
-      "category": "no_header_declaration",
+      "category": "unmapped_header_type",
       "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "robot"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "runSpeedMaxSkill"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "runSpeedMinSkill"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "singleGender"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "OgreUnorderedSet<GameData>",
-      "member": "specialFoods"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
+      "expected": "?ogre_unordered_map<StatsEnumerated,float>::type",
+      "header": "ogre_unordered_map<StatsEnumerated,float>::type",
       "kind": "property",
       "lua": "OgreUnorderedMap<integer, number>",
       "member": "statMods"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "swimOffset"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "swimSpeed"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "swims"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "boolean",
-      "member": "vampiric"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "visionMultiplier"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "walkSpeed"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "number",
-      "member": "waterAvoidance"
-    },
-    {
-      "category": "no_header_declaration",
-      "class": "RaceData",
-      "kind": "property",
-      "lua": "OgreUnorderedSet<integer>",
-      "member": "weatherImmunities"
     },
     {
       "category": "unmapped_header_type",
@@ -17214,23 +15651,6 @@
       "member": "getDefaultTask"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "ResearchBuilding",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ResearchBuilding): integer",
-      "member": "_NV_getDefaultTask"
-    },
-    {
       "category": "binding_converts",
       "class": "ResearchBuildingInventoryLayout",
       "expected": "MyGUI.Button|nil",
@@ -17355,23 +15775,6 @@
       "member": "_serialise"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "RobotLimbItem",
-      "expected": "fun(GameDataContainer, itemType): GameData|nil",
-      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RobotLimbItem, container: GameDataContainer, type: integer): GameData",
-      "member": "_NV__serialise"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "RobotLimbItem",
       "expected": "?ogre_unordered_map<StatsEnumerated,float>::type",
@@ -17478,23 +15881,6 @@
       "member": "setStandingOrder"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "RootObject",
-      "expected": "fun(StandingOrder)",
-      "header": "void _NV_setStandingOrder(MessageForB::StandingOrder _a1)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "StandingOrder",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObject, arg1: integer)",
-      "member": "_NV_setStandingOrder"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "RootObject",
       "expected": "fun(): ?PlatoonAI*",
@@ -17510,23 +15896,6 @@
       "kind": "method",
       "lua": "fun(self: RootObject): lightuserdata",
       "member": "getPlatoonAI"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RootObject",
-      "expected": "fun(): ?PlatoonAI*",
-      "header": "PlatoonAI* _NV_getPlatoonAI()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PlatoonAI*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObject): lightuserdata",
-      "member": "_NV_getPlatoonAI"
     },
     {
       "category": "enum_typed_as_integer",
@@ -17546,23 +15915,6 @@
       "member": "notifyEffect"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "RootObject",
-      "expected": "fun(integer, WeatherAffecting, number)",
-      "header": "void _NV_notifyEffect(EffectType::Enum type, WeatherAffecting what, float strength)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "WeatherAffecting",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObject, type: integer, what: integer, strength: number)",
-      "member": "_NV_notifyEffect"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "RootObject",
       "expected": "fun(): ?Ogre::Aabb",
@@ -17578,23 +15930,6 @@
       "kind": "method",
       "lua": "fun(self: RootObject): lightuserdata",
       "member": "getAABB"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "RootObject",
-      "expected": "fun(): ?Ogre::Aabb",
-      "header": "const Ogre::Aabb& _NV_getAABB() const",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Ogre::Aabb",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObject): lightuserdata",
-      "member": "_NV_getAABB"
     },
     {
       "category": "enum_typed_as_integer",
@@ -17621,29 +15956,6 @@
     },
     {
       "category": "enum_typed_as_integer",
-      "class": "RootObject",
-      "expected": "fun(CutDirection, Damages, Character, CombatTechniqueData, integer): HitMaterialType",
-      "header": "HitMaterialType _NV_hitByMeleeAttack(CutDirection dir, Damages& damage, Character* who, CombatTechniqueData* attack, int comboID)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CutDirection",
-          "position": "param 1"
-        },
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "HitMaterialType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObject, dir: integer, damage: Damages, who?: Character, attack?: CombatTechniqueData, comboID: integer): integer",
-      "member": "_NV_hitByMeleeAttack"
-    },
-    {
-      "category": "enum_typed_as_integer",
       "class": "RootObjectBase",
       "expected": "fun(): itemType",
       "header": "itemType getDataType() const",
@@ -17658,23 +15970,6 @@
       "kind": "method",
       "lua": "fun(self: RootObjectBase): integer",
       "member": "getDataType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "RootObjectBase",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getDataType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObjectBase): integer",
-      "member": "_NV_getDataType"
     },
     {
       "category": "unmapped_header_type",
@@ -17709,23 +16004,6 @@
       "kind": "method",
       "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>|RootObjectContainer, type: integer, selectedOnly?: boolean)",
       "member": "getSelectedObjects"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "RootObjectContainer",
-      "expected": "fun(Lektor<RootObject>, itemType, boolean)",
-      "header": "void _NV_getSelectedObjects(lektor<RootObject*>& out, itemType type, bool selectedOnly)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: RootObjectContainer, out: Lektor<RootObject>|RootObjectContainer, type: integer, selectedOnly?: boolean)",
-      "member": "_NV_getSelectedObjects"
     },
     {
       "category": "multiple",
@@ -18022,23 +16300,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "ScreenLabel",
-      "expected": "fun(RisingSpeed)",
-      "header": "void _NV_setRisingSpeed(ScreenLabel::RisingSpeed value)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "RisingSpeed",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ScreenLabel, value: integer)",
-      "member": "_NV_setRisingSpeed"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "ScreenLabel",
       "expected": "LabelSize",
       "header": "ScreenLabel::LabelSize",
       "kind": "property",
@@ -18222,23 +16483,6 @@
       "member": "_serialise"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "SeveredLimbItem",
-      "expected": "fun(GameDataContainer, itemType): GameData|nil",
-      "header": "GameData* _NV__serialise(GameDataContainer* container, itemType type)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "param 2"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: SeveredLimbItem, container: GameDataContainer, type: integer): GameData|nil",
-      "member": "_NV__serialise"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "SharedKing",
       "expected": "?AreasList*",
@@ -18265,23 +16509,6 @@
       "member": "getDataType"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "ShopTrader",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getDataType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ShopTrader): integer",
-      "member": "_NV_getDataType"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "ShopTrader",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
@@ -18299,23 +16526,6 @@
       "member": "serialise"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "ShopTrader",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ShopTrader, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "ShopTraderInventory",
       "expected": "fun(string, integer, integer, AttachSlot, boolean, boolean, boolean, integer): InventorySection|nil",
@@ -18331,23 +16541,6 @@
       "kind": "method",
       "lua": "fun(self: ShopTraderInventory, name: string, w: integer, h: integer, arg4: integer, equipCallbacks?: boolean, arg6?: boolean, arg7?: boolean, arg8: integer): InventorySection",
       "member": "initialiseNewSection"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "ShopTraderInventory",
-      "expected": "fun(string, integer, integer, AttachSlot, boolean, boolean, boolean, integer): InventorySection|nil",
-      "header": "InventorySection* _NV_initialiseNewSection(const std::string& name, int w, int h, AttachSlot _a4, bool equipCallbacks, bool _a6, bool _a7, int _a8)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "AttachSlot",
-          "position": "param 4"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ShopTraderInventory, name: string, w: integer, h: integer, arg4: integer, equipCallbacks?: boolean, arg6?: boolean, arg7?: boolean, arg8: integer): InventorySection",
-      "member": "_NV_initialiseNewSection"
     },
     {
       "category": "no_header_declaration",
@@ -18651,23 +16844,6 @@
       "member": "getDefaultTask"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "StorageBuilding",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: StorageBuilding): integer",
-      "member": "_NV_getDefaultTask"
-    },
-    {
       "category": "binding_pushes_raw_pointer",
       "class": "StorageBuilding",
       "expected": "fun(): ConsumptionItem|nil",
@@ -18702,23 +16878,6 @@
       "member": "getConsumtionItems"
     },
     {
-      "category": "binding_pushes_raw_pointer",
-      "class": "StorageBuilding",
-      "expected": "fun(integer): ConsumptionItem|nil",
-      "header": "StorageBuilding::ConsumptionItem* _NV_getConsumtionItems(int id)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "ConsumptionItem|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: StorageBuilding, id: integer): lightuserdata",
-      "member": "_NV_getConsumtionItems"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "StorageBuilding",
       "expected": "itemType",
@@ -18743,23 +16902,6 @@
       "kind": "method",
       "lua": "fun(self: Sword): integer",
       "member": "getClassType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Sword",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getClassType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Sword): integer",
-      "member": "_NV_getClassType"
     },
     {
       "category": "enum_typed_as_integer",
@@ -19258,23 +17400,6 @@
       "member": "getDataType"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "Town",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getDataType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Town): integer",
-      "member": "_NV_getDataType"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "Town",
       "expected": "fun(): ?AlarmManager*",
@@ -19294,23 +17419,6 @@
     {
       "category": "unmapped_header_type",
       "class": "Town",
-      "expected": "fun(): ?AlarmManager*",
-      "header": "AlarmManager* _NV_getAlarmMgr()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AlarmManager*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Town): lightuserdata",
-      "member": "_NV_getAlarmMgr"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Town",
       "expected": "fun(): ?Nest*",
       "header": "Nest* isNest() override",
       "issues": [
@@ -19324,23 +17432,6 @@
       "kind": "method",
       "lua": "fun(self: Town): lightuserdata",
       "member": "isNest"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Town",
-      "expected": "fun(): ?Nest*",
-      "header": "Nest* _NV_isNest()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?Nest*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Town): lightuserdata",
-      "member": "_NV_isNest"
     },
     {
       "category": "enum_typed_as_integer",
@@ -19358,23 +17449,6 @@
       "kind": "method",
       "lua": "fun(self: Town): integer",
       "member": "getMapMarkerZoomLevel"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "Town",
-      "expected": "fun(): MapZoomLevel",
-      "header": "MapZoomLevel _NV_getMapMarkerZoomLevel()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MapZoomLevel",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Town): integer",
-      "member": "_NV_getMapMarkerZoomLevel"
     },
     {
       "category": "unmapped_header_type",
@@ -19430,23 +17504,6 @@
     {
       "category": "unmapped_header_type",
       "class": "Town",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* c, GameData* r, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: Town, c: GameDataContainer, r: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "Town",
       "expected": "?TagsClass<BuildingDesignation>",
       "header": "TagsClass<BuildingDesignation>",
       "kind": "property",
@@ -19498,23 +17555,6 @@
       "member": "getDataType"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "TownBase",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getDataType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase): integer",
-      "member": "_NV_getDataType"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "TownBase",
       "expected": "fun(): ?Nest*",
@@ -19551,23 +17591,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "TownBase",
-      "expected": "fun(BuildingDesignation, Character): Lektor<Building>|nil",
-      "header": "lektor<Building*>* _NV_findAllBuildingsOfType(BuildingDesignation func, Character* me)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "BuildingDesignation",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase, func: integer, me?: Character): Lektor<Building>",
-      "member": "_NV_findAllBuildingsOfType"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "TownBase",
       "expected": "fun(BuildingFunction, Character): Lektor<Building>|nil",
       "header": "lektor<Building*>* findAllBuildingsWithFunction(BuildingFunction func, Character* me)",
       "issues": [
@@ -19581,23 +17604,6 @@
       "kind": "method",
       "lua": "fun(self: TownBase, func: integer, me?: Character): Lektor<Building>",
       "member": "findAllBuildingsWithFunction"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "TownBase",
-      "expected": "fun(BuildingFunction, Character): Lektor<Building>|nil",
-      "header": "lektor<Building*>* _NV_findAllBuildingsWithFunction(BuildingFunction func, Character* me)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "BuildingFunction",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase, func: integer, me?: Character): Lektor<Building>",
-      "member": "_NV_findAllBuildingsWithFunction"
     },
     {
       "category": "unmapped_header_type",
@@ -19619,23 +17625,6 @@
     {
       "category": "unmapped_header_type",
       "class": "TownBase",
-      "expected": "fun(): ?AlarmManager*",
-      "header": "AlarmManager* _NV_getAlarmMgr()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AlarmManager*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase): lightuserdata",
-      "member": "_NV_getAlarmMgr"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "TownBase",
       "expected": "fun(): ?AreaBiomeGroup*",
       "header": "AreaBiomeGroup* getBiome()",
       "issues": [
@@ -19649,23 +17638,6 @@
       "kind": "method",
       "lua": "fun(self: TownBase): lightuserdata",
       "member": "getBiome"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "TownBase",
-      "expected": "fun(): ?AreaBiomeGroup*",
-      "header": "AreaBiomeGroup* _NV_getBiome()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?AreaBiomeGroup*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase): lightuserdata",
-      "member": "_NV_getBiome"
     },
     {
       "category": "enum_typed_as_integer",
@@ -19687,23 +17659,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "TownBase",
-      "expected": "fun(): MapZoomLevel",
-      "header": "MapZoomLevel _NV_getMapMarkerZoomLevel()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "MapZoomLevel",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase): integer",
-      "member": "_NV_getMapMarkerZoomLevel"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "TownBase",
       "expected": "fun(): TownAlarmState",
       "header": "TownAlarmState getAlarmState() const",
       "issues": [
@@ -19717,23 +17672,6 @@
       "kind": "method",
       "lua": "fun(self: TownBase): integer",
       "member": "getAlarmState"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "TownBase",
-      "expected": "fun(): TownAlarmState",
-      "header": "TownAlarmState _NV_getAlarmState() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TownAlarmState",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase): integer",
-      "member": "_NV_getAlarmState"
     },
     {
       "category": "enum_typed_as_integer",
@@ -19753,23 +17691,6 @@
       "member": "setAlarmState"
     },
     {
-      "category": "enum_typed_as_integer",
-      "class": "TownBase",
-      "expected": "fun(TownAlarmState)",
-      "header": "void _NV_setAlarmState(TownAlarmState s)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TownAlarmState",
-          "position": "param 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase, s: integer)",
-      "member": "_NV_setAlarmState"
-    },
-    {
       "category": "unmapped_header_type",
       "class": "TownBase",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
@@ -19785,23 +17706,6 @@
       "kind": "method",
       "lua": "fun(self: TownBase, c: GameDataContainer, r: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "TownBase",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* c, GameData* r, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TownBase, c: GameDataContainer, r: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "unmapped_header_type",
@@ -20184,23 +18088,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "TurretBuilding",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TurretBuilding): integer",
-      "member": "_NV_getDefaultTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "TurretBuilding",
       "expected": "fun(): StatsEnumerated",
       "header": "StatsEnumerated getStatUsed() const",
       "issues": [
@@ -20231,23 +18118,6 @@
       "kind": "method",
       "lua": "fun(self: TurretBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "TurretBuilding",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: TurretBuilding, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "binding_pushes_raw_pointer",
@@ -20412,23 +18282,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "UseableStuff",
-      "expected": "fun(): CursorType",
-      "header": "CursorType _NV_getMouseCursor()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CursorType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: UseableStuff): integer",
-      "member": "_NV_getMouseCursor"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "UseableStuff",
       "expected": "fun(): TaskType",
       "header": "TaskType getDefaultTask() override",
       "issues": [
@@ -20442,23 +18295,6 @@
       "kind": "method",
       "lua": "fun(self: UseableStuff): integer",
       "member": "getDefaultTask"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "UseableStuff",
-      "expected": "fun(): TaskType",
-      "header": "TaskType _NV_getDefaultTask()",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "TaskType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: UseableStuff): integer",
-      "member": "_NV_getDefaultTask"
     },
     {
       "category": "enum_typed_as_integer",
@@ -20497,23 +18333,6 @@
     {
       "category": "unmapped_header_type",
       "class": "UseableStuff",
-      "expected": "fun(): ?DoorLock*",
-      "header": "DoorLock* _NV_getDoorLock()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?DoorLock*",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: UseableStuff): lightuserdata",
-      "member": "_NV_getDoorLock"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "UseableStuff",
       "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
       "header": "GameSaveState serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract) override",
       "issues": [
@@ -20527,23 +18346,6 @@
       "kind": "method",
       "lua": "fun(self: UseableStuff, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
       "member": "serialise"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "UseableStuff",
-      "expected": "fun(GameDataContainer, GameData, ?PosRotPair*): GameSaveState",
-      "header": "GameSaveState _NV_serialise(GameDataContainer* container, GameData* refList, PosRotPair* offsetPosToSubtract)",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "unmapped_header_type",
-          "expected": "?PosRotPair*",
-          "position": "param 3"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: UseableStuff, container: GameDataContainer, refList: GameData, offsetPosToSubtract: lightuserdata): GameSaveState",
-      "member": "_NV_serialise"
     },
     {
       "category": "enum_typed_as_integer",
@@ -20567,29 +18369,6 @@
       "kind": "method",
       "lua": "fun(self: UseableStuff, dir: integer, damage: Damages, who: Character, attack: CombatTechniqueData, comboID: integer): integer",
       "member": "hitByMeleeAttack"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "UseableStuff",
-      "expected": "fun(CutDirection, Damages, Character, CombatTechniqueData, integer): HitMaterialType",
-      "header": "HitMaterialType _NV_hitByMeleeAttack(CutDirection dir, Damages& damage, Character* who, CombatTechniqueData* attack, int comboID)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CutDirection",
-          "position": "param 1"
-        },
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "HitMaterialType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: UseableStuff, dir: integer, damage: Damages, who: Character, attack: CombatTechniqueData, comboID: integer): integer",
-      "member": "_NV_hitByMeleeAttack"
     },
     {
       "category": "unmapped_header_type",
@@ -20712,29 +18491,6 @@
     {
       "category": "enum_typed_as_integer",
       "class": "WallBuilding",
-      "expected": "fun(CutDirection, Damages, Character, CombatTechniqueData, integer): HitMaterialType",
-      "header": "HitMaterialType _NV_hitByMeleeAttack(CutDirection dir, Damages& damage, Character* who, CombatTechniqueData* attack, int comboID)",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "CutDirection",
-          "position": "param 1"
-        },
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "HitMaterialType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: WallBuilding, dir: integer, damage: Damages, who: Character, attack: CombatTechniqueData, comboID: integer): integer",
-      "member": "_NV_hitByMeleeAttack"
-    },
-    {
-      "category": "enum_typed_as_integer",
-      "class": "WallBuilding",
       "expected": "WallSectionLinkType",
       "header": "WallSectionLinkType",
       "kind": "property",
@@ -20822,6 +18578,102 @@
     },
     {
       "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "fun(table): ?std::vector<std::pair<EffectType::Enum,float>,Ogre::STLAllocator<std::pair<EffectType::Enum,float>,Ogre::GeneralAllocPolicy>>",
+      "header": "const std::vector<std::pair<EffectType::Enum, float>, Ogre::STLAllocator<std::pair<EffectType::Enum, float>, Ogre::GeneralAllocPolicy > >& getPositionGlobalEffects(const Ogre::Vector3& position) const",
+      "issues": [
+        {
+          "actual": "{ effect: EffectType.Enum, strength: number }[]",
+          "category": "unmapped_header_type",
+          "expected": "?std::vector<std::pair<EffectType::Enum,float>,Ogre::STLAllocator<std::pair<EffectType::Enum,float>,Ogre::GeneralAllocPolicy>>",
+          "position": "return 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: WeatherSystem, position: table): { effect: EffectType.Enum, strength: number }[]",
+      "member": "getPositionGlobalEffects"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "fun(?EffectHandler*)",
+      "header": "void addWeatherEffect(EffectHandler* effect)",
+      "issues": [
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?EffectHandler*",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: WeatherSystem, effect: lightuserdata)",
+      "member": "addWeatherEffect"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "fun(?EffectHandler*)",
+      "header": "void removeWeatherEffect(EffectHandler* effect)",
+      "issues": [
+        {
+          "actual": "lightuserdata",
+          "category": "unmapped_header_type",
+          "expected": "?EffectHandler*",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: WeatherSystem, effect: lightuserdata)",
+      "member": "removeWeatherEffect"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "?AreaBiomeGroup*",
+      "header": "AreaBiomeGroup*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "ActiveRegion"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "?std::set<EffectHandler*,std::less<EffectHandler*>,Ogre::STLAllocator<EffectHandler*,Ogre::GeneralAllocPolicy>>",
+      "header": "std::set<EffectHandler*,std::less<EffectHandler*>,Ogre::STLAllocator<EffectHandler*,Ogre::GeneralAllocPolicy>>",
+      "kind": "property",
+      "lua": "lightuserdata[]",
+      "member": "activeEffects"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "?AreaBiomeGroup*",
+      "header": "AreaBiomeGroup*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "previousArea"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "?AreaSector*",
+      "header": "AreaSector*",
+      "kind": "property",
+      "lua": "lightuserdata|nil",
+      "member": "previousSector"
+    },
+    {
+      "category": "unmapped_header_type",
+      "class": "WeatherSystem",
+      "expected": "?std::map<WeatherRegion::Listener*,WeatherRegion*,std::less<WeatherRegion::Listener*>,Ogre::STLAllocator<std::pair<WeatherRegion::Listener*,WeatherRegion*>,Ogre::GeneralAllocPolicy>>",
+      "header": "std::map<WeatherRegion::Listener*,WeatherRegion*,std::less<WeatherRegion::Listener*>,Ogre::STLAllocator<std::pair<WeatherRegion::Listener*const,WeatherRegion*>,Ogre::GeneralAllocPolicy>>",
+      "kind": "property",
+      "lua": "{ listener: Listener|nil, region: WeatherRegion|nil }[]",
+      "member": "weatherListeners"
+    },
+    {
+      "category": "unmapped_header_type",
       "class": "WorldEventStateQuery",
       "expected": "?ogre_unordered_map<GameData*,WorldStateEnum>::type",
       "header": "ogre_unordered_map<GameData*,WorldStateEnum>::type",
@@ -20854,14 +18706,14 @@
       "header": "bool operator==(YesNoMaybe::ynm a) const",
       "issues": [
         {
-          "actual": "YesNoMaybeValue|integer",
+          "actual": "YesNoMaybe|YesNoMaybeValue|integer",
           "category": "binding_converts",
           "expected": "ynm",
           "position": "param 1"
         }
       ],
       "kind": "method",
-      "lua": "fun(self: YesNoMaybeValue, arg1?: YesNoMaybeValue|integer): boolean",
+      "lua": "fun(self: YesNoMaybeValue, arg1?: YesNoMaybe|YesNoMaybeValue|integer): boolean",
       "member": "operator_eq"
     },
     {
@@ -21426,23 +19278,6 @@
     },
     {
       "category": "enum_typed_as_integer",
-      "class": "ZoneMapContent.HandleDummy",
-      "expected": "fun(): itemType",
-      "header": "itemType _NV_getDataType() const",
-      "issues": [
-        {
-          "actual": "integer",
-          "category": "enum_typed_as_integer",
-          "expected": "itemType",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: ZoneMapContent.HandleDummy): integer",
-      "member": "_NV_getDataType"
-    },
-    {
-      "category": "enum_typed_as_integer",
       "class": "ZoneSmell",
       "expected": "fun(SmellType): ZoneSmell_Smell|nil",
       "header": "ZoneSmell::Smell* _getSmell(SmellType t)",
@@ -21661,23 +19496,6 @@
       "kind": "method",
       "lua": "fun(self: hkMemoryAllocator): lightuserdata",
       "member": "getExtendedInterface"
-    },
-    {
-      "category": "binding_pushes_raw_pointer",
-      "class": "hkMemoryAllocator",
-      "expected": "fun(): hkMemoryAllocator_ExtendedInterface|nil",
-      "header": "hkMemoryAllocator::ExtendedInterface* _NV_getExtendedInterface()",
-      "issues": [
-        {
-          "actual": "lightuserdata",
-          "category": "binding_pushes_raw_pointer",
-          "expected": "hkMemoryAllocator_ExtendedInterface|nil",
-          "position": "return 1"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: hkMemoryAllocator): lightuserdata",
-      "member": "_NV_getExtendedInterface"
     },
     {
       "category": "binding_converts",
@@ -21909,16 +19727,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 54,
-    "binding_pushes_raw_pointer": 53,
-    "binding_shape_differs": 206,
+    "binding_pushes_raw_pointer": 49,
+    "binding_shape_differs": 203,
     "blocking_issues": 0,
-    "container_methods_typed": 1105,
-    "enum_typed_as_integer": 544,
-    "methods": 8817,
-    "methods_matching_header": 6702,
-    "no_header_declaration": 278,
-    "properties": 3710,
-    "properties_matching_header": 3139,
-    "unmapped_header_type": 463
+    "container_methods_typed": 1103,
+    "enum_typed_as_integer": 467,
+    "methods": 7377,
+    "methods_matching_header": 5392,
+    "no_header_declaration": 228,
+    "properties": 3716,
+    "properties_matching_header": 3167,
+    "unmapped_header_type": 444
   }
 }

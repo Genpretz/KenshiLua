@@ -207,7 +207,7 @@ void validateWidgetSkin(const std::string& type, const std::string& skin)
 
 MyGUI::Widget* toWidget(lua_State* L, int idx)
 {
-    return WidgetBinding::getWidget(L, idx);
+    return testObject<MyGUI::Widget>(L, idx, WidgetBinding::getMetatableName());
 }
 
 int pushWidget(lua_State* L, MyGUI::Widget* widget)

@@ -241,7 +241,7 @@ int GameDataBinding::loadFromFile(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string path = luaL_checkstring(L, 2);
+    const char* path = luaL_checkstring(L, 2);
     itemType _type = (itemType)luaL_checkinteger(L, 3);
     bool result = instance->loadFromFile(path, _type);
     lua_pushboolean(L, result ? 1 : 0);
@@ -298,9 +298,9 @@ int GameDataBinding::addFileName(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string n = luaL_checkstring(L, 2);
-    const std::string v = luaL_checkstring(L, 3);
-    std::string filestype = luaL_checkstring(L, 4);
+    const char* n = luaL_checkstring(L, 2);
+    const char* v = luaL_checkstring(L, 3);
+    const char* filestype = luaL_checkstring(L, 4);
     std::string category = luaL_checkstring(L, 5);
     bool vis = lua_toboolean(L, 6) != 0;
     instance->addFileName(n, v, filestype, category, vis);
@@ -312,8 +312,8 @@ int GameDataBinding::addString(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string n = luaL_checkstring(L, 2);
-    const std::string v = luaL_checkstring(L, 3);
+    const char* n = luaL_checkstring(L, 2);
+    const char* v = luaL_checkstring(L, 3);
     std::string category = luaL_checkstring(L, 4);
     bool vis = lua_toboolean(L, 5) != 0;
     instance->addString(n, v, category, vis);
@@ -325,7 +325,7 @@ int GameDataBinding::getGameDataReferenceObject(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string list = luaL_checkstring(L, 2);
+    const char* list = luaL_checkstring(L, 2);
     const std::string id = luaL_checkstring(L, 3);
     GameDataReference* result = instance->getGameDataReferenceObject(list, id);
     return pushObject<GameDataReference>(L, result, GameDataReferenceBinding::getMetatableName());
@@ -336,8 +336,8 @@ int GameDataBinding::addToList(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string list = luaL_checkstring(L, 2);
-    const std::string id = luaL_checkstring(L, 3);
+    const char* list = luaL_checkstring(L, 2);
+    const char* id = luaL_checkstring(L, 3);
     int val = (int)luaL_checkinteger(L, 4);
     int val2 = (int)luaL_checkinteger(L, 5);
     int val3 = (int)luaL_checkinteger(L, 6);
@@ -350,7 +350,7 @@ int GameDataBinding::findInList(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string list = luaL_checkstring(L, 2);
+    const char* list = luaL_checkstring(L, 2);
     const std::string SID = luaL_checkstring(L, 3);
     bool result = instance->findInList(list, SID);
     lua_pushboolean(L, result ? 1 : 0);
@@ -453,7 +453,7 @@ int GameDataBinding::getFromListAsData(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string n = luaL_checkstring(L, 2);
+    const char* n = luaL_checkstring(L, 2);
     int index = (int)luaL_checkinteger(L, 3);
     GameDataContainer* dataContainer = checkObject<GameDataContainer>(L, 4, GameDataContainerBinding::getMetatableName());
     itemType type = (itemType)luaL_checkinteger(L, 5);
@@ -466,7 +466,7 @@ int GameDataBinding::deleteInstancedObject(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string id = luaL_checkstring(L, 2);
+    const char* id = luaL_checkstring(L, 2);
     int modIndex = (int)luaL_checkinteger(L, 3);
     instance->deleteInstancedObject(id, modIndex);
     return 0;
@@ -556,7 +556,7 @@ int GameDataBinding::add(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string n = luaL_checkstring(L, 2);
+    const char* n = luaL_checkstring(L, 2);
     if (lua_istable(L, 3))
     {
         Ogre::Vector3 v;
@@ -567,7 +567,7 @@ int GameDataBinding::add(lua_State* L)
     else if (lua_isboolean(L, 3))
     {
         bool v = lua_toboolean(L, 3) != 0;
-        std::string category = luaL_optstring(L, 4, "");
+        const char* category = luaL_optstring(L, 4, "");
         bool vis = lua_toboolean(L, 5) != 0;
         instance->add(n, v, category, vis);
         return 0;
@@ -577,7 +577,7 @@ int GameDataBinding::add(lua_State* L)
         if (lua_isinteger(L, 3))
         {
             int v = (int)lua_tointeger(L, 3);
-            std::string category = luaL_optstring(L, 4, "");
+            const char* category = luaL_optstring(L, 4, "");
             bool vis = lua_toboolean(L, 5) != 0;
             instance->add(n, v, category, vis);
             return 0;
@@ -585,7 +585,7 @@ int GameDataBinding::add(lua_State* L)
         else
         {
             float v = (float)lua_tonumber(L, 3);
-            std::string category = luaL_optstring(L, 4, "");
+            const char* category = luaL_optstring(L, 4, "");
             bool vis = lua_toboolean(L, 5) != 0;
             bool isSlider = lua_toboolean(L, 6) != 0;
             instance->add(n, v, category, vis, isSlider);
@@ -600,7 +600,7 @@ int GameDataBinding::removeFromList(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string list = luaL_checkstring(L, 2);
+    const char* list = luaL_checkstring(L, 2);
     if (lua_isnumber(L, 3))
     {
         int id = (int)lua_tointeger(L, 3);
@@ -620,7 +620,7 @@ int GameDataBinding::getFromList(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string n = luaL_checkstring(L, 2);
+    const char* n = luaL_checkstring(L, 2);
     int index = (int)luaL_checkinteger(L, 3);
     const std::string& result = instance->getFromList(n, index);
     lua_pushstring(L, result.c_str());
@@ -643,7 +643,7 @@ int GameDataBinding::getAllFromList(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string n = luaL_checkstring(L, 2);
+    const char* n = luaL_checkstring(L, 2);
     lektor<std::string>* list = LektorStringBinding<std::string>::getInstance(L, 3);
     if (!list) return luaL_error(L, "Argument 3 to getAllFromList must be lektor<string>");
     instance->getAllFromList(n, *list);
@@ -655,7 +655,7 @@ int GameDataBinding::getValueFromList(lua_State* L)
     GameData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameData is nil");
 
-    const std::string list = luaL_checkstring(L, 2);
+    const char* list = luaL_checkstring(L, 2);
     int index = (int)luaL_checkinteger(L, 3);
     const TripleInt& result = instance->getValueFromList(list, index);
     return pushValue<TripleInt>(L, result, TripleIntBinding::getMetatableName());

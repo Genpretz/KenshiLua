@@ -334,6 +334,10 @@ def build_report():
 
         for method in binding.get("methods", []):
             name = method["name"]
+            # Direct-dispatch helpers remain in the runtime inventory but are
+            # intentionally hidden from the generated public LuaLS surface.
+            if name.startswith("_NV_"):
+                continue
             field_type = class_fields.get(name, "")
             base = {"class": lua_type, "member": name, "kind": "method", "lua": field_type}
             if binding.get("kind") == "template_instance":

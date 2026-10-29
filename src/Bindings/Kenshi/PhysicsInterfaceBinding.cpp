@@ -141,12 +141,12 @@ int PhysicsInterfaceBinding::loadScytheFileMT(lua_State* L)
     if (!instance) return luaL_error(L, "PhysicsInterface is nil");
 
     RootObject* userdata = checkObject<RootObject>(L, 2, RootObjectBinding::getMetatableName());
-    const std::string file = luaL_checkstring(L, 3);
+    const char* file = luaL_checkstring(L, 3);
     Ogre::Vector3 pos;
     readVector3(L, 4, pos);
     Ogre::Quaternion q;
     readQuaternion(L, 5, q);
-    const std::string boneAttachment = luaL_checkstring(L, 6);
+    const char* boneAttachment = luaL_checkstring(L, 6);
     GameData* itemdata = checkObject<GameData>(L, 7, GameDataBinding::getMetatableName());
     ScythePhysicsT* result = instance->loadScytheFileMT(userdata, file, pos, q, boneAttachment, itemdata);
     lua_pushlightuserdata(L, (void*)result);

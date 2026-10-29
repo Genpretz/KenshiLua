@@ -10,7 +10,6 @@ local function checkTextureAndMessageBox(box, widget, textures, ptr)
     box:buttonClick()
     assert(box.modal and (box.callback == nil or box.callback == ptr))
     textures:loadImage()
-    textures:_NV_loadImage()
 end
 
 return checkTextureAndMessageBox

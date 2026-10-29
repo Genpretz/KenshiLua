@@ -27,7 +27,7 @@ int LoggerBinding::close(lua_State* L)
 
 int LoggerBinding::logMessage(lua_State* L)
 {
-    const std::string msg = luaL_checkstring(L, 1);
+    const char* msg = luaL_checkstring(L, 1);
     Logger::Severity sev = (Logger::Severity)luaL_optinteger(L, 2, (lua_Integer)Logger::Info);
     Logger::logMessage(msg, sev);
     return 0;

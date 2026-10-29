@@ -66,18 +66,47 @@ namespace KenshiLua
     template <class T>
     inline T* testObject(lua_State* L, int idx, const char* metatableName)
     {
-        if (!lua_isuserdata(L, idx)) return 0;
+        if (!lua_isuserdata(L, idx) || !metatableName) return 0;
+        if (idx < 0 && idx > LUA_REGISTRYINDEX) {
+            idx = lua_gettop(L) + idx + 1;
+        }
 
         int top = lua_gettop(L);
         bool match = false;
-        if (lua_getmetatable(L, idx)) { // Stack: MT
-            while (true) {
+        if (lua_getmetatable(L, idx)) { // Stack: top+1 = origMT
+            int origMTIdx = top + 1;
+
+            lua_pushstring(L, "__isa");
+            lua_rawget(L, origMTIdx); // Stack: top+2 = __isa (or nil)
+            if (lua_istable(L, -1)) {
+                lua_pushstring(L, metatableName);
+                lua_rawget(L, -2);
+                if (lua_isboolean(L, -1)) {
+                    match = (lua_toboolean(L, -1) != 0);
+                    lua_settop(L, top);
+                    if (!match) return 0;
+                    void* raw = lua_touserdata(L, idx);
+                    return raw ? (T*)*((void**)raw) : 0;
+                }
+                lua_pop(L, 1);
+            } else {
+                lua_pop(L, 1);
+                lua_newtable(L);
+                lua_pushstring(L, "__isa");
+                lua_pushvalue(L, -2);
+                lua_rawset(L, origMTIdx);
+            }
+            int isaIdx = top + 2;
+
+            lua_pushvalue(L, origMTIdx); // Stack: top+3 = curMT
+            for (int depth = 0; depth < 32; ++depth) {
                 lua_pushstring(L, "__name");
                 lua_rawget(L, -2);
                 const char* name = lua_tostring(L, -1);
+                bool eq = (name && strcmp(name, metatableName) == 0);
                 lua_pop(L, 1);
 
-                if (name && strcmp(name, metatableName) == 0) {
+                if (eq) {
                     match = true;
                     break;
                 }
@@ -88,13 +117,17 @@ namespace KenshiLua
 
                 lua_pushstring(L, "__index");
                 lua_rawget(L, -2);
-                if (lua_istable(L, -1)) {
+                if (lua_istable(L, -1) && !lua_rawequal(L, -1, -3)) {
                     lua_replace(L, -3);
                     lua_pop(L, 1);
                 } else {
                     break;
                 }
             }
+
+            lua_pushstring(L, metatableName);
+            lua_pushboolean(L, match ? 1 : 0);
+            lua_rawset(L, isaIdx);
         }
         lua_settop(L, top);
 
@@ -198,12 +231,15 @@ namespace KenshiLua
         *ud = (void*)ptr;
         int udIdx = lua_gettop(L);
 
-        std::string ownedMetaName = std::string(baseMetatableName) + "_Owned";
-        luaL_getmetatable(L, ownedMetaName.c_str());
+        char ownedMetaName[160];
+        _snprintf(ownedMetaName, sizeof(ownedMetaName), "%s_Owned_%p", baseMetatableName, (void*)GcFn);
+        ownedMetaName[sizeof(ownedMetaName) - 1] = '\0';
+
+        luaL_getmetatable(L, ownedMetaName);
 
         if (lua_isnil(L, -1)) {
             lua_pop(L, 1);
-            luaL_newmetatable(L, ownedMetaName.c_str());
+            luaL_newmetatable(L, ownedMetaName);
             int ownedMTIdx = lua_gettop(L);
 
             luaL_getmetatable(L, baseMetatableName);
@@ -221,9 +257,10 @@ namespace KenshiLua
                     }
                 }
 
-                if (lua_getmetatable(L, baseMTIdx)) {
-                    lua_setmetatable(L, ownedMTIdx);
-                }
+                lua_newtable(L);
+                lua_pushvalue(L, baseMTIdx);
+                lua_setfield(L, -2, "__index");
+                lua_setmetatable(L, ownedMTIdx);
 
                 lua_pop(L, 1);
             } else {
@@ -350,8 +387,11 @@ namespace KenshiLua
     // or returns the method if it exists in the metatable.
     inline int genericPropertyIndex(lua_State* L)
     {
-        // Stack: 1 = userdata (object), 2 = string (key)
-        const char* key = luaL_checkstring(L, 2);
+        // Stack: 1 = userdata (object), 2 = key
+        if (lua_type(L, 2) != LUA_TSTRING) {
+            lua_pushnil(L);
+            return 1;
+        }
 
         if (lua_getmetatable(L, 1)) {
             // 1. Check for a method in the metatable first
@@ -369,10 +409,9 @@ namespace KenshiLua
                 lua_pushvalue(L, 2);  // push the key again
                 lua_gettable(L, -2);
                 if (lua_iscfunction(L, -1)) {
-                    // We found the getter function! Execute it.
-                    lua_pushvalue(L, 1); // Pass the C++ object as the first argument
-                    lua_call(L, 1, 1);   // Call with 1 arg, expect 1 return
-                    return 1;
+                    lua_CFunction getter = lua_tocfunction(L, -1);
+                    lua_settop(L, 1); // Leave only arg 1 (userdata) on stack
+                    return getter(L);
                 }
             }
         }
@@ -396,16 +435,16 @@ namespace KenshiLua
                 lua_gettable(L, -2);   // look up the key in __setters
 
                 if (lua_iscfunction(L, -1)) {
-                    // We found the setter function! Execute it.
-                    lua_pushvalue(L, 1); // Pass the C++ object (arg 1)
-                    lua_pushvalue(L, 3); // Pass the new value (arg 2)
-                    lua_call(L, 2, 0);   // Call with 2 args, expect 0 returns
-                    return 0;
+                    lua_CFunction setter = lua_tocfunction(L, -1);
+                    lua_settop(L, 3); // Leave userdata (1), key (2), value (3)
+                    lua_remove(L, 2); // Remove key so stack is userdata (1), value (2)
+                    return setter(L);
                 }
             }
         }
 
-        return luaL_error(L, "Property '%s' is read-only or does not exist", lua_tostring(L, 2));
+        return luaL_error(L, "Property '%s' is read-only or does not exist",
+            lua_isstring(L, 2) ? lua_tostring(L, 2) : luaL_typename(L, 2));
     }
 
     // =========================================================================
@@ -537,6 +576,12 @@ namespace KenshiLua
             luaL_setfuncs(L, methods, 0);
         }
 
+        lua_newtable(L);
+        lua_setfield(L, -2, "__getters");
+
+        lua_newtable(L);
+        lua_setfield(L, -2, "__setters");
+
         lua_pop(L, 1);
     }
 
@@ -546,6 +591,7 @@ namespace KenshiLua
         // 1. Link child metatable __index fallback to parent metatable
         luaL_getmetatable(L, childMeta);
         if (lua_istable(L, -1)) {
+            int childMTIdx = lua_gettop(L);
             luaL_getmetatable(L, parentMeta);
             if (!lua_istable(L, -1)) {
                 // Parent metatable doesn't exist, log a warning or return safely
@@ -553,43 +599,66 @@ namespace KenshiLua
                 lua_pop(L, 2); // pop child metatable and nil parent metatable
                 return;
             }
+            int parentMTIdx = lua_gettop(L);
+
+            lua_pushstring(L, "__isa");
+            lua_pushnil(L);
+            lua_rawset(L, childMTIdx);
 
             lua_newtable(L);
-            lua_pushvalue(L, -2); // duplicate parentMT
+            lua_pushvalue(L, parentMTIdx); // duplicate parentMT
             lua_setfield(L, -2, "__index"); // newtable.__index = parentMT
-            lua_setmetatable(L, -3); // childMT's metatable is newtable
+            lua_setmetatable(L, childMTIdx); // childMT's metatable is newtable
 
-            // 2. Link child __getters table __index fallback to parent __getters
+            // 2. Ensure child and parent __getters tables exist and link child -> parent
             lua_pushstring(L, "__getters");
-            lua_rawget(L, -3); // childMT is at -3
-            if (lua_istable(L, -1)) {
+            lua_rawget(L, childMTIdx);
+            if (!lua_istable(L, -1)) {
+                lua_pop(L, 1);
                 lua_newtable(L);
                 lua_pushstring(L, "__getters");
-                lua_rawget(L, -4); // parentMT is at -4
-                if (lua_istable(L, -1)) {
-                    lua_setfield(L, -2, "__index");
-                    lua_setmetatable(L, -2);
-                } else {
-                    lua_pop(L, 2);
-                }
+                lua_pushvalue(L, -2);
+                lua_rawset(L, childMTIdx);
             }
-            lua_pop(L, 1); // pop childGetters
+            lua_pushstring(L, "__getters");
+            lua_rawget(L, parentMTIdx);
+            if (!lua_istable(L, -1)) {
+                lua_pop(L, 1);
+                lua_newtable(L);
+                lua_pushstring(L, "__getters");
+                lua_pushvalue(L, -2);
+                lua_rawset(L, parentMTIdx);
+            }
+            lua_newtable(L);
+            lua_pushvalue(L, -2); // parentGetters
+            lua_setfield(L, -2, "__index");
+            lua_setmetatable(L, -3); // childGetters's metatable
+            lua_pop(L, 2); // pop parentGetters and childGetters
 
-            // 3. Link child __setters table __index fallback to parent __setters
+            // 3. Ensure child and parent __setters tables exist and link child -> parent
             lua_pushstring(L, "__setters");
-            lua_rawget(L, -3); // childMT is at -3
-            if (lua_istable(L, -1)) {
+            lua_rawget(L, childMTIdx);
+            if (!lua_istable(L, -1)) {
+                lua_pop(L, 1);
                 lua_newtable(L);
                 lua_pushstring(L, "__setters");
-                lua_rawget(L, -4); // parentMT is at -4
-                if (lua_istable(L, -1)) {
-                    lua_setfield(L, -2, "__index");
-                    lua_setmetatable(L, -2);
-                } else {
-                    lua_pop(L, 2);
-                }
+                lua_pushvalue(L, -2);
+                lua_rawset(L, childMTIdx);
             }
-            lua_pop(L, 1); // pop childSetters
+            lua_pushstring(L, "__setters");
+            lua_rawget(L, parentMTIdx);
+            if (!lua_istable(L, -1)) {
+                lua_pop(L, 1);
+                lua_newtable(L);
+                lua_pushstring(L, "__setters");
+                lua_pushvalue(L, -2);
+                lua_rawset(L, parentMTIdx);
+            }
+            lua_newtable(L);
+            lua_pushvalue(L, -2); // parentSetters
+            lua_setfield(L, -2, "__index");
+            lua_setmetatable(L, -3); // childSetters's metatable
+            lua_pop(L, 2); // pop parentSetters and childSetters
 
             lua_pop(L, 1); // pop parentMT
         }
@@ -861,6 +930,72 @@ namespace KenshiLua
         lua_rawgeti(L, idx, 2); out.value[1] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
         lua_rawgeti(L, idx, 3); out.value[2] = (int)lua_tointeger(L, -1); lua_pop(L, 1);
         return true;
+    }
+
+    template <class V2>
+    inline void checkVector2(lua_State* L, int idx, V2& out)
+    {
+        if (!readVector2(L, idx, out))
+        {
+            const char* msg = lua_pushfstring(L, "Vector2 expected, got %s",
+                pushArgumentTypeName(L, idx));
+            luaL_argerror(L, idx, msg);
+        }
+    }
+
+    template <class V3>
+    inline void checkVector3(lua_State* L, int idx, V3& out)
+    {
+        if (!readVector3(L, idx, out))
+        {
+            const char* msg = lua_pushfstring(L, "Vector3 expected, got %s",
+                pushArgumentTypeName(L, idx));
+            luaL_argerror(L, idx, msg);
+        }
+    }
+
+    template <class Q4>
+    inline void checkQuaternion(lua_State* L, int idx, Q4& out)
+    {
+        if (!readQuaternion(L, idx, out))
+        {
+            const char* msg = lua_pushfstring(L, "Quaternion expected, got %s",
+                pushArgumentTypeName(L, idx));
+            luaL_argerror(L, idx, msg);
+        }
+    }
+
+    template <class V4>
+    inline void checkVector4(lua_State* L, int idx, V4& out)
+    {
+        if (!readVector4(L, idx, out))
+        {
+            const char* msg = lua_pushfstring(L, "Vector4 expected, got %s",
+                pushArgumentTypeName(L, idx));
+            luaL_argerror(L, idx, msg);
+        }
+    }
+
+    template <class CV>
+    inline void checkColourValue(lua_State* L, int idx, CV& out)
+    {
+        if (!readColourValue(L, idx, out))
+        {
+            const char* msg = lua_pushfstring(L, "ColourValue expected, got %s",
+                pushArgumentTypeName(L, idx));
+            luaL_argerror(L, idx, msg);
+        }
+    }
+
+    template <class TI>
+    inline void checkTripleInt(lua_State* L, int idx, TI& out)
+    {
+        if (!readTripleInt(L, idx, out))
+        {
+            const char* msg = lua_pushfstring(L, "TripleInt expected, got %s",
+                pushArgumentTypeName(L, idx));
+            luaL_argerror(L, idx, msg);
+        }
     }
 
     // =========================================================================

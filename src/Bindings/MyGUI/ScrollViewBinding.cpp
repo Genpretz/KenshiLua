@@ -9,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::ScrollView* ScrollViewBinding::getScrollView(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::ScrollView>(false);
+    return MyGUIBindings::checkWidget<MyGUI::ScrollView>(L, idx);
 }
 
 int ScrollViewBinding::setVisibleHScroll(lua_State* L)
@@ -153,7 +151,8 @@ int ScrollViewBinding::getViewCoord(lua_State* L)
 
 static int ScrollView_tostring(lua_State* L)
 {
-    MyGUI::ScrollView* sv = ScrollViewBinding::getScrollView(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::ScrollView* sv = w ? w->castType<MyGUI::ScrollView>(false) : nullptr;
     char buf[128];
     if (sv)
     {

@@ -144,10 +144,12 @@ int luaKenshiLogError(lua_State* L)
 
 int luaKenshiError(lua_State* L)
 {
-    std::string msg = "Lua Error: " + formatLuaArgs(L);
-    logToFileError(msg);
-    lua_settop(L, 0);
-    lua_pushlstring(L, msg.c_str(), msg.size());
+    {
+        std::string msg = "Lua Error: " + formatLuaArgs(L);
+        logToFileError(msg);
+        lua_settop(L, 0);
+        lua_pushlstring(L, msg.c_str(), msg.size());
+    }
     return lua_error(L);
 }
 

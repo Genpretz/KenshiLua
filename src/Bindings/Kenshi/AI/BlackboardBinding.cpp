@@ -1099,7 +1099,7 @@ int BlackboardBinding::_setupJobFromData(lua_State* L)
     if (!instance) return luaL_error(L, "Blackboard is nil");
 
     GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    std::string listname = luaL_checkstring(L, 3);
+    const char* listname = luaL_checkstring(L, 3);
     SquadMemberType listEnum = (SquadMemberType)luaL_checkinteger(L, 4);
     instance->_setupJobFromData(data, listname, listEnum);
     return 0;

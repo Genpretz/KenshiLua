@@ -392,17 +392,13 @@ int HandBinding::operator_assign(lua_State* L)
 
 int HandBinding::push(lua_State* L, const hand& h)
 {
-    hand* heapHand = new hand(h);
-    return pushObject<hand>(L, heapHand, HandBinding::getMetatableName());
+    return pushValue<hand>(L, h, HandBinding::getMetatableName());
 }
 
 int HandBinding::gc(lua_State* L)
 {
-    void** ud = (void**)lua_touserdata(L, 1);
-    if (ud && *ud) {
-        delete (hand*)*ud;
-        *ud = nullptr;
-    }
+    // Base metatable wraps borrowed engine pointers; owned copies from
+    // HandBinding::push or pushValue use the owned metatable and its cleanup.
     return 0;
 }
 

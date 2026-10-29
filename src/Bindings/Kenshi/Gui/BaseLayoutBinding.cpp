@@ -58,7 +58,7 @@ static int BaseLayout_assignWidget(lua_State* L)
     wraps::BaseLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BaseLayout is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     if (!lua_isnoneornil(L, 3))
         luaL_checktype(L, 3, LUA_TBOOLEAN);
     if (!lua_isnoneornil(L, 4))
@@ -80,7 +80,7 @@ static int BaseLayout_initialise(lua_State* L)
     wraps::BaseLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BaseLayout is nil");
 
-    std::string layoutName = luaL_checkstring(L, 2);
+    const char* layoutName = luaL_checkstring(L, 2);
     MyGUI::Widget* parent = nullptr;
     if (!lua_isnoneornil(L, 3))
     {
@@ -144,7 +144,7 @@ static int BaseLayout_createFakeWidgetT(lua_State* L)
     wraps::BaseLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "BaseLayout is nil");
 
-    std::string typeName = luaL_checkstring(L, 2);
+    const char* typeName = luaL_checkstring(L, 2);
     luaL_checkany(L, 3);
     MyGUI::Widget* parent = nullptr;
     if (!lua_isnil(L, 3))

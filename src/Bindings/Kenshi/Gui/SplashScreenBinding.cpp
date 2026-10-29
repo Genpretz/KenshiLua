@@ -128,7 +128,7 @@ int SplashScreenBinding::addLogo(lua_State* L)
     SplashScreen* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "SplashScreen is nil");
 
-    const std::string file = luaL_checkstring(L, 2);
+    const char* file = luaL_checkstring(L, 2);
     float scale = (float)luaL_checknumber(L, 3);
     instance->addLogo(file, scale);
     return 0;

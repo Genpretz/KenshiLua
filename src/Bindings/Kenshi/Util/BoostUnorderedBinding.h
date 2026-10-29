@@ -245,12 +245,16 @@ namespace KenshiLua
             MapType* m = getInstance(L, 1);
             if (!m) return luaL_error(L, "map is nil");
 
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
-
             if (lua_isnil(L, 3))
             {
+                K key = LuaCodec<K>::read(L, 2, keyMetaName);
                 m->erase(key);
                 return 0;
+            }
+
+            if (std::is_same<K, std::string>::value)
+            {
+                luaL_checkstring(L, 2);
             }
 
             V val;
@@ -263,6 +267,7 @@ namespace KenshiLua
                 val = LuaCodec<V>::read(L, 3, nullptr);
             }
 
+            K key = LuaCodec<K>::read(L, 2, keyMetaName);
             (*m)[key] = val;
             return 0;
         }

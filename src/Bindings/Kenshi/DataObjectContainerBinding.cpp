@@ -93,7 +93,7 @@ int DataObjectContainerBinding::setupDataFile(lua_State* L)
     DataObjectContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataObjectContainer is nil");
 
-    const std::string filename = luaL_checkstring(L, 2);
+    const char* filename = luaL_checkstring(L, 2);
     GameDataContainer* container = checkObject<GameDataContainer>(L, 3, GameDataContainerBinding::getMetatableName());
     instance->setupDataFile(filename, container);
     return 0;

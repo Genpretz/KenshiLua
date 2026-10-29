@@ -35,5 +35,8 @@ namespace KenshiLua
 
         // Initializes all compatibility subsystems on a newly created Lua state.
         void Initialize(lua_State* L);
+
+        // Clears per-script deprecation warning deduplication tables on script reload.
+        void ResetWarnings(lua_State* L);
     }
 }

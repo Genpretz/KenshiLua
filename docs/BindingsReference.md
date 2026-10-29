@@ -1220,8 +1220,8 @@
 | autoSitTask | `Tasker` | RW | `obj.autoSitTask = <value>` |
 | autoEjectEnemiesTask1 | `Tasker` | RW | `obj.autoEjectEnemiesTask1 = <value>` |
 | autoEjectEnemiesTask2 | `Tasker` | RW | `obj.autoEjectEnemiesTask2 = <value>` |
+| orderedGoals | `OrderedGoalsMapBinding::MapType` | RW | `obj.orderedGoals = <value>` |
 | requestsList | `lektor<Tasker*>` | R | `obj.requestsList` |
-| orderedGoals | `OrderedGoalsMap` | R | `obj.orderedGoals` |
 | actions | `AITaskSytem::ActionsListMgr` | R | `obj.actions` |
 | actionsTryList | `AITaskSytem::ActionsListMgr` | R | `obj.actionsTryList` |
 | failedGOAPGoalDebugString | `lstring` | RW | `obj.failedGOAPGoalDebugString = <value>` |
@@ -1269,10 +1269,10 @@
 | checkOrders | `` | `boolean` | `obj:checkOrders()` |
 | chooseGoal | `timedLockOnCurrentGoal: boolean` | `void` | `obj:chooseGoal(timedLockOnCurrentGoal)` |
 | _chooseGoal | `priority: taskPriority, squadMemberType: SquadMemberType` | `boolean` | `obj:_chooseGoal(priority, squadMemberType)` |
-| chooseGoalFrom | `goals: OrderedGoalsMap, match: TaskMatch, listIn: lektor<Tasker*>, theseAreBlackboard: boolean` | `void` | `obj:chooseGoalFrom(goals, match, listIn, theseAreBlackboard)` |
-| choosePermaJob | `goals: OrderedGoalsMap, match: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean` | `void` | `obj:choosePermaJob(goals, match, urgentOnes, jobsEnabled)` |
+| chooseGoalFrom | `orderedGoals: userdata, alreadyHasGoal: TaskMatch, goalListIn: userdata, theseAreBlackboard: boolean` | `void` | `obj:chooseGoalFrom(orderedGoals, alreadyHasGoal, goalListIn, theseAreBlackboard)` |
+| choosePermaJob | `orderedGoals: userdata, alreadyHasGoal: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean` | `void` | `obj:choosePermaJob(orderedGoals, alreadyHasGoal, urgentOnes, jobsEnabled)` |
 | setupParametersForCurrentGoal | `` | `void` | `obj:setupParametersForCurrentGoal()` |
-| runGoals | `goals: OrderedGoalsMap, playerOrder: boolean` | `boolean` | `obj:runGoals(goals, playerOrder)` |
+| runGoals | `orderedGoals: userdata, playerOrder: boolean` | `boolean` | `obj:runGoals(orderedGoals, playerOrder)` |
 | clearRequestsList | `` | `void` | `obj:clearRequestsList()` |
 | bodyTaskComplete | `` | `void` | `obj:bodyTaskComplete()` |
 | popFromOrders | `what: Tasker` | `void` | `obj:popFromOrders(what)` |
@@ -3550,31 +3550,12 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | isAnimal | `` | `CharacterAnimal` | `obj:isAnimal()` |
-| createAnimationClass | `` | `void` | `obj:createAnimationClass()` |
-| drawWeapon | `_a1: Item, lastSlot: string` | `boolean` | `obj:drawWeapon(_a1, lastSlot)` |
-| sheatheWeapon | `` | `void` | `obj:sheatheWeapon()` |
-| getCurrentWeapon | `` | `Weapon` | `obj:getCurrentWeapon()` |
-| getThePreferredWeapon | `` | `Weapon` | `obj:getThePreferredWeapon()` |
-| createInventoryLayout | `` | `InventoryLayout` | `obj:createInventoryLayout()` |
-| giveBirth | `appearance: GameDataCopyStandalone, position: Vector3, rotation: Quaternion, state: GameSaveState, tempplatoonptr: ActivePlatoon, _faction: Faction` | `boolean` | `obj:giveBirth(appearance, position, rotation, state, tempplatoonptr, _faction)` |
-| setupInventorySections | `state: GameSaveState` | `boolean` | `obj:setupInventorySections(state)` |
-| setupAudio | `` | `void` | `obj:setupAudio()` |
-| periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
-| setAge | `zeroToOne: number` | `void` | `obj:setAge(zeroToOne)` |
-| getAge | `` | `number` | `obj:getAge()` |
-| getAgeInverse | `` | `number` | `obj:getAgeInverse()` |
-| getAge0to1 | `` | `number` | `obj:getAge0to1()` |
-| getDefaultTaskRepertoireEnum | `` | `integer` | `obj:getDefaultTaskRepertoireEnum()` |
-| canGoIndoors | `b: Building` | `boolean` | `obj:canGoIndoors(b)` |
 | getSmellHuntingThresholdBlood | `` | `number` | `obj:getSmellHuntingThresholdBlood()` |
 | getSmellHuntingThresholdEggs | `` | `number` | `obj:getSmellHuntingThresholdEggs()` |
-| getHPMultiplier | `` | `number` | `obj:getHPMultiplier()` |
-| foodUpdate | `` | `void` | `obj:foodUpdate()` |
 | pickupItemInMouth | `item: Item` | `boolean` | `obj:pickupItemInMouth(item)` |
 | dropItemInMouth | `` | `boolean` | `obj:dropItemInMouth()` |
 | getItemInMouth | `` | `Item` | `obj:getItemInMouth()` |
 | eatItemInMouth | `` | `void` | `obj:eatItemInMouth()` |
-| init | `` | `void` | `obj:init()` |
 | dropItem | `itembase: RootObject` | `void` | `obj:dropItem(itembase)` |
 
 ## CharacterEditWindow
@@ -3693,28 +3674,11 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | isHuman | `` | `CharacterHuman` | `obj:isHuman()` |
-| drawWeapon | `item: Item, lastSection: string` | `boolean` | `obj:drawWeapon(item, lastSection)` |
-| sheatheWeapon | `` | `void` | `obj:sheatheWeapon()` |
-| getCurrentWeapon | `` | `Weapon` | `obj:getCurrentWeapon()` |
-| getThePreferredWeapon | `` | `Weapon` | `obj:getThePreferredWeapon()` |
-| getRangedWeapon | `` | `Crossbow` | `obj:getRangedWeapon()` |
-| loadFromSerialise | `state: GameSaveState` | `void` | `obj:loadFromSerialise(state)` |
-| giveBirth | `_appearance: GameDataCopyStandalone, _pos: Vector3, _rot: Quaternion, state: GameSaveState, tempplatoonptr: ActivePlatoon, _faction: Faction` | `boolean` | `obj:giveBirth(_appearance, _pos, _rot, state, tempplatoonptr, _faction)` |
-| setupInventorySections | `state: GameSaveState` | `boolean` | `obj:setupInventorySections(state)` |
-| validateInventorySections | `` | `void` | `obj:validateInventorySections()` |
-| setupAudio | `` | `void` | `obj:setupAudio()` |
 | shaveHead | `on: boolean` | `void` | `obj:shaveHead(on)` |
-| isHeadShaven | `` | `boolean` | `obj:isHeadShaven()` |
-| createAnimationClass | `` | `void` | `obj:createAnimationClass()` |
 | dropItem | `itembase: RootObject` | `void` | `obj:dropItem(itembase)` |
 | dropWeaponInHands | `` | `void` | `obj:dropWeaponInHands()` |
 | dropWeaponInHandsFake | `` | `void` | `obj:dropWeaponInHandsFake()` |
-| unequipItem | `section: string, item: Item` | `void` | `obj:unequipItem(section, item)` |
-| weatherUpdate | `time: number` | `void` | `obj:weatherUpdate(time)` |
 | leaveSheathEquipped | `section: string, ypos: integer` | `void` | `obj:leaveSheathEquipped(section, ypos)` |
-| postRagdollCallback | `on: boolean, part: RagdollPart::Enum` | `void` | `obj:postRagdollCallback(on, part)` |
-| reCalculateNaturalWeapon | `` | `void` | `obj:reCalculateNaturalWeapon()` |
-| serialise | `container: GameDataContainer, refList: GameData, offset: userdata` | `GameSaveState` | `obj:serialise(container, refList, offset)` |
 
 ## CharacterInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
@@ -14576,9 +14540,13 @@
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | ActiveRegionWeather | `WeatherRegion` | RW | `obj.ActiveRegionWeather = <value>` |
+| ActiveRegion | `unknown` | RW | `obj.ActiveRegion = <value>` |
 | exitingBiome | `boolean` | RW | `obj.exitingBiome = <value>` |
 | previousBiomeAABB | `Vector4` | RW | `obj.previousBiomeAABB = <value>` |
+| previousArea | `unknown` | RW | `obj.previousArea = <value>` |
+| areaGroups | `unknown` | RW | `obj.areaGroups = <value>` |
 | areaFog | `WeatherSystem::ZoneFog` | R | `obj.areaFog` |
+| previousSector | `unknown` | RW | `obj.previousSector = <value>` |
 | previousPoint | `Vector3` | RW | `obj.previousPoint = <value>` |
 | zoneFogBlendingPosition | `Vector3` | RW | `obj.zoneFogBlendingPosition = <value>` |
 | zoneFogBlendingType | `integer` | RW | `obj.zoneFogBlendingType = <value>` |
@@ -14592,6 +14560,8 @@
 | currentDustAmount | `Vector3` | RW | `obj.currentDustAmount = <value>` |
 | heatHazeUpdated | `boolean` | RW | `obj.heatHazeUpdated = <value>` |
 | heatHazeValue | `number` | RW | `obj.heatHazeValue = <value>` |
+| weatherListeners | `WeatherRegion::Listener` | R | `obj.weatherListeners` |
+| activeEffects | `unknown` | R | `obj.activeEffects` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -14603,6 +14573,9 @@
 | addWeatherListener [1] | `position: Vector3, listener: WeatherRegion::Listener` | `void` | `obj:addWeatherListener(position, listener)` |
 | addWeatherListener [2] | `biome: GameData, listener: WeatherRegion::Listener` | `void` | `obj:addWeatherListener(biome, listener)` |
 | removeWeatherListener | `listener: WeatherRegion::Listener` | `void` | `obj:removeWeatherListener(listener)` |
+| getPositionGlobalEffects | `position: Vector3` | `integer\|number` | `obj:getPositionGlobalEffects(position)` |
+| addWeatherEffect | `effect: userdata` | `void` | `obj:addWeatherEffect(effect)` |
+| removeWeatherEffect | `effect: userdata` | `void` | `obj:removeWeatherEffect(effect)` |
 | setDustShaderValue | `value: Vector3` | `void` | `obj:setDustShaderValue(value)` |
 
 ### Static Methods

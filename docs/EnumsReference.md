@@ -4,7 +4,7 @@
 
 ## Overview
 
-KenshiLua exposes **1783** bound enum values across **133** enum tables from **52** SDK header files.
+KenshiLua exposes **1795** bound enum values across **136** enum tables from **54** SDK header files.
 
 ## Lua Usage & Syntax
 
@@ -95,6 +95,8 @@ end
 - [ZoneManager.h](#zonemanagerh) (`ZoneActivationType`, `ZoneSpacialGrid.Result`, `ZoneMap.ZONE_MESSAGE`)
 - [gui/CharacterEditWindow.h](#guicharactereditwindowh) (`CharacterEditMode`)
 - [Kenshi.h](#kenshih) (`KenshiLib.BinaryVersion.KenshiPlatform`)
+- [combat/RangedCombatClass.h](#combatrangedcombatclassh) (`RangedCombatClass.RangedState`)
+- [ZoneSmell.h](#zonesmellh) (`SmellType`, `ZoneSmell.SmellMessageType`)
 
 ---
 
@@ -2751,5 +2753,40 @@ end
 | `KenshiLib.BinaryVersion.KenshiPlatform.GOG` | `0` | `KenshiLib::BinaryVersion::KenshiPlatform::GOG` |
 | `KenshiLib.BinaryVersion.KenshiPlatform.STEAM` | `1` | `KenshiLib::BinaryVersion::KenshiPlatform::STEAM` |
 | `KenshiLib.BinaryVersion.KenshiPlatform.UNKNOWN` | `2` | `KenshiLib::BinaryVersion::KenshiPlatform::UNKNOWN` |
+
+---
+
+## combat/RangedCombatClass.h
+
+### Table: `RangedCombatClass.RangedState`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `RangedCombatClass.RangedState.SHOOTING` | `0` | `RangedCombatClass::RangedState::SHOOTING` |
+| `RangedCombatClass.RangedState.MOVING` | `1` | `RangedCombatClass::RangedState::MOVING` |
+| `RangedCombatClass.RangedState.RELOADING` | `2` | `RangedCombatClass::RangedState::RELOADING` |
+| `RangedCombatClass.RangedState.WAITING` | `3` | `RangedCombatClass::RangedState::WAITING` |
+| `RangedCombatClass.RangedState.THINKING` | `4` | `RangedCombatClass::RangedState::THINKING` |
+
+---
+
+## ZoneSmell.h
+
+### Table: `SmellType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `SmellType.SMELL_NULL` | `0` | `SmellType::SMELL_NULL` |
+| `SmellType.SMELL_BLOOD_AND_CORPSES` | `1` | `SmellType::SMELL_BLOOD_AND_CORPSES` |
+| `SmellType.SMELL_EGG` | `2` | `SmellType::SMELL_EGG` |
+
+### Table: `ZoneSmell.SmellMessageType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `ZoneSmell.SmellMessageType.SMELLMSG_NONE` | `0` | `ZoneSmell::SmellMessageType::SMELLMSG_NONE` |
+| `ZoneSmell.SmellMessageType.SMELLMSG_CORPSE` | `1` | `ZoneSmell::SmellMessageType::SMELLMSG_CORPSE` |
+| `ZoneSmell.SmellMessageType.SMELLMSG_BLOOD` | `2` | `ZoneSmell::SmellMessageType::SMELLMSG_BLOOD` |
+| `ZoneSmell.SmellMessageType.SMELLMSG_EGG` | `3` | `ZoneSmell::SmellMessageType::SMELLMSG_EGG` |
 
 ---

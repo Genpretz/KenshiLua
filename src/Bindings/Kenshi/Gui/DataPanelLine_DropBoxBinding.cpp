@@ -75,7 +75,7 @@ int DataPanelLine_DropBoxBinding::addAValue(lua_State* L)
     DataPanelLine_DropBox* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     int val = (int)luaL_checkinteger(L, 3);
     instance->addAValue(key, val);
     return 0;

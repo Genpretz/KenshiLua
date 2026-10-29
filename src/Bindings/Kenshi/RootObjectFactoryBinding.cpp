@@ -125,7 +125,7 @@ int RootObjectFactoryBinding::chooseDataFromList(lua_State* L)
     if (!instance) return luaL_error(L, "RootObjectFactory is nil");
 
     GameData* dataList = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    const std::string listName = luaL_checkstring(L, 3);
+    const char* listName = luaL_checkstring(L, 3);
     itemType materialDataType = (itemType)luaL_checkinteger(L, 4);
     int useVal012 = (int)luaL_checkinteger(L, 5);
     GameData* result = instance->chooseDataFromList(dataList, listName, materialDataType, useVal012);
@@ -138,7 +138,7 @@ int RootObjectFactoryBinding::chooseDataFromListWithVals(lua_State* L)
     if (!instance) return luaL_error(L, "RootObjectFactory is nil");
 
     GameData* dataList = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    const std::string listName = luaL_checkstring(L, 3);
+    const char* listName = luaL_checkstring(L, 3);
     itemType materialDataType = (itemType)luaL_checkinteger(L, 4);
     int useVal012 = (int)luaL_checkinteger(L, 5);
     const GameDataReference* result = instance->chooseDataFromListWithVals(dataList, listName, materialDataType, useVal012);
@@ -364,7 +364,7 @@ int RootObjectFactoryBinding::_chooseClothingItemFromList(lua_State* L)
     }
 
     GameData* dataList = checkObject<GameData>(L, offset, GameDataBinding::getMetatableName());
-    std::string listName = luaL_checkstring(L, offset + 1);
+    const char* listName = luaL_checkstring(L, offset + 1);
     AttachSlot slot = (AttachSlot)luaL_checkinteger(L, offset + 2);
     RaceData* race = checkObject<RaceData>(L, offset + 3, RaceDataBinding::getMetatableName());
 
@@ -391,7 +391,7 @@ int RootObjectFactoryBinding::chooseMyClothing(lua_State* L)
 
     lektor<GameData*>* gear = checkObject<lektor<GameData*>>(L, offset, LektorPtrBinding<GameData*>::metaName);
     GameData* dataList = checkObject<GameData>(L, offset + 1, GameDataBinding::getMetatableName());
-    std::string listName = luaL_checkstring(L, offset + 2);
+    const char* listName = luaL_checkstring(L, offset + 2);
     RaceData* race = checkObject<RaceData>(L, offset + 3, RaceDataBinding::getMetatableName());
     bool noShoes = lua_toboolean(L, offset + 4) != 0;
 

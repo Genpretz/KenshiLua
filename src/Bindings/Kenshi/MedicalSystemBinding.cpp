@@ -702,7 +702,7 @@ static int MedicalSystem_set_lastBloodPosition(lua_State* L)
 {
     MedicalSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MedicalSystem is nil");
-    readVector3(L, 2, instance->lastBloodPosition);
+    if (!readVector3(L, 2, instance->lastBloodPosition)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -1448,7 +1448,7 @@ int MedicalSystemBinding::_setHealth(lua_State* L)
     MedicalSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "MedicalSystem is nil");
 
-    std::string bodypart = luaL_checkstring(L, 2);
+    const char* bodypart = luaL_checkstring(L, 2);
     float amount = (float)luaL_checknumber(L, 3);
     instance->_setHealth(bodypart, amount);
     return 0;

@@ -9,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::MultiListBox* MultiListBoxBinding::getMultiListBox(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::MultiListBox>(false);
+    return MyGUIBindings::checkWidget<MyGUI::MultiListBox>(L, idx);
 }
 
 int MultiListBoxBinding::getColumnCount(lua_State* L)
@@ -247,51 +245,10 @@ int MultiListBoxBinding::findSubItemWith(lua_State* L)
     return 1;
 }
 
-static int MultiListBox_index(lua_State* L)
-{
-    MyGUI::MultiListBox* mlb = MultiListBoxBinding::getMultiListBox(L, 1);
-    if (!mlb) return luaL_error(L, "MultiListBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "itemCount") == 0 || strcmp(key, "count") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)mlb->getItemCount());
-        return 1;
-    }
-    if (strcmp(key, "columnCount") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)mlb->getColumnCount());
-        return 1;
-    }
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        size_t idx = mlb->getIndexSelected();
-        if (idx == MyGUI::ITEM_NONE) lua_pushinteger(L, -1);
-        else lua_pushinteger(L, (lua_Integer)idx);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int MultiListBox_newindex(lua_State* L)
-{
-    MyGUI::MultiListBox* mlb = MultiListBoxBinding::getMultiListBox(L, 1);
-    if (!mlb) return luaL_error(L, "MultiListBox is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        lua_Integer idx = luaL_checkinteger(L, 3);
-        if (idx < 0) mlb->clearIndexSelected();
-        else mlb->setIndexSelected((size_t)idx);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int MultiListBox_tostring(lua_State* L)
 {
-    MyGUI::MultiListBox* mlb = MultiListBoxBinding::getMultiListBox(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::MultiListBox* mlb = w ? w->castType<MyGUI::MultiListBox>(false) : nullptr;
     char buf[128];
     if (mlb)
     {
@@ -338,7 +295,23 @@ void MultiListBoxBinding::registerBinding(lua_State* L)
         { "findSubItemWith",  findSubItemWith },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, MultiListBox_index, MultiListBox_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "itemCount", MultiListBoxBinding::getItemCount);
+    registerGetter(L, "count", MultiListBoxBinding::getItemCount);
+    registerGetter(L, "columnCount", MultiListBoxBinding::getColumnCount);
+    registerGetter(L, "indexSelected", MultiListBoxBinding::getIndexSelected);
+    registerGetter(L, "selectedIndex", MultiListBoxBinding::getIndexSelected);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "indexSelected", MultiListBoxBinding::setIndexSelected);
+    registerSetter(L, "selectedIndex", MultiListBoxBinding::setIndexSelected);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), WidgetBinding::getMetatableName());
 }
 

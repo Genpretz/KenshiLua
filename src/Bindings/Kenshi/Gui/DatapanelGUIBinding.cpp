@@ -575,7 +575,7 @@ int DatapanelGUIBinding::addTab(lua_State* L)
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
     int id = (int)luaL_checkinteger(L, 2);
-    const std::string name = luaL_checkstring(L, 3);
+    const char* name = luaL_checkstring(L, 3);
     const std::string icon = luaL_checkstring(L, 4);
     instance->addTab(id, name, icon);
     return 0;
@@ -587,7 +587,7 @@ int DatapanelGUIBinding::_NV_addTab(lua_State* L)
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
     int id = (int)luaL_checkinteger(L, 2);
-    const std::string name = luaL_checkstring(L, 3);
+    const char* name = luaL_checkstring(L, 3);
     const std::string icon = luaL_checkstring(L, 4);
     instance->_NV_addTab(id, name, icon);
     return 0;
@@ -690,8 +690,8 @@ int DatapanelGUIBinding::setLineStatInfo(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string s1 = luaL_checkstring(L, 2);
-    const std::string s2 = luaL_checkstring(L, 3);
+    const char* s1 = luaL_checkstring(L, 2);
+    const char* s2 = luaL_checkstring(L, 3);
     int category = (int)luaL_checkinteger(L, 4);
     DataPanelLine* result = instance->setLineStatInfo(s1, s2, category);
     return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
@@ -702,8 +702,8 @@ int DatapanelGUIBinding::setLineFaction(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string s1 = luaL_checkstring(L, 2);
-    const std::string s2 = luaL_checkstring(L, 3);
+    const char* s1 = luaL_checkstring(L, 2);
+    const char* s2 = luaL_checkstring(L, 3);
     int category = (int)luaL_checkinteger(L, 4);
     float v1 = (float)luaL_checknumber(L, 5);
     float v2 = (float)luaL_checknumber(L, 6);
@@ -716,8 +716,8 @@ int DatapanelGUIBinding::setLineTextButton(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string text = luaL_checkstring(L, 2);
-    const std::string caption = luaL_checkstring(L, 3);
+    const char* text = luaL_checkstring(L, 2);
+    const char* caption = luaL_checkstring(L, 3);
     int category = (int)luaL_checkinteger(L, 4);
     float buttonWidth = (float)luaL_checknumber(L, 5);
     const std::string skin = luaL_checkstring(L, 6);
@@ -730,8 +730,8 @@ int DatapanelGUIBinding::setLineButton(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
-    const std::string caption = luaL_checkstring(L, 3);
+    const char* key = luaL_checkstring(L, 2);
+    const char* caption = luaL_checkstring(L, 3);
     int category = (int)luaL_checkinteger(L, 4);
     DataPanelLine_Button* result = instance->setLineButton(key, caption, category);
     return pushObject<DataPanelLine_Button>(L, result, DataPanelLine_ButtonBinding::getMetatableName());
@@ -742,8 +742,8 @@ int DatapanelGUIBinding::setLineToggleButton(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
-    const std::string caption = luaL_checkstring(L, 3);
+    const char* key = luaL_checkstring(L, 2);
+    const char* caption = luaL_checkstring(L, 3);
     int category = (int)luaL_checkinteger(L, 4);
     DataPanelLine_Button* result = instance->setLineToggleButton(key, caption, category);
     return pushObject<DataPanelLine_Button>(L, result, DataPanelLine_ButtonBinding::getMetatableName());
@@ -754,7 +754,7 @@ int DatapanelGUIBinding::setLineSliderEditable(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     int category = (int)luaL_checkinteger(L, 3);
     bool showName = lua_toboolean(L, 4) != 0;
     float min = (float)luaL_checknumber(L, 5);
@@ -770,8 +770,8 @@ int DatapanelGUIBinding::setLineSlider(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
-    const std::string caption = luaL_checkstring(L, 3);
+    const char* key = luaL_checkstring(L, 2);
+    const char* caption = luaL_checkstring(L, 3);
     float min = (float)luaL_checknumber(L, 4);
     float max = (float)luaL_checknumber(L, 5);
     int category = (int)luaL_checkinteger(L, 6);
@@ -787,7 +787,7 @@ int DatapanelGUIBinding::setLineProgress(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     int category = (int)luaL_checkinteger(L, 3);
     float progressValue = (float)luaL_checknumber(L, 4);
     const std::string progressText = luaL_checkstring(L, 5);
@@ -801,7 +801,7 @@ int DatapanelGUIBinding::removeLine(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string s1 = luaL_checkstring(L, 2);
+    const char* s1 = luaL_checkstring(L, 2);
     int category = (int)luaL_checkinteger(L, 3);
     instance->removeLine(s1, category);
     return 0;
@@ -812,7 +812,7 @@ int DatapanelGUIBinding::setLineCheckbox(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string s1 = luaL_checkstring(L, 2);
+    const char* s1 = luaL_checkstring(L, 2);
     bool tempBool = lua_toboolean(L, 3) != 0;
     bool* val = &tempBool;
     int category = (int)luaL_checkinteger(L, 4);
@@ -825,7 +825,7 @@ int DatapanelGUIBinding::setLineDropBox(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     int category = (int)luaL_checkinteger(L, 3);
     int tempInt = (int)luaL_checkinteger(L, 4);
     int* valPtr = &tempInt;
@@ -961,7 +961,7 @@ int DatapanelGUIBinding::getLine(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     int cat = (int)luaL_checkinteger(L, 3);
     DataPanelLine* result = instance->getLine(key, cat);
     return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
@@ -972,7 +972,7 @@ int DatapanelGUIBinding::_NV_getLine(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     int cat = (int)luaL_checkinteger(L, 3);
     DataPanelLine* result = instance->_NV_getLine(key, cat);
     return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
@@ -983,7 +983,7 @@ int DatapanelGUIBinding::lineExists(lua_State* L)
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
 
-    const std::string key = luaL_checkstring(L, 2);
+    const char* key = luaL_checkstring(L, 2);
     int cat = (int)luaL_checkinteger(L, 3);
     bool result = instance->lineExists(key, cat);
     lua_pushboolean(L, result ? 1 : 0);
@@ -1076,8 +1076,8 @@ int DatapanelGUIBinding::setLine(lua_State* L)
     if (top == 5)
     {
         // setLine(s1, s2, barValue, category)
-        std::string s1 = luaL_checkstring(L, 2);
-        std::string s2 = luaL_checkstring(L, 3);
+        const char* s1 = luaL_checkstring(L, 2);
+        const char* s2 = luaL_checkstring(L, 3);
         float barValue = (float)luaL_checknumber(L, 4);
         int category = (int)luaL_checkinteger(L, 5);
         DataPanelLine* result = instance->setLine(s1, s2, barValue, category);
@@ -1085,13 +1085,13 @@ int DatapanelGUIBinding::setLine(lua_State* L)
     }
     else if (top == 6)
     {
-        std::string s1 = luaL_checkstring(L, 2);
-        std::string s2 = luaL_checkstring(L, 3);
+        const char* s1 = luaL_checkstring(L, 2);
+        const char* s2 = luaL_checkstring(L, 3);
         if (lua_isstring(L, 4) && lua_isstring(L, 5))
         {
             // setLine(s1, s2, skinA, skinB, category)
-            std::string skinA = luaL_checkstring(L, 4);
-            std::string skinB = luaL_checkstring(L, 5);
+            const char* skinA = luaL_checkstring(L, 4);
+            const char* skinB = luaL_checkstring(L, 5);
             int category = (int)luaL_checkinteger(L, 6);
             DataPanelLine* result = instance->setLine(s1, s2, skinA, skinB, category);
             return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
@@ -1108,14 +1108,14 @@ int DatapanelGUIBinding::setLine(lua_State* L)
     }
     else if (top >= 7)
     {
-        std::string keyValue = luaL_checkstring(L, 2);
-        std::string s1 = luaL_checkstring(L, 3);
-        std::string s2 = luaL_checkstring(L, 4);
+        const char* keyValue = luaL_checkstring(L, 2);
+        const char* s1 = luaL_checkstring(L, 3);
+        const char* s2 = luaL_checkstring(L, 4);
         if (lua_isstring(L, 5) && lua_isstring(L, 6))
         {
             // setLine(keyValue, s1, s2, skinA, skinB, category)
-            std::string skinA = luaL_checkstring(L, 5);
-            std::string skinB = luaL_checkstring(L, 6);
+            const char* skinA = luaL_checkstring(L, 5);
+            const char* skinB = luaL_checkstring(L, 6);
             int category = (int)luaL_checkinteger(L, 7);
             DataPanelLine* result = instance->setLine(keyValue, s1, s2, skinA, skinB, category);
             return pushObject<DataPanelLine>(L, result, DataPanelLineBinding::getMetatableName());
@@ -1143,11 +1143,11 @@ int DatapanelGUIBinding::setLineResearch(lua_State* L)
     if (top == 7)
     {
         // setLineResearch(s1, s2, category, v1, barColor, XButton)
-        std::string s1 = luaL_checkstring(L, 2);
-        std::string s2 = luaL_checkstring(L, 3);
+        const char* s1 = luaL_checkstring(L, 2);
+        const char* s2 = luaL_checkstring(L, 3);
         int category = (int)luaL_checkinteger(L, 4);
         float v1 = (float)luaL_checknumber(L, 5);
-        std::string barColor = luaL_checkstring(L, 6);
+        const char* barColor = luaL_checkstring(L, 6);
         bool XButton = lua_toboolean(L, 7) != 0;
         DataPanelLine_Research* result = instance->setLineResearch(s1, s2, category, v1, barColor, XButton);
         return pushObject<DataPanelLine_Research>(L, result, DataPanelLine_ResearchBinding::getMetatableName());
@@ -1155,12 +1155,12 @@ int DatapanelGUIBinding::setLineResearch(lua_State* L)
     else if (top >= 8)
     {
         // setLineResearch(key, s1, s2, category, v1, barColor, Xbutton)
-        std::string key = luaL_checkstring(L, 2);
-        std::string s1 = luaL_checkstring(L, 3);
-        std::string s2 = luaL_checkstring(L, 4);
+        const char* key = luaL_checkstring(L, 2);
+        const char* s1 = luaL_checkstring(L, 3);
+        const char* s2 = luaL_checkstring(L, 4);
         int category = (int)luaL_checkinteger(L, 5);
         float v1 = (float)luaL_checknumber(L, 6);
-        std::string barColor = luaL_checkstring(L, 7);
+        const char* barColor = luaL_checkstring(L, 7);
         bool Xbutton = lua_toboolean(L, 8) != 0;
         DataPanelLine_Research* result = instance->setLineResearch(key, s1, s2, category, v1, barColor, Xbutton);
         return pushObject<DataPanelLine_Research>(L, result, DataPanelLine_ResearchBinding::getMetatableName());
@@ -1193,8 +1193,8 @@ int DatapanelGUIBinding::setLineText(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-    std::string key = luaL_checkstring(L, 2);
-    std::string caption = luaL_checkstring(L, 3);
+    const char* key = luaL_checkstring(L, 2);
+    const char* caption = luaL_checkstring(L, 3);
     int category = (int)luaL_checkinteger(L, 4);
     bool wordWrap = lua_toboolean(L, 5) != 0;
     MyGUI::Align textAlign = lua_isstring(L, 6) ? MyGUI::Align::parse(luaL_checkstring(L, 6)) : MyGUI::Align((MyGUI::Align::Enum)(int)luaL_checkinteger(L, 6));
@@ -1206,8 +1206,8 @@ int DatapanelGUIBinding::setLineTextEditable(lua_State* L)
 {
     DatapanelGUI* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "DatapanelGUI is nil");
-    std::string key = luaL_checkstring(L, 2);
-    std::string text = luaL_checkstring(L, 3);
+    const char* key = luaL_checkstring(L, 2);
+    const char* text = luaL_checkstring(L, 3);
     int category = (int)luaL_checkinteger(L, 4);
     bool showKey = lua_toboolean(L, 5) != 0;
     bool multiLine = lua_toboolean(L, 6) != 0;

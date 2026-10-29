@@ -132,7 +132,7 @@ static int CreatelistItem_set_position(lua_State* L)
 {
     CreatelistItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CreatelistItem is nil");
-    readVector3(L, 2, instance->position);
+    if (!readVector3(L, 2, instance->position)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -148,7 +148,7 @@ static int CreatelistItem_set_rotation(lua_State* L)
 {
     CreatelistItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CreatelistItem is nil");
-    readQuaternion(L, 2, instance->rotation);
+    if (!readQuaternion(L, 2, instance->rotation)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 

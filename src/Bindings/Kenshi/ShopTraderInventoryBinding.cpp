@@ -96,7 +96,7 @@ int ShopTraderInventoryBinding::initialiseNewSection(lua_State* L)
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     int w = (int)luaL_checkinteger(L, 3);
     int h = (int)luaL_checkinteger(L, 4);
     AttachSlot _a4 = (AttachSlot)luaL_checkinteger(L, 5);
@@ -113,7 +113,7 @@ int ShopTraderInventoryBinding::_NV_initialiseNewSection(lua_State* L)
     ShopTraderInventory* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ShopTraderInventory is nil");
 
-    std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     int w = (int)luaL_checkinteger(L, 3);
     int h = (int)luaL_checkinteger(L, 4);
     AttachSlot _a4 = (AttachSlot)luaL_checkinteger(L, 5);

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Bindings/MyGUI/ScrollBarBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -8,9 +9,7 @@ namespace KenshiLua
 
 MyGUI::ScrollBar* ScrollBarBinding::getScrollBar(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::ScrollBar>(false);
+    return MyGUIBindings::checkWidget<MyGUI::ScrollBar>(L, idx);
 }
 
 int ScrollBarBinding::setScrollRange(lua_State* L)
@@ -181,47 +180,10 @@ int ScrollBarBinding::getRepeatEnabled(lua_State* L)
     return 1;
 }
 
-static int ScrollBar_index(lua_State* L)
-{
-    MyGUI::ScrollBar* sb = ScrollBarBinding::getScrollBar(L, 1);
-    if (!sb) return luaL_error(L, "ScrollBar is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "scrollPosition") == 0 || strcmp(key, "position") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)sb->getScrollPosition());
-        return 1;
-    }
-    if (strcmp(key, "scrollRange") == 0 || strcmp(key, "range") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)sb->getScrollRange());
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int ScrollBar_newindex(lua_State* L)
-{
-    MyGUI::ScrollBar* sb = ScrollBarBinding::getScrollBar(L, 1);
-    if (!sb) return luaL_error(L, "ScrollBar is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "scrollPosition") == 0 || strcmp(key, "position") == 0)
-    {
-        sb->setScrollPosition((size_t)luaL_checkinteger(L, 3));
-        return 0;
-    }
-    if (strcmp(key, "scrollRange") == 0 || strcmp(key, "range") == 0)
-    {
-        sb->setScrollRange((size_t)luaL_checkinteger(L, 3));
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int ScrollBar_tostring(lua_State* L)
 {
-    MyGUI::ScrollBar* sb = ScrollBarBinding::getScrollBar(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::ScrollBar* sb = w ? w->castType<MyGUI::ScrollBar>(false) : nullptr;
     char buf[128];
     if (sb)
     {
@@ -266,7 +228,24 @@ void ScrollBarBinding::registerBinding(lua_State* L)
         { "getRepeatEnabled",     getRepeatEnabled },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, ScrollBar_index, ScrollBar_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "scrollPosition", ScrollBarBinding::getScrollPosition);
+    registerGetter(L, "position", ScrollBarBinding::getScrollPosition);
+    registerGetter(L, "scrollRange", ScrollBarBinding::getScrollRange);
+    registerGetter(L, "range", ScrollBarBinding::getScrollRange);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "scrollPosition", ScrollBarBinding::setScrollPosition);
+    registerSetter(L, "position", ScrollBarBinding::setScrollPosition);
+    registerSetter(L, "scrollRange", ScrollBarBinding::setScrollRange);
+    registerSetter(L, "range", ScrollBarBinding::setScrollRange);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), WidgetBinding::getMetatableName());
 }
 

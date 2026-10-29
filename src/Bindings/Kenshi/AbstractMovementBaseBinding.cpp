@@ -187,7 +187,7 @@ static int AbstractMovementBase_set_currentMotion(lua_State* L)
 {
     AbstractMovementBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
-    readVector3(L, 2, instance->currentMotion);
+    if (!readVector3(L, 2, instance->currentMotion)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -227,7 +227,7 @@ static int AbstractMovementBase_set_pos(lua_State* L)
 {
     AbstractMovementBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
-    readVector3(L, 2, instance->pos);
+    if (!readVector3(L, 2, instance->pos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -235,7 +235,7 @@ static int AbstractMovementBase_set_direction(lua_State* L)
 {
     AbstractMovementBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
-    readVector3(L, 2, instance->direction);
+    if (!readVector3(L, 2, instance->direction)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -243,7 +243,7 @@ static int AbstractMovementBase_set_destination(lua_State* L)
 {
     AbstractMovementBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
-    readVector3(L, 2, instance->destination);
+    if (!readVector3(L, 2, instance->destination)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -251,7 +251,7 @@ static int AbstractMovementBase_set_pathDestination(lua_State* L)
 {
     AbstractMovementBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AbstractMovementBase is nil");
-    readVector3(L, 2, instance->pathDestination);
+    if (!readVector3(L, 2, instance->pathDestination)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

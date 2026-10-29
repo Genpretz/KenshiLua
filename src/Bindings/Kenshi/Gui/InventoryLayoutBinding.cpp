@@ -131,7 +131,7 @@ int InventoryLayoutBinding::setSectionGUIDisabled(lua_State* L)
     InventoryLayout* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "InventoryLayout is nil");
 
-    const std::string sectionName = luaL_checkstring(L, 2);
+    const char* sectionName = luaL_checkstring(L, 2);
     int width = (int)luaL_checkinteger(L, 3);
     int height = (int)luaL_checkinteger(L, 4);
     instance->setSectionGUIDisabled(sectionName, width, height);

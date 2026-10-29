@@ -658,7 +658,7 @@ int AppearanceBaseBinding::attachEffect(lua_State* L)
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
 
     GameData* data = checkObject<GameData>(L, 2, GameDataBinding::getMetatableName());
-    const std::string boneName = luaL_checkstring(L, 3);
+    const char* boneName = luaL_checkstring(L, 3);
     Ogre::Vector3 offsetPosition;
     readVector3(L, 4, offsetPosition);
     Ogre::Quaternion offsetOrientation;
@@ -850,7 +850,7 @@ int AppearanceBaseBinding::getVertexWorldPosition(lua_State* L)
     AppearanceBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
 
-    const std::string boneName = luaL_checkstring(L, 2);
+    const char* boneName = luaL_checkstring(L, 2);
     const int vertex = (int)luaL_checkinteger(L, 3);
     Ogre::Vector3 result = instance->getVertexWorldPosition(boneName, vertex);
     pushVector3(L, result);
@@ -862,7 +862,7 @@ int AppearanceBaseBinding::getRandomVertex(lua_State* L)
     AppearanceBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
 
-    const std::string boneName = luaL_checkstring(L, 2);
+    const char* boneName = luaL_checkstring(L, 2);
     MeshDataLookup::Dir direction = (MeshDataLookup::Dir)luaL_checkinteger(L, 3);
     int result = instance->getRandomVertex(boneName, direction);
     lua_pushinteger(L, result);
@@ -1118,7 +1118,7 @@ int AppearanceBaseBinding::setHairTexture(lua_State* L)
     AppearanceBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     int channel = (int)luaL_checkinteger(L, 3);
     int alpha = (int)luaL_checkinteger(L, 4);
     Ogre::Vector3 colour;
@@ -1177,7 +1177,7 @@ int AppearanceBaseBinding::attachItem(lua_State* L)
 
     if (lua_isstring(L, 4))
     {
-        std::string mesh = luaL_checkstring(L, 3);
+        const char* mesh = luaL_checkstring(L, 3);
         std::string slot = luaL_checkstring(L, 4);
         bool result = instance->attachItem(item, mesh, slot);
         lua_pushboolean(L, result ? 1 : 0);
@@ -1205,7 +1205,7 @@ int AppearanceBaseBinding::detachItem(lua_State* L)
     }
     else if (lua_isstring(L, 2))
     {
-        std::string slot = lua_tostring(L, 2);
+        const char* slot = lua_tostring(L, 2);
         bool result = instance->detachItem(slot);
         lua_pushboolean(L, result ? 1 : 0);
         return 1;
@@ -1228,7 +1228,7 @@ int AppearanceBaseBinding::getRandomVertexPosition(lua_State* L)
     AppearanceBase* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AppearanceBase is nil");
 
-    std::string boneName = luaL_checkstring(L, 2);
+    const char* boneName = luaL_checkstring(L, 2);
     MeshDataLookup::Dir direction = (MeshDataLookup::Dir)luaL_checkinteger(L, 3);
     pushVector3(L, instance->getRandomVertexPosition(boneName, direction));
     return 1;

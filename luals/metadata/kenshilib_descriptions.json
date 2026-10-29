@@ -534,6 +534,8 @@
                 "callForUpdate": "Requests an update; `superUrgent` requests it immediately.",
                 "canIDoTheInfrequents": "Returns whether the infrequent checks are due.",
                 "checkOrders": "Checks the orders and returns whether one is active.",
+                "chooseGoalFrom": "Adds matching tasks from `goalListIn` to `orderedGoals`, excluding tasks recorded by `alreadyHasGoal`.",
+                "choosePermaJob": "Adds matching permanent jobs to `orderedGoals`.",
                 "chooseGoal": "Chooses a new goal; `timedLockOnCurrentGoal` keeps a current timed goal.",
                 "clearAllTasks": "Removes every order, job, goal, and action.",
                 "clearRequestsList": "Clears `requestsList`.",
@@ -555,6 +557,7 @@
                 "periodicUpdate": "Runs the periodic update.",
                 "popFromOrders": "Removes the task from the orders.",
                 "runGOAP": "Plans the task with GOAP and returns its score.",
+                "runGoals": "Runs the highest-priority task in `orderedGoals` and returns whether a task was started.",
                 "serialise": "Saves the task system to the `GameData`.",
                 "setCurrentGoal": "Sets the current goal to the task with the score and priority. The task cannot be nil.",
                 "setCurrentTask": "Takes the current task from the action list and returns whether one was set.",
@@ -591,6 +594,7 @@
                 "debugCount": "Debug counter.",
                 "failedGOAPGoalDebugString": "Debug text of the last failed GOAP goal.",
                 "infrequentTimeStamp": "Time of the last infrequent check.",
+                "orderedGoals": "Candidate goals ordered by score, as a live `StdMap<number, Tasker>`.",
                 "pathFailures": "Recent path failures by target handle, as a live map. Read-only; edit it in place.",
                 "pos": "Position of the character at the last update.",
                 "requestsList": "Pending requests, as a live `lektor<Tasker*>`. Read-only; edit it in place.",
@@ -12276,8 +12280,11 @@
         "WeatherSystem": {
             "description": "The game's weather coordinator: the region around the camera, fog blending between biomes, wind, rain, dust, and heat haze. A singleton; get it with `WeatherSystem.getInstance()`.",
             "methods": {
+                "addWeatherEffect": "Registers an engine `EffectHandler` supplied as borrowed lightuserdata.",
                 "addWeatherListener": "Registers listener (`Listener`) with the weather region at position (Vector3 table) or for biome (GameData).",
                 "getInstance": "Returns the `WeatherSystem` singleton.",
+                "getPositionGlobalEffects": "Returns the global weather effects and strengths at position (Vector3 table).",
+                "removeWeatherEffect": "Unregisters an engine `EffectHandler` supplied as borrowed lightuserdata.",
                 "removeWeatherListener": "Unregisters listener (`Listener`).",
                 "reset": "Resets the weather system.",
                 "setDustShaderValue": "Sets the dust shader parameter from value (Vector3 table).",
@@ -12286,8 +12293,11 @@
                 "updateUT": "Runs the weather system's update-thread update."
             },
             "properties": {
+                "ActiveRegion": "Current unbound `AreaBiomeGroup`, exposed as borrowed lightuserdata or nil.",
                 "ActiveRegionWeather": "The `WeatherRegion` around the camera, or nil.",
+                "activeEffects": "Snapshot of registered borrowed `EffectHandler` pointers as lightuserdata. Read-only; mutate through `addWeatherEffect` and `removeWeatherEffect`.",
                 "areaFog": "Table of the four `WeatherSystem_ZoneFog` states used to blend fog between neighbouring biomes. The elements can be edited in place.",
+                "areaGroups": "The four unbound `AreaBiomeGroup` pointers as borrowed lightuserdata or nil.",
                 "currentDustAmount": "Dust amount passed to the dust shaders, as a Vector3 table.",
                 "currentFogValues": "Current blended fog values, as `WeatherSystem_FogValues`.",
                 "currentRainValue": "Current rain amount.",
@@ -12298,10 +12308,13 @@
                 "heatHazeUpdated": "True when the heat haze value needs to be sent to the shaders.",
                 "heatHazeValue": "Current heat haze strength.",
                 "previousBiomeAABB": "Bounds of the previous biome, as a Vector4 table.",
+                "previousArea": "Previous unbound `AreaBiomeGroup`, exposed as borrowed lightuserdata or nil.",
                 "previousPoint": "Previous camera sample position.",
+                "previousSector": "Previous unbound `AreaSector`, exposed as borrowed lightuserdata or nil.",
                 "previousZoneFog": "Fog state being blended from, as `WeatherSystem_ZoneFog`.",
                 "rainValueUpdated": "True when the rain value changed and needs to be applied.",
                 "zoneFogBlendingPosition": "Position where fog blending is happening.",
+                "weatherListeners": "Read-only snapshot of listener-to-region registrations.",
                 "zoneFogBlendingType": "Fog blending mode."
             }
         },

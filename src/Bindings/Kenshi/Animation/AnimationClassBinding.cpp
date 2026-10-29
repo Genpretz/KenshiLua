@@ -439,7 +439,7 @@ int AnimationClassBinding::playAction(lua_State* L)
     }
     if (lua_type(L, 2) != LUA_TSTRING)
         return luaL_error(L, "Argument 2 to playAction must be a string or AnimationData, got %s", luaL_typename(L, 2));
-    const std::string dataname = lua_tostring(L, 2);
+    const char* dataname = lua_tostring(L, 2);
     float speedMult = (float)luaL_checknumber(L, 3);
     float initialWeight = (float)luaL_checknumber(L, 4);
     bool isStumble = lua_toboolean(L, 5) != 0;
@@ -682,7 +682,7 @@ int AnimationClassBinding::ragdollAnimateTo(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string targetAnimationName = luaL_checkstring(L, 2);
+    const char* targetAnimationName = luaL_checkstring(L, 2);
     float duration = (float)luaL_checknumber(L, 3);
     instance->ragdollAnimateTo(targetAnimationName, duration);
     return 0;
@@ -707,7 +707,7 @@ int AnimationClassBinding::ragdollModeUT(lua_State* L)
     Ogre::Vector3 momentum;
     readVector3(L, 3, momentum);
     RagdollPart::Enum part = (RagdollPart::Enum)luaL_checkinteger(L, 4);
-    const std::string physicsFile = luaL_checkstring(L, 5);
+    const char* physicsFile = luaL_checkstring(L, 5);
     Character* me = checkObject<Character>(L, 6, CharacterBinding::getMetatableName());
     instance->ragdollModeUT(on, momentum, part, physicsFile, me);
     return 0;
@@ -722,7 +722,7 @@ int AnimationClassBinding::_NV_ragdollModeUT(lua_State* L)
     Ogre::Vector3 momentum;
     readVector3(L, 3, momentum);
     RagdollPart::Enum part = (RagdollPart::Enum)luaL_checkinteger(L, 4);
-    const std::string physicsFile = luaL_checkstring(L, 5);
+    const char* physicsFile = luaL_checkstring(L, 5);
     Character* me = checkObject<Character>(L, 6, CharacterBinding::getMetatableName());
     instance->_NV_ragdollModeUT(on, momentum, part, physicsFile, me);
     return 0;
@@ -830,7 +830,7 @@ int AnimationClassBinding::runAnimation(lua_State* L)
         AnimationLayerEnum lay = (AnimationLayerEnum)luaL_checkinteger(L, 4);
         float blend = (float)luaL_checknumber(L, 5);
         if (top >= 6) {
-            const std::string ext = luaL_checkstring(L, 6);
+            const char* ext = luaL_checkstring(L, 6);
             instance->runAnimation(anim, speed, lay, blend, ext);
         } else {
             instance->runAnimation(anim, speed, lay, blend);
@@ -839,7 +839,7 @@ int AnimationClassBinding::runAnimation(lua_State* L)
     }
     if (lua_type(L, 2) != LUA_TSTRING)
         return luaL_error(L, "Argument 2 to runAnimation must be a string or AnimationData, got %s", luaL_typename(L, 2));
-    const std::string name = lua_tostring(L, 2);
+    const char* name = lua_tostring(L, 2);
     float speed = (float)luaL_checknumber(L, 3);
     float blend = (float)luaL_checknumber(L, 4);
     instance->runAnimation(name, speed, blend);
@@ -904,7 +904,7 @@ int AnimationClassBinding::startAnimation(lua_State* L)
     }
     if (lua_type(L, 2) != LUA_TSTRING)
         return luaL_error(L, "Argument 2 to startAnimation must be a string or AnimationData, got %s", luaL_typename(L, 2));
-    const std::string anim = lua_tostring(L, 2);
+    const char* anim = lua_tostring(L, 2);
     float speed = (float)luaL_checknumber(L, 3);
     float startWeight = (float)luaL_checknumber(L, 4);
     instance->startAnimation(anim, speed, startWeight);
@@ -944,7 +944,7 @@ int AnimationClassBinding::getAnimationData(lua_State* L)
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
     if (lua_type(L, 2) == LUA_TSTRING) {
-        const std::string name = lua_tostring(L, 2);
+        const char* name = lua_tostring(L, 2);
         AnimationData* result = instance->getAnimationData(name);
         return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
     }
@@ -961,7 +961,7 @@ int AnimationClassBinding::_NV_getAnimationData(lua_State* L)
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
     if (lua_type(L, 2) == LUA_TSTRING) {
-        const std::string name = lua_tostring(L, 2);
+        const char* name = lua_tostring(L, 2);
         AnimationData* result = instance->_NV_getAnimationData(name);
         return pushObject<AnimationData>(L, result, AnimationDataBinding::getMetatableName());
     }
@@ -1066,7 +1066,7 @@ int AnimationClassBinding::playSlaveAnim(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     float speedMult = (float)luaL_checknumber(L, 3);
     float sync = (float)luaL_checknumber(L, 4);
     float startWeight = (float)luaL_checknumber(L, 5);
@@ -1079,7 +1079,7 @@ int AnimationClassBinding::runSlaveAnim(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string name = luaL_checkstring(L, 2);
+    const char* name = luaL_checkstring(L, 2);
     float speedMult = (float)luaL_checknumber(L, 3);
     float sync = (float)luaL_checknumber(L, 4);
     float startWeight = (float)luaL_checknumber(L, 5);
@@ -1202,7 +1202,7 @@ int AnimationClassBinding::ragdollTheWeapons(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string slotname = luaL_checkstring(L, 2);
+    const char* slotname = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     bool attach = lua_toboolean(L, 4) != 0;
     instance->ragdollTheWeapons(slotname, item, attach);
@@ -1214,7 +1214,7 @@ int AnimationClassBinding::_NV_ragdollTheWeapons(lua_State* L)
     AnimationClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AnimationClass is nil");
 
-    const std::string slotname = luaL_checkstring(L, 2);
+    const char* slotname = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     bool attach = lua_toboolean(L, 4) != 0;
     instance->_NV_ragdollTheWeapons(slotname, item, attach);

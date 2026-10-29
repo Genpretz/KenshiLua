@@ -65,7 +65,7 @@ static int FormationMover_set_destination(lua_State* L)
 {
     FormationMover* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FormationMover is nil");
-    readVector3(L, 2, instance->destination);
+    if (!readVector3(L, 2, instance->destination)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 
@@ -73,7 +73,7 @@ static int FormationMover_set_direction(lua_State* L)
 {
     FormationMover* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FormationMover is nil");
-    readVector3(L, 2, instance->direction);
+    if (!readVector3(L, 2, instance->direction)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

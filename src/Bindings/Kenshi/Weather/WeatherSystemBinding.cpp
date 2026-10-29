@@ -10,6 +10,10 @@
 #include "Bindings/Kenshi/Weather/WeatherSystem_FogValuesBinding.h"
 #include "Bindings/Kenshi/Weather/WeatherSystem_ZoneFogBinding.h"
 
+#include <map>
+#include <set>
+#include <vector>
+
 namespace KenshiLua
 {
 
@@ -18,10 +22,41 @@ static_assert(sizeof(WeatherSystem) == 0x288, "WeatherSystem size does not match
 static_assert(offsetof(WeatherSystem, areaFog) == 0x50, "WeatherSystem::areaFog offset does not match the game");
 static_assert(offsetof(WeatherSystem, currentZoneFog) == 0x1B8, "WeatherSystem::currentZoneFog offset does not match the game");
 static_assert(offsetof(WeatherSystem, weatherListeners) == 0x238, "WeatherSystem::weatherListeners offset does not match the game");
+static_assert(offsetof(WeatherSystem, activeEffects) == 0x260, "WeatherSystem::activeEffects offset does not match the game");
+
+typedef std::vector<std::pair<EffectType::Enum, float>, Ogre::STLAllocator<std::pair<EffectType::Enum, float>, Ogre::GeneralAllocPolicy> > GlobalEffectList;
+typedef std::map<WeatherRegion::Listener*, WeatherRegion*, std::less<WeatherRegion::Listener*>, Ogre::STLAllocator<std::pair<WeatherRegion::Listener* const, WeatherRegion*>, Ogre::GeneralAllocPolicy> > WeatherListenerMap;
+typedef std::set<EffectHandler*, std::less<EffectHandler*>, Ogre::STLAllocator<EffectHandler*, Ogre::GeneralAllocPolicy> > WeatherEffectSet;
 
 static WeatherSystem* getInstance(lua_State* L, int idx)
 {
     return checkObject<WeatherSystem>(L, idx, WeatherSystemBinding::getMetatableName());
+}
+
+static int pushOpaquePointer(lua_State* L, const void* value)
+{
+    if (value)
+        lua_pushlightuserdata(L, const_cast<void*>(value));
+    else
+        lua_pushnil(L);
+    return 1;
+}
+
+template <typename T>
+static T* checkOpaquePointer(lua_State* L, int idx, const char* expected, bool allowNil)
+{
+    if (lua_isnoneornil(L, idx))
+    {
+        if (allowNil) return nullptr;
+        luaL_argerror(L, idx, expected);
+        return nullptr;
+    }
+    if (!lua_islightuserdata(L, idx))
+    {
+        luaL_argerror(L, idx, expected);
+        return nullptr;
+    }
+    return static_cast<T*>(lua_touserdata(L, idx));
 }
 
 // --- Static Methods ---
@@ -36,6 +71,13 @@ static int WeatherSystem_get_ActiveRegionWeather(lua_State* L)
     WeatherSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WeatherSystem is nil");
     return pushObject<WeatherRegion>(L, instance->ActiveRegionWeather, WeatherRegionBinding::getMetatableName());
+}
+
+static int WeatherSystem_get_ActiveRegion(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    return pushOpaquePointer(L, instance->ActiveRegion);
 }
 
 static int WeatherSystem_get_exitingBiome(lua_State* L)
@@ -54,6 +96,28 @@ static int WeatherSystem_get_previousBiomeAABB(lua_State* L)
     return 1;
 }
 
+static int WeatherSystem_get_previousArea(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    return pushOpaquePointer(L, instance->previousArea);
+}
+
+// AreaBiomeGroup is not bound yet, so this fixed array is a snapshot of borrowed opaque pointers.
+static int WeatherSystem_get_areaGroups(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    const int count = (int)(sizeof(instance->areaGroups) / sizeof(instance->areaGroups[0]));
+    lua_createtable(L, count, 0);
+    for (int i = 0; i < count; ++i)
+    {
+        pushOpaquePointer(L, instance->areaGroups[i]);
+        lua_rawseti(L, -2, i + 1);
+    }
+    return 1;
+}
+
 // The elements are borrowed and can be edited in place; the array itself is not assignable.
 static int WeatherSystem_get_areaFog(lua_State* L)
 {
@@ -67,6 +131,13 @@ static int WeatherSystem_get_areaFog(lua_State* L)
         lua_rawseti(L, -2, i + 1);
     }
     return 1;
+}
+
+static int WeatherSystem_get_previousSector(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    return pushOpaquePointer(L, instance->previousSector);
 }
 
 static int WeatherSystem_get_previousPoint(lua_State* L)
@@ -170,6 +241,42 @@ static int WeatherSystem_get_heatHazeValue(lua_State* L)
     return 1;
 }
 
+// These registries are maintained by add/remove methods. Return snapshots so Lua cannot
+// bypass the engine's registration and teardown paths by mutating the containers directly.
+static int WeatherSystem_get_weatherListeners(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    WeatherListenerMap* listeners = &instance->weatherListeners;
+    lua_createtable(L, (int)listeners->size(), 0);
+    int index = 1;
+    for (WeatherListenerMap::const_iterator it = listeners->begin(); it != listeners->end(); ++it, ++index)
+    {
+        lua_createtable(L, 0, 2);
+        pushObject<WeatherRegion::Listener>(L, it->first, ListenerBinding::getMetatableName());
+        lua_setfield(L, -2, "listener");
+        pushObject<WeatherRegion>(L, it->second, WeatherRegionBinding::getMetatableName());
+        lua_setfield(L, -2, "region");
+        lua_rawseti(L, -2, index);
+    }
+    return 1;
+}
+
+static int WeatherSystem_get_activeEffects(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    WeatherEffectSet* effects = &instance->activeEffects;
+    lua_createtable(L, (int)effects->size(), 0);
+    int index = 1;
+    for (WeatherEffectSet::const_iterator it = effects->begin(); it != effects->end(); ++it, ++index)
+    {
+        pushOpaquePointer(L, *it);
+        lua_rawseti(L, -2, index);
+    }
+    return 1;
+}
+
 // --- Setters for WeatherSystem ---
 // updateMT returns early while no region is active.
 static int WeatherSystem_set_ActiveRegionWeather(lua_State* L)
@@ -177,6 +284,14 @@ static int WeatherSystem_set_ActiveRegionWeather(lua_State* L)
     WeatherSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WeatherSystem is nil");
     instance->ActiveRegionWeather = lua_isnoneornil(L, 2) ? nullptr : checkObject<WeatherRegion>(L, 2, WeatherRegionBinding::getMetatableName());
+    return 0;
+}
+
+static int WeatherSystem_set_ActiveRegion(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    instance->ActiveRegion = checkOpaquePointer<AreaBiomeGroup>(L, 2, "AreaBiomeGroup lightuserdata or nil expected", true);
     return 0;
 }
 
@@ -193,6 +308,42 @@ static int WeatherSystem_set_previousBiomeAABB(lua_State* L)
     WeatherSystem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "WeatherSystem is nil");
     if (!readVector4(L, 2, instance->previousBiomeAABB)) return luaL_argerror(L, 2, "Vector4 table expected");
+    return 0;
+}
+
+static int WeatherSystem_set_previousArea(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    instance->previousArea = checkOpaquePointer<AreaBiomeGroup>(L, 2, "AreaBiomeGroup lightuserdata or nil expected", true);
+    return 0;
+}
+
+static int WeatherSystem_set_areaGroups(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    luaL_checktype(L, 2, LUA_TTABLE);
+
+    AreaBiomeGroup* values[4];
+    for (int i = 0; i < 4; ++i)
+    {
+        lua_rawgeti(L, 2, i + 1);
+        if (!lua_isnoneornil(L, -1) && !lua_islightuserdata(L, -1))
+            return luaL_error(L, "WeatherSystem.areaGroups[%d] must be AreaBiomeGroup lightuserdata or nil", i + 1);
+        values[i] = static_cast<AreaBiomeGroup*>(lua_touserdata(L, -1));
+        lua_pop(L, 1);
+    }
+    for (int i = 0; i < 4; ++i)
+        instance->areaGroups[i] = values[i];
+    return 0;
+}
+
+static int WeatherSystem_set_previousSector(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    instance->previousSector = checkOpaquePointer<AreaSector>(L, 2, "AreaSector lightuserdata or nil expected", true);
     return 0;
 }
 
@@ -372,6 +523,49 @@ int WeatherSystemBinding::removeWeatherListener(lua_State* L)
     return 0;
 }
 
+int WeatherSystemBinding::getPositionGlobalEffects(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    if (!instance->ActiveRegion)
+        return luaL_error(L, "WeatherSystem.getPositionGlobalEffects requires an active biome");
+
+    Ogre::Vector3 position;
+    if (!readVector3(L, 2, position)) return luaL_argerror(L, 2, "Vector3 table expected");
+    const GlobalEffectList& effects = instance->getPositionGlobalEffects(position);
+    lua_createtable(L, (int)effects.size(), 0);
+    for (size_t i = 0; i < effects.size(); ++i)
+    {
+        lua_createtable(L, 0, 2);
+        lua_pushinteger(L, (lua_Integer)effects[i].first);
+        lua_setfield(L, -2, "effect");
+        lua_pushnumber(L, effects[i].second);
+        lua_setfield(L, -2, "strength");
+        lua_rawseti(L, -2, (int)i + 1);
+    }
+    return 1;
+}
+
+int WeatherSystemBinding::addWeatherEffect(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    if (!lua_islightuserdata(L, 2)) return luaL_argerror(L, 2, "EffectHandler lightuserdata expected");
+    EffectHandler* effect = static_cast<EffectHandler*>(lua_touserdata(L, 2));
+    instance->addWeatherEffect(effect);
+    return 0;
+}
+
+int WeatherSystemBinding::removeWeatherEffect(lua_State* L)
+{
+    WeatherSystem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WeatherSystem is nil");
+    if (!lua_islightuserdata(L, 2)) return luaL_argerror(L, 2, "EffectHandler lightuserdata expected");
+    EffectHandler* effect = static_cast<EffectHandler*>(lua_touserdata(L, 2));
+    instance->removeWeatherEffect(effect);
+    return 0;
+}
+
 int WeatherSystemBinding::setDustShaderValue(lua_State* L)
 {
     WeatherSystem* instance = getInstance(L, 1);
@@ -387,18 +581,10 @@ int WeatherSystemBinding::setDustShaderValue(lua_State* L)
 Skipped methods needing manual binding:
   line 199: ~WeatherSystem() - destructor; the game owns the singleton
   line 202: destroy() - deletes the singleton while the game keeps using it through getInstance's static pointer
-  line 210: getPositionGlobalEffects(...) - returns a std::vector<std::pair<EffectType::Enum, float> > with no container binding, and reads the biome at the position without a null check
-  line 211: addWeatherEffect(EffectHandler* effect) - EffectHandler is unbound
-  line 212: removeWeatherEffect(EffectHandler* effect) - EffectHandler is unbound
   line 217: WeatherSystem() - constructor; getInstance creates the singleton
 
-Skipped properties needing manual binding:
-  line 215: ActiveRegion (AreaBiomeGroup*) - unbound pointer
-  line 245: previousArea (AreaBiomeGroup*) - unbound pointer
-  line 246: areaGroups (AreaBiomeGroup*[4]) - unbound pointer
-  line 248: previousSector (AreaSector*) - unbound pointer
-  line 262: weatherListeners (std::map<WeatherRegion::Listener*, WeatherRegion*, ...>) - no container binding for this map
-  line 263: activeEffects (std::set<EffectHandler*, ...>) - EffectHandler is unbound
+Read-only properties:
+  weatherListeners, activeEffects - snapshots of engine registries; mutate them through add/remove methods
 */
 
 int WeatherSystemBinding::gc(lua_State* L)
@@ -429,6 +615,9 @@ void WeatherSystemBinding::registerBinding(lua_State* L)
         { "updateUT", WeatherSystemBinding::updateUT },
         { "addWeatherListener", WeatherSystemBinding::addWeatherListener },
         { "removeWeatherListener", WeatherSystemBinding::removeWeatherListener },
+        { "getPositionGlobalEffects", WeatherSystemBinding::getPositionGlobalEffects },
+        { "addWeatherEffect", WeatherSystemBinding::addWeatherEffect },
+        { "removeWeatherEffect", WeatherSystemBinding::removeWeatherEffect },
         { "setDustShaderValue", WeatherSystemBinding::setDustShaderValue },
         { 0, 0 }
     };
@@ -445,9 +634,13 @@ void WeatherSystemBinding::registerBinding(lua_State* L)
     luaL_getmetatable(L, WeatherSystemBinding::getMetatableName());
     lua_newtable(L); // Create __getters table
     registerGetter(L, "ActiveRegionWeather", WeatherSystem_get_ActiveRegionWeather);
+    registerGetter(L, "ActiveRegion", WeatherSystem_get_ActiveRegion);
     registerGetter(L, "exitingBiome", WeatherSystem_get_exitingBiome);
     registerGetter(L, "previousBiomeAABB", WeatherSystem_get_previousBiomeAABB);
+    registerGetter(L, "previousArea", WeatherSystem_get_previousArea);
+    registerGetter(L, "areaGroups", WeatherSystem_get_areaGroups);
     registerGetter(L, "areaFog", WeatherSystem_get_areaFog);
+    registerGetter(L, "previousSector", WeatherSystem_get_previousSector);
     registerGetter(L, "previousPoint", WeatherSystem_get_previousPoint);
     registerGetter(L, "zoneFogBlendingPosition", WeatherSystem_get_zoneFogBlendingPosition);
     registerGetter(L, "zoneFogBlendingType", WeatherSystem_get_zoneFogBlendingType);
@@ -461,12 +654,18 @@ void WeatherSystemBinding::registerBinding(lua_State* L)
     registerGetter(L, "currentDustAmount", WeatherSystem_get_currentDustAmount);
     registerGetter(L, "heatHazeUpdated", WeatherSystem_get_heatHazeUpdated);
     registerGetter(L, "heatHazeValue", WeatherSystem_get_heatHazeValue);
+    registerGetter(L, "weatherListeners", WeatherSystem_get_weatherListeners);
+    registerGetter(L, "activeEffects", WeatherSystem_get_activeEffects);
     lua_setfield(L, -2, "__getters"); // Bind to metatable
 
     lua_newtable(L); // Create __setters table
     registerSetter(L, "ActiveRegionWeather", WeatherSystem_set_ActiveRegionWeather);
+    registerSetter(L, "ActiveRegion", WeatherSystem_set_ActiveRegion);
     registerSetter(L, "exitingBiome", WeatherSystem_set_exitingBiome);
     registerSetter(L, "previousBiomeAABB", WeatherSystem_set_previousBiomeAABB);
+    registerSetter(L, "previousArea", WeatherSystem_set_previousArea);
+    registerSetter(L, "areaGroups", WeatherSystem_set_areaGroups);
+    registerSetter(L, "previousSector", WeatherSystem_set_previousSector);
     registerSetter(L, "previousPoint", WeatherSystem_set_previousPoint);
     registerSetter(L, "zoneFogBlendingPosition", WeatherSystem_set_zoneFogBlendingPosition);
     registerSetter(L, "zoneFogBlendingType", WeatherSystem_set_zoneFogBlendingType);

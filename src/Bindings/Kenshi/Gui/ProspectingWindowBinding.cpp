@@ -127,7 +127,7 @@ static int ProspectingWindow_set_lastPos(lua_State* L)
 {
     ProspectingWindow* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProspectingWindow is nil");
-    readVector3(L, 2, instance->lastPos);
+    if (!readVector3(L, 2, instance->lastPos)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

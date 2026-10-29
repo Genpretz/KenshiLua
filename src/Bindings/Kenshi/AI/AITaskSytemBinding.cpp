@@ -11,10 +11,12 @@
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/StateBroadcastDataBinding.h"
+#include "Bindings/Kenshi/AI/TaskMatchBinding.h"
 #include "Bindings/Kenshi/TaskerBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
+#include "Bindings/Kenshi/Util/StdMapBinding.h"
 #include "Bindings/Kenshi/Util/TimeOfDayBinding.h"
 
 namespace KenshiLua
@@ -27,9 +29,8 @@ static_assert(offsetof(AITaskSytem, pos) == 0x398, "AITaskSytem::pos offset does
 static_assert(offsetof(AITaskSytem, taskRecursionLast) == 0x3B4, "AITaskSytem::taskRecursionLast offset does not match the game");
 
 typedef LektorPtrBinding<Tasker*> TaskerLektorBinding;
-typedef std::map<float, Tasker*, std::less<float>, Ogre::STLAllocator<std::pair<float const, Tasker*>, Ogre::GeneralAllocPolicy> > OrderedGoalsMap;
-typedef StdMapBinding<float, Tasker*> OrderedGoalsMapBinding;
 typedef OgreUnorderedMapBinding<hand, float> HandFloatMapBinding;
+typedef StdMapBinding<float, Tasker*> OrderedGoalsMapBinding;
 
 static AITaskSytem* getInstance(lua_State* L, int idx)
 {
@@ -178,18 +179,18 @@ static int AITaskSytem_get_autoEjectEnemiesTask2(lua_State* L)
     return pushObject<Tasker>(L, instance->autoEjectEnemiesTask2, TaskerBinding::getMetatableName());
 }
 
+static int AITaskSytem_get_orderedGoals(lua_State* L)
+{
+    AITaskSytem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AITaskSytem is nil");
+    return pushObject<OrderedGoalsMapBinding::MapType>(L, &instance->orderedGoals, OrderedGoalsMapBinding::getMetatableName());
+}
+
 static int AITaskSytem_get_requestsList(lua_State* L)
 {
     AITaskSytem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AITaskSytem is nil");
     return pushObject<lektor<Tasker*> >(L, &instance->requestsList, TaskerLektorBinding::getMetatableName());
-}
-
-static int AITaskSytem_get_orderedGoals(lua_State* L)
-{
-    AITaskSytem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AITaskSytem is nil");
-    return pushObject<OrderedGoalsMap>(L, &instance->orderedGoals, OrderedGoalsMapBinding::getMetatableName());
 }
 
 static int AITaskSytem_get_actions(lua_State* L)
@@ -389,6 +390,16 @@ static int AITaskSytem_set_autoEjectEnemiesTask2(lua_State* L)
     AITaskSytem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AITaskSytem is nil");
     instance->autoEjectEnemiesTask2 = lua_isnoneornil(L, 2) ? nullptr : checkObject<Tasker>(L, 2, TaskerBinding::getMetatableName());
+    return 0;
+}
+
+static int AITaskSytem_set_orderedGoals(lua_State* L)
+{
+    AITaskSytem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AITaskSytem is nil");
+    OrderedGoalsMapBinding::MapType* value = OrderedGoalsMapBinding::getInstance(L, 2);
+    if (!value) return luaL_argerror(L, 2, "std::map<float, Tasker*> expected");
+    instance->orderedGoals = *value;
     return 0;
 }
 
@@ -746,7 +757,7 @@ int AITaskSytemBinding::debugTargetInfo(lua_State* L)
     AITaskSytem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "AITaskSytem is nil");
 
-    std::string task = luaL_checkstring(L, 2);
+    const char* task = luaL_checkstring(L, 2);
     hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
     std::string info = luaL_checkstring(L, 4);
     bool isChosenTarget = lua_toboolean(L, 5) != 0;
@@ -842,37 +853,6 @@ int AITaskSytemBinding::_chooseGoal(lua_State* L)
     return 1;
 }
 
-int AITaskSytemBinding::chooseGoalFrom(lua_State* L)
-{
-    AITaskSytem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AITaskSytem is nil");
-
-    OrderedGoalsMap* goals = checkObject<OrderedGoalsMap>(L, 2, OrderedGoalsMapBinding::getMetatableName());
-    if (!goals) return luaL_error(L, "Argument 1 must be std::map<float, Tasker*>");
-    TaskMatch* match = checkObject<TaskMatch>(L, 3, TaskMatchBinding::getMetatableName());
-    if (!match) return luaL_error(L, "Argument 2 must be TaskMatch");
-    lektor<Tasker*>* listIn = checkObject<lektor<Tasker*> >(L, 4, TaskerLektorBinding::getMetatableName());
-    if (!listIn) return luaL_error(L, "Argument 3 must be lektor<Tasker*>");
-    bool theseAreBlackboard = lua_toboolean(L, 5) != 0;
-    instance->chooseGoalFrom(*goals, *match, *listIn, theseAreBlackboard);
-    return 0;
-}
-
-int AITaskSytemBinding::choosePermaJob(lua_State* L)
-{
-    AITaskSytem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AITaskSytem is nil");
-
-    OrderedGoalsMap* goals = checkObject<OrderedGoalsMap>(L, 2, OrderedGoalsMapBinding::getMetatableName());
-    if (!goals) return luaL_error(L, "Argument 1 must be std::map<float, Tasker*>");
-    TaskMatch* match = checkObject<TaskMatch>(L, 3, TaskMatchBinding::getMetatableName());
-    if (!match) return luaL_error(L, "Argument 2 must be TaskMatch");
-    bool urgentOnes = lua_toboolean(L, 4) != 0;
-    bool jobsEnabled = lua_toboolean(L, 5) != 0;
-    instance->choosePermaJob(*goals, *match, urgentOnes, jobsEnabled);
-    return 0;
-}
-
 int AITaskSytemBinding::setupParametersForCurrentGoal(lua_State* L)
 {
     AITaskSytem* instance = getInstance(L, 1);
@@ -880,19 +860,6 @@ int AITaskSytemBinding::setupParametersForCurrentGoal(lua_State* L)
 
     instance->setupParametersForCurrentGoal();
     return 0;
-}
-
-int AITaskSytemBinding::runGoals(lua_State* L)
-{
-    AITaskSytem* instance = getInstance(L, 1);
-    if (!instance) return luaL_error(L, "AITaskSytem is nil");
-
-    OrderedGoalsMap* goals = checkObject<OrderedGoalsMap>(L, 2, OrderedGoalsMapBinding::getMetatableName());
-    if (!goals) return luaL_error(L, "Argument 1 must be std::map<float, Tasker*>");
-    bool playerOrder = lua_toboolean(L, 3) != 0;
-    bool result = instance->runGoals(*goals, playerOrder);
-    lua_pushboolean(L, result ? 1 : 0);
-    return 1;
 }
 
 int AITaskSytemBinding::clearRequestsList(lua_State* L)
@@ -947,15 +914,53 @@ int AITaskSytemBinding::runGOAP(lua_State* L)
     return 1;
 }
 
+int AITaskSytemBinding::chooseGoalFrom(lua_State* L)
+{
+    AITaskSytem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AITaskSytem is nil");
+
+    OrderedGoalsMapBinding::MapType* orderedGoals = OrderedGoalsMapBinding::getInstance(L, 2);
+    TaskMatch* alreadyHasGoal = checkObject<TaskMatch>(L, 3, TaskMatchBinding::getMetatableName());
+    lektor<Tasker*>* goalListIn = TaskerLektorBinding::getInstance(L, 4);
+    if (!orderedGoals) return luaL_error(L, "orderedGoals is nil");
+    if (!alreadyHasGoal) return luaL_error(L, "alreadyHasGoal is nil");
+    if (!goalListIn) return luaL_error(L, "goalListIn is nil");
+    bool theseAreBlackboard = lua_toboolean(L, 5) != 0;
+    instance->chooseGoalFrom(*orderedGoals, *alreadyHasGoal, *goalListIn, theseAreBlackboard);
+    return 0;
+}
+
+int AITaskSytemBinding::choosePermaJob(lua_State* L)
+{
+    AITaskSytem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AITaskSytem is nil");
+
+    OrderedGoalsMapBinding::MapType* orderedGoals = OrderedGoalsMapBinding::getInstance(L, 2);
+    TaskMatch* alreadyHasGoal = checkObject<TaskMatch>(L, 3, TaskMatchBinding::getMetatableName());
+    if (!orderedGoals) return luaL_error(L, "orderedGoals is nil");
+    if (!alreadyHasGoal) return luaL_error(L, "alreadyHasGoal is nil");
+    bool urgentOnes = lua_toboolean(L, 4) != 0;
+    bool jobsEnabled = lua_toboolean(L, 5) != 0;
+    instance->choosePermaJob(*orderedGoals, *alreadyHasGoal, urgentOnes, jobsEnabled);
+    return 0;
+}
+
+int AITaskSytemBinding::runGoals(lua_State* L)
+{
+    AITaskSytem* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AITaskSytem is nil");
+
+    OrderedGoalsMapBinding::MapType* orderedGoals = OrderedGoalsMapBinding::getInstance(L, 2);
+    if (!orderedGoals) return luaL_error(L, "orderedGoals is nil");
+    bool playerOrder = lua_toboolean(L, 3) != 0;
+    bool result = instance->runGoals(*orderedGoals, playerOrder);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 221-224: AITaskSytem(AI*, CharBody*, Character*), _CONSTRUCTOR, ~AITaskSytem, _DESTRUCTOR - owned by AI (AI::taskSystemAI, deleted by ~AI)
-  line 281: chooseGoalFrom(...) - std::map<float, Tasker*>& and lektor<Tasker*>& engine scratch lists; the map helpers wrap a pointer value's map slot, not the task
-  line 282: choosePermaJob(...) - std::map<float, Tasker*>& engine scratch map; see chooseGoalFrom
-  line 284: runGoals(...) - std::map<float, Tasker*>& engine scratch map; see chooseGoalFrom
-
-Skipped properties needing manual binding:
-  line 291: orderedGoals (std::map<float, Tasker*>) - the std::map helper wraps a pointer value's map slot, not the task
 
 Read-only properties:
   pathFailures, requestsList - containers are edited in place; whole-container assignment is not bound
@@ -1065,8 +1070,8 @@ void AITaskSytemBinding::registerBinding(lua_State* L)
     registerGetter(L, "autoSitTask", AITaskSytem_get_autoSitTask);
     registerGetter(L, "autoEjectEnemiesTask1", AITaskSytem_get_autoEjectEnemiesTask1);
     registerGetter(L, "autoEjectEnemiesTask2", AITaskSytem_get_autoEjectEnemiesTask2);
-    registerGetter(L, "requestsList", AITaskSytem_get_requestsList);
     registerGetter(L, "orderedGoals", AITaskSytem_get_orderedGoals);
+    registerGetter(L, "requestsList", AITaskSytem_get_requestsList);
     registerGetter(L, "actions", AITaskSytem_get_actions);
     registerGetter(L, "actionsTryList", AITaskSytem_get_actionsTryList);
     registerGetter(L, "failedGOAPGoalDebugString", AITaskSytem_get_failedGOAPGoalDebugString);
@@ -1095,6 +1100,7 @@ void AITaskSytemBinding::registerBinding(lua_State* L)
     registerSetter(L, "autoSitTask", AITaskSytem_set_autoSitTask);
     registerSetter(L, "autoEjectEnemiesTask1", AITaskSytem_set_autoEjectEnemiesTask1);
     registerSetter(L, "autoEjectEnemiesTask2", AITaskSytem_set_autoEjectEnemiesTask2);
+    registerSetter(L, "orderedGoals", AITaskSytem_set_orderedGoals);
     registerSetter(L, "failedGOAPGoalDebugString", AITaskSytem_set_failedGOAPGoalDebugString);
     registerSetter(L, "pos", AITaskSytem_set_pos);
     registerSetter(L, "currentlySubTasking", AITaskSytem_set_currentlySubTasking);

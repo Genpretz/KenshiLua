@@ -244,7 +244,7 @@ static int CameraClass_set_objectCurrentlyFollowingOffset(lua_State* L)
 {
     CameraClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CameraClass is nil");
-    readVector3(L, 2, instance->objectCurrentlyFollowingOffset);
+    if (!readVector3(L, 2, instance->objectCurrentlyFollowingOffset)) return luaL_argerror(L, 2, "Vector3 table expected");
     return 0;
 }
 

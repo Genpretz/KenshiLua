@@ -183,7 +183,7 @@ int ContainerItemBinding::equipItem(lua_State* L)
     ContainerItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContainerItem is nil");
 
-    const std::string what = luaL_checkstring(L, 2);
+    const char* what = luaL_checkstring(L, 2);
     Item* who = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->equipItem(what, who);
     return 0;
@@ -194,7 +194,7 @@ int ContainerItemBinding::_NV_equipItem(lua_State* L)
     ContainerItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContainerItem is nil");
 
-    const std::string what = luaL_checkstring(L, 2);
+    const char* what = luaL_checkstring(L, 2);
     Item* who = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_equipItem(what, who);
     return 0;
@@ -205,7 +205,7 @@ int ContainerItemBinding::unequipItem(lua_State* L)
     ContainerItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContainerItem is nil");
 
-    const std::string what = luaL_checkstring(L, 2);
+    const char* what = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->unequipItem(what, item);
     return 0;
@@ -216,7 +216,7 @@ int ContainerItemBinding::_NV_unequipItem(lua_State* L)
     ContainerItem* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ContainerItem is nil");
 
-    const std::string what = luaL_checkstring(L, 2);
+    const char* what = luaL_checkstring(L, 2);
     Item* item = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_unequipItem(what, item);
     return 0;

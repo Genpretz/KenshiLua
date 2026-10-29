@@ -138,7 +138,7 @@ int GameDataContainerBinding::createNewData(lua_State* L)
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
     itemType type = (itemType)luaL_checkinteger(L, 2);
-    const std::string forceID = luaL_checkstring(L, 3);
+    const char* forceID = luaL_checkstring(L, 3);
     const std::string name = luaL_checkstring(L, 4);
     GameData* result = instance->createNewData(type, forceID, name);
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
@@ -149,7 +149,7 @@ int GameDataContainerBinding::getDataByName(lua_State* L)
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
-    const std::string dataName = luaL_checkstring(L, 2);
+    const char* dataName = luaL_checkstring(L, 2);
     itemType category = (itemType)luaL_checkinteger(L, 3);
     GameData* result = instance->getDataByName(dataName, category);
     return pushObject<GameData>(L, result, GameDataBinding::getMetatableName());
@@ -322,7 +322,7 @@ int GameDataContainerBinding::getData(lua_State* L)
     }
     else if (lua_isstring(L, 2))
     {
-        std::string sid = lua_tostring(L, 2);
+        const char* sid = lua_tostring(L, 2);
         if (lua_isnumber(L, 3))
         {
             itemType category = (itemType)lua_tointeger(L, 3);
@@ -362,7 +362,7 @@ int GameDataContainerBinding::loadGameDataReturn(lua_State* L)
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
-    std::string file = luaL_checkstring(L, 2);
+    const char* file = luaL_checkstring(L, 2);
     bool isActive = lua_toboolean(L, 3) != 0;
     bool readOnly = lua_toboolean(L, 4) != 0;
     Serialisable* moreData = lua_isnoneornil(L, 5) ? nullptr : checkObject<Serialisable>(L, 5, SerialisableBinding::getMetatableName());
@@ -376,8 +376,8 @@ int GameDataContainerBinding::load(lua_State* L)
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
-    std::string filename = luaL_checkstring(L, 2);
-    std::string modName = luaL_checkstring(L, 3);
+    const char* filename = luaL_checkstring(L, 2);
+    const char* modName = luaL_checkstring(L, 3);
     int modIndex = (int)luaL_checkinteger(L, 4);
     Serialisable* moreData = lua_isnoneornil(L, 5) ? nullptr : checkObject<Serialisable>(L, 5, SerialisableBinding::getMetatableName());
     bool keepDeletedInstances = lua_isboolean(L, 6) ? (lua_toboolean(L, 6) != 0) : false;
@@ -391,7 +391,7 @@ int GameDataContainerBinding::save(lua_State* L)
     GameDataContainer* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameDataContainer is nil");
 
-    std::string filename = luaL_checkstring(L, 2);
+    const char* filename = luaL_checkstring(L, 2);
     Serialisable* moreData = lua_isnoneornil(L, 3) ? nullptr : checkObject<Serialisable>(L, 3, SerialisableBinding::getMetatableName());
     bool res = instance->save(filename, moreData);
     lua_pushboolean(L, res ? 1 : 0);

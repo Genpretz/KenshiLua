@@ -7,6 +7,11 @@
 namespace KenshiLua
 {
 
+static int argStart(lua_State* L)
+{
+    return testObject<MyGUI::InputManager>(L, 1, InputManagerBinding::getMetatableName()) ? 2 : 1;
+}
+
 int InputManagerBinding::getInstance(lua_State* L)
 {
     if (MyGUI::InputManager::getInstancePtr())
@@ -19,9 +24,10 @@ int InputManagerBinding::getInstance(lua_State* L)
 
 int InputManagerBinding::injectMouseMove(lua_State* L)
 {
-    int absx = (int)luaL_checkinteger(L, 1);
-    int absy = (int)luaL_checkinteger(L, 2);
-    int absz = (int)luaL_optinteger(L, 3, 0);
+    int idx = argStart(L);
+    int absx = (int)luaL_checkinteger(L, idx);
+    int absy = (int)luaL_checkinteger(L, idx + 1);
+    int absz = (int)luaL_optinteger(L, idx + 2, 0);
     if (MyGUI::InputManager::getInstancePtr())
     {
         bool handled = MyGUI::InputManager::getInstance().injectMouseMove(absx, absy, absz);
@@ -34,9 +40,10 @@ int InputManagerBinding::injectMouseMove(lua_State* L)
 
 int InputManagerBinding::injectMousePress(lua_State* L)
 {
-    int absx = (int)luaL_checkinteger(L, 1);
-    int absy = (int)luaL_checkinteger(L, 2);
-    int btn = (int)luaL_optinteger(L, 3, (int)MyGUI::MouseButton::Left);
+    int idx = argStart(L);
+    int absx = (int)luaL_checkinteger(L, idx);
+    int absy = (int)luaL_checkinteger(L, idx + 1);
+    int btn = (int)luaL_optinteger(L, idx + 2, (int)MyGUI::MouseButton::Left);
     if (MyGUI::InputManager::getInstancePtr())
     {
         bool handled = MyGUI::InputManager::getInstance().injectMousePress(absx, absy, MyGUI::MouseButton((MyGUI::MouseButton::Enum)btn));
@@ -49,9 +56,10 @@ int InputManagerBinding::injectMousePress(lua_State* L)
 
 int InputManagerBinding::injectMouseRelease(lua_State* L)
 {
-    int absx = (int)luaL_checkinteger(L, 1);
-    int absy = (int)luaL_checkinteger(L, 2);
-    int btn = (int)luaL_optinteger(L, 3, (int)MyGUI::MouseButton::Left);
+    int idx = argStart(L);
+    int absx = (int)luaL_checkinteger(L, idx);
+    int absy = (int)luaL_checkinteger(L, idx + 1);
+    int btn = (int)luaL_optinteger(L, idx + 2, (int)MyGUI::MouseButton::Left);
     if (MyGUI::InputManager::getInstancePtr())
     {
         bool handled = MyGUI::InputManager::getInstance().injectMouseRelease(absx, absy, MyGUI::MouseButton((MyGUI::MouseButton::Enum)btn));
@@ -64,8 +72,9 @@ int InputManagerBinding::injectMouseRelease(lua_State* L)
 
 int InputManagerBinding::injectKeyPress(lua_State* L)
 {
-    int key = (int)luaL_checkinteger(L, 1);
-    int text = (int)luaL_optinteger(L, 2, 0);
+    int idx = argStart(L);
+    int key = (int)luaL_checkinteger(L, idx);
+    int text = (int)luaL_optinteger(L, idx + 1, 0);
     if (MyGUI::InputManager::getInstancePtr())
     {
         bool handled = MyGUI::InputManager::getInstance().injectKeyPress(MyGUI::KeyCode((MyGUI::KeyCode::Enum)key), (MyGUI::Char)text);
@@ -78,7 +87,8 @@ int InputManagerBinding::injectKeyPress(lua_State* L)
 
 int InputManagerBinding::injectKeyRelease(lua_State* L)
 {
-    int key = (int)luaL_checkinteger(L, 1);
+    int idx = argStart(L);
+    int key = (int)luaL_checkinteger(L, idx);
     if (MyGUI::InputManager::getInstancePtr())
     {
         bool handled = MyGUI::InputManager::getInstance().injectKeyRelease(MyGUI::KeyCode((MyGUI::KeyCode::Enum)key));
@@ -146,7 +156,8 @@ int InputManagerBinding::isCaptureMouse(lua_State* L)
 
 int InputManagerBinding::setKeyFocusWidget(lua_State* L)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
+    int idx = argStart(L);
+    MyGUI::Widget* w = lua_isnoneornil(L, idx) ? nullptr : WidgetBinding::getWidget(L, idx);
     if (MyGUI::InputManager::getInstancePtr())
     {
         MyGUI::InputManager::getInstance().setKeyFocusWidget(w);
@@ -158,9 +169,10 @@ int InputManagerBinding::resetKeyFocusWidget(lua_State* L)
 {
     if (MyGUI::InputManager::getInstancePtr())
     {
-        if (lua_gettop(L) >= 1 && !lua_isnil(L, 1))
+        int idx = argStart(L);
+        if (lua_gettop(L) >= idx && !lua_isnil(L, idx))
         {
-            MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
+            MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
             if (w) MyGUI::InputManager::getInstance().resetKeyFocusWidget(w);
         }
         else
@@ -209,7 +221,8 @@ int InputManagerBinding::getMousePosition(lua_State* L)
 
 int InputManagerBinding::addWidgetModal(lua_State* L)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
+    int idx = argStart(L);
+    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
     if (w && MyGUI::InputManager::getInstancePtr())
     {
         MyGUI::InputManager::getInstance().addWidgetModal(w);
@@ -219,7 +232,8 @@ int InputManagerBinding::addWidgetModal(lua_State* L)
 
 int InputManagerBinding::removeWidgetModal(lua_State* L)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
+    int idx = argStart(L);
+    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
     if (w && MyGUI::InputManager::getInstancePtr())
     {
         MyGUI::InputManager::getInstance().removeWidgetModal(w);

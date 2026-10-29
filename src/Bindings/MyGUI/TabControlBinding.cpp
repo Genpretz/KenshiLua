@@ -10,9 +10,7 @@ namespace KenshiLua
 
 MyGUI::TabControl* TabControlBinding::getTabControl(lua_State* L, int idx)
 {
-    MyGUI::Widget* w = WidgetBinding::getWidget(L, idx);
-    if (!w) return nullptr;
-    return w->castType<MyGUI::TabControl>(false);
+    return MyGUIBindings::checkWidget<MyGUI::TabControl>(L, idx);
 }
 
 int TabControlBinding::getItemCount(lua_State* L)
@@ -212,46 +210,10 @@ int TabControlBinding::getSmoothShow(lua_State* L)
     return 1;
 }
 
-static int TabControl_index(lua_State* L)
-{
-    MyGUI::TabControl* tc = TabControlBinding::getTabControl(L, 1);
-    if (!tc) return luaL_error(L, "TabControl is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "itemCount") == 0 || strcmp(key, "count") == 0)
-    {
-        lua_pushinteger(L, (lua_Integer)tc->getItemCount());
-        return 1;
-    }
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        size_t idx = tc->getIndexSelected();
-        if (idx == MyGUI::ITEM_NONE) lua_pushinteger(L, -1);
-        else lua_pushinteger(L, (lua_Integer)idx);
-        return 1;
-    }
-    return genericPropertyIndex(L);
-}
-
-static int TabControl_newindex(lua_State* L)
-{
-    MyGUI::TabControl* tc = TabControlBinding::getTabControl(L, 1);
-    if (!tc) return luaL_error(L, "TabControl is nil");
-    const char* key = luaL_checkstring(L, 2);
-
-    if (strcmp(key, "indexSelected") == 0 || strcmp(key, "selectedIndex") == 0)
-    {
-        lua_Integer idx = luaL_checkinteger(L, 3);
-        if (idx < 0) tc->setIndexSelected(MyGUI::ITEM_NONE);
-        else tc->setIndexSelected((size_t)idx);
-        return 0;
-    }
-    return genericPropertyNewIndex(L);
-}
-
 static int TabControl_tostring(lua_State* L)
 {
-    MyGUI::TabControl* tc = TabControlBinding::getTabControl(L, 1);
+    MyGUI::Widget* w = MyGUIBindings::toWidget(L, 1);
+    MyGUI::TabControl* tc = w ? w->castType<MyGUI::TabControl>(false) : nullptr;
     char buf[128];
     if (tc)
     {
@@ -295,7 +257,22 @@ void TabControlBinding::registerBinding(lua_State* L)
         { "getSmoothShow",          getSmoothShow },
         { 0, 0 }
     };
-    registerClass(L, getMetatableName(), meta, methods, TabControl_index, TabControl_newindex);
+    registerClass(L, getMetatableName(), meta, methods, genericPropertyIndex, genericPropertyNewIndex);
+
+    luaL_getmetatable(L, getMetatableName());
+    lua_newtable(L);
+    registerGetter(L, "itemCount", TabControlBinding::getItemCount);
+    registerGetter(L, "count", TabControlBinding::getItemCount);
+    registerGetter(L, "indexSelected", TabControlBinding::getIndexSelected);
+    registerGetter(L, "selectedIndex", TabControlBinding::getIndexSelected);
+    lua_setfield(L, -2, "__getters");
+
+    lua_newtable(L);
+    registerSetter(L, "indexSelected", TabControlBinding::setIndexSelected);
+    registerSetter(L, "selectedIndex", TabControlBinding::setIndexSelected);
+    lua_setfield(L, -2, "__setters");
+    lua_pop(L, 1);
+
     setMetatableParent(L, getMetatableName(), WidgetBinding::getMetatableName());
 }
 

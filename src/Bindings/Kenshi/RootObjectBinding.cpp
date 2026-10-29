@@ -149,7 +149,7 @@ static int RootObject_set_rot(lua_State* L)
 {
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
-    readQuaternion(L, 2, instance->rot);
+    if (!readQuaternion(L, 2, instance->rot)) return luaL_argerror(L, 2, "Quaternion table expected");
     return 0;
 }
 
@@ -700,7 +700,7 @@ int RootObjectBinding::equipItem(lua_State* L)
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
 
-    const std::string _a1 = luaL_checkstring(L, 2);
+    const char* _a1 = luaL_checkstring(L, 2);
     Item* _a2 = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->equipItem(_a1, _a2);
     return 0;
@@ -711,7 +711,7 @@ int RootObjectBinding::_NV_equipItem(lua_State* L)
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
 
-    const std::string _a1 = luaL_checkstring(L, 2);
+    const char* _a1 = luaL_checkstring(L, 2);
     Item* _a2 = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_equipItem(_a1, _a2);
     return 0;
@@ -722,7 +722,7 @@ int RootObjectBinding::unequipItem(lua_State* L)
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
 
-    const std::string _a1 = luaL_checkstring(L, 2);
+    const char* _a1 = luaL_checkstring(L, 2);
     Item* _a2 = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->unequipItem(_a1, _a2);
     return 0;
@@ -733,7 +733,7 @@ int RootObjectBinding::_NV_unequipItem(lua_State* L)
     RootObject* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "RootObject is nil");
 
-    const std::string _a1 = luaL_checkstring(L, 2);
+    const char* _a1 = luaL_checkstring(L, 2);
     Item* _a2 = checkObject<Item>(L, 3, ItemBinding::getMetatableName());
     instance->_NV_unequipItem(_a1, _a2);
     return 0;

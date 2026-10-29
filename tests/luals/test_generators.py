@@ -126,17 +126,15 @@ class DefinitionGenerationTests(unittest.TestCase):
             "Deducts the specified amount of Cats from this character's money",
             generated,
         )
-        self.assertIn(
-            "Override dispatch for `takeMoney`. Deducts the specified amount of Cats",
-            generated,
-        )
-        self.assertIn(
-            "Inherited API from `Character`. Override dispatch for `giveBirth`",
-            generated,
-        )
         self.assertIn("---@class HavokCharacter", generated)
         self.assertIn("---@field havokCharacter HavokCharacter", generated)
         self.assertIn("Active sneaking stance toggle.", generated)
+
+    def test_non_virtual_methods_are_hidden_but_event_names_remain(self):
+        generated = generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8")
+
+        self.assertNotRegex(generated, r"---@field _NV_[A-Za-z0-9_]+")
+        self.assertIn('---| "Character::_NV_takeMoney"', generated)
 
 
 class BindingInventoryTests(unittest.TestCase):

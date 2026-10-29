@@ -11870,7 +11870,7 @@
               {
                 "name": "orderedGoals",
                 "optional": false,
-                "type": "StdMap<number, Tasker>"
+                "type": "AITaskSytem"
               },
               {
                 "name": "alreadyHasGoal",
@@ -11880,7 +11880,7 @@
               {
                 "name": "goalListIn",
                 "optional": false,
-                "type": "Lektor<Tasker>"
+                "type": "AITaskSytem"
               },
               {
                 "name": "theseAreBlackboard",
@@ -11901,7 +11901,7 @@
               {
                 "name": "orderedGoals",
                 "optional": false,
-                "type": "StdMap<number, Tasker>"
+                "type": "AITaskSytem"
               },
               {
                 "name": "alreadyHasGoal",
@@ -11941,7 +11941,7 @@
               {
                 "name": "orderedGoals",
                 "optional": false,
-                "type": "StdMap<number, Tasker>"
+                "type": "AITaskSytem"
               },
               {
                 "name": "playerOrder",
@@ -12151,14 +12151,16 @@
           "type": "number"
         },
         {
-          "access": "readonly",
+          "access": "readwrite",
           "name": "orderedGoals",
-          "type": "StdMap<number, Tasker>"
+          "type": "StdMap<number, Tasker>",
+          "type_source": "header"
         },
         {
           "access": "readonly",
           "name": "pathFailures",
-          "type": "OgreUnorderedMap<hand, number>"
+          "type": "OgreUnorderedMap<hand, number>",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -15274,7 +15276,8 @@
         {
           "access": "readwrite",
           "name": "boneInitialWorldOrientations",
-          "type": "StdMap<string, table>"
+          "type": "StdMap<string, table>",
+          "type_source": "header"
         },
         {
           "access": "readwrite",
@@ -15359,7 +15362,7 @@
               {
                 "name": "anim",
                 "optional": false,
-                "type": "AnimationClassBase.SingleAnimation"
+                "type": "AnimationClassBase.SingleAnimation|SingleAnimation"
               }
             ],
             "returns": [],
@@ -25796,7 +25799,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
+                "type": "SectionsMap|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -25822,7 +25825,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
+                "type": "SectionsMap|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -30294,7 +30297,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
+                "type": "SectionsMap|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -30561,11 +30564,13 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "selected"
+          "name": "selected",
+          "type": "boolean"
         },
         {
           "access": "readwrite",
-          "name": "stateSelected"
+          "name": "stateSelected",
+          "type": "boolean"
         }
       ],
       "registered_from": [
@@ -35830,7 +35835,7 @@
               {
                 "name": "seen",
                 "optional": false,
-                "type": "YesNoMaybeValue"
+                "type": "YesNoMaybe|YesNoMaybeValue"
               },
               {
                 "name": "isMoving",
@@ -37366,43 +37371,11 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::createAnimationClass",
-          "name": "createAnimationClass",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_createAnimationClass",
           "name": "_NV_createAnimationClass",
           "signature": {
             "params": [],
             "returns": []
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::drawWeapon",
-          "name": "drawWeapon",
-          "signature": {
-            "params": [
-              {
-                "name": "arg1",
-                "optional": false,
-                "type": "Item"
-              },
-              {
-                "name": "lastSlot",
-                "optional": false,
-                "type": "string"
-              }
-            ],
-            "returns": [
-              "boolean"
-            ],
-            "type_source": "header"
           },
           "static": false
         },
@@ -37430,15 +37403,6 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::sheatheWeapon",
-          "name": "sheatheWeapon",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_sheatheWeapon",
           "name": "_NV_sheatheWeapon",
           "signature": {
@@ -37448,30 +37412,8 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::getCurrentWeapon",
-          "name": "getCurrentWeapon",
-          "signature": {
-            "params": [],
-            "returns": [
-              "Weapon"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_getCurrentWeapon",
           "name": "_NV_getCurrentWeapon",
-          "signature": {
-            "params": [],
-            "returns": [
-              "Weapon"
-            ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::getThePreferredWeapon",
-          "name": "getThePreferredWeapon",
           "signature": {
             "params": [],
             "returns": [
@@ -37492,17 +37434,6 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::createInventoryLayout",
-          "name": "createInventoryLayout",
-          "signature": {
-            "params": [],
-            "returns": [
-              "InventoryLayout"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_createInventoryLayout",
           "name": "_NV_createInventoryLayout",
           "signature": {
@@ -37510,49 +37441,6 @@
             "returns": [
               "InventoryLayout"
             ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::giveBirth",
-          "name": "giveBirth",
-          "signature": {
-            "params": [
-              {
-                "name": "appearance",
-                "optional": false,
-                "type": "GameDataCopyStandalone"
-              },
-              {
-                "name": "position",
-                "optional": false,
-                "type": "table"
-              },
-              {
-                "name": "rotation",
-                "optional": false,
-                "type": "table"
-              },
-              {
-                "name": "state",
-                "optional": false,
-                "type": "GameSaveState"
-              },
-              {
-                "name": "tempplatoonptr",
-                "optional": false,
-                "type": "ActivePlatoon"
-              },
-              {
-                "name": "_faction",
-                "optional": false,
-                "type": "Faction"
-              }
-            ],
-            "returns": [
-              "boolean"
-            ],
-            "type_source": "header"
           },
           "static": false
         },
@@ -37600,24 +37488,6 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::setupInventorySections",
-          "name": "setupInventorySections",
-          "signature": {
-            "params": [
-              {
-                "name": "state",
-                "optional": false,
-                "type": "GameSaveState"
-              }
-            ],
-            "returns": [
-              "boolean"
-            ],
-            "type_source": "header"
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_setupInventorySections",
           "name": "_NV_setupInventorySections",
           "signature": {
@@ -37636,26 +37506,8 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::setupAudio",
-          "name": "setupAudio",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_setupAudio",
           "name": "_NV_setupAudio",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::periodicUpdate",
-          "name": "periodicUpdate",
           "signature": {
             "params": [],
             "returns": []
@@ -37668,22 +37520,6 @@
           "signature": {
             "params": [],
             "returns": []
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::setAge",
-          "name": "setAge",
-          "signature": {
-            "params": [
-              {
-                "name": "zeroToOne",
-                "optional": false,
-                "type": "number"
-              }
-            ],
-            "returns": [],
-            "type_source": "header"
           },
           "static": false
         },
@@ -37704,30 +37540,8 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::getAge",
-          "name": "getAge",
-          "signature": {
-            "params": [],
-            "returns": [
-              "number"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_getAge",
           "name": "_NV_getAge",
-          "signature": {
-            "params": [],
-            "returns": [
-              "number"
-            ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::getAgeInverse",
-          "name": "getAgeInverse",
           "signature": {
             "params": [],
             "returns": [
@@ -37748,34 +37562,12 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::getAge0to1",
-          "name": "getAge0to1",
-          "signature": {
-            "params": [],
-            "returns": [
-              "number"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_getAge0to1",
           "name": "_NV_getAge0to1",
           "signature": {
             "params": [],
             "returns": [
               "number"
-            ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::getDefaultTaskRepertoireEnum",
-          "name": "getDefaultTaskRepertoireEnum",
-          "signature": {
-            "params": [],
-            "returns": [
-              "integer"
             ]
           },
           "static": false
@@ -37788,24 +37580,6 @@
             "returns": [
               "integer"
             ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::canGoIndoors",
-          "name": "canGoIndoors",
-          "signature": {
-            "params": [
-              {
-                "name": "b",
-                "optional": false,
-                "type": "Building"
-              }
-            ],
-            "returns": [
-              "boolean"
-            ],
-            "type_source": "header"
           },
           "static": false
         },
@@ -37872,17 +37646,6 @@
           "static": false
         },
         {
-          "callback": "CharacterAnimalBinding::getHPMultiplier",
-          "name": "getHPMultiplier",
-          "signature": {
-            "params": [],
-            "returns": [
-              "number"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterAnimalBinding::_NV_getHPMultiplier",
           "name": "_NV_getHPMultiplier",
           "signature": {
@@ -37890,15 +37653,6 @@
             "returns": [
               "number"
             ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::foodUpdate",
-          "name": "foodUpdate",
-          "signature": {
-            "params": [],
-            "returns": []
           },
           "static": false
         },
@@ -37954,15 +37708,6 @@
         {
           "callback": "CharacterAnimalBinding::eatItemInMouth",
           "name": "eatItemInMouth",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterAnimalBinding::init",
-          "name": "init",
           "signature": {
             "params": [],
             "returns": []
@@ -38938,7 +38683,7 @@
               {
                 "name": "seeing",
                 "optional": false,
-                "type": "YesNoMaybeValue"
+                "type": "YesNoMaybe|YesNoMaybeValue"
               },
               {
                 "name": "maybeProgress01",
@@ -45829,29 +45574,6 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::drawWeapon",
-          "name": "drawWeapon",
-          "signature": {
-            "params": [
-              {
-                "name": "item",
-                "optional": false,
-                "type": "Item"
-              },
-              {
-                "name": "lastSection",
-                "optional": false,
-                "type": "string"
-              }
-            ],
-            "returns": [
-              "boolean"
-            ],
-            "type_source": "header"
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_drawWeapon",
           "name": "_NV_drawWeapon",
           "signature": {
@@ -45875,15 +45597,6 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::sheatheWeapon",
-          "name": "sheatheWeapon",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_sheatheWeapon",
           "name": "_NV_sheatheWeapon",
           "signature": {
@@ -45893,30 +45606,8 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::getCurrentWeapon",
-          "name": "getCurrentWeapon",
-          "signature": {
-            "params": [],
-            "returns": [
-              "Weapon"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_getCurrentWeapon",
           "name": "_NV_getCurrentWeapon",
-          "signature": {
-            "params": [],
-            "returns": [
-              "Weapon"
-            ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterHumanBinding::getThePreferredWeapon",
-          "name": "getThePreferredWeapon",
           "signature": {
             "params": [],
             "returns": [
@@ -45937,17 +45628,6 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::getRangedWeapon",
-          "name": "getRangedWeapon",
-          "signature": {
-            "params": [],
-            "returns": [
-              "Crossbow"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_getRangedWeapon",
           "name": "_NV_getRangedWeapon",
           "signature": {
@@ -45955,22 +45635,6 @@
             "returns": [
               "Crossbow"
             ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterHumanBinding::loadFromSerialise",
-          "name": "loadFromSerialise",
-          "signature": {
-            "params": [
-              {
-                "name": "state",
-                "optional": false,
-                "type": "GameSaveState"
-              }
-            ],
-            "returns": [],
-            "type_source": "header"
           },
           "static": false
         },
@@ -45986,49 +45650,6 @@
               }
             ],
             "returns": [],
-            "type_source": "header"
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterHumanBinding::giveBirth",
-          "name": "giveBirth",
-          "signature": {
-            "params": [
-              {
-                "name": "_appearance",
-                "optional": false,
-                "type": "GameDataCopyStandalone"
-              },
-              {
-                "name": "_pos",
-                "optional": false,
-                "type": "table"
-              },
-              {
-                "name": "_rot",
-                "optional": false,
-                "type": "table"
-              },
-              {
-                "name": "state",
-                "optional": false,
-                "type": "GameSaveState"
-              },
-              {
-                "name": "tempplatoonptr",
-                "optional": false,
-                "type": "ActivePlatoon"
-              },
-              {
-                "name": "_faction",
-                "optional": false,
-                "type": "Faction"
-              }
-            ],
-            "returns": [
-              "boolean"
-            ],
             "type_source": "header"
           },
           "static": false
@@ -46077,24 +45698,6 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::setupInventorySections",
-          "name": "setupInventorySections",
-          "signature": {
-            "params": [
-              {
-                "name": "state",
-                "optional": false,
-                "type": "GameSaveState"
-              }
-            ],
-            "returns": [
-              "boolean"
-            ],
-            "type_source": "header"
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_setupInventorySections",
           "name": "_NV_setupInventorySections",
           "signature": {
@@ -46113,26 +45716,8 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::validateInventorySections",
-          "name": "validateInventorySections",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_validateInventorySections",
           "name": "_NV_validateInventorySections",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterHumanBinding::setupAudio",
-          "name": "setupAudio",
           "signature": {
             "params": [],
             "returns": []
@@ -46165,17 +45750,6 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::isHeadShaven",
-          "name": "isHeadShaven",
-          "signature": {
-            "params": [],
-            "returns": [
-              "boolean"
-            ]
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_isHeadShaven",
           "name": "_NV_isHeadShaven",
           "signature": {
@@ -46183,15 +45757,6 @@
             "returns": [
               "boolean"
             ]
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterHumanBinding::createAnimationClass",
-          "name": "createAnimationClass",
-          "signature": {
-            "params": [],
-            "returns": []
           },
           "static": false
         },
@@ -46255,27 +45820,6 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::unequipItem",
-          "name": "unequipItem",
-          "signature": {
-            "params": [
-              {
-                "name": "section",
-                "optional": false,
-                "type": "string"
-              },
-              {
-                "name": "item",
-                "optional": false,
-                "type": "Item"
-              }
-            ],
-            "returns": [],
-            "type_source": "header"
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_unequipItem",
           "name": "_NV_unequipItem",
           "signature": {
@@ -46289,22 +45833,6 @@
                 "name": "item",
                 "optional": false,
                 "type": "Item"
-              }
-            ],
-            "returns": [],
-            "type_source": "header"
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterHumanBinding::weatherUpdate",
-          "name": "weatherUpdate",
-          "signature": {
-            "params": [
-              {
-                "name": "time",
-                "optional": false,
-                "type": "number"
               }
             ],
             "returns": [],
@@ -46350,27 +45878,6 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::postRagdollCallback",
-          "name": "postRagdollCallback",
-          "signature": {
-            "params": [
-              {
-                "name": "on",
-                "optional": true,
-                "type": "boolean"
-              },
-              {
-                "name": "part",
-                "optional": false,
-                "type": "integer"
-              }
-            ],
-            "returns": [],
-            "type_source": "header"
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_postRagdollCallback",
           "name": "_NV_postRagdollCallback",
           "signature": {
@@ -46392,48 +45899,11 @@
           "static": false
         },
         {
-          "callback": "CharacterHumanBinding::reCalculateNaturalWeapon",
-          "name": "reCalculateNaturalWeapon",
-          "signature": {
-            "params": [],
-            "returns": []
-          },
-          "static": false
-        },
-        {
           "callback": "CharacterHumanBinding::_NV_reCalculateNaturalWeapon",
           "name": "_NV_reCalculateNaturalWeapon",
           "signature": {
             "params": [],
             "returns": []
-          },
-          "static": false
-        },
-        {
-          "callback": "CharacterHumanBinding::serialise",
-          "name": "serialise",
-          "signature": {
-            "params": [
-              {
-                "name": "container",
-                "optional": false,
-                "type": "GameDataContainer"
-              },
-              {
-                "name": "refList",
-                "optional": false,
-                "type": "GameData"
-              },
-              {
-                "name": "offsetPosToSubtract",
-                "optional": false,
-                "type": "lightuserdata"
-              }
-            ],
-            "returns": [
-              "GameSaveState"
-            ],
-            "type_source": "header"
           },
           "static": false
         },
@@ -50155,27 +49625,33 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "comboModeDrop"
+          "name": "comboModeDrop",
+          "type": "boolean"
         },
         {
           "access": "readonly",
-          "name": "count"
+          "name": "count",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "indexSelected"
+          "name": "indexSelected",
+          "type": "integer"
         },
         {
           "access": "readonly",
-          "name": "itemCount"
+          "name": "itemCount",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "modeDrop"
+          "name": "modeDrop",
+          "type": "boolean"
         },
         {
           "access": "readwrite",
-          "name": "selectedIndex"
+          "name": "selectedIndex",
+          "type": "integer"
         }
       ],
       "registered_from": [
@@ -53035,7 +52511,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
+                "type": "SectionsMap|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -53061,7 +52537,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
+                "type": "SectionsMap|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -61714,15 +61190,18 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "multiLine"
+          "name": "multiLine",
+          "type": "boolean"
         },
         {
           "access": "readwrite",
-          "name": "readOnly"
+          "name": "readOnly",
+          "type": "boolean"
         },
         {
           "access": "readwrite",
-          "name": "wordWrap"
+          "name": "wordWrap",
+          "type": "boolean"
         }
       ],
       "registered_from": [
@@ -80448,27 +79927,27 @@
           "callback": "injectMouseMove",
           "name": "injectMouseMove",
           "signature": {
-            "no_self": true,
             "params": [
               {
-                "name": "arg1",
+                "name": "_absx",
                 "optional": false,
                 "type": "integer"
               },
               {
-                "name": "arg2",
+                "name": "_absy",
                 "optional": false,
                 "type": "integer"
               },
               {
-                "name": "arg3",
-                "optional": true,
+                "name": "_absz",
+                "optional": false,
                 "type": "integer"
               }
             ],
             "returns": [
               "boolean"
-            ]
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -80476,27 +79955,22 @@
           "callback": "injectMousePress",
           "name": "injectMousePress",
           "signature": {
-            "no_self": true,
             "params": [
               {
-                "name": "arg1",
+                "name": "_absx",
                 "optional": false,
                 "type": "integer"
               },
               {
-                "name": "arg2",
+                "name": "_absy",
                 "optional": false,
-                "type": "integer"
-              },
-              {
-                "name": "arg3",
-                "optional": true,
                 "type": "integer"
               }
             ],
             "returns": [
               "boolean"
-            ]
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -80504,27 +79978,22 @@
           "callback": "injectMouseRelease",
           "name": "injectMouseRelease",
           "signature": {
-            "no_self": true,
             "params": [
               {
-                "name": "arg1",
+                "name": "_absx",
                 "optional": false,
                 "type": "integer"
               },
               {
-                "name": "arg2",
+                "name": "_absy",
                 "optional": false,
-                "type": "integer"
-              },
-              {
-                "name": "arg3",
-                "optional": true,
                 "type": "integer"
               }
             ],
             "returns": [
               "boolean"
-            ]
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -80532,7 +80001,6 @@
           "callback": "injectKeyPress",
           "name": "injectKeyPress",
           "signature": {
-            "no_self": true,
             "params": [
               {
                 "name": "arg1",
@@ -80540,14 +80008,15 @@
                 "type": "integer"
               },
               {
-                "name": "arg2",
-                "optional": true,
-                "type": "integer"
+                "name": "_text",
+                "optional": false,
+                "type": "any"
               }
             ],
             "returns": [
               "boolean"
-            ]
+            ],
+            "type_source": "header"
           },
           "static": false
         },
@@ -80555,7 +80024,6 @@
           "callback": "injectKeyRelease",
           "name": "injectKeyRelease",
           "signature": {
-            "no_self": true,
             "params": [
               {
                 "name": "arg1",
@@ -80628,8 +80096,15 @@
           "callback": "setKeyFocusWidget",
           "name": "setKeyFocusWidget",
           "signature": {
-            "params": [],
-            "returns": []
+            "params": [
+              {
+                "name": "_widget",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         },
@@ -80637,8 +80112,15 @@
           "callback": "resetKeyFocusWidget",
           "name": "resetKeyFocusWidget",
           "signature": {
-            "params": [],
-            "returns": []
+            "params": [
+              {
+                "name": "_widget",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         },
@@ -80683,8 +80165,15 @@
           "callback": "addWidgetModal",
           "name": "addWidgetModal",
           "signature": {
-            "params": [],
-            "returns": []
+            "params": [
+              {
+                "name": "_widget",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         },
@@ -80692,8 +80181,15 @@
           "callback": "removeWidgetModal",
           "name": "removeWidgetModal",
           "signature": {
-            "params": [],
-            "returns": []
+            "params": [
+              {
+                "name": "_widget",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         },
@@ -91077,19 +90573,23 @@
       "properties": [
         {
           "access": "readonly",
-          "name": "count"
+          "name": "count",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "indexSelected"
+          "name": "indexSelected",
+          "type": "integer"
         },
         {
           "access": "readonly",
-          "name": "itemCount"
+          "name": "itemCount",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "selectedIndex"
+          "name": "selectedIndex",
+          "type": "integer"
         }
       ],
       "registered_from": [
@@ -97203,15 +96703,18 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "checked"
+          "name": "checked",
+          "type": "boolean"
         },
         {
           "access": "readwrite",
-          "name": "itemId"
+          "name": "itemId",
+          "type": "string"
         },
         {
           "access": "readwrite",
-          "name": "itemName"
+          "name": "itemName",
+          "type": "string"
         }
       ],
       "registered_from": [
@@ -98041,23 +97544,28 @@
       "properties": [
         {
           "access": "readonly",
-          "name": "columnCount"
+          "name": "columnCount",
+          "type": "integer"
         },
         {
           "access": "readonly",
-          "name": "count"
+          "name": "count",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "indexSelected"
+          "name": "indexSelected",
+          "type": "integer"
         },
         {
           "access": "readonly",
-          "name": "itemCount"
+          "name": "itemCount",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "selectedIndex"
+          "name": "selectedIndex",
+          "type": "integer"
         }
       ],
       "registered_from": [
@@ -111202,19 +110710,23 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "position"
+          "name": "position",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "progressPosition"
+          "name": "progressPosition",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "progressRange"
+          "name": "progressRange",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "range"
+          "name": "range",
+          "type": "integer"
         }
       ],
       "registered_from": [
@@ -114083,7 +113595,7 @@
               {
                 "name": "sections",
                 "optional": false,
-                "type": "StdMap<string, InventorySectionGUI>|lightuserdata"
+                "type": "SectionsMap|lightuserdata"
               },
               {
                 "name": "inventory",
@@ -120049,19 +119561,23 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "position"
+          "name": "position",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "range"
+          "name": "range",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "scrollPosition"
+          "name": "scrollPosition",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "scrollRange"
+          "name": "scrollRange",
+          "type": "integer"
         }
       ],
       "registered_from": [
@@ -125840,19 +125356,23 @@
       "properties": [
         {
           "access": "readonly",
-          "name": "count"
+          "name": "count",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "indexSelected"
+          "name": "indexSelected",
+          "type": "integer"
         },
         {
           "access": "readonly",
-          "name": "itemCount"
+          "name": "itemCount",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "selectedIndex"
+          "name": "selectedIndex",
+          "type": "integer"
         }
       ],
       "registered_from": [
@@ -127892,11 +127412,13 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "fontHeight"
+          "name": "fontHeight",
+          "type": "integer"
         },
         {
           "access": "readwrite",
-          "name": "fontName"
+          "name": "fontName",
+          "type": "string"
         }
       ],
       "registered_from": [
@@ -143032,6 +142554,58 @@
           "static": false
         },
         {
+          "callback": "WeatherSystemBinding::getPositionGlobalEffects",
+          "name": "getPositionGlobalEffects",
+          "signature": {
+            "params": [
+              {
+                "name": "position",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "integer",
+              "number",
+              "table"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::addWeatherEffect",
+          "name": "addWeatherEffect",
+          "signature": {
+            "params": [
+              {
+                "name": "effect",
+                "optional": false,
+                "type": "lightuserdata"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "WeatherSystemBinding::removeWeatherEffect",
+          "name": "removeWeatherEffect",
+          "signature": {
+            "params": [
+              {
+                "name": "effect",
+                "optional": false,
+                "type": "lightuserdata"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
           "callback": "WeatherSystemBinding::setDustShaderValue",
           "name": "setDustShaderValue",
           "signature": {
@@ -143053,13 +142627,27 @@
       "properties": [
         {
           "access": "readwrite",
+          "name": "ActiveRegion"
+        },
+        {
+          "access": "readwrite",
           "name": "ActiveRegionWeather",
           "type": "WeatherRegion"
         },
         {
           "access": "readonly",
+          "name": "activeEffects",
+          "type": "table"
+        },
+        {
+          "access": "readonly",
           "name": "areaFog",
           "type": "WeatherSystem_ZoneFog[]"
+        },
+        {
+          "access": "readwrite",
+          "name": "areaGroups",
+          "type": "table"
         },
         {
           "access": "readwrite",
@@ -143108,6 +142696,10 @@
         },
         {
           "access": "readwrite",
+          "name": "previousArea"
+        },
+        {
+          "access": "readwrite",
           "name": "previousBiomeAABB",
           "type": "table"
         },
@@ -143118,6 +142710,10 @@
         },
         {
           "access": "readwrite",
+          "name": "previousSector"
+        },
+        {
+          "access": "readwrite",
           "name": "previousZoneFog",
           "type": "WeatherSystem_ZoneFog"
         },
@@ -143125,6 +142721,11 @@
           "access": "readwrite",
           "name": "rainValueUpdated",
           "type": "boolean"
+        },
+        {
+          "access": "readonly",
+          "name": "weatherListeners",
+          "type": "Listener|WeatherRegion|table"
         },
         {
           "access": "readwrite",
@@ -144413,31 +144014,38 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "alpha"
+          "name": "alpha",
+          "type": "number"
         },
         {
           "access": "readwrite",
-          "name": "caption"
+          "name": "caption",
+          "type": "string"
         },
         {
           "access": "readwrite",
-          "name": "enabled"
+          "name": "enabled",
+          "type": "boolean"
         },
         {
           "access": "readonly",
-          "name": "name"
+          "name": "name",
+          "type": "string"
         },
         {
           "access": "readwrite",
-          "name": "text"
+          "name": "text",
+          "type": "string"
         },
         {
           "access": "readonly",
-          "name": "type"
+          "name": "type",
+          "type": "string"
         },
         {
           "access": "readwrite",
-          "name": "visible"
+          "name": "visible",
+          "type": "boolean"
         }
       ],
       "registered_from": [
@@ -144824,15 +144432,18 @@
       "properties": [
         {
           "access": "readwrite",
-          "name": "autoAlpha"
+          "name": "autoAlpha",
+          "type": "boolean"
         },
         {
           "access": "readwrite",
-          "name": "movable"
+          "name": "movable",
+          "type": "boolean"
         },
         {
           "access": "readwrite",
-          "name": "snap"
+          "name": "snap",
+          "type": "boolean"
         }
       ],
       "registered_from": [
@@ -145024,7 +144635,7 @@
               {
                 "name": "arg1",
                 "optional": true,
-                "type": "YesNoMaybeValue|integer"
+                "type": "YesNoMaybe|YesNoMaybeValue|integer"
               }
             ],
             "returns": [
@@ -145041,7 +144652,7 @@
               {
                 "name": "arg1",
                 "optional": true,
-                "type": "YesNoMaybeValue|boolean|integer"
+                "type": "YesNoMaybe|YesNoMaybeValue|boolean|integer"
               }
             ],
             "returns": [
@@ -153594,7 +153205,7 @@
       "properties": [],
       "registered_from": [
         "src/Bindings/Kenshi/DialogLineDataBinding.cpp",
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -153633,9 +153244,6 @@
     },
     {
       "binding": "FitnessSelectorBinding<CombatTechniqueData*>",
-      "binding_aliases": [
-        "FitnessSelector_CombatTechniqueData_Binding"
-      ],
       "element_refs": [
         "binding:CombatTechniqueDataBinding",
         "metatable:std::map<float, CombatTechniqueData*>",
@@ -153654,7 +153262,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/FitnessSelectorBinding.h",
       "template": "FitnessSelectorBinding",
@@ -153682,7 +153290,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/FitnessSelectorBinding.h",
       "template": "FitnessSelectorBinding",
@@ -155753,7 +155361,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorIntBinding",
@@ -156318,7 +155926,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -156544,7 +156152,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -156657,7 +156265,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -156770,7 +156378,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -156886,7 +156494,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -156999,7 +156607,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -157112,7 +156720,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -157225,7 +156833,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -157338,7 +156946,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -157790,7 +157398,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -157903,7 +157511,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -158016,7 +157624,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -158129,7 +157737,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -158242,7 +157850,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -158355,7 +157963,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -158468,7 +158076,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -158701,7 +158309,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -159153,7 +158761,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -159266,7 +158874,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -159613,7 +159221,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorPtrBinding",
@@ -159837,7 +159445,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorStringBinding",
@@ -159950,7 +159558,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorValueBinding",
@@ -160063,7 +159671,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorValueBinding",
@@ -160176,7 +159784,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorValueBinding",
@@ -160289,7 +159897,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorValueBinding",
@@ -160631,7 +160239,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorValueBinding",
@@ -160864,7 +160472,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorValueReadOnlyBinding",
@@ -160923,7 +160531,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/LektorBinding.h",
       "template": "LektorValueReadOnlyBinding",
@@ -162003,7 +161611,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -162478,7 +162086,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -162943,7 +162551,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -163098,7 +162706,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -163253,7 +162861,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -163408,7 +163016,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -163563,7 +163171,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -163718,7 +163326,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -163884,9 +163492,6 @@
     },
     {
       "binding": "OgreUnorderedMapBinding<hand,float>",
-      "binding_aliases": [
-        "HandFloatMapBinding"
-      ],
       "element_refs": [
         "binding:HandBinding",
         null
@@ -164031,7 +163636,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedMapBinding",
@@ -164384,7 +163989,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedSetBinding",
@@ -164573,7 +164178,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedSetBinding",
@@ -164762,7 +164367,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedSetBinding",
@@ -164951,7 +164556,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedSetBinding",
@@ -165518,7 +165123,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedSetBinding",
@@ -165711,7 +165316,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/OgreUnorderedBinding.h",
       "template": "OgreUnorderedSetBinding",
@@ -166665,7 +166270,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
       "template": "StdDequePrimitiveBinding",
@@ -166873,7 +166478,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
       "template": "StdDequePtrBinding",
@@ -167082,7 +166687,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
       "template": "StdDequePtrBinding",
@@ -167291,7 +166896,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
       "template": "StdDequePtrBinding",
@@ -167499,7 +167104,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
       "template": "StdDequeValueBinding",
@@ -167561,7 +167166,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdDequeBinding.h",
       "template": "StdDequeValueReadOnlyBinding",
@@ -167667,7 +167272,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -167678,9 +167283,6 @@
     },
     {
       "binding": "StdMapBinding<GameData*,bool,std::less<GameData*>,std::allocator<std::pair<GameData*const,bool>>>",
-      "binding_aliases": [
-        "GameDataBoolStdMapBinding"
-      ],
       "element_refs": [
         "binding:GameDataBinding",
         null
@@ -167777,7 +167379,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -167889,7 +167491,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -167996,7 +167598,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -168103,7 +167705,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -168210,7 +167812,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -168221,9 +167823,6 @@
     },
     {
       "binding": "StdMapBinding<float,Tasker*>",
-      "binding_aliases": [
-        "OrderedGoalsMapBinding"
-      ],
       "element_refs": [
         null,
         "binding:TaskerBinding"
@@ -168320,7 +167919,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -168438,9 +168037,6 @@
     },
     {
       "binding": "StdMapBinding<std::string,Ogre::Quaternion>",
-      "binding_aliases": [
-        "BoneQuaternionMapBinding"
-      ],
       "element_refs": [],
       "element_types": {
         "key": "string",
@@ -168534,7 +168130,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdMapBinding.h",
       "template": "StdMapBinding",
@@ -168656,7 +168252,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdSetBinding.h",
       "template": "StdSetBinding",
@@ -168777,7 +168373,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdSetBinding.h",
       "template": "StdSetBinding",
@@ -169022,7 +168618,7 @@
       "parent_metatable": "",
       "properties": [],
       "registered_from": [
-        "src/Lua/RegisterBindings.cpp"
+        "src/Lua/RegisterContainers.cpp"
       ],
       "source": "src/Bindings/Kenshi/Util/StdSetBinding.h",
       "template": "StdSetBinding",

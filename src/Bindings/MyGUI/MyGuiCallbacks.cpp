@@ -63,6 +63,16 @@ int LuaWidgetCallbackManager::registerCallback(MyGUI::Widget* widget, EventType 
         val.luaRef = luaRef;
         m_callbacks[key] = val;
         m_idToKey[id] = key;
+        attachDelegate(widget, type);
+    }
+    return id;
+}
+
+void LuaWidgetCallbackManager::attachDelegate(MyGUI::Widget* widget, EventType type)
+{
+    if (!widget || !MyGUI::Gui::getInstancePtr()) return;
+    try
+    {
         if (type == OnClick)
         {
             widget->eventMouseButtonClick += MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseButtonClick);
@@ -180,7 +190,136 @@ int LuaWidgetCallbackManager::registerCallback(MyGUI::Widget* widget, EventType 
             }
         }
     }
-    return id;
+    catch (...)
+    {
+    }
+}
+
+void LuaWidgetCallbackManager::detachDelegate(MyGUI::Widget* widget, EventType type)
+{
+    if (!widget || !MyGUI::Gui::getInstancePtr()) return;
+    try
+    {
+        if (type == OnClick)
+        {
+            widget->eventMouseButtonClick -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseButtonClick);
+        }
+        else if (type == OnTextChanged)
+        {
+            MyGUI::EditBox* editBox = widget->castType<MyGUI::EditBox>(false);
+            if (editBox)
+            {
+                editBox->eventEditTextChange -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onEditTextChange);
+            }
+        }
+        else if (type == OnWindowButtonPressed)
+        {
+            MyGUI::Window* window = widget->castType<MyGUI::Window>(false);
+            if (window)
+            {
+                window->eventWindowButtonPressed -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onWindowButtonPressed);
+            }
+        }
+        else if (type == OnMouseButtonPressed)
+        {
+            widget->eventMouseButtonPressed -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseButtonPressed);
+        }
+        else if (type == OnMouseButtonReleased)
+        {
+            widget->eventMouseButtonReleased -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseButtonReleased);
+        }
+        else if (type == OnMouseSetFocus)
+        {
+            widget->eventMouseSetFocus -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseSetFocus);
+        }
+        else if (type == OnMouseLostFocus)
+        {
+            widget->eventMouseLostFocus -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseLostFocus);
+        }
+        else if (type == OnMouseMove)
+        {
+            widget->eventMouseMove -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseMove);
+        }
+        else if (type == OnMouseWheel)
+        {
+            widget->eventMouseWheel -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMouseWheel);
+        }
+        else if (type == OnKeyButtonPressed)
+        {
+            widget->eventKeyButtonPressed -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onKeyButtonPressed);
+        }
+        else if (type == OnKeyButtonReleased)
+        {
+            widget->eventKeyButtonReleased -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onKeyButtonReleased);
+        }
+        else if (type == OnComboAccept)
+        {
+            MyGUI::ComboBox* comboBox = widget->castType<MyGUI::ComboBox>(false);
+            if (comboBox)
+            {
+                comboBox->eventComboAccept -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onComboAccept);
+            }
+        }
+        else if (type == OnComboChangePosition)
+        {
+            MyGUI::ComboBox* comboBox = widget->castType<MyGUI::ComboBox>(false);
+            if (comboBox)
+            {
+                comboBox->eventComboChangePosition -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onComboChangePosition);
+            }
+        }
+        else if (type == OnListSelectAccept)
+        {
+            MyGUI::ListBox* listBox = widget->castType<MyGUI::ListBox>(false);
+            if (listBox)
+            {
+                listBox->eventListSelectAccept -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onListSelectAccept);
+            }
+        }
+        else if (type == OnListChangePosition)
+        {
+            MyGUI::ListBox* listBox = widget->castType<MyGUI::ListBox>(false);
+            if (listBox)
+            {
+                listBox->eventListChangePosition -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onListChangePosition);
+            }
+        }
+        else if (type == OnWindowChangeCoord)
+        {
+            MyGUI::Window* window = widget->castType<MyGUI::Window>(false);
+            if (window)
+            {
+                window->eventWindowChangeCoord -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onWindowChangeCoord);
+            }
+        }
+        else if (type == OnScrollChangePosition)
+        {
+            MyGUI::ScrollBar* scrollBar = widget->castType<MyGUI::ScrollBar>(false);
+            if (scrollBar)
+            {
+                scrollBar->eventScrollChangePosition -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onScrollChangePosition);
+            }
+        }
+        else if (type == OnTabChangeSelect)
+        {
+            MyGUI::TabControl* tabControl = widget->castType<MyGUI::TabControl>(false);
+            if (tabControl)
+            {
+                tabControl->eventTabChangeSelect -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onTabChangeSelect);
+            }
+        }
+        else if (type == OnMenuAccept)
+        {
+            MyGUI::MenuControl* menu = widget->castType<MyGUI::MenuControl>(false);
+            if (menu)
+            {
+                menu->eventMenuCtrlAccept -= MyGUI::newDelegate(this, &LuaWidgetCallbackManager::onMenuAccept);
+            }
+        }
+    }
+    catch (...)
+    {
+    }
 }
 
 bool LuaWidgetCallbackManager::unregisterCallback(int callbackId)
@@ -200,6 +339,7 @@ bool LuaWidgetCallbackManager::unregisterCallback(int callbackId)
             luaL_unref(L, LUA_REGISTRYINDEX, cbIt->second.luaRef);
         }
         m_callbacks.erase(cbIt);
+        detachDelegate(key.widget, key.type);
     }
     return true;
 }
@@ -217,6 +357,7 @@ bool LuaWidgetCallbackManager::unregisterCallback(MyGUI::Widget* widget, EventTy
         luaL_unref(L, LUA_REGISTRYINDEX, cbIt->second.luaRef);
     }
     m_callbacks.erase(cbIt);
+    detachDelegate(widget, type);
     return true;
 }
 
@@ -242,15 +383,13 @@ void LuaWidgetCallbackManager::unregisterAll(MyGUI::Widget* widget)
 void LuaWidgetCallbackManager::clear()
 {
     lua_State* L = getLuaState();
-    if (L)
+    for (std::map<CallbackKey, CallbackValue>::iterator it = m_callbacks.begin(); it != m_callbacks.end(); ++it)
     {
-        for (std::map<CallbackKey, CallbackValue>::iterator it = m_callbacks.begin(); it != m_callbacks.end(); ++it)
+        if (L && it->second.luaRef != LUA_NOREF)
         {
-            if (it->second.luaRef != LUA_NOREF)
-            {
-                luaL_unref(L, LUA_REGISTRYINDEX, it->second.luaRef);
-            }
+            luaL_unref(L, LUA_REGISTRYINDEX, it->second.luaRef);
         }
+        detachDelegate(it->first.widget, it->first.type);
     }
     m_callbacks.clear();
     m_idToKey.clear();
@@ -274,11 +413,10 @@ void LuaWidgetCallbackManager::onMouseButtonClick(MyGUI::Widget* sender)
 
     pushWidget(L, sender);
 
-    if (lua_pcall(L, 1, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 1, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in click callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in click callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -300,11 +438,10 @@ void LuaWidgetCallbackManager::onEditTextChange(MyGUI::EditBox* sender)
 
     pushWidget(L, sender);
 
-    if (lua_pcall(L, 1, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 1, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in text change callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in text change callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -327,11 +464,10 @@ void LuaWidgetCallbackManager::onWindowButtonPressed(MyGUI::Window* sender, cons
     pushWidget(L, sender);
     lua_pushstring(L, name.c_str());
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in window button pressed callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in window button pressed callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -356,11 +492,10 @@ void LuaWidgetCallbackManager::onMouseButtonPressed(MyGUI::Widget* sender, int l
     lua_pushinteger(L, top);
     lua_pushinteger(L, id.getValue());
 
-    if (lua_pcall(L, 4, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 4, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse button pressed callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse button pressed callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -385,11 +520,10 @@ void LuaWidgetCallbackManager::onMouseButtonReleased(MyGUI::Widget* sender, int 
     lua_pushinteger(L, top);
     lua_pushinteger(L, id.getValue());
 
-    if (lua_pcall(L, 4, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 4, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse button released callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse button released callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -419,11 +553,10 @@ void LuaWidgetCallbackManager::onMouseSetFocus(MyGUI::Widget* sender, MyGUI::Wid
         lua_pushnil(L);
     }
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse set focus callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse set focus callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -453,11 +586,10 @@ void LuaWidgetCallbackManager::onMouseLostFocus(MyGUI::Widget* sender, MyGUI::Wi
         lua_pushnil(L);
     }
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse lost focus callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse lost focus callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -481,11 +613,10 @@ void LuaWidgetCallbackManager::onMouseMove(MyGUI::Widget* sender, int left, int 
     lua_pushinteger(L, left);
     lua_pushinteger(L, top);
 
-    if (lua_pcall(L, 3, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 3, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse move callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse move callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -508,11 +639,10 @@ void LuaWidgetCallbackManager::onMouseWheel(MyGUI::Widget* sender, int rel)
     pushWidget(L, sender);
     lua_pushinteger(L, rel);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse wheel callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in mouse wheel callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -536,11 +666,10 @@ void LuaWidgetCallbackManager::onKeyButtonPressed(MyGUI::Widget* sender, MyGUI::
     lua_pushinteger(L, key.getValue());
     lua_pushinteger(L, ch);
 
-    if (lua_pcall(L, 3, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 3, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in key button pressed callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in key button pressed callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -563,11 +692,10 @@ void LuaWidgetCallbackManager::onKeyButtonReleased(MyGUI::Widget* sender, MyGUI:
     pushWidget(L, sender);
     lua_pushinteger(L, key.getValue());
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in key button released callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in key button released callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -590,11 +718,10 @@ void LuaWidgetCallbackManager::onComboAccept(MyGUI::ComboBox* sender, size_t ind
     pushWidget(L, sender);
     lua_pushinteger(L, (lua_Integer)index);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in combo accept callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in combo accept callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -617,11 +744,10 @@ void LuaWidgetCallbackManager::onComboChangePosition(MyGUI::ComboBox* sender, si
     pushWidget(L, sender);
     lua_pushinteger(L, (lua_Integer)index);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in combo change position callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in combo change position callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -644,11 +770,10 @@ void LuaWidgetCallbackManager::onListSelectAccept(MyGUI::ListBox* sender, size_t
     pushWidget(L, sender);
     lua_pushinteger(L, (lua_Integer)index);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in list select accept callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in list select accept callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -671,11 +796,10 @@ void LuaWidgetCallbackManager::onListChangePosition(MyGUI::ListBox* sender, size
     pushWidget(L, sender);
     lua_pushinteger(L, (lua_Integer)index);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in list change position callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in list change position callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -697,11 +821,10 @@ void LuaWidgetCallbackManager::onWindowChangeCoord(MyGUI::Window* sender)
 
     pushWidget(L, sender);
 
-    if (lua_pcall(L, 1, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 1, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in window change coord callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in window change coord callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -724,11 +847,10 @@ void LuaWidgetCallbackManager::onScrollChangePosition(MyGUI::ScrollBar* sender, 
     pushWidget(L, sender);
     lua_pushinteger(L, (lua_Integer)position);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in scroll change position callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in scroll change position callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -751,11 +873,10 @@ void LuaWidgetCallbackManager::onTabChangeSelect(MyGUI::TabControl* sender, size
     pushWidget(L, sender);
     lua_pushinteger(L, (lua_Integer)index);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in tab change select callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in tab change select callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -778,11 +899,10 @@ void LuaWidgetCallbackManager::onMenuAccept(MyGUI::MenuControl* sender, MyGUI::M
     pushWidget(L, sender);
     pushWidget(L, item);
 
-    if (lua_pcall(L, 2, 0, 0) != 0)
+    std::string err;
+    if (!LuaState::pcallWithTraceback(L, 2, 0, &err))
     {
-        const char* err = lua_tostring(L, -1);
-        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in menu accept callback: ") + (err ? err : "unknown"));
-        lua_pop(L, 1);
+        Logger::get().log(LogLevel_Error, std::string("[MyGUI Callback] Error in menu accept callback: ") + (err.empty() ? "unknown" : err));
     }
 }
 
@@ -834,7 +954,7 @@ LuaWidgetCallbackManager::EventType LuaWidgetCallbackManager::parseEventType(con
 
 int widget_on(lua_State* L)
 {
-    MyGUI::Widget* w = testObject<MyGUI::Widget>(L, 1, WidgetBinding::getMetatableName());
+    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
     const char* rawEventType = luaL_checkstring(L, 2);
     luaL_checktype(L, 3, LUA_TFUNCTION);
 
@@ -888,7 +1008,7 @@ int widget_registerCallback(lua_State* L)
 
 int widget_off(lua_State* L)
 {
-    MyGUI::Widget* w = testObject<MyGUI::Widget>(L, 1, WidgetBinding::getMetatableName());
+    MyGUI::Widget* w = WidgetBinding::getWidget(L, 1);
     if (lua_isnumber(L, 2))
     {
         int id = (int)lua_tointeger(L, 2);
