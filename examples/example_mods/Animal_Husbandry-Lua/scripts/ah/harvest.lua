@@ -16,10 +16,14 @@ local LAYOUT_FILE = "AH_HusbandryWindow.layout"
 local ROW_HEIGHT = 32
 local ROW_STEP = 36
 local BUTTON_WIDTH = 96
-local SCROLLBAR_WIDTH = 20
 local BUTTON_MARGIN = 8
 local BUTTON_GAP = 8
 local DEFAULT_LEFT, DEFAULT_TOP = 220, 160
+local REFERENCE_WIDTH, REFERENCE_HEIGHT = 1920, 1080
+local BASE_WINDOW_WIDTH, BASE_WINDOW_HEIGHT = 465, 436
+local MIN_LAYOUT_SCALE = 0.70
+local HIGH_RES_SCALE_RATE = 0.25
+local VIEW_MARGIN = 16
 
 AH.husbandrySerial = AH.husbandrySerial or 0
 
@@ -36,17 +40,125 @@ end
 ---@field layout MyGUI.Widget[]|nil
 ---@field root MyGUI.Widget|nil
 ---@field rows table[]
----@field generalPanel DatapanelGUI|nil
----@field husbandryPanel DatapanelGUI|nil
----@field infoPanels DatapanelGUI[]
+---@field generalPanel MyGUI.Widget|nil
+---@field husbandryPanel MyGUI.Widget|nil
 ---@field infoText table<string, string>
 ---@field portrait MyGUI.ImageBox|nil
 ---@field nameText MyGUI.Widget|nil
 ---@field productsArea MyGUI.ScrollView|nil
+---@field viewWidth number
+---@field viewHeight number
+---@field layoutScale number
+---@field layoutCoords table[]
 ---@type AnimalHusbandryLuaWindowState|nil
 local windowState = nil
 
 local menuState = { target = nil, harvester = nil, focused = false }
+
+local function clamp(value, minimum, maximum)
+    return math.max(minimum, math.min(value, maximum))
+end
+
+local function rounded(value)
+    return math.floor(value + 0.5)
+end
+
+local function currentViewSize()
+    local width, height = MyGUI.getViewSize()
+    if type(width) ~= "number" or width <= 0 then
+        width = REFERENCE_WIDTH
+    end
+    if type(height) ~= "number" or height <= 0 then
+        height = REFERENCE_HEIGHT
+    end
+    return width, height
+end
+
+local function startsWith(s, prefix)
+    return s and string.sub(s, 1, #prefix) == prefix
+end
+
+-- Record the layout-authored widgets in parent-first order. Skin-created and
+-- runtime-created widgets are skipped; their parents control their layout.
+local function captureLayoutCoords(widget, prefix, out)
+    for i = 0, widget:getChildCount() - 1 do
+        local child = widget:getChildAt(i)
+        if startsWith(child:getName(), prefix) then
+            local left, top, width, height = child:getRealCoord()
+            out[#out + 1] = {
+                widget = child,
+                left = left,
+                top = top,
+                width = width,
+                height = height,
+            }
+        end
+        captureLayoutCoords(child, prefix, out)
+    end
+end
+
+local function restoreLayoutCoords(coords)
+    for i = 1, #coords do
+        local c = coords[i]
+        c.widget:setRealCoord(c.left, c.top, c.width, c.height)
+    end
+end
+
+-- MyGUI's integer coordinates are physical pixels. Scale the 1920x1080 design
+-- uniformly for the logical display so the window keeps its shape at every aspect
+-- ratio. The readability floor is relaxed only when it would not fit on-screen.
+local function reflowWindow(root, position, layoutCoords)
+    local viewWidth, viewHeight = currentViewSize()
+    local availableWidth = math.max(1, viewWidth - 2 * VIEW_MARGIN)
+    local availableHeight = math.max(1, viewHeight - 2 * VIEW_MARGIN)
+    local displayScale = math.min(viewWidth / REFERENCE_WIDTH, viewHeight / REFERENCE_HEIGHT)
+    local responsiveScale = displayScale
+    if displayScale > 1 then
+        responsiveScale = 1 + (displayScale - 1) * HIGH_RES_SCALE_RATE
+    end
+    local layoutScale = math.max(MIN_LAYOUT_SCALE, responsiveScale)
+    layoutScale = math.min(layoutScale,
+        availableWidth / BASE_WINDOW_WIDTH,
+        availableHeight / BASE_WINDOW_HEIGHT)
+    local width = rounded(BASE_WINDOW_WIDTH * layoutScale)
+    local height = rounded(BASE_WINDOW_HEIGHT * layoutScale)
+    root:setSize(width, height)
+    restoreLayoutCoords(layoutCoords)
+
+    local left = rounded(DEFAULT_LEFT * layoutScale)
+    local top = rounded(DEFAULT_TOP * layoutScale)
+    if position then
+        left, top = position.left or left, position.top or top
+        if position.viewWidth and position.viewWidth > 0 then
+            left = rounded(left * viewWidth / position.viewWidth)
+        end
+        if position.viewHeight and position.viewHeight > 0 then
+            top = rounded(top * viewHeight / position.viewHeight)
+        end
+    end
+
+    local horizontalRoom = math.max(0, viewWidth - width)
+    local verticalRoom = math.max(0, viewHeight - height)
+    local minLeft = math.min(VIEW_MARGIN, horizontalRoom)
+    local minTop = math.min(VIEW_MARGIN, verticalRoom)
+    local maxLeft = math.max(minLeft, horizontalRoom - VIEW_MARGIN)
+    local maxTop = math.max(minTop, verticalRoom - VIEW_MARGIN)
+    root:setPosition(clamp(left, minLeft, maxLeft), clamp(top, minTop, maxTop))
+    return viewWidth, viewHeight, layoutScale
+end
+
+local function rememberWindowPosition(root, viewWidth, viewHeight)
+    local left, top = root:getPosition()
+    if not viewWidth or not viewHeight then
+        viewWidth, viewHeight = currentViewSize()
+    end
+    AH.husbandryWindowPos = {
+        left = left,
+        top = top,
+        viewWidth = viewWidth,
+        viewHeight = viewHeight,
+    }
+end
 
 -- Rules
 
@@ -227,7 +339,8 @@ local function infoLines(entry, animal, harvester, now)
     return general, husbandry
 end
 
--- Rebuilds the details datapanel only when its text changed, so it does not flicker.
+-- Rebuilds normalized key/value rows only when their text changes. Direct MyGUI
+-- rows avoid DatapanelGUI's resolution-dependent global line spacing.
 local function fillInfoPanel(panel, cacheKey, lines)
     local state = windowState
     if not state or not panel then
@@ -242,11 +355,30 @@ local function fillInfoPanel(panel, cacheKey, lines)
         return
     end
     state.infoText[cacheKey] = text
-    panel:clear()
-    for i = 1, #lines do
-        panel:setLine(lines[i][1], lines[i][2], 0, false, true)
+
+    while panel:getChildCount() > 0 do
+        panel:getChildAt(0):destroy()
     end
-    panel:show(true)
+
+    local rowCount = math.max(#lines, 1)
+    local rowHeight = 1 / rowCount
+    for i = 1, #lines do
+        local rowTop = (i - 1) * rowHeight
+        local key = assert(panel:createWidget(
+            "TextBox", "Kenshi_TextboxStandardText", 0, 0, 1, 1,
+            MyGUI.Align.Default, state.prefix .. cacheKey .. "Key" .. i))
+        key:setRealCoord(0, rowTop, 0.48, rowHeight)
+        key:setProperty("TextAlign", "Left VCenter")
+        key:setCaption(lines[i][1])
+
+        local value = assert(panel:createWidget(
+            "TextBox", "Kenshi_TextboxStandardText", 0, 0, 1, 1,
+            MyGUI.Align.Default, state.prefix .. cacheKey .. "Value" .. i))
+        value:setRealCoord(0.48, rowTop, 0.52, rowHeight)
+        value:setProperty("TextAlign", "Right VCenter")
+        value:setCaption(lines[i][2])
+    end
+    panel:setVisible(true)
 end
 
 local function refreshWindow()
@@ -285,23 +417,9 @@ end
 
 local function destroyWindow()
     if windowState and windowState.root then
-        local l, t = windowState.root:getPosition()
-        AH.husbandryWindowPos = { left = l, top = t }
+        rememberWindowPosition(windowState.root, windowState.viewWidth, windowState.viewHeight)
     elseif AH.husbandryWindow then
-        local l, t = AH.husbandryWindow:getPosition()
-        AH.husbandryWindowPos = { left = l, top = t }
-    end
-    if windowState and windowState.infoPanels then
-        local gui = getForgottenGUI()
-        if gui then
-            for i = 1, #windowState.infoPanels do
-                local ok, err = pcall(gui.destroy, gui, windowState.infoPanels[i])
-                if not ok then
-                    AH.log("Husbandry window: could not destroy a datapanel: " .. tostring(err))
-                end
-            end
-        end
-        windowState.infoPanels = {}
+        rememberWindowPosition(AH.husbandryWindow)
     end
     if windowState and windowState.layout then
         local ok, err = pcall(function()
@@ -351,41 +469,58 @@ local function rebuildProducts(entry)
     end
 
     local products = (entry.def and entry.def.products) or {}
-    local maxVisible = (hcfg() and hcfg().maxVisibleProducts) or 4
     local rowCount = #products
+    local layoutScale = state.layoutScale or 1
+    local rowHeight = rounded(ROW_HEIGHT * layoutScale)
+    local rowStep = rounded(ROW_STEP * layoutScale)
+    local buttonWidth = rounded(BUTTON_WIDTH * layoutScale)
+    local buttonMargin = rounded(BUTTON_MARGIN * layoutScale)
+    local buttonGap = rounded(BUTTON_GAP * layoutScale)
 
-    local _, _, productsWidth, viewHeight = productsArea:getCoord()
-    if productsWidth <= 0 then productsWidth = 292 end
-    if viewHeight <= 0 then viewHeight = 168 end
+    -- Let MyGUI decide whether vertical scrolling is needed from the actual
+    -- viewport. Resetting the canvas first removes scrollbar state left by the
+    -- previously selected animal. Horizontal scrolling is never useful here.
+    productsArea:setVisibleHScroll(false)
+    productsArea:setVisibleVScroll(true)
+    productsArea:setCanvasSize(1, 1)
+    productsArea:setViewOffset(0, 0)
 
-    local needsScroll = (rowCount > maxVisible) or (rowCount * ROW_STEP > viewHeight)
-    local scrollbarMargin = needsScroll and (SCROLLBAR_WIDTH + BUTTON_MARGIN) or BUTTON_MARGIN
-    local buttonLeft = productsWidth - BUTTON_WIDTH - scrollbarMargin
-    local statusWidth = buttonLeft - BUTTON_GAP
-
-    local canvasWidth = needsScroll and (productsWidth - SCROLLBAR_WIDTH) or productsWidth
-    local canvasHeight = math.max(viewHeight, rowCount * ROW_STEP)
-    if productsArea.setCanvasSize then
-        productsArea:setCanvasSize(canvasWidth, canvasHeight)
-        productsArea:setVisibleHScroll(false)
-        productsArea:setVisibleVScroll(needsScroll)
-        productsArea:setViewOffset(0, 0)
+    local _, _, canvasWidth, viewHeight = productsArea:getViewCoord()
+    if canvasWidth <= 0 or viewHeight <= 0 then
+        local _, _, productsWidth, productsHeight = productsArea:getCoord()
+        canvasWidth = math.max(productsWidth, 1)
+        viewHeight = math.max(productsHeight, 1)
     end
+
+    local contentRows = math.max(rowCount, 1)
+    local canvasHeight = (contentRows - 1) * rowStep + rowHeight
+    productsArea:setCanvasSize(canvasWidth, canvasHeight)
+
+    -- A vertical scrollbar narrows the viewport. Match the canvas to that final
+    -- width so it cannot create horizontal overflow as a side effect.
+    local _, _, finalWidth = productsArea:getViewCoord()
+    if finalWidth > 0 and finalWidth ~= canvasWidth then
+        canvasWidth = finalWidth
+        productsArea:setCanvasSize(canvasWidth, canvasHeight)
+    end
+
+    local buttonLeft = canvasWidth - buttonWidth - buttonMargin
+    local statusWidth = buttonLeft - buttonGap
 
     local align = MyGUI.Align.Default
     if #products == 0 then
-        createLabel(productsArea, 0, 0, canvasWidth, ROW_HEIGHT, "AH_NoProducts")
+        createLabel(productsArea, 0, 0, canvasWidth, rowHeight, "AH_NoProducts")
             :setCaption("This animal gives no products.")
     end
     for i = 1, #products do
         local product = products[i]
         local name = productName(product)
-        local rowTop = (i - 1) * ROW_STEP
-        local status = createLabel(productsArea, 0, rowTop, statusWidth, ROW_HEIGHT,
+        local rowTop = (i - 1) * rowStep
+        local status = createLabel(productsArea, 0, rowTop, statusWidth, rowHeight,
             "AH_ProductStatus" .. i)
         local button = assert(productsArea:createWidget(
             "Button", "Kenshi_Button2", buttonLeft, rowTop,
-            BUTTON_WIDTH, ROW_HEIGHT, align, "AH_ProductHarvest" .. i))
+            buttonWidth, rowHeight, align, "AH_ProductHarvest" .. i))
         button:setCaption("Harvest")
         button:on("eventMouseButtonClick", function()
             if windowState ~= state or state.target ~= targetHandle then
@@ -441,6 +576,14 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
     end
 
     if windowState and AH.husbandryWindow and AH.husbandryWindow:getVisible() then
+        local left, top = AH.husbandryWindow:getPosition()
+        windowState.viewWidth, windowState.viewHeight, windowState.layoutScale =
+            reflowWindow(AH.husbandryWindow, {
+            left = left,
+            top = top,
+            viewWidth = windowState.viewWidth,
+            viewHeight = windowState.viewHeight,
+        }, windowState.layoutCoords)
         showAnimal(targetHandle, entry)
         AH.husbandryWindow:upLayerItem()
         return
@@ -464,13 +607,15 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
         return root:findWidget(prefix .. name)
     end
 
-    local pos = AH.husbandryWindowPos or { left = DEFAULT_LEFT, top = DEFAULT_TOP }
-    root:setPosition(pos.left, pos.top)
+    local layoutCoords = {}
+    captureLayoutCoords(root, prefix, layoutCoords)
+    local viewWidth, viewHeight, layoutScale =
+        reflowWindow(root, AH.husbandryWindowPos, layoutCoords)
 
     root:on("eventWindowButtonPressed", function(window, buttonName)
         if buttonName == "close" then
-            local l, t = window:getPosition()
-            AH.husbandryWindowPos = { left = l, top = t }
+            rememberWindowPosition(window, windowState and windowState.viewWidth,
+                windowState and windowState.viewHeight)
             window:setVisible(false)
             local im = MyGUI.InputManager.getInstance()
             if im then
@@ -486,8 +631,11 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
         layout = layout,
         root = root,
         rows = {},
-        infoPanels = {},
         infoText = {},
+        viewWidth = viewWidth,
+        viewHeight = viewHeight,
+        layoutScale = layoutScale,
+        layoutCoords = layoutCoords,
     }
     windowState = state
 
@@ -496,20 +644,12 @@ function AH.openHusbandryWindow(targetHandle, harvesterHandle)
     state.portrait = portrait
     state.nameText = find("AH_Name")
 
-    local guiObj = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
-    local function createInfoPanel(name, area)
-        local panel = assert(guiObj:createDatapanel(prefix .. name, area, false),
-            "Husbandry window: could not create the " .. name .. " datapanel")
-        state.infoPanels[#state.infoPanels + 1] = panel
-        return panel
-    end
-
     local generalArea = assert(find("AH_GeneralInfoArea"),
         "Husbandry layout missing AH_GeneralInfoArea")
     local husbandryArea = assert(find("AH_BreedingInfoArea"),
         "Husbandry layout missing AH_BreedingInfoArea")
-    state.generalPanel = createInfoPanel("GeneralInfo", generalArea)
-    state.husbandryPanel = createInfoPanel("HusbandryInfo", husbandryArea)
+    state.generalPanel = generalArea
+    state.husbandryPanel = husbandryArea
 
     local productsArea = assert(find("AH_ProductsScrollView"),
         "Husbandry layout missing AH_ProductsScrollView")
@@ -661,7 +801,26 @@ local function onFrame()
     refreshCounter = 0
     local w = AH.husbandryWindow
     if w and windowState and w:getVisible() then
-        local ok, err = pcall(refreshWindow)
+        local ok, err = pcall(function()
+            local viewWidth, viewHeight = currentViewSize()
+            if viewWidth ~= windowState.viewWidth or viewHeight ~= windowState.viewHeight then
+                local left, top = w:getPosition()
+                windowState.viewWidth, windowState.viewHeight, windowState.layoutScale =
+                    reflowWindow(w, {
+                    left = left,
+                    top = top,
+                    viewWidth = windowState.viewWidth,
+                    viewHeight = windowState.viewHeight,
+                }, windowState.layoutCoords)
+                windowState.infoText = {}
+                local animal = windowState.target and windowState.target:getCharacter()
+                local entry = animal and AH.animalEntry(animal)
+                if entry then
+                    rebuildProducts(entry)
+                end
+            end
+            refreshWindow()
+        end)
         if not ok then
             AH.log("Husbandry window refresh failed: " .. tostring(err))
         end

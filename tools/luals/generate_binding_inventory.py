@@ -1074,6 +1074,8 @@ def validate_inventory(inventory):
         "getGlobalConstants",
         "getOptionsHolder",
         "getForgottenGUI",
+        "getSharedKing",
+        "getKingOfRenderThread",
         "print",
     }
     if not required_functions.issubset(global_functions):

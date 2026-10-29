@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "FormationBinding.h"
 #include "kenshi\CharMovement.h"
 #include "CharMovementBinding.h"
 #include "Lua/BindingHelpers.h"

@@ -30,9 +30,24 @@
 #include "Bindings/Kenshi/AkSoundPositionBinding.h"
 #include "Bindings/Kenshi/AkVectorBinding.h"
 #include "Bindings/Kenshi/AnimalInventoryLayoutBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationChoicesBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBase_AnimationLayerBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBase_SingleAnimationBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationEventsBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationRequirementBinding.h"
+#include "Bindings/Kenshi/Animation/AnimsListsManagerBinding.h"
+#include "Bindings/Kenshi/Animation/AnimsListsManager_AnimListBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassAnimalBinding.h" 
 #include "Bindings/Kenshi/Animation/AnimationClassBaseBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassHumanBinding.h"
 #include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationEventBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationGroundEventBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationReloadEventBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationSFXEventBinding.h"
+#include "Bindings/Kenshi/Animation/RagdollAnimationBinding.h"
+#include "Bindings/Kenshi/Animation/RagdollAnimation_RagdollAnimationTrackBinding.h"
 #include "Bindings/Kenshi/AppearanceAnimalBinding.h"
 #include "Bindings/Kenshi/AppearanceBaseBinding.h"
 #include "Bindings/Kenshi/AppearanceHumanBinding.h"
@@ -107,6 +122,10 @@
 #include "Bindings/Kenshi/CombatClass_EffectDataBinding.h"
 #include "Bindings/Kenshi/CombatMovementControllerBinding.h"
 #include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/CombatStateBinding.h"
+#include "Bindings/Kenshi/AttackStateBinding.h"
+#include "Bindings/Kenshi/CircleStateAIBinding.h"
+#include "Bindings/Kenshi/WaitingStateAIBinding.h"
 #include "Bindings/Kenshi/ContainerItemBinding.h"
 #include "Bindings/Kenshi/CreatelistItemBinding.h"
 #include "Bindings/Kenshi/CrossbowBinding.h"
@@ -153,6 +172,9 @@
 #include "Bindings/Kenshi/GearBinding.h"
 #include "Bindings/Kenshi/GlobalBinding.h"
 #include "Bindings/Kenshi/GlobalConstantsBinding.h"
+#include "Bindings/Kenshi/GunClassBinding.h"
+#include "Bindings/Kenshi/GunClassPersonalBinding.h"
+#include "Bindings/Kenshi/GunClassTurretBinding.h"
 #include "Bindings/Kenshi/Gui/BackpackInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/Gui/BaseLayoutBinding.h"
 #include "Bindings/Kenshi/Gui/BoxBinding.h"
@@ -269,6 +291,7 @@
 #include "Bindings/Kenshi/InventorySectionBinding.h"
 #include "Bindings/Kenshi/ItemBinding.h"
 #include "Bindings/Kenshi/ItemDataBinding.h"
+#include "Bindings/Kenshi/KingOfRenderThreadBinding.h"
 #include "Bindings/Kenshi/LightEntBinding.h"
 #include "Bindings/Kenshi/LimbsInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/RaceLimiter_LimiterBinding.h"
@@ -320,8 +343,15 @@
 #include "Bindings/Kenshi/ProsperityManagerBinding.h"
 #include "Bindings/Kenshi/RaceDataBinding.h"
 #include "Bindings/Kenshi/RaceLimiterBinding.h"
+#include "Bindings/Kenshi/RangedCombatClassBinding.h"
 #include "Bindings/Kenshi/RelationDataBinding.h"
+#include "Bindings/Kenshi/RenderToTextureotronBinding.h"
+#include "Bindings/Kenshi/RendererBinding.h"
+#include "Bindings/Kenshi/RendererTBinding.h"
 #include "Bindings/Kenshi/RepetitionCounterBinding.h"
+#include "Bindings/Kenshi/ResearchBinding.h"
+#include "Bindings/Kenshi/ResearchItemBinding.h"
+#include "Bindings/Kenshi/Research_BuildingUpgradesBinding.h"
 #include "Bindings/Kenshi/ResourceLoadRequestMeshBinding.h"
 #include "Bindings/Kenshi/ResourceLoadRequestTextureBinding.h"
 #include "Bindings/Kenshi/ResourceLoaderBinding.h"
@@ -342,6 +372,17 @@
 #include "Bindings/Kenshi/SenseItrBinding.h"
 #include "Bindings/Kenshi/SensoryDataBinding.h"
 #include "Bindings/Kenshi/SerialisableBinding.h"
+#include "Bindings/Kenshi/HandleListBaseBinding.h"
+#include "Bindings/Kenshi/HandleContainerListBinding.h"
+#include "Bindings/Kenshi/PlatoonHandleContainerListBinding.h"
+#include "Bindings/Kenshi/ZoneMapHandleContainerListBinding.h"
+#include "Bindings/Kenshi/TownHandleContainerListBinding.h"
+#include "Bindings/Kenshi/HandleListBinding.h"
+#include "Bindings/Kenshi/ItemHandleListBinding.h"
+#include "Bindings/Kenshi/HandleManagerBinding.h"
+#include "Bindings/Kenshi/LocaleInfoBinding.h"
+#include "Bindings/Kenshi/LocaleManagerBinding.h"
+#include "Bindings/Kenshi/SharedKingBinding.h"
 #include "Bindings/Kenshi/ShopTraderBinding.h"
 #include "Bindings/Kenshi/ShopTraderInventoryBinding.h"
 #include "Bindings/Kenshi/ShopTraderInventorySectionBinding.h"
@@ -370,6 +411,15 @@
 #include "Bindings/Kenshi/TownBaseBinding.h"
 #include "Bindings/Kenshi/TownBase_ResidentDataBinding.h"
 #include "Bindings/Kenshi/TownBinding.h"
+#include "Bindings/Kenshi/TownListBinding.h"
+#include "Bindings/Kenshi/FormationBinding.h"
+#include "Bindings/Kenshi/GameDataScoredListBinding.h"
+#include "Bindings/Kenshi/BlueprintItemBinding.h"
+#include "Bindings/Kenshi/MapItemBinding.h"
+#include "Bindings/Kenshi/MoneyItemBinding.h"
+#include "Bindings/Kenshi/NestItemBinding.h"
+#include "Bindings/Kenshi/SeveredLimbItemBinding.h"
+
 #include "Bindings/Kenshi/TownBuildingsManagerBinding.h"
 #include "Bindings/Kenshi/TownBuildingsManager_BuildingInfoBinding.h"
 #include "Bindings/Kenshi/TownPositionCacherBinding.h"
@@ -409,6 +459,12 @@
 #include "Bindings/Kenshi/ZoneManagerInterfaceTBinding.h"
 #include "Bindings/Kenshi/ZoneManager_BiomeGroundEffectsBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
+#include "Bindings/Kenshi/ZoneMapContentBinding.h"
+#include "Bindings/Kenshi/ZoneMapContent_HandleDummyBinding.h"
+#include "Bindings/Kenshi/ZoneMapContent_ZoneMapContentOrderLoaderBinding.h"
+#include "Bindings/Kenshi/ZoneSmellBinding.h"
+#include "Bindings/Kenshi/ZoneSmell_SmellBinding.h"
+#include "Bindings/Kenshi/ZoneSmell_SmellMsgBinding.h"
 #include "Bindings/Kenshi/ZoneSpacialGridBinding.h"
 #include "Bindings/Kenshi/ZoneSpacialGrid_ZoneCellBinding.h"
 #include "Bindings/Kenshi/hkBoolBinding.h"
@@ -434,11 +490,17 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, AbstractMovementBaseBinding::getMetatableName(),              NxUserControllerHitReportBinding::getMetatableName());
     setMetatableParent(L, ActivePlatoonBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
     setMetatableParent(L, AnimalInventoryLayoutBinding::getMetatableName(),             InventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, AnimationClassAnimalBinding::getMetatableName(),              AnimationClassBinding::getMetatableName());
     setMetatableParent(L, AnimationClassBinding::getMetatableName(),                    AnimationClassBaseBinding::getMetatableName());
+    setMetatableParent(L, AnimationClassHumanBinding::getMetatableName(),               AnimationClassBinding::getMetatableName());
+    setMetatableParent(L, AnimationGroundEventBinding::getMetatableName(),              AnimationEventBinding::getMetatableName());
+    setMetatableParent(L, AnimationReloadEventBinding::getMetatableName(),              AnimationEventBinding::getMetatableName());
+    setMetatableParent(L, AnimationSFXEventBinding::getMetatableName(),                 AnimationEventBinding::getMetatableName());
     setMetatableParent(L, AppearanceAnimalBinding::getMetatableName(),                  AppearanceBaseBinding::getMetatableName());
     setMetatableParent(L, AppearanceHumanBinding::getMetatableName(),                   AppearanceBaseBinding::getMetatableName());
     setMetatableParent(L, AppearanceManager_DataRangePoseBinding::getMetatableName(),   AppearanceManager_DataRangeBinding::getMetatableName());
     setMetatableParent(L, AppearanceManager_DataRangeVectorBinding::getMetatableName(), AppearanceManager_DataRangeBinding::getMetatableName());
+    setMetatableParent(L, AttackStateBinding::getMetatableName(),                       CombatStateBinding::getMetatableName());
     setMetatableParent(L, ArmourBinding::getMetatableName(),                            GearBinding::getMetatableName());
     setMetatableParent(L, BackpackInventoryLayoutBinding::getMetatableName(),           GenericFixedInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, BoxBinding::getMetatableName(),                               BaseLayoutBinding::getMetatableName());
@@ -448,6 +510,7 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, BuildingContainerInventoryLayoutBinding::getMetatableName(),  GenericInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, CPerfTimerTBinding::getMetatableName(),                       CPerfTimerBinding::getMetatableName());
     setMetatableParent(L, CharMovementBinding::getMetatableName(),                      AbstractMovementBaseBinding::getMetatableName());
+    setMetatableParent(L, CircleStateAIBinding::getMetatableName(),                     CombatStateBinding::getMetatableName());
     setMetatableParent(L, CharacterAnimalBinding::getMetatableName(),                   CharacterBinding::getMetatableName());
     setMetatableParent(L, CharacterBinding::getMetatableName(),                         RootObjectBinding::getMetatableName());
     setMetatableParent(L, CharacterEditWindowBinding::getMetatableName(),               BaseLayoutBinding::getMetatableName());
@@ -495,6 +558,16 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, GeneratorBuildingBinding::getMetatableName(),                 ProductionBuildingBinding::getMetatableName());
     setMetatableParent(L, GenericFixedInventoryLayoutBinding::getMetatableName(),       InventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, GenericInventoryLayoutBinding::getMetatableName(),            InventoryLayoutBinding::getMetatableName());
+    setMetatableParent(L, GunClassPersonalBinding::getMetatableName(),                  GunClassBinding::getMetatableName());
+    setMetatableParent(L, GunClassTurretBinding::getMetatableName(),                    GunClassBinding::getMetatableName());
+    setMetatableParent(L, HandleListBaseBinding::getMetatableName(),             SerialisableBinding::getMetatableName());
+    setMetatableParent(L, HandleContainerListBinding::getMetatableName(),        HandleListBaseBinding::getMetatableName());
+    setMetatableParent(L, PlatoonHandleContainerListBinding::getMetatableName(), HandleContainerListBinding::getMetatableName());
+    setMetatableParent(L, ZoneMapHandleContainerListBinding::getMetatableName(), HandleContainerListBinding::getMetatableName());
+    setMetatableParent(L, TownHandleContainerListBinding::getMetatableName(),    HandleContainerListBinding::getMetatableName());
+    setMetatableParent(L, HandleListBinding::getMetatableName(),                 HandleListBaseBinding::getMetatableName());
+    setMetatableParent(L, ItemHandleListBinding::getMetatableName(),             HandleListBinding::getMetatableName());
+    setMetatableParent(L, HandleManagerBinding::getMetatableName(),              SerialisableBinding::getMetatableName());
     setMetatableParent(L, hkContainerHeapAllocator_AllocatorBinding::getMetatableName(), hkMemoryAllocatorBinding::getMetatableName());
     setMetatableParent(L, ImportGameMenuBinding::getMetatableName(),                    LoadSaveWindowBinding::getMetatableName());
     setMetatableParent(L, InteriorModeButtonWindowBinding::getMetatableName(),          BaseLayoutBinding::getMetatableName());
@@ -533,8 +606,16 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, ResearchBuildingInventoryLayoutBinding::getMetatableName(),   GenericInventoryLayoutBinding::getMetatableName());
     setMetatableParent(L, ResourceLinePanelBinding::getMetatableName(),                 BaseLayoutBinding::getMetatableName());
     setMetatableParent(L, ResourceLoaderBinding::getMetatableName(),                    ThreadClassBinding::getMetatableName());
-    setMetatableParent(L, RobotLimbItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
+    setMetatableParent(L, RendererBinding::getMetatableName(),                          RendererTBinding::getMetatableName());
+    setMetatableParent(L, RobotLimbItemBinding::getMetatableName(),                     GearBinding::getMetatableName());
     setMetatableParent(L, RootObjectBinding::getMetatableName(),                        RootObjectBaseBinding::getMetatableName());
+        setMetatableParent(L, TownListBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
+    setMetatableParent(L, GameDataScoredListBinding::getMetatableName(),            "FitnessSelector<GameData*>");
+    setMetatableParent(L, BlueprintItemBinding::getMetatableName(),                 ItemBinding::getMetatableName());
+    setMetatableParent(L, MapItemBinding::getMetatableName(),                       ItemBinding::getMetatableName());
+    setMetatableParent(L, MoneyItemBinding::getMetatableName(),                     ItemBinding::getMetatableName());
+    setMetatableParent(L, NestItemBinding::getMetatableName(),                      ItemBinding::getMetatableName());
+    setMetatableParent(L, SeveredLimbItemBinding::getMetatableName(),               ItemBinding::getMetatableName());
     setMetatableParent(L, RootObjectContainerBinding::getMetatableName(),               DataObjectContainerBinding::getMetatableName());
     setMetatableParent(L, RotatingEntBinding::getMetatableName(),                       StaticEntBinding::getMetatableName());
     setMetatableParent(L, SaveFileSystemBinding::getMetatableName(),                    ThreadClassBinding::getMetatableName());
@@ -569,8 +650,12 @@ static void registerInheritance(lua_State* L)
     setMetatableParent(L, UseableStuffBinding::getMetatableName(),                      BuildingBinding::getMetatableName());
     setMetatableParent(L, WallBuildingBinding::getMetatableName(),                      BuildingBinding::getMetatableName());
     setMetatableParent(L, WeaponBinding::getMetatableName(),                            GearBinding::getMetatableName());
+    setMetatableParent(L, WaitingStateAIBinding::getMetatableName(),                    CombatStateBinding::getMetatableName());
     setMetatableParent(L, WindGeneratorBuildingBinding::getMetatableName(),             GeneratorBuildingBinding::getMetatableName());
     setMetatableParent(L, ZoneManagerBinding::getMetatableName(),                       ZoneManagerInterfaceTBinding::getMetatableName());
+    setMetatableParent(L, ZoneMapContentBinding::getMetatableName(),                     RootObjectContainerBinding::getMetatableName());
+    setMetatableParent(L, ZoneMapContent_HandleDummyBinding::getMetatableName(),        RootObjectBaseBinding::getMetatableName());
+    setMetatableParent(L, ZoneMapContent_ZoneMapContentOrderLoaderBinding::getMetatableName(), SpecificItemLoadFirstBinding::getMetatableName());
 
 // --- FUTURE / COMMENTED-OUT INHERITANCE ---
     // setMetatableParent(L, AbstractMovementBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());
@@ -692,9 +777,22 @@ void LuaBindings::registerClasses(lua_State* L)
     AkSoundPositionBinding::registerBinding(L);
     AkVectorBinding::registerBinding(L);
     AnimalInventoryLayoutBinding::registerBinding(L);
+    AnimationChoicesBinding::registerBinding(L);
+    AnimationClassBase_AnimationLayerBinding::registerBinding(L);
+    AnimationClassBase_SingleAnimationBinding::registerBinding(L);
+    AnimationEventsBinding::registerBinding(L);
+    AnimationRequirementBinding::registerBinding(L);
+    AnimsListsManagerBinding::registerBinding(L);
+    AnimsListsManager_AnimListBinding::registerBinding(L);
+    AnimationClassAnimalBinding::registerBinding(L);
     AnimationClassBaseBinding::registerBinding(L);
     AnimationClassBinding::registerBinding(L);
+    AnimationClassHumanBinding::registerBinding(L);
     AnimationDataBinding::registerBinding(L);
+    AnimationEventBinding::registerBinding(L);
+    AnimationGroundEventBinding::registerBinding(L);
+    AnimationReloadEventBinding::registerBinding(L);
+    AnimationSFXEventBinding::registerBinding(L);
     AppearanceAnimalBinding::registerBinding(L);
     AppearanceBaseBinding::registerBinding(L);
     AppearanceHumanBinding::registerBinding(L);
@@ -706,6 +804,7 @@ void LuaBindings::registerClasses(lua_State* L)
     AppearanceManager_DataRangeVectorBinding::registerBinding(L);
     AppearanceManager_GenderBinding::registerBinding(L);
     ArmourBinding::registerBinding(L);
+    AttackStateBinding::registerBinding(L);
     AttachedArrowManagerBinding::registerBinding(L);
     AttackSlotManagerBinding::registerBinding(L);
     BackThreadMessagesToMainTBinding::registerBinding(L);
@@ -734,6 +833,7 @@ void LuaBindings::registerClasses(lua_State* L)
     CampaignTriggerDataBinding::registerBinding(L);
     CharBodyBinding::registerBinding(L);
     CharMovementBinding::registerBinding(L);
+    CircleStateAIBinding::registerBinding(L);
     CharStatsBinding::registerBinding(L);
     CharacterAnimalBinding::registerBinding(L);
     CharacterBinding::registerBinding(L);
@@ -748,6 +848,7 @@ void LuaBindings::registerClasses(lua_State* L)
     CombatClass_AttackSlotManager_SlotDataBinding::registerBinding(L);
     CombatClass_EffectDataBinding::registerBinding(L);
     CombatMovementControllerBinding::registerBinding(L);
+    CombatStateBinding::registerBinding(L);
     CombatTechniqueDataBinding::registerBinding(L);
     ConstructionStateBinding::registerBinding(L);
     ConsumptionItemBinding::registerBinding(L);
@@ -837,6 +938,9 @@ void LuaBindings::registerClasses(lua_State* L)
     GenericFixedInventoryLayoutBinding::registerBinding(L);
     GenericInventoryLayoutBinding::registerBinding(L);
     GlobalConstantsBinding::registerBinding(L);
+    GunClassBinding::registerBinding(L);
+    GunClassPersonalBinding::registerBinding(L);
+    GunClassTurretBinding::registerBinding(L);
     HandBinding::registerBinding(L);
     Inventory_HasRoomCacheBinding::registerBinding(L);
     HavokCharacterBinding::registerBinding(L);
@@ -859,6 +963,7 @@ void LuaBindings::registerClasses(lua_State* L)
     InventoryTraderGUIBinding::registerBinding(L);
     ItemBinding::registerBinding(L);
     ItemDataBinding::registerBinding(L);
+    KingOfRenderThreadBinding::registerBinding(L);
     ItemListWindowBinding::registerBinding(L);
     GamedataSelectionListBinding::registerBinding(L);
     LevelEditorBinding::registerBinding(L);
@@ -944,9 +1049,18 @@ void LuaBindings::registerClasses(lua_State* L)
     ProsperityManagerBinding::registerBinding(L);
     RaceDataBinding::registerBinding(L);
     RaceLimiterBinding::registerBinding(L);
+    RagdollAnimationBinding::registerBinding(L);
+    RagdollAnimation_RagdollAnimationTrackBinding::registerBinding(L);
     RainCollectorBuildingBinding::registerBinding(L);
+    RangedCombatClassBinding::registerBinding(L);
     RelationDataBinding::registerBinding(L);
+    RenderToTextureotronBinding::registerBinding(L);
+    RendererTBinding::registerBinding(L);
+    RendererBinding::registerBinding(L);
     RepetitionCounterBinding::registerBinding(L);
+    ResearchBinding::registerBinding(L);
+    ResearchItemBinding::registerBinding(L);
+    Research_BuildingUpgradesBinding::registerBinding(L);
     ResearchBuildingBinding::registerBinding(L);
     ResearchBuildingInventoryLayoutBinding::registerBinding(L);
     ResourceLinePanelBinding::registerBinding(L);
@@ -974,6 +1088,17 @@ void LuaBindings::registerClasses(lua_State* L)
     SenseItrBinding::registerBinding(L);
     SensoryDataBinding::registerBinding(L);
     SerialisableBinding::registerBinding(L);
+    HandleListBaseBinding::registerBinding(L);
+    HandleContainerListBinding::registerBinding(L);
+    PlatoonHandleContainerListBinding::registerBinding(L);
+    ZoneMapHandleContainerListBinding::registerBinding(L);
+    TownHandleContainerListBinding::registerBinding(L);
+    HandleListBinding::registerBinding(L);
+    ItemHandleListBinding::registerBinding(L);
+    HandleManagerBinding::registerBinding(L);
+    LocaleInfoBinding::registerBinding(L);
+    LocaleManagerBinding::registerBinding(L);
+    SharedKingBinding::registerBinding(L);
     ShopTraderBinding::registerBinding(L);
     ShopTraderInventoryBinding::registerBinding(L);
     ShopTraderInventorySectionBinding::registerBinding(L);
@@ -1023,6 +1148,15 @@ void LuaBindings::registerClasses(lua_State* L)
     TownBaseBinding::registerBinding(L);
     TownBase_ResidentDataBinding::registerBinding(L);
     TownBinding::registerBinding(L);
+    TownListBinding::registerBinding(L);
+    FormationBinding::registerBinding(L);
+    GameDataScoredListBinding::registerBinding(L);
+    BlueprintItemBinding::registerBinding(L);
+    MapItemBinding::registerBinding(L);
+    MoneyItemBinding::registerBinding(L);
+    NestItemBinding::registerBinding(L);
+    SeveredLimbItemBinding::registerBinding(L);
+
     TownBuildingsManagerBinding::registerBinding(L);
     TownBuildingsManager_BuildingInfoBinding::registerBinding(L);
     TownListWindowBinding::registerBinding(L);
@@ -1046,6 +1180,7 @@ void LuaBindings::registerClasses(lua_State* L)
     UseableStuffBinding::registerBinding(L);
     UtilityTBinding::registerBinding(L);
     VisibleObjectInfoBinding::registerBinding(L);
+    WaitingStateAIBinding::registerBinding(L);
     WallBuildingBinding::registerBinding(L);
     WeaponBinding::registerBinding(L);
     WeatherBinding::registerBinding(L);
@@ -1063,6 +1198,12 @@ void LuaBindings::registerClasses(lua_State* L)
     ZoneManagerInterfaceTBinding::registerBinding(L);
     ZoneManager_BiomeGroundEffectsBinding::registerBinding(L);
     ZoneMapBinding::registerBinding(L);
+    ZoneMapContentBinding::registerBinding(L);
+    ZoneMapContent_HandleDummyBinding::registerBinding(L);
+    ZoneMapContent_ZoneMapContentOrderLoaderBinding::registerBinding(L);
+    ZoneSmellBinding::registerBinding(L);
+    ZoneSmell_SmellBinding::registerBinding(L);
+    ZoneSmell_SmellMsgBinding::registerBinding(L);
     ZoneSpacialGridBinding::registerBinding(L);
     ZoneSpacialGrid_ZoneCellBinding::registerBinding(L);
     hkBoolBinding::registerBinding(L);

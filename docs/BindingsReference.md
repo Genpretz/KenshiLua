@@ -28,9 +28,22 @@
 - [`AkSoundPosition`](#aksoundposition)
 - [`AkVector`](#akvector)
 - [`AnimalInventoryLayout`](#animalinventorylayout)
+- [`AnimationChoices`](#animationchoices)
 - [`AnimationClass`](#animationclass)
+- [`AnimationClassAnimal`](#animationclassanimal)
 - [`AnimationClassBase`](#animationclassbase)
+  - [`AnimationClassBase::AnimationLayer`](#animationclassbase::animationlayer)
+  - [`AnimationClassBase::SingleAnimation`](#animationclassbase::singleanimation)
+- [`AnimationClassHuman`](#animationclasshuman)
 - [`AnimationData`](#animationdata)
+- [`AnimationEvent`](#animationevent)
+- [`AnimationEvents`](#animationevents)
+- [`AnimationGroundEvent`](#animationgroundevent)
+- [`AnimationReloadEvent`](#animationreloadevent)
+- [`AnimationRequirement`](#animationrequirement)
+- [`AnimationSFXEvent`](#animationsfxevent)
+- [`AnimsListsManager`](#animslistsmanager)
+  - [`AnimsListsManager::AnimList`](#animslistsmanager::animlist)
 - [`AppearanceAnimal`](#appearanceanimal)
 - [`AppearanceBase`](#appearancebase)
 - [`AppearanceHuman`](#appearancehuman)
@@ -43,11 +56,13 @@
   - [`AppearanceManager::Gender`](#appearancemanager::gender)
 - [`Armour`](#armour)
 - [`Array2d`](#array2d)
+- [`AttackState`](#attackstate)
 - [`BackpackInventoryLayout`](#backpackinventorylayout)
 - [`BackThreadMessagesToMainT`](#backthreadmessagestomaint)
 - [`BadSize`](#badsize)
 - [`Blackboard`](#blackboard)
   - [`Blackboard::TaskInfo`](#blackboard::taskinfo)
+- [`BlueprintItem`](#blueprintitem)
 - [`BoundsViolation`](#boundsviolation)
 - [`Bounty`](#bounty)
 - [`BountyManager`](#bountymanager)
@@ -80,11 +95,13 @@
 - [`CharBody`](#charbody)
 - [`CharMovement`](#charmovement)
 - [`CharStats`](#charstats)
+- [`CircleStateAI`](#circlestateai)
 - [`CombatClass`](#combatclass)
   - [`CombatClass::AttackSlotManager`](#combatclass::attackslotmanager)
   - [`CombatClass::AttackSlotManager::SlotData`](#combatclass::attackslotmanager::slotdata)
   - [`CombatClass::EffectData`](#combatclass::effectdata)
 - [`CombatMovementController`](#combatmovementcontroller)
+- [`CombatState`](#combatstate)
 - [`CombatTechniqueData`](#combattechniquedata)
   - [`CombatTechniqueData::ImpactPoint`](#combattechniquedata::impactpoint)
 - [`ContainerItem`](#containeritem)
@@ -159,6 +176,7 @@
   - [`FoliageSystem::EntData`](#foliagesystem::entdata)
   - [`FoliageSystem::TreeData`](#foliagesystem::treedata)
 - [`ForgottenGUI`](#forgottengui)
+- [`Formation`](#formation)
 - [`FormationMover`](#formationmover)
 - [`FurnaceBuilding`](#furnacebuilding)
 - [`FurnaceInventoryLayout`](#furnaceinventorylayout)
@@ -173,6 +191,7 @@
 - [`GameDataHeader`](#gamedataheader)
 - [`GameDataManager`](#gamedatamanager)
 - [`GameDataReference`](#gamedatareference)
+- [`GameDataScoredList`](#gamedatascoredlist)
 - [`GameDataValuePair`](#gamedatavaluepair)
 - [`GameplayOptions`](#gameplayoptions)
 - [`GameSaveState`](#gamesavestate)
@@ -186,7 +205,14 @@
 - [`Global`](#global)
 - [`GlobalConstants`](#globalconstants)
 - [`GUIWindow`](#guiwindow)
+- [`GunClass`](#gunclass)
+- [`GunClassPersonal`](#gunclasspersonal)
+- [`GunClassTurret`](#gunclassturret)
 - [`Hand`](#hand)
+- [`HandleContainerList`](#handlecontainerlist)
+- [`HandleList`](#handlelist)
+- [`HandleListBase`](#handlelistbase)
+- [`HandleManager`](#handlemanager)
 - [`HavokCharacter`](#havokcharacter)
 - [`hkArray`](#hkarray)
 - [`hkArrayBase`](#hkarraybase)
@@ -219,8 +245,10 @@
 - [`InventorySectionGUI`](#inventorysectiongui)
 - [`InventoryTraderGUI`](#inventorytradergui)
 - [`Item`](#item)
+- [`ItemHandleList`](#itemhandlelist)
 - [`iVector2`](#ivector2)
 - [`KenshiLib::BinaryVersion`](#kenshilib::binaryversion)
+- [`KingOfRenderThread`](#kingofrenderthread)
 - [`LevelEditor`](#leveleditor)
   - [`LevelEditor::FactionListWindow`](#leveleditor::factionlistwindow)
   - [`LevelEditor::GamedataSelectionList`](#leveleditor::gamedataselectionlist)
@@ -233,6 +261,8 @@
 - [`ListScrollBar`](#listscrollbar)
 - [`LoadingWindow`](#loadingwindow)
 - [`LoadSaveWindow`](#loadsavewindow)
+- [`LocaleInfo`](#localeinfo)
+- [`LocaleManager`](#localemanager)
 - [`LockedArmour`](#lockedarmour)
 - [`Logger`](#logger)
 - [`MainBarGUI`](#mainbargui)
@@ -240,6 +270,7 @@
 - [`MainthreadStateReaderT`](#mainthreadstatereadert)
 - [`ManagementScreen`](#managementscreen)
   - [`ManagementScreen::TechItemViewData`](#managementscreen::techitemviewdata)
+- [`MapItem`](#mapitem)
 - [`MapScreen`](#mapscreen)
   - [`MapScreen::MapMarkerCharacter`](#mapscreen::mapmarkercharacter)
   - [`MapScreen::MapMarkerTown`](#mapscreen::mapmarkertown)
@@ -256,6 +287,7 @@
 - [`MessageQueue`](#messagequeue)
   - [`MessageQueue::Node`](#messagequeue::node)
 - [`ModInfo`](#modinfo)
+- [`MoneyItem`](#moneyitem)
 - [`MotionFilter`](#motionfilter)
 - [`MultiSlider`](#multislider)
 - [`MustEndWithSemiColon`](#mustendwithsemicolon)
@@ -267,6 +299,7 @@
   - [`NavMeshGenerator::Task`](#navmeshgenerator::task)
   - [`NavMeshGenerator::TaskQueue`](#navmeshgenerator::taskqueue)
 - [`NavMeshSeeds`](#navmeshseeds)
+- [`NestItem`](#nestitem)
 - [`NewGameOptionsWindow`](#newgameoptionswindow)
 - [`NewGameWindow`](#newgamewindow)
 - [`Nx9Real`](#nx9real)
@@ -298,6 +331,7 @@
   - [`PhysicsCollection::StaticEnt`](#physicscollection::staticent)
 - [`PhysicsInterface`](#physicsinterface)
 - [`Platoon`](#platoon)
+- [`PlatoonHandleContainerList`](#platoonhandlecontainerlist)
 - [`PlayerInterface`](#playerinterface)
   - [`PlayerInterface::AIOptions`](#playerinterface::aioptions)
 - [`PortraitData`](#portraitdata)
@@ -315,11 +349,20 @@
 - [`RaceData`](#racedata)
 - [`RaceLimiter`](#racelimiter)
   - [`RaceLimiter::Limiter`](#racelimiter::limiter)
+- [`RagdollAnimation`](#ragdollanimation)
+  - [`RagdollAnimation::RagdollAnimationTrack`](#ragdollanimation::ragdollanimationtrack)
 - [`RainCollectorBuilding`](#raincollectorbuilding)
+- [`RangedCombatClass`](#rangedcombatclass)
+- [`Renderer`](#renderer)
+- [`RendererT`](#renderert)
+- [`RenderToTextureotron`](#rendertotextureotron)
 - [`rendHit`](#rendhit)
 - [`ReorderableList`](#reorderablelist)
+- [`Research`](#research)
+  - [`Research::BuildingUpgrades`](#research::buildingupgrades)
 - [`ResearchBuilding`](#researchbuilding)
 - [`ResearchBuildingInventoryLayout`](#researchbuildinginventorylayout)
+- [`ResearchItem`](#researchitem)
 - [`ResourceLoader`](#resourceloader)
   - [`ResourceLoader::MeshLoadData`](#resourceloader::meshloaddata)
   - [`ResourceLoader::ResourceLoadRequestMesh`](#resourceloader::resourceloadrequestmesh)
@@ -350,6 +393,8 @@
   - [`SensoryData::SpottingPeopleMgr`](#sensorydata::spottingpeoplemgr)
   - [`SensoryData::SpottingPeopleMgr::Spot`](#sensorydata::spottingpeoplemgr::spot)
 - [`Serialisable`](#serialisable)
+- [`SeveredLimbItem`](#severedlimbitem)
+- [`SharedKing`](#sharedking)
 - [`ShopTrader`](#shoptrader)
 - [`ShopTraderInventory`](#shoptraderinventory)
 - [`ShopTraderInventorySection`](#shoptraderinventorysection)
@@ -402,6 +447,8 @@
   - [`TownBase::TownPositionCacher`](#townbase::townpositioncacher)
 - [`TownBuildingsManager`](#townbuildingsmanager)
   - [`TownBuildingsManager::BuildingInfo`](#townbuildingsmanager::buildinginfo)
+- [`TownHandleContainerList`](#townhandlecontainerlist)
+- [`TownList`](#townlist)
 - [`TradeCulture`](#tradeculture)
 - [`TraderInventoryLayout`](#traderinventorylayout)
 - [`TransformWindow`](#transformwindow)
@@ -415,6 +462,7 @@
 - [`UseableStuff`](#useablestuff)
 - [`UtilityT`](#utilityt)
 - [`VisibleObjectInfo`](#visibleobjectinfo)
+- [`WaitingStateAI`](#waitingstateai)
 - [`WallBuilding`](#wallbuilding)
 - [`Weapon`](#weapon)
 - [`Weather`](#weather)
@@ -433,6 +481,13 @@
 - [`ZoneManagerInterfaceT`](#zonemanagerinterfacet)
 - [`ZoneMap`](#zonemap)
   - [`ZoneMap::StateT`](#zonemap::statet)
+- [`ZoneMapContent`](#zonemapcontent)
+  - [`ZoneMapContent::HandleDummy`](#zonemapcontent::handledummy)
+  - [`ZoneMapContent::ZoneMapContentOrderLoader`](#zonemapcontent::zonemapcontentorderloader)
+- [`ZoneMapHandleContainerList`](#zonemaphandlecontainerlist)
+- [`ZoneSmell`](#zonesmell)
+  - [`ZoneSmell::Smell`](#zonesmell::smell)
+  - [`ZoneSmell::SmellMsg`](#zonesmell::smellmsg)
 - [`ZoneSpacialGrid`](#zonespacialgrid)
   - [`ZoneSpacialGrid::ZoneCell`](#zonespacialgrid::zonecell)
 
@@ -1167,6 +1222,7 @@
 | autoEjectEnemiesTask2 | `Tasker` | RW | `obj.autoEjectEnemiesTask2 = <value>` |
 | orderedGoals | `OrderedGoalsMapBinding::MapType` | RW | `obj.orderedGoals = <value>` |
 | requestsList | `lektor<Tasker*>` | R | `obj.requestsList` |
+| orderedGoals | `OrderedGoalsMap` | R | `obj.orderedGoals` |
 | actions | `AITaskSytem::ActionsListMgr` | R | `obj.actions` |
 | actionsTryList | `AITaskSytem::ActionsListMgr` | R | `obj.actionsTryList` |
 | failedGOAPGoalDebugString | `lstring` | RW | `obj.failedGOAPGoalDebugString = <value>` |
@@ -1214,7 +1270,10 @@
 | checkOrders | `` | `boolean` | `obj:checkOrders()` |
 | chooseGoal | `timedLockOnCurrentGoal: boolean` | `void` | `obj:chooseGoal(timedLockOnCurrentGoal)` |
 | _chooseGoal | `priority: taskPriority, squadMemberType: SquadMemberType` | `boolean` | `obj:_chooseGoal(priority, squadMemberType)` |
+| chooseGoalFrom | `goals: OrderedGoalsMap, match: TaskMatch, listIn: lektor<Tasker*>, theseAreBlackboard: boolean` | `void` | `obj:chooseGoalFrom(goals, match, listIn, theseAreBlackboard)` |
+| choosePermaJob | `goals: OrderedGoalsMap, match: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean` | `void` | `obj:choosePermaJob(goals, match, urgentOnes, jobsEnabled)` |
 | setupParametersForCurrentGoal | `` | `void` | `obj:setupParametersForCurrentGoal()` |
+| runGoals | `goals: OrderedGoalsMap, playerOrder: boolean` | `boolean` | `obj:runGoals(goals, playerOrder)` |
 | clearRequestsList | `` | `void` | `obj:clearRequestsList()` |
 | bodyTaskComplete | `` | `void` | `obj:bodyTaskComplete()` |
 | popFromOrders | `what: Tasker` | `void` | `obj:popFromOrders(what)` |
@@ -1272,6 +1331,23 @@
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
 
+## AnimationChoices
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationChoices`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| anims | `lektor<AnimationData*>` | RW | `obj.anims = <value>` |
+| weights | `lektor<float>` | RW | `obj.weights = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| normaliseWeights | `` | `void` | `obj:normaliseWeights()` |
+| calculateSpeedOfMoveAnims | `travelSpeed: number, characterHeight: number` | `number` | `obj:calculateSpeedOfMoveAnims(travelSpeed, characterHeight)` |
+| chooseHighestScore | `` | `AnimationData` | `obj:chooseHighestScore()` |
+
 ## AnimationClass
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
 **Metatable:** `KenshiLua.AnimationClass`
@@ -1287,7 +1363,10 @@
 | disableRagdollKinematics | `integer` | RW | `obj.disableRagdollKinematics = <value>` |
 | me | `Character` | RW | `obj.me = <value>` |
 | defaultIdleAnimation | `AnimationData` | RW | `obj.defaultIdleAnimation = <value>` |
+| ragdollAnimation | `RagdollAnimation` | R | `obj.ragdollAnimation` |
 | ragdollParts | `RagdollPart::Enum` | RW | `obj.ragdollParts = <value>` |
+| animationRequirements | `AnimationRequirement` | R | `obj.animationRequirements` |
+| myAnimList | `AnimsListsManager::AnimList` | RW | `obj.myAnimList = <value>` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -1401,6 +1480,26 @@
 | overlaidAnimationSelection | `` | `void` | `obj:overlaidAnimationSelection()` |
 | processTurnAnim | `` | `boolean` | `obj:processTurnAnim()` |
 | breathing | `armsToo: boolean` | `void` | `obj:breathing(armsToo)` |
+| isHuman | `` | `AnimationClassHuman` | `obj:isHuman()` |
+| getEvents | `animName: string` | `AnimationEvents` | `obj:getEvents(animName)` |
+| getAnimationDatasList | `` | `AnimsListsManager::AnimList` | `obj:getAnimationDatasList()` |
+| chooseAnims | `choices: AnimationChoices, anims: lektor<AnimationData*>, req: AnimationRequirement, isUpperBody: boolean, isIdles: boolean` | `void` | `obj:chooseAnims(choices, anims, req, isUpperBody, isIdles)` |
+| chooseRandomAnim | `anims: lektor<AnimationData*>, req: AnimationRequirement, skipCarryModes: boolean` | `AnimationChoices` | `obj:chooseRandomAnim(anims, req, skipCarryModes)` |
+| scoreAnim | `anim: AnimationData, req: AnimationRequirement, skipCarryModes: boolean` | `number` | `obj:scoreAnim(anim, req, skipCarryModes)` |
+| processMoveAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, isUpperBody: boolean, weightHack: number` | `void` | `obj:processMoveAnims(anims, req, isUpperBody, weightHack)` |
+| processIdleAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, frameTIME: number` | `void` | `obj:processIdleAnims(anims, req, frameTIME)` |
+| processCombatIdleAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, frameTIME: number, weightLimit: number` | `void` | `obj:processCombatIdleAnims(anims, req, frameTIME, weightLimit)` |
+
+## AnimationClassAnimal
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassAnimal.h`
+**Metatable:** `KenshiLua.AnimationClassAnimal`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| maxTurnSpeed | `number` | RW | `obj.maxTurnSpeed = <value>` |
+| _isTurningFar | `boolean` | RW | `obj._isTurningFar = <value>` |
+| lastRot | `Quaternion` | RW | `obj.lastRot = <value>` |
 
 ## AnimationClassBase
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
@@ -1422,6 +1521,7 @@
 | movement | `CharMovement` | RW | `obj.movement = <value>` |
 | masterTime | `number` | RW | `obj.masterTime = <value>` |
 | masterSpeed | `number` | RW | `obj.masterSpeed = <value>` |
+| layer | `lektor<AnimationClassBase::AnimationLayer*>` | R | `obj.layer` |
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -1464,6 +1564,84 @@
 | getAnimation_Medic | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Medic(inwhat)` |
 | getAnimation_Lockpick | `inwhat: hand` | `AnimationData` | `obj:getAnimation_Lockpick(inwhat)` |
 | getAnimationData | `name: string` | `AnimationData` | `obj:getAnimationData(name)` |
+| getAnimationPlaying_animName | `s: string` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying_animName(s)` |
+| getAnimationPlaying_datName | `s: string` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying_datName(s)` |
+| getAnimationPlaying [1] | `name: CombatTechniqueData` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying(name)` |
+| getAnimationPlaying [2] | `name: AnimationData` | `AnimationClassBase::SingleAnimation` | `obj:getAnimationPlaying(name)` |
+
+## AnimationClassBase::AnimationLayer
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Parent Class:** [`AnimationClassBase`](#animationclassbase)
+**Metatable:** `KenshiLua.AnimationClassBase.AnimationLayer`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| addToRemoveList | `anim: SingleAnimation` | `void` | `obj:addToRemoveList(anim)` |
+| clearLists | `` | `void` | `obj:clearLists()` |
+| _clearListsSafe | `` | `void` | `obj:_clearListsSafe()` |
+| randomiseAnimationPosition | `name: string` | `void` | `obj:randomiseAnimationPosition(name)` |
+| isAnimationInRemoveList | `ad: AnimationData` | `SingleAnimation` | `obj:isAnimationInRemoveList(ad)` |
+| isAnimationInAddList [1] | `state: string` | `AnimationClassBase::SingleAnimation` | `obj:isAnimationInAddList(state)` |
+| isAnimationInAddList [2] | `state: CombatTechniqueData` | `AnimationClassBase::SingleAnimation` | `obj:isAnimationInAddList(state)` |
+| isAnimationInAddList [3] | `state: AnimationData` | `AnimationClassBase::SingleAnimation` | `obj:isAnimationInAddList(state)` |
+| isAnimationInAddList_Datname | `s: string` | `SingleAnimation` | `obj:isAnimationInAddList_Datname(s)` |
+| takeFromRemoveList | `s: string` | `SingleAnimation` | `obj:takeFromRemoveList(s)` |
+| takeFromAddList [1] | `what: AnimationData` | `AnimationClassBase::SingleAnimation` | `obj:takeFromAddList(what)` |
+| takeFromAddList [2] | `what: string` | `AnimationClassBase::SingleAnimation` | `obj:takeFromAddList(what)` |
+| getTotalAnimationWeight [1] | `thisLayer: boolean, wholeBody: boolean, includeRemovelist: boolean` | `number` | `obj:getTotalAnimationWeight(thisLayer, wholeBody, includeRemovelist)` |
+| getTotalAnimationWeight [2] | `cat: CharacterAnimCategory` | `number` | `obj:getTotalAnimationWeight(cat)` |
+| getTotalActionAnimationWeight | `` | `number` | `obj:getTotalActionAnimationWeight()` |
+| stillPlayingAnActionOrSomething | `` | `boolean` | `obj:stillPlayingAnActionOrSomething()` |
+| getCurrentAnimationWeight | `s: string` | `number` | `obj:getCurrentAnimationWeight(s)` |
+| updateAnimationSpeed | `s: string, speed: number` | `void` | `obj:updateAnimationSpeed(s, speed)` |
+| removeAnimation [1] | `anim: AnimationData` | `void` | `obj:removeAnimation(anim)` |
+| removeAnimation [2] | `name: string` | `void` | `obj:removeAnimation(name)` |
+| update2frame | `` | `void` | `obj:update2frame()` |
+| moveAllToRemoveList | `` | `void` | `obj:moveAllToRemoveList()` |
+| endAllAnimations | `` | `void` | `obj:endAllAnimations()` |
+| stopActionAnimations | `` | `void` | `obj:stopActionAnimations()` |
+| stopAllAnimation | `hardStop: boolean` | `void` | `obj:stopAllAnimation(hardStop)` |
+| stopAllAnimationThatMovesFromOrigin | `` | `void` | `obj:stopAllAnimationThatMovesFromOrigin()` |
+| clearAllAnimationUT | `` | `void` | `obj:clearAllAnimationUT()` |
+| getAnimTime | `` | `number` | `obj:getAnimTime()` |
+| usingRightArm | `` | `boolean` | `obj:usingRightArm()` |
+| usingLeftArm | `` | `boolean` | `obj:usingLeftArm()` |
+
+## AnimationClassBase::SingleAnimation
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Parent Class:** [`AnimationClassBase`](#animationclassbase)
+**Metatable:** `KenshiLua.AnimationClassBase.SingleAnimation`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getAnimTime | `` | `number` | `obj:getAnimTime()` |
+| hasSound | `` | `boolean` | `obj:hasSound()` |
+| _disable | `` | `void` | `obj:_disable()` |
+| disable | `` | `void` | `obj:disable()` |
+| notStartedYet | `` | `boolean` | `obj:notStartedYet()` |
+| isACombatAnimation | `` | `boolean` | `obj:isACombatAnimation()` |
+| isABlockAnimation | `` | `boolean` | `obj:isABlockAnimation()` |
+| initialiseMainState | `` | `boolean` | `obj:initialiseMainState()` |
+| fade | `frameTIME: number, blendrate: number` | `boolean` | `obj:fade(frameTIME, blendrate)` |
+| update | `masterTime: number, frameTIME: number, playSounds: boolean` | `void` | `obj:update(masterTime, frameTIME, playSounds)` |
+
+## AnimationClassHuman
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassHuman.h`
+**Metatable:** `KenshiLua.AnimationClassHuman`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| usingRightArm | `boolean` | RW | `obj.usingRightArm = <value>` |
+| usingLeftArm | `boolean` | RW | `obj.usingLeftArm = <value>` |
+| disabledRightArm | `boolean` | RW | `obj.disabledRightArm = <value>` |
+| disabledLeftArm | `boolean` | RW | `obj.disabledLeftArm = <value>` |
+| stanceAnimation | `lstring` | RW | `obj.stanceAnimation = <value>` |
+| lookDirection | `Vector3` | RW | `obj.lookDirection = <value>` |
+| hipspos | `Vector3` | RW | `obj.hipspos = <value>` |
+| breatheTimer | `number` | RW | `obj.breatheTimer = <value>` |
 
 ## AnimationData
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
@@ -1517,6 +1695,169 @@
 | stumbleOrigination | `CutOrigination` | RW | `obj.stumbleOrigination = <value>` |
 | bigStumble | `boolean` | RW | `obj.bigStumble = <value>` |
 | stumbleRarityMult | `number` | RW | `obj.stumbleRarityMult = <value>` |
+
+## AnimationEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationEvent`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `c: Character` | `void` | `obj:trigger(c)` |
+| finish | `c: Character` | `void` | `obj:finish(c)` |
+| toString | `` | `string` | `obj:toString()` |
+
+## AnimationEvents
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationEvents`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| lastFrame | `number` | RW | `obj.lastFrame = <value>` |
+| nextEvent | `integer` | RW | `obj.nextEvent = <value>` |
+| character | `Character` | RW | `obj.character = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setInitialFrame | `f: number` | `void` | `obj:setInitialFrame(f)` |
+| update | `frame: number, sound: boolean` | `void` | `obj:update(frame, sound)` |
+| addEvent [1] | `e: AnimationEvent, time: number` | `void` | `obj:addEvent(e, time)` |
+| addEvent [2] | `data: GameData, time: number` | `void` | `obj:addEvent(data, time)` |
+| size | `` | `integer` | `obj:size()` |
+
+## AnimationGroundEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationGroundEvent`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| bone | `string` | RW | `obj.bone = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `character: Character` | `void` | `obj:trigger(character)` |
+| toString | `` | `string` | `obj:toString()` |
+
+## AnimationReloadEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationReloadEvent`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `character: Character` | `void` | `obj:trigger(character)` |
+
+## AnimationRequirement
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimationRequirement`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| currentAnimCategory | `CharacterAnimCategory` | RW | `obj.currentAnimCategory = <value>` |
+| filterFW | `MedianFilter` | RW | `obj.filterFW = <value>` |
+| filterStrafe | `MedianFilter` | RW | `obj.filterStrafe = <value>` |
+| moveSpeed | `number` | RW | `obj.moveSpeed = <value>` |
+| turnSpeed | `number` | RW | `obj.turnSpeed = <value>` |
+| smoothedMoveSpeed | `number` | RW | `obj.smoothedMoveSpeed = <value>` |
+| strafeSpeed | `number` | RW | `obj.strafeSpeed = <value>` |
+| lastStrafeWeight | `number` | RW | `obj.lastStrafeWeight = <value>` |
+| isStrafeMode | `boolean` | RW | `obj.isStrafeMode = <value>` |
+| weaponL | `boolean` | RW | `obj.weaponL = <value>` |
+| weaponR | `boolean` | RW | `obj.weaponR = <value>` |
+| isAnimal | `boolean` | RW | `obj.isAnimal = <value>` |
+| doWeatherAnimation | `boolean` | RW | `obj.doWeatherAnimation = <value>` |
+| holdBreath | `boolean` | RW | `obj.holdBreath = <value>` |
+| stance | `StanceEnum` | RW | `obj.stance = <value>` |
+| weatherType | `WeatherAffecting` | RW | `obj.weatherType = <value>` |
+| maxSpeed | `number` | RW | `obj.maxSpeed = <value>` |
+| weatherStrength | `number` | RW | `obj.weatherStrength = <value>` |
+| actionSpeedMult | `number` | RW | `obj.actionSpeedMult = <value>` |
+| isActionSlave | `boolean` | RW | `obj.isActionSlave = <value>` |
+| attachRootToMastersBone | `string` | RW | `obj.attachRootToMastersBone = <value>` |
+| slaveSync | `number` | RW | `obj.slaveSync = <value>` |
+| slaveHandle | `hand` | RW | `obj.slaveHandle = <value>` |
+| forcedSlaveLoop | `AnimationData` | RW | `obj.forcedSlaveLoop = <value>` |
+| _currentCombatTechnique | `CombatTechniqueData` | RW | `obj._currentCombatTechnique = <value>` |
+| _currentAction | `AnimationData` | RW | `obj._currentAction = <value>` |
+| stateTimer | `number` | RW | `obj.stateTimer = <value>` |
+| crouched | `boolean` | RW | `obj.crouched = <value>` |
+| prone | `boolean` | RW | `obj.prone = <value>` |
+| carryingLeft | `boolean` | RW | `obj.carryingLeft = <value>` |
+| carryingRight | `boolean` | RW | `obj.carryingRight = <value>` |
+| carried | `boolean` | RW | `obj.carried = <value>` |
+| currentStumble | `AnimationData` | RW | `obj.currentStumble = <value>` |
+| idle | `boolean` | RW | `obj.idle = <value>` |
+| idleState | `AnimationData` | RW | `obj.idleState = <value>` |
+| idleTimer | `number` | RW | `obj.idleTimer = <value>` |
+| isCombatMode | `integer` | RW | `obj.isCombatMode = <value>` |
+| isStealthMode | `integer` | RW | `obj.isStealthMode = <value>` |
+| legsIdle | `boolean` | RW | `obj.legsIdle = <value>` |
+| upperIdle | `boolean` | RW | `obj.upperIdle = <value>` |
+| legDamageR | `number` | RW | `obj.legDamageR = <value>` |
+| legDamageL | `number` | RW | `obj.legDamageL = <value>` |
+| pos | `Vector3` | RW | `obj.pos = <value>` |
+| currentWeapon | `WeaponCategory` | RW | `obj.currentWeapon = <value>` |
+| desiredPainOverlayAnimationOverride | `string` | RW | `obj.desiredPainOverlayAnimationOverride = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isUpperBodyOnlyAction | `` | `boolean` | `obj:isUpperBodyOnlyAction()` |
+| hasAction | `` | `boolean` | `obj:hasAction()` |
+| clearAction | `` | `void` | `obj:clearAction()` |
+
+## AnimationSFXEvent
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
+**Metatable:** `KenshiLua.AnimationSFXEvent`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| name | `string` | RW | `obj.name = <value>` |
+| key | `string` | RW | `obj.key = <value>` |
+| value | `string` | RW | `obj.value = <value>` |
+| stop | `string` | RW | `obj.stop = <value>` |
+| isFootstep | `boolean` | RW | `obj.isFootstep = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| trigger | `character: Character` | `void` | `obj:trigger(character)` |
+| finish | `character: Character` | `void` | `obj:finish(character)` |
+| toString | `` | `string` | `obj:toString()` |
+
+## AnimsListsManager
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Metatable:** `KenshiLua.AnimsListsManager`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| characterAnimations | `AnimsListsManager::AnimList` | R | `obj.characterAnimations` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getAnimalList | `race: GameData, animData: GameData` | `AnimsListsManager::AnimList` | `obj:getAnimalList(race, animData)` |
+| getCharacterList | `` | `AnimsListsManager::AnimList` | `obj:getCharacterList()` |
+| setupCharacterList | `` | `void` | `obj:setupCharacterList()` |
+| setupAnimalList | `animalRace: GameData, getAnimsFrom: GameData` | `void` | `obj:setupAnimalList(animalRace, getAnimsFrom)` |
+
+## AnimsListsManager::AnimList
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
+**Parent Class:** [`AnimsListsManager`](#animslistsmanager)
+**Metatable:** `KenshiLua.AnimsListsManager.AnimList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getStumbles | `bp: GameData` | `lektor<AnimationData*>` | `obj:getStumbles(bp)` |
+| getStrafe | `` | `AnimationData` | `obj:getStrafe()` |
 
 ## AppearanceAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
@@ -1846,6 +2187,24 @@
 **Header:** `extern/KenshiLib/Include/kenshi/util/array2d.h`
 **Metatable:** `KenshiLua.Array2d`
 
+## AttackState
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.AttackState`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| techniqueIntegrityCheckTimer | `number` | RW | `obj.techniqueIntegrityCheckTimer = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| validate | `` | `boolean` | `obj:validate()` |
+| initialiseAttack | `target: Character` | `boolean` | `obj:initialiseAttack(target)` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
+
 ## BackpackInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.BackpackInventoryLayout`
@@ -1992,6 +2351,25 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | Blackboard::TaskInfo | `` | `Blackboard::TaskInfo` | `local obj = Blackboard::TaskInfo()` |
+
+## BlueprintItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.BlueprintItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| value | `integer` | RW | `obj.value = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getClassType | `` | `integer` | `obj:getClassType()` |
+| getItemWeight | `` | `number` | `obj:getItemWeight()` |
+| getValueSingle | `isPlayer: boolean` | `integer` | `obj:getValueSingle(isPlayer)` |
+| getResearchData | `` | `GameData` | `obj:getResearchData()` |
+| learnResearch | `` | `boolean` | `obj:learnResearch()` |
+| getGUIData | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(datapanel, category)` |
 
 ## BoundsViolation
 **Header:** `extern/KenshiLib/Include/kenshi/util/Array2d.h`
@@ -2588,7 +2966,7 @@
 | worldStateRequirements | `WorldEventStateQueryList` | R | `obj.worldStateRequirements` |
 | specificTargetCharacter | `lektor<GameData*>` | R | `obj.specificTargetCharacter` |
 | specificLeaderCharacter | `lektor<GameData*>` | R | `obj.specificLeaderCharacter` |
-| spawns | `FitnessSelector<GameData*>` | R | `obj.spawns` |
+| spawns | `GameDataScoredList` | R | `obj.spawns` |
 | repeatLimit | `number` | RW | `obj.repeatLimit = <value>` |
 | campaignType | `WarCampaignEnum` | RW | `obj.campaignType = <value>` |
 | lastTerritorialTrigger | `TimeOfDay` | RW | `obj.lastTerritorialTrigger = <value>` |
@@ -2726,7 +3104,7 @@
 | lastGuyWhoDefeatedMe | `hand` | RW | `obj.lastGuyWhoDefeatedMe = <value>` |
 | myRace | `RaceData` | RW | `obj.myRace = <value>` |
 | inventory | `Inventory` | RW | `obj.inventory = <value>` |
-| rangedCombat | `lightuserdata` | RW | `obj.rangedCombat = <value>` |
+| rangedCombat | `RangedCombatClass` | RW | `obj.rangedCombat = <value>` |
 | inWhat | `hand` | RW | `obj.inWhat = <value>` |
 | isChained | `boolean` | RW | `obj.isChained = <value>` |
 | slaveOwner | `hand` | RW | `obj.slaveOwner = <value>` |
@@ -2807,8 +3185,8 @@
 | updateTimes | `` | `void` | `obj:updateTimes()` |
 | getSensoryData | `` | `SensoryData` | `obj:getSensoryData()` |
 | getStateBroadcast | `` | `StateBroadcastData` | `obj:getStateBroadcast()` |
-| getFormation | `` | `lightuserdata` | `obj:getFormation()` |
-| getEnemyFormation | `` | `lightuserdata` | `obj:getEnemyFormation()` |
+| getFormation | `` | `Formation` | `obj:getFormation()` |
+| getEnemyFormation | `` | `Formation` | `obj:getEnemyFormation()` |
 | AIDestinationIndoorOutdoorCheck | `who: RootObject` | `boolean` | `obj:AIDestinationIndoorOutdoorCheck(who)` |
 | update | `` | `void` | `obj:update()` |
 | postUpdate | `` | `void` | `obj:postUpdate()` |
@@ -3811,6 +4189,24 @@
 | convertBluntMultiplierToWeaponWeight | `` | `number` | `CharStats.convertBluntMultiplierToWeaponWeight()`<br>`obj:convertBluntMultiplierToWeaponWeight()` |
 | setupCombatTechniques | `` | `void` | `CharStats.setupCombatTechniques()`<br>`obj:setupCombatTechniques()` |
 
+## CircleStateAI
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.CircleStateAI`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| circlingDirection | `number` | RW | `obj.circlingDirection = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| amOverCrowded | `` | `boolean` | `obj:amOverCrowded()` |
+| validate | `` | `boolean` | `obj:validate()` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
+
 ## CombatClass
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
 **Metatable:** `KenshiLua.CombatClass`
@@ -4043,6 +4439,24 @@
 | getGUIData | `panel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(panel, category)` |
 | combatMovementOffensive | `target: hand, minDistance: number, maxDistance: number, circle: number, power: boolean, speedLimit: number` | `void` | `obj:combatMovementOffensive(target, minDistance, maxDistance, circle, power, speedLimit)` |
 | disable | `` | `void` | `obj:disable()` |
+
+## CombatState
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.CombatState`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| combat | `CombatClass` | RW | `obj.combat = <value>` |
+| stateTimer | `number` | RW | `obj.stateTimer = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| validate | `` | `boolean` | `obj:validate()` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
 
 ## CombatTechniqueData
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatTechniqueData.h`
@@ -6164,6 +6578,23 @@
 |---|---|---|---|
 | changeFontSize | `` | `void` | `ForgottenGUI.changeFontSize()`<br>`obj:changeFontSize()` |
 
+## Formation
+**Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
+**Metatable:** `KenshiLua.Formation`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| character | `RootObject` | RW | `obj.character = <value>` |
+| followers | `lektor<hand>` | R | `obj.followers` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| addToFormation | `h: hand` | `integer` | `obj:addToFormation(h)` |
+| removeFromFormation | `h: hand` | `void` | `obj:removeFromFormation(h)` |
+| getFormationPos | `id: integer, tightness: number` | `Vector3` | `obj:getFormationPos(id, tightness)` |
+
 ## FormationMover
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
 **Metatable:** `KenshiLua.FormationMover`
@@ -6463,6 +6894,15 @@
 | operator_assign | `other: GameDataReference` | `void` | `obj:operator_assign(other)` |
 | getPtr | `source: GameDataContainer` | `GameData` | `obj:getPtr(source)` |
 
+## GameDataScoredList
+**Header:** `extern/KenshiLib/Include/kenshi/Campaign.h`
+**Metatable:** `KenshiLua.GameDataScoredList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupFromData | `spawnData: GameData, listname: string, typ: itemType` | `void` | `obj:setupFromData(spawnData, listname, typ)` |
+
 ## GameDataValuePair
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
 **Metatable:** `KenshiLua.GameDataValuePair`
@@ -6542,7 +6982,7 @@
 |---|---|---|---|
 | tempSpawnsDisableTimer | `number` | RW | `obj.tempSpawnsDisableTimer = <value>` |
 | initialized | `boolean` | RW | `obj.initialized = <value>` |
-| render | `lightuserdata` | RW | `obj.render = <value>` |
+| render | `RendererT` | RW | `obj.render = <value>` |
 | physics | `PhysicsInterface` | RW | `obj.physics = <value>` |
 | gamedata | `GameDataManager` | RW | `obj.gamedata = <value>` |
 | leveldata | `GameDataManager` | RW | `obj.leveldata = <value>` |
@@ -6919,6 +7359,56 @@
 | getWidget | `` | `MyGUI::Widget` | `obj:getWidget()` |
 | resize | `w: integer, h: integer` | `void` | `obj:resize(w, h)` |
 
+## GunClass
+**Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
+**Metatable:** `KenshiLua.GunClass`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| maxRange | `number` | RW | `obj.maxRange = <value>` |
+| accuracySkillRequired | `number` | RW | `obj.accuracySkillRequired = <value>` |
+| accuracyDeviationBase | `number` | RW | `obj.accuracyDeviationBase = <value>` |
+| aimSpeed | `number` | RW | `obj.aimSpeed = <value>` |
+| shotSpeed | `number` | RW | `obj.shotSpeed = <value>` |
+| numShotsMax | `integer` | RW | `obj.numShotsMax = <value>` |
+| numShotsCurrent | `integer` | RW | `obj.numShotsCurrent = <value>` |
+| reloadTimeMin | `number` | RW | `obj.reloadTimeMin = <value>` |
+| reloadTimeMax | `number` | RW | `obj.reloadTimeMax = <value>` |
+| userSkill01 | `number` | RW | `obj.userSkill01 = <value>` |
+| user | `hand` | RW | `obj.user = <value>` |
+| reloadAnimation | `GameData` | RW | `obj.reloadAnimation = <value>` |
+| ammoType | `GameData` | RW | `obj.ammoType = <value>` |
+| active | `boolean` | RW | `obj.active = <value>` |
+| visible | `boolean` | RW | `obj.visible = <value>` |
+| gunData | `GameData` | RW | `obj.gunData = <value>` |
+| gunBarrelOffsetPos | `Vector3` | RW | `obj.gunBarrelOffsetPos = <value>` |
+| reloadState | `number` | RW | `obj.reloadState = <value>` |
+| position | `Vector3` | RW | `obj.position = <value>` |
+| orientation | `Quaternion` | RW | `obj.orientation = <value>` |
+
+## GunClassPersonal
+**Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
+**Metatable:** `KenshiLua.GunClassPersonal`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| minDamage | `integer` | RW | `obj.minDamage = <value>` |
+| maxDamage | `integer` | RW | `obj.maxDamage = <value>` |
+| animReadyToShoot | `boolean` | RW | `obj.animReadyToShoot = <value>` |
+| character | `hand` | RW | `obj.character = <value>` |
+
+## GunClassTurret
+**Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
+**Metatable:** `KenshiLua.GunClassTurret`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| lastTarget | `Vector3` | RW | `obj.lastTarget = <value>` |
+| turretBuilding | `TurretBuilding` | RW | `obj.turretBuilding = <value>` |
+
 ## Hand
 **Header:** `extern/KenshiLib/Include/kenshi/util/hand.h`
 **Metatable:** `KenshiLua.hand`
@@ -6947,6 +7437,92 @@
 | isValid | `` | `boolean` | `obj:isValid()` |
 | canCastToRootObject | `` | `boolean` | `obj:canCastToRootObject()` |
 | squadMatch | `` | `boolean` | `obj:squadMatch()` |
+
+## HandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleContainerList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| add | `o: RootObjectBase` | `hand` | `obj:add(o)` |
+
+## HandleList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleList`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| containerHandle | `hand` | RW | `obj.containerHandle = <value>` |
+| handleShift | `std::map<unsigned __int64, unsigned int>` | RW | `obj.handleShift = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| add | `o: RootObjectBase` | `hand` | `obj:add(o)` |
+| get | `h: hand` | `RootObjectBase` | `obj:get(h)` |
+| addExisting | `o: RootObjectBase, h: hand` | `hand` | `obj:addExisting(o, h)` |
+| addExistingAndForceContainer | `o: RootObjectBase, h: hand` | `hand` | `obj:addExistingAndForceContainer(o, h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
+
+## HandleListBase
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleListBase`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| maxSize | `integer` | RW | `obj.maxSize = <value>` |
+| lastID | `integer` | RW | `obj.lastID = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| clearToZero | `` | `void` | `obj:clearToZero()` |
+| get | `h: hand` | `RootObjectBase` | `obj:get(h)` |
+| isUnloadedNotDead | `h: hand` | `boolean` | `obj:isUnloadedNotDead(h)` |
+| addExisting | `o: RootObjectBase, h: hand` | `hand` | `obj:addExisting(o, h)` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
+
+## HandleManager
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.HandleManager`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| platoons | `PlatoonHandleContainerList` | R | `obj.platoons` |
+| zones | `ZoneMapHandleContainerList` | R | `obj.zones` |
+| towns | `TownHandleContainerList` | R | `obj.towns` |
+| items | `ItemHandleList` | R | `obj.items` |
+| nodes | `ItemHandleList` | R | `obj.nodes` |
+| mapfeatures | `HandleContainerList` | R | `obj.mapfeatures` |
+| redirect | `ogre_unordered_map<hand, hand>` | RW | `obj.redirect = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getRedirect | `h: hand` | `hand` | `obj:getRedirect(h)` |
+| removeRedirect | `h: hand` | `void` | `obj:removeRedirect(h)` |
+| clearRedirectForHandle | `h: hand` | `void` | `obj:clearRedirectForHandle(h)` |
+| reset | `` | `void` | `obj:reset()` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand, reason: string` | `void` | `obj:destroy(h, reason)` |
+| getAnything | `h: hand, deadOnes: boolean` | `RootObjectBase` | `obj:getAnything(h, deadOnes)` |
+| getTownBase | `h: hand, backupPos: Vector3` | `TownBase` | `obj:getTownBase(h, backupPos)` |
+| getTown | `h: hand, backupPos: Vector3` | `Town` | `obj:getTown(h, backupPos)` |
+| getAnythingButBase | `h: hand, deadOnes: boolean` | `RootObject` | `obj:getAnythingButBase(h, deadOnes)` |
+| getShopTrader | `h: hand` | `Character` | `obj:getShopTrader(h)` |
+| getBuilding | `h: hand` | `Building` | `obj:getBuilding(h)` |
+| getBuilding_UseableStuff | `h: hand` | `UseableStuff` | `obj:getBuilding_UseableStuff(h)` |
+| getCharacter | `h: hand, deadOnes: boolean, redirect: boolean` | `Character` | `obj:getCharacter(h, deadOnes, redirect)` |
+| getPlatoon | `h: hand` | `Platoon` | `obj:getPlatoon(h)` |
+| getItem | `h: hand` | `Item` | `obj:getItem(h)` |
+| isPlayerFaction | `h: hand` | `boolean` | `obj:isPlayerFaction(h)` |
+| addExistingObjectHandleToZone | `h: hand` | `boolean` | `obj:addExistingObjectHandleToZone(h)` |
+| getFromDeathParade | `h: hand` | `Character` | `obj:getFromDeathParade(h)` |
 
 ## HavokCharacter
 **Header:** `extern/KenshiLib/Include/kenshi/HavokCharacter.h`
@@ -7979,6 +8555,15 @@
 | setPersistant [2] | `p: boolean` | `void` | `obj:setPersistant(p)` |
 | itemEntityCreated | `ent: userdata` | `void` | `obj:itemEntityCreated(ent)` |
 
+## ItemHandleList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.ItemHandleList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+
 ## iVector2
 **Header:** `extern/KenshiLib/Include/kenshi/util/iVector2.h`
 **Metatable:** `KenshiLua.iVector2`
@@ -8025,6 +8610,36 @@
 | GetKenshiVersion | `` | `KenshiLib::BinaryVersion` | `KenshiLib::BinaryVersion.GetKenshiVersion()`<br>`obj:GetKenshiVersion()` |
 | getKenshiVersion | `` | `KenshiLib::BinaryVersion` | `KenshiLib::BinaryVersion.getKenshiVersion()`<br>`obj:getKenshiVersion()` |
 | new | `` | `KenshiLib::BinaryVersion` | `KenshiLib::BinaryVersion.new()`<br>`obj:new()` |
+
+## KingOfRenderThread
+**Header:** `extern/KenshiLib/Include/kenshi/KingOfRenderThread.h`
+**Metatable:** `KenshiLua.KingOfRenderThread`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| TIME | `number` | RW | `obj.TIME = <value>` |
+| render | `Renderer` | RW | `obj.render = <value>` |
+| camera | `CameraClass` | RW | `obj.camera = <value>` |
+| terrain | `Terrain` | RW | `obj.terrain = <value>` |
+| titleScreen | `TitleScreen` | RW | `obj.titleScreen = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| startup | `` | `void` | `obj:startup()` |
+| initialisation | `` | `void` | `obj:initialisation()` |
+| mainloop | `time: number` | `void` | `obj:mainloop(time)` |
+| newGame | `w: MyGUI::Widget` | `void` | `obj:newGame(w)` |
+| newGameWithCharEdit | `starter: GameData` | `void` | `obj:newGameWithCharEdit(starter)` |
+| error | `msg: string` | `void` | `obj:error(msg)` |
+| errorD | `msg: string` | `void` | `obj:errorD(msg)` |
+| loadTerrain | `name: string` | `void` | `obj:loadTerrain(name)` |
+| analyseModel | `name: string, model: userdata` | `void` | `obj:analyseModel(name, model)` |
+| getBonesVertices | `modelName: string, boneName: string, facing: MeshDataLookup::Dir` | `lektor<int>` | `obj:getBonesVertices(modelName, boneName, facing)` |
+| getMeshData | `meshName: string` | `MeshDataLookup` | `obj:getMeshData(meshName)` |
+| addTerrainBloodSplat | `x: number, z: number, rad: number, angle: number, uvOffset: iVector2, mat: string, slow: boolean` | `void` | `obj:addTerrainBloodSplat(x, z, rad, angle, uvOffset, mat, slow)` |
+| deleteTitleScreen | `` | `void` | `obj:deleteTitleScreen()` |
 
 ## LevelEditor
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
@@ -8301,6 +8916,48 @@
 | createInfo | `panel: MyGUI::Widget` | `void` | `obj:createInfo(panel)` |
 | updateInfo | `index: integer` | `void` | `obj:updateInfo(index)` |
 
+## LocaleInfo
+**Header:** `extern/KenshiLib/Include/kenshi/LocaleInfo.h`
+**Metatable:** `KenshiLua.LocaleInfo`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| isBase | `boolean` | RW | `obj.isBase = <value>` |
+| id | `string` | RW | `obj.id = <value>` |
+| name | `string` | RW | `obj.name = <value>` |
+| steamCode | `string` | RW | `obj.steamCode = <value>` |
+| isMod | `boolean` | RW | `obj.isMod = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| operator_assign | `other: LocaleInfo` | `LocaleInfo` | `obj:operator_assign(other)` |
+
+## LocaleManager
+**Header:** `extern/KenshiLib/Include/kenshi/LocaleInfo.h`
+**Metatable:** `KenshiLua.LocaleManager`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| currentLocale | `LocaleInfo` | RW | `obj.currentLocale = <value>` |
+| modLocale | `LocaleInfo` | RW | `obj.modLocale = <value>` |
+| localePath | `string` | RW | `obj.localePath = <value>` |
+| availableLanguages | `Ogre::FastArray<LocaleInfo*>` | RW | `obj.availableLanguages = <value>` |
+| localeList | `Ogre::FastArray<LocaleInfo>` | RW | `obj.localeList = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| init | `` | `void` | `obj:init()` |
+| getCurrentLocale | `` | `LocaleInfo` | `obj:getCurrentLocale()` |
+| setCurrentLocale | `locale: LocaleInfo` | `void` | `obj:setCurrentLocale(locale)` |
+| trySetCurrentLocaleFromMod | `mod: ModInfo` | `boolean` | `obj:trySetCurrentLocaleFromMod(mod)` |
+| getCurrentLocalePath | `` | `string` | `obj:getCurrentLocalePath()` |
+| getCurrentLocaleMod | `` | `string` | `obj:getCurrentLocaleMod()` |
+| getAvailableLanguages | `` | `LocaleInfoPtrFastArrayBinding::ArrayType` | `obj:getAvailableLanguages()` |
+
 ## LockedArmour
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.LockedArmour`
@@ -8547,6 +9204,27 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ManagementScreen.h`
 **Parent Class:** [`ManagementScreen`](#managementscreen)
 **Metatable:** `KenshiLua.ManagementScreen_TechItemViewData`
+
+## MapItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.MapItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| value | `integer` | RW | `obj.value = <value>` |
+| townsDiscoveredCount | `integer` | RW | `obj.townsDiscoveredCount = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getItemWeight | `` | `number` | `obj:getItemWeight()` |
+| getValueSingle | `isPlayer: boolean` | `integer` | `obj:getValueSingle(isPlayer)` |
+| selectTowns | `` | `integer` | `obj:selectTowns()` |
+| consume | `` | `boolean` | `obj:consume()` |
+| getTownsDiscovered | `` | `integer` | `obj:getTownsDiscovered()` |
+| _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
+| _serialise | `container: GameDataContainer, typ: itemType` | `GameData` | `obj:_serialise(container, typ)` |
 
 ## MapScreen
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
@@ -8948,6 +9626,16 @@
 | operator_assign | `other: ModInfo` | `void` | `obj:operator_assign(other)` |
 | getLocale | `` | `boolean\|string` | `obj:getLocale()` |
 
+## MoneyItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.MoneyItem`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getValueSingle | `isPlayer: boolean` | `integer` | `obj:getValueSingle(isPlayer)` |
+| consume | `` | `boolean` | `obj:consume()` |
+
 ## MotionFilter
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
 **Metatable:** `KenshiLua.MotionFilter`
@@ -9134,6 +9822,16 @@
 | removeIsland | `pos: Vector3, radius: number` | `integer` | `obj:removeIsland(pos, radius)` |
 | projectToTerrain | `zone: ZoneMap` | `void` | `obj:projectToTerrain(zone)` |
 | getSeedPoints | `zone: ZoneMap` | `lightuserdata` | `obj:getSeedPoints(zone)` |
+
+## NestItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.NestItem`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getClassType | `` | `integer` | `obj:getClassType()` |
+| getModelName | `` | `string` | `obj:getModelName()` |
 
 ## NewGameOptionsWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/NewGameOptionsWindow.h`
@@ -9993,6 +10691,19 @@
 | setRoamingMapArea | `a: userdata` | `void` | `obj:setRoamingMapArea(a)` |
 | getSquadLeader_theRealOne | `` | `hand` | `obj:getSquadLeader_theRealOne()` |
 
+## PlatoonHandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.PlatoonHandleContainerList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getCharacterOrZero | `h: hand` | `RootObject` | `obj:getCharacterOrZero(h)` |
+| getCharacterOrPlatoon | `h: hand` | `RootObjectBase` | `obj:getCharacterOrPlatoon(h)` |
+| getActivePlatoon | `h: hand` | `ActivePlatoon` | `obj:getActivePlatoon(h)` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
+
 ## PlayerInterface
 **Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
 **Metatable:** `KenshiLua.PlayerInterface`
@@ -10002,7 +10713,7 @@
 |---|---|---|---|
 | factionName | `string` | RW | `obj.factionName = <value>` |
 | camera | `CameraClass` | RW | `obj.camera = <value>` |
-| technology | `lightuserdata` | RW | `obj.technology = <value>` |
+| technology | `Research` | RW | `obj.technology = <value>` |
 | selectedObjectsChangedThisFrame | `boolean` | RW | `obj.selectedObjectsChangedThisFrame = <value>` |
 | contextMenu | `ContextMenu` | RW | `obj.contextMenu = <value>` |
 | selectBox | `SelectionBox` | RW | `obj.selectBox = <value>` |
@@ -10651,6 +11362,36 @@
 |---|---|---|---|
 | canEquip | `race: RaceData, isAnimal: boolean` | `boolean` | `obj:canEquip(race, isAnimal)` |
 
+## RagdollAnimation
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/RagdollAnimation.h`
+**Metatable:** `KenshiLua.RagdollAnimation`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| animationClass | `AnimationClass` | R | `obj.animationClass` |
+| targetAnimationName | `string` | RW | `obj.targetAnimationName = <value>` |
+| skeleton | `lightuserdata` | R | `obj.skeleton` |
+| entity | `lightuserdata` | R | `obj.entity` |
+| firstUpdate | `boolean` | RW | `obj.firstUpdate = <value>` |
+| animating | `boolean` | RW | `obj.animating = <value>` |
+| endTime | `number` | RW | `obj.endTime = <value>` |
+| curTime | `number` | RW | `obj.curTime = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isAnimating | `` | `boolean` | `obj:isAnimating()` |
+| update | `` | `void` | `obj:update()` |
+| setTargetAnimation | `ent: userdata, skel: userdata, animation: userdata, duration: number` | `void` | `obj:setTargetAnimation(ent, skel, animation, duration)` |
+| getTargetAnimation | `` | `string` | `obj:getTargetAnimation()` |
+| getAnimationTime | `` | `number` | `obj:getAnimationTime()` |
+
+## RagdollAnimation::RagdollAnimationTrack
+**Header:** `extern/KenshiLib/Include/kenshi/Animation/RagdollAnimation.h`
+**Parent Class:** [`RagdollAnimation`](#ragdollanimation)
+**Metatable:** `KenshiLua.RagdollAnimation.RagdollAnimationTrack`
+
 ## RainCollectorBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/RainCollectorBuilding.h`
 **Metatable:** `KenshiLua.RainCollectorBuilding`
@@ -10662,6 +11403,94 @@
 | getRainAmount | `` | `number` | `obj:getRainAmount()` |
 | getGUIState | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIState(datapanel, category)` |
 | getGUIToolTipForGroundResourceEfficiency | `` | `void` | `obj:getGUIToolTipForGroundResourceEfficiency()` |
+
+## RangedCombatClass
+**Header:** `extern/KenshiLib/Include/kenshi/combat/RangedCombatClass.h`
+**Metatable:** `KenshiLua.RangedCombatClass`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| state | `RangedCombatClass::RangedState` | RW | `obj.state = <value>` |
+| _lastAimAheadAmount | `number` | RW | `obj._lastAimAheadAmount = <value>` |
+| turret | `hand` | RW | `obj.turret = <value>` |
+| gun | `GunClass` | RW | `obj.gun = <value>` |
+| currentStat | `StatsEnumerated` | RW | `obj.currentStat = <value>` |
+| updateNeededMsg | `boolean` | RW | `obj.updateNeededMsg = <value>` |
+
+## Renderer
+**Header:** `extern/KenshiLib/Include/kenshi/Renderer.h`
+**Metatable:** `KenshiLua.Renderer`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| terrainDecalManager | `lightuserdata` | R | `obj.terrainDecalManager` |
+| renderToTextureIconMachine | `RenderToTextureotron` | RW | `obj.renderToTextureIconMachine = <value>` |
+| camera | `lightuserdata` | R | `obj.camera` |
+| scene | `lightuserdata` | R | `obj.scene` |
+| root | `lightuserdata` | R | `obj.root` |
+| viewport | `lightuserdata` | R | `obj.viewport` |
+| window | `lightuserdata` | R | `obj.window` |
+| workspace | `lightuserdata` | R | `obj.workspace` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| shutDown | `` | `void` | `obj:shutDown()` |
+| update | `` | `void` | `obj:update()` |
+| createLight | `data: GameData, indoors: boolean, floor: integer` | `lightuserdata` | `obj:createLight(data, indoors, floor)` |
+| go | `` | `void` | `obj:go()` |
+| initialiseScene | `` | `void` | `obj:initialiseScene()` |
+| createDebugBox | `a: Vector3, b: Vector3` | `lightuserdata` | `obj:createDebugBox(a, b)` |
+| destroy [1] | `node: Ogre::SceneNode, destroyAttached: boolean` | `void` | `obj:destroy(node, destroyAttached)` |
+| destroy [2] | `light: Ogre::Light` | `void` | `obj:destroy(light)` |
+| getSceneManager | `` | `lightuserdata` | `obj:getSceneManager()` |
+| getRenderSystem | `` | `lightuserdata` | `obj:getRenderSystem()` |
+| getRootSceneNode | `` | `lightuserdata` | `obj:getRootSceneNode()` |
+| getCamera | `` | `lightuserdata` | `obj:getCamera()` |
+| getViewport | `` | `lightuserdata` | `obj:getViewport()` |
+| getRoot | `` | `lightuserdata` | `obj:getRoot()` |
+| getScreenWidth | `` | `number` | `obj:getScreenWidth()` |
+| getScreenHeight | `` | `number` | `obj:getScreenHeight()` |
+| getWorkspace | `` | `lightuserdata` | `obj:getWorkspace()` |
+| getSceneRelativeOrigin | `` | `Vector3` | `obj:getSceneRelativeOrigin()` |
+| validateCompositor | `node: string` | `boolean` | `obj:validateCompositor(node)` |
+| setupPostProcessing | `str: string` | `void` | `obj:setupPostProcessing(str)` |
+| refreshActiveCompositor | `` | `void` | `obj:refreshActiveCompositor()` |
+
+## RendererT
+**Header:** `extern/KenshiLib/Include/kenshi/Renderer.h`
+**Metatable:** `KenshiLua.RendererT`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| debugEntsUpdateListT | `lektor<RenderEntityT*>` | RW | `obj.debugEntsUpdateListT = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| update | `` | `void` | `obj:update()` |
+
+## RenderToTextureotron
+**Header:** `extern/KenshiLib/Include/kenshi/RenderToTextureotron.h`
+**Metatable:** `KenshiLua.RenderToTextureotron`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| sceneManager | `lightuserdata` | R | `obj.sceneManager` |
+| camera | `lightuserdata` | R | `obj.camera` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| renderItem [1] | `item: Item, data: GameData, filename: string, imgSize: iVector2, textureSize: iVector2, pitch: number, yaw: number, roll: number, zoom: number` | `boolean` | `obj:renderItem(item, data, filename, imgSize, textureSize, pitch, yaw, roll, zoom)` |
+| renderItem [2] | `item: Item, filename: string, size: iVector2` | `void` | `obj:renderItem(item, filename, size)` |
+| renderBuilding | `data: GameData, fileStr: string, size: iVector2, yaw: number, pitch: number` | `string` | `obj:renderBuilding(data, fileStr, size, yaw, pitch)` |
+| renderCharacterNPC | `character: Character, size: iVector2, distance: number` | `string` | `obj:renderCharacterNPC(character, size, distance)` |
+| buildAllItemsIcons | `` | `void` | `obj:buildAllItemsIcons()` |
 
 ## rendHit
 **Header:** `extern/KenshiLib/Include/kenshi/util/UtilityT.h`
@@ -10689,6 +11518,65 @@
 | refresh | `force: boolean` | `void` | `obj:refresh(force)` |
 | notifyEndDrop | `sender: integer, info: integer, result: boolean` | `void` | `obj:notifyEndDrop(sender, info, result)` |
 | notifyRemoved | `index: integer` | `void` | `obj:notifyRemoved(index)` |
+
+## Research
+**Header:** `extern/KenshiLib/Include/kenshi/Research.h`
+**Metatable:** `KenshiLua.Research`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| screen | `ManagementScreen` | RW | `obj.screen = <value>` |
+| theoreticalTechLevel | `integer` | RW | `obj.theoreticalTechLevel = <value>` |
+| changedSoUpdateGUI | `boolean` | RW | `obj.changedSoUpdateGUI = <value>` |
+| categories | `lektor<std::string>` | R | `obj.categories` |
+| paidFor | `lektor<std::string>` | R | `obj.paidFor` |
+| finished | `ogre_unordered_set<GameData*>` | R | `obj.finished` |
+| enabledObjects | `ogre_unordered_set<GameData*>` | R | `obj.enabledObjects` |
+| researchDeskLevel | `integer` | RW | `obj.researchDeskLevel = <value>` |
+| numResearchers | `integer` | RW | `obj.numResearchers = <value>` |
+| totalResearchThisFrame | `number` | RW | `obj.totalResearchThisFrame = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| _reset | `` | `void` | `obj:_reset()` |
+| _setup | `` | `void` | `obj:_setup()` |
+| getArmourCraftLevel | `armour: GameData, skill: integer, crit: boolean` | `integer` | `obj:getArmourCraftLevel(armour, skill, crit)` |
+| startResearch | `d: GameData` | `boolean` | `obj:startResearch(d)` |
+| stopResearch | `d: GameData` | `void` | `obj:stopResearch(d)` |
+| completeResearch | `d: GameData` | `void` | `obj:completeResearch(d)` |
+| isFinished | `what: GameData` | `boolean` | `obj:isFinished(what)` |
+| isBuildingResearched | `d: GameData` | `boolean` | `obj:isBuildingResearched(d)` |
+| getETA | `d: GameData, simple: boolean` | `string` | `obj:getETA(d, simple)` |
+| payCosts | `d: GameData` | `boolean` | `obj:payCosts(d)` |
+| canPayCosts | `data: GameData` | `boolean` | `obj:canPayCosts(data)` |
+| getBlueprintsFor | `item: GameData` | `GameData` | `obj:getBlueprintsFor(item)` |
+| staticUpdate | `` | `void` | `obj:staticUpdate()` |
+| getCurrentResearchRate | `` | `number` | `obj:getCurrentResearchRate()` |
+| serialise | `data: GameData` | `void` | `obj:serialise(data)` |
+| load | `data: GameData` | `void` | `obj:load(data)` |
+| progressResearch | `amount: number` | `void` | `obj:progressResearch(amount)` |
+| checkRequirementsForInvisibility | `what: GameData, twoLevels: boolean` | `boolean` | `obj:checkRequirementsForInvisibility(what, twoLevels)` |
+| checkRequirements | `what: GameData, twoLevels: boolean, checkCost: boolean` | `boolean` | `obj:checkRequirements(what, twoLevels, checkCost)` |
+| checkRequirements_andQueue | `what: GameData` | `boolean` | `obj:checkRequirements_andQueue(what)` |
+| isInQueue | `what: GameData` | `boolean` | `obj:isInQueue(what)` |
+| _updateTheAllList | `` | `void` | `obj:_updateTheAllList()` |
+| setResearchDeskLevel | `level: integer` | `void` | `obj:setResearchDeskLevel(level)` |
+| refreshTheoreticalTechLevel | `` | `void` | `obj:refreshTheoreticalTechLevel()` |
+| needsATechBench | `d: GameData` | `integer` | `obj:needsATechBench(d)` |
+| hasPaidFor | `d: GameData` | `boolean` | `obj:hasPaidFor(d)` |
+| getResearchDeskLevel | `` | `integer` | `obj:getResearchDeskLevel()` |
+| hasArtifact | `artifact: GameData, quantity: integer` | `boolean` | `obj:hasArtifact(artifact, quantity)` |
+| getResearchItem | `d: GameData` | `ResearchItem` | `obj:getResearchItem(d)` |
+| getResearchProgress [1] | `d: GameData` | `number` | `obj:getResearchProgress(d)` |
+| getResearchProgress [2] | `d: ResearchItem` | `number` | `obj:getResearchProgress(d)` |
+| getCategories | `` | `lektor<std::string>` | `obj:getCategories()` |
+
+## Research::BuildingUpgrades
+**Header:** `extern/KenshiLib/Include/kenshi/Research.h`
+**Parent Class:** [`Research`](#research)
+**Metatable:** `KenshiLua.Research_BuildingUpgrades`
 
 ## ResearchBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ResearchBuilding.h`
@@ -10721,6 +11609,23 @@
 |---|---|---|---|
 | getResearchButton | `` | `MyGUI::Widget` | `obj:getResearchButton()` |
 | setupSections | `inventoryGUI: InventoryGUI, sections: SectionsMap, inventory: Inventory` | `void` | `obj:setupSections(inventoryGUI, sections, inventory)` |
+
+## ResearchItem
+**Header:** `extern/KenshiLib/Include/kenshi/Research.h`
+**Metatable:** `KenshiLua.ResearchItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| data | `GameData` | RW | `obj.data = <value>` |
+| progress | `number` | RW | `obj.progress = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getCostItem | `id: integer` | `GameData` | `obj:getCostItem(id)` |
+| getCostItemQuantity | `id: integer` | `integer` | `obj:getCostItemQuantity(id)` |
+| getNumDifferentCostItems | `` | `integer` | `obj:getNumDifferentCostItems()` |
 
 ## ResourceLoader
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
@@ -10828,8 +11733,28 @@
 | loadImage | `` | `void` | `obj:loadImage()` |
 
 ## RobotLimbItem
-**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.RobotLimbItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| statMults | `ogre_unordered_map<StatsEnumerated, float>::type` | RW | `obj.statMults = <value>` |
+| maxHP | `number` | RW | `obj.maxHP = <value>` |
+| currentDamage | `number` | RW | `obj.currentDamage = <value>` |
+| wearDamage | `number` | RW | `obj.wearDamage = <value>` |
+| stunDamage | `number` | RW | `obj.stunDamage = <value>` |
+| unarmedDamage | `integer` | RW | `obj.unarmedDamage = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getStatMult | `stat: StatsEnumerated` | `number` | `obj:getStatMult(stat)` |
+| _serialise | `container: GameDataContainer, type: itemType` | `GameData` | `obj:_serialise(container, type)` |
+| _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
+| getCraftTime | `` | `number` | `obj:getCraftTime()` |
+| getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
+| getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 
 ## RobotLimbs
 **Header:** `extern/KenshiLib/Include/kenshi/MedicalSystem.h`
@@ -11472,6 +12397,44 @@
 ## Serialisable
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.Serialisable`
+
+## SeveredLimbItem
+**Header:** `extern/KenshiLib/Include/kenshi/Item.h`
+**Metatable:** `KenshiLua.SeveredLimbItem`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| limbScale | `Vector3` | RW | `obj.limbScale = <value>` |
+| skinTone | `Vector4` | RW | `obj.skinTone = <value>` |
+| blood | `unknown` | RW | `obj.blood = <value>` |
+| impulse | `Vector3` | RW | `obj.impulse = <value>` |
+| timeout | `TimeOfDay` | RW | `obj.timeout = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| setupFromCharacter | `c: Character, limb: integer, force: Vector3` | `void` | `obj:setupFromCharacter(c, limb, force)` |
+| _serialise | `container: GameDataContainer, typ: itemType` | `GameData` | `obj:_serialise(container, typ)` |
+| _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
+| getTimeout | `` | `TimeOfDay` | `obj:getTimeout()` |
+| destroyPhysical | `` | `void` | `obj:destroyPhysical()` |
+
+## SharedKing
+**Header:** `extern/KenshiLib/Include/kenshi/SharedKing.h`
+**Metatable:** `KenshiLua.SharedKing`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| areasList | `lightuserdata` | R | `obj.areasList` |
+| townList | `TownList` | R | `obj.townList` |
+| zoneMgr | `ZoneManagerInterfaceT` | RW | `obj.zoneMgr = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isLevelEditMode | `` | `boolean` | `obj:isLevelEditMode()` |
 
 ## ShopTrader
 **Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
@@ -12792,6 +13755,64 @@
 **Parent Class:** [`TownBuildingsManager`](#townbuildingsmanager)
 **Metatable:** `KenshiLua.TownBuildingsManager_BuildingInfo`
 
+## TownHandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.TownHandleContainerList`
+
+## TownList
+**Header:** `extern/KenshiLib/Include/kenshi/Town.h`
+**Metatable:** `KenshiLua.TownList`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| newTownsDiscovered | `boolean` | RW | `obj.newTownsDiscovered = <value>` |
+| noTown | `lightuserdata` | R | `obj.noTown` |
+| uniqueTowns | `lektor<RootObject*>` | R | `obj.uniqueTowns` |
+| nests | `lektor<RootObject*>` | R | `obj.nests` |
+| deletedTowns | `lektor<Town*>` | R | `obj.deletedTowns` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| addActiveObject | `b: RootObject` | `boolean` | `obj:addActiveObject(b)` |
+| updateTownCoverage | `n: TownBase` | `void` | `obj:updateTownCoverage(n)` |
+| _clearAll | `` | `void` | `obj:_clearAll()` |
+| _resetGame | `` | `void` | `obj:_resetGame()` |
+| destroyAllTheNests | `` | `void` | `obj:destroyAllTheNests()` |
+| destroy | `t: TownBase` | `void` | `obj:destroy(t)` |
+| getTown | `instanceID: string` | `Town` | `obj:getTown(instanceID)` |
+| getTownBySID | `name: string` | `Town` | `obj:getTownBySID(name)` |
+| getNearestPlayerTown | `position: Vector3, includePlayerResidenceTowns: boolean, maxDistance: number` | `Town` | `obj:getNearestPlayerTown(position, includePlayerResidenceTowns, maxDistance)` |
+| getNearestTown | `pos: Vector3, townOwner: Faction, except: Town, myFaction: Faction, type: TownType` | `Town` | `obj:getNearestTown(pos, townOwner, except, myFaction, type)` |
+| getNearestTownWithBuildingDesignation | `what: BuildingDesignation, pos: Vector3, townFactionWanted: Faction, except: Town, notEnemiesOf: Faction, type: TownType, maxDistanceSquared: number` | `Town` | `obj:getNearestTownWithBuildingDesignation(what, pos, townFactionWanted, except, notEnemiesOf, type, maxDistanceSquared)` |
+| getNearestNest | `pos: Vector3, f: Faction, except: TownBase` | `lightuserdata` | `obj:getNearestNest(pos, f, except)` |
+| getNearest | `pos: Vector3, f: Faction, except: TownBase` | `TownBase` | `obj:getNearest(pos, f, except)` |
+| getNearestWithinItsRadius | `position: Vector3, skipPlayerTowns: boolean` | `TownBase` | `obj:getNearestWithinItsRadius(position, skipPlayerTowns)` |
+| getRetreatTown | `pos: Vector3, owner: Faction, except: Town` | `Town` | `obj:getRetreatTown(pos, owner, except)` |
+| createNewPlayerTown | `pos: Vector3` | `Town` | `obj:createNewPlayerTown(pos)` |
+| getDistToNearestTown | `pos: Vector3, except: Town` | `number` | `obj:getDistToNearestTown(pos, except)` |
+| getSquaredDistToNearestTown | `pos: Vector3, except: Town` | `number` | `obj:getSquaredDistToNearestTown(pos, except)` |
+| getNearishTown | `myFaction: Faction, pos: Vector3, owner: Faction, except: TownBase, publicOnly: boolean, types: integer` | `Town` | `obj:getNearishTown(myFaction, pos, owner, except, publicOnly, types)` |
+| getAllTowns | `` | `lektor<RootObject*>` | `obj:getAllTowns()` |
+| getNullTown | `` | `TownBase` | `obj:getNullTown()` |
+| update | `` | `boolean` | `obj:update()` |
+| updateTownsDiscovery | `` | `void` | `obj:updateTownsDiscovery()` |
+| setAllTownsDebugVisible | `on: boolean` | `void` | `obj:setAllTownsDebugVisible(on)` |
+| saveToDisk | `levelEditor: boolean, forceFilename: string` | `void` | `obj:saveToDisk(levelEditor, forceFilename)` |
+| loadFromDisk | `force: boolean, extra: Serialisable` | `boolean` | `obj:loadFromDisk(force, extra)` |
+| saveState | `container: GameDataContainer` | `void` | `obj:saveState(container)` |
+| loadState | `container: GameDataContainer, isImportSoPlayerOnly: boolean` | `void` | `obj:loadState(container, isImportSoPlayerOnly)` |
+| loadStateDiscovery | `container: GameDataContainer, importOverride: boolean` | `void` | `obj:loadStateDiscovery(container, importOverride)` |
+| loadLevelData | `newGame: boolean` | `void` | `obj:loadLevelData(newGame)` |
+| _saveLevelData | `container: GameDataContainer, mod: string` | `void` | `obj:_saveLevelData(container, mod)` |
+| saveUniqueTownsAndNests | `container: GameDataContainer` | `void` | `obj:saveUniqueTownsAndNests(container)` |
+| listUniqueTownsFromPlayerOwnership | `` | `void` | `obj:listUniqueTownsFromPlayerOwnership()` |
+| loadAllTowns_worldInit | `saveSource: GameDataContainer` | `void` | `obj:loadAllTowns_worldInit(saveSource)` |
+| addNest | `n: RootObject` | `void` | `obj:addNest(n)` |
+| reassessTownPositions | `t: TownBase` | `void` | `obj:reassessTownPositions(t)` |
+| mergePlayerTowns | `a: Town, b: Town` | `void` | `obj:mergePlayerTowns(a, b)` |
+
 ## TradeCulture
 **Header:** `extern/KenshiLib/Include/kenshi/TradeCulture.h`
 **Metatable:** `KenshiLua.TradeCulture`
@@ -12911,7 +13932,7 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| gunClass | `lightuserdata` | R | `obj.gunClass` |
+| gunClass | `GunClassTurret` | RW | `obj.gunClass = <value>` |
 | aimDistInDegrees | `number` | RW | `obj.aimDistInDegrees = <value>` |
 | currentAimDir | `Vector3` | RW | `obj.currentAimDir = <value>` |
 | rootAimDir | `Vector3` | RW | `obj.rootAimDir = <value>` |
@@ -13296,6 +14317,23 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | operator_assign | `other: VisibleObjectInfo` | `void` | `obj:operator_assign(other)` |
+
+## WaitingStateAI
+**Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
+**Metatable:** `KenshiLua.WaitingStateAI`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| circlingDirection | `number` | RW | `obj.circlingDirection = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| validate | `` | `boolean` | `obj:validate()` |
+| initialise | `` | `boolean` | `obj:initialise()` |
+| update | `time: number` | `void` | `obj:update(time)` |
+| end | `` | `void` | `obj:end()` |
 
 ## WallBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/WallBuilding.h`
@@ -13769,9 +14807,9 @@
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
-| mapContent | `lightuserdata` | R | `obj.mapContent` |
+| mapContent | `ZoneMapContent` | R | `obj.mapContent` |
 | mapFeatures | `lightuserdata` | R | `obj.mapFeatures` |
-| zoneSmell | `lightuserdata` | R | `obj.zoneSmell` |
+| zoneSmell | `ZoneSmell` | R | `obj.zoneSmell` |
 | coordinates | `iVector2` | RW | `obj.coordinates = <value>` |
 | island | `integer` | RW | `obj.island = <value>` |
 | hasFile | `boolean` | RW | `obj.hasFile = <value>` |
@@ -13833,6 +14871,128 @@
 |---|---|---|---|
 | _zoneBeingLoaded | `boolean` | RW | `obj._zoneBeingLoaded = <value>` |
 | _zoneIsLoaded | `boolean` | RW | `obj._zoneIsLoaded = <value>` |
+
+## ZoneMapContent
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
+**Metatable:** `KenshiLua.ZoneMapContent`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| periodicUpdateIndex | `integer` | RW | `obj.periodicUpdateIndex = <value>` |
+| myHandles | `HandleList` | RW | `obj.myHandles = <value>` |
+| handleDummy | `ZoneMapContent::HandleDummy` | RW | `obj.handleDummy = <value>` |
+| newGameFirstTimeLoaded | `boolean` | RW | `obj.newGameFirstTimeLoaded = <value>` |
+| toUpdateList | `lektor<RootObject*>` | R | `obj.toUpdateList` |
+| zoneMap | `ZoneMap` | RW | `obj.zoneMap = <value>` |
+| loaded | `boolean` | RW | `obj.loaded = <value>` |
+| foliageSystem | `FoliageSystem` | RW | `obj.foliageSystem = <value>` |
+| activationFlag | `boolean` | RW | `obj.activationFlag = <value>` |
+| items | `ogre_unordered_set<hand>` | R | `obj.items` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| isLoadedT | `` | `boolean` | `obj:isLoadedT()` |
+| update | `` | `boolean` | `obj:update()` |
+| threadedUpdate | `` | `void` | `obj:threadedUpdate()` |
+| addToUpdateList | `b: RootObject` | `void` | `obj:addToUpdateList(b)` |
+| _reloadAllFoliage | `` | `void` | `obj:_reloadAllFoliage()` |
+| getOverlayPixelCoord | `` | `iVector2` | `obj:getOverlayPixelCoord()` |
+| clearOverlay | `channel: integer` | `void` | `obj:clearOverlay(channel)` |
+| generateDirtMap | `channel: integer` | `integer` | `obj:generateDirtMap(channel)` |
+| addLoadedBuilding | `buildingInstanceData: GameSaveState, isActiveLevelFile: boolean` | `void` | `obj:addLoadedBuilding(buildingInstanceData, isActiveLevelFile)` |
+| loadItems | `source: GameDataContainer` | `boolean` | `obj:loadItems(source)` |
+| saveItems | `dest: GameDataContainer, allItems: boolean` | `void` | `obj:saveItems(dest, allItems)` |
+| saveLevelData | `all: boolean, modName: string, pathOverride: string` | `void` | `obj:saveLevelData(all, modName, pathOverride)` |
+| saveToDisk | `path: string` | `void` | `obj:saveToDisk(path)` |
+| activate | `` | `void` | `obj:activate()` |
+| deactivate | `saveZoneState: boolean` | `void` | `obj:deactivate(saveZoneState)` |
+| reFactionBuildingsFromTown | `` | `void` | `obj:reFactionBuildingsFromTown()` |
+| updateItemsVisibility | `` | `void` | `obj:updateItemsVisibility()` |
+| _setEnabledStaticGeometry | `enable: boolean` | `void` | `obj:_setEnabledStaticGeometry(enable)` |
+| findBuildingTypePublic | `t: Town` | `Building` | `obj:findBuildingTypePublic(t)` |
+| findBuildingByDataPosition | `data: GameData, x: number, z: number` | `Building` | `obj:findBuildingByDataPosition(data, x, z)` |
+| _populateTownsOnNewGame | `` | `void` | `obj:_populateTownsOnNewGame()` |
+| forceLoadAllTheBuildingInteriorVisuals | `` | `void` | `obj:forceLoadAllTheBuildingInteriorVisuals()` |
+| addItem | `item: Item` | `void` | `obj:addItem(item)` |
+| removeItem | `item: Item` | `void` | `obj:removeItem(item)` |
+| changeItemZone | `item: Item, moveTo: ZoneMap` | `boolean` | `obj:changeItemZone(item, moveTo)` |
+| removeObject | `obj: RootObject` | `boolean` | `obj:removeObject(obj)` |
+| getFoliageSystem | `` | `FoliageSystem` | `obj:getFoliageSystem()` |
+| _activate | `` | `void` | `obj:_activate()` |
+| createLoadedItems | `` | `void` | `obj:createLoadedItems()` |
+| setLoadedT | `t: boolean` | `void` | `obj:setLoadedT(t)` |
+
+## ZoneMapContent::HandleDummy
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
+**Parent Class:** [`ZoneMapContent`](#zonemapcontent)
+**Metatable:** `KenshiLua.ZoneMapContent.HandleDummy`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getDataType | `` | `integer` | `obj:getDataType()` |
+| loadFromSerialise | `state: GameSaveState` | `void` | `obj:loadFromSerialise(state)` |
+
+## ZoneMapContent::ZoneMapContentOrderLoader
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
+**Parent Class:** [`ZoneMapContent`](#zonemapcontent)
+**Metatable:** `KenshiLua.ZoneMapContent.ZoneMapContentOrderLoader`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| shouldSkip | `state: GameSaveState` | `boolean` | `obj:shouldSkip(state)` |
+
+## ZoneMapHandleContainerList
+**Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
+**Metatable:** `KenshiLua.ZoneMapHandleContainerList`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| getZoneMap | `h: hand` | `ZoneMapContent` | `obj:getZoneMap(h)` |
+| getObject | `h: hand` | `RootObject` | `obj:getObject(h)` |
+| setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+| destroy | `h: hand` | `void` | `obj:destroy(h)` |
+| getCorrectHandleList | `h: hand` | `HandleList` | `obj:getCorrectHandleList(h)` |
+
+## ZoneSmell
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
+**Metatable:** `KenshiLua.ZoneSmell`
+
+### Fields
+| Lua Name | Type | R/W | Example |
+|---|---|---|---|
+| smell_bloodAndCorpses | `ZoneSmell::Smell` | R | `obj.smell_bloodAndCorpses` |
+| smell_eggs | `ZoneSmell::Smell` | R | `obj.smell_eggs` |
+| zoneMap | `ZoneMap` | RW | `obj.zoneMap = <value>` |
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| _getSmell | `t: SmellType` | `ZoneSmell::Smell` | `obj:_getSmell(t)` |
+| isEmpty | `` | `boolean` | `obj:isEmpty()` |
+| getSmell | `pos: Vector3, type: SmellType` | `Vector3` | `obj:getSmell(pos, type)` |
+| getGeneralSmellLevel | `type: SmellType` | `number` | `obj:getGeneralSmellLevel(type)` |
+| periodicUpdate | `time: number` | `void` | `obj:periodicUpdate(time)` |
+| addSmell | `type: ZoneSmell::SmellMessageType, key: userdata, pos: Vector3` | `void` | `obj:addSmell(type, key, pos)` |
+
+## ZoneSmell::Smell
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
+**Parent Class:** [`ZoneSmell`](#zonesmell)
+**Metatable:** `KenshiLua.ZoneSmell_Smell`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| update | `time: number` | `void` | `obj:update(time)` |
+
+## ZoneSmell::SmellMsg
+**Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
+**Parent Class:** [`ZoneSmell`](#zonesmell)
+**Metatable:** `KenshiLua.ZoneSmell_SmellMsg`
 
 ## ZoneSpacialGrid
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`

@@ -109,6 +109,10 @@ def find_processes_under_root(game_root: Path, launched_after_epoch: float) -> L
             continue
         proc_path = parts[2].strip()
         if not proc_path:
+            # Under Steam, non-elevated PowerShell cannot inspect .Path for Kenshi_x64;
+            # match by process name and launch epoch window.
+            if start_epoch >= (launched_after_epoch - 2.0):
+                pids.append(pid)
             continue
         norm_path = os.path.normcase(os.path.abspath(proc_path))
         if norm_path.startswith(root_prefix) and start_epoch >= (launched_after_epoch - 2.0):

@@ -58,7 +58,10 @@ public:
     static int checkOrders(lua_State* L);
     static int chooseGoal(lua_State* L);
     static int _chooseGoal(lua_State* L);
+    static int chooseGoalFrom(lua_State* L);
+    static int choosePermaJob(lua_State* L);
     static int setupParametersForCurrentGoal(lua_State* L);
+    static int runGoals(lua_State* L);
     static int clearRequestsList(lua_State* L);
     static int bodyTaskComplete(lua_State* L);
     static int popFromOrders(lua_State* L);

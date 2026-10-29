@@ -30,7 +30,8 @@ function S.priceOf(entry)
         return AH.priceOf(entry)
     end
     local base = (entry.def and entry.def.basePrice) or scfg().defaultBasePrice
-    return math.floor((AH.age(entry.animal) + 0.1) * base)
+    local mult = scfg().resaleMultiplier or 0.50
+    return math.floor((AH.age(entry.animal) + 0.1) * base * mult)
 end
 
 -- Returns the buyer (the NPC) and the seller (the player character) of a
@@ -128,7 +129,24 @@ end
 
 -- Window
 
+local function removeModal(st)
+    if not st or not st.modal then
+        return
+    end
+    st.modal = false
+    local im = MyGUI.InputManager.getInstance()
+    if im and st.root then
+        local ok, err = pcall(im.removeWidgetModal, im, st.root)
+        if not ok then
+            AH.log("could not remove sale window modal state: " .. tostring(err))
+        end
+    end
+end
+
 local function destroyState(st)
+    -- Keep this defensive cleanup here as well as in close(): an open sale window can
+    -- be discarded during reload or replaced by another one without using close().
+    removeModal(st)
     local gui = assert(getForgottenGUI(), "ForgottenGUI is unavailable")
     -- Datapanels own widgets inside the layout, so destroy them before the layout.
     for i = 1, #st.panels do
@@ -178,18 +196,37 @@ local function endConversation(st)
     end
 end
 
-function S.close()
-    local st = S.state
-    if not st or st.closed then
-        return
-    end
+local function hideWindow(st)
     st.closed = true
+    removeModal(st)
     pcall(st.root.setVisible, st.root, false)
     local im = MyGUI.InputManager.getInstance()
     if im then
         im:resetKeyFocusWidget()
     end
+end
+
+function S.close()
+    local st = S.state
+    if not st or st.closed then
+        return
+    end
+    hideWindow(st)
     endConversation(st)
+end
+
+-- Kenshi's 3D-world clicks bypass MyGUI's modal-widget routing. If the player
+-- clicks the trader again while this custom window is open, the engine can start
+-- and display a new dialogue anyway. Dismiss the sale window without ending that
+-- newly started conversation; deferred destruction keeps this safe inside the
+-- DialogueWindow::show callback.
+local function onDialogueWindowShow()
+    local st = S.state
+    if not st or st.closed then
+        return
+    end
+    AH.debugLog("dismissing sale window because a new dialogue window opened")
+    hideWindow(st)
 end
 
 local function selectedRows(st)
@@ -384,6 +421,7 @@ function S.open(dialogue, filter)
         countText = countText,
         confirm = confirm,
         closed = false,
+        modal = false,
     }
     S.state = st
 
@@ -421,6 +459,9 @@ function S.open(dialogue, filter)
         end
         updateTotals(st)
         root:upLayerItem()
+        local im = assert(MyGUI.InputManager.getInstance(), "MyGUI InputManager is unavailable")
+        im:addWidgetModal(root)
+        st.modal = true
     end)
     if not ok then
         AH.log("sale window failed: " .. tostring(err))
@@ -432,6 +473,7 @@ function S.open(dialogue, filter)
 end
 
 AH.onEvent("sales_destroyClosed", "GameWorld::charsUpdate", destroyClosedWindow)
+AH.onEvent("sales_dialogueWindowShow", "DialogueWindow::show", onDialogueWindowShow)
 
 S.shutdown = discardWindow
 
