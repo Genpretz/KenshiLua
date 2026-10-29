@@ -1222,7 +1222,6 @@
 | autoEjectEnemiesTask2 | `Tasker` | RW | `obj.autoEjectEnemiesTask2 = <value>` |
 | orderedGoals | `OrderedGoalsMapBinding::MapType` | RW | `obj.orderedGoals = <value>` |
 | requestsList | `lektor<Tasker*>` | R | `obj.requestsList` |
-| orderedGoals | `OrderedGoalsMap` | R | `obj.orderedGoals` |
 | actions | `AITaskSytem::ActionsListMgr` | R | `obj.actions` |
 | actionsTryList | `AITaskSytem::ActionsListMgr` | R | `obj.actionsTryList` |
 | failedGOAPGoalDebugString | `lstring` | RW | `obj.failedGOAPGoalDebugString = <value>` |
@@ -1270,18 +1269,15 @@
 | checkOrders | `` | `boolean` | `obj:checkOrders()` |
 | chooseGoal | `timedLockOnCurrentGoal: boolean` | `void` | `obj:chooseGoal(timedLockOnCurrentGoal)` |
 | _chooseGoal | `priority: taskPriority, squadMemberType: SquadMemberType` | `boolean` | `obj:_chooseGoal(priority, squadMemberType)` |
-| chooseGoalFrom | `goals: OrderedGoalsMap, match: TaskMatch, listIn: lektor<Tasker*>, theseAreBlackboard: boolean` | `void` | `obj:chooseGoalFrom(goals, match, listIn, theseAreBlackboard)` |
-| choosePermaJob | `goals: OrderedGoalsMap, match: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean` | `void` | `obj:choosePermaJob(goals, match, urgentOnes, jobsEnabled)` |
+| chooseGoalFrom | `orderedGoals: userdata, alreadyHasGoal: TaskMatch, goalListIn: userdata, theseAreBlackboard: boolean` | `void` | `obj:chooseGoalFrom(orderedGoals, alreadyHasGoal, goalListIn, theseAreBlackboard)` |
+| choosePermaJob | `orderedGoals: userdata, alreadyHasGoal: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean` | `void` | `obj:choosePermaJob(orderedGoals, alreadyHasGoal, urgentOnes, jobsEnabled)` |
 | setupParametersForCurrentGoal | `` | `void` | `obj:setupParametersForCurrentGoal()` |
-| runGoals | `goals: OrderedGoalsMap, playerOrder: boolean` | `boolean` | `obj:runGoals(goals, playerOrder)` |
+| runGoals | `orderedGoals: userdata, playerOrder: boolean` | `boolean` | `obj:runGoals(orderedGoals, playerOrder)` |
 | clearRequestsList | `` | `void` | `obj:clearRequestsList()` |
 | bodyTaskComplete | `` | `void` | `obj:bodyTaskComplete()` |
 | popFromOrders | `what: Tasker` | `void` | `obj:popFromOrders(what)` |
 | setCurrentTask | `from: AITaskSytem::ActionsListMgr` | `boolean` | `obj:setCurrentTask(from)` |
 | runGOAP | `task: Tasker, _a2: boolean, playerOrder: boolean` | `number` | `obj:runGOAP(task, _a2, playerOrder)` |
-| chooseGoalFrom | `orderedGoals: userdata, alreadyHasGoal: TaskMatch, goalListIn: userdata, theseAreBlackboard: boolean` | `void` | `obj:chooseGoalFrom(orderedGoals, alreadyHasGoal, goalListIn, theseAreBlackboard)` |
-| choosePermaJob | `orderedGoals: userdata, alreadyHasGoal: TaskMatch, urgentOnes: boolean, jobsEnabled: boolean` | `void` | `obj:choosePermaJob(orderedGoals, alreadyHasGoal, urgentOnes, jobsEnabled)` |
-| runGoals | `orderedGoals: userdata, playerOrder: boolean` | `boolean` | `obj:runGoals(orderedGoals, playerOrder)` |
 
 ## AITaskSytem::ActionsListMgr
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`

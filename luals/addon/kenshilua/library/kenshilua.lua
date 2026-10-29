@@ -1724,6 +1724,14 @@ SlaveStateEnum = {
     EX_SLAVE = 3,
 }
 
+--- Engine enum `SmellType`.
+---@enum SmellType
+SmellType = {
+    SMELL_NULL = 0,
+    SMELL_BLOOD_AND_CORPSES = 1,
+    SMELL_EGG = 2,
+}
+
 --- Acoustic propagation distance tier for sound emitter events.
 ---@enum SoundRange
 SoundRange = {
@@ -4994,7 +5002,7 @@ taskPriority = {
 --- Active reference retention counter.
 ---@field loadCount integer
 --- Content data container for spawns, items, foliage, and buildings.
----@field mapContent lightuserdata
+---@field mapContent ZoneMapContent|nil
 --- Placed geographical features and landmarks.
 ---@field mapFeatures lightuserdata
 --- Orthogonal adjacent zone neighbors (N, S, E, W).
@@ -5004,7 +5012,7 @@ taskPriority = {
 --- PhysX heightfield collision mesh sector.
 ---@field terrainCollision lightuserdata
 --- Predator scent and tracking trail manager.
----@field zoneSmell lightuserdata
+---@field zoneSmell ZoneSmell|nil
 --- Nested enum table `ZoneMap.ZONE_MESSAGE`.
 ---@field ZONE_MESSAGE ZoneMap.ZONE_MESSAGE
 
@@ -5428,7 +5436,7 @@ taskPriority = {
 --- PhysX physics engine pipeline interface.
 ---@field physics PhysicsInterface
 --- OGRE 3D graphics rendering subsystem coordinator.
----@field render lightuserdata
+---@field render RendererT|nil
 --- Runtime modified dynamic object state database.
 ---@field savedata GameDataManager
 --- Flag indicating Steam Workshop integration status.
@@ -5687,7 +5695,7 @@ taskPriority = {
 --- Whether the set of selected objects changed during the current frame.
 ---@field selectedObjectsChangedThisFrame boolean
 --- Raw pointer (lightuserdata) to the player faction's Research technology manager.
----@field technology lightuserdata
+---@field technology Research|nil
 --- Set (ogre_unordered_set<TownBase*>) of towns currently active near the player.
 ---@field townsActive OgreUnorderedSet<TownBase>
 --- The floor number of the character currently tracked by the camera.
@@ -8965,7 +8973,31 @@ taskPriority = {
 ---@field hit table
 
 --- A specialized `Gear` subclass that represents equippable robotic limb replacements. It handles tracking specific limb condition (damage, wear) and computing character stat multipliers (e.g. stealth, athletics, strength) based on the tier and type of the limb.
----@class RobotLimbItem : Item
+---@class RobotLimbItem : Gear
+--- Retrieves the multiplier for a specific character stat provided by this robotic limb.
+---@field getStatMult fun(self: RobotLimbItem, stat: integer): number
+--- Serializes the robotic limb item's state to a `GameData` instance.
+---@field _serialise fun(self: RobotLimbItem, container: GameDataContainer, type: integer): GameData
+--- Deserializes and loads the item state from a `GameData` structure.
+---@field _loadFromSerialise fun(self: RobotLimbItem, container: GameDataContainer, state: GameData)
+--- Retrieves the base time required to craft this robot limb item.
+---@field getCraftTime fun(self: RobotLimbItem): number
+--- Populates primary tooltip strings displaying item statistics, effects, and multipliers for robotic limbs.
+---@field getTooltipData1 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+--- Populates secondary tooltip strings, generally appending flavor text and item descriptions.
+---@field getTooltipData2 fun(self: RobotLimbItem, lines: OgreVector<StringPair>|RobotLimbItem)
+--- Current physical damage sustained.
+---@field currentDamage number
+--- Maximum structural hit points of the limb.
+---@field maxHP number
+--- Cached map of stat multipliers provided by this limb.
+---@field statMults OgreUnorderedMap<integer, number>
+--- Temporary stun/blunt damage.
+---@field stunDamage number
+--- Bonus damage applied to unarmed attacks.
+---@field unarmedDamage integer
+--- Wear and tear degradation over time.
+---@field wearDamage number
 
 --- High-resolution performance counter and benchmarking timer wrapping Windows QueryPerformanceCounter.
 ---@class CPerfTimer
@@ -9914,9 +9946,9 @@ taskPriority = {
 --- Returns this character's `StateBroadcastData`.
 ---@field getStateBroadcast fun(self: Character): StateBroadcastData
 --- Returns the movement `Formation` managing this character's squad positioning.
----@field getFormation fun(self: Character): lightuserdata
+---@field getFormation fun(self: Character): Formation|nil
 --- Retrieves the opposing squad's combat formation controller.
----@field getEnemyFormation fun(self: Character): lightuserdata
+---@field getEnemyFormation fun(self: Character): Formation|nil
 --- Checks whether a target entity or navigation destination is located indoors or outdoors.
 ---@field AIDestinationIndoorOutdoorCheck fun(self: Character, who: RootObject): boolean
 --- Primary simulation tick updating AI arbitration, motor movement, medical wound bleeding, hunger progression, dialogue timers, and equipment state.
@@ -10608,7 +10640,7 @@ taskPriority = {
 --- Cached safe navmesh recovery coordinate for ragdoll physics.
 ---@field ragdollNavmeshPosition table
 --- Crossbow reloading, aim tracking, and projectile calculations.
----@field rangedCombat lightuserdata
+---@field rangedCombat RangedCombatClass|nil
 --- Queued message flag requesting visibility change notification.
 ---@field setVisibleMsg boolean
 --- Gender string identifier ('male' or 'female').
@@ -12877,6 +12909,23 @@ taskPriority = {
 --- The tasks, as a live `std::deque<Tasker*>`. Read-only; edit it in place.
 ---@field list StdDeque<Tasker>
 
+--- Engine class `AnimationChoices`.
+---@class AnimationChoices
+---@field normaliseWeights fun(self: AnimationChoices)
+---@field calculateSpeedOfMoveAnims fun(self: AnimationChoices, travelSpeed: number, characterHeight: number): number
+---@field chooseHighestScore fun(self: AnimationChoices): AnimationData|nil
+---@field anims Lektor<AnimationData>
+---@field weights Lektor<number>
+
+--- Engine class `AnimationClassAnimal`.
+---@class AnimationClassAnimal : AnimationClass
+--- Flag indicating sharp angle turning threshold exceeded.
+---@field _isTurningFar boolean
+--- Previous frame orientation for delta yaw calculation.
+---@field lastRot table
+--- Maximum angular rotational turn velocity.
+---@field maxTurnSpeed number
+
 --- Core skeletal animation subsystem base class for characters and creatures in Kenshi. Manages skeletal bone queries, world-space and local-space bone caching, animation track blending across layered channels (`AnimationLayer`), root motion relocation, and playback timing synchronization with the locomotion kinematic controller (`CharMovement`).
 ---@class AnimationClassBase
 --- Controls visibility of the underlying Ogre 3D mesh entity (`body`) and associated scene graph node.
@@ -12949,6 +12998,12 @@ taskPriority = {
 --- Resolves the appropriate lockpicking animation track based on lock mechanism height and character posture (standing vs kneeling).
 ---@field getAnimation_Lockpick fun(self: AnimationClassBase, inwhat: hand): AnimationData
 ---@field getAnimationData fun(self: AnimationClassBase, arg1: string): AnimationData
+--- Searches all animation layers for an active `SingleAnimation*` matching the given internal clip name.
+---@field getAnimationPlaying_animName fun(self: AnimationClassBase, arg1: string): AnimationClassBase.SingleAnimation|nil
+--- Searches all animation layers for an active `SingleAnimation*` matching the FCS template identifier string.
+---@field getAnimationPlaying_datName fun(self: AnimationClassBase, arg1: string): AnimationClassBase.SingleAnimation|nil
+--- Searches all animation layers for an active `SingleAnimation*` executing the specified combat technique.
+---@field getAnimationPlaying fun(self: AnimationClassBase, arg1: AnimationData|CombatTechniqueData): AnimationClassBase.SingleAnimation|nil
 --- Activation request transition marker.
 ---@field activateFlag boolean
 --- Cached base rest-pose world bone orientations.
@@ -12965,6 +13020,8 @@ taskPriority = {
 ---@field isVisible boolean
 --- Root motion delta translation accumulator.
 ---@field lastAnimRelocation table
+--- Dynamic animation layer track container.
+---@field layer Lektor<AnimationClassBase.AnimationLayer>
 --- Global animation playback speed scale multiplier.
 ---@field masterSpeed number
 --- Master animation timeline clock in seconds.
@@ -12975,6 +13032,78 @@ taskPriority = {
 ---@field rootBonePosition table
 --- Blending reset toggle flag.
 ---@field zeroOutTheBlending boolean
+
+--- Engine class `AnimationClassBase.AnimationLayer`.
+---@class AnimationClassBase.AnimationLayer
+---@field addToRemoveList fun(self: AnimationClassBase.AnimationLayer, anim: AnimationClassBase.SingleAnimation|SingleAnimation)
+---@field clearLists fun(self: AnimationClassBase.AnimationLayer)
+---@field _clearListsSafe fun(self: AnimationClassBase.AnimationLayer)
+---@field randomiseAnimationPosition fun(self: AnimationClassBase.AnimationLayer, arg1: string)
+---@field isAnimationInRemoveList fun(self: AnimationClassBase.AnimationLayer, state: AnimationData): AnimationClassBase.SingleAnimation|nil
+---@field isAnimationInAddList fun(self: AnimationClassBase.AnimationLayer, arg1: AnimationData|CombatTechniqueData|string): AnimationClassBase.SingleAnimation|nil
+---@field isAnimationInAddList_Datname fun(self: AnimationClassBase.AnimationLayer, arg1: string): AnimationClassBase.SingleAnimation|nil
+---@field takeFromRemoveList fun(self: AnimationClassBase.AnimationLayer, arg1: string): AnimationClassBase.SingleAnimation|nil
+---@field takeFromAddList fun(self: AnimationClassBase.AnimationLayer, arg1: AnimationData|string): AnimationClassBase.SingleAnimation|nil
+---@field getTotalAnimationWeight fun(self: AnimationClassBase.AnimationLayer, thisLayer: boolean|integer, wholeBody?: boolean, includeRemovelist?: boolean): number
+---@field getTotalActionAnimationWeight fun(self: AnimationClassBase.AnimationLayer): number
+---@field stillPlayingAnActionOrSomething fun(self: AnimationClassBase.AnimationLayer): boolean
+---@field getCurrentAnimationWeight fun(self: AnimationClassBase.AnimationLayer, arg1: string): number
+---@field updateAnimationSpeed fun(self: AnimationClassBase.AnimationLayer, arg1: string, speed: number)
+---@field removeAnimation fun(self: AnimationClassBase.AnimationLayer, arg1: AnimationData|string)
+---@field update2frame fun(self: AnimationClassBase.AnimationLayer)
+---@field moveAllToRemoveList fun(self: AnimationClassBase.AnimationLayer)
+---@field endAllAnimations fun(self: AnimationClassBase.AnimationLayer)
+---@field stopActionAnimations fun(self: AnimationClassBase.AnimationLayer)
+---@field stopAllAnimation fun(self: AnimationClassBase.AnimationLayer, hardStop?: boolean)
+---@field stopAllAnimationThatMovesFromOrigin fun(self: AnimationClassBase.AnimationLayer)
+---@field clearAllAnimationUT fun(self: AnimationClassBase.AnimationLayer)
+---@field getAnimTime fun(self: AnimationClassBase.AnimationLayer): number
+---@field usingRightArm fun(self: AnimationClassBase.AnimationLayer): boolean
+---@field usingLeftArm fun(self: AnimationClassBase.AnimationLayer): boolean
+---@field addList Lektor<AnimationClassBase.SingleAnimation>
+---@field animationClass AnimationClassBase|nil
+---@field body lightuserdata|nil
+---@field fadeRate number
+---@field movement CharMovement|nil
+---@field removeList Lektor<AnimationClassBase.SingleAnimation>
+
+--- Engine class `AnimationClassBase.SingleAnimation`.
+---@class AnimationClassBase.SingleAnimation
+---@field getAnimTime fun(self: AnimationClassBase.SingleAnimation): number
+---@field hasSound fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field _disable fun(self: AnimationClassBase.SingleAnimation)
+---@field disable fun(self: AnimationClassBase.SingleAnimation)
+---@field notStartedYet fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field isACombatAnimation fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field isABlockAnimation fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field initialiseMainState fun(self: AnimationClassBase.SingleAnimation): boolean
+---@field fade fun(self: AnimationClassBase.SingleAnimation, frameTIME: number, blendrate: number): boolean
+---@field update fun(self: AnimationClassBase.SingleAnimation, masterTime: number, frameTIME: number, playSounds?: boolean)
+---@field _breakWhenEnded boolean
+---@field acceptableEndTime01 number
+---@field animName string
+---@field animationClass AnimationClassBase|nil
+---@field animationData AnimationData|nil
+---@field autoRemove boolean
+---@field currentFrameTime number
+---@field currentFrameTime01 number
+---@field desiredWeight number
+---@field events AnimationEvents
+---@field isAWholeBodyAction boolean
+---@field looped boolean
+---@field mainState lightuserdata|nil
+---@field movesFromOrigin boolean
+---@field msgHardStop boolean
+---@field msgSetToReversePosition boolean
+---@field normalise boolean
+---@field reversePlayOnFadeOut boolean
+---@field speed number
+---@field stillWanted boolean
+---@field synchOffset number
+---@field synchSlave boolean
+---@field usingLeftArm boolean
+---@field usingRightArm boolean
+---@field weight number
 
 --- Core skeletal animation controller and locomotion blending coordinator governing character poses, movement cycles, combat techniques, stumbles, and ragdoll transitions. Manages Ogre3D skeletal animation layers, motion smoothing filters, pain overlay blend masks, and physics ragdoll kinematics coupling. Interacts directly with `Character` for actor state, `CharMovement` for locomotion velocity and steering, `AppearanceBase` for skeletal mesh scaling and body morphs, and `CombatClass` for attack and parry sequence timing.
 ---@class AnimationClass : AnimationClassBase
@@ -13175,6 +13304,25 @@ taskPriority = {
 ---@field processTurnAnim fun(self: AnimationClass): boolean
 --- Advances and applies subtle skeletal breathing morph animations to chest and shoulder bones during idles.
 ---@field breathing fun(self: AnimationClass, armsToo?: boolean)
+---@field isHuman fun(self: AnimationClass): AnimationClassHuman|nil
+--- Returns the active event notification callbacks registered for current animation tracks.
+---@field getEvents fun(self: AnimationClass, arg1: string): AnimationEvents|nil
+--- Returns the list of all `AnimationData` records registered for this skeletal rig.
+---@field getAnimationDatasList fun(self: AnimationClass): AnimsListsManager.AnimList|nil
+--- Evaluates available animation clips matching current character stance, speed, and held equipment requirements.
+---@field chooseAnims fun(self: AnimationClass, result: AnimationChoices, candidates: Lektor<AnimationData>, requirements: AnimationRequirement, isUpperBody?: boolean, isIdles?: boolean)
+--- Selects a random animation variant from a matching group of candidate clips.
+---@field chooseRandomAnim fun(self: AnimationClass, candidates: Lektor<AnimationData>, requirements: AnimationRequirement, skipCarryModes?: boolean): AnimationChoices
+--- Calculates compatibility score of candidate animation against current movement speed, weapon held, and injury state.
+---@field scoreAnim fun(self: AnimationClass, candidate: AnimationData, requirements: AnimationRequirement, skipCarryModes?: boolean): number
+--- Blends walk, jog, and run locomotion tracks based on current horizontal velocity.
+---@field processMoveAnims fun(self: AnimationClass, listAnims: Lektor<AnimationData>, requirements: AnimationRequirement, isUpperBody?: boolean, weightHack: number)
+--- Blends ambient idle fidgets and posture shifts when the character is standing still.
+---@field processIdleAnims fun(self: AnimationClass, list: Lektor<AnimationData>, requirements: AnimationRequirement, frameTIME: number)
+--- Blends breathing, fidgets, and weapon swaying for combat ready stances.
+---@field processCombatIdleAnims fun(self: AnimationClass, list: Lektor<AnimationData>, requirements: AnimationRequirement, frameTIME: number, weightLimit: number)
+--- Cached character stance, movement speed, weapon held, and injury state flags.
+---@field animationRequirements AnimationRequirement
 --- Character cosmetic appearance, skeletal proportions, and body morph target controller.
 ---@field appearance AppearanceBase
 --- Footwear sole thickness compensation offset preventing ground mesh penetration.
@@ -13187,12 +13335,35 @@ taskPriority = {
 ---@field feetHeight number
 --- Back-pointer to owning character actor entity.
 ---@field me Character
+--- Active race/character animation library package containing moves, idles, and combat clips.
+---@field myAnimList AnimsListsManager.AnimList|nil
+--- Skeletal bone kinematic ragdoll blending coupler.
+---@field ragdollAnimation RagdollAnimation|nil
 --- Ragdoll component collision bitmask identifying active physics limbs.
 ---@field ragdollParts integer
 --- Directional strafe blending and velocity smoothing motion filter.
 ---@field strafeBlendFilter MotionFilter
 --- Summed blend weight scalar across all active upper-body action clips.
 ---@field totalActionWeight number
+
+--- Engine class `AnimationClassHuman`.
+---@class AnimationClassHuman : AnimationClass
+--- Procedural idle chest breathing phase timer.
+---@field breatheTimer number
+--- Left arm crippled or severed flag.
+---@field disabledLeftArm boolean
+--- Right arm crippled or severed flag.
+---@field disabledRightArm boolean
+--- Cached pelvis/hips origin in skeletal space.
+---@field hipspos table
+--- Procedural head-tracking gaze direction.
+---@field lookDirection table
+--- Active stance animation resource name.
+---@field stanceAnimation string
+--- Whether left arm is actively occupied.
+---@field usingLeftArm boolean
+--- Whether right arm is actively occupied by a primary action.
+---@field usingRightArm boolean
 
 --- Animation clip record storing character animation data and mode requirements.
 ---@class AnimationData
@@ -13286,6 +13457,122 @@ taskPriority = {
 ---@field weatherType integer
 --- Override all skeletal blend layers.
 ---@field wholeBodyAllLayer boolean
+
+--- Engine class `AnimationEvent`.
+---@class AnimationEvent
+---@field trigger fun(self: AnimationEvent, arg1: Character)
+---@field finish fun(self: AnimationEvent, arg1: Character)
+---@field toString fun(self: AnimationEvent): string
+
+--- Engine class `AnimationEvents`.
+---@class AnimationEvents
+--- Initializes the starting frame value to correctly begin interval checking for events. Used when resetting an animation or initially binding an animation timeline.
+---@field setInitialFrame fun(self: AnimationEvents, f: number)
+--- Progresses the animation event interval checker to the provided frame. It fires all animation event callbacks for any sequenced events that have been passed between the `lastFrame` and the current `frame`.
+---@field update fun(self: AnimationEvents, frame: number, sound?: boolean)
+--- Inserts a new `AnimationEvent` into the sorted array of sequenced events. Reallocates the internal tracking array dynamically if its capacity is exceeded, inserting the event sequentially based on its trigger time.
+---@field addEvent fun(self: AnimationEvents, arg1: AnimationEvent|GameData, arg2: number)
+--- Retrieves the count of events currently queued within the sequence array.
+---@field size fun(self: AnimationEvents): integer
+--- Bound character actor receiving event callbacks.
+---@field character Character|nil
+--- Previous animation frame position for interval checking.
+---@field lastFrame number
+--- Index of the upcoming event in the sorted event sequence.
+---@field nextEvent integer
+
+--- Engine class `AnimationGroundEvent`.
+---@class AnimationGroundEvent : AnimationEvent
+---@field trigger fun(self: AnimationGroundEvent, character: Character)
+---@field toString fun(self: AnimationGroundEvent): string
+---@field bone string
+
+--- Engine class `AnimationReloadEvent`.
+---@class AnimationReloadEvent : AnimationEvent
+---@field trigger fun(self: AnimationReloadEvent, character: Character)
+
+--- Engine class `AnimationRequirement`.
+---@class AnimationRequirement
+---@field isUpperBodyOnlyAction fun(self: AnimationRequirement): boolean
+---@field hasAction fun(self: AnimationRequirement): boolean
+---@field clearAction fun(self: AnimationRequirement)
+---@field _currentAction AnimationData|nil
+---@field _currentCombatTechnique CombatTechniqueData|nil
+---@field actionSpeedMult number
+---@field attachRootToMastersBone string
+---@field carried boolean
+---@field carryingLeft boolean
+---@field carryingRight boolean
+---@field crouched boolean
+---@field currentAnimCategory integer
+---@field currentStumble AnimationData|nil
+---@field currentWeapon integer
+---@field desiredPainOverlayAnimationOverride string
+---@field doWeatherAnimation boolean
+---@field filterFW MedianFilter
+---@field filterStrafe MedianFilter
+---@field forcedSlaveLoop AnimationData|nil
+---@field holdBreath boolean
+---@field idle boolean
+---@field idleState AnimationData|nil
+---@field idleTimer number
+---@field isActionSlave boolean
+---@field isAnimal boolean
+---@field isCombatMode integer
+---@field isStealthMode integer
+---@field isStrafeMode boolean
+---@field lastStrafeWeight number
+---@field legDamageL number
+---@field legDamageR number
+---@field legsIdle boolean
+---@field maxSpeed number
+---@field moveSpeed number
+---@field pos table
+---@field prone boolean
+---@field slaveHandle hand
+---@field slaveSync number
+---@field smoothedMoveSpeed number
+---@field stance integer
+---@field stateTimer number
+---@field strafeSpeed number
+---@field turnSpeed number
+---@field upperIdle boolean
+---@field weaponL boolean
+---@field weaponR boolean
+---@field weatherStrength number
+---@field weatherType integer
+
+--- Engine class `AnimationSFXEvent`.
+---@class AnimationSFXEvent : AnimationEvent
+---@field trigger fun(self: AnimationSFXEvent, character: Character)
+---@field finish fun(self: AnimationSFXEvent, character: Character)
+---@field toString fun(self: AnimationSFXEvent): string
+---@field isFootstep boolean
+---@field key string
+---@field name string
+---@field stop string
+---@field value string
+
+--- Engine class `AnimsListsManager`.
+---@class AnimsListsManager
+---@field getAnimalList fun(self: AnimsListsManager, race: GameData, animationData: GameData): AnimsListsManager.AnimList|nil
+---@field getCharacterList fun(self: AnimsListsManager): AnimsListsManager.AnimList|nil
+---@field setupCharacterList fun(self: AnimsListsManager)
+---@field setupAnimalList fun(self: AnimsListsManager, animalRace: GameData, getAnimsFrom: GameData)
+---@field characterAnimations AnimsListsManager.AnimList
+
+--- Engine class `AnimsListsManager.AnimList`.
+---@class AnimsListsManager.AnimList
+---@field getStumbles fun(self: AnimsListsManager.AnimList, bodypart: GameData): Lektor<AnimationData>|nil
+---@field getStrafe fun(self: AnimsListsManager.AnimList): AnimationData|nil
+---@field actionAnims BoostUnorderedMap<string, AnimationData>
+---@field allAnims BoostUnorderedMap<string, AnimationData>
+---@field attacks Lektor<AnimationData>
+---@field idleAnims Lektor<AnimationData>
+---@field movementAnimsBase Lektor<AnimationData>
+---@field movementAnimsUpper Lektor<AnimationData>
+---@field strafeAnims Lektor<AnimationData>
+---@field turningAnim AnimationData|nil
 
 --- Humanoid character appearance specialist managing facial features, hair/beard styling, gender dimorphism, chest/waist proportions, and skin normal overlays.
 ---@class AppearanceHuman : AppearanceBase
@@ -13646,6 +13933,15 @@ taskPriority = {
 --- Owner character whose immediate combat perimeter is governed by this slot manager.
 ---@field me Character
 
+--- Engine class `AttackState`.
+---@class AttackState : CombatState
+---@field validate fun(self: AttackState): boolean
+---@field initialiseAttack fun(self: AttackState, target: Character): boolean
+---@field initialise fun(self: AttackState): boolean
+---@field update fun(self: AttackState, time: number)
+---@field end fun(self: AttackState)
+---@field techniqueIntegrityCheckTimer number
+
 --- Thread-safe message queue template used to transfer notifications and state changes from background worker threads to the main engine thread.
 ---@class BackThreadMessagesToMainT
 --- Swaps background thread messages into the main thread buffer, returning true if any messages were transferred.
@@ -13832,6 +14128,20 @@ taskPriority = {
 ---@field subject hand
 --- The task, as a `TaskType` value.
 ---@field type integer
+
+--- Engine class `BlueprintItem`.
+---@class BlueprintItem : Item
+--- Inherited API from `Item`. Returns the base item type enumeration code (`itemType::ITEM`).
+---@field getClassType fun(self: BlueprintItem): integer
+--- Inherited API from `InventoryItemBase`. Returns the total weight in kilograms of this item stack.
+---@field getItemWeight fun(self: BlueprintItem): number
+--- Inherited API from `InventoryItemBase`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field getValueSingle fun(self: BlueprintItem, isPlayer?: boolean): integer
+---@field getResearchData fun(self: BlueprintItem): GameData|nil
+---@field learnResearch fun(self: BlueprintItem): boolean
+--- Inherited API from `InventoryItemBase`. Populates the specified DatapanelGUI category with UI information lines for this item.
+---@field getGUIData fun(self: BlueprintItem, datapanel: DatapanelGUI, category: integer)
+---@field value integer
 
 --- Individual faction criminal bounty record. Tracks monetary reward, accumulated crime bitflags, claim status, and timestamp when the bounty was posted.
 ---@class Bounty
@@ -14179,7 +14489,7 @@ taskPriority = {
 --- The `Faction` that owns this campaign data. Cannot be set to nil.
 ---@field me Faction
 ---@field repeatLimit number
----@field spawns GameDataFitnessSelector
+---@field spawns GameDataScoredList
 ---@field specificLeaderCharacter Lektor<GameData>
 ---@field specificTargetCharacter Lektor<GameData>
 ---@field targetCharacters boolean
@@ -14768,6 +15078,15 @@ taskPriority = {
 --- Raw pointer (lightuserdata) to the CharacterTradingHandler managing the trading transaction.
 ---@field tradingHandler lightuserdata
 
+--- Engine class `CircleStateAI`.
+---@class CircleStateAI : CombatState
+---@field amOverCrowded fun(self: CircleStateAI): boolean
+---@field validate fun(self: CircleStateAI): boolean
+---@field initialise fun(self: CircleStateAI): boolean
+---@field update fun(self: CircleStateAI, time: number)
+---@field end fun(self: CircleStateAI)
+---@field circlingDirection number
+
 --- Master tactical melee combat controller governing realtime weapon exchanges, directional swing trajectories, defensive blocking arcs, damage mitigations, and attack slot reservations. Coordinates directly with `AnimationClass` for skeletal motion, `CharStats` for combat formulas and weapon skills, `MedicalSystem` for anatomical trauma, and `CharMovement` for combat spacing.
 ---@class CombatClass
 --- Queries whether this combat controller instance is governed by AI automation rather than direct player commands.
@@ -14981,7 +15300,7 @@ taskPriority = {
 --- Attack slot overflow counter (buffer 2) tracking enemies queued for an engagement slot.
 ---@field numEnemiesWaitingForMe2 integer
 --- Hash map associating discrete combat state enums (`CHOP_WEAPON`, `BLOCK`, `STUMBLE`) with state handler objects.
----@field stateMap OgreUnorderedMap<integer, lightuserdata>
+---@field stateMap OgreUnorderedMap<integer, CombatState>
 --- Elapsed simulation time accumulator for current combat state phase.
 ---@field stateTimer number
 --- Character attributes, skill levels (Melee Attack, Melee Defense, Dexterity, Strength), and weapon masteries.
@@ -15120,6 +15439,15 @@ taskPriority = {
 ---@field strafeStateTimer number
 --- Whether the character is currently strafing.
 ---@field strafing boolean
+
+--- Engine class `CombatState`.
+---@class CombatState
+---@field validate fun(self: CombatState): boolean
+---@field initialise fun(self: CombatState): boolean
+---@field update fun(self: CombatState, arg1: number)
+---@field end fun(self: CombatState)
+---@field combat CombatClass|nil
+---@field stateTimer number
 
 --- Combat technique animation data, defining attack trajectory, speed, distance, and hit timings.
 ---@class CombatTechniqueData
@@ -16805,6 +17133,14 @@ taskPriority = {
 --- The string identifier associated with this footprint node.
 ---@field nodeId string
 
+--- Engine class `Formation`.
+---@class Formation
+---@field addToFormation fun(self: Formation, h: hand): integer
+---@field removeFromFormation fun(self: Formation, h: hand)
+---@field getFormationPos fun(self: Formation, id: integer, tightness: number): table
+---@field character RootObject
+---@field followers Lektor<hand>
+
 --- Controls squad formation movement behavior, computing coordinated group spacing, facing direction, and speeds relative to a leader.
 ---@class FormationMover
 --- Updates formation movement logic, spacing, and target positioning for the current frame.
@@ -16924,6 +17260,10 @@ taskPriority = {
 --- TripleInt table containing three integer parameters associated with this reference link.
 ---@field values TripleInt
 
+--- Engine class `GameDataScoredList`.
+---@class GameDataScoredList
+---@field setupFromData fun(self: GameDataScoredList, spawnData: GameData, listname: string, typ: integer)
+
 --- Holds per-save and new-game difficulty and gameplay multipliers (such as hunger rate, damage, nest spawns, and research/production speeds).
 ---@class GameplayOptions
 --- Resets all gameplay option multipliers and flags to their default values.
@@ -17021,6 +17361,143 @@ taskPriority = {
 ---@field getGUIState fun(self: GeneratorBuilding, datapanel: DatapanelGUI, category: integer)
 --- Retrieves `InputValue` for this `GeneratorBuilding` instance.
 ---@field getInputValue fun(self: GeneratorBuilding, item: Item): number
+
+--- Base ranged weapon subsystem in Kenshi managing both handheld crossbows (`GunClassPersonal`) and mounted building turrets (`GunClassTurret`). Encapsulates projectile ballistics raycasting (`physHit`), aiming kinematics, reload cycle progression, elevation/wall bonus computations, bowstring rendering states, and visual projectile tracer streams (`ConstantTracerT`).
+---@class GunClass
+--- Base angular trajectory cone spread in radians.
+---@field accuracyDeviationBase number
+--- Skill threshold required to achieve nominal accuracy.
+---@field accuracySkillRequired number
+--- Active operational readiness toggle flag.
+---@field active boolean
+--- Tracking angular steering rate towards targets.
+---@field aimSpeed number
+--- Required ammunition item data descriptor.
+---@field ammoType GameData|nil
+--- Local relative offset vector from root node to muzzle tip.
+---@field gunBarrelOffsetPos table
+--- Core weapon configuration GameData record.
+---@field gunData GameData|nil
+--- Maximum effective firing range in meters.
+---@field maxRange number
+--- Currently loaded remaining shots in magazine.
+---@field numShotsCurrent integer
+--- Internal magazine ammunition capacity.
+---@field numShotsMax integer
+--- World-space orientation quaternion.
+---@field orientation table
+--- World-space origin coordinate.
+---@field position table
+--- Animation asset definition governing reloading posture.
+---@field reloadAnimation GameData|nil
+--- Normalized reload progression progress (0.0 to 1.0).
+---@field reloadState number
+--- Maximum reload duration at zero operator skill.
+---@field reloadTimeMax number
+--- Minimum possible reload duration at max operator skill.
+---@field reloadTimeMin number
+--- Projectile flight velocity scalar in m/s.
+---@field shotSpeed number
+--- Entity handle of operating character.
+---@field user hand
+--- Normalized operator proficiency skill scalar (0.0 to 1.0).
+---@field userSkill01 number
+--- Visual rendering visibility toggle flag.
+---@field visible boolean
+
+--- A specialized implementation of `GunClass` representing ranged weapons wielded personally by characters (e.g., crossbows). It manages character-specific weapon mechanics, animation states, and entity material bindings.
+---@class GunClassPersonal : GunClass
+--- State flag indicating if the character's animation is ready to fire.
+---@field animReadyToShoot boolean
+--- Bound character handle.
+---@field character hand
+--- Cached maximum pierce damage calculation.
+---@field maxDamage integer
+--- Cached minimum pierce damage calculation.
+---@field minDamage integer
+
+--- `GunClassTurret` represents a mounted turret weapon in the game world. It inherits from `GunClass` and links directly to a `TurretBuilding` entity, handling the physical representation, aiming, and target scoring specific to stationary defenses.
+---@class GunClassTurret : GunClass
+--- The last targeted position.
+---@field lastTarget table
+--- Pointer to the associated turret building structure.
+---@field turretBuilding TurretBuilding|nil
+
+--- Engine class `HandleContainerList`.
+---@class HandleContainerList : HandleListBase
+---@field add fun(self: HandleContainerList, o: RootObjectBase): hand
+
+--- Engine class `HandleListBase`.
+---@class HandleListBase : Serialisable
+---@field clearToZero fun(self: HandleListBase)
+---@field get fun(self: HandleListBase, handle: hand): RootObjectBase|nil
+---@field isUnloadedNotDead fun(self: HandleListBase, handle: hand): boolean
+---@field addExisting fun(self: HandleListBase, o: RootObjectBase, _handle: hand): hand
+---@field setUnloaded fun(self: HandleListBase, handle: hand)
+---@field destroy fun(self: HandleListBase, handle: hand)
+---@field lastID integer
+---@field maxSize integer
+
+--- Engine class `HandleList`.
+---@class HandleList : HandleListBase
+---@field add fun(self: HandleList, o: RootObjectBase): hand
+---@field get fun(self: HandleList, handle: hand): RootObjectBase|nil
+---@field addExisting fun(self: HandleList, o: RootObjectBase, _handle: hand): hand
+---@field addExistingAndForceContainer fun(self: HandleList, o: RootObjectBase, _handle: hand): hand
+---@field destroy fun(self: HandleList, handle: hand)
+---@field containerHandle hand
+---@field handleShift StdMap<integer, integer>
+
+--- Universal object handle resolver decoupling weak entity references from raw heap pointers, coordinating memory lifetime, serialisation tombstones, and unloaded entity paging.
+---@class HandleManager : Serialisable
+--- Follows handle redirect chains to find the current active replacement handle.
+---@field getRedirect fun(self: HandleManager, h: hand): hand
+--- Removes a redirect mapping that forwarded references from an obsolete handle ID to a replacement object.
+---@field removeRedirect fun(self: HandleManager, h: hand)
+--- Clears any pointer forwarding or redirection entry registered for the specified object handle.
+---@field clearRedirectForHandle fun(self: HandleManager, h: hand)
+--- Clears all active handles, redirects, and registered zone lookups, resetting the manager to an empty state.
+---@field reset fun(self: HandleManager)
+--- Marks the entity identified by the handle as unloaded and paged out to disk.
+---@field setUnloaded fun(self: HandleManager, handle: hand)
+--- Tears down the handle manager, releasing all registered handle mappings, redirects, and deferred delete lists.
+---@field destroy fun(self: HandleManager, handle: hand, reason?: string)
+--- Resolves an object handle to any live entity (`RootObjectBase*`).
+---@field getAnything fun(self: HandleManager, handle: hand, deadOnes?: boolean): RootObjectBase|nil
+--- Resolves an object handle to its underlying `TownBase` settlement instance.
+---@field getTownBase fun(self: HandleManager, handle: hand, backupPos?: table): TownBase|nil
+--- Resolves an object handle to its corresponding `Town` entity pointer.
+---@field getTown fun(self: HandleManager, handle: hand, backupPos?: table): Town|nil
+--- Resolves an object handle to an active entity pointer, excluding base classes.
+---@field getAnythingButBase fun(self: HandleManager, handle: hand, deadOnes?: boolean): RootObject|nil
+--- Resolves an object handle to the merchant or shopkeeper character associated with it.
+---@field getShopTrader fun(self: HandleManager, handle: hand): Character|nil
+--- Resolves an object handle to its corresponding `Building` pointer, or nullptr if destroyed or unloaded.
+---@field getBuilding fun(self: HandleManager, handle: hand): Building|nil
+--- Resolves an object handle specifically to an interactive or usable building structure.
+---@field getBuilding_UseableStuff fun(self: HandleManager, handle: hand): UseableStuff|nil
+--- Resolves an object handle to its corresponding `Character` pointer, or nullptr if unloaded or dead.
+---@field getCharacter fun(self: HandleManager, handle: hand, deadOnes?: boolean, redirect?: boolean): Character|nil
+--- Resolves an object handle to its corresponding `Platoon` pointer.
+---@field getPlatoon fun(self: HandleManager, handle: hand): Platoon|nil
+--- Resolves an object handle to its corresponding `Item` pointer.
+---@field getItem fun(self: HandleManager, handle: hand): Item|nil
+--- Returns true if the entity referenced by the handle belongs to the player faction.
+---@field isPlayerFaction fun(self: HandleManager, h: hand): boolean
+--- Associates an existing object handle with its containing zone map for spatial tracking and paging.
+---@field addExistingObjectHandleToZone fun(self: HandleManager, handle: hand): boolean
+--- Looks up a character handle in the death parade queue awaiting destruction.
+---@field getFromDeathParade fun(self: HandleManager, handle: hand): Character|nil
+--- Item physical instance handle container.
+---@field items ItemHandleList
+---@field mapfeatures HandleContainerList
+---@field nodes ItemHandleList
+--- Platoon handle resolution container.
+---@field platoons PlatoonHandleContainerList
+---@field redirect OgreUnorderedMap<hand, hand>
+--- Town settlement handle resolution container.
+---@field towns TownHandleContainerList
+---@field zones ZoneMapHandleContainerList
 
 --- Autonomous navigation agent and kinematic path follower bridging character locomotion kinematics (`CharMovement`) to Havok AI navigation meshes (`hkaiNavMesh`). Executes string-pulling portal funneling across NavMesh edge corridors (`EdgePathNode`), local obstacle avoidance steering, dynamic obstacle cylinder-sweep collision detection (`EdgeCache`), and water immersion speed damping.
 ---@class HavokCharacter
@@ -17495,6 +17972,31 @@ taskPriority = {
 --- True if this field is visible in the editor UI.
 ---@field visible boolean
 
+--- Engine class `ItemHandleList`.
+---@class ItemHandleList : HandleList
+---@field setUnloaded fun(self: ItemHandleList, handle: hand)
+
+--- Engine class `KingOfRenderThread`.
+---@class KingOfRenderThread
+---@field startup fun(self: KingOfRenderThread)
+---@field initialisation fun(self: KingOfRenderThread)
+---@field mainloop fun(self: KingOfRenderThread, time: number)
+---@field newGame fun(self: KingOfRenderThread, arg1?: MyGUI.Widget)
+---@field newGameWithCharEdit fun(self: KingOfRenderThread, starter?: GameData)
+---@field error fun(self: KingOfRenderThread, arg1: string)
+---@field errorD fun(self: KingOfRenderThread, arg1: string)
+---@field loadTerrain fun(self: KingOfRenderThread, arg1: string)
+---@field analyseModel fun(self: KingOfRenderThread, arg1: string, model: lightuserdata)
+---@field getBonesVertices fun(self: KingOfRenderThread, arg1: string, arg2: string, facing: integer): Lektor<integer>
+---@field getMeshData fun(self: KingOfRenderThread, arg1: string): MeshDataLookup|nil
+---@field addTerrainBloodSplat fun(self: KingOfRenderThread, x: number, z: number, rad: number, arg4: number, UVOffset: iVector2, arg6: string, slowSpreading?: boolean)
+---@field deleteTitleScreen fun(self: KingOfRenderThread)
+---@field TIME number
+---@field camera CameraClass|nil
+---@field render Renderer|nil
+---@field terrain Terrain|nil
+---@field titleScreen TitleScreen|nil
+
 --- In-game level editor controlling world object placement, terrain tools, navmesh generation, and mod authoring.
 ---@class LevelEditor
 --- Closes the level editor window.
@@ -17773,6 +18275,42 @@ taskPriority = {
 ---@field loadingText MyGUI.Widget
 --- The MyGUI::EditBox widget displaying gameplay tips.
 ---@field messageText MyGUI.EditBox|nil
+
+--- Engine class `LocaleInfo`.
+---@class LocaleInfo
+---@field operator_assign fun(self: LocaleInfo, arg1: LocaleInfo): LocaleInfo
+---@field id string
+---@field isBase boolean
+---@field isMod boolean
+---@field name string
+---@field steamCode string
+
+--- Internationalization and localization manager handling language catalogs, translation dictionaries, East Asian typography fallbacks, and mod translation packs.
+---@class LocaleManager
+--- Initializes the localization system, detecting available language catalogs, system locale settings, and translation resource paths.
+---@field init fun(self: LocaleManager)
+--- Returns the currently active localization language code (e.g. 'en', 'es', 'ja').
+---@field getCurrentLocale fun(self: LocaleManager): LocaleInfo|nil
+--- Sets the active UI and dialogue localization language.
+---@field setCurrentLocale fun(self: LocaleManager, locale?: LocaleInfo)
+--- Attempts to switch the active game locale using a translation package or locale override supplied by an active mod.
+---@field trySetCurrentLocaleFromMod fun(self: LocaleManager, mod: ModInfo): boolean
+--- Returns the filesystem path to the current language's translation folder.
+---@field getCurrentLocalePath fun(self: LocaleManager): string
+--- Returns the active translation mod name supplying UI strings.
+---@field getCurrentLocaleMod fun(self: LocaleManager): string
+--- Returns a list of language codes and localization directory paths available for selection.
+---@field getAvailableLanguages fun(self: LocaleManager): OgreFastArray<LocaleInfo>
+--- List of active available language pointers.
+---@field availableLanguages OgreFastArray<LocaleInfo>
+--- Currently active language profile.
+---@field currentLocale LocaleInfo|nil
+--- Flat storage array of all available language profiles.
+---@field localeList OgreFastArray<LocaleInfo>
+--- Disk path to localization po/mo translation dictionaries.
+---@field localePath string
+--- Custom locale override supplied by active translation mod.
+---@field modLocale LocaleInfo|nil
 
 --- `LockedArmour` is a specialized subclass of `Armour` that incorporates a lock mechanism, primarily used for slave shackles and similar items.
 ---@class LockedArmour : Armour
@@ -18129,6 +18667,22 @@ taskPriority = {
 ---@field toolTip ToolTip
 --- Root MyGUI::Window widget containing the management screen interface.
 ---@field window MyGUI.Window|nil
+
+--- Engine class `MapItem`.
+---@class MapItem : Item
+--- Inherited API from `InventoryItemBase`. Returns the total weight in kilograms of this item stack.
+---@field getItemWeight fun(self: MapItem): number
+--- Inherited API from `InventoryItemBase`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field getValueSingle fun(self: MapItem, isPlayer?: boolean): integer
+---@field selectTowns fun(self: MapItem): integer
+---@field consume fun(self: MapItem): boolean
+---@field getTownsDiscovered fun(self: MapItem): integer
+--- Inherited API from `Item`. Low-level deserialization routine restoring charges, quality, quantity, and stolen status from an FCS record.
+---@field _loadFromSerialise fun(self: MapItem, container: GameDataContainer, state: GameData)
+--- Inherited API from `Item`. Low-level serialization routine recording charges, quality, stolen owner handle, and persistence to an FCS record.
+---@field _serialise fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil
+---@field townsDiscoveredCount integer
+---@field value integer
 
 --- World map marker widget representing a town, settlement, or outpost on the map screen.
 ---@class MapMarkerTown
@@ -18597,6 +19151,12 @@ taskPriority = {
 --- Full directory path where this mod is located on disk.
 ---@field path string
 
+--- Engine class `MoneyItem`.
+---@class MoneyItem : Item
+--- Inherited API from `InventoryItemBase`. Returns the trade value in cats of a single unit of this item, adjusted for whether the buyer/seller is the player.
+---@field getValueSingle fun(self: MoneyItem, isPlayer?: boolean): integer
+---@field consume fun(self: MoneyItem): boolean
+
 --- Character movement smoothing filter that maintains a rolling history buffer of motion weights and speeds.
 ---@class MotionFilter
 --- Sets the number of frames stored in the movement smoothing history buffer and initializes them with a fill value.
@@ -18815,6 +19375,13 @@ taskPriority = {
 ---@field next NavMesh_NavMeshMessage
 --- Pointer to the ZoneMap affected by this navmesh message.
 ---@field zone ZoneMap
+
+--- Engine class `NestItem`.
+---@class NestItem : Item
+--- Inherited API from `Item`. Returns the base item type enumeration code (`itemType::ITEM`).
+---@field getClassType fun(self: NestItem): integer
+--- Inherited API from `Item`. Resolves the 3D `.mesh` resource file path from the item's FCS blueprint record (`'mesh'`).
+---@field getModelName fun(self: NestItem): string
 
 --- GUI dialog window displaying customizable gameplay options (e.g. hunger rate, squad size limits, chance of death) when starting a new game.
 ---@class NewGameOptionsWindow : BaseLayout
@@ -19456,6 +20023,14 @@ taskPriority = {
 --- Shared mutex protecting access to _queuesClear.
 ---@field queuesClearMuto lightuserdata
 
+--- Engine class `PlatoonHandleContainerList`.
+---@class PlatoonHandleContainerList : HandleContainerList
+---@field getCharacterOrZero fun(self: PlatoonHandleContainerList, handle: hand): RootObject|nil
+---@field getCharacterOrPlatoon fun(self: PlatoonHandleContainerList, handle: hand): RootObjectBase|nil
+---@field getActivePlatoon fun(self: PlatoonHandleContainerList, handle: hand): ActivePlatoon|nil
+---@field setUnloaded fun(self: PlatoonHandleContainerList, handle: hand)
+---@field destroy fun(self: PlatoonHandleContainerList, handle: hand)
+
 --- Maintains UI state, status overlays, and update triggers for a character portrait in squad lists.
 ---@class PortraitData
 --- Returns the Character instance associated with this portrait, or nil if unloaded.
@@ -20031,6 +20606,44 @@ taskPriority = {
 --- Map (ogre_unordered_map<GameData*, RaceLimiter::Limiter>) of item game data to race restriction limiter rules.
 ---@field limits OgreUnorderedMap<GameData, Limiter>
 
+--- Engine class `RagdollAnimation`.
+---@class RagdollAnimation
+--- Checks if the ragdoll recovery blend is actively interpolating. Returns the value of the internal `animating` flag.
+---@field isAnimating fun(self: RagdollAnimation): boolean
+--- Performs the per-frame tick for the ragdoll-to-animation blend. If it's the first update, bones are set to manually controlled. It interpolates bone orientations and positions using `nlerp`, and restores regular animation control once the blend duration completes.
+---@field update fun(self: RagdollAnimation)
+--- Configures the blend sequence by evaluating a target `Ogre::Animation` and matching its track data against the ragdoll bones. It computes the start offsets and target orientations for the transition.
+---@field setTargetAnimation fun(self: RagdollAnimation, ent: lightuserdata, skel: lightuserdata, animation: lightuserdata, duration: number)
+--- Returns the name of the target animation clip that the ragdoll is blending towards. Used to queue the standard animation state machine upon blend completion.
+---@field getTargetAnimation fun(self: RagdollAnimation): string
+--- Retrieves the currently elapsed time within the ragdoll transition blend. Represents the active progress of the blend transition.
+---@field getAnimationTime fun(self: RagdollAnimation): number
+--- Whether ragdoll-to-keyframe blend is actively interpolating.
+---@field animating boolean
+--- Bound owner animation coordinator.
+---@field animationClass AnimationClass|nil
+--- Current elapsed blend transition timer.
+---@field curTime number
+--- Total blend transition duration.
+---@field endTime number
+--- Visual 3D actor entity mesh.
+---@field entity lightuserdata
+--- Initialization tick marker flag.
+---@field firstUpdate boolean
+--- Skeletal rig instance being blended.
+---@field skeleton lightuserdata
+--- Target recovery animation clip name (e.g. get up from ground).
+---@field targetAnimationName string
+
+--- Engine class `RagdollAnimation.RagdollAnimationTrack`.
+---@class RagdollAnimation.RagdollAnimationTrack
+---@field active boolean
+---@field bone lightuserdata
+---@field endPosition table
+---@field endRotation table
+---@field startPosition table
+---@field startRotation table
+
 --- Specialized ProductionBuilding that passively collects water from rainfall at a rate determined by local weather conditions.
 ---@class RainCollectorBuilding : ProductionBuilding
 --- Calculates and returns the water collection efficiency multiplier based on current rainfall.
@@ -20041,6 +20654,23 @@ taskPriority = {
 ---@field getGUIState fun(self: RainCollectorBuilding, datapanel: DatapanelGUI, category: integer)
 --- Populates the provided Lektor<StringPair> container with tooltip lines describing rainfall collection efficiency.
 ---@field getGUIToolTipForGroundResourceEfficiency fun(self: RainCollectorBuilding, out: Lektor<StringPair>|RainCollectorBuilding)
+
+--- Ballistic weapon controller governing personal crossbows and mounted defensive turrets. Manages predictive target leading (`getAimPos`), friendly-fire raycast clearances (`takeTheShotCheck`), ammunition consumption and reloading cycles (`reloadCheck`), elevation range multipliers (`getGunRange`), and targeting priority arbitration (`scoreTarget`).
+---@class RangedCombatClass
+--- Calculated lead distance offset applied to target coordinates based on linear velocity.
+---@field _lastAimAheadAmount number
+--- Active governing combat skill (`TURRETS` or `CROSSBOWS`).
+---@field currentStat integer
+--- Pointer to active ballistic firearm controller handling muzzle physics, spread, and bolts.
+---@field gun GunClass|nil
+--- Current state machine phase (`SHOOTING`, `MOVING`, `RELOADING`, `WAITING`, `THINKING`).
+---@field state integer
+--- Handle referencing mounted turret building entity when manning stationary defenses.
+---@field turret hand
+--- Dirty flag requesting animation re-evaluation on next frame.
+---@field updateNeededMsg boolean
+--- Nested enum table `RangedCombatClass.RangedState`.
+---@field RangedState RangedCombatClass.RangedState
 
 --- Stores diplomatic relation state, trust values, perceived strength, and treaty/war flags between two factions (wrapping `FactionRelations::RelationData`).
 ---@class RelationData
@@ -20067,6 +20697,95 @@ taskPriority = {
 --- Whether open war is active with the target faction.
 ---@field war boolean
 
+--- Engine class `RenderToTextureotron`.
+---@class RenderToTextureotron
+---@field renderItem fun(self: RenderToTextureotron, item: Item, arg2: string, size: iVector2): string
+---@field renderBuilding fun(self: RenderToTextureotron, data: GameData, arg2: string, size: iVector2, yaw: number, pitch: number): string
+---@field renderCharacterNPC fun(self: RenderToTextureotron, character: Character, size: iVector2, distance: number): string
+---@field buildAllItemsIcons fun(self: RenderToTextureotron)
+---@field camera lightuserdata|nil
+---@field sceneManager lightuserdata|nil
+
+--- Engine class `Renderer`.
+---@class Renderer : RendererT
+---@field shutDown fun(self: Renderer)
+---@field update fun(self: Renderer)
+---@field createLight fun(self: Renderer, data?: GameData, indoors?: boolean, floor?: integer): lightuserdata|nil
+---@field go fun(self: Renderer)
+---@field initialiseScene fun(self: Renderer)
+---@field createDebugBox fun(self: Renderer, a: table, b: table): lightuserdata|nil
+---@field destroy fun(self: Renderer, node: lightuserdata, destroyAttached?: boolean)
+---@field getSceneManager fun(self: Renderer): lightuserdata|nil
+---@field getRenderSystem fun(self: Renderer): lightuserdata|nil
+---@field getRootSceneNode fun(self: Renderer): lightuserdata|nil
+---@field getCamera fun(self: Renderer): lightuserdata|nil
+---@field getViewport fun(self: Renderer): lightuserdata|nil
+---@field getRoot fun(self: Renderer): lightuserdata|nil
+---@field getScreenWidth fun(self: Renderer): number
+---@field getScreenHeight fun(self: Renderer): number
+---@field getWorkspace fun(self: Renderer): lightuserdata|nil
+---@field getSceneRelativeOrigin fun(self: Renderer): table
+---@field validateCompositor fun(self: Renderer, arg1: string): boolean
+---@field setupPostProcessing fun(self: Renderer, arg1: string)
+---@field refreshActiveCompositor fun(self: Renderer)
+---@field camera lightuserdata|nil
+---@field renderToTextureIconMachine RenderToTextureotron|nil
+---@field root lightuserdata|nil
+---@field scene lightuserdata|nil
+---@field terrainDecalManager lightuserdata|nil
+---@field viewport lightuserdata|nil
+---@field window lightuserdata|nil
+---@field workspace lightuserdata|nil
+
+--- Engine class `RendererT`.
+---@class RendererT
+---@field update fun(self: RendererT)
+---@field debugEntsUpdateListT Lektor<lightuserdata>
+
+--- Engine class `Research`.
+---@class Research
+---@field _reset fun(self: Research)
+---@field _setup fun(self: Research)
+---@field getArmourCraftLevel fun(self: Research, armour: GameData, skill: integer, crit?: boolean): integer
+---@field startResearch fun(self: Research, d: GameData): boolean
+---@field stopResearch fun(self: Research, d: GameData)
+---@field completeResearch fun(self: Research, d: GameData)
+---@field isFinished fun(self: Research, what: GameData): boolean
+---@field isBuildingResearched fun(self: Research, d: GameData): boolean
+---@field getETA fun(self: Research, d: GameData, simple?: boolean): string
+---@field payCosts fun(self: Research, d: GameData): boolean
+---@field canPayCosts fun(self: Research, data: GameData): boolean
+---@field getBlueprintsFor fun(self: Research, item: GameData): GameData
+---@field staticUpdate fun(self: Research)
+---@field getCurrentResearchRate fun(self: Research): number
+---@field serialise fun(self: Research, data: GameData)
+---@field load fun(self: Research, data: GameData)
+---@field progressResearch fun(self: Research, amount: number)
+---@field checkRequirementsForInvisibility fun(self: Research, what: GameData, twoLevels?: boolean): boolean
+---@field checkRequirements fun(self: Research, what: GameData, twoLevels?: boolean, checkCost?: boolean): boolean
+---@field checkRequirements_andQueue fun(self: Research, what: GameData): boolean
+---@field isInQueue fun(self: Research, what: GameData): boolean
+---@field _updateTheAllList fun(self: Research)
+---@field setResearchDeskLevel fun(self: Research, level: integer)
+---@field refreshTheoreticalTechLevel fun(self: Research)
+---@field needsATechBench fun(self: Research, d: GameData): integer
+---@field hasPaidFor fun(self: Research, d: GameData): boolean
+---@field getResearchDeskLevel fun(self: Research): integer
+---@field hasArtifact fun(self: Research, artifact: GameData, quantity: integer): boolean
+---@field getResearchItem fun(self: Research, d: GameData): ResearchItem
+---@field getResearchProgress fun(self: Research, arg1: GameData|ResearchItem): number
+---@field getCategories fun(self: Research): Lektor<string>
+---@field categories Lektor<string>
+---@field changedSoUpdateGUI boolean
+---@field enabledObjects OgreUnorderedSet<GameData>
+---@field finished OgreUnorderedSet<GameData>
+---@field numResearchers integer
+---@field paidFor Lektor<string>
+---@field researchDeskLevel integer
+---@field screen ManagementScreen
+---@field theoreticalTechLevel integer
+---@field totalResearchThisFrame number
+
 --- Specialized UseableStuff building representing a research bench where characters conduct technology research and store research artifacts.
 ---@class ResearchBuilding : UseableStuff
 --- Returns true if no technology is currently queued for research or if required research materials are missing.
@@ -20087,6 +20806,20 @@ taskPriority = {
 ---@field getGUIData fun(self: ResearchBuilding, datapanel: DatapanelGUI, category: integer)
 --- Opens the faction research screen in response to a MyGUI.Widget button event.
 ---@field showResearchWindow fun(self: ResearchBuilding, arg1: MyGUI.Widget)
+
+--- Engine class `ResearchItem`.
+---@class ResearchItem
+---@field getCostItem fun(self: ResearchItem, id: integer): GameData
+---@field getCostItemQuantity fun(self: ResearchItem, id: integer): integer
+---@field getNumDifferentCostItems fun(self: ResearchItem): integer
+---@field data GameData
+---@field progress number
+
+--- Engine class `Research_BuildingUpgrades`.
+---@class Research_BuildingUpgrades
+---@field powerBoost number
+---@field powerCapacity number
+---@field productionMult number
 
 --- Multithreaded background resource streaming manager for loading meshes, textures, and scene assets.
 ---@class ResourceLoader : ThreadClass
@@ -20700,6 +21433,30 @@ taskPriority = {
 
 --- Engine interface for objects that can be written to and read from save streams. Its methods take C++ streams and are not exposed; the type is used for typed `Serialisable` arguments.
 ---@class Serialisable
+
+--- Engine class `SeveredLimbItem`.
+---@class SeveredLimbItem : Item
+---@field setupFromCharacter fun(self: SeveredLimbItem, c: Character, limb: integer, force: table)
+--- Inherited API from `Item`. Low-level serialization routine recording charges, quality, stolen owner handle, and persistence to an FCS record.
+---@field _serialise fun(self: SeveredLimbItem, container: GameDataContainer, type: integer): GameData|nil
+--- Inherited API from `Item`. Low-level deserialization routine restoring charges, quality, quantity, and stolen status from an FCS record.
+---@field _loadFromSerialise fun(self: SeveredLimbItem, container: GameDataContainer, state: GameData)
+--- Inherited API from `Item`. Returns the item's despawn or decay expiration timestamp.
+---@field getTimeout fun(self: SeveredLimbItem): TimeOfDay
+--- Inherited API from `Item`. Tears down active PhysX rigid bodies and OGRE visual meshes, unregistering the item from the spatial zone map (`ZoneMapContent`).
+---@field destroyPhysical fun(self: SeveredLimbItem)
+---@field blood table
+---@field impulse table
+---@field limbScale table
+---@field skinTone table
+---@field timeout TimeOfDay
+
+--- Engine class `SharedKing`.
+---@class SharedKing
+---@field isLevelEditMode fun(self: SharedKing): boolean
+---@field areasList lightuserdata
+---@field townList TownList|nil
+---@field zoneMgr ZoneManagerInterfaceT|nil
 
 --- Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.
 ---@class ShopTrader : RootObject
@@ -22017,6 +22774,56 @@ taskPriority = {
 --- Parent settlement controller pointer.
 ---@field town TownBase
 
+--- Engine class `TownHandleContainerList`.
+---@class TownHandleContainerList : HandleContainerList
+
+--- Engine class `TownList`.
+---@class TownList : RootObjectContainer
+--- Inherited API from `RootObjectContainer`. Adds an active RootObject to this container and returns true if added.
+---@field addActiveObject fun(self: TownList, b: RootObject): boolean
+---@field updateTownCoverage fun(self: TownList, n: TownBase)
+---@field _clearAll fun(self: TownList)
+---@field _resetGame fun(self: TownList)
+---@field destroyAllTheNests fun(self: TownList)
+---@field destroy fun(self: TownList, t: TownBase)
+---@field getTown fun(self: TownList, instanceID: string): Town|nil
+---@field getTownBySID fun(self: TownList, name: string): Town|nil
+---@field getNearestPlayerTown fun(self: TownList, position: table, includePlayerResidenceTowns?: boolean, maxDistance: number): Town|nil
+---@field getNearestTown fun(self: TownList, pos: table, townOwner?: Faction, except?: Town, myFaction?: Faction, type: integer): Town|nil
+---@field getNearestTownWithBuildingDesignation fun(self: TownList, what: integer, pos: table, townFactionWanted?: Faction, except?: Town, notEnemiesOf?: Faction, type: integer, maxDistanceSquared: number): Town|nil
+---@field getNearestNest fun(self: TownList, pos: table, f?: Faction, except?: TownBase): lightuserdata
+---@field getNearest fun(self: TownList, pos: table, f?: Faction, except?: TownBase): TownBase|nil
+---@field getNearestWithinItsRadius fun(self: TownList, position: table, skipPlayerTowns?: boolean): TownBase|nil
+---@field getRetreatTown fun(self: TownList, pos: table, owner?: Faction, except?: Town): Town|nil
+---@field createNewPlayerTown fun(self: TownList, pos: table): Town|nil
+---@field getDistToNearestTown fun(self: TownList, pos: table, except?: Town): number
+---@field getSquaredDistToNearestTown fun(self: TownList, pos: table, except?: Town): number
+---@field getNearishTown fun(self: TownList, myFaction?: Faction, pos: table, owner?: Faction, except?: TownBase, publicOnly?: boolean, types: integer): Town|nil
+---@field getAllTowns fun(self: TownList): Lektor<RootObject>
+---@field getNullTown fun(self: TownList): TownBase|nil
+--- Inherited API from `RootObjectContainer`. Updates the active objects in this container and returns true if active.
+---@field update fun(self: TownList): boolean
+---@field updateTownsDiscovery fun(self: TownList)
+---@field setAllTownsDebugVisible fun(self: TownList, on?: boolean)
+---@field saveToDisk fun(self: TownList, levelEditor?: boolean, forceFilename: string)
+---@field loadFromDisk fun(self: TownList, force?: boolean, extra?: Serialisable): boolean
+---@field saveState fun(self: TownList, container: GameDataContainer)
+---@field loadState fun(self: TownList, container: GameDataContainer, isImportSoPlayerOnly?: boolean)
+---@field loadStateDiscovery fun(self: TownList, container: GameDataContainer, importOverride?: boolean)
+---@field loadLevelData fun(self: TownList, newGame?: boolean)
+---@field _saveLevelData fun(self: TownList, container: GameDataContainer, mod: string)
+---@field saveUniqueTownsAndNests fun(self: TownList, container: GameDataContainer)
+---@field listUniqueTownsFromPlayerOwnership fun(self: TownList)
+---@field loadAllTowns_worldInit fun(self: TownList, saveSource: GameDataContainer)
+---@field addNest fun(self: TownList, n: RootObject)
+---@field reassessTownPositions fun(self: TownList, t: TownBase)
+---@field mergePlayerTowns fun(self: TownList, a: Town, b: Town)
+---@field deletedTowns any
+---@field nests Lektor<RootObject>
+---@field newTownsDiscovered boolean
+---@field noTown lightuserdata
+---@field uniqueTowns Lektor<RootObject>
+
 --- Periodically caches town center positions and updates territorial boundaries over in-game time.
 ---@class TownPositionCacher
 --- Updates the last update timestamp to the current game world time.
@@ -22213,7 +23020,7 @@ taskPriority = {
 --- World position of tracked target point.
 ---@field currentAimTarget table
 --- Embedded turret ballistic and firing controller.
----@field gunClass lightuserdata
+---@field gunClass GunClassTurret|nil
 --- Elevation vertical gun pitch joint.
 ---@field gunPart lightuserdata
 --- Azimuth horizontal rotation joint.
@@ -22768,6 +23575,14 @@ taskPriority = {
 --- Distance from the observer to the perceived entity.
 ---@field range number
 
+--- Engine class `WaitingStateAI`.
+---@class WaitingStateAI : CombatState
+---@field validate fun(self: WaitingStateAI): boolean
+---@field initialise fun(self: WaitingStateAI): boolean
+---@field update fun(self: WaitingStateAI, time: number)
+---@field end fun(self: WaitingStateAI)
+---@field circlingDirection number
+
 --- Defensive wall fortification piece governing perimeter segment connections, rampart walkway placement, shared construction scaffolds, and structural upgrades. Derived from `Building`, `WallBuilding` coordinates directly with `ZoneMapContent` for neighboring structural discovery, `TurretBuilding` for mounted rampart defenses, and `DatapanelGUI` for fortification upgrade and demolition controls.
 ---@class WallBuilding : Building
 --- Returns associated `UseableStuff` pointer if wall includes operable rampart machinery (nullptr for passive wall sections).
@@ -23296,6 +24111,101 @@ taskPriority = {
 --- Array (1-indexed table or indexed lookup) of 5 spawn probabilities for each ground effect.
 ---@field probabilities number|number[]
 
+--- Engine class `ZoneMapContent`.
+---@class ZoneMapContent : RootObjectContainer
+---@field isLoadedT fun(self: ZoneMapContent): boolean
+--- Inherited API from `RootObjectContainer`. Updates the active objects in this container and returns true if active.
+---@field update fun(self: ZoneMapContent): boolean
+---@field threadedUpdate fun(self: ZoneMapContent)
+---@field addToUpdateList fun(self: ZoneMapContent, b: RootObject)
+---@field _reloadAllFoliage fun(self: ZoneMapContent)
+---@field getOverlayPixelCoord fun(self: ZoneMapContent): iVector2
+---@field clearOverlay fun(self: ZoneMapContent, channel: integer)
+---@field generateDirtMap fun(self: ZoneMapContent, channel: integer): integer
+---@field addLoadedBuilding fun(self: ZoneMapContent, buildingInstanceData: GameSaveState, isActiveLevelFile?: boolean)
+---@field loadItems fun(self: ZoneMapContent, source: GameDataContainer): boolean
+---@field saveItems fun(self: ZoneMapContent, dest: GameDataContainer, allItems?: boolean)
+---@field saveLevelData fun(self: ZoneMapContent, all?: boolean, modName: string, pathOverride: string)
+---@field saveToDisk fun(self: ZoneMapContent, path: string)
+---@field activate fun(self: ZoneMapContent)
+---@field deactivate fun(self: ZoneMapContent, saveZoneState?: boolean)
+---@field reFactionBuildingsFromTown fun(self: ZoneMapContent)
+---@field updateItemsVisibility fun(self: ZoneMapContent)
+---@field _setEnabledStaticGeometry fun(self: ZoneMapContent, enable?: boolean)
+---@field findBuildingTypePublic fun(self: ZoneMapContent, t: Town): Building
+---@field findBuildingByDataPosition fun(self: ZoneMapContent, data: GameData, x: number, z: number): Building
+---@field _populateTownsOnNewGame fun(self: ZoneMapContent)
+---@field forceLoadAllTheBuildingInteriorVisuals fun(self: ZoneMapContent)
+---@field addItem fun(self: ZoneMapContent, item: Item)
+---@field removeItem fun(self: ZoneMapContent, item: Item)
+---@field changeItemZone fun(self: ZoneMapContent, item: Item, moveTo: ZoneMap): boolean
+--- Inherited API from `RootObjectContainer`. Removes the specified RootObject from this container and returns true if removed.
+---@field removeObject fun(self: ZoneMapContent, obj: RootObject): boolean
+---@field getFoliageSystem fun(self: ZoneMapContent): FoliageSystem
+---@field _activate fun(self: ZoneMapContent)
+---@field createLoadedItems fun(self: ZoneMapContent)
+---@field setLoadedT fun(self: ZoneMapContent, t?: boolean)
+---@field activationFlag boolean
+---@field foliageSystem FoliageSystem|nil
+---@field handleDummy ZoneMapContent.HandleDummy|nil
+---@field items OgreUnorderedSet<hand>
+---@field loaded boolean
+---@field myHandles HandleList|nil
+---@field newGameFirstTimeLoaded boolean
+---@field periodicUpdateIndex integer
+---@field toUpdateList Lektor<RootObject>
+---@field zoneMap ZoneMap|nil
+
+--- Engine class `ZoneMapContent.HandleDummy`.
+---@class ZoneMapContent.HandleDummy : RootObjectBase
+--- Inherited API from `RootObjectBase`. Returns the itemType enum identifying the runtime category of this object.
+---@field getDataType fun(self: ZoneMapContent.HandleDummy): integer
+--- Inherited API from `RootObjectBase`. Restores this object's state from the provided GameSaveState.
+---@field loadFromSerialise fun(self: ZoneMapContent.HandleDummy, state: GameSaveState)
+---@field me ZoneMapContent|nil
+
+--- Engine class `ZoneMapContent.ZoneMapContentOrderLoader`.
+---@class ZoneMapContent.ZoneMapContentOrderLoader : SpecificItemLoadFirst
+--- Inherited API from `SpecificItemLoadFirst`. Evaluates whether loading of the specified game save state entry should be deferred.
+---@field shouldSkip fun(self: ZoneMapContent.ZoneMapContentOrderLoader, state: GameSaveState): boolean
+---@field newGameFirstTimeLoaded boolean
+
+--- Engine class `ZoneMapHandleContainerList`.
+---@class ZoneMapHandleContainerList : HandleContainerList
+---@field getZoneMap fun(self: ZoneMapHandleContainerList, handle: hand): ZoneMapContent|nil
+---@field getObject fun(self: ZoneMapHandleContainerList, handle: hand): RootObject|nil
+---@field setUnloaded fun(self: ZoneMapHandleContainerList, handle: hand)
+---@field destroy fun(self: ZoneMapHandleContainerList, handle: hand)
+---@field getCorrectHandleList fun(self: ZoneMapHandleContainerList, h: hand): HandleList|nil
+
+--- Engine class `ZoneSmell`.
+---@class ZoneSmell
+---@field _getSmell fun(self: ZoneSmell, t: integer): ZoneSmell_Smell|nil
+---@field isEmpty fun(self: ZoneSmell): boolean
+---@field getSmell fun(self: ZoneSmell, posInOut: table, type: integer): number, table
+---@field getGeneralSmellLevel fun(self: ZoneSmell, type: integer): number
+---@field periodicUpdate fun(self: ZoneSmell, time: number)
+---@field addSmell fun(self: ZoneSmell, type: integer, key: lightuserdata, _pos: table)
+---@field smell_bloodAndCorpses ZoneSmell_Smell|nil
+---@field smell_eggs ZoneSmell_Smell|nil
+---@field zoneMap ZoneMap|nil
+--- Nested enum table `ZoneSmell.SmellMessageType`.
+---@field SmellMessageType ZoneSmell.SmellMessageType
+
+--- Engine class `ZoneSmell_Smell`.
+---@class ZoneSmell_Smell
+---@field update fun(self: ZoneSmell_Smell, time: number)
+---@field decreaseRate number
+---@field increaseRate number
+---@field numSources number
+---@field pos table
+---@field strength number
+
+--- Engine class `ZoneSmell_SmellMsg`.
+---@class ZoneSmell_SmellMsg
+---@field pos table
+---@field type integer
+
 --- Spatial partitioning grid used by the engine to efficiently query, track, and update world entities across zones and cells.
 ---@class ZoneSpacialGrid
 --- Inserts a RootObject into the spatial grid, returning its resulting spatial cell key.
@@ -23616,6 +24526,9 @@ taskPriority = {
 --- Returns the number of elements.
 ---@field size fun(self: StdSet<T>): integer
 
+--- Static functions registered on the `AnimsListsManager` global table.
+---@class AnimsListsManagerStatics
+
 --- Static functions registered on the `AppearanceManager` global table.
 ---@class AppearanceManagerStatics
 --- Static method returning the singleton AppearanceManager instance.
@@ -23744,6 +24657,9 @@ taskPriority = {
 ---@class LoadingWindowStatics
 --- Returns the singleton LoadingWindow instance; can also be called statically.
 ---@field getInstance fun(): LoadingWindow
+
+--- Static functions registered on the `LocaleManager` global table.
+---@class LocaleManagerStatics
 
 --- Static functions registered on the `Logger` global table.
 ---@class LoggerStatics
@@ -23969,45 +24885,135 @@ taskPriority = {
 --- Nested enum table `KenshiLib.BinaryVersion`.
 ---@field BinaryVersion KenshiLib.BinaryVersion
 
---- KenshiLua runtime API: script reloading, logging, profiling, and diagnostics.
----@type KenshiLua.Api
+--- Global Building binding table.
+---@type Building
 ---@diagnostic disable-next-line: missing-fields
-KenshiLua = {}
+Building = {}
 
---- Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.
----@type KenshiLua.Events
+--- Global CharStats binding table.
+---@type CharStats
 ---@diagnostic disable-next-line: missing-fields
-Events = {}
-
---- Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned.
----@type MyGUI.Api
----@diagnostic disable-next-line: missing-fields
-MyGUI = {}
-
---- Global table exposing the MyGUI Gui singleton.
----@type MyGUI.GuiStatic
----@diagnostic disable-next-line: missing-fields
-Gui = {}
-
---- Global table exposing the MyGUI input-manager singleton.
----@type MyGUI.InputManagerStatic
----@diagnostic disable-next-line: missing-fields
-InputManager = {}
-
---- Global table exposing the MyGUI pointer-manager singleton.
----@type MyGUI.PointerManagerStatic
----@diagnostic disable-next-line: missing-fields
-PointerManager = {}
+CharStats = {}
 
 --- Global table exposing the MyGUI clipboard-manager singleton.
 ---@type MyGUI.ClipboardManagerStatic
 ---@diagnostic disable-next-line: missing-fields
 ClipboardManager = {}
 
+--- Global alias of MyGUI.Colour.
+---@type MyGUI.ColourConstructor
+---@diagnostic disable-next-line: missing-fields
+Colour = {}
+
+--- Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.
+---@type KenshiLua.Events
+---@diagnostic disable-next-line: missing-fields
+Events = {}
+
+--- Global alias of MyGUI.FloatCoord.
+---@type MyGUI.FloatCoordConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatCoord = {}
+
+--- Global alias of MyGUI.FloatPoint.
+---@type MyGUI.FloatPointConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatPoint = {}
+
+--- Global alias of MyGUI.FloatRect.
+---@type MyGUI.FloatRectConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatRect = {}
+
+--- Global alias of MyGUI.FloatSize.
+---@type MyGUI.FloatSizeConstructor
+---@diagnostic disable-next-line: missing-fields
+FloatSize = {}
+
+--- Global table exposing the MyGUI Gui singleton.
+---@type MyGUI.GuiStatic
+---@diagnostic disable-next-line: missing-fields
+Gui = {}
+
+--- Static utility table for HavokCharacter physics controllers.
+---@type HavokCharacterStatic
+---@diagnostic disable-next-line: missing-fields
+HavokCharacter = {}
+
+--- Global table exposing the MyGUI input-manager singleton.
+---@type MyGUI.InputManagerStatic
+---@diagnostic disable-next-line: missing-fields
+InputManager = {}
+
+--- Global alias of MyGUI.IntCoord.
+---@type MyGUI.IntCoordConstructor
+---@diagnostic disable-next-line: missing-fields
+IntCoord = {}
+
+--- Global alias of MyGUI.IntPoint.
+---@type MyGUI.IntPointConstructor
+---@diagnostic disable-next-line: missing-fields
+IntPoint = {}
+
+--- Global alias of MyGUI.IntRect.
+---@type MyGUI.IntRectConstructor
+---@diagnostic disable-next-line: missing-fields
+IntRect = {}
+
+--- Global alias of MyGUI.IntSize.
+---@type MyGUI.IntSizeConstructor
+---@diagnostic disable-next-line: missing-fields
+IntSize = {}
+
+--- Static utility table for inventory layouts.
+---@type InventoryLayoutStatic
+---@diagnostic disable-next-line: missing-fields
+InventoryLayout = {}
+
+--- KenshiLua runtime API: script reloading, logging, profiling, and diagnostics.
+---@type KenshiLua.Api
+---@diagnostic disable-next-line: missing-fields
+KenshiLua = {}
+
+--- Global table exposing the MyGUI layer-manager singleton.
+---@type MyGUI.LayerManagerStatic
+---@diagnostic disable-next-line: missing-fields
+LayerManager = {}
+
 --- Global table exposing the MyGUI layout-manager singleton.
 ---@type MyGUI.LayoutManagerStatic
 ---@diagnostic disable-next-line: missing-fields
 LayoutManager = {}
+
+--- Static manager table for in-game modal message boxes.
+---@type MessageBoxManagerStatic
+---@diagnostic disable-next-line: missing-fields
+MessageBoxManager = {}
+
+--- Static factory table for MessageForB messages.
+---@type MessageForBStatic
+---@diagnostic disable-next-line: missing-fields
+MessageForB = {}
+
+--- Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned.
+---@type MyGUI.Api
+---@diagnostic disable-next-line: missing-fields
+MyGUI = {}
+
+--- Static utility table for PhysX NxMat33 matrices.
+---@type NxMat33Static
+---@diagnostic disable-next-line: missing-fields
+NxMat33 = {}
+
+--- Static utility table for PhysX NxVec3 vectors.
+---@type NxVec3Static
+---@diagnostic disable-next-line: missing-fields
+NxVec3 = {}
+
+--- Global table exposing the MyGUI pointer-manager singleton.
+---@type MyGUI.PointerManagerStatic
+---@diagnostic disable-next-line: missing-fields
+PointerManager = {}
 
 --- Global table exposing the MyGUI render-manager singleton.
 ---@type MyGUI.RenderManagerStatic
@@ -24019,55 +25025,24 @@ RenderManager = {}
 ---@diagnostic disable-next-line: missing-fields
 SkinManager = {}
 
---- Global table exposing the MyGUI layer-manager singleton.
----@type MyGUI.LayerManagerStatic
+--- Global TownBase binding table.
+---@type TownBase
 ---@diagnostic disable-next-line: missing-fields
-LayerManager = {}
+TownBase = {}
 
---- Global alias of MyGUI.IntPoint.
----@type MyGUI.IntPointConstructor
+--- Static helper table for TradeResult transaction outcomes.
+---@type TradeResultStatic
 ---@diagnostic disable-next-line: missing-fields
-IntPoint = {}
+TradeResult = {}
 
---- Global alias of MyGUI.IntSize.
----@type MyGUI.IntSizeConstructor
+--- Static query table for world event states.
+---@type WorldEventStateQueryStatic
 ---@diagnostic disable-next-line: missing-fields
-IntSize = {}
+WorldEventStateQuery = {}
 
---- Global alias of MyGUI.IntCoord.
----@type MyGUI.IntCoordConstructor
----@diagnostic disable-next-line: missing-fields
-IntCoord = {}
-
---- Global alias of MyGUI.IntRect.
----@type MyGUI.IntRectConstructor
----@diagnostic disable-next-line: missing-fields
-IntRect = {}
-
---- Global alias of MyGUI.FloatPoint.
----@type MyGUI.FloatPointConstructor
----@diagnostic disable-next-line: missing-fields
-FloatPoint = {}
-
---- Global alias of MyGUI.FloatSize.
----@type MyGUI.FloatSizeConstructor
----@diagnostic disable-next-line: missing-fields
-FloatSize = {}
-
---- Global alias of MyGUI.FloatCoord.
----@type MyGUI.FloatCoordConstructor
----@diagnostic disable-next-line: missing-fields
-FloatCoord = {}
-
---- Global alias of MyGUI.FloatRect.
----@type MyGUI.FloatRectConstructor
----@diagnostic disable-next-line: missing-fields
-FloatRect = {}
-
---- Global alias of MyGUI.Colour.
----@type MyGUI.ColourConstructor
----@diagnostic disable-next-line: missing-fields
-Colour = {}
+--- Conditional constants alias registered at Lua startup. Prefer getGlobalConstants().
+---@type GlobalConstants|nil
+con = nil
 
 --- Injected only during synchronous dialogue-script execution; the wrapped object is borrowed.
 ---@type Dialogue|nil
@@ -24077,43 +25052,13 @@ currentDialogue = nil
 ---@type DialogLineData|nil
 currentDialogueLine = nil
 
---- Conditional game-world alias registered at Lua startup. Prefer getGameWorld().
----@type GameWorld|nil
-ou = nil
-
---- Conditional player-interface alias registered at Lua startup. Prefer getPlayerInterface().
----@type PlayerInterface|nil
-player = nil
-
---- Conditional input-handler alias registered at Lua startup. Prefer getInputHandler().
----@type InputHandler|nil
-key = nil
-
---- Conditional root-object-factory alias registered at Lua startup. Prefer getRootObjectFactory().
----@type RootObjectFactory|nil
-root = nil
-
---- Conditional constants alias registered at Lua startup. Prefer getGlobalConstants().
----@type GlobalConstants|nil
-con = nil
-
---- Conditional options alias registered at Lua startup. Prefer getOptionsHolder().
----@type OptionsHolder|nil
-options = nil
+--- Conditional KingOfRenderThread alias registered at Lua startup. Prefer getKingOfRenderThread().
+---@type KingOfRenderThread|nil
+au = nil
 
 --- Conditional ForgottenGUI alias registered at Lua startup. Prefer getForgottenGUI().
 ---@type ForgottenGUI|nil
 gui = nil
-
---- Static utility table for PhysX NxVec3 vectors.
----@type NxVec3Static
----@diagnostic disable-next-line: missing-fields
-NxVec3 = {}
-
---- Static utility table for PhysX NxMat33 matrices.
----@type NxMat33Static
----@diagnostic disable-next-line: missing-fields
-NxMat33 = {}
 
 --- Static utility table for Havok hkVector4f vectors.
 ---@type hkVector4fStatic
@@ -24125,50 +25070,34 @@ hkVector4f = {}
 ---@diagnostic disable-next-line: missing-fields
 hkVector4fComparison = {}
 
---- Static utility table for HavokCharacter physics controllers.
----@type HavokCharacterStatic
----@diagnostic disable-next-line: missing-fields
-HavokCharacter = {}
+--- Conditional input-handler alias registered at Lua startup. Prefer getInputHandler().
+---@type InputHandler|nil
+key = nil
 
---- Static utility table for inventory layouts.
----@type InventoryLayoutStatic
----@diagnostic disable-next-line: missing-fields
-InventoryLayout = {}
+--- Conditional options alias registered at Lua startup. Prefer getOptionsHolder().
+---@type OptionsHolder|nil
+options = nil
 
---- Static query table for world event states.
----@type WorldEventStateQueryStatic
----@diagnostic disable-next-line: missing-fields
-WorldEventStateQuery = {}
+--- Conditional game-world alias registered at Lua startup. Prefer getGameWorld().
+---@type GameWorld|nil
+ou = nil
 
---- Static factory table for MessageForB messages.
----@type MessageForBStatic
----@diagnostic disable-next-line: missing-fields
-MessageForB = {}
+--- Conditional player-interface alias registered at Lua startup. Prefer getPlayerInterface().
+---@type PlayerInterface|nil
+player = nil
 
---- Static manager table for in-game modal message boxes.
----@type MessageBoxManagerStatic
----@diagnostic disable-next-line: missing-fields
-MessageBoxManager = {}
+--- Conditional root-object-factory alias registered at Lua startup. Prefer getRootObjectFactory().
+---@type RootObjectFactory|nil
+root = nil
 
---- Static helper table for TradeResult transaction outcomes.
----@type TradeResultStatic
----@diagnostic disable-next-line: missing-fields
-TradeResult = {}
+--- Conditional SharedKing alias registered at Lua startup. Prefer getSharedKing().
+---@type SharedKing|nil
+shou = nil
 
---- Global Building binding table.
----@type Building
+--- Global table of static functions for `AnimsListsManager`.
+---@type AnimsListsManagerStatics
 ---@diagnostic disable-next-line: missing-fields
-Building = {}
-
---- Global TownBase binding table.
----@type TownBase
----@diagnostic disable-next-line: missing-fields
-TownBase = {}
-
---- Global CharStats binding table.
----@type CharStats
----@diagnostic disable-next-line: missing-fields
-CharStats = {}
+AnimsListsManager = {}
 
 --- Global table of static functions for `AppearanceManager`.
 ---@type AppearanceManagerStatics
@@ -24244,6 +25173,11 @@ InventoryIcon = {}
 ---@type LoadingWindowStatics
 ---@diagnostic disable-next-line: missing-fields
 LoadingWindow = {}
+
+--- Global table of static functions for `LocaleManager`.
+---@type LocaleManagerStatics
+---@diagnostic disable-next-line: missing-fields
+LocaleManager = {}
 
 --- Global table of static functions for `Logger`.
 ---@type LoggerStatics
@@ -24485,6 +25419,11 @@ ProductionBuilding = {}
 ---@diagnostic disable-next-line: missing-fields
 RagdollPart = {}
 
+--- Namespace table enclosing nested `RangedCombatClass` enums.
+---@type RangedCombatClass
+---@diagnostic disable-next-line: missing-fields
+RangedCombatClass = {}
+
 --- Namespace table enclosing nested `RobotLimbs` enums.
 ---@type RobotLimbs
 ---@diagnostic disable-next-line: missing-fields
@@ -24524,6 +25463,11 @@ YesNoMaybe = {}
 ---@type ZoneMap
 ---@diagnostic disable-next-line: missing-fields
 ZoneMap = {}
+
+--- Namespace table enclosing nested `ZoneSmell` enums.
+---@type ZoneSmell
+---@diagnostic disable-next-line: missing-fields
+ZoneSmell = {}
 
 --- Namespace table enclosing nested `ZoneSpacialGrid` enums.
 ---@type ZoneSpacialGrid
@@ -25030,6 +25974,16 @@ RagdollPart.Enum = {
     ALL = 4294934528,
 }
 
+--- Engine enum `RangedCombatClass.RangedState`.
+---@enum RangedCombatClass.RangedState
+RangedCombatClass.RangedState = {
+    SHOOTING = 0,
+    MOVING = 1,
+    RELOADING = 2,
+    WAITING = 3,
+    THINKING = 4,
+}
+
 --- Prosthetic and robotic limb anatomy identifier.
 ---@enum RobotLimbs.Limb
 RobotLimbs.Limb = {
@@ -25183,6 +26137,15 @@ ZoneMap.ZONE_MESSAGE = {
     BEING_LOADED_TRUE = 1,
 }
 
+--- Engine enum `ZoneSmell.SmellMessageType`.
+---@enum ZoneSmell.SmellMessageType
+ZoneSmell.SmellMessageType = {
+    SMELLMSG_NONE = 0,
+    SMELLMSG_CORPSE = 1,
+    SMELLMSG_BLOOD = 2,
+    SMELLMSG_EGG = 3,
+}
+
 --- Spatial partition grid movement result (unchanged, changed cell, changed zone).
 ---@enum ZoneSpacialGrid.Result
 ZoneSpacialGrid.Result = {
@@ -25230,6 +26193,10 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "int"): Lektor<integer>
 ---@overload fun(typeName: "lektor<AIPackage*>"): Lektor<AIPackage>
 ---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
+---@overload fun(typeName: "lektor<AnimationClassBase::AnimationLayer*>"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer*"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "lektor<AnimationData*>"): Lektor<AnimationData>
+---@overload fun(typeName: "AnimationData*"): Lektor<AnimationData>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
 ---@overload fun(typeName: "Armour*"): Lektor<Armour>
 ---@overload fun(typeName: "lektor<Building*>"): Lektor<Building>
@@ -25282,10 +26249,14 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "MyGUI::Button*"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "lektor<Platoon*>"): Lektor<Platoon>
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
+---@overload fun(typeName: "lektor<RenderEntityT*>"): Lektor<lightuserdata>
+---@overload fun(typeName: "RenderEntityT*"): Lektor<lightuserdata>
 ---@overload fun(typeName: "lektor<RootObject*>"): Lektor<RootObject>
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
+---@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
@@ -25308,6 +26279,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "StringPair"): Lektor<StringPair>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
+---@overload fun(typeName: "lektor<float>"): Lektor<number>
+---@overload fun(typeName: "float"): Lektor<number>
 ---@overload fun(typeName: "lektor<hand>"): Lektor<hand>
 ---@overload fun(typeName: "hand"): Lektor<hand>
 ---@overload fun(typeName: "lektor<iVector2>"): Lektor<iVector2>
@@ -25325,6 +26298,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
 ---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
 ---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationData"): Lektor<AnimationData>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
@@ -25349,8 +26324,10 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "HealthPartStatus"): Lektor<MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "Platoon"): Lektor<Platoon>
+---@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
 ---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "SingleAnimation"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
@@ -25364,6 +26341,10 @@ lektor = {}
 ---@overload fun(typeName: "int"): Lektor<integer>
 ---@overload fun(typeName: "lektor<AIPackage*>"): Lektor<AIPackage>
 ---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
+---@overload fun(typeName: "lektor<AnimationClassBase::AnimationLayer*>"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer*"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "lektor<AnimationData*>"): Lektor<AnimationData>
+---@overload fun(typeName: "AnimationData*"): Lektor<AnimationData>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
 ---@overload fun(typeName: "Armour*"): Lektor<Armour>
 ---@overload fun(typeName: "lektor<Building*>"): Lektor<Building>
@@ -25416,10 +26397,14 @@ lektor = {}
 ---@overload fun(typeName: "MyGUI::Button*"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "lektor<Platoon*>"): Lektor<Platoon>
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
+---@overload fun(typeName: "lektor<RenderEntityT*>"): Lektor<lightuserdata>
+---@overload fun(typeName: "RenderEntityT*"): Lektor<lightuserdata>
 ---@overload fun(typeName: "lektor<RootObject*>"): Lektor<RootObject>
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
+---@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
@@ -25442,6 +26427,8 @@ lektor = {}
 ---@overload fun(typeName: "StringPair"): Lektor<StringPair>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
+---@overload fun(typeName: "lektor<float>"): Lektor<number>
+---@overload fun(typeName: "float"): Lektor<number>
 ---@overload fun(typeName: "lektor<hand>"): Lektor<hand>
 ---@overload fun(typeName: "hand"): Lektor<hand>
 ---@overload fun(typeName: "lektor<iVector2>"): Lektor<iVector2>
@@ -25459,6 +26446,8 @@ lektor = {}
 ---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
 ---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
 ---@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
+---@overload fun(typeName: "AnimationClassBase::AnimationLayer"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "AnimationData"): Lektor<AnimationData>
 ---@overload fun(typeName: "Armour"): Lektor<Armour>
 ---@overload fun(typeName: "Building"): Lektor<Building>
 ---@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
@@ -25483,8 +26472,10 @@ lektor = {}
 ---@overload fun(typeName: "HealthPartStatus"): Lektor<MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "Platoon"): Lektor<Platoon>
+---@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
 ---@overload fun(typeName: "RootObject"): Lektor<RootObject>
 ---@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
+---@overload fun(typeName: "SingleAnimation"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "TownBase"): Lektor<TownBase>
 ---@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
@@ -25560,6 +26551,8 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
+---@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
@@ -25610,8 +26603,8 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "int", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<itemType, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
----@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, lightuserdata>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, CombatState>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
@@ -25639,7 +26632,7 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "hand", valueType: "InventorySection"): OgreUnorderedMap<hand, InventorySection>
 ---@overload fun(keyType: "int", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(keyType: string|table, valueType: string|table): OgreUnorderedMap<any, any>
 ogre_unordered_map = {}
 
@@ -25654,6 +26647,8 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
+---@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
@@ -25704,8 +26699,8 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "int", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<itemType, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
----@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, lightuserdata>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, CombatState>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
 ---@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
@@ -25733,11 +26728,63 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "hand", valueType: "InventorySection"): OgreUnorderedMap<hand, InventorySection>
 ---@overload fun(keyType: "int", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, lightuserdata>
+---@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, CombatState>
 ---@param keyType string|table
 ---@param valueType string|table
 ---@return OgreUnorderedMap<any, any>
 function ogre_unordered_map.new(keyType, valueType) end
+
+--- Returns the game's main GUI object, or nil before it exists.
+---@return ForgottenGUI|nil
+function getForgottenGUI() end
+
+--- Returns the game world, or nil before it exists.
+---@return GameWorld|nil
+function getGameWorld() end
+
+--- Returns the engine's global constants, or nil before they are loaded.
+---@return GlobalConstants|nil
+function getGlobalConstants() end
+
+--- Returns the engine input handler, or nil before it exists.
+---@return InputHandler|nil
+function getInputHandler() end
+
+--- Returns the game options, or nil before they are loaded.
+---@return OptionsHolder|nil
+function getOptionsHolder() end
+
+--- Returns the player interface, or nil before the game world and player exist.
+---@return PlayerInterface|nil
+function getPlayerInterface() end
+
+--- Returns the game world's object factory, or nil before it exists.
+---@return RootObjectFactory|nil
+function getRootObjectFactory() end
+
+--- Returns the player's selected character, or nil when none is selected or the game world is not ready.
+---@return Character|nil
+function getSelectedCharacter() end
+
+--- Returns the game's shared king object, or nil before it exists.
+---@return SharedKing|nil
+function getSharedKing() end
+
+--- Returns the game's king of render thread object, or nil before it exists.
+---@return KingOfRenderThread|nil
+function getKingOfRenderThread() end
+
+--- Calls function or callable table f with the given arguments in protected mode (LuaJIT).
+---@overload fun(callable: any, ...: any): boolean, any
+---@param f fun(...: any): ...any
+---@param ... any
+---@return boolean
+---@return any
+function pcall(f, ...) end
+
+--- Prints values through the KenshiLua logger and GUI console/editor.
+---@param ... any
+function print(...) end
 
 --- Compatibility alias for `Events.on`.
 ---@param eventName KenshiLua.EventName|string
@@ -25748,47 +26795,3 @@ function registerHandler(eventName, handler) end
 --- Compatibility alias for `Events.off`.
 ---@param handlerId integer
 function unregisterHandler(handlerId) end
-
---- Returns the game world, or nil before it exists.
----@return GameWorld|nil
-function getGameWorld() end
-
---- Returns the player interface, or nil before the game world and player exist.
----@return PlayerInterface|nil
-function getPlayerInterface() end
-
---- Returns the engine input handler, or nil before it exists.
----@return InputHandler|nil
-function getInputHandler() end
-
---- Returns the player's selected character, or nil when none is selected or the game world is not ready.
----@return Character|nil
-function getSelectedCharacter() end
-
---- Returns the game world's object factory, or nil before it exists.
----@return RootObjectFactory|nil
-function getRootObjectFactory() end
-
---- Returns the engine's global constants, or nil before they are loaded.
----@return GlobalConstants|nil
-function getGlobalConstants() end
-
---- Returns the game options, or nil before they are loaded.
----@return OptionsHolder|nil
-function getOptionsHolder() end
-
---- Returns the game's main GUI object, or nil before it exists.
----@return ForgottenGUI|nil
-function getForgottenGUI() end
-
---- Prints values through the KenshiLua logger and GUI console/editor.
----@param ... any
-function print(...) end
-
---- Calls function or callable table f with the given arguments in protected mode (LuaJIT).
----@overload fun(callable: any, ...: any): boolean, any
----@param f fun(...: any): ...any
----@param ... any
----@return boolean
----@return any
-function pcall(f, ...) end
