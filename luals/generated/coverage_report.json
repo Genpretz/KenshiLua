@@ -405,7 +405,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -477,7 +477,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 4,
       "property_count": 6
     },
     {
@@ -501,7 +501,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 25,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 25
     },
     {
@@ -645,7 +645,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -717,7 +717,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -747,7 +747,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -771,7 +771,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 8,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 8,
       "property_count": 8
     },
     {
@@ -1113,7 +1113,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -2181,7 +2181,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -2367,7 +2367,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -4359,7 +4359,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5080,7 +5080,7 @@
       "lua_type": "hand",
       "method_count": 21,
       "methods_with_inferred_returns": 21,
-      "methods_with_kenshilib_descriptions": 21,
+      "methods_with_kenshilib_descriptions": 15,
       "missing_instance_methods": [],
       "missing_properties": [],
       "missing_static_methods": [],
@@ -5133,7 +5133,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -5157,7 +5157,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -6321,7 +6321,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -6555,7 +6555,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -8625,7 +8625,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 6,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 6,
       "property_count": 6
     },
     {
@@ -8919,7 +8919,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -8943,7 +8943,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -9663,7 +9663,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -12237,7 +12237,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 10,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 10
     },
     {
@@ -12261,7 +12261,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -12285,7 +12285,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 1,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 1,
       "property_count": 1
     },
     {
@@ -12333,7 +12333,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 3,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 3,
       "property_count": 3
     },
     {
@@ -12357,7 +12357,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 5,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 5,
       "property_count": 5
     },
     {
@@ -12381,7 +12381,7 @@
       "missing_properties": [],
       "missing_static_methods": [],
       "properties_with_inferred_types": 2,
-      "properties_with_kenshilib_descriptions": 0,
+      "properties_with_kenshilib_descriptions": 2,
       "property_count": 2
     },
     {
@@ -16643,6 +16643,11 @@
     "MyGUI.WidgetStyle",
     "NxMat33Static",
     "NxVec3Static",
+    "OIS",
+    "OIS.Effect",
+    "OIS.InputManager",
+    "OIS.Interface",
+    "OIS.Keyboard",
     "TradeResultStatic",
     "WorldEventStateQueryStatic",
     "hkVector4fComparisonStatic",
@@ -16651,7 +16656,7 @@
   "metadata_only_functions": [
     "pcall"
   ],
-  "runtime_version": "0.3.9-alpha",
+  "runtime_version": "0.3.10-alpha",
   "schema_version": 2,
   "scope": "runtime bindings represented by binding_inventory.json",
   "summary": {
@@ -16679,19 +16684,19 @@
     "inferred_return_percent": 99.9,
     "inheritance_links": 191,
     "inheritance_percent": 100.0,
-    "kenshilib_method_description_percent": 88.9,
-    "kenshilib_property_description_percent": 91.0,
-    "metadata_classes": 705,
+    "kenshilib_method_description_percent": 88.8,
+    "kenshilib_property_description_percent": 93.0,
+    "metadata_classes": 710,
     "metadata_functions": 14,
     "metadata_globals": 87,
     "method_percent": 100.0,
     "methods": 8784,
     "methods_with_inferred_returns": 8776,
-    "methods_with_kenshilib_descriptions": 6828,
+    "methods_with_kenshilib_descriptions": 6822,
     "methods_with_signatures": 8784,
     "properties": 3716,
     "properties_with_inferred_types": 3652,
-    "properties_with_kenshilib_descriptions": 3380,
+    "properties_with_kenshilib_descriptions": 3455,
     "property_percent": 100.0,
     "runtime_globals": 178,
     "signature_methods": 8784,

@@ -9153,6 +9153,40 @@
     {
       "category": "enum_typed_as_integer",
       "class": "InputHandler",
+      "expected": "fun(KeyCode)",
+      "header": "void keyDownEvent(OIS::KeyCode key)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "KeyCode",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: InputHandler, key: integer)",
+      "member": "keyDownEvent"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "InputHandler",
+      "expected": "fun(KeyCode)",
+      "header": "void keyUpEvent(OIS::KeyCode key)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "KeyCode",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: InputHandler, key: integer)",
+      "member": "keyUpEvent"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "InputHandler",
       "expected": "fun(string): GameMode",
       "header": "GameMode getMode(const std::string& command)",
       "issues": [
@@ -11571,11 +11605,17 @@
       "member": "injectMouseRelease"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "multiple",
       "class": "MyGUI.InputManager",
-      "expected": "fun(integer, ?Char): boolean",
+      "expected": "fun(KeyCode, ?Char): boolean",
       "header": "bool injectKeyPress(KeyCode _key, Char _text = 0)",
       "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "KeyCode",
+          "position": "param 1"
+        },
         {
           "actual": "integer",
           "category": "unmapped_header_type",
@@ -11586,6 +11626,23 @@
       "kind": "method",
       "lua": "fun(self: MyGUI.InputManager, key: integer, character?: integer): boolean",
       "member": "injectKeyPress"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "MyGUI.InputManager",
+      "expected": "fun(KeyCode): boolean",
+      "header": "bool injectKeyRelease(KeyCode _key)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "KeyCode",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MyGUI.InputManager, key: integer): boolean",
+      "member": "injectKeyRelease"
     },
     {
       "category": "binding_shape_differs",
@@ -13835,6 +13892,23 @@
       "kind": "property",
       "lua": "nil",
       "member": "compositors"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "OptionsWindow",
+      "expected": "fun(KeyCode)",
+      "header": "void setKey(const OIS::KeyCode& code)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "KeyCode",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: OptionsWindow, code: integer)",
+      "member": "setKey"
     },
     {
       "category": "multiple",
@@ -19714,9 +19788,9 @@
     "binding_shape_differs": 202,
     "blocking_issues": 0,
     "container_methods_typed": 1103,
-    "enum_typed_as_integer": 467,
+    "enum_typed_as_integer": 472,
     "methods": 7377,
-    "methods_matching_header": 5393,
+    "methods_matching_header": 5389,
     "no_header_declaration": 228,
     "properties": 3716,
     "properties_matching_header": 3167,
