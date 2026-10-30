@@ -1,6 +1,6 @@
 # Lua Language Server Guide
 
-KenshiLua provides complete type definitions for the [Lua Language Server (LuaLS)](https://luals.github.io/). These definitions enable autocomplete, signature help, hover documentation, and static type checking for KenshiLib classes, methods, properties, enums, containers, and MyGUI widgets within your code editor.
+KenshiLua provides editor type definitions for the [Lua Language Server (LuaLS)](https://luals.github.io/). These definitions enable autocomplete, signature help, hover documentation, and static type checking for registered Lua classes, methods, properties, enums, containers, and MyGUI widgets within your code editor.
 
 ---
 
@@ -13,7 +13,7 @@ KenshiLua-LuaLS-Addon-v<version>.zip
 
 This archive contains a standardized LuaLS addon folder named `kenshilua`, including:
 * `config.json`: Configuration tuning LuaLS for LuaJIT 2.1 compatibility.
-* `library/kenshilua.lua`: Complete type definitions generated directly from KenshiLua's runtime binding inventory and KenshiLib headers.
+* `library/kenshilua.lua`: Type definitions generated from the runtime binding inventory, reviewed metadata, and KenshiLib declarations.
 * `README.md`: Quick setup instructions.
 
 > [!NOTE]
@@ -80,7 +80,7 @@ if not currentDialogue or not currentDialogueLine then
     return
 end
 
-local speaker = currentDialogue.speaker
+local speaker = currentDialogue:getCharacter()
 if speaker then
     print("Speaker: " .. speaker:getName())
 end
@@ -117,11 +117,15 @@ function MyMod_ApplyBuff(target, bonusAmount)
         return false
     end
 
-    local stats = target.charStats
+    local stats = target.stats
     if stats then
         -- Full autocompletion and hover documentation for CharStats
-        print("Combat level: " .. tostring(stats.combatLevel))
+        print("Strength: " .. tostring(stats:getStrength()))
     end
     return true
 end
 ```
+
+## Maintaining Descriptions
+
+Hover descriptions are stored in checked-in metadata and preserved during generation. See the [description maintenance workflow](../tools/README.md#luals-descriptions) for authoritative files, precedence, and importing upstream descriptions for review.

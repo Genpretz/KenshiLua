@@ -28,7 +28,7 @@
   ],
   "classes": [
     {
-      "description": "Lua view of the `FitnessSelector<CampaignTriggerData*>` helper. Its fields are served by a custom __index in FitnessSelectorBinding.h.",
+      "description": "Candidate scores for CampaignTriggerData selection, exposing the total score, highest score, and highest candidate as a raw pointer.",
       "fields": [
         {
           "description": "Total sum of scores across all evaluated candidates in the selector.",
@@ -41,17 +41,17 @@
           "type": "number"
         },
         {
-          "description": "Pushed through LuaCodec without an element metatable, so Lua receives a raw pointer.",
+          "description": "Highest-scoring candidate, exposed as a raw pointer rather than typed CampaignTriggerData userdata.",
           "name": "highestItem",
           "type": "lightuserdata|nil"
         },
         {
-          "description": "This instance is registered without a list metatable.",
+          "description": "This specialization does not expose this candidate map; reading the field returns nil.",
           "name": "list",
           "type": "nil"
         },
         {
-          "description": "This instance is registered without an item-score metatable.",
+          "description": "This specialization does not expose this candidate map; reading the field returns nil.",
           "name": "itemsScores",
           "type": "nil"
         }
@@ -59,7 +59,7 @@
       "name": "FitnessSelectorCampaignTriggerData"
     },
     {
-      "description": "Lua view of the `FitnessSelector<CombatTechniqueData*>` helper. Its fields are served by a custom __index in FitnessSelectorBinding.h.",
+      "description": "Candidate scores for CombatTechniqueData selection, exposing the total score, highest score, and highest candidate as a raw pointer.",
       "fields": [
         {
           "description": "Total sum of scores across all evaluated candidates in the selector.",
@@ -72,7 +72,7 @@
           "type": "number"
         },
         {
-          "description": "Pushed through LuaCodec without an element metatable, so Lua receives a raw pointer.",
+          "description": "Highest-scoring candidate, exposed as a raw pointer rather than typed CombatTechniqueData userdata.",
           "name": "highestItem",
           "type": "lightuserdata|nil"
         },
@@ -90,7 +90,7 @@
       "name": "CombatTechniqueDataFitnessSelector"
     },
     {
-      "description": "Lua view of the `FitnessSelector<GameData*>` helper. Its fields are served by a custom __index in FitnessSelectorBinding.h.",
+      "description": "Candidate scores for GameData selection, exposing the total score, highest score, and highest candidate as a raw pointer.",
       "fields": [
         {
           "description": "Total sum of scores across all evaluated candidates in the selector.",
@@ -103,7 +103,7 @@
           "type": "number"
         },
         {
-          "description": "Pushed through LuaCodec without an element metatable, so Lua receives a raw pointer.",
+          "description": "Highest-scoring candidate, exposed as a raw pointer rather than typed GameData userdata.",
           "name": "highestItem",
           "type": "lightuserdata|nil"
         },
@@ -4773,12 +4773,10 @@
       "name": "NavMeshGenerator_Task"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "ZoneMap"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "NavInstance"
     },
@@ -4859,7 +4857,7 @@
           "type": "fun(self: hand): boolean"
         },
         {
-          "description": "Returns whether the handle's type is a valid object type. It does not check that the object still exists; resolve the handle with a getter for that.",
+          "description": "Returns whether type lies in the engine itemType range, including NULL_ITEM. It does not check that the referenced object still exists.",
           "name": "isValid",
           "type": "fun(self: hand): boolean"
         },
@@ -4869,14 +4867,14 @@
           "type": "fun(self: hand): boolean"
         },
         {
-          "description": "Returns whether two handles are equal under the engine's `hand::operator==`.",
+          "description": "Compares this handle with another hand, a RootObjectBase, or a boolean using the corresponding engine comparison.",
           "name": "operator_eq",
-          "type": "fun(self: hand, other: hand): boolean"
+          "type": "fun(self: hand, other: hand|RootObjectBase|boolean): boolean"
         },
         {
-          "description": "Returns whether two handles differ under the engine's `hand::operator!=`.",
+          "description": "Tests inequality with another hand or RootObjectBase; with a boolean, returns the inverse of the engine boolean equality check.",
           "name": "operator_ne",
-          "type": "fun(self: hand, other: hand): boolean"
+          "type": "fun(self: hand, other: hand|RootObjectBase|boolean): boolean"
         },
         {
           "description": "Orders two handles with the engine's `hand::operator<`.",
@@ -5430,77 +5428,62 @@
       "name": "HavokCharacterStatic"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "BadSize"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "BoundsViolation"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "BuildingPlacementGroundType"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "FactionsScreen_FactionRelationsLine_LessSort"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "hkContainerHeapAllocator"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "hkMemoryAllocator_ExtendedInterface"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "Listener"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "MustEndWithSemiColon"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "Nx9Real"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "NxUserControllerHitReport"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "NxUserTriggerReport"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "OrdersItemBox"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "PhysicsClass"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "TimerClass"
     },
     {
-      "description": "Opaque runtime-registered type with no exposed members.",
       "fields": [],
       "name": "TraitBool"
     },
@@ -5617,27 +5600,23 @@
       "name": "InventoryLayoutStatic"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "Inventory"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "InventorySection"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "Item"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "GameData"
     },
     {
-      "description": "Standalone GameData value with no additional registered members.",
+      "description": "Standalone GameData value inheriting record fields and lookup operations from GameData.",
       "fields": [],
       "name": "GameDataCopyStandalone",
       "parent": "GameData"
@@ -6019,7 +5998,7 @@
       "parent": "BuildInventoryLayout"
     },
     {
-      "description": "Production layout with no additional registered members.",
+      "description": "Inventory layout for production machines, inheriting input/output controls from BuildInventoryLayout.",
       "fields": [],
       "name": "ProductionInventoryLayout",
       "parent": "BuildInventoryLayout"
@@ -6075,12 +6054,10 @@
       "name": "Inventory_HasRoomCache"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "RootObjectBase"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "RootObject",
       "parent": "RootObjectBase"
@@ -6349,12 +6326,10 @@
       "name": "GameSaveState"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "ObjectInstance"
     },
     {
-      "description": "Forward declaration. Its registered API remains tracked as incomplete in the coverage report.",
       "fields": [],
       "name": "InstanceID"
     },
@@ -7120,12 +7095,10 @@
       "parent": "NpcListWindow"
     },
     {
-      "description": "Forward declaration for the level-editor list base; its members are documented separately.",
       "fields": [],
       "name": "GamedataSelectionList"
     },
     {
-      "description": "Forward declaration for Havok allocator inheritance; its members are documented separately.",
       "fields": [],
       "name": "hkMemoryAllocator"
     },
@@ -7196,7 +7169,6 @@
       "parent": "BaseLayout"
     },
     {
-      "description": "Forward declaration for texture-load inheritance; its members are documented separately.",
       "fields": [],
       "name": "TextureLoadData"
     },
@@ -7691,7 +7663,6 @@
       "name": "TradeResultStatic"
     },
     {
-      "description": "Forward declaration for appearance inheritance; its members are documented separately.",
       "fields": [],
       "name": "AppearanceBase"
     },
@@ -7782,7 +7753,6 @@
       "parent": "AppearanceBase"
     },
     {
-      "description": "Character binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
       "fields": [
         {
           "name": "handle",
@@ -7830,21 +7800,18 @@
       "parent": "RootObject"
     },
     {
-      "description": "Building binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
       "fields": [],
       "inventory_fields": "Building",
       "name": "Building",
       "parent": "RootObject"
     },
     {
-      "description": "Town-base binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
       "fields": [],
       "inventory_fields": "TownBase",
       "name": "TownBase",
       "parent": "RootObject"
     },
     {
-      "description": "Character-statistics binding. Registered members are exposed from the source binding inventory; signatures not yet source-audited remain explicitly broad.",
       "fields": [
         {
           "name": "getThieving",
@@ -7908,6 +7875,31 @@
       "description": "Global MyGUI root table exposing widget factory functions and GUI subsystem singletons.",
       "fields": [],
       "name": "MyGUI"
+    },
+    {
+      "name": "OIS",
+      "description": "OIS SDK enum tables for input events, device/component categories, errors, and force feedback.",
+      "fields": []
+    },
+    {
+      "name": "OIS.Keyboard",
+      "description": "Keyboard modifier and text-translation mode constants. This table provides enums, not a keyboard device wrapper.",
+      "fields": []
+    },
+    {
+      "name": "OIS.InputManager",
+      "description": "Optional input-factory selector constants. Input-manager operations are not exposed by this table.",
+      "fields": []
+    },
+    {
+      "name": "OIS.Interface",
+      "description": "Optional OIS device-interface type constants.",
+      "fields": []
+    },
+    {
+      "name": "OIS.Effect",
+      "description": "Force-feedback family, effect-shape, and direction constants. Effect creation and playback are not exposed by this table.",
+      "fields": []
     }
   ],
   "functions": [

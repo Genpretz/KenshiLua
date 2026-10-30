@@ -242,7 +242,7 @@
                 "isLeaderDown": "Returns true if the squad leader is currently unconscious, dying, or incapacitated.",
                 "isLocationAccessible": "Returns true if the target coordinates can be reached via pathfinding.",
                 "isLyingProne": "Returns true if the character is currently lying flat on the ground.",
-                "isMachineInputInvalid": "Returns true if incompatible or invalid materials are placed in machine input slots.",
+                "isMachineInputInvalid": "Returns true only when subject resolves to a crafting building with invalid input item types. Missing and non-crafting buildings return false. The Vector3 argument is required by Lua but is unused by this engine check.",
                 "isMachineJammed": "Returns true if the target production machine is stalled due to full output or missing inputs.",
                 "isMachineOutputEmpty": "Returns true if the machine output hopper contains no finished items.",
                 "isMachineOutputFull": "Returns true if the machine output hopper is filled to capacity and cannot accept more items.",
@@ -468,7 +468,7 @@
             }
         },
         "AIPackage": {
-            "description": "",
+            "description": "AI behavior package holding mission handles, squad and blackboard references, travel preferences, and activation/end callbacks.",
             "methods": {
                 "AIPackage": "Initializes a new `AIPackage` instance. Sets default values for handles and nullifies pointers, preparing the object for configuration via its template data.",
                 "_NV_getMyTarget": "Non-virtual `getMyTarget`.",
@@ -649,7 +649,7 @@
                 "create": "Initializes the movement base at starting position _pos (Vector3 table).",
                 "extractRoadFollower": "Detaches and returns the current RoadFollower* (as lightuserdata).",
                 "faceDirection": "Rotates the agent to face direction vector dir (Vector3 table).",
-                "getCurrentMotion": "Returns the current frame motion vector (Vector3 table).",
+                "getCurrentMotion": "Returns a copy of the controller's currentMotion vector as a Vector3 table.",
                 "getCurrentSpeed": "Returns the current scalar movement speed.",
                 "getCurrentSpeedRelativeToMax01": "Returns current speed normalized against maxSpeed in the [0.0, 1.0] range.",
                 "getDestination": "Returns the current target destination position (Vector3 table).",
@@ -814,6 +814,14 @@
             },
             "properties": {}
         },
+        "AnimationChoices": {
+            "description": "Animation candidates and their corresponding selection weights, with helpers for weight normalization and choosing a candidate.",
+            "methods": {},
+            "properties": {
+                "anims": "Candidate animation definitions, paired by index with weights.",
+                "weights": "Selection weights corresponding to the entries in anims."
+            }
+        },
         "AnimationClass": {
             "description": "Core skeletal animation controller and locomotion blending coordinator governing character poses, movement cycles, combat techniques, stumbles, and ragdoll transitions. Manages Ogre3D skeletal animation layers, motion smoothing filters, pain overlay blend masks, and physics ragdoll kinematics coupling. Interacts directly with `Character` for actor state, `CharMovement` for locomotion velocity and steering, `AppearanceBase` for skeletal mesh scaling and body morphs, and `CombatClass` for attack and parry sequence timing.",
             "methods": {
@@ -973,7 +981,7 @@
             }
         },
         "AnimationClassAnimal": {
-            "description": "",
+            "description": "Animal animation controller with turn-speed limits, previous rotation, and animal-specific idle and water-height handling.",
             "methods": {
                 "AnimationClassAnimal": "Constructor for `AnimationClassAnimal`. Initializes the underlying animation system and specifically configures animal-specific state and settings.",
                 "calculatePositionWithWaterHeight": "Calculates the vertical positioning for the animal taking water depth into consideration. Adjusts the node positioning offset so the head remains above the water level, reading from the `Bip01 Head` bone and current water height.",
@@ -987,9 +995,9 @@
             },
             "properties": {
                 "_base": "Inherited high-level animation coordinator.",
-                "_isTurningFar": "Flag indicating sharp angle turning threshold exceeded.",
-                "lastRot": "Previous frame orientation for delta yaw calculation.",
-                "maxTurnSpeed": "Maximum angular rotational turn velocity."
+                "_isTurningFar": "Stored sharp-turn state used by the animal animation controller.",
+                "lastRot": "Previous rotation recorded by the animal animation controller.",
+                "maxTurnSpeed": "Maximum turn-speed value used by the animal animation controller."
             }
         },
         "AnimationClassBase": {
@@ -1060,8 +1068,30 @@
                 "zeroOutTheBlending": "Blending reset toggle flag."
             }
         },
+        "AnimationClassBase.AnimationLayer": {
+            "description": "Animation blend layer holding added and fading SingleAnimation entries, with playback, fade, and removal controls.",
+            "methods": {},
+            "properties": {
+                "addList": "Animation instances added to this layer.",
+                "removeList": "Animation instances queued for removal from this layer.",
+                "fadeRate": "Fade rate stored by this animation layer.",
+                "animationClass": "Animation controller that owns this layer."
+            }
+        },
+        "AnimationClassBase.SingleAnimation": {
+            "description": "One animation playback instance, including its Ogre state, speed, blend weights, synchronization flags, and character events.",
+            "methods": {},
+            "properties": {
+                "animName": "Name of the animation being played.",
+                "speed": "Playback-speed multiplier.",
+                "weight": "Current blend weight.",
+                "desiredWeight": "Target blend weight.",
+                "looped": "Whether this playback instance loops.",
+                "events": "Character events associated with this animation playback."
+            }
+        },
         "AnimationClassHuman": {
-            "description": "",
+            "description": "Humanoid animation controller for stance, arm use, equipment, gaze, breathing, and combat animation selection.",
             "methods": {
                 "AnimationClassHuman": "Initializes a new `AnimationClassHuman` instance. This class builds on `AnimationClass` to manage human-specific animation states.",
                 "animationSelectionCombatMode": "Updates the animation logic when the character is engaged in combat mode. Selects proper strikes and parries.",
@@ -1159,8 +1189,13 @@
                 "wholeBodyAllLayer": "Override all skeletal blend layers."
             }
         },
+        "AnimationEvent": {
+            "description": "Base character animation event with trigger, finish, and text-description callbacks.",
+            "methods": {},
+            "properties": {}
+        },
         "AnimationEvents": {
-            "description": "",
+            "description": "Frame-indexed animation events for one character, tracking the previous frame and the next event to process.",
             "methods": {
                 "AnimationEvents": "Constructs an instance of the `AnimationEvents` structure. Associates the events with a specific `Character` pointer to allow event callbacks to operate on the corresponding actor.",
                 "addEvent": "Inserts a new `AnimationEvent` into the sorted array of sequenced events. Reallocates the internal tracking array dynamically if its capacity is exceeded, inserting the event sequentially based on its trigger time.",
@@ -1171,10 +1206,59 @@
                 "~AnimationEvents": "Destructs the `AnimationEvents` structure. Cleans up the internal `lektor` array and clears event sequence allocations."
             },
             "properties": {
-                "character": "Bound character actor receiving event callbacks.",
+                "character": "Character receiving this event sequence.",
                 "events": "Array of sequenced animation events and their trigger timestamps.",
-                "lastFrame": "Previous animation frame position for interval checking.",
-                "nextEvent": "Index of the upcoming event in the sorted event sequence."
+                "lastFrame": "Previously processed animation frame.",
+                "nextEvent": "Index of the next event to process."
+            }
+        },
+        "AnimationGroundEvent": {
+            "description": "Character animation event carrying the bone name used by its ground-event trigger.",
+            "methods": {},
+            "properties": {
+                "bone": "Bone name stored by this ground animation event."
+            }
+        },
+        "AnimationReloadEvent": {
+            "description": "Character animation event whose trigger performs the engine's reload event.",
+            "methods": {},
+            "properties": {}
+        },
+        "AnimationRequirement": {
+            "description": "Inputs to character animation selection, including movement, stance, equipment, weather, combat actions, and synchronized partners.",
+            "methods": {},
+            "properties": {}
+        },
+        "AnimationSFXEvent": {
+            "description": "Character animation sound event with sound name, key/value settings, stop event, and a footstep flag.",
+            "methods": {},
+            "properties": {
+                "name": "Sound-event name.",
+                "key": "Sound-event setting key.",
+                "value": "Value associated with the sound-event setting key.",
+                "stop": "Sound-event name used when the event finishes.",
+                "isFootstep": "Whether this sound event is marked as a footstep."
+            }
+        },
+        "AnimsListsManager": {
+            "description": "Shared animation catalog with a humanoid list and per-animal lists, populated from GameData animation definitions.",
+            "methods": {},
+            "properties": {
+                "characterAnimations": "Shared humanoid animation catalog."
+            }
+        },
+        "AnimsListsManager.AnimList": {
+            "description": "Animation catalog grouped into movement, idle, strafe, attack, named actions, stumbles, and weather overlays.",
+            "methods": {},
+            "properties": {
+                "movementAnimsBase": "Base-body movement animations.",
+                "movementAnimsUpper": "Upper-body movement animations.",
+                "idleAnims": "Idle animation definitions.",
+                "strafeAnims": "Strafing animation definitions.",
+                "attacks": "Attack animation definitions.",
+                "actionAnims": "Action animations indexed by name.",
+                "allAnims": "Animation definitions indexed by name.",
+                "turningAnim": "Turning animation definition."
             }
         },
         "AppearanceAnimal": {
@@ -1565,6 +1649,13 @@
                 "me": "Owner character whose immediate combat perimeter is governed by this slot manager."
             }
         },
+        "AttackState": {
+            "description": "CombatState for attacking a target, with attack initialization and a technique-integrity check timer.",
+            "methods": {},
+            "properties": {
+                "techniqueIntegrityCheckTimer": "Timer for the attack technique's integrity check."
+            }
+        },
         "BackThreadMessagesToMainT": {
             "description": "Thread-safe message queue template used to transfer notifications and state changes from background worker threads to the main engine thread.",
             "methods": {
@@ -1580,7 +1671,7 @@
             "properties": {}
         },
         "BadSize": {
-            "description": "Exception type thrown by two-dimensional array containers when an operation is requested with invalid or mismatched dimensions.",
+            "description": "Array2d size-error marker. Registered as an opaque Lua type without fields or methods.",
             "methods": {},
             "properties": {}
         },
@@ -1678,8 +1769,13 @@
                 "type": "The task, as a `TaskType` value."
             }
         },
+        "BlueprintItem": {
+            "description": "Item that exposes research data and can teach that research through learnResearch().",
+            "methods": {},
+            "properties": {}
+        },
         "BoundsViolation": {
-            "description": "Exception struct thrown by Array2d operations when an attempted row or column index exceeds the container dimensions.",
+            "description": "Array2d bounds-error marker. Registered as an opaque Lua type without fields or methods.",
             "methods": {},
             "properties": {}
         },
@@ -1858,7 +1954,7 @@
             }
         },
         "Building": {
-            "description": "Master architectural and structural simulation entity representing buildings, outposts, town gates, defensive walls, manufacturing facilities, and interior furniture items. Manages construction material delivery, construction progress tracking, structural dismantling, town ownership, power grid connectivity, Havok navmesh cutouts, PhysX collision hulls, Ogre3D scene node hierarchies, positional audio emitters, interior visibility culling, and character job/usage interaction nodes. Interacts directly with `Town` for settlement ownership, `TownBuildingsManager` for municipal infrastructure, `BuildingInterior` for interior furniture layouts, `DoorStuff` for gateway/door security, `UsageNode` for worker and craft station bindings, and child specializations (`UseableStuff`, `StorageBuilding`, `ProductionBuilding`, `CraftingBuilding`, `FarmBuilding`, `WallBuilding`, `GatewayBuilding`).",
+            "description": "World structure or machine with placement, construction, operation, ownership, and interior state. Subclasses supply specialized storage, production, farming, and other behavior.",
             "methods": {
                 "Building": "Primary constructor for `Building` instances, initializing scene node attachments, PhysX rigid bodies, construction state tracking, spatial bounding boxes, and town association.",
                 "_changeTown": "Migrates building registration from one town entity to another during territorial expansion or civil takeover.",
@@ -2137,7 +2233,7 @@
             }
         },
         "BuildingPlacementGroundType": {
-            "description": "Defines valid ground and surface placement constraints (such as ANY, LAND, or WATER) for buildings.",
+            "description": "Building ground-placement category; the nested Enum contains ANY, LAND, and WATER.",
             "methods": {},
             "properties": {}
         },
@@ -2441,7 +2537,7 @@
             }
         },
         "CharStats": {
-            "description": "Attribute, combat skill, racial bonus, damage curve, and experience points (XP) calculation engine for `Character` actors. Manages primary attributes (Strength, Dexterity, Toughness, Perception) and secondary proficiencies (Martial Arts, Melee Attack/Defence, Weapon proficiencies, Athletics, Stealth, Thievery, Crafting, Medicine, Crossbows, and Turrets). Governs movement dynamics (run speed, encumbrance penalties, swim speed, stealth speed), combat speed (attack/block timing, weapon weight penalties), damage scaling (cut, blunt, pierce, bleed), environmental weather hazard protection, and experience event dispatching. Coordinates directly with `Character` for entity state, `MedicalSystem` for health and wound penalties, `Inventory` for weight encumbrance, and `CombatClass` for attack selection and damage resolution.",
+            "description": "Character skills, attributes, experience, and racial modifiers, with stat queries and recalculation helpers.",
             "methods": {
                 "CharStats": "Constructs a new `CharStats` instance, initializing primary attributes and proficiencies to default zero baseline, setting multiplier scalars to 1.0, configuring the unarmed hand weapon slot, and clearing racial bonus mappings.",
                 "_calculateBlockChance": "Computes block success probability against an opponent's attack skill, factoring in relative weapon skills, defensive posture, and injury penalties.",
@@ -2692,7 +2788,7 @@
             }
         },
         "Character": {
-            "description": "Primary entity actor representing all humanoid and creature characters across the game world. Coordinates AI execution, combat, movement, anatomical damage, inventories, equipment, physics ragdolls, perception, and dialogues. Interacts directly with `MedicalSystem` for anatomical limb damage and vital hitpoints, `CharStats` for attributes and skill calculations, `AI` for Goal-Oriented Action Planning and jobs, `CombatClass` for melee combat execution, `RangedCombatClass` for crossbow targeting, `Inventory` for equipment slots and items, `CharMovement` for locomotion pathfinding, `CharBody` for visual mesh and detached limbs, and `Platoon` for squad membership and command structures.",
+            "description": "Primary entity actor representing all humanoid and creature characters. Exposes identity, faction, inventory, health, movement, AI, appearance, and character state.",
             "methods": {
                 "AIDestinationIndoorOutdoorCheck": "Checks whether a target entity or navigation destination is located indoors or outdoors.",
                 "Character": "Primary constructor initializing character entity, binding RootObject scene nodes, creating MedicalSystem, CharStats, AI, CharMovement, BountyManager, and registering with owning faction.",
@@ -3378,6 +3474,13 @@
                 "part": "RagdollPart::Enum body part affected by the ragdoll state change."
             }
         },
+        "CircleStateAI": {
+            "description": "CombatState for circling, storing a circling direction and checking overcrowding.",
+            "methods": {},
+            "properties": {
+                "circlingDirection": "Direction value stored by the circling combat state."
+            }
+        },
         "CombatClass": {
             "description": "Master tactical melee combat controller governing realtime weapon exchanges, directional swing trajectories, defensive blocking arcs, damage mitigations, and attack slot reservations. Coordinates directly with `AnimationClass` for skeletal motion, `CharStats` for combat formulas and weapon skills, `MedicalSystem` for anatomical trauma, and `CharMovement` for combat spacing.",
             "methods": {
@@ -3458,7 +3561,7 @@
                 "MEI_MAX": "Maximum effective melee engagement distance (outer weapon reach boundary).",
                 "MEI_MIN": "Minimum effective melee engagement distance (inner collision boundary).",
                 "MINIMUM_DISTANCE_TO_OTHERS": "Personal space repulsion threshold preventing combatants from clipping into each other.",
-                "_isAttacking": "Normalized attack execution progress or execution status (-100 = ragdoll, -1 = stumble, 0.0–1.0 = attack cycle).",
+                "_isAttacking": "Normalized attack execution progress or execution status (-100 = ragdoll, -1 = stumble, 0.0Ã¢â‚¬â€œ1.0 = attack cycle).",
                 "_vftable": "Virtual method dispatch table pointer resolving polymorphic combat methods (`isAI`, `attackState`, `blockState`, etc.).",
                 "ai": "High-level decision engine supplying tactical goals, package overrides, and target priorities.",
                 "animation": "Skeletal animation blender coordinating strike transitions, recovery poses, and blend layers.",
@@ -3625,6 +3728,14 @@
                 "stats": "Pointer to the owning character's CharStats.",
                 "strafeStateTimer": "Timer tracking the current strafing state.",
                 "strafing": "Whether the character is currently strafing."
+            }
+        },
+        "CombatState": {
+            "description": "Abstract combat-state interface with validation, initialization, update, and end callbacks; stores its CombatClass and state timer.",
+            "methods": {},
+            "properties": {
+                "combat": "Combat controller associated with this state.",
+                "stateTimer": "Timer stored by this combat state."
             }
         },
         "CombatTechniqueData": {
@@ -5067,7 +5178,7 @@
             }
         },
         "FactionsScreen_FactionRelationsLine_LessSort": {
-            "description": "Sorting functor used to order faction relation entry lines within the faction relations UI.",
+            "description": "Faction-relations UI sorting functor, exposed as an opaque type without a callable Lua comparator.",
             "methods": {},
             "properties": {}
         },
@@ -5515,6 +5626,14 @@
                 "visible": "Master GUI visibility toggle flag."
             }
         },
+        "Formation": {
+            "description": "Follower formation owned by a RootObject, storing follower handles and calculating a follower's formation position.",
+            "methods": {},
+            "properties": {
+                "character": "RootObject that owns the formation.",
+                "followers": "Handles of followers in this formation."
+            }
+        },
         "FormationMover": {
             "description": "Controls squad formation movement behavior, computing coordinated group spacing, facing direction, and speeds relative to a leader.",
             "methods": {
@@ -5778,6 +5897,11 @@
                 "sid": "String identifier (SID) of the referenced GameData record.",
                 "values": "TripleInt table containing three integer parameters associated with this reference link."
             }
+        },
+        "GameDataScoredList": {
+            "description": "FitnessSelector<GameData*> populated from a named GameData list, used for campaign spawn selection.",
+            "methods": {},
+            "properties": {}
         },
         "GameDataValuePair": {
             "description": "A pair associating a GameData reference with an integer value, used in dialogue condition checks and script state queries.",
@@ -6323,6 +6447,27 @@
                 "_base": "Base gun class.",
                 "lastTarget": "The last targeted position.",
                 "turretBuilding": "Pointer to the associated turret building structure."
+            }
+        },
+        "HandleContainerList": {
+            "description": "HandleListBase specialization that reads and writes container indices and compares container serials.",
+            "methods": {},
+            "properties": {}
+        },
+        "HandleList": {
+            "description": "Per-container handle registry with its container handle and an index-remapping table for restored handles.",
+            "methods": {},
+            "properties": {
+                "containerHandle": "Handle identifying this list's owning container.",
+                "handleShift": "Restored-handle index remapping table."
+            }
+        },
+        "HandleListBase": {
+            "description": "Indexed registry of RootObjectBase pointers, with handle allocation, resolution, unload/destroy handling, and serialization.",
+            "methods": {},
+            "properties": {
+                "maxSize": "Capacity value stored by this handle registry.",
+                "lastID": "Last object ID tracked by the registry."
             }
         },
         "HandleManager": {
@@ -7207,11 +7352,21 @@
                 "visible": "True if this field is visible in the editor UI."
             }
         },
+        "ItemHandleList": {
+            "description": "HandleList specialization with item-specific unload handling.",
+            "methods": {},
+            "properties": {}
+        },
         "ItemListWindow": {
             "description": "Subclass of LevelEditor::GamedataSelectionList providing a level editor window for browsing and selecting GameData items by category.",
             "methods": {
                 "itemSelected": "Callback invoked when an item GameData template is selected from the list."
             },
+            "properties": {}
+        },
+        "KingOfRenderThread": {
+            "description": "Render-loop coordinator exposing the renderer, camera, terrain, title screen, and cached mesh data.",
+            "methods": {},
             "properties": {}
         },
         "LevelEditor": {
@@ -7359,7 +7514,7 @@
             }
         },
         "Listener": {
-            "description": "Abstract listener interface receiving weather state change notifications from a WeatherRegion.",
+            "description": "Weather-region change listener interface, exposed as an opaque Lua type without event-registration methods.",
             "methods": {},
             "properties": {}
         },
@@ -7404,6 +7559,17 @@
                 "currentTime": "Timer tracking elapsed display time for the current loading tip.",
                 "loadingText": "The MyGUI::TextBox widget displaying loading status messages.",
                 "messageText": "The MyGUI::EditBox widget displaying gameplay tips."
+            }
+        },
+        "LocaleInfo": {
+            "description": "Language record containing its locale ID, display name, Steam language code, and base/mod flags.",
+            "methods": {},
+            "properties": {
+                "id": "Locale identifier.",
+                "name": "Locale display name, converted from the SDK's wide string.",
+                "steamCode": "Steam language code for this locale.",
+                "isBase": "Whether this is a base-game locale.",
+                "isMod": "Whether this locale comes from a mod."
             }
         },
         "LocaleManager": {
@@ -7662,6 +7828,14 @@
             "methods": {},
             "properties": {
                 "item": "Raw pointer (lightuserdata) to the associated ResearchItem."
+            }
+        },
+        "MapItem": {
+            "description": "Consumable map item with town handles, discovered-town count, and save/load support.",
+            "methods": {},
+            "properties": {
+                "value": "Value stored by the map item.",
+                "townsDiscoveredCount": "Town-discovery count stored by the map item."
             }
         },
         "MapMarkerCharacter": {
@@ -8048,6 +8222,11 @@
                 "path": "Full directory path where this mod is located on disk."
             }
         },
+        "MoneyItem": {
+            "description": "Money pickup item with value, tooltip, and character-consumption behavior.",
+            "methods": {},
+            "properties": {}
+        },
         "MotionFilter": {
             "description": "Character movement smoothing filter that maintains a rolling history buffer of motion weights and speeds.",
             "methods": {
@@ -8071,7 +8250,7 @@
             }
         },
         "MustEndWithSemiColon": {
-            "description": "Havok SDK compile-time helper type used in memory allocator macros to enforce trailing semicolons.",
+            "description": "Empty SDK compatibility marker, registered without Lua fields or methods.",
             "methods": {},
             "properties": {}
         },
@@ -8315,6 +8494,11 @@
                 "zone": "Pointer to the ZoneMap affected by this navmesh message."
             }
         },
+        "NestItem": {
+            "description": "Item specialization with nest-specific class-type and model-name queries.",
+            "methods": {},
+            "properties": {}
+        },
         "NewGameOptionsWindow": {
             "description": "GUI dialog window displaying customizable gameplay options (e.g. hunger rate, squad size limits, chance of death) when starting a new game.",
             "methods": {
@@ -8363,7 +8547,7 @@
             "properties": {}
         },
         "Nx9Real": {
-            "description": "PhysX 3x3 floating-point matrix storage representation used for orientation and rotational transforms.",
+            "description": "PhysX 3-by-3 matrix-storage type. Its raw storage is not exposed through this opaque Lua binding.",
             "methods": {},
             "properties": {}
         },
@@ -8416,12 +8600,12 @@
             "properties": {}
         },
         "NxUserControllerHitReport": {
-            "description": "PhysX character controller callback interface for handling collision events when a character controller strikes shapes or other controllers.",
+            "description": "PhysX controller shape/controller collision callback interface; this binding exposes no Lua callbacks.",
             "methods": {},
             "properties": {}
         },
         "NxUserTriggerReport": {
-            "description": "PhysX callback interface for trigger volume events when physical actors enter, leave, or stay within trigger shapes.",
+            "description": "PhysX trigger callback interface; this binding exposes no Lua callbacks.",
             "methods": {},
             "properties": {}
         },
@@ -8657,7 +8841,7 @@
             }
         },
         "OrdersItemBox": {
-            "description": "Item box container displaying assigned tasks and permanent jobs in the character orders panel.",
+            "description": "Orders-panel item-box type. Its internal widget and order-cell operations are not exposed by this binding.",
             "methods": {},
             "properties": {}
         },
@@ -8908,7 +9092,7 @@
             }
         },
         "PhysicsClass": {
-            "description": "Core PhysX physics interface managing physics actors, collision scenes, joints, and skeletal ragdoll models.",
+            "description": "Scythe::PhysicsClass type, exposed as an opaque reference without Lua physics-management methods.",
             "methods": {},
             "properties": {}
         },
@@ -9052,6 +9236,11 @@
                 "traderInventoryRefreshTime": "Timestamp for merchant inventory restocking.",
                 "unloadedPlatoon": "Pointer to background simulated container when unloaded."
             }
+        },
+        "PlatoonHandleContainerList": {
+            "description": "Container-handle registry that resolves characters, platoons, and active platoons.",
+            "methods": {},
+            "properties": {}
         },
         "PlayerInterface": {
             "description": "Manages the local player's faction, active squads, character and object selection, camera control, task issuance, and build/edit modes. Accessible via the global GameWorld player member.",
@@ -9579,7 +9768,7 @@
             }
         },
         "RagdollAnimation": {
-            "description": "",
+            "description": "Blends skeleton bones toward a target animation using per-bone tracks and elapsed/duration state.",
             "methods": {
                 "RagdollAnimation": "Constructs a new `RagdollAnimation` instance, associating it with an `AnimationClass`. Initializes timing fields and internal state to zero or default values.",
                 "getAnimationTime": "Retrieves the currently elapsed time within the ragdoll transition blend. Represents the active progress of the blend transition.",
@@ -9590,15 +9779,27 @@
                 "~RagdollAnimation": "Destructor for the `RagdollAnimation` object. Releases any dynamically allocated memory, particularly track channels, and cleans up standard string buffers."
             },
             "properties": {
-                "animating": "Whether ragdoll-to-keyframe blend is actively interpolating.",
-                "animationClass": "Bound owner animation coordinator.",
-                "curTime": "Current elapsed blend transition timer.",
-                "endTime": "Total blend transition duration.",
+                "animating": "Whether the blend is active.",
+                "animationClass": "Character animation controller owning this blend.",
+                "curTime": "Current-time value stored by the blend.",
+                "endTime": "End-time value stored by the blend.",
                 "entity": "Visual 3D actor entity mesh.",
-                "firstUpdate": "Initialization tick marker flag.",
+                "firstUpdate": "Whether the first blend update is pending.",
                 "skeleton": "Skeletal rig instance being blended.",
-                "targetAnimationName": "Target recovery animation clip name (e.g. get up from ground).",
+                "targetAnimationName": "Name of the target animation.",
                 "tracks": "Bone track rotation/translation interpolation channels."
+            }
+        },
+        "RagdollAnimation.RagdollAnimationTrack": {
+            "description": "One bone's ragdoll-animation blend track, storing start/end rotations and positions and whether the track is active.",
+            "methods": {},
+            "properties": {
+                "active": "Whether this bone's blend track is active.",
+                "startRotation": "Rotation at the start of the blend.",
+                "endRotation": "Rotation at the end of the blend.",
+                "startPosition": "Position at the start of the blend.",
+                "endPosition": "Position at the end of the blend.",
+                "bone": "Skeleton bone controlled by this track."
             }
         },
         "RainCollectorBuilding": {
@@ -9677,6 +9878,21 @@
                 "war": "Whether open war is active with the target faction."
             }
         },
+        "RenderToTextureotron": {
+            "description": "Offscreen renderer for item, building, and character preview textures, with camera/scene setup and texture save/load helpers.",
+            "methods": {},
+            "properties": {}
+        },
+        "Renderer": {
+            "description": "Ogre rendering coordinator exposing scene, camera, window, viewport, compositor, lights, and texture-painting operations.",
+            "methods": {},
+            "properties": {}
+        },
+        "RendererT": {
+            "description": "Renderer base containing the render-thread debug-entity update list and its update operation.",
+            "methods": {},
+            "properties": {}
+        },
         "RepetitionCounter": {
             "description": "Tracks how many times and how recently each `EventTriggerEnum` dialogue event has been triggered for a `Dialogue` instance (wrapping `Dialogue::RepetitionCounter`).",
             "methods": {
@@ -9685,6 +9901,11 @@
                 "getTimeSinceLastTrigger": "Returns the elapsed game time since the specified `EventTriggerEnum` (`ev`) was last triggered.",
                 "setup": "Initializes the repetition counter's event state map with default reset times."
             },
+            "properties": {}
+        },
+        "Research": {
+            "description": "Research manager with queued projects, progress and cost checks, unlocked craftable objects, building upgrades, and save/load state.",
+            "methods": {},
             "properties": {}
         },
         "ResearchBuilding": {
@@ -9710,6 +9931,23 @@
             },
             "properties": {
                 "researchButton": "The MyGUI Button widget used to access the research menu."
+            }
+        },
+        "ResearchItem": {
+            "description": "Research project record containing its GameData definition and progress, with queries for required cost items and quantities.",
+            "methods": {},
+            "properties": {
+                "data": "GameData definition of the research project.",
+                "progress": "Stored progress for the research project."
+            }
+        },
+        "Research_BuildingUpgrades": {
+            "description": "Researched building modifiers for production output, power generation, and power capacity.",
+            "methods": {},
+            "properties": {
+                "productionMult": "Production multiplier supplied by researched upgrades.",
+                "powerBoost": "Power-generation boost supplied by researched upgrades.",
+                "powerCapacity": "Power-capacity modifier supplied by researched upgrades."
             }
         },
         "ResourceLinePanel": {
@@ -10314,6 +10552,20 @@
             "description": "Engine interface for objects that can be written to and read from save streams. Its methods take C++ streams and are not exposed; the type is used for typed `Serialisable` arguments.",
             "methods": {},
             "properties": {}
+        },
+        "SeveredLimbItem": {
+            "description": "Detached limb item with character-derived scale and colors, an initial impulse, and a timeout timestamp.",
+            "methods": {},
+            "properties": {}
+        },
+        "SharedKing": {
+            "description": "Shared references to world area/town lists and the zone-manager interface, with a level-editor mode query.",
+            "methods": {},
+            "properties": {
+                "areasList": "World area-list manager.",
+                "townList": "World town-list manager.",
+                "zoneMgr": "Zone-manager interface shared with this object."
+            }
         },
         "ShopTrader": {
             "description": "Merchant trade interface proxy adapter mediating retail transactions between customer characters and vendor NPCs. Wraps a vendor `Character` instance with an isolated `ShopTraderInventory` containing shop stock, synchronizing currency exchanges, vendor list restocking schedules, barter price markups, and delegating spatial queries to the shopkeeper.",
@@ -11129,7 +11381,7 @@
             }
         },
         "TimerClass": {
-            "description": "High-resolution performance counter timer utility for measuring execution duration.",
+            "description": "Performance-counter timer storage with frequency/start/end counters; this binding exposes none of those fields or timer methods.",
             "methods": {},
             "properties": {}
         },
@@ -11379,7 +11631,7 @@
             }
         },
         "TownBase": {
-            "description": "Base settlement entity representing villages, ruins, creature nests, and bandit camps. Coordinates territorial coverage, resident populations, faction ownership, and town alert levels. Interacts directly with `TownBuildingsManager` for town infrastructure and structural building registration, `BasePopulationManager` for squad spawning and resident counts, `ZoneMap` for spatial terrain chunk coverage, `NestBatcher` for procedural creature nest geometry, and `Faction` for diplomatic alignments and town ownership.",
+            "description": "Shared base for settlements and nests, with a name, position, faction ownership, radius, and discovery state.",
             "methods": {
                 "TownBase": "Constructs a `TownBase` settlement instance using the provided FCS `GameData` template record.",
                 "_nestUpThisSpot": "Internal routine placing creature nest models, debris geometry, and guarding spawns at the specified position.",
@@ -11575,6 +11827,16 @@
                 "flags": "Underlying integer bitmask representing all enabled town facility tags."
             }
         },
+        "TownHandleContainerList": {
+            "description": "Container-handle registry with town-specific serial comparison.",
+            "methods": {},
+            "properties": {}
+        },
+        "TownList": {
+            "description": "World town and nest collection with location queries, player-town creation, discovery updates, and persistence.",
+            "methods": {},
+            "properties": {}
+        },
         "TownListWindow": {
             "description": "Editor window listing towns and outposts in the level editor, allowing selection and inspection of settlement data.",
             "methods": {
@@ -11649,7 +11911,7 @@
             }
         },
         "TraitBool": {
-            "description": "Havok compile-time boolean trait type used in template specialization for Havok physics containers and algorithms.",
+            "description": "Havok hkTrait::TraitBool<1> compile-time trait, registered without Lua fields or methods.",
             "methods": {},
             "properties": {}
         },
@@ -12099,6 +12361,11 @@
                 "isEnemy": "Whether the perceived entity is classified as an enemy.",
                 "range": "Distance from the observer to the perceived entity."
             }
+        },
+        "WaitingStateAI": {
+            "description": "CombatState for waiting, with validation, initialization, update, and end callbacks.",
+            "methods": {},
+            "properties": {}
         },
         "WallBuilding": {
             "description": "Defensive wall fortification piece governing perimeter segment connections, rampart walkway placement, shared construction scaffolds, and structural upgrades. Derived from `Building`, `WallBuilding` coordinates directly with `ZoneMapContent` for neighboring structural discovery, `TurretBuilding` for mounted rampart defenses, and `DatapanelGUI` for fortification upgrade and demolition controls.",
@@ -12593,6 +12860,64 @@
                 "zoneSmell": "Predator scent and tracking trail manager."
             }
         },
+        "ZoneMapContent": {
+            "description": "Objects and foliage belonging to one ZoneMap, including building/item tracking, activation, updates, loading, and saving.",
+            "methods": {},
+            "properties": {
+                "zoneMap": "Zone that owns these contents.",
+                "loaded": "Stored loaded state for these zone contents.",
+                "items": "Handles of items tracked in this zone.",
+                "myHandles": "Handle registry for this zone's objects.",
+                "handleDummy": "Proxy used for handle-based tracking of these zone contents."
+            }
+        },
+        "ZoneMapContent.HandleDummy": {
+            "description": "RootObjectBase proxy associated with a ZoneMapContent, allowing the content to participate in handle-based object tracking.",
+            "methods": {},
+            "properties": {
+                "me": "ZoneMapContent associated with this proxy."
+            }
+        },
+        "ZoneMapContent.ZoneMapContentOrderLoader": {
+            "description": "Saved-object load filter used by ZoneMapContent, carrying the initial new-game-load flag.",
+            "methods": {},
+            "properties": {
+                "newGameFirstTimeLoaded": "Whether this is the initial content load for a new game."
+            }
+        },
+        "ZoneMapHandleContainerList": {
+            "description": "Container-handle registry resolving zone contents and their objects, with lookup of the corresponding per-zone HandleList.",
+            "methods": {},
+            "properties": {}
+        },
+        "ZoneSmell": {
+            "description": "Zone-local blood/corpse and egg scent accumulators, with queued source messages and periodic strength updates.",
+            "methods": {},
+            "properties": {
+                "smell_bloodAndCorpses": "Blood/corpse scent accumulator.",
+                "smell_eggs": "Egg scent accumulator.",
+                "zoneMap": "Zone associated with these scent fields."
+            }
+        },
+        "ZoneSmell_Smell": {
+            "description": "Scent accumulator with position, strength, source count, and increase/decrease rates.",
+            "methods": {},
+            "properties": {
+                "decreaseRate": "Stored scent-decrease rate.",
+                "increaseRate": "Stored scent-increase rate.",
+                "pos": "Position associated with this scent accumulator.",
+                "numSources": "Stored source-count value.",
+                "strength": "Current scent-strength value."
+            }
+        },
+        "ZoneSmell_SmellMsg": {
+            "description": "Queued scent-source message containing its message type and world-space position.",
+            "methods": {},
+            "properties": {
+                "type": "Scent-source message category.",
+                "pos": "World-space position carried by the message."
+            }
+        },
         "ZoneSpacialGrid": {
             "description": "Spatial partitioning grid used by the engine to efficiently query, track, and update world entities across zones and cells.",
             "methods": {
@@ -12636,13 +12961,7 @@
                 "getRootObject": "Resolves and returns the referenced RootObject, or nil if invalid or not a root object.",
                 "getRootObjectBase": "Resolves and returns the referenced RootObjectBase, or nil if invalid.",
                 "getTown": "Resolves and returns the referenced Town object, or nil if invalid or not a town.",
-                "isNull": "Returns true if the handle is null or does not reference any object.",
-                "isValid": "Returns true if the handle resolves to a valid, live game object.",
                 "operator_assign": "Assigns this handle from another hand, a RootObjectBase pointer, or an integer handle representation.",
-                "operator_bool": "Returns true if the handle points to a valid, non-null live game object.",
-                "operator_eq": "Compares this handle for equality with another hand, a RootObjectBase, or a boolean.",
-                "operator_lt": "Compares whether this handle sorts before another hand based on object identity.",
-                "operator_ne": "Compares this handle for inequality with another hand, a RootObjectBase, or a boolean.",
                 "setNull": "Resets the handle to a null, unreferenced state.",
                 "squadMatch": "Returns true if this handle and another handle belong to the same squad or platoon.",
                 "toString": "Serializes the handle into a formatted string representation."
@@ -12667,7 +12986,7 @@
             }
         },
         "hkContainerHeapAllocator": {
-            "description": "Havok heap allocation policy providing memory management for Havok container collections.",
+            "description": "Havok container heap-allocation policy, exposed as an opaque type without Lua allocation operations.",
             "methods": {},
             "properties": {}
         },
@@ -12686,7 +13005,7 @@
             "properties": {}
         },
         "hkMemoryAllocator_ExtendedInterface": {
-            "description": "Extended memory allocator interface providing block allocation and memory lifecycle hooks in Havok.",
+            "description": "Havok memory allocator extension interface, exposed as an opaque type without Lua allocation operations.",
             "methods": {},
             "properties": {}
         },
@@ -12922,6 +13241,18 @@
         "NxControllerAction": "Physics character controller collision response action.",
         "NxShapeFlag": "PhysX collision shape trigger and simulation flags.",
         "NxShapesType": "PhysX collision shape query filter category (static, dynamic, all).",
+        "OIS.ComponentType": "OIS device-component categories for buttons, axes, sliders, POV controls, and three-dimensional vectors.",
+        "OIS.Effect.EDirection": "Eight compass directions for OIS force-feedback effects. Integer values are SDK direction identifiers, not angles.",
+        "OIS.Effect.EForce": "Force-feedback families: unknown, constant, ramp, periodic, conditional, and custom.",
+        "OIS.Effect.EType": "Force-feedback effect shapes, including constant/ramp forces, periodic waveforms, friction, damping, inertia, spring, and custom effects.",
+        "OIS.InputManager.AddOnFactories": "OIS optional input-factory selectors for all addons, LIRC, or WiiMote. Constants do not enable device-factory management in Lua.",
+        "OIS.Interface.IType": "OIS optional device-interface categories, including force feedback and a reserved interface slot.",
+        "OIS.KeyCode": "Keyboard scan codes supplied to InputHandler key events, using the SDK KC_* names. These identify keys rather than translated text characters.",
+        "OIS.Keyboard.Modifier": "Keyboard modifier bit masks for Shift, Ctrl, and Alt. Values retain the SDK bit positions.",
+        "OIS.Keyboard.TextTranslationMode": "Keyboard text-translation modes: disabled, Unicode, or ASCII. Declares constants only; keyboard configuration methods are not bound.",
+        "OIS.MouseButtonID": "Mouse button identifiers, with left, right, middle, and five additional buttons numbered by the SDK.",
+        "OIS.OIS_ERROR": "OIS error categories for disconnected, missing, unsupported, full, duplicate, or invalid devices/operations and general failures.",
+        "OIS.Type": "OIS input-device categories: unknown, keyboard, mouse, joystick, and tablet.",
         "OrdersReceiver.AggroType": "Aggression modes of an `OrdersReceiver`.",
         "PermajobType": "Persistent recurring task priority classification (normal work job, high-priority combat job).",
         "PersonalityTags": "Personality tag assigned to a character, as stored in `StateBroadcastData.myPersonality`.",

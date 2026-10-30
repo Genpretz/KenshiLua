@@ -42,10 +42,12 @@ def find_server(explicit):
     return None
 
 
-def lua_paths(root):
+def lua_paths(root, ignored_dirs=()):
+    ignored = tuple(directory.replace("\\", "/").strip("/") + "/" for directory in ignored_dirs)
     return {
         path.relative_to(PROJECT_ROOT).as_posix(): path
         for path in root.rglob("*.lua")
+        if not path.relative_to(root).as_posix().startswith(ignored)
     }
 
 
@@ -98,7 +100,8 @@ def main():
 
     check_root = PROJECT_ROOT if args.workspace else FIXTURE_ROOT
     config_path = PROJECT_ROOT / ".luarc.json" if args.workspace else FIXTURE_ROOT / ".luarc.json"
-    paths = lua_paths(check_root)
+    config = json.loads(config_path.read_text(encoding="utf-8"))
+    paths = lua_paths(check_root, config.get("workspace.ignoreDir", []))
     expected = expected_diagnostics(paths)
     with tempfile.TemporaryDirectory() as temp_dir:
         results_path = pathlib.Path(temp_dir) / "check.json"

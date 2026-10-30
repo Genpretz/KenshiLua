@@ -22,9 +22,52 @@ import generate_binding_inventory
 import generate_coverage_report
 import generate_definitions
 import generate_type_audit
+import import_kenshilib_docs
 
 
 class EnumExtractionTests(unittest.TestCase):
+    def test_namespace_enum_values_and_exported_class_owners_do_not_collide(self):
+        source = '''
+            namespace OIS {
+                class ForwardOnly;
+                enum Type { First = 7, Second };
+                class _OISExport Keyboard {
+                public:
+                    enum Modifier { Shift = 0x1, Ctrl = 0x10, Alt = 0x100 };
+                };
+                enum AfterClass { Value = 21 };
+            }
+            namespace Other { enum Type { First = 99, Second }; }
+        '''
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            (root / "Enums.h").write_text(source, encoding="utf-8")
+            values = extract_enum_values.parse_header_enums(root)
+        self.assertEqual(7, values["OIS::Type::First"])
+        self.assertEqual(8, values["OIS::Second"])
+        self.assertEqual(99, values["Other::Type::First"])
+        self.assertEqual(16, values["OIS::Keyboard::Modifier::Ctrl"])
+        self.assertEqual(256, values["OIS::Keyboard::Alt"])
+        self.assertEqual(21, values["OIS::AfterClass::Value"])
+        self.assertNotIn("OIS::Keyboard::AfterClass::Value", values)
+
+    def test_ois_enums_preserve_sdk_names_and_scan_codes(self):
+        _, nested = generate_definitions.parse_enums()
+        ois = {parent + "." + name: values
+               for parent, enums in nested.items() if parent == "OIS" or parent.startswith("OIS.")
+               for name, values in enums.items()}
+        self.assertEqual(12, len(ois))
+        keys = ois["OIS.KeyCode"]
+        self.assertEqual(145, len(keys))
+        for name, value in {"KC_UNASSIGNED": 0, "KC_ESCAPE": 1, "KC_A": 0x1e,
+                            "KC_F8": 0x42, "KC_NUMPADENTER": 0x9c,
+                            "KC_MEDIASELECT": 0xed}.items():
+            self.assertEqual(value, keys[name])
+        self.assertEqual({"Shift": 1, "Ctrl": 16, "Alt": 256}, ois["OIS.Keyboard.Modifier"])
+        self.assertEqual(7, ois["OIS.MouseButtonID"]["MB_Button7"])
+        self.assertEqual(4, ois["OIS.Type"]["OISTablet"])
+        self.assertEqual(12, ois["OIS.Effect.EType"]["Custom"])
+
     def test_missing_include_directory_fails(self):
         with tempfile.TemporaryDirectory() as temporary:
             missing = pathlib.Path(temporary) / "missing"
@@ -65,6 +108,41 @@ class EnumExtractionTests(unittest.TestCase):
 
 
 class DefinitionGenerationTests(unittest.TestCase):
+    def test_reviewed_descriptions_survive_generation_and_import_fallbacks(self):
+        metadata = {"classes": [{
+            "name": "Example", "inventory_fields": "Example",
+            "description": "Reviewed class description.",
+            "fields": [{"name": "name", "type": "string", "description": "Reviewed field description."}],
+            "descriptions": {"check": "Reviewed behavior and argument meaning."},
+        }]}
+        before = json.loads(json.dumps(metadata))
+        inventory = {"classes": [{
+            "binding": "ExampleBinding", "kind": "class", "lua_type": "Example",
+            "methods": [{"name": "check", "signature": {"params": [], "returns": ["boolean"]}},
+                        {"name": "other", "signature": {"params": [], "returns": ["string"]}}],
+            "properties": [{"name": "name", "type": "string"}],
+        }, {"binding": "ExtraBinding", "kind": "class", "lua_type": "Extra"}]}
+        descriptions = {"classes": {"Example": {
+            "description": "Less accurate imported class.",
+            "methods": {"check": "Less accurate imported method.", "other": "Useful fallback description."},
+            "properties": {"name": "Less accurate imported field."},
+        }}}
+        with tempfile.TemporaryDirectory() as temporary:
+            inventory_path = pathlib.Path(temporary) / "inventory.json"
+            description_path = pathlib.Path(temporary) / "descriptions.json"
+            inventory_path.write_text(json.dumps(inventory), encoding="utf-8")
+            description_path.write_text(json.dumps(descriptions), encoding="utf-8")
+            with mock.patch.object(generate_definitions, "INVENTORY_PATH", inventory_path), \
+                 mock.patch.object(generate_definitions, "DESCRIPTION_PATH", description_path):
+                first = generate_definitions.generate(metadata, "test", {}, {}, [])
+                second = generate_definitions.generate(metadata, "test", {}, {}, [])
+        self.assertEqual(before, metadata)
+        self.assertEqual(first, second)
+        for text in ("Reviewed class description.", "Reviewed field description.",
+                     "Reviewed behavior and argument meaning.", "Useful fallback description."):
+            self.assertIn(text, first)
+        self.assertNotIn("Less accurate imported", first)
+
     def test_generation_failure_does_not_modify_outputs(self):
         output_before = generate_definitions.OUTPUT_PATH.read_bytes()
         addon_before = generate_definitions.ADDON_LIBRARY_PATH.read_bytes()
@@ -130,6 +208,16 @@ class DefinitionGenerationTests(unittest.TestCase):
         self.assertIn("---@field havokCharacter HavokCharacter", generated)
         self.assertIn("Active sneaking stance toggle.", generated)
 
+    def test_handle_comparison_contracts_match_binding_overloads(self):
+        metadata = json.loads(generate_definitions.METADATA_PATH.read_text(encoding="utf-8"))
+        handle = next(entry for entry in metadata["classes"] if entry["name"] == "hand")
+        fields = {field["name"]: field for field in handle["fields"]}
+        for name in ("operator_eq", "operator_ne"):
+            self.assertIn("other: hand|RootObjectBase|boolean", fields[name]["type"])
+        generated = generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8")
+        self.assertIn(fields["isValid"]["description"], generated)
+        self.assertIn(fields["operator_bool"]["description"], generated)
+
     def test_non_virtual_methods_are_hidden_but_event_names_remain(self):
         generated = generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8")
 
@@ -154,6 +242,29 @@ class DefinitionGenerationTests(unittest.TestCase):
             "type: boolean|integer|table, barefoot?: boolean): string",
             generated,
         )
+
+
+class DescriptionImportTests(unittest.TestCase):
+    def test_import_writes_candidate_and_preserves_reviewed_metadata(self):
+        self.assertNotEqual(import_kenshilib_docs.OUTPUT_PATH, generate_definitions.DESCRIPTION_PATH)
+        reviewed_before = generate_definitions.DESCRIPTION_PATH.read_bytes()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            (root / "api").mkdir()
+            (root / "api" / "Example.md").write_text(
+                "---\nclass: Example\n---\n# Example\n\nImported class candidate.\n---\n"
+                "### `check`\n\nImported method candidate.\n**Parameters:**\nIgnored details.\n",
+                encoding="utf-8",
+            )
+            candidate = root / "generated" / "candidate.json"
+            with mock.patch.object(import_kenshilib_docs, "OUTPUT_PATH", candidate), \
+                 mock.patch.object(sys, "argv", ["import_kenshilib_docs.py", "--docs", str(root)]), \
+                 contextlib.redirect_stdout(io.StringIO()):
+                import_kenshilib_docs.main()
+            imported = json.loads(candidate.read_text(encoding="utf-8"))
+            self.assertEqual("Imported class candidate.", imported["classes"]["Example"]["description"])
+            self.assertEqual("Imported method candidate.", imported["classes"]["Example"]["methods"]["check"])
+        self.assertEqual(reviewed_before, generate_definitions.DESCRIPTION_PATH.read_bytes())
 
 
 class BindingInventoryTests(unittest.TestCase):
@@ -950,6 +1061,21 @@ class CoverageReportTests(unittest.TestCase):
 
 
 class FixtureDiagnosticsTests(unittest.TestCase):
+    def test_workspace_discovery_skips_ignored_non_utf8_scripts(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            for folder in ("extern", "scratch", "luals/addon", "external_examples"):
+                (root / folder).mkdir(parents=True)
+            for folder in ("extern", "scratch", "luals/addon"):
+                (root / folder / "ignored.lua").write_bytes(b"-- Copyright \xa9\n")
+            included = root / "external_examples" / "example.lua"
+            included.write_text("-- EXPECT-DIAGNOSTIC: undefined-field\n", encoding="utf-8")
+            with mock.patch.object(check_fixtures, "PROJECT_ROOT", root):
+                paths = check_fixtures.lua_paths(root, ["extern", "scratch", "luals/addon"])
+                self.assertEqual({"external_examples/example.lua": included}, paths)
+                self.assertEqual({"external_examples/example.lua": "undefined-field"},
+                                 check_fixtures.expected_diagnostics(paths))
+
     def test_reported_diagnostics_resolves_posix_and_windows_uris(self):
         fixture = "tests/luals/invalid/example file.lua"
         for root, uri_root in (

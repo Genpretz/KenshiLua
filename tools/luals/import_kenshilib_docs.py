@@ -1,8 +1,8 @@
 """Import concise class and method summaries from KenshiLib Markdown docs.
 
-The docs repository is intentionally an input, not a runtime dependency. This
-tool extracts the human-written summaries into a checked-in JSON artifact used
-by the LuaLS definition generator.
+The docs repository is intentionally an input, not a runtime dependency. Imports
+are review candidates, separate from the checked-in descriptions used by LuaLS,
+so importing upstream docs cannot replace reviewed text or enum descriptions.
 
 Usage:
     python tools/luals/import_kenshilib_docs.py --docs C:/path/to/docs
@@ -15,7 +15,7 @@ import re
 
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
-OUTPUT_PATH = PROJECT_ROOT / "luals" / "metadata" / "kenshilib_descriptions.json"
+OUTPUT_PATH = PROJECT_ROOT / "tools" / "generated" / "kenshilib_descriptions.imported.json"
 
 
 def strip_doc_links(text):
@@ -109,10 +109,13 @@ def main():
     if not args.docs.is_dir():
         parser.error("docs directory does not exist: " + str(args.docs))
     artifact = import_docs(args.docs)
+    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(artifact, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     classes = artifact["classes"]
     methods = sum(len(entry["methods"]) for entry in classes.values())
     print("Imported {0} classes and {1} method descriptions.".format(len(classes), methods))
+    print("Review candidate: " + str(OUTPUT_PATH))
+    print("Merge verified descriptions into luals/metadata/kenshilib_descriptions.json; reviewed metadata was not changed.")
 
 
 if __name__ == "__main__":

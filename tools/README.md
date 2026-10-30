@@ -54,6 +54,22 @@ python tools/audit/generate_unbound_reference.py
 
 Review generated documentation before committing it.
 
+### LuaLS descriptions
+
+Maintain hover text in the checked-in metadata, rather than editing generated Lua files:
+
+- `luals/metadata/runtime.json` holds reviewed Lua contracts. Class and field `description` values take precedence over the documentation fallback. A class's `descriptions` map overrides member text without fixing that member's inferred signature.
+- `luals/metadata/kenshilib_descriptions.json` holds persistent class, method, property and enum summaries. Use runtime Lua names as keys, including dotted names for nested classes. Check wording against the actual binding and SDK declaration; a method name alone does not establish behavior.
+- `luals/generated/kenshilua.lua` and the addon library are outputs. Regeneration reads the metadata and preserves reviewed descriptions; it does not import or invent prose.
+
+To extract candidate summaries from a local KenshiLib documentation checkout:
+
+```powershell
+python tools/luals/import_kenshilib_docs.py --docs C:/path/to/KenshiLib-docs/docs
+```
+
+This writes `tools/generated/kenshilib_descriptions.imported.json`, an ignored review candidate. Merge only verified entries into the persistent metadata. Imports do not overwrite the checked-in descriptions or enum summaries. Then run `python tools/luals/generate_definitions.py` to update both definition libraries.
+
 ## Release utilities
 
 `release/sync_version.py` checks or updates the version embedded in the mod file from `src/Version.h`.
