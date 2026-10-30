@@ -32,6 +32,8 @@ runner.register_game_suite("live-subsystems", function(ctx)
 
         -- FactionManager queries
         local fm = gw.factionMgr
+        t.assert_not_nil(fm, "gw.factionMgr (FactionManager)")
+        ---@cast fm -nil
         t.assert_not_nil(fm.participants, "fm.participants container")
         t.assert_true(#fm.participants > 0, "fm.participants has registered factions")
 
@@ -171,6 +173,8 @@ runner.register_game_suite("live-subsystems", function(ctx)
         local chars = player.playerCharacters
         t.assert_true(chars:size() >= 1, "at least one character")
         local char = chars[1]
+        t.assert_not_nil(char, "first player character")
+        ---@cast char -nil
 
         local activePlat = char:getPlatoon() or player.currentPlatoon
         t.assert_not_nil(activePlat, "char:getPlatoon() returns ActivePlatoon")
@@ -214,17 +218,18 @@ runner.register_game_suite("live-subsystems", function(ctx)
 
         local player = getPlayerInterface()
         t.assert_not_nil(player, "getPlayerInterface()")
+        ---@cast player -nil
         local chars = player.playerCharacters
         t.assert_true(#chars >= 1, "at least one character")
         local pos = chars[1]:getPosition()
         t.assert_not_nil(pos, "character position")
 
         -- Test ZoneManager ground sound query with real world position
-        local sound_short = zm:getGroundSound(pos, SoundRange.SOUNDRANGE_SHORT)
-        t.assert_true(type(sound_short) == "string", "zm:getGroundSound short range returns string")
+        local sound = zm:getGroundSound(pos)
+        t.assert_true(type(sound) == "string", "zm:getGroundSound returns string")
 
-        local sound_long = zm:getGroundSound(pos, SoundRange.SOUNDRANGE_LONG)
-        t.assert_true(type(sound_long) == "string", "zm:getGroundSound long range returns string")
+        local sound_dirt = zm:getGroundSound(GroundType.GROUND_DIRT, false)
+        t.assert_true(type(sound_dirt) == "string", "zm:getGroundSound with GroundType returns string")
 
         -- WeatherSystem singleton queries
         local ws = WeatherSystem.getInstance()

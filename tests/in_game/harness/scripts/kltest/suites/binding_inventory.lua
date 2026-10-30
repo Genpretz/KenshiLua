@@ -40,6 +40,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 constructor = g and g.new
             end
             t.assert_not_nil(constructor, entry.name .. " has custom indexer but no constructor to verify properties")
+            ---@cast constructor -nil
             local inst = constructor()
             t.assert_not_nil(inst, entry.name .. " constructor returned nil")
             for i = 1, #entry.getters do
@@ -190,6 +191,18 @@ runner.register_menu_suite("binding-inventory", function(ctx)
             { name = "NxControllerAction", constants = { { "NX_ACTION_NONE", 0 }, { "NX_ACTION_PUSH", 1 } } },
             { name = "NxShapeFlag", constants = { { "NX_TRIGGER_ON_ENTER", 1 }, { "NX_TRIGGER_ON_LEAVE", 2 }, { "NX_TRIGGER_ON_STAY", 4 }, { "NX_TRIGGER_ENABLE", 7 }, { "NX_SF_VISUALIZATION", 8 }, { "NX_SF_DISABLE_COLLISION", 16 }, { "NX_SF_FEATURE_INDICES", 32 }, { "NX_SF_DISABLE_RAYCASTING", 64 } } },
             { name = "NxShapesType", constants = { { "NX_STATIC_SHAPES", 1 }, { "NX_DYNAMIC_SHAPES", 2 }, { "NX_ALL_SHAPES", 3 } } },
+            { name = "OIS.ComponentType", constants = { { "OIS_Unknown", 0 }, { "OIS_Button", 1 }, { "OIS_Axis", 2 }, { "OIS_Slider", 3 }, { "OIS_POV", 4 }, { "OIS_Vector3", 5 } } },
+            { name = "OIS.Effect.EDirection", constants = { { "NorthWest", 0 }, { "North", 1 }, { "NorthEast", 2 }, { "East", 3 }, { "SouthEast", 4 }, { "South", 5 }, { "SouthWest", 6 }, { "West", 7 } } },
+            { name = "OIS.Effect.EForce", constants = { { "UnknownForce", 0 }, { "ConstantForce", 1 }, { "RampForce", 2 }, { "PeriodicForce", 3 }, { "ConditionalForce", 4 }, { "CustomForce", 5 } } },
+            { name = "OIS.Effect.EType", constants = { { "Unknown", 0 }, { "Constant", 1 }, { "Ramp", 2 }, { "Square", 3 }, { "Triangle", 4 }, { "Sine", 5 }, { "SawToothUp", 6 }, { "SawToothDown", 7 }, { "Friction", 8 }, { "Damper", 9 }, { "Inertia", 10 }, { "Spring", 11 }, { "Custom", 12 } } },
+            { name = "OIS.InputManager.AddOnFactories", constants = { { "AddOn_All", 0 }, { "AddOn_LIRC", 1 }, { "AddOn_WiiMote", 2 } } },
+            { name = "OIS.Interface.IType", constants = { { "ForceFeedback", 0 }, { "Reserved", 1 } } },
+            { name = "OIS.KeyCode", constants = { { "KC_UNASSIGNED", 0 }, { "KC_ESCAPE", 1 }, { "KC_1", 2 }, { "KC_2", 3 }, { "KC_3", 4 }, { "KC_4", 5 }, { "KC_5", 6 }, { "KC_6", 7 }, { "KC_7", 8 }, { "KC_8", 9 }, { "KC_9", 10 }, { "KC_0", 11 }, { "KC_MINUS", 12 }, { "KC_EQUALS", 13 }, { "KC_BACK", 14 }, { "KC_TAB", 15 }, { "KC_Q", 16 }, { "KC_W", 17 }, { "KC_E", 18 }, { "KC_R", 19 }, { "KC_T", 20 }, { "KC_Y", 21 }, { "KC_U", 22 }, { "KC_I", 23 }, { "KC_O", 24 }, { "KC_P", 25 }, { "KC_LBRACKET", 26 }, { "KC_RBRACKET", 27 }, { "KC_RETURN", 28 }, { "KC_LCONTROL", 29 }, { "KC_A", 30 }, { "KC_S", 31 }, { "KC_D", 32 }, { "KC_F", 33 }, { "KC_G", 34 }, { "KC_H", 35 }, { "KC_J", 36 }, { "KC_K", 37 }, { "KC_L", 38 }, { "KC_SEMICOLON", 39 }, { "KC_APOSTROPHE", 40 }, { "KC_GRAVE", 41 }, { "KC_LSHIFT", 42 }, { "KC_BACKSLASH", 43 }, { "KC_Z", 44 }, { "KC_X", 45 }, { "KC_C", 46 }, { "KC_V", 47 }, { "KC_B", 48 }, { "KC_N", 49 }, { "KC_M", 50 }, { "KC_COMMA", 51 }, { "KC_PERIOD", 52 }, { "KC_SLASH", 53 }, { "KC_RSHIFT", 54 }, { "KC_MULTIPLY", 55 }, { "KC_LMENU", 56 }, { "KC_SPACE", 57 }, { "KC_CAPITAL", 58 }, { "KC_F1", 59 }, { "KC_F2", 60 }, { "KC_F3", 61 }, { "KC_F4", 62 }, { "KC_F5", 63 }, { "KC_F6", 64 }, { "KC_F7", 65 }, { "KC_F8", 66 }, { "KC_F9", 67 }, { "KC_F10", 68 }, { "KC_NUMLOCK", 69 }, { "KC_SCROLL", 70 }, { "KC_NUMPAD7", 71 }, { "KC_NUMPAD8", 72 }, { "KC_NUMPAD9", 73 }, { "KC_SUBTRACT", 74 }, { "KC_NUMPAD4", 75 }, { "KC_NUMPAD5", 76 }, { "KC_NUMPAD6", 77 }, { "KC_ADD", 78 }, { "KC_NUMPAD1", 79 }, { "KC_NUMPAD2", 80 }, { "KC_NUMPAD3", 81 }, { "KC_NUMPAD0", 82 }, { "KC_DECIMAL", 83 }, { "KC_OEM_102", 86 }, { "KC_F11", 87 }, { "KC_F12", 88 }, { "KC_F13", 100 }, { "KC_F14", 101 }, { "KC_F15", 102 }, { "KC_KANA", 112 }, { "KC_ABNT_C1", 115 }, { "KC_CONVERT", 121 }, { "KC_NOCONVERT", 123 }, { "KC_YEN", 125 }, { "KC_ABNT_C2", 126 }, { "KC_NUMPADEQUALS", 141 }, { "KC_PREVTRACK", 144 }, { "KC_AT", 145 }, { "KC_COLON", 146 }, { "KC_UNDERLINE", 147 }, { "KC_KANJI", 148 }, { "KC_STOP", 149 }, { "KC_AX", 150 }, { "KC_UNLABELED", 151 }, { "KC_NEXTTRACK", 153 }, { "KC_NUMPADENTER", 156 }, { "KC_RCONTROL", 157 }, { "KC_MUTE", 160 }, { "KC_CALCULATOR", 161 }, { "KC_PLAYPAUSE", 162 }, { "KC_MEDIASTOP", 164 }, { "KC_VOLUMEDOWN", 174 }, { "KC_VOLUMEUP", 176 }, { "KC_WEBHOME", 178 }, { "KC_NUMPADCOMMA", 179 }, { "KC_DIVIDE", 181 }, { "KC_SYSRQ", 183 }, { "KC_RMENU", 184 }, { "KC_PAUSE", 197 }, { "KC_HOME", 199 }, { "KC_UP", 200 }, { "KC_PGUP", 201 }, { "KC_LEFT", 203 }, { "KC_RIGHT", 205 }, { "KC_END", 207 }, { "KC_DOWN", 208 }, { "KC_PGDOWN", 209 }, { "KC_INSERT", 210 }, { "KC_DELETE", 211 }, { "KC_LWIN", 219 }, { "KC_RWIN", 220 }, { "KC_APPS", 221 }, { "KC_POWER", 222 }, { "KC_SLEEP", 223 }, { "KC_WAKE", 227 }, { "KC_WEBSEARCH", 229 }, { "KC_WEBFAVORITES", 230 }, { "KC_WEBREFRESH", 231 }, { "KC_WEBSTOP", 232 }, { "KC_WEBFORWARD", 233 }, { "KC_WEBBACK", 234 }, { "KC_MYCOMPUTER", 235 }, { "KC_MAIL", 236 }, { "KC_MEDIASELECT", 237 } } },
+            { name = "OIS.Keyboard.Modifier", constants = { { "Shift", 1 }, { "Ctrl", 16 }, { "Alt", 256 } } },
+            { name = "OIS.Keyboard.TextTranslationMode", constants = { { "Off", 0 }, { "Unicode", 1 }, { "Ascii", 2 } } },
+            { name = "OIS.MouseButtonID", constants = { { "MB_Left", 0 }, { "MB_Right", 1 }, { "MB_Middle", 2 }, { "MB_Button3", 3 }, { "MB_Button4", 4 }, { "MB_Button5", 5 }, { "MB_Button6", 6 }, { "MB_Button7", 7 } } },
+            { name = "OIS.OIS_ERROR", constants = { { "E_InputDisconnected", 0 }, { "E_InputDeviceNonExistant", 1 }, { "E_InputDeviceNotSupported", 2 }, { "E_DeviceFull", 3 }, { "E_NotSupported", 4 }, { "E_NotImplemented", 5 }, { "E_Duplicate", 6 }, { "E_InvalidParam", 7 }, { "E_General", 8 } } },
+            { name = "OIS.Type", constants = { { "OISUnknown", 0 }, { "OISKeyboard", 1 }, { "OISMouse", 2 }, { "OISJoyStick", 3 }, { "OISTablet", 4 } } },
             { name = "OrdersReceiver.AggroType", constants = { { "AI_AGGRESSIVE", 0 }, { "AI_DEFENSIVE", 1 }, { "AI_EVASIVE", 2 } } },
             { name = "PermajobType", constants = { { "NOT_A_PERMAJOB", 0 }, { "PERMAJOB_NORMAL", 1 }, { "PERMAJOB_HIGHCOMBAT", 2 } } },
             { name = "PersonalityTags", constants = { { "PT_NONE", 0 }, { "PT_HONORABLE", 1 }, { "PT_TRAITOROUS", 2 }, { "PT___", 3 }, { "PT__", 4 }, { "PT_SMART", 5 }, { "PT_DUMB", 6 }, { "PT____", 7 }, { "PT_____", 8 }, { "PT_BRAVE", 9 }, { "PT_FEARFUL", 10 }, { "PT_WARM_KIND", 11 }, { "PT_COLD_CRUEL", 12 }, { "PT_NORMAL", 13 }, { "PT_MANIACAL", 14 }, { "PT_END", 15 } } },
@@ -256,6 +269,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
             local ed = enum_defs[i]
             local tbl = resolve_global(ed.name)
             t.assert_not_nil(tbl, "Enum table missing: " .. ed.name)
+            ---@cast tbl -nil
             total_enums = total_enums + 1
             for j = 1, #ed.constants do
                 local c = ed.constants[j]
@@ -264,8 +278,8 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 total_constants = total_constants + 1
             end
         end
-        t.assert_equal(total_enums, 136, 'verified all registered enum tables')
-        t.assert_equal(total_constants, 1795, 'verified all enum constant values')
+        t.assert_equal(total_enums, 148, 'verified all registered enum tables')
+        t.assert_equal(total_constants, 2006, 'verified all enum constant values')
     end)
 
     ctx.test("template container instance factories and metatables", function(t)

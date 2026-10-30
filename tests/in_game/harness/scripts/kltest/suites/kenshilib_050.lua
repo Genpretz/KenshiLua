@@ -342,7 +342,7 @@ runner.register_game_suite("kenshilib-050", function(ctx)
         t.assert_true(type(char:shouldIHelpThisGuy(char)) == "boolean", "char:shouldIHelpThisGuy(char) is boolean")
 
         -- 4. Combat Controller
-        local combat = char.combat
+        local combat = char:getCombatClass()
         if combat ~= nil then
             t.assert_true(type(combat:isAI()) == "boolean", "combat:isAI() is boolean")
             t.assert_true(type(combat:getNumOpponents()) == "number", "combat:getNumOpponents() is number")
