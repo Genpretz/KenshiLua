@@ -143,7 +143,7 @@ def generate_markdown(sections):
     md.append("")
     md.append("## Lua Usage & Syntax")
     md.append("")
-    md.append("All enums in KenshiLua use their exact literal C++ names and are exposed as global tables or nested class tables (e.g. `CrimeEnum.CRIME_STEALING` or `MeshDataLookup.Dir.FRONT`). Each entry maps to its underlying integer value defined in the KenshiLib headers.")
+    md.append("Enum constants retain their exact C++ enumerator names and are exposed through global, namespace, or nested class tables (e.g. `CrimeEnum.CRIME_STEALING`, `OIS.KeyCode.KC_ESCAPE`, or `MeshDataLookup.Dir.FRONT`). Each entry maps to its underlying integer value defined in the KenshiLib headers.")
     md.append("")
     md.append("```lua")
     md.append("-- Accessing enum constants directly:")

@@ -4,11 +4,11 @@
 
 ## Overview
 
-KenshiLua exposes **1795** bound enum values across **136** enum tables from **54** SDK header files.
+KenshiLua exposes **2006** bound enum values across **148** enum tables from **61** SDK header files.
 
 ## Lua Usage & Syntax
 
-All enums in KenshiLua use their exact literal C++ names and are exposed as global tables or nested class tables (e.g. `CrimeEnum.CRIME_STEALING` or `MeshDataLookup.Dir.FRONT`). Each entry maps to its underlying integer value defined in the KenshiLib headers.
+Enum constants retain their exact C++ enumerator names and are exposed through global, namespace, or nested class tables (e.g. `CrimeEnum.CRIME_STEALING`, `OIS.KeyCode.KC_ESCAPE`, or `MeshDataLookup.Dir.FRONT`). Each entry maps to its underlying integer value defined in the KenshiLib headers.
 
 ```lua
 -- Accessing enum constants directly:
@@ -97,6 +97,13 @@ end
 - [Kenshi.h](#kenshih) (`KenshiLib.BinaryVersion.KenshiPlatform`)
 - [combat/RangedCombatClass.h](#combatrangedcombatclassh) (`RangedCombatClass.RangedState`)
 - [ZoneSmell.h](#zonesmellh) (`SmellType`, `ZoneSmell.SmellMessageType`)
+- [OIS/OISPrereqs.h](#oisoisprereqsh) (`OIS.Type`, `OIS.ComponentType`)
+- [OIS/OISKeyboard.h](#oisoiskeyboardh) (`OIS.KeyCode`, `OIS.Keyboard.TextTranslationMode`, `OIS.Keyboard.Modifier`)
+- [OIS/OISMouse.h](#oisoismouseh) (`OIS.MouseButtonID`)
+- [OIS/OISException.h](#oisoisexceptionh) (`OIS.OIS_ERROR`)
+- [OIS/OISInterface.h](#oisoisinterfaceh) (`OIS.Interface.IType`)
+- [OIS/OISInputManager.h](#oisoisinputmanagerh) (`OIS.InputManager.AddOnFactories`)
+- [OIS/OISEffect.h](#oisoiseffecth) (`OIS.Effect.EForce`, `OIS.Effect.EType`, `OIS.Effect.EDirection`)
 
 ---
 
@@ -2788,5 +2795,304 @@ end
 | `ZoneSmell.SmellMessageType.SMELLMSG_CORPSE` | `1` | `ZoneSmell::SmellMessageType::SMELLMSG_CORPSE` |
 | `ZoneSmell.SmellMessageType.SMELLMSG_BLOOD` | `2` | `ZoneSmell::SmellMessageType::SMELLMSG_BLOOD` |
 | `ZoneSmell.SmellMessageType.SMELLMSG_EGG` | `3` | `ZoneSmell::SmellMessageType::SMELLMSG_EGG` |
+
+---
+
+## OIS/OISPrereqs.h
+
+### Table: `OIS.Type`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.Type.OISUnknown` | `0` | `OIS::OISUnknown` |
+| `OIS.Type.OISKeyboard` | `1` | `OIS::OISKeyboard` |
+| `OIS.Type.OISMouse` | `2` | `OIS::OISMouse` |
+| `OIS.Type.OISJoyStick` | `3` | `OIS::OISJoyStick` |
+| `OIS.Type.OISTablet` | `4` | `OIS::OISTablet` |
+
+### Table: `OIS.ComponentType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.ComponentType.OIS_Unknown` | `0` | `OIS::OIS_Unknown` |
+| `OIS.ComponentType.OIS_Button` | `1` | `OIS::OIS_Button` |
+| `OIS.ComponentType.OIS_Axis` | `2` | `OIS::OIS_Axis` |
+| `OIS.ComponentType.OIS_Slider` | `3` | `OIS::OIS_Slider` |
+| `OIS.ComponentType.OIS_POV` | `4` | `OIS::OIS_POV` |
+| `OIS.ComponentType.OIS_Vector3` | `5` | `OIS::OIS_Vector3` |
+
+---
+
+## OIS/OISKeyboard.h
+
+### Table: `OIS.KeyCode`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.KeyCode.KC_UNASSIGNED` | `0` | `OIS::KC_UNASSIGNED` |
+| `OIS.KeyCode.KC_ESCAPE` | `1` | `OIS::KC_ESCAPE` |
+| `OIS.KeyCode.KC_1` | `2` | `OIS::KC_1` |
+| `OIS.KeyCode.KC_2` | `3` | `OIS::KC_2` |
+| `OIS.KeyCode.KC_3` | `4` | `OIS::KC_3` |
+| `OIS.KeyCode.KC_4` | `5` | `OIS::KC_4` |
+| `OIS.KeyCode.KC_5` | `6` | `OIS::KC_5` |
+| `OIS.KeyCode.KC_6` | `7` | `OIS::KC_6` |
+| `OIS.KeyCode.KC_7` | `8` | `OIS::KC_7` |
+| `OIS.KeyCode.KC_8` | `9` | `OIS::KC_8` |
+| `OIS.KeyCode.KC_9` | `10` | `OIS::KC_9` |
+| `OIS.KeyCode.KC_0` | `11` | `OIS::KC_0` |
+| `OIS.KeyCode.KC_MINUS` | `12` | `OIS::KC_MINUS` |
+| `OIS.KeyCode.KC_EQUALS` | `13` | `OIS::KC_EQUALS` |
+| `OIS.KeyCode.KC_BACK` | `14` | `OIS::KC_BACK` |
+| `OIS.KeyCode.KC_TAB` | `15` | `OIS::KC_TAB` |
+| `OIS.KeyCode.KC_Q` | `16` | `OIS::KC_Q` |
+| `OIS.KeyCode.KC_W` | `17` | `OIS::KC_W` |
+| `OIS.KeyCode.KC_E` | `18` | `OIS::KC_E` |
+| `OIS.KeyCode.KC_R` | `19` | `OIS::KC_R` |
+| `OIS.KeyCode.KC_T` | `20` | `OIS::KC_T` |
+| `OIS.KeyCode.KC_Y` | `21` | `OIS::KC_Y` |
+| `OIS.KeyCode.KC_U` | `22` | `OIS::KC_U` |
+| `OIS.KeyCode.KC_I` | `23` | `OIS::KC_I` |
+| `OIS.KeyCode.KC_O` | `24` | `OIS::KC_O` |
+| `OIS.KeyCode.KC_P` | `25` | `OIS::KC_P` |
+| `OIS.KeyCode.KC_LBRACKET` | `26` | `OIS::KC_LBRACKET` |
+| `OIS.KeyCode.KC_RBRACKET` | `27` | `OIS::KC_RBRACKET` |
+| `OIS.KeyCode.KC_RETURN` | `28` | `OIS::KC_RETURN` |
+| `OIS.KeyCode.KC_LCONTROL` | `29` | `OIS::KC_LCONTROL` |
+| `OIS.KeyCode.KC_A` | `30` | `OIS::KC_A` |
+| `OIS.KeyCode.KC_S` | `31` | `OIS::KC_S` |
+| `OIS.KeyCode.KC_D` | `32` | `OIS::KC_D` |
+| `OIS.KeyCode.KC_F` | `33` | `OIS::KC_F` |
+| `OIS.KeyCode.KC_G` | `34` | `OIS::KC_G` |
+| `OIS.KeyCode.KC_H` | `35` | `OIS::KC_H` |
+| `OIS.KeyCode.KC_J` | `36` | `OIS::KC_J` |
+| `OIS.KeyCode.KC_K` | `37` | `OIS::KC_K` |
+| `OIS.KeyCode.KC_L` | `38` | `OIS::KC_L` |
+| `OIS.KeyCode.KC_SEMICOLON` | `39` | `OIS::KC_SEMICOLON` |
+| `OIS.KeyCode.KC_APOSTROPHE` | `40` | `OIS::KC_APOSTROPHE` |
+| `OIS.KeyCode.KC_GRAVE` | `41` | `OIS::KC_GRAVE` |
+| `OIS.KeyCode.KC_LSHIFT` | `42` | `OIS::KC_LSHIFT` |
+| `OIS.KeyCode.KC_BACKSLASH` | `43` | `OIS::KC_BACKSLASH` |
+| `OIS.KeyCode.KC_Z` | `44` | `OIS::KC_Z` |
+| `OIS.KeyCode.KC_X` | `45` | `OIS::KC_X` |
+| `OIS.KeyCode.KC_C` | `46` | `OIS::KC_C` |
+| `OIS.KeyCode.KC_V` | `47` | `OIS::KC_V` |
+| `OIS.KeyCode.KC_B` | `48` | `OIS::KC_B` |
+| `OIS.KeyCode.KC_N` | `49` | `OIS::KC_N` |
+| `OIS.KeyCode.KC_M` | `50` | `OIS::KC_M` |
+| `OIS.KeyCode.KC_COMMA` | `51` | `OIS::KC_COMMA` |
+| `OIS.KeyCode.KC_PERIOD` | `52` | `OIS::KC_PERIOD` |
+| `OIS.KeyCode.KC_SLASH` | `53` | `OIS::KC_SLASH` |
+| `OIS.KeyCode.KC_RSHIFT` | `54` | `OIS::KC_RSHIFT` |
+| `OIS.KeyCode.KC_MULTIPLY` | `55` | `OIS::KC_MULTIPLY` |
+| `OIS.KeyCode.KC_LMENU` | `56` | `OIS::KC_LMENU` |
+| `OIS.KeyCode.KC_SPACE` | `57` | `OIS::KC_SPACE` |
+| `OIS.KeyCode.KC_CAPITAL` | `58` | `OIS::KC_CAPITAL` |
+| `OIS.KeyCode.KC_F1` | `59` | `OIS::KC_F1` |
+| `OIS.KeyCode.KC_F2` | `60` | `OIS::KC_F2` |
+| `OIS.KeyCode.KC_F3` | `61` | `OIS::KC_F3` |
+| `OIS.KeyCode.KC_F4` | `62` | `OIS::KC_F4` |
+| `OIS.KeyCode.KC_F5` | `63` | `OIS::KC_F5` |
+| `OIS.KeyCode.KC_F6` | `64` | `OIS::KC_F6` |
+| `OIS.KeyCode.KC_F7` | `65` | `OIS::KC_F7` |
+| `OIS.KeyCode.KC_F8` | `66` | `OIS::KC_F8` |
+| `OIS.KeyCode.KC_F9` | `67` | `OIS::KC_F9` |
+| `OIS.KeyCode.KC_F10` | `68` | `OIS::KC_F10` |
+| `OIS.KeyCode.KC_NUMLOCK` | `69` | `OIS::KC_NUMLOCK` |
+| `OIS.KeyCode.KC_SCROLL` | `70` | `OIS::KC_SCROLL` |
+| `OIS.KeyCode.KC_NUMPAD7` | `71` | `OIS::KC_NUMPAD7` |
+| `OIS.KeyCode.KC_NUMPAD8` | `72` | `OIS::KC_NUMPAD8` |
+| `OIS.KeyCode.KC_NUMPAD9` | `73` | `OIS::KC_NUMPAD9` |
+| `OIS.KeyCode.KC_SUBTRACT` | `74` | `OIS::KC_SUBTRACT` |
+| `OIS.KeyCode.KC_NUMPAD4` | `75` | `OIS::KC_NUMPAD4` |
+| `OIS.KeyCode.KC_NUMPAD5` | `76` | `OIS::KC_NUMPAD5` |
+| `OIS.KeyCode.KC_NUMPAD6` | `77` | `OIS::KC_NUMPAD6` |
+| `OIS.KeyCode.KC_ADD` | `78` | `OIS::KC_ADD` |
+| `OIS.KeyCode.KC_NUMPAD1` | `79` | `OIS::KC_NUMPAD1` |
+| `OIS.KeyCode.KC_NUMPAD2` | `80` | `OIS::KC_NUMPAD2` |
+| `OIS.KeyCode.KC_NUMPAD3` | `81` | `OIS::KC_NUMPAD3` |
+| `OIS.KeyCode.KC_NUMPAD0` | `82` | `OIS::KC_NUMPAD0` |
+| `OIS.KeyCode.KC_DECIMAL` | `83` | `OIS::KC_DECIMAL` |
+| `OIS.KeyCode.KC_OEM_102` | `86` | `OIS::KC_OEM_102` |
+| `OIS.KeyCode.KC_F11` | `87` | `OIS::KC_F11` |
+| `OIS.KeyCode.KC_F12` | `88` | `OIS::KC_F12` |
+| `OIS.KeyCode.KC_F13` | `100` | `OIS::KC_F13` |
+| `OIS.KeyCode.KC_F14` | `101` | `OIS::KC_F14` |
+| `OIS.KeyCode.KC_F15` | `102` | `OIS::KC_F15` |
+| `OIS.KeyCode.KC_KANA` | `112` | `OIS::KC_KANA` |
+| `OIS.KeyCode.KC_ABNT_C1` | `115` | `OIS::KC_ABNT_C1` |
+| `OIS.KeyCode.KC_CONVERT` | `121` | `OIS::KC_CONVERT` |
+| `OIS.KeyCode.KC_NOCONVERT` | `123` | `OIS::KC_NOCONVERT` |
+| `OIS.KeyCode.KC_YEN` | `125` | `OIS::KC_YEN` |
+| `OIS.KeyCode.KC_ABNT_C2` | `126` | `OIS::KC_ABNT_C2` |
+| `OIS.KeyCode.KC_NUMPADEQUALS` | `141` | `OIS::KC_NUMPADEQUALS` |
+| `OIS.KeyCode.KC_PREVTRACK` | `144` | `OIS::KC_PREVTRACK` |
+| `OIS.KeyCode.KC_AT` | `145` | `OIS::KC_AT` |
+| `OIS.KeyCode.KC_COLON` | `146` | `OIS::KC_COLON` |
+| `OIS.KeyCode.KC_UNDERLINE` | `147` | `OIS::KC_UNDERLINE` |
+| `OIS.KeyCode.KC_KANJI` | `148` | `OIS::KC_KANJI` |
+| `OIS.KeyCode.KC_STOP` | `149` | `OIS::KC_STOP` |
+| `OIS.KeyCode.KC_AX` | `150` | `OIS::KC_AX` |
+| `OIS.KeyCode.KC_UNLABELED` | `151` | `OIS::KC_UNLABELED` |
+| `OIS.KeyCode.KC_NEXTTRACK` | `153` | `OIS::KC_NEXTTRACK` |
+| `OIS.KeyCode.KC_NUMPADENTER` | `156` | `OIS::KC_NUMPADENTER` |
+| `OIS.KeyCode.KC_RCONTROL` | `157` | `OIS::KC_RCONTROL` |
+| `OIS.KeyCode.KC_MUTE` | `160` | `OIS::KC_MUTE` |
+| `OIS.KeyCode.KC_CALCULATOR` | `161` | `OIS::KC_CALCULATOR` |
+| `OIS.KeyCode.KC_PLAYPAUSE` | `162` | `OIS::KC_PLAYPAUSE` |
+| `OIS.KeyCode.KC_MEDIASTOP` | `164` | `OIS::KC_MEDIASTOP` |
+| `OIS.KeyCode.KC_VOLUMEDOWN` | `174` | `OIS::KC_VOLUMEDOWN` |
+| `OIS.KeyCode.KC_VOLUMEUP` | `176` | `OIS::KC_VOLUMEUP` |
+| `OIS.KeyCode.KC_WEBHOME` | `178` | `OIS::KC_WEBHOME` |
+| `OIS.KeyCode.KC_NUMPADCOMMA` | `179` | `OIS::KC_NUMPADCOMMA` |
+| `OIS.KeyCode.KC_DIVIDE` | `181` | `OIS::KC_DIVIDE` |
+| `OIS.KeyCode.KC_SYSRQ` | `183` | `OIS::KC_SYSRQ` |
+| `OIS.KeyCode.KC_RMENU` | `184` | `OIS::KC_RMENU` |
+| `OIS.KeyCode.KC_PAUSE` | `197` | `OIS::KC_PAUSE` |
+| `OIS.KeyCode.KC_HOME` | `199` | `OIS::KC_HOME` |
+| `OIS.KeyCode.KC_UP` | `200` | `OIS::KC_UP` |
+| `OIS.KeyCode.KC_PGUP` | `201` | `OIS::KC_PGUP` |
+| `OIS.KeyCode.KC_LEFT` | `203` | `OIS::KC_LEFT` |
+| `OIS.KeyCode.KC_RIGHT` | `205` | `OIS::KC_RIGHT` |
+| `OIS.KeyCode.KC_END` | `207` | `OIS::KC_END` |
+| `OIS.KeyCode.KC_DOWN` | `208` | `OIS::KC_DOWN` |
+| `OIS.KeyCode.KC_PGDOWN` | `209` | `OIS::KC_PGDOWN` |
+| `OIS.KeyCode.KC_INSERT` | `210` | `OIS::KC_INSERT` |
+| `OIS.KeyCode.KC_DELETE` | `211` | `OIS::KC_DELETE` |
+| `OIS.KeyCode.KC_LWIN` | `219` | `OIS::KC_LWIN` |
+| `OIS.KeyCode.KC_RWIN` | `220` | `OIS::KC_RWIN` |
+| `OIS.KeyCode.KC_APPS` | `221` | `OIS::KC_APPS` |
+| `OIS.KeyCode.KC_POWER` | `222` | `OIS::KC_POWER` |
+| `OIS.KeyCode.KC_SLEEP` | `223` | `OIS::KC_SLEEP` |
+| `OIS.KeyCode.KC_WAKE` | `227` | `OIS::KC_WAKE` |
+| `OIS.KeyCode.KC_WEBSEARCH` | `229` | `OIS::KC_WEBSEARCH` |
+| `OIS.KeyCode.KC_WEBFAVORITES` | `230` | `OIS::KC_WEBFAVORITES` |
+| `OIS.KeyCode.KC_WEBREFRESH` | `231` | `OIS::KC_WEBREFRESH` |
+| `OIS.KeyCode.KC_WEBSTOP` | `232` | `OIS::KC_WEBSTOP` |
+| `OIS.KeyCode.KC_WEBFORWARD` | `233` | `OIS::KC_WEBFORWARD` |
+| `OIS.KeyCode.KC_WEBBACK` | `234` | `OIS::KC_WEBBACK` |
+| `OIS.KeyCode.KC_MYCOMPUTER` | `235` | `OIS::KC_MYCOMPUTER` |
+| `OIS.KeyCode.KC_MAIL` | `236` | `OIS::KC_MAIL` |
+| `OIS.KeyCode.KC_MEDIASELECT` | `237` | `OIS::KC_MEDIASELECT` |
+
+### Table: `OIS.Keyboard.TextTranslationMode`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.Keyboard.TextTranslationMode.Off` | `0` | `OIS::Keyboard::Off` |
+| `OIS.Keyboard.TextTranslationMode.Unicode` | `1` | `OIS::Keyboard::Unicode` |
+| `OIS.Keyboard.TextTranslationMode.Ascii` | `2` | `OIS::Keyboard::Ascii` |
+
+### Table: `OIS.Keyboard.Modifier`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.Keyboard.Modifier.Shift` | `1` | `OIS::Keyboard::Shift` |
+| `OIS.Keyboard.Modifier.Ctrl` | `16` | `OIS::Keyboard::Ctrl` |
+| `OIS.Keyboard.Modifier.Alt` | `256` | `OIS::Keyboard::Alt` |
+
+---
+
+## OIS/OISMouse.h
+
+### Table: `OIS.MouseButtonID`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.MouseButtonID.MB_Left` | `0` | `OIS::MB_Left` |
+| `OIS.MouseButtonID.MB_Right` | `1` | `OIS::MB_Right` |
+| `OIS.MouseButtonID.MB_Middle` | `2` | `OIS::MB_Middle` |
+| `OIS.MouseButtonID.MB_Button3` | `3` | `OIS::MB_Button3` |
+| `OIS.MouseButtonID.MB_Button4` | `4` | `OIS::MB_Button4` |
+| `OIS.MouseButtonID.MB_Button5` | `5` | `OIS::MB_Button5` |
+| `OIS.MouseButtonID.MB_Button6` | `6` | `OIS::MB_Button6` |
+| `OIS.MouseButtonID.MB_Button7` | `7` | `OIS::MB_Button7` |
+
+---
+
+## OIS/OISException.h
+
+### Table: `OIS.OIS_ERROR`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.OIS_ERROR.E_InputDisconnected` | `0` | `OIS::E_InputDisconnected` |
+| `OIS.OIS_ERROR.E_InputDeviceNonExistant` | `1` | `OIS::E_InputDeviceNonExistant` |
+| `OIS.OIS_ERROR.E_InputDeviceNotSupported` | `2` | `OIS::E_InputDeviceNotSupported` |
+| `OIS.OIS_ERROR.E_DeviceFull` | `3` | `OIS::E_DeviceFull` |
+| `OIS.OIS_ERROR.E_NotSupported` | `4` | `OIS::E_NotSupported` |
+| `OIS.OIS_ERROR.E_NotImplemented` | `5` | `OIS::E_NotImplemented` |
+| `OIS.OIS_ERROR.E_Duplicate` | `6` | `OIS::E_Duplicate` |
+| `OIS.OIS_ERROR.E_InvalidParam` | `7` | `OIS::E_InvalidParam` |
+| `OIS.OIS_ERROR.E_General` | `8` | `OIS::E_General` |
+
+---
+
+## OIS/OISInterface.h
+
+### Table: `OIS.Interface.IType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.Interface.IType.ForceFeedback` | `0` | `OIS::Interface::ForceFeedback` |
+| `OIS.Interface.IType.Reserved` | `1` | `OIS::Interface::Reserved` |
+
+---
+
+## OIS/OISInputManager.h
+
+### Table: `OIS.InputManager.AddOnFactories`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.InputManager.AddOnFactories.AddOn_All` | `0` | `OIS::InputManager::AddOn_All` |
+| `OIS.InputManager.AddOnFactories.AddOn_LIRC` | `1` | `OIS::InputManager::AddOn_LIRC` |
+| `OIS.InputManager.AddOnFactories.AddOn_WiiMote` | `2` | `OIS::InputManager::AddOn_WiiMote` |
+
+---
+
+## OIS/OISEffect.h
+
+### Table: `OIS.Effect.EForce`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.Effect.EForce.UnknownForce` | `0` | `OIS::Effect::UnknownForce` |
+| `OIS.Effect.EForce.ConstantForce` | `1` | `OIS::Effect::ConstantForce` |
+| `OIS.Effect.EForce.RampForce` | `2` | `OIS::Effect::RampForce` |
+| `OIS.Effect.EForce.PeriodicForce` | `3` | `OIS::Effect::PeriodicForce` |
+| `OIS.Effect.EForce.ConditionalForce` | `4` | `OIS::Effect::ConditionalForce` |
+| `OIS.Effect.EForce.CustomForce` | `5` | `OIS::Effect::CustomForce` |
+
+### Table: `OIS.Effect.EType`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.Effect.EType.Unknown` | `0` | `OIS::Effect::Unknown` |
+| `OIS.Effect.EType.Constant` | `1` | `OIS::Effect::Constant` |
+| `OIS.Effect.EType.Ramp` | `2` | `OIS::Effect::Ramp` |
+| `OIS.Effect.EType.Square` | `3` | `OIS::Effect::Square` |
+| `OIS.Effect.EType.Triangle` | `4` | `OIS::Effect::Triangle` |
+| `OIS.Effect.EType.Sine` | `5` | `OIS::Effect::Sine` |
+| `OIS.Effect.EType.SawToothUp` | `6` | `OIS::Effect::SawToothUp` |
+| `OIS.Effect.EType.SawToothDown` | `7` | `OIS::Effect::SawToothDown` |
+| `OIS.Effect.EType.Friction` | `8` | `OIS::Effect::Friction` |
+| `OIS.Effect.EType.Damper` | `9` | `OIS::Effect::Damper` |
+| `OIS.Effect.EType.Inertia` | `10` | `OIS::Effect::Inertia` |
+| `OIS.Effect.EType.Spring` | `11` | `OIS::Effect::Spring` |
+| `OIS.Effect.EType.Custom` | `12` | `OIS::Effect::Custom` |
+
+### Table: `OIS.Effect.EDirection`
+
+| Lua Syntax | Integer Value | C++ Enumerator |
+| :--- | :--- | :--- |
+| `OIS.Effect.EDirection.NorthWest` | `0` | `OIS::Effect::NorthWest` |
+| `OIS.Effect.EDirection.North` | `1` | `OIS::Effect::North` |
+| `OIS.Effect.EDirection.NorthEast` | `2` | `OIS::Effect::NorthEast` |
+| `OIS.Effect.EDirection.East` | `3` | `OIS::Effect::East` |
+| `OIS.Effect.EDirection.SouthEast` | `4` | `OIS::Effect::SouthEast` |
+| `OIS.Effect.EDirection.South` | `5` | `OIS::Effect::South` |
+| `OIS.Effect.EDirection.SouthWest` | `6` | `OIS::Effect::SouthWest` |
+| `OIS.Effect.EDirection.West` | `7` | `OIS::Effect::West` |
 
 ---

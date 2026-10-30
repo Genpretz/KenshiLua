@@ -19,6 +19,29 @@ def strip_comments(text):
     return text
 
 
+def enum_owner_paths(content):
+    """Track lexical namespace/class owners, including OIS's export macro."""
+    token = re.compile(
+        r'\bnamespace\s+(\w+)\s*\{'
+        r'|\b(?:class|struct)\s+(?:_OISExport\s+)?(\w+)[^;{}]*\{'
+        r'|\benum\s+(?:class\s+)?\w*\s*\{'
+        r'|[{}]'
+    )
+    stack = []
+    owners = {}
+    for match in token.finditer(content):
+        text = match.group(0)
+        if text == '}':
+            if stack:
+                stack.pop()
+        elif text.startswith('enum'):
+            owners[match.start()] = '::'.join(name for name in stack if name)
+            stack.append('')
+        else:
+            stack.append(match.group(1) or match.group(2) or '')
+    return owners
+
+
 def parse_header_enums(include_dir=INCLUDE_DIR):
     """Parse all enum definitions from KenshiLib header files and fcs.def."""
     if not include_dir.is_dir():
@@ -39,6 +62,7 @@ def parse_header_enums(include_dir=INCLUDE_DIR):
     for header in headers:
         content = header.read_text(encoding="utf-8", errors="ignore")
         content = strip_comments(content)
+        owner_paths = enum_owner_paths(content)
 
         # Tokenize by class/struct/enum to track current class scope
         # Find all enum blocks, capturing preceding class name if nested
@@ -85,6 +109,13 @@ def parse_header_enums(include_dir=INCLUDE_DIR):
 
                 key = key.split()[0] if key else ""
                 if key and re.match(r'^\w+$', key):
+                    # Complete paths disambiguate library enums such as
+                    # OIS::Type from identically named enums in other headers.
+                    owner = owner_paths.get(pos, '')
+                    if owner:
+                        enum_values[f"{owner}::{key}"] = current_val
+                        if enum_name:
+                            enum_values[f"{owner}::{enum_name}::{key}"] = current_val
                     if key not in enum_values:
                         enum_values[key] = current_val
                     if enum_name:
