@@ -15,6 +15,7 @@
 namespace KenshiLua
 {
 
+#ifndef __INTELLISENSE__
 // Field accessors index engine-owned data; offsets checked against the constructor (RVA 0x9C7420).
 static_assert(offsetof(CampaignData, me) == 0x8, "CampaignData::me offset does not match the game");
 static_assert(offsetof(CampaignData, specificTargetCharacter) == 0x70, "CampaignData::specificTargetCharacter offset does not match the game");
@@ -23,6 +24,7 @@ static_assert(offsetof(CampaignData, data) == 0x138, "CampaignData::data offset 
 static_assert(offsetof(CampaignData, victoryTriggers) == 0x1F0, "CampaignData::victoryTriggers offset does not match the game");
 // FactionWarMgr::_createCampaignData allocates 0x250 bytes for each CampaignData.
 static_assert(sizeof(CampaignData) == 0x250, "CampaignData size does not match the game");
+#endif
 
 static CampaignData* getInstance(lua_State* L, int idx)
 {
