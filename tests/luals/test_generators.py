@@ -26,6 +26,41 @@ import import_kenshilib_docs
 
 
 class EnumExtractionTests(unittest.TestCase):
+    def test_enum_sources_are_discovered_across_sdk_directories(self):
+        source = '''
+            namespace KenshiLua {
+                // Input/Enums.h
+                void registerInputKeys(lua_State* L) {
+                    lua_createtable(L, 0, 1);
+                    setEnum(L, "KEY_ESCAPE", 27);
+                    setNestedClassTable(L, "Input", "KeyCode");
+                    lua_pop(L, 1);
+                }
+                void registerInputEnumBindings(lua_State* L) {
+                    registerInputKeys(L);
+                }
+            }
+        '''
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            directory = root / "Input"
+            directory.mkdir()
+            (directory / "EnumBinding.cpp").write_text(source, encoding="utf-8")
+            with mock.patch.object(generate_definitions, "BINDINGS_DIR", root):
+                globals_, nested = generate_definitions.parse_enums()
+            self.assertEqual({}, globals_)
+            self.assertEqual({"Input": {"KeyCode": {"KEY_ESCAPE": 27}}}, nested)
+
+            sys.path.insert(0, str(PROJECT_ROOT / "tools" / "docs"))
+            import generate_enums_reference
+            with mock.patch.object(generate_enums_reference, "BINDINGS_DIR", root):
+                sections = generate_enums_reference.parse_enum_bindings()
+            self.assertEqual(1, len(sections))
+            self.assertEqual("Input/Enums.h", sections[0]["header"])
+            self.assertEqual(1, len(sections[0]["enums"]))
+            self.assertEqual(["Input.KeyCode"], sections[0]["enums"][0]["globals"])
+            self.assertEqual(27, sections[0]["enums"][0]["entries"][0]["int_val"])
+
     def test_namespace_enum_values_and_exported_class_owners_do_not_collide(self):
         source = '''
             namespace OIS {
@@ -37,7 +72,13 @@ class EnumExtractionTests(unittest.TestCase):
                 };
                 enum AfterClass { Value = 21 };
             }
-            namespace Other { enum Type { First = 99, Second }; }
+            namespace Other {
+                enum Type { First = 99, Second };
+                class OTHER_API Keyboard {
+                public:
+                    enum Modifier { Ctrl = 2 };
+                };
+            }
         '''
         with tempfile.TemporaryDirectory() as temporary:
             root = pathlib.Path(temporary)
@@ -46,6 +87,7 @@ class EnumExtractionTests(unittest.TestCase):
         self.assertEqual(7, values["OIS::Type::First"])
         self.assertEqual(8, values["OIS::Second"])
         self.assertEqual(99, values["Other::Type::First"])
+        self.assertEqual(2, values["Other::Keyboard::Modifier::Ctrl"])
         self.assertEqual(16, values["OIS::Keyboard::Modifier::Ctrl"])
         self.assertEqual(256, values["OIS::Keyboard::Alt"])
         self.assertEqual(21, values["OIS::AfterClass::Value"])
@@ -93,7 +135,10 @@ class EnumExtractionTests(unittest.TestCase):
             for values in fields.values()
         )
 
-        source = generate_definitions.ENUM_BINDING_PATH.read_text(encoding="utf-8")
+        source = "\n".join(
+            path.read_text(encoding="utf-8")
+            for path in generate_definitions.BINDINGS_DIR.rglob("*EnumBinding.cpp")
+        )
         registration_count = len(re.findall(r"\bsetEnum\s*\(", source))
         self.assertEqual(registration_count, resolved_count)
 
@@ -1136,6 +1181,29 @@ class TypeAuditTests(unittest.TestCase):
             ("wraps::BaseLayout", "MyGUI::Widget*"),
             headers.find_member("wraps::BaseLayout", "mMainWidget"),
         )
+
+    def test_mygui_itembox_update_param_normalizes_to_clean_signature(self):
+        headers = generate_type_audit.HeaderIndex()
+        with tempfile.TemporaryDirectory() as temporary:
+            header = pathlib.Path(temporary) / "MyGUI_ItemBox.h"
+            header.write_text(
+                "namespace MyGUI {\n"
+                "class ItemBox {\npublic:\n"
+                "    void insertItemAt(size_t _index, Any _data = Any::Null, bool update = true);\n"
+                "    void addItem(Any _data = Any::Null, bool update = true);\n"
+                "    void removeItemAt(size_t _index, bool update = true);\n"
+                "};\n}\n",
+                encoding="utf-8",
+            )
+            headers.parse_file(header)
+        _, methods = headers.find_methods("MyGUI::ItemBox", "insertItemAt")
+        self.assertEqual(2, len(methods[0]["params"]))
+        self.assertEqual("size_t", methods[0]["params"][0]["type"])
+        self.assertEqual("Any", methods[0]["params"][1]["type"])
+        _, add_methods = headers.find_methods("MyGUI::ItemBox", "addItem")
+        self.assertEqual(1, len(add_methods[0]["params"]))
+        _, remove_methods = headers.find_methods("MyGUI::ItemBox", "removeItemAt")
+        self.assertEqual(1, len(remove_methods[0]["params"]))
 
     def test_header_declaration_maps_out_params_to_returns(self):
         headers = generate_type_audit.HeaderIndex()

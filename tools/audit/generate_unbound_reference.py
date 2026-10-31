@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+from pathlib import Path
 import re
 import glob
 
@@ -9,11 +10,10 @@ def main():
     project_root = os.path.dirname(os.path.dirname(script_dir))
     bindings_dir = os.path.join(project_root, "src", "Bindings")
     output_file = os.path.join(project_root, "docs", "UnboundReference.md")
-    enum_file = os.path.join(bindings_dir, "Kenshi", "EnumBinding.cpp")
 
     # 1. Discover all registered enums
     bound_enums = set()
-    if os.path.exists(enum_file):
+    for enum_file in sorted(Path(bindings_dir).rglob("*EnumBinding.cpp")):
         with open(enum_file, 'r', encoding='utf-8', errors='ignore') as f:
             enum_content = f.read()
             for m in re.finditer(r'void\s+register(\w+)\s*\(lua_State\*', enum_content):

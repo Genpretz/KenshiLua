@@ -1414,8 +1414,9 @@ def build_inventory():
     name_container_instances(classes, mapper)
     # A binding class named like a registered global enum (YesNoMaybe) is a
     # different runtime type from the enum's integer table: name it apart.
-    enum_text = (PROJECT_ROOT / "src" / "Bindings" / "Kenshi" / "EnumBinding.cpp").read_text(
-        encoding="utf-8", errors="ignore"
+    enum_text = "\n".join(
+        path.read_text(encoding="utf-8", errors="ignore")
+        for path in sorted((PROJECT_ROOT / "src" / "Bindings").rglob("*EnumBinding.cpp"))
     )
     enum_globals = set(re.findall(r'lua_setglobal\s*\(\s*L\s*,\s*"([A-Za-z_]\w*)"', enum_text))
     if re.search(

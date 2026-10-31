@@ -22,7 +22,7 @@ Override the destination when needed:
 python tools/bindings/generate_class.py extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h --write-dir path/to/output
 ```
 
-The class-binding generator automatically discovers bindings in `src/Bindings`, registered enums in `src/Bindings/Kenshi/EnumBinding.cpp`, and their associated headers. `--bind-map`, `--classes`, and `--enums` remain available for one-off additions or overrides.
+The class-binding generator automatically discovers bindings in `src/Bindings`, registered enums in `src/Bindings/**/*EnumBinding.cpp`, and their associated headers. `--bind-map`, `--classes`, and `--enums` remain available for one-off additions or overrides.
 
 ## Documentation and audits
 
@@ -30,7 +30,7 @@ The class-binding generator automatically discovers bindings in `src/Bindings`, 
 | --- | --- | --- |
 | `docs/generate_bindings_reference.py` | Generates the general Lua bindings reference. | `docs/BindingsReference.md` |
 | `docs/generate_mygui_reference.py` | Generates the MyGUI Lua bindings reference. | `docs/MyGUIReference.md` |
-| `docs/generate_enums_reference.py` | Generates the enum reference from `EnumBinding.cpp`. | `docs/EnumsReference.md` |
+| `docs/generate_enums_reference.py` | Generates the enum reference from `src/Bindings/**/*EnumBinding.cpp`. | `docs/EnumsReference.md` |
 | `docs/generate_callbacks_reference.py` | Generates the callbacks reference from callback and hook declarations. | `docs/CallbacksReference.md` |
 | `luals/generate_definitions.py` | Generates the versioned LuaLS definitions from reviewed metadata and runtime registries. | `luals/generated/kenshilua.lua`, `luals/addon/kenshilua/library/kenshilua.lua` |
 | `luals/generate_binding_inventory.py` | Inventories bindings reachable from the runtime registration graph without inferring signatures. | `luals/generated/binding_inventory.json` |

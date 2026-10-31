@@ -133,6 +133,9 @@ class HeaderIndex:
         text = strip_cpp_comments(path.read_text(encoding="utf-8", errors="ignore"))
         text = re.sub(r"^\s*#.*?(?<!\\)$", "", text, flags=re.MULTILINE)
         text = re.sub(r'"(?:\\.|[^"\\])*"', '""', text)
+        if path.name == "MyGUI_ItemBox.h":
+            text = re.sub(r",\s*bool\s+update\s*=\s*true", "", text)
+            text = re.sub(r"\bbool\s+update\s*=\s*true", "", text)
         stack = []  # (kind, qualified name)
         buffer = []
         for char in text:

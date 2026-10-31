@@ -10,7 +10,7 @@ import re
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 INCLUDE_DIR = PROJECT_ROOT / "extern" / "KenshiLib" / "Include"
 FCS_DEF = PROJECT_ROOT / "assets" / "config" / "fcs.def"
-ENUM_BINDING_CPP = PROJECT_ROOT / "src" / "Bindings" / "Kenshi" / "EnumBinding.cpp"
+BINDINGS_DIR = PROJECT_ROOT / "src" / "Bindings"
 
 
 def strip_comments(text):
@@ -20,10 +20,10 @@ def strip_comments(text):
 
 
 def enum_owner_paths(content):
-    """Track lexical namespace/class owners, including OIS's export macro."""
+    """Track lexical namespace/class owners, allowing class export macros."""
     token = re.compile(
         r'\bnamespace\s+(\w+)\s*\{'
-        r'|\b(?:class|struct)\s+(?:_OISExport\s+)?(\w+)[^;{}]*\{'
+        r'|\b(?:class|struct)\s+(?:\w+\s+)?(\w+)[^;{}]*\{'
         r'|\benum\s+(?:class\s+)?\w*\s*\{'
         r'|[{}]'
     )
@@ -159,7 +159,10 @@ def match_enum_bindings():
     except (FileNotFoundError, ValueError) as exc:
         print("Enum extraction failed: " + str(exc))
         return 1
-    content = ENUM_BINDING_CPP.read_text(encoding="utf-8", errors="ignore")
+    content = "\n".join(
+        path.read_text(encoding="utf-8", errors="ignore")
+        for path in sorted(BINDINGS_DIR.rglob("*EnumBinding.cpp"))
+    )
     set_enums = re.findall(r'setEnum\(\s*L\s*,\s*"([^"]+)"\s*,\s*([^)]+)\);', content)
 
     matched = 0
@@ -195,7 +198,7 @@ def match_enum_bindings():
         else:
             unmatched.append((key, cxx_sym))
 
-    print(f"Total in EnumBinding.cpp: {len(set_enums)}")
+    print(f"Total in enum binding sources: {len(set_enums)}")
     print(f"Matched with exact header values: {matched} / {len(set_enums)} ({matched * 100 // len(set_enums)}%)")
     if unmatched:
         print(f"Unmatched count: {len(unmatched)}")

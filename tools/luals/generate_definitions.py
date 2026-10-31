@@ -17,7 +17,7 @@ import sys
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 METADATA_PATH = PROJECT_ROOT / "luals" / "metadata" / "runtime.json"
-ENUM_BINDING_PATH = PROJECT_ROOT / "src" / "Bindings" / "Kenshi" / "EnumBinding.cpp"
+BINDINGS_DIR = PROJECT_ROOT / "src" / "Bindings"
 HOOK_REGISTRY_PATH = PROJECT_ROOT / "src" / "Hooks" / "Hooks_Registry.cpp"
 VERSION_PATH = PROJECT_ROOT / "src" / "Version.h"
 OUTPUT_PATH = PROJECT_ROOT / "luals" / "generated" / "kenshilua.lua"
@@ -66,10 +66,10 @@ def read_version():
 
 def parse_enums():
     header_values = parse_header_enums()
-    text = ENUM_BINDING_PATH.read_text(encoding="utf-8")
-    ns_pos = text.find("namespace KenshiLua")
-    reg_pos = text.find("void registerEnumBindings(lua_State* L)")
-    body_text = text[ns_pos:reg_pos] if ns_pos >= 0 and reg_pos >= 0 else text
+    body_text = "\n".join(
+        path.read_text(encoding="utf-8")
+        for path in sorted(BINDINGS_DIR.rglob("*EnumBinding.cpp"))
+    )
 
     global_enums = {}
     nested_enums = {}
