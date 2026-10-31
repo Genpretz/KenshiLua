@@ -246,6 +246,7 @@
     <ClCompile Include="src\Bindings\Kenshi\DialogueSpeechBubbleBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\EntDataBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\EnumBinding.cpp" />
+    <ClCompile Include="src\Bindings\OIS\OISEnumBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\FactionBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\FactionLeaderBinding.cpp" />
     <ClCompile Include="src\Bindings\Kenshi\FactionManagerBinding.cpp" />
@@ -1244,6 +1245,7 @@
     <ClInclude Include="src\Bindings\Kenshi\DialogueSpeechBubbleBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\EntDataBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\EnumBinding.h" />
+    <ClInclude Include="src\Bindings\OIS\OISEnumBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\FactionBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\FactionLeaderBinding.h" />
     <ClInclude Include="src\Bindings\Kenshi\FactionManagerBinding.h" />

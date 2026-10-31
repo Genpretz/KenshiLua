@@ -145,6 +145,7 @@
 #include "Bindings/Kenshi/EdgePathNodeBinding.h"
 #include "Bindings/Kenshi/EntDataBinding.h"
 #include "Bindings/Kenshi/EnumBinding.h"
+#include "Bindings/OIS/OISEnumBinding.h"
 #include "Bindings/Kenshi/FactionBinding.h"
 #include "Bindings/Kenshi/FactionLeaderBinding.h"
 #include "Bindings/Kenshi/FactionManagerBinding.h"
@@ -1227,6 +1228,7 @@ void LuaBindings::registerAll(lua_State* L)
 
     // Register Enums
     registerEnumBindings(L);
+    registerOISEnumBindings(L);
 
     // Register templates centrally before classes are bound
     registerLektor(L);
