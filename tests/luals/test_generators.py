@@ -24,6 +24,203 @@ import generate_definitions
 import generate_type_audit
 import import_kenshilib_docs
 
+sys.path.insert(0, str(PROJECT_ROOT / "tools/bindings"))
+import generate_class as generate_class_scaffold
+
+
+class ContainerCatalogTests(unittest.TestCase):
+    def test_factory_overloads_follow_catalog_availability_and_aliases(self):
+        entry = {
+            "kind": "template_instance", "template": "LektorPtrBinding", "lua_type": "Lektor<Item>",
+            "metatable": "lektor<Item*>", "factories": [],
+        }
+        self.assertEqual([], container_contracts.factory_overloads([entry])["lektor"])
+        entry["factories"] = [{
+            "family": "lektor", "metatable": "lektor<Item*>",
+            "aliases": ["lektor<Item*>", "legacy-item-name", "legacy-item-name*", "KenshiLua.Item"],
+        }]
+        overloads = container_contracts.factory_overloads([entry])["lektor"]
+        names = {params[0][1] for params, _ in overloads}
+        self.assertTrue({"lektor<Item*>", "Item*", "legacy-item-name*"}.issubset(names))
+        self.assertNotIn("Item", names)
+        self.assertNotIn("legacy-item-name", names)
+        self.assertNotIn("KenshiLua.Item", names)
+
+    def test_factory_aliases_preserve_each_argument_pointer_depth(self):
+        matches = container_contracts.factory_spelling_matches
+        self.assertTrue(matches("lektor", "int", "lektor<int>"))
+        self.assertTrue(matches("lektor", "string", "lektor<std::string>"))
+        self.assertFalse(matches("lektor", "", "lektor<int>"))
+        self.assertFalse(matches("ogre_unordered_map", "GameData*,", "ogre_unordered_map<GameData*, bool>"))
+        self.assertFalse(matches("lektor", "int*", "lektor<int>"))
+        self.assertFalse(matches("lektor", "ModInfo", "lektor<ModInfo*>"))
+        self.assertFalse(matches("lektor", "ModInfo**", "lektor<ModInfo*>"))
+        self.assertTrue(matches("ogre_unordered_map", "GameData*, bool",
+                                "ogre_unordered_map<GameData*, bool>"))
+        self.assertFalse(matches("ogre_unordered_map", "GameData, bool",
+                                 "ogre_unordered_map<GameData*, bool>"))
+        self.assertFalse(matches("ogre_unordered_map", "hand, Character",
+                                 "ogre_unordered_map<hand, Character*>"))
+
+    def test_scaffold_reports_container_requirements_without_local_registration(self):
+        info = generate_class_scaffold.ClassInfo("Holder", members=[
+            generate_class_scaffold.Member("Ogre::FastArray<Character*>", "characters", 1),
+            generate_class_scaffold.Member("Ogre::FastArray<float>", "weights", 2),
+        ])
+        source = generate_class_scaffold.generate_cpp(
+            info, PROJECT_ROOT / "extern/KenshiLib/Include/kenshi/Holder.h",
+            set(), {"Character": "CharacterBinding"},
+        )
+        self.assertIn("Review src/Lua/Containers/RegisterArrays.cpp", source)
+        self.assertIn("OgreFastArrayPtrBinding<Character*>", source)
+        self.assertIn("OgreFastArrayPrimitiveBinding<float>", source)
+        self.assertNotRegex(
+            generate_binding_inventory.strip_cpp_comments(source),
+            r"OgreFastArray\w*Binding<.*?>::registerBinding",
+        )
+
+    def test_catalog_macro_preserves_names_metadata_and_factory_expressions(self):
+        source = '''
+            KENSHILUA_DEFINE_CONTAINER(Containers::ValuesBinding, "std::map<int, float>",
+                nullptr, ValueBinding::getMetatableName(), NULL,
+                (ContainerFactoryDefinition("map", Containers::ValuesBinding::createNew, Names)))
+        '''
+        arguments, = generate_binding_inventory.container_macro_arguments(source)
+        self.assertEqual(6, len(arguments))
+        self.assertEqual('"std::map<int, float>"', arguments[1])
+        self.assertEqual("ValueBinding::getMetatableName()", arguments[3])
+        self.assertIn("Containers::ValuesBinding::createNew", arguments[5])
+
+    def test_truncated_catalog_macro_fails(self):
+        with self.assertRaisesRegex(ValueError, "unterminated"):
+            list(generate_binding_inventory.container_macro_arguments(
+                'KENSHILUA_DEFINE_CONTAINER(Containers::BrokenBinding, "broken"'))
+
+    def test_factory_aliases_are_read_from_the_definition(self):
+        source = 'static const char* const Names[] = { "KenshiLua.Character", "KenshiLua.Character*" };'
+        factory = generate_binding_inventory.container_factory_contract(
+            '(ContainerFactoryDefinition("lektor", Containers::CharactersBinding::createNew, Names))',
+            source, "lektor<Character*>",
+        )
+        self.assertEqual("lektor", factory["family"])
+        self.assertEqual(
+            ["KenshiLua.Character", "KenshiLua.Character*", "lektor<Character*>"], factory["aliases"],
+        )
+        with self.assertRaisesRegex(ValueError, "missing factory aliases"):
+            generate_binding_inventory.container_factory_contract(
+                '(ContainerFactoryDefinition("lektor", Containers::CharactersBinding::createNew, Missing))',
+                source, "lektor<Character*>",
+            )
+
+    def test_location_check_rejects_direct_and_alias_registration(self):
+        for source in (
+            'LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>");',
+            'LektorPtrBinding<Character*> :: registerBinding(L);',
+            'CharactersBinding::registerBinding(L);',
+            'Containers::CharactersBinding::registerBinding(L);',
+        ):
+            with self.subTest(source=source), self.assertRaisesRegex(ValueError, "outside central"):
+                generate_binding_inventory.validate_container_registration_location(
+                    source, "CharacterBinding.cpp", {"LektorPtrBinding"}, {"CharactersBinding"},
+                )
+        generate_binding_inventory.validate_container_registration_location(
+            '// CharactersBinding::registerBinding(L);\nCharacterBinding::registerBinding(L);',
+            "CharacterBinding.cpp", {"LektorPtrBinding"}, {"CharactersBinding"},
+        )
+
+    def test_explicit_default_set_policy_does_not_change_type_identity(self):
+        self.assertEqual(
+            generate_binding_inventory.canonical_container_id("StdSetBinding", "hand"),
+            generate_binding_inventory.canonical_container_id(
+                "StdSetBinding", "hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>",
+            ),
+        )
+        self.assertNotEqual(
+            generate_binding_inventory.canonical_container_id("StdSetBinding", "hand"),
+            generate_binding_inventory.canonical_container_id(
+                "StdSetBinding", "hand, std::less<hand>, std::allocator<hand>",
+            ),
+        )
+
+    def test_literal_container_consumers_must_use_a_registered_name(self):
+        source = 'return pushObject<lektor<Item*>>(L, &instance->items, "lektor<Item*>");'
+        generate_binding_inventory.validate_container_metatable_references(
+            source, "HolderBinding.cpp", {"lektor<Item*>"},
+        )
+        with self.assertRaisesRegex(ValueError, "unregistered container metatable"):
+            generate_binding_inventory.validate_container_metatable_references(source, "HolderBinding.cpp", set())
+        generate_binding_inventory.validate_container_metatable_references(
+            '// ' + source + '\nreturn pushObject<Item>(L, instance->item, "KenshiLua.Item");',
+            "HolderBinding.cpp", set(),
+        )
+
+    def test_startup_collection_reachability_follows_calls_across_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = pathlib.Path(temporary)
+            directory = root / "src/Lua/Containers"
+            directory.mkdir(parents=True)
+            (directory.parent / "RegisterBindings.cpp").write_text(
+                "void LuaBindings::registerAll(lua_State* L) { registerContainers(L); }\n"
+                "void LuaBindings::registerContainers(lua_State* L) { collectValues(definitions); }",
+                encoding="utf-8",
+            )
+            (directory / "RegisterValues.cpp").write_text(
+                "void LuaBindings::collectValues(ContainerBindingList& definitions) { installValues(); }\n"
+                "void LuaBindings::collectUnused(ContainerBindingList& definitions) { unused(); }",
+                encoding="utf-8",
+            )
+            with mock.patch.object(generate_binding_inventory, "PROJECT_ROOT", root):
+                sources = generate_binding_inventory.container_registration_sources()
+            self.assertEqual(3, len(sources))
+            self.assertIn("installValues", sources[-1]["body"])
+            self.assertFalse(any("unused()" in entry["body"] for entry in sources))
+
+    def catalog_fixture(self, root, declarations, definitions, collected):
+        directory = root / "src/Lua/Containers"
+        directory.mkdir(parents=True)
+        (root / "src/Bindings").mkdir()
+        (directory / "ValueTypes.h").write_text(declarations, encoding="utf-8")
+        (directory / "RegisterValues.cpp").write_text(
+            definitions + "\nvoid LuaBindings::collectValues(ContainerBindingList& definitions) {\n" +
+            "\n".join("definitions.push_back(&containerBindingDefinition<Containers::" + alias +
+                      "::MetadataType>());" for alias in collected) + "\n}", encoding="utf-8",
+        )
+        (directory.parent / "RegisterBindings.cpp").write_text(
+            "void LuaBindings::registerAll(lua_State* L) { collectValues(definitions); }", encoding="utf-8",
+        )
+
+    def test_catalog_rejects_unreachable_duplicate_and_conflicting_definitions(self):
+        declaration = "typedef LektorValueBinding<int> IntsBinding;\n"
+        definition = ('KENSHILUA_DEFINE_CONTAINER(Containers::IntsBinding, "lektor<int>", '
+                      'NULL, NULL, NULL, ContainerFactoryDefinition())\n')
+        variants = (
+            (declaration, definition, [], "unreachable"),
+            (declaration, definition, ["IntsBinding", "IntsBinding"], "duplicate container registration"),
+            (declaration, definition + definition, ["IntsBinding"], "duplicate container definition"),
+            (declaration + "typedef LektorValueBinding<float> FloatsBinding;\n",
+             definition + definition.replace("IntsBinding", "FloatsBinding"),
+             ["IntsBinding", "FloatsBinding"], "duplicate container metatable"),
+            (declaration + "typedef LektorValueBinding<int> OtherIntsBinding;\n",
+             definition + definition.replace("IntsBinding", "OtherIntsBinding").replace("lektor<int>", "other<int>"),
+             ["IntsBinding", "OtherIntsBinding"], "multiple metatables"),
+        )
+        for declarations, descriptions, collected, message in variants:
+            with self.subTest(message=message), tempfile.TemporaryDirectory() as temporary:
+                root = pathlib.Path(temporary)
+                self.catalog_fixture(root, declarations, descriptions, collected)
+                with mock.patch.object(generate_binding_inventory, "PROJECT_ROOT", root), \
+                     mock.patch.object(generate_binding_inventory, "find_template_definitions", return_value={
+                         "LektorValueBinding": {"body": "", "text": "", "path": "ValueBinding.h"},
+                     }), self.assertRaisesRegex(ValueError, message):
+                    generate_binding_inventory.parse_template_instances({}, {})
+
+    def test_factory_constructor_must_match_its_container(self):
+        with self.assertRaisesRegex(ValueError, "constructor does not match"):
+            generate_binding_inventory.container_factory_contract(
+                '(ContainerFactoryDefinition("lektor", Containers::WrongBinding::createNew))',
+                "", "lektor<int>", "IntsBinding",
+            )
+
 
 class EnumExtractionTests(unittest.TestCase):
     def test_enum_sources_are_discovered_across_sdk_directories(self):
@@ -246,7 +443,7 @@ class DefinitionGenerationTests(unittest.TestCase):
             generated,
         )
         self.assertIn(
-            "Deducts the specified amount of Cats from this character's money",
+            "Deducts `amount` from the balance returned by `getOwnerships()`",
             generated,
         )
         self.assertIn("---@class HavokCharacter", generated)
@@ -313,6 +510,55 @@ class DescriptionImportTests(unittest.TestCase):
 
 
 class BindingInventoryTests(unittest.TestCase):
+    def test_global_table_paths_are_classified_without_setglobal(self):
+        for path in ("MyGUI", "MyGUI.Factory"):
+            with self.subTest(path=path):
+                body = '''
+                    pushGlobalTablePath(L, "%s");
+                    luaL_register(L, NULL, globalMethods);
+                    lua_pop(L, 1);
+                ''' % path
+                self.assertEqual(
+                    ("global_table", [path]),
+                    generate_binding_inventory.classify_binding(body),
+                )
+        self.assertEqual(
+            ("global_table", ["MyGUI"]),
+            generate_binding_inventory.classify_binding('''
+                KenshiLua::pushGlobalTablePath(L, "MyGUI");
+                lua_setglobal(L, "MyGUI");
+            '''),
+        )
+
+    def test_global_table_classification_preserves_userdata_classes(self):
+        self.assertEqual(
+            ("class", ["Example"]),
+            generate_binding_inventory.classify_binding('''
+                registerClass(L, getMetatableName(), meta, methods);
+                pushGlobalTablePath(L, "Example");
+            '''),
+        )
+        self.assertEqual(
+            ("class", ["MyGUI.Gui"]),
+            generate_binding_inventory.classify_binding('''
+                registerClass(L, getMetatableName(), meta, methods);
+                lua_newtable(L);
+                registerStaticMethod(L, "getInstance", getInstance);
+                setNestedClassTable(L, "MyGUI", "Gui");
+                lua_pop(L, 1);
+            '''),
+        )
+        self.assertEqual(
+            ("binding", []),
+            generate_binding_inventory.classify_binding('''
+                // pushGlobalTablePath(L, "Commented");
+                /* lua_setglobal(L, "AlsoCommented"); */
+                // setNestedClassTable(L, "Hidden", "Class");
+                pushGlobalTable(L, "Unpublished");
+                pushGlobalTablePath(L, dynamicPath);
+            '''),
+        )
+
     def test_commented_registrations_are_ignored(self):
         body = r'''
             static const luaL_Reg methods[] = {
@@ -425,15 +671,16 @@ class BindingInventoryTests(unittest.TestCase):
         overloads = container_contracts.factory_overloads(classes)
         lektor = {params[0][1]: lua_type for params, lua_type in overloads["lektor"]}
         self.assertEqual("Lektor<Character>", lektor["Character*"])
-        self.assertEqual("Lektor<Character>", lektor["Character"])
+        self.assertNotIn("Character", lektor)
         self.assertEqual("Lektor<Character>", lektor["lektor<Character*>"])
         self.assertEqual("Lektor<string>", lektor["string"])
         self.assertEqual("Lektor<ModInfo>", lektor["ModInfo"])
+        self.assertEqual("Lektor<ModInfo>", lektor["ModInfo*"])
+        self.assertNotIn("string*", lektor)
         maps = {tuple(value for _, value in params): lua_type for params, lua_type in overloads["ogre_unordered_map"]}
         self.assertIn(("TutorialItem*", "TutorialGUILine*"), maps)
-        # The map factory appends "*" to one argument at a time, never both.
-        self.assertIn(("TutorialItem", "TutorialGUILine*"), maps)
-        self.assertIn(("TutorialItem*", "TutorialGUILine"), maps)
+        self.assertNotIn(("TutorialItem", "TutorialGUILine*"), maps)
+        self.assertNotIn(("TutorialItem*", "TutorialGUILine"), maps)
         self.assertNotIn(("TutorialItem", "TutorialGUILine"), maps)
 
     def test_static_method_tables_get_statics_classes(self):
@@ -566,10 +813,22 @@ class BindingInventoryTests(unittest.TestCase):
         # ModInfo in Lua; central registration makes lektor<ModInfo> writable.
         mod_info = bindings["Lektor<ModInfo>"]
         self.assertEqual(
+            {"lektor<ModInfo>", "lektor<ModInfo*>"},
+            {factory["metatable"] for factory in mod_info["factories"]},
+        )
+        mod_info_aliases = {
+            alias: factory["metatable"] for factory in mod_info["factories"] for alias in factory["aliases"]
+        }
+        self.assertEqual("lektor<ModInfo*>", mod_info_aliases["KenshiLua.ModInfo"])
+        self.assertEqual(
             {"lektor<ModInfo*>", "lektor<ModInfo>"},
             {mod_info["metatable"]} | set(mod_info.get("metatable_aliases", [])),
         )
         self.assertEqual("LektorValueBinding", bindings["Lektor<hand>"]["template"])
+        self.assertEqual(["Town*"], bindings["Lektor<Town>"]["template_args"])
+        self.assertEqual(
+            "Lektor<Town>", next(prop["type"] for prop in bindings["TownList"]["properties"] if prop["name"] == "deletedTowns"),
+        )
         # Typedef aliases registering one metatable are one Lua type.
         self.assertEqual("ogre_unordered_set<hand>", bindings["OgreUnorderedSet<hand>"]["metatable"])
         self.assertEqual(
@@ -755,6 +1014,24 @@ class BindingInventoryTests(unittest.TestCase):
 
 
 class CoverageReportTests(unittest.TestCase):
+    def test_emitted_globals_include_nested_table_paths(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            definitions = pathlib.Path(temporary) / "definitions.lua"
+            definitions.write_text(
+                "MyGUI = {}\n"
+                "MyGUI.Gui = {}\n"
+                "MyGUI.Nested.Factory = {}\n"
+                "function MyGUI.Nested.create() end\n"
+                "--- MyGUI.Commented = {}\n"
+                "local hidden = {}\n",
+                encoding="utf-8",
+            )
+            with mock.patch.object(generate_coverage_report, "DEFINITIONS_PATH", definitions):
+                self.assertEqual(
+                    {"MyGUI", "MyGUI.Gui", "MyGUI.Nested.Factory", "MyGUI.Nested.create"},
+                    generate_coverage_report.emitted_globals(),
+                )
+
     def test_committed_coverage_report_is_reproducible(self):
         generated = generate_coverage_report.serialize(generate_coverage_report.build_report())
         self.assertEqual(

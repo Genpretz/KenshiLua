@@ -75,7 +75,8 @@ void IntPointBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", IntPoint_new);
-    lua_setglobal(L, "IntPoint");
+    setNestedClassTable(L, "MyGUI", "IntPoint");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -148,7 +149,8 @@ void IntSizeBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", IntSize_new);
-    lua_setglobal(L, "IntSize");
+    setNestedClassTable(L, "MyGUI", "IntSize");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -251,7 +253,8 @@ void IntCoordBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", IntCoord_new);
-    lua_setglobal(L, "IntCoord");
+    setNestedClassTable(L, "MyGUI", "IntCoord");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -316,7 +319,8 @@ void IntRectBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", IntRect_new);
-    lua_setglobal(L, "IntRect");
+    setNestedClassTable(L, "MyGUI", "IntRect");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -373,7 +377,8 @@ void FloatPointBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", FloatPoint_new);
-    lua_setglobal(L, "FloatPoint");
+    setNestedClassTable(L, "MyGUI", "FloatPoint");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -430,7 +435,8 @@ void FloatSizeBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", FloatSize_new);
-    lua_setglobal(L, "FloatSize");
+    setNestedClassTable(L, "MyGUI", "FloatSize");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -493,7 +499,8 @@ void FloatCoordBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", FloatCoord_new);
-    lua_setglobal(L, "FloatCoord");
+    setNestedClassTable(L, "MyGUI", "FloatCoord");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -558,7 +565,8 @@ void FloatRectBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "new", FloatRect_new);
-    lua_setglobal(L, "FloatRect");
+    setNestedClassTable(L, "MyGUI", "FloatRect");
+    lua_pop(L, 1);
 }
 
 // ============================================================================
@@ -679,7 +687,8 @@ void ColourBinding::registerBinding(lua_State* L)
     lua_newtable(L);
     registerStaticMethod(L, "new", Colour_new);
     registerStaticMethod(L, "parse", Colour_parse);
-    lua_setglobal(L, "Colour");
+    setNestedClassTable(L, "MyGUI", "Colour");
+    lua_pop(L, 1);
 }
 
 } // namespace KenshiLua

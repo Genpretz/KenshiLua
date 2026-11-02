@@ -35,6 +35,7 @@
 #include "Bindings/MyGUI/SkinManagerBinding.h"
 #include "Bindings/MyGUI/LayerManagerBinding.h"
 #include "Bindings/MyGUI/ILayerBinding.h"
+#include "Bindings/MyGUI/MyGUIEnumBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -1103,16 +1104,15 @@ void MyGUIBinding::registerBinding(lua_State* L)
     SkinManagerBinding::registerBinding(L);    CHECK_BINDING_STACK(L, "SkinManagerBinding");
     LayerManagerBinding::registerBinding(L);   CHECK_BINDING_STACK(L, "LayerManagerBinding");
     ILayerBinding::registerBinding(L);         CHECK_BINDING_STACK(L, "ILayerBinding");
+    registerMyGUIEnumBindings(L);              CHECK_BINDING_STACK(L, "MyGUIEnumBinding");
 
 #undef CHECK_BINDING_STACK
 
     // Initialize callback manager
     MyGUIBindings::LuaWidgetCallbackManager::get().setLuaState(L);
 
-    // 4. Register global MyGUI table
-    lua_newtable(L);
-
-    // Global widget creation helpers
+    // 4. Populate global MyGUI table
+    pushGlobalTablePath(L, "MyGUI");
     static const luaL_Reg globalMethods[] = {
         { "createButton",           global_createButton },
         { "createButtonReal",       global_createButtonReal },
@@ -1175,110 +1175,7 @@ void MyGUIBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
     luaL_register(L, NULL, globalMethods);
-
-    // Expose manager singleton tables under MyGUI (e.g. MyGUI.Gui.getInstance())
-    lua_getglobal(L, "Gui");              lua_setfield(L, -2, "Gui");
-    lua_getglobal(L, "InputManager");     lua_setfield(L, -2, "InputManager");
-    lua_getglobal(L, "PointerManager");   lua_setfield(L, -2, "PointerManager");
-    lua_getglobal(L, "ClipboardManager"); lua_setfield(L, -2, "ClipboardManager");
-    lua_getglobal(L, "LayoutManager");    lua_setfield(L, -2, "LayoutManager");
-    lua_getglobal(L, "RenderManager");    lua_setfield(L, -2, "RenderManager");
-    lua_getglobal(L, "SkinManager");      lua_setfield(L, -2, "SkinManager");
-    lua_getglobal(L, "LayerManager");     lua_setfield(L, -2, "LayerManager");
-
-    // Expose value type constructors under MyGUI (e.g. MyGUI.IntPoint.new(x, y))
-    lua_getglobal(L, "IntPoint");         lua_setfield(L, -2, "IntPoint");
-    lua_getglobal(L, "IntSize");          lua_setfield(L, -2, "IntSize");
-    lua_getglobal(L, "IntCoord");         lua_setfield(L, -2, "IntCoord");
-    lua_getglobal(L, "IntRect");          lua_setfield(L, -2, "IntRect");
-    lua_getglobal(L, "FloatPoint");       lua_setfield(L, -2, "FloatPoint");
-    lua_getglobal(L, "FloatSize");        lua_setfield(L, -2, "FloatSize");
-    lua_getglobal(L, "FloatCoord");       lua_setfield(L, -2, "FloatCoord");
-    lua_getglobal(L, "FloatRect");        lua_setfield(L, -2, "FloatRect");
-    lua_getglobal(L, "Colour");           lua_setfield(L, -2, "Colour");
-
-    // Register Align enum table
-    lua_newtable(L);
-    lua_pushinteger(L, (int)MyGUI::Align::HCenter); lua_setfield(L, -2, "HCenter");
-    lua_pushinteger(L, (int)MyGUI::Align::VCenter); lua_setfield(L, -2, "VCenter");
-    lua_pushinteger(L, (int)MyGUI::Align::Center);  lua_setfield(L, -2, "Center");
-    lua_pushinteger(L, (int)MyGUI::Align::Left);    lua_setfield(L, -2, "Left");
-    lua_pushinteger(L, (int)MyGUI::Align::Right);   lua_setfield(L, -2, "Right");
-    lua_pushinteger(L, (int)MyGUI::Align::HStretch);lua_setfield(L, -2, "HStretch");
-    lua_pushinteger(L, (int)MyGUI::Align::Top);     lua_setfield(L, -2, "Top");
-    lua_pushinteger(L, (int)MyGUI::Align::Bottom);  lua_setfield(L, -2, "Bottom");
-    lua_pushinteger(L, (int)MyGUI::Align::VStretch);lua_setfield(L, -2, "VStretch");
-    lua_pushinteger(L, (int)MyGUI::Align::Stretch); lua_setfield(L, -2, "Stretch");
-    lua_pushinteger(L, (int)MyGUI::Align::Default); lua_setfield(L, -2, "Default");
-    lua_setfield(L, -2, "Align");
-
-    // Register WidgetStyle enum table
-    lua_newtable(L);
-    lua_pushinteger(L, (int)MyGUI::WidgetStyle::Child);     lua_setfield(L, -2, "Child");
-    lua_pushinteger(L, (int)MyGUI::WidgetStyle::Overlapped);lua_setfield(L, -2, "Overlapped");
-    lua_pushinteger(L, (int)MyGUI::WidgetStyle::Popup);     lua_setfield(L, -2, "Popup");
-    lua_setfield(L, -2, "WidgetStyle");
-
-    // Register FlowDirection enum table
-    lua_newtable(L);
-    lua_pushinteger(L, (int)MyGUI::FlowDirection::LeftToRight); lua_setfield(L, -2, "LeftToRight");
-    lua_pushinteger(L, (int)MyGUI::FlowDirection::RightToLeft); lua_setfield(L, -2, "RightToLeft");
-    lua_pushinteger(L, (int)MyGUI::FlowDirection::TopToBottom); lua_setfield(L, -2, "TopToBottom");
-    lua_pushinteger(L, (int)MyGUI::FlowDirection::BottomToTop); lua_setfield(L, -2, "BottomToTop");
-    lua_setfield(L, -2, "FlowDirection");
-
-    // Register MenuItemType enum table
-    lua_newtable(L);
-    lua_pushinteger(L, (int)MyGUI::MenuItemType::Normal);    lua_setfield(L, -2, "Normal");
-    lua_pushinteger(L, (int)MyGUI::MenuItemType::Popup);     lua_setfield(L, -2, "Popup");
-    lua_pushinteger(L, (int)MyGUI::MenuItemType::Separator); lua_setfield(L, -2, "Separator");
-    lua_setfield(L, -2, "MenuItemType");
-
-    // Register MouseButton enum table
-    lua_newtable(L);
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Left);    lua_setfield(L, -2, "Left");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Right);   lua_setfield(L, -2, "Right");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Middle);  lua_setfield(L, -2, "Middle");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button0); lua_setfield(L, -2, "Button0");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button1); lua_setfield(L, -2, "Button1");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button2); lua_setfield(L, -2, "Button2");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button3); lua_setfield(L, -2, "Button3");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button4); lua_setfield(L, -2, "Button4");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button5); lua_setfield(L, -2, "Button5");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button6); lua_setfield(L, -2, "Button6");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::Button7); lua_setfield(L, -2, "Button7");
-    lua_pushinteger(L, (int)MyGUI::MouseButton::None);    lua_setfield(L, -2, "None");
-    lua_setfield(L, -2, "MouseButton");
-
-    // Register KeyCode enum table
-    lua_newtable(L);
-    lua_pushinteger(L, (int)MyGUI::KeyCode::None);         lua_setfield(L, -2, "None");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::Escape);       lua_setfield(L, -2, "Escape");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::Return);       lua_setfield(L, -2, "Return");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::Space);        lua_setfield(L, -2, "Space");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::Tab);          lua_setfield(L, -2, "Tab");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::Backspace);    lua_setfield(L, -2, "Backspace");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::Delete);       lua_setfield(L, -2, "Delete");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::LeftShift);    lua_setfield(L, -2, "LeftShift");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::RightShift);   lua_setfield(L, -2, "RightShift");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::LeftControl);  lua_setfield(L, -2, "LeftControl");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::RightControl); lua_setfield(L, -2, "RightControl");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::LeftAlt);      lua_setfield(L, -2, "LeftAlt");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::RightAlt);     lua_setfield(L, -2, "RightAlt");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::ArrowUp);      lua_setfield(L, -2, "ArrowUp");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::ArrowDown);    lua_setfield(L, -2, "ArrowDown");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::ArrowLeft);    lua_setfield(L, -2, "ArrowLeft");
-    lua_pushinteger(L, (int)MyGUI::KeyCode::ArrowRight);   lua_setfield(L, -2, "ArrowRight");
-    lua_setfield(L, -2, "KeyCode");
-
-    // Register ResizingPolicy enum table
-    pushGlobalTable(L, "MyGUI");
-    lua_pushinteger(L, (int)MyGUI::ResizingPolicy::Auto);  lua_setfield(L, -2, "Auto");
-    lua_pushinteger(L, (int)MyGUI::ResizingPolicy::Fixed); lua_setfield(L, -2, "Fixed");
-    lua_pushinteger(L, (int)MyGUI::ResizingPolicy::Fill);  lua_setfield(L, -2, "Fill");
-    lua_setfield(L, -2, "ResizingPolicy");
-
-    lua_setglobal(L, "MyGUI");
+    lua_pop(L, 1);
 }
 
 } // namespace KenshiLua

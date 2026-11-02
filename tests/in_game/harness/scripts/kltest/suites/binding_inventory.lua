@@ -4602,7 +4602,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "clearClipboardData", "getClipboardData", "getInstance", "getText", "setClipboardData", "setText" },
                 getters = {  },
                 setters = {  },
-                globals = { "ClipboardManager" },
+                globals = { "MyGUI.ClipboardManager" },
                 custom_indexer = false,
             },
             {
@@ -4612,7 +4612,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new", "parse" },
                 getters = { "a", "alpha", "b", "blue", "g", "green", "r", "red" },
                 setters = { "a", "alpha", "b", "blue", "g", "green", "r", "red" },
-                globals = { "Colour" },
+                globals = { "MyGUI.Colour" },
                 custom_indexer = true,
             },
             {
@@ -4672,7 +4672,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "h", "height", "left", "top", "w", "width", "x", "y" },
                 setters = { "h", "height", "left", "top", "w", "width", "x", "y" },
-                globals = { "FloatCoord" },
+                globals = { "MyGUI.FloatCoord" },
                 custom_indexer = true,
             },
             {
@@ -4682,7 +4682,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "left", "top", "x", "y" },
                 setters = { "left", "top", "x", "y" },
-                globals = { "FloatPoint" },
+                globals = { "MyGUI.FloatPoint" },
                 custom_indexer = true,
             },
             {
@@ -4692,7 +4692,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "bottom", "height", "left", "right", "top", "width" },
                 setters = { "bottom", "left", "right", "top" },
-                globals = { "FloatRect" },
+                globals = { "MyGUI.FloatRect" },
                 custom_indexer = true,
             },
             {
@@ -4702,7 +4702,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "h", "height", "w", "width" },
                 setters = { "h", "height", "w", "width" },
-                globals = { "FloatSize" },
+                globals = { "MyGUI.FloatSize" },
                 custom_indexer = true,
             },
             {
@@ -4712,7 +4712,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "createWidget", "createWidgetReal", "destroyWidget", "destroyWidgets", "findWidget", "findWidgetT", "getEnumerator", "getInstance", "hidePointer", "isPointerVisible", "showPointer" },
                 getters = {  },
                 setters = {  },
-                globals = { "Gui" },
+                globals = { "MyGUI.Gui" },
                 custom_indexer = false,
             },
             {
@@ -4742,7 +4742,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "addWidgetModal", "getInstance", "getKeyFocusWidget", "getMouseFocusWidget", "getMousePosition", "injectKeyPress", "injectKeyRelease", "injectMouseMove", "injectMousePress", "injectMouseRelease", "isCaptureMouse", "isControlPressed", "isFocusKey", "isFocusMouse", "isModalAny", "isShiftPressed", "removeWidgetModal", "resetKeyFocusWidget", "resetMouseCaptureWidget", "setKeyFocusWidget" },
                 getters = {  },
                 setters = {  },
-                globals = { "InputManager" },
+                globals = { "MyGUI.InputManager" },
                 custom_indexer = false,
             },
             {
@@ -4752,7 +4752,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "h", "height", "left", "point", "size", "top", "w", "width", "x", "y" },
                 setters = { "h", "height", "left", "top", "w", "width", "x", "y" },
-                globals = { "IntCoord" },
+                globals = { "MyGUI.IntCoord" },
                 custom_indexer = true,
             },
             {
@@ -4762,7 +4762,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "left", "top", "x", "y" },
                 setters = { "left", "top", "x", "y" },
-                globals = { "IntPoint" },
+                globals = { "MyGUI.IntPoint" },
                 custom_indexer = true,
             },
             {
@@ -4772,7 +4772,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "bottom", "height", "left", "right", "top", "width" },
                 setters = { "bottom", "left", "right", "top" },
-                globals = { "IntRect" },
+                globals = { "MyGUI.IntRect" },
                 custom_indexer = true,
             },
             {
@@ -4782,7 +4782,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "new" },
                 getters = { "h", "height", "w", "width" },
                 setters = { "h", "height", "w", "width" },
-                globals = { "IntSize" },
+                globals = { "MyGUI.IntSize" },
                 custom_indexer = true,
             },
             {
@@ -4802,7 +4802,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "attachToLayerNode", "detachFromLayer", "getByName", "getCategoryName", "getEnumerator", "getInstance", "getLayer", "getLayerCount", "getWidgetFromPoint", "isExist", "upLayerItem" },
                 getters = {  },
                 setters = {  },
-                globals = { "LayerManager" },
+                globals = { "MyGUI.LayerManager" },
                 custom_indexer = false,
             },
             {
@@ -4812,7 +4812,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "getInstance", "loadLayout", "unloadLayout" },
                 getters = {  },
                 setters = {  },
-                globals = { "LayoutManager" },
+                globals = { "MyGUI.LayoutManager" },
                 custom_indexer = false,
             },
             {
@@ -4872,7 +4872,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "clearPointer", "getDefaultPointer", "getInstance", "getLayerName", "getVisible", "isVisible", "setDefaultPointer", "setLayerName", "setPointer", "setVisible" },
                 getters = {  },
                 setters = {  },
-                globals = { "PointerManager" },
+                globals = { "MyGUI.PointerManager" },
                 custom_indexer = false,
             },
             {
@@ -4902,7 +4902,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "getInstance", "getViewHeight", "getViewSize", "getViewWidth" },
                 getters = {  },
                 setters = {  },
-                globals = { "RenderManager" },
+                globals = { "MyGUI.RenderManager" },
                 custom_indexer = false,
             },
             {
@@ -4932,7 +4932,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 methods = { "getDefaultSkin", "getInstance", "isExist", "setDefaultSkin" },
                 getters = {  },
                 setters = {  },
-                globals = { "SkinManager" },
+                globals = { "MyGUI.SkinManager" },
                 custom_indexer = false,
             },
             {
@@ -5550,6 +5550,16 @@ runner.register_menu_suite("binding-inventory", function(ctx)
                 custom_indexer = false,
             },
             {
+                name = "Lektor<FarmBuilding_SubPlant>",
+                meta = "lektor<FarmBuilding::SubPlant>",
+                parent = "",
+                methods = { "clear", "pop", "push", "removeAt", "size", "toTable" },
+                getters = {  },
+                setters = {  },
+                globals = {  },
+                custom_indexer = false,
+            },
+            {
                 name = "Lektor<GUIWindow>",
                 meta = "lektor<GUIWindow*>",
                 parent = "",
@@ -5612,6 +5622,16 @@ runner.register_menu_suite("binding-inventory", function(ctx)
             {
                 name = "Lektor<MyGUI.Button>",
                 meta = "lektor<MyGUI::Button*>",
+                parent = "",
+                methods = { "clear", "pop", "push", "removeAt", "size", "toTable" },
+                getters = {  },
+                setters = {  },
+                globals = {  },
+                custom_indexer = false,
+            },
+            {
+                name = "Lektor<NavMesh_BuildingInfo>",
+                meta = "lektor<NavMesh::BuildingInfo>",
                 parent = "",
                 methods = { "clear", "pop", "push", "removeAt", "size", "toTable" },
                 getters = {  },
@@ -5702,6 +5722,16 @@ runner.register_menu_suite("binding-inventory", function(ctx)
             {
                 name = "Lektor<Tasker>",
                 meta = "lektor<Tasker*>",
+                parent = "",
+                methods = { "clear", "pop", "push", "removeAt", "size", "toTable" },
+                getters = {  },
+                setters = {  },
+                globals = {  },
+                custom_indexer = false,
+            },
+            {
+                name = "Lektor<Town>",
+                meta = "lektor<Town*>",
                 parent = "",
                 methods = { "clear", "pop", "push", "removeAt", "size", "toTable" },
                 getters = {  },
@@ -6091,7 +6121,7 @@ runner.register_menu_suite("binding-inventory", function(ctx)
             },
             {
                 name = "OgreUnorderedMap<GameData, integer>",
-                meta = "ogre_unordered_map<GameData*, int>",
+                meta = "ogre_unordered_map<GameData*, WorldStateEnum>",
                 parent = "",
                 methods = { "clear", "contains", "erase", "has", "pairs", "remove", "size", "toTable" },
                 getters = {  },
@@ -7112,8 +7142,8 @@ runner.register_menu_suite("binding-inventory", function(ctx)
     end)
 
     ctx.test("complete binding inventory audit totals match expected count", function(t)
-        t.assert_equal(total_verified_classes, 668, 'total verified classes')
-        t.assert_equal(total_verified_methods, 8784, 'total verified methods')
+        t.assert_equal(total_verified_classes, 671, 'total verified classes')
+        t.assert_equal(total_verified_methods, 8802, 'total verified methods')
         t.assert_equal(total_verified_properties, 3716, 'total verified properties')
     end)
 end)

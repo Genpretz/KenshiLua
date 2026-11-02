@@ -117,10 +117,124 @@ def find_template_definitions():
     return definitions
 
 
-CENTRAL_CONTAINER_REGISTRATIONS = (
-    "registerLektor", "registerOgreUnordered", "registerStdSet", "registerStdMap",
-    "registerStdDeque", "registerFitnessSelector",
-)
+def container_macro_arguments(source):
+    """Read catalog macros while respecting quoted names and nested expressions."""
+    for match in re.finditer(r"\bKENSHILUA_DEFINE_CONTAINER\s*\(", source):
+        depth = 1
+        quoted = False
+        escaped = False
+        start = match.end()
+        index = start
+        while index < len(source) and depth:
+            char = source[index]
+            if quoted:
+                if escaped:
+                    escaped = False
+                elif char == "\\":
+                    escaped = True
+                elif char == '"':
+                    quoted = False
+            elif char == '"':
+                quoted = True
+            elif char == "(":
+                depth += 1
+            elif char == ")":
+                depth -= 1
+            index += 1
+        if depth:
+            raise ValueError("unterminated container definition")
+        arguments = split_top_level(source[start:index - 1])
+        if len(arguments) != 6:
+            raise ValueError("expected six container definition arguments")
+        yield arguments
+
+
+def validate_container_registration_location(source, path, templates, aliases):
+    """Container installation belongs exclusively to the central catalog."""
+    source = strip_cpp_comments(source)
+    for template in templates:
+        if re.search(r"\b" + re.escape(template) + r"\s*<[^;]*?>\s*::\s*registerBinding\s*\(", source):
+            raise ValueError("container registration outside central modules: " + str(path))
+    for alias in aliases:
+        if re.search(r"\b" + re.escape(alias) + r"\s*::\s*registerBinding\s*\(", source):
+            raise ValueError("container alias registration outside central modules: " + str(path))
+
+
+def validate_container_metatable_references(source, path, metatables):
+    """Catch literal container names that bypass the fixed wrapper metadata."""
+    source = strip_cpp_comments(source)
+    calls = re.finditer(
+        r'\b(?:pushObject|pushValue|checkObject|testObject)\s*(?:<[^;]+?>)?\s*\([^;]*?,\s*"([^"]+)"\s*\)',
+        source,
+    )
+    for match in calls:
+        name = match[1]
+        if re.match(r"(?:lektor<|std::(?:map|set|deque)<|(?:boost|ogre)_unordered_|ogre_vector<|Ogre::FastArray<|KenshiLua\.(?:Array2d<|TagsClass<|OgreVector)|FitnessSelector<)", name):
+            if name not in metatables:
+                raise ValueError("unregistered container metatable " + name + " in " + str(path))
+
+
+def container_factory_contract(expression, source, metatable, expected_binding=None):
+    if expression == "ContainerFactoryDefinition()":
+        return None
+    match = re.fullmatch(
+        r'\(ContainerFactoryDefinition\("([^"]+)",\s*Containers::(\w+)::createNew(?:,\s*(\w+))?\)\)',
+        expression,
+    )
+    if not match:
+        raise ValueError("unrecognized factory definition for " + metatable)
+    if expected_binding is not None and match[2] != expected_binding:
+        raise ValueError("factory constructor does not match container " + metatable)
+    aliases = []
+    if match[3]:
+        declaration = re.search(r"\b" + re.escape(match[3]) + r"\[\]\s*=\s*\{([^}]+)\}", source)
+        if not declaration:
+            raise ValueError("missing factory aliases for " + metatable)
+        aliases = [json.loads(value) for value in re.findall(r'"[^"\\]*(?:\\.[^"\\]*)*"', declaration[1])]
+    return {"family": match[1], "aliases": sorted(set([metatable] + aliases))}
+
+
+def container_registration_sources():
+    """Follow explicit startup calls across compiled Lua registration modules."""
+    functions = {}
+    for path in sorted((PROJECT_ROOT / "src" / "Lua").rglob("*.cpp")):
+        source = strip_cpp_comments(path.read_text(encoding="utf-8"))
+        for match in re.finditer(r"void\s+LuaBindings::((?:register|collect)\w+)\s*\((?:lua_State\* L|ContainerBindingList& definitions)\)", source):
+            functions[match[1]] = {
+                "path": relative(path), "text": source,
+                "body": find_function_body(source, match[0]),
+            }
+    reached = []
+    seen = set()
+
+    def visit(name):
+        if name in seen:
+            return
+        if name not in functions:
+            if name.startswith("collect"):
+                raise ValueError("missing container collection function: " + name)
+            return
+        seen.add(name)
+        implementation = functions[name]
+        reached.append(implementation)
+        for called in re.findall(r"\b((?:register|collect)\w+)\((?:L|definitions)\)", implementation["body"]):
+            visit(called)
+
+    visit("registerAll")
+    if not reached:
+        raise ValueError("could not discover LuaBindings::registerAll")
+    return reached
+
+
+def canonical_container_id(template, args):
+    """Normalize explicit default policies while retaining nondefault allocators."""
+    parts = [re.sub(r"\s+", "", arg) for arg in split_top_level(args)]
+    if template == "StdSetBinding" and parts:
+        defaults = ["std::less<" + parts[0] + ">",
+                    "Ogre::STLAllocator<" + parts[0] + ",Ogre::GeneralAllocPolicy>"]
+        while len(parts) > 1 and parts[-1] == defaults[len(parts) - 2]:
+            parts.pop()
+    return template + "<" + ",".join(parts) + ">"
 
 
 def parse_template_instances(reached, implementations):
@@ -170,75 +284,93 @@ def parse_template_instances(reached, implementations):
         entry["registered_from"].add(implementation["path"])
         alias_metatables.setdefault(alias, set()).add(metatable)
 
-    direct_aliases = {}
     direct_ids = {}
-    # registerAll runs these before registerClasses, and registerClass keeps
-    # the first metatable registered under a name, so a central registration
-    # defines the runtime type of every later registration that shares its
-    # name (lektor<hand> is LektorValueBinding<hand>, not the read-only one).
-    central_source_path = REGISTER_CONTAINERS_PATH if REGISTER_CONTAINERS_PATH.exists() else REGISTER_BINDINGS_PATH
-    central_text = strip_cpp_comments(central_source_path.read_text(encoding="utf-8", errors="ignore"))
-    central_body = "".join(
-        find_function_body(central_text, "void LuaBindings::" + name + "(lua_State* L)")
-        for name in CENTRAL_CONTAINER_REGISTRATIONS
-    )
-    central = {"path": relative(central_source_path)}
-    central_metatables = set()
-    central_metatables_by_binding = {}
-    for template, args, metatable, rest in direct_pattern.findall(central_body):
-        if template not in definitions:
-            continue
-        binding_id = template_binding_id(template, args)
-        direct_ids.setdefault(metatable, set()).add(binding_id)
-        central_metatables_by_binding.setdefault(binding_id, set()).add(metatable)
-        if metatable in central_metatables:
-            continue
-        alias = direct_aliases.setdefault(metatable, binding_id)
-        record((alias, metatable), alias, metatable, template, args, rest, "LuaBindings", central)
-        central_metatables.add(metatable)
+    canonical = {}
+    shared_aliases = {}
+    catalog_directory = PROJECT_ROOT / "src" / "Lua" / "Containers"
+    for path in sorted(catalog_directory.glob("*Types.h")):
+        source = strip_cpp_comments(path.read_text(encoding="utf-8"))
+        for template, args, alias in typedef_pattern.findall(source):
+            if alias in shared_aliases:
+                raise ValueError("duplicate shared container alias: " + alias)
+            shared_aliases[alias] = (template, args)
 
-    for owner in reached:
-        implementation = implementations.get(owner)
-        if not implementation:
-            continue
+    descriptions = {}
+    for path in sorted(catalog_directory.glob("*.cpp")):
+        source = strip_cpp_comments(path.read_text(encoding="utf-8"))
+        for arguments in container_macro_arguments(source):
+            alias, name, *rest = arguments
+            alias = alias.removeprefix("Containers::")
+            if alias not in shared_aliases:
+                raise ValueError("unknown shared container alias: " + alias)
+            metatable = json.loads(name)
+            if alias in descriptions:
+                raise ValueError("duplicate container definition: " + alias)
+            descriptions[alias] = (metatable, rest, relative(path), source)
+
+    collected = set()
+    factory_owners = {}
+    for implementation in container_registration_sources():
+        for alias in re.findall(r"containerBindingDefinition<Containers::(\w+)::MetadataType>\(\)", implementation["body"]):
+            if alias in collected:
+                raise ValueError("duplicate container registration for " + alias)
+            collected.add(alias)
+            if alias not in descriptions:
+                raise ValueError("missing container definition: " + alias)
+            metatable, rest, source_path, source = descriptions[alias]
+            template, args = shared_aliases[alias]
+            identity = canonical_container_id(template, args)
+            if metatable in canonical:
+                raise ValueError("duplicate container metatable: " + metatable)
+            if identity in canonical:
+                raise ValueError("multiple metatables for container " + identity)
+            canonical[metatable] = identity
+            canonical[identity] = metatable
+            binding_id = template_binding_id(template, args)
+            direct_ids[metatable] = {binding_id, alias, "Containers::" + alias}
+            # Only the first three fields are element/component metadata.
+            refs = rest[:3]
+            while refs and refs[-1] in {"NULL", "nullptr"}:
+                refs.pop()
+            record_alias = alias if template == "TagsClassBinding" else binding_id
+            record((binding_id, metatable), record_alias, metatable, template, args,
+                   ", " + ", ".join(refs) if refs else "", "LuaBindings", {"path": source_path})
+            factory = container_factory_contract(rest[3], source, metatable, alias)
+            instances[(binding_id, metatable)]["factory"] = factory
+            if factory:
+                for factory_alias in factory["aliases"]:
+                    key = (factory["family"], factory_alias)
+                    if key in factory_owners:
+                        raise ValueError("conflicting factory alias " + factory_alias + ": " +
+                                         factory_owners[key] + " and " + metatable)
+                    factory_owners[key] = metatable
+    unused = set(descriptions) - collected
+    if unused:
+        raise ValueError("unreachable container definitions: " + ", ".join(sorted(unused)))
+
+    # Local typedefs remain useful for consumers, but never own registration.
+    for path in sorted((PROJECT_ROOT / "src" / "Bindings").rglob("*.cpp")):
+        source = strip_cpp_comments(path.read_text(encoding="utf-8"))
+        validate_container_metatable_references(source, relative(path), {key[1] for key in instances})
         aliases = {
             alias: (template, args)
-            for template, args, alias in typedef_pattern.findall(implementation["text"])
+            for template, args, alias in typedef_pattern.findall(source)
+            if template in definitions
         }
+        for shared, alias in re.findall(r"typedef\s+Containers::(\w+)\s+(\w+Binding)\s*;", source):
+            if shared not in shared_aliases:
+                raise ValueError("unknown shared container type: " + shared)
+            aliases[alias] = shared_aliases[shared]
+        validate_container_registration_location(source, relative(path), definitions, set(aliases) | set(shared_aliases))
         for alias, (template, args) in aliases.items():
-            binding_id = template_binding_id(template, args)
-            for metatable in central_metatables_by_binding.get(binding_id, ()):
+            metatable = canonical.get(canonical_container_id(template, args))
+            if metatable:
                 direct_ids[metatable].add(alias)
-            call_pattern = re.compile(
-                r"\b" + re.escape(alias) +
-                r"::registerBinding\s*\(\s*L\s*,\s*\"([^\"]+)\"([^;]*)\)\s*;"
-            )
-            for metatable, rest in call_pattern.findall(implementation["body"]):
-                if metatable in central_metatables:
-                    direct_ids[metatable].add(alias)
-                    continue
-                record((alias, metatable), alias, metatable, template, args, rest, owner, implementation)
-    typed_metatables = {key[1] for key in instances}
-    for owner in sorted(reached):
-        implementation = implementations.get(owner)
-        if not implementation:
-            continue
-        for template, args, metatable, rest in direct_pattern.findall(implementation["body"]):
-            if template not in definitions:
-                continue
-            if metatable in central_metatables:
                 direct_ids[metatable].add(template_binding_id(template, args))
-                continue
-            if metatable in typed_metatables:
-                continue
-            # Distinct instantiations (StdSetBinding<hand> and one spelling out
-            # its allocator) can register one metatable: one Lua class.
-            alias = direct_aliases.setdefault(metatable, template_binding_id(template, args))
-            direct_ids.setdefault(metatable, set()).add(template_binding_id(template, args))
-            record((alias, metatable), alias, metatable, template, args, rest, owner, implementation)
 
     result = []
-    for (alias, metatable), entry in sorted(instances.items()):
+    for (_key, metatable), entry in sorted(instances.items()):
+        alias = entry["alias"]
         short_name = alias.removesuffix("Binding")
         if "<" in alias:
             # Named after its element types by name_container_instances().
@@ -279,6 +411,7 @@ def parse_template_instances(reached, implementations):
             "template_args": entry["template_args"],
             "element_refs": entry["element_refs"],
             "owners": sorted(entry["owners"]),
+            "factories": [dict(entry["factory"], metatable=metatable)] if entry.get("factory") else [],
         })
         other_ids = sorted(direct_ids.get(metatable, set()) - {binding})
         if other_ids:
@@ -1000,9 +1133,18 @@ def lua_type_from_metatable(metatable, binding):
 
 def classify_binding(body):
     """Distinguish a userdata class from a Lua global-table registrar."""
-    globals_ = sorted(set(re.findall(
-        r'lua_setglobal\s*\(\s*L\s*,\s*"([^"]+)"\s*\)', body
-    )))
+    body = strip_cpp_comments(body)
+    # pushGlobalTablePath publishes missing tables inside the helper itself.
+    globals_ = set(re.findall(
+        r'\b(?:lua_setglobal|pushGlobalTablePath)\s*\(\s*L\s*,\s*"([^"]+)"\s*\)', body
+    ))
+    globals_.update(
+        parent + "." + name
+        for parent, name in re.findall(
+            r'\bsetNestedClassTable\s*\(\s*L\s*,\s*"([^"]+)"\s*,\s*"([^"]+)"\s*\)', body
+        )
+    )
+    globals_ = sorted(globals_)
     if re.search(r"\bregisterClass\s*\(\s*L\s*,", body):
         return "class", globals_
     if globals_:
@@ -1121,6 +1263,9 @@ def name_container_instances(classes, mapper):
             )
         keep["owners"] = sorted(set(keep.get("owners", [])) | set(other.get("owners", [])))
         keep["registered_from"] = sorted(set(keep["registered_from"]) | set(other["registered_from"]))
+        factories = keep.get("factories", []) + other.get("factories", [])
+        if factories:
+            keep["factories"] = sorted(factories, key=lambda factory: (factory["family"], factory["metatable"]))
         classes.remove(other)
 
     # Typedef aliases in different bindings can register one metatable

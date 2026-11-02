@@ -88,7 +88,8 @@ void LayoutManagerBinding::registerBinding(lua_State* L)
     // Register global class table for static methods
     lua_newtable(L);
     registerStaticMethod(L, "getInstance", getInstance);
-    lua_setglobal(L, "LayoutManager");
+    setNestedClassTable(L, "MyGUI", "LayoutManager");
+    lua_pop(L, 1);
 }
 
 } // namespace KenshiLua

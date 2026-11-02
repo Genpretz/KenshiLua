@@ -7168,6 +7168,15 @@
       "member": "getData"
     },
     {
+      "category": "unmapped_header_type",
+      "class": "DialogLineData",
+      "expected": "?ogre_unordered_map<GameData*,int>::type",
+      "header": "ogre_unordered_map<GameData*,int>::type",
+      "kind": "property",
+      "lua": "OgreUnorderedMap<GameData, integer>",
+      "member": "factionRelationEffects"
+    },
+    {
       "category": "no_header_declaration",
       "class": "DialogLineData",
       "kind": "property",
@@ -8100,15 +8109,6 @@
       "kind": "method",
       "lua": "fun(self: FarmBuilding_Plant, arg1: FarmBuilding_Plant): boolean",
       "member": "operator_eq"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "FarmBuilding_Plant",
-      "expected": "?lektor<FarmBuilding::SubPlant>",
-      "header": "lektor<FarmBuilding::SubPlant>",
-      "kind": "property",
-      "lua": "any",
-      "member": "parts"
     },
     {
       "category": "unmapped_header_type",
@@ -13632,15 +13632,6 @@
       "member": "bounds"
     },
     {
-      "category": "unmapped_header_type",
-      "class": "NavMesh_NavMeshMessage",
-      "expected": "?lektor<NavMesh::BuildingInfo>",
-      "header": "lektor<NavMesh::BuildingInfo>",
-      "kind": "property",
-      "lua": "any",
-      "member": "interiors"
-    },
-    {
       "category": "enum_typed_as_integer",
       "class": "NavMesh_NavMeshMessage",
       "expected": "MessageType",
@@ -17995,15 +17986,6 @@
     {
       "category": "unmapped_header_type",
       "class": "TownList",
-      "expected": "?lektor<Town*>",
-      "header": "lektor<Town*>",
-      "kind": "property",
-      "lua": "any",
-      "member": "deletedTowns"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "TownList",
       "expected": "?TownNull*",
       "header": "TownNull*",
       "kind": "property",
@@ -18728,33 +18710,6 @@
       "kind": "property",
       "lua": "{ listener: Listener|nil, region: WeatherRegion|nil }[]",
       "member": "weatherListeners"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "WorldEventStateQuery",
-      "expected": "?ogre_unordered_map<GameData*,WorldStateEnum>::type",
-      "header": "ogre_unordered_map<GameData*,WorldStateEnum>::type",
-      "kind": "property",
-      "lua": "OgreUnorderedMap<GameData, integer>",
-      "member": "towns"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "WorldEventStateQuery",
-      "expected": "?ogre_unordered_map<GameData*,WorldStateEnum>::type",
-      "header": "ogre_unordered_map<GameData*,WorldStateEnum>::type",
-      "kind": "property",
-      "lua": "OgreUnorderedMap<GameData, integer>",
-      "member": "uniqueNPCsAre"
-    },
-    {
-      "category": "unmapped_header_type",
-      "class": "WorldEventStateQuery",
-      "expected": "?ogre_unordered_map<GameData*,WorldStateEnum>::type",
-      "header": "ogre_unordered_map<GameData*,WorldStateEnum>::type",
-      "kind": "property",
-      "lua": "OgreUnorderedMap<GameData, integer>",
-      "member": "uniqueNPCsAreNot"
     },
     {
       "category": "binding_converts",
@@ -19770,13 +19725,13 @@
     "binding_pushes_raw_pointer": 49,
     "binding_shape_differs": 201,
     "blocking_issues": 0,
-    "container_methods_typed": 1103,
+    "container_methods_typed": 1121,
     "enum_typed_as_integer": 472,
-    "methods": 7377,
+    "methods": 7395,
     "methods_matching_header": 5390,
     "no_header_declaration": 228,
     "properties": 3716,
-    "properties_matching_header": 3167,
-    "unmapped_header_type": 444
+    "properties_matching_header": 3172,
+    "unmapped_header_type": 439
   }
 }

@@ -20,6 +20,7 @@ import pathlib
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 MYGUI_DIR = PROJECT_ROOT / "src" / "Bindings" / "MyGUI"
+MYGUI_ENUM_BINDING = MYGUI_DIR / "MyGUIEnumBinding.cpp"
 BASE_LAYOUT_BINDING = PROJECT_ROOT / "src" / "Bindings" / "Kenshi" / "Gui" / "BaseLayoutBinding.cpp"
 DOCS_DIR = PROJECT_ROOT / "docs"
 DOCS_DIR.mkdir(parents=True, exist_ok=True)
@@ -434,34 +435,23 @@ def parse_global_methods(mygui_cpp_path: pathlib.Path):
                     methods.append((l_name, args, ret))
     return methods
 
-def parse_global_enums(mygui_cpp_path: pathlib.Path):
-    content = mygui_cpp_path.read_text(encoding='utf-8', errors='ignore')
+def parse_global_enums(enum_cpp_path: pathlib.Path):
+    """Read the enum tables that setEnum fills and setNestedClassTable publishes under MyGUI."""
+    content = strip_cpp_comments(enum_cpp_path.read_text(encoding='utf-8', errors='ignore'))
     enums = {}
-    current_ename = None
     current_vals = []
 
-    for line in content.splitlines():
-        line = line.strip()
-        reg_match = re.search(r'//\s*Register\s+(\w+)\s+enum\s+table', line, re.IGNORECASE)
-        if reg_match:
-            current_ename = reg_match.group(1)
+    for m in re.finditer(
+        r'setEnum\s*\(\s*L\s*,\s*"([^"]+)"\s*,\s*([^;]+?)\s*\)\s*;'
+        r'|setNestedClassTable\s*\(\s*L\s*,\s*"MyGUI"\s*,\s*"([^"]+)"\s*\)\s*;',
+        content,
+    ):
+        if m.group(3):
+            if current_vals:
+                enums[m.group(3)] = current_vals
             current_vals = []
-            continue
-
-        if current_ename:
-            val_match = re.search(r'lua_pushinteger\(L,\s*\(int\)([^)]+)\);\s*lua_setfield\(L,\s*-2,\s*\"([^\"]+)\"\);', line)
-            if val_match:
-                c_val = val_match.group(1).strip()
-                f_name = val_match.group(2).strip()
-                current_vals.append((f_name, c_val))
-                continue
-
-            close_match = re.search(r'lua_setfield\(L,\s*-2,\s*\"([^\"]+)\"\);', line)
-            if close_match and close_match.group(1) == current_ename:
-                if current_vals:
-                    enums[current_ename] = current_vals
-                current_ename = None
-                current_vals = []
+        else:
+            current_vals.append((m.group(1), m.group(2)))
 
     return enums
 
@@ -1107,7 +1097,7 @@ def build_reference():
     types_cpp_path = MYGUI_DIR / "TypesBinding.cpp"
     
     global_methods = parse_global_methods(mygui_cpp_path)
-    global_enums = parse_global_enums(mygui_cpp_path)
+    global_enums = parse_global_enums(MYGUI_ENUM_BINDING)
     type_classes = parse_types_file(types_cpp_path)
     layout_classes = [parse_base_layout_class()]
     
@@ -1121,7 +1111,7 @@ def build_reference():
     enumerator_names = {"EnumeratorWidgetPtrSnapshot", "EnumeratorLayerSnapshot"}
 
     for cpp in sorted(MYGUI_DIR.glob("*Binding.cpp")):
-        if cpp.name in ("MyGUIBinding.cpp", "TypesBinding.cpp"):
+        if cpp.name in ("MyGUIBinding.cpp", "TypesBinding.cpp", MYGUI_ENUM_BINDING.name):
             continue
         c_info = parse_mygui_class_file(cpp)
         if c_info['class_name'] in manager_names:

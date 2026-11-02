@@ -253,313 +253,6 @@
       "name": "KenshiLua.Api"
     },
     {
-      "description": "Bitmask enumeration specifying widget anchoring and resizing alignment within parent containers.",
-      "fields": [
-        {
-          "description": "Align horizontally centered within the parent container.",
-          "name": "HCenter",
-          "type": "integer"
-        },
-        {
-          "description": "Align vertically centered within the parent container.",
-          "name": "VCenter",
-          "type": "integer"
-        },
-        {
-          "description": "Align both horizontally and vertically centered within the parent container.",
-          "name": "Center",
-          "type": "integer"
-        },
-        {
-          "description": "Anchor to the left edge of the parent container.",
-          "name": "Left",
-          "type": "integer"
-        },
-        {
-          "description": "Anchor to the right edge of the parent container.",
-          "name": "Right",
-          "type": "integer"
-        },
-        {
-          "description": "Stretch horizontally to track the width of the parent container.",
-          "name": "HStretch",
-          "type": "integer"
-        },
-        {
-          "description": "Anchor to the top edge of the parent container.",
-          "name": "Top",
-          "type": "integer"
-        },
-        {
-          "description": "Anchor to the bottom edge of the parent container.",
-          "name": "Bottom",
-          "type": "integer"
-        },
-        {
-          "description": "Stretch vertically to track the height of the parent container.",
-          "name": "VStretch",
-          "type": "integer"
-        },
-        {
-          "description": "Stretch both horizontally and vertically to track the size of the parent container.",
-          "name": "Stretch",
-          "type": "integer"
-        },
-        {
-          "description": "Default alignment anchoring to the top-left corner (Left | Top).",
-          "name": "Default",
-          "type": "integer"
-        }
-      ],
-      "name": "MyGUI.Align"
-    },
-    {
-      "description": "Enumeration defining the windowing hierarchy and clipping behavior of a widget.",
-      "fields": [
-        {
-          "description": "Standard child widget clipped by parent boundaries without overlapping sibling widgets.",
-          "name": "Child",
-          "type": "integer"
-        },
-        {
-          "description": "Child widget clipped by parent boundaries that can overlap sibling widgets and receive focus.",
-          "name": "Overlapped",
-          "type": "integer"
-        },
-        {
-          "description": "Floating popup widget attached to a parent but not clipped by parent boundaries.",
-          "name": "Popup",
-          "type": "integer"
-        }
-      ],
-      "name": "MyGUI.WidgetStyle"
-    },
-    {
-      "description": "Enumeration defining the item layout progression and filling direction in multi-item containers.",
-      "fields": [
-        {
-          "description": "Arrange items horizontally from left to right.",
-          "name": "LeftToRight",
-          "type": "integer"
-        },
-        {
-          "description": "Arrange items horizontally from right to left.",
-          "name": "RightToLeft",
-          "type": "integer"
-        },
-        {
-          "description": "Arrange items vertically from top to bottom.",
-          "name": "TopToBottom",
-          "type": "integer"
-        },
-        {
-          "description": "Arrange items vertically from bottom to top.",
-          "name": "BottomToTop",
-          "type": "integer"
-        }
-      ],
-      "name": "MyGUI.FlowDirection"
-    },
-    {
-      "description": "Enumeration defining the behavioral category and appearance of a menu item.",
-      "fields": [
-        {
-          "description": "Standard clickable menu command item.",
-          "name": "Normal",
-          "type": "integer"
-        },
-        {
-          "description": "Submenu parent item that expands an associated popup menu on hover or click.",
-          "name": "Popup",
-          "type": "integer"
-        },
-        {
-          "description": "Non-clickable visual divider line separating groups of menu items.",
-          "name": "Separator",
-          "type": "integer"
-        }
-      ],
-      "name": "MyGUI.MenuItemType"
-    },
-    {
-      "description": "Enumeration identifying physical and logical mouse buttons for pointer input events.",
-      "fields": [
-        {
-          "description": "Primary left mouse button (equivalent to Button0).",
-          "name": "Left",
-          "type": "integer"
-        },
-        {
-          "description": "Secondary right mouse button (equivalent to Button1).",
-          "name": "Right",
-          "type": "integer"
-        },
-        {
-          "description": "Middle mouse button or scroll wheel click (equivalent to Button2).",
-          "name": "Middle",
-          "type": "integer"
-        },
-        {
-          "description": "First mouse button, typically the left button.",
-          "name": "Button0",
-          "type": "integer"
-        },
-        {
-          "description": "Second mouse button, typically the right button.",
-          "name": "Button1",
-          "type": "integer"
-        },
-        {
-          "description": "Third mouse button, typically the middle button.",
-          "name": "Button2",
-          "type": "integer"
-        },
-        {
-          "description": "Fourth mouse button, typically the backward thumb button.",
-          "name": "Button3",
-          "type": "integer"
-        },
-        {
-          "description": "Fifth mouse button, typically the forward thumb button.",
-          "name": "Button4",
-          "type": "integer"
-        },
-        {
-          "description": "Sixth extra mouse button.",
-          "name": "Button5",
-          "type": "integer"
-        },
-        {
-          "description": "Seventh extra mouse button.",
-          "name": "Button6",
-          "type": "integer"
-        },
-        {
-          "description": "Eighth extra mouse button.",
-          "name": "Button7",
-          "type": "integer"
-        },
-        {
-          "description": "No mouse button pressed.",
-          "name": "None",
-          "type": "integer"
-        }
-      ],
-      "name": "MyGUI.MouseButton"
-    },
-    {
-      "description": "Enumeration of keyboard key scan codes for low-level key press, release, and shortcut handling.",
-      "fields": [
-        {
-          "description": "No key pressed or unassigned key code.",
-          "name": "None",
-          "type": "integer"
-        },
-        {
-          "description": "Escape key.",
-          "name": "Escape",
-          "type": "integer"
-        },
-        {
-          "description": "Return or Enter key on the main keyboard.",
-          "name": "Return",
-          "type": "integer"
-        },
-        {
-          "description": "Space bar key.",
-          "name": "Space",
-          "type": "integer"
-        },
-        {
-          "description": "Tab key.",
-          "name": "Tab",
-          "type": "integer"
-        },
-        {
-          "description": "Backspace key.",
-          "name": "Backspace",
-          "type": "integer"
-        },
-        {
-          "description": "Delete key on the navigation keypad.",
-          "name": "Delete",
-          "type": "integer"
-        },
-        {
-          "description": "Left Shift modifier key.",
-          "name": "LeftShift",
-          "type": "integer"
-        },
-        {
-          "description": "Right Shift modifier key.",
-          "name": "RightShift",
-          "type": "integer"
-        },
-        {
-          "description": "Left Control modifier key.",
-          "name": "LeftControl",
-          "type": "integer"
-        },
-        {
-          "description": "Right Control modifier key.",
-          "name": "RightControl",
-          "type": "integer"
-        },
-        {
-          "description": "Left Alt modifier key.",
-          "name": "LeftAlt",
-          "type": "integer"
-        },
-        {
-          "description": "Right Alt modifier key.",
-          "name": "RightAlt",
-          "type": "integer"
-        },
-        {
-          "description": "Up arrow navigation key.",
-          "name": "ArrowUp",
-          "type": "integer"
-        },
-        {
-          "description": "Down arrow navigation key.",
-          "name": "ArrowDown",
-          "type": "integer"
-        },
-        {
-          "description": "Left arrow navigation key.",
-          "name": "ArrowLeft",
-          "type": "integer"
-        },
-        {
-          "description": "Right arrow navigation key.",
-          "name": "ArrowRight",
-          "type": "integer"
-        }
-      ],
-      "name": "MyGUI.KeyCode"
-    },
-    {
-      "description": "Enumeration defining how a container or widget automatically resizes in response to content or parent size changes.",
-      "fields": [
-        {
-          "description": "Automatically adjusts size based on child content dimensions.",
-          "name": "Auto",
-          "type": "integer"
-        },
-        {
-          "description": "Maintains a fixed size regardless of content changes.",
-          "name": "Fixed",
-          "type": "integer"
-        },
-        {
-          "description": "Expands to fill all available space within the parent container.",
-          "name": "Fill",
-          "type": "integer"
-        }
-      ],
-      "name": "MyGUI.ResizingPolicy"
-    },
-    {
       "description": "Represents a 2D integer pixel coordinate point with horizontal and vertical components.",
       "descriptions": {
         "new": "Constructs a new coordinate value instance in integer pixel units."
@@ -3959,41 +3652,6 @@
           "type": "fun(widget: MyGUI.Widget)"
         },
         {
-          "description": "Alignment flags enum specifying widget anchor points and stretch behaviors.",
-          "name": "Align",
-          "type": "MyGUI.Align"
-        },
-        {
-          "description": "Widget style enum defining whether a widget is child, overlapped, or popup.",
-          "name": "WidgetStyle",
-          "type": "MyGUI.WidgetStyle"
-        },
-        {
-          "description": "Flow direction enum defining layout filling directions.",
-          "name": "FlowDirection",
-          "type": "MyGUI.FlowDirection"
-        },
-        {
-          "description": "Menu item type enum distinguishing normal items, submenu popups, and separators.",
-          "name": "MenuItemType",
-          "type": "MyGUI.MenuItemType"
-        },
-        {
-          "description": "Mouse button identifier enum for pointer click and press events.",
-          "name": "MouseButton",
-          "type": "MyGUI.MouseButton"
-        },
-        {
-          "description": "Keyboard scan code enum for key press and release events.",
-          "name": "KeyCode",
-          "type": "MyGUI.KeyCode"
-        },
-        {
-          "description": "Resizing policy enum defining auto-sizing and fill behaviors.",
-          "name": "ResizingPolicy",
-          "type": "MyGUI.ResizingPolicy"
-        },
-        {
           "description": "Constructor and static methods for integer 2D point values.",
           "name": "IntPoint",
           "type": "MyGUI.IntPointConstructor"
@@ -4095,7 +3753,8 @@
         },
         {
           "name": "endDialogue",
-          "type": "fun(self: Dialogue, definitelyTheEnd: boolean)"
+          "type": "fun(self: Dialogue, definitelyTheEnd: boolean)",
+          "description": "Ends the current speech, clears its bubble and current line, and records the conversation event in the repetition counter. With `definitelyTheEnd` true, clears the conversation even when awaiting a reply; false can retain it while waiting. A call during the game worker thread queues the end operation."
         }
       ],
       "name": "Dialogue"
@@ -4120,7 +3779,8 @@
         },
         {
           "name": "checkRepeatLimits",
-          "type": "fun(self: DialogLineData): boolean"
+          "type": "fun(self: DialogLineData): boolean",
+          "description": "Checks only the minimum repeat interval in game hours. Returns true if the interval is nonpositive, `lastTimeSaid.time` is at most -99, or enough game hours have elapsed; it does not check `onceOnly`."
         },
         {
           "name": "checkTags",
@@ -4132,39 +3792,48 @@
         },
         {
           "name": "saidItBefore",
-          "type": "fun(self: DialogLineData): boolean"
+          "type": "fun(self: DialogLineData): boolean",
+          "description": "Returns true when `lastTimeSaid.time` is greater than -99, the dialogue sentinel for a line that has not yet been spoken."
         },
         {
           "name": "willTalkToEnemies",
-          "type": "fun(self: DialogLineData): boolean"
+          "type": "fun(self: DialogLineData): boolean",
+          "description": "Returns false unconditionally in the supported engine implementation; it does not inspect child lines."
         },
         {
           "name": "isEmptyNode",
-          "type": "fun(self: DialogLineData): boolean"
+          "type": "fun(self: DialogLineData): boolean",
+          "description": "Returns true for a `DIALOGUE` container record, a missing `texts` array, or an interjection node. This does not simply test `lineCount`."
         },
         {
           "name": "_NV_isEmptyNode",
-          "type": "fun(self: DialogLineData): boolean"
+          "type": "fun(self: DialogLineData): boolean",
+          "description": "Calls `DialogLineData`'s implementation directly: true for a `DIALOGUE` container record, a missing `texts` array, or an interjection node."
         },
         {
           "name": "isAnnouncement",
-          "type": "fun(self: DialogLineData): boolean"
+          "type": "fun(self: DialogLineData): boolean",
+          "description": "Returns the value of `isMonologue`."
         },
         {
           "name": "stampLastTimeSaid",
-          "type": "fun(self: DialogLineData)"
+          "type": "fun(self: DialogLineData)",
+          "description": "Stamps this line and every ancestor with the current world time in game hours."
         },
         {
           "name": "getScore",
-          "type": "fun(self: DialogLineData, target: Character): integer"
+          "type": "fun(self: DialogLineData, target: Character): integer",
+          "description": "Returns `score`, adding 2 when `target` has a race related to an entry in `isTargetRace`."
         },
         {
           "name": "getScorePlusChildrenIfEmpty",
-          "type": "fun(self: DialogLineData, target: Character): integer"
+          "type": "fun(self: DialogLineData, target: Character): integer",
+          "description": "Returns this node's base `score`; for an empty node, adds the highest immediate child score for `target`, with a minimum added value of zero. It does not sum all child scores."
         },
         {
           "name": "hasChildren",
-          "type": "fun(self: DialogLineData): boolean"
+          "type": "fun(self: DialogLineData): boolean",
+          "description": "Returns whether the `children` pointer is non-nil, even if its choice list is empty."
         },
         {
           "name": "checkConditions",
@@ -4192,11 +3861,13 @@
         },
         {
           "name": "getMoneyCostForLine",
-          "type": "fun(self: DialogLineData): integer"
+          "type": "fun(self: DialogLineData): integer",
+          "description": "Returns the value of the first `DA_TAKE_MONEY` or `DA_GIVE_MONEY` action. If neither exists, uses the first `DC_PLAYERMONEY` condition value, or zero if none exists."
         },
         {
           "name": "getText",
-          "type": "fun(self: DialogLineData, stampTime: boolean): string"
+          "type": "fun(self: DialogLineData, stampTime: boolean): string",
+          "description": "Selects a random text variant and appends bracketed money amounts for `DA_TAKE_MONEY` actions. With `stampTime` true, stamps this line and its ancestors. Returns an empty string when there are no text variants."
         },
         {
           "name": "getPlayerReplies",
@@ -4252,7 +3923,8 @@
         },
         {
           "name": "isCharacter",
-          "type": "Lektor<GameData>"
+          "type": "Lektor<GameData>",
+          "description": "Character templates allowed for the speaking character (`dialog.me`). A nonempty list must include the speaker's template."
         },
         {
           "name": "isTargetCarryingCharacter",
@@ -4260,7 +3932,8 @@
         },
         {
           "name": "hasPackage",
-          "type": "Lektor<GameData>"
+          "type": "Lektor<GameData>",
+          "description": "Dialogue packages required on the speaking character. A nonempty list passes when at least one entry is in `dialog.pacakgesIHave`; this field wraps C++ `_hasPackage`."
         },
         {
           "name": "isMyRace",
@@ -4296,7 +3969,8 @@
         },
         {
           "name": "forCertainType",
-          "type": "CharacterTypeEnum"
+          "type": "CharacterTypeEnum",
+          "description": "Required `CharacterTypeEnum` for the target. A nonpositive value imposes no restriction; `OT_SLAVE` also accepts slave or escaping-slave states."
         },
         {
           "name": "children",
@@ -4328,7 +4002,8 @@
         },
         {
           "name": "chanceTemporary",
-          "type": "number"
+          "type": "number",
+          "description": "Percentage threshold rerolled during `checkConditions`. Values below 99 are tested against a random value from 0 to 100; values of 99 or higher bypass the roll."
         },
         {
           "name": "unique",
@@ -4352,7 +4027,8 @@
         },
         {
           "name": "oneAtATime",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Prevents this line from passing `checkConditions` while a member of the speaker's platoon has the same active conversation."
         },
         {
           "name": "isLocked",
@@ -4391,7 +4067,8 @@
           "type": "TalkerEnum"
         }
       ],
-      "name": "DialogLineData"
+      "name": "DialogLineData",
+      "description": "Dialogue tree node containing text variants, speaker selection, conditions, actions, and child choices. Some nodes are structural or interjections rather than spoken text."
     },
     {
       "fields": [
@@ -4435,100 +4112,124 @@
         },
         {
           "name": "minTime",
-          "type": "integer"
+          "type": "integer",
+          "description": "Lower bound of the random campaign request delay, in game hours."
         },
         {
           "name": "maxTime",
-          "type": "integer"
+          "type": "integer",
+          "description": "Upper bound of the random campaign request delay, in game hours."
         },
         {
           "name": "chance",
-          "type": "number"
+          "type": "number",
+          "description": "Chance contribution copied into the campaign selector when dialogue data is loaded. Changing this field alone does not rebuild the selector's stored weights."
         }
       ],
-      "name": "CampaignTriggerData"
+      "name": "CampaignTriggerData",
+      "description": "Campaign template, random request delay range in game hours, and selection chance used by dialogue campaign triggers."
     },
     {
       "fields": [
         {
           "name": "setNull",
-          "type": "fun(self: TimeOfDay)"
+          "type": "fun(self: TimeOfDay)",
+          "description": "Sets `time` to zero, the value recognized by `isUnset`."
         },
         {
           "name": "isUnset",
-          "type": "fun(self: TimeOfDay): boolean"
+          "type": "fun(self: TimeOfDay): boolean",
+          "description": "Returns true when `time` is exactly zero."
         },
         {
           "name": "setTime",
-          "type": "fun(self: TimeOfDay, hours: number)"
+          "type": "fun(self: TimeOfDay, hours: number)",
+          "description": "Replaces `time` with the supplied number of game hours, without wrapping it to a 24-hour clock."
         },
         {
           "name": "addHours",
-          "type": "fun(self: TimeOfDay, hours: number)"
+          "type": "fun(self: TimeOfDay, hours: number)",
+          "description": "Adds game hours to `time`, without wrapping it to a 24-hour clock."
         },
         {
           "name": "addMinutes",
-          "type": "fun(self: TimeOfDay, minutes: number)"
+          "type": "fun(self: TimeOfDay, minutes: number)",
+          "description": "Adds game minutes to `time`, converting them to hours."
         },
         {
           "name": "getTotalHours",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns `time` in game hours."
         },
         {
           "name": "getTotalMinutes",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns `time * 60` in game minutes."
         },
         {
           "name": "getTotalSeconds",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns `time * 3600` in game seconds."
         },
         {
           "name": "getRealLifeSeconds",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Converts the stored game hours using `time * 3600 / 33 * 0.5`. This is a fixed conversion, independent of pause state and game speed; it does not measure wall-clock time."
         },
         {
           "name": "getRealLifeSecondsPassed",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Applies the fixed `hours * 3600 / 33 * 0.5` conversion to `getHoursPassed()`. It does not measure wall-clock time elapsed since the timestamp."
         },
         {
           "name": "getTotalDays",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns `time / 24` in game days."
         },
         {
           "name": "stampTime",
-          "type": "fun(self: TimeOfDay)"
+          "type": "fun(self: TimeOfDay)",
+          "description": "Copies the current world clock in game hours into `time`."
         },
         {
           "name": "getHoursPassed",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns current world game hours minus `time`. A future timestamp produces a negative result."
         },
         {
           "name": "getMinutesPassed",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns `getHoursPassed() * 60` in game minutes."
         },
         {
           "name": "getSecondsPassed",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns `getHoursPassed() * 3600` in game seconds."
         },
         {
           "name": "timeOfDayHasPassed",
-          "type": "fun(self: TimeOfDay, additionalHours: number): boolean"
+          "type": "fun(self: TimeOfDay, additionalHours: number): boolean",
+          "description": "Returns true when `time` is zero or the current world game hours are strictly greater than `time + additionalHours`. Equality does not pass."
         },
         {
           "name": "timePassed",
-          "type": "fun(self: TimeOfDay): number"
+          "type": "fun(self: TimeOfDay): number",
+          "description": "Returns current world game hours minus `time`, the same difference as `getHoursPassed()`."
         },
         {
           "name": "getTimePassedString",
-          "type": "fun(self: TimeOfDay): string"
+          "type": "fun(self: TimeOfDay): string",
+          "description": "Formats current world game hours minus `time` using `getTotalTimeString`."
         },
         {
           "name": "getTimeRemainingString",
-          "type": "fun(self: TimeOfDay): string"
+          "type": "fun(self: TimeOfDay): string",
+          "description": "Formats `time` minus current world game hours using `getTotalTimeString`; a past deadline produces the localized expired message."
         },
         {
           "name": "getTotalTimeString",
-          "type": "fun(self: TimeOfDay): string"
+          "type": "fun(self: TimeOfDay): string",
+          "description": "Formats the stored duration with localized units: floored minutes up to one hour, floored hours up to one day, or days and remaining whole hours above one day. Negative durations produce the localized expired message."
         },
         {
           "name": "operator_gt",
@@ -4556,24 +4257,29 @@
         },
         {
           "name": "time",
-          "type": "number"
+          "type": "number",
+          "description": "Timestamp or duration in game hours, stored as a double. Zero is also the unset value; values are not restricted to a 24-hour clock."
         }
       ],
-      "name": "TimeOfDay"
+      "name": "TimeOfDay",
+      "description": "Game timestamp or duration stored in game hours. Zero represents an unset value; elapsed-time helpers compare against the world game clock."
     },
     {
       "fields": [
         {
           "name": "setupFrom",
-          "type": "fun(self: WorldEventStateQueryList, data: GameData, listName: string): boolean"
+          "type": "fun(self: WorldEventStateQueryList, data: GameData, listName: string): boolean",
+          "description": "Adds or updates queries from `data`'s named reference list without clearing existing entries. A reference's first integer value of 1 requires true; other values require false. Returns false for a missing or empty source list, otherwise whether the resulting query map is nonempty."
         },
         {
           "name": "reset",
-          "type": "fun(self: WorldEventStateQueryList)"
+          "type": "fun(self: WorldEventStateQueryList)",
+          "description": "Clears the query/expected-result map without destroying the cached query objects."
         },
         {
           "name": "isTrue",
-          "type": "fun(self: WorldEventStateQueryList): boolean"
+          "type": "fun(self: WorldEventStateQueryList): boolean",
+          "description": "Returns true if every query matches its stored expected boolean result. An empty list returns true."
         },
         {
           "name": "statesList",
@@ -4586,11 +4292,13 @@
       "fields": [
         {
           "name": "isTrue",
-          "type": "fun(self: WorldEventStateQuery): boolean"
+          "type": "fun(self: WorldEventStateQuery): boolean",
+          "description": "Checks required and forbidden unique-NPC states and the player faction's alliance/enemy requirements. All evaluated requirements must pass; an empty query returns true. The `towns` map is not evaluated."
         },
         {
           "name": "playerInvolvement",
-          "type": "boolean"
+          "type": "boolean",
+          "description": "When enabled, requires recorded player involvement for required non-ALIVE unique-NPC states and for forbidden ALIVE states. This flag is not a general town or faction involvement test."
         },
         {
           "name": "isAllyOf",
@@ -4602,7 +4310,8 @@
         },
         {
           "name": "towns",
-          "type": "OgreUnorderedMap<GameData, integer>"
+          "type": "OgreUnorderedMap<GameData, integer>",
+          "description": "SDK-declared town-state map. The supported engine's `isTrue()` does not evaluate this map."
         },
         {
           "name": "uniqueNPCsAre",
@@ -4613,18 +4322,23 @@
           "type": "OgreUnorderedMap<GameData, integer>"
         }
       ],
-      "name": "WorldEventStateQuery"
+      "name": "WorldEventStateQuery",
+      "description": "Cached world-state requirements for unique NPCs and player-faction relations. Evaluates required/forbidden NPC states and expected alliance/enemy results; the SDK-declared town map is not used by `isTrue()`.",
+      "descriptions": {
+        "getFromData": "Returns the cached query for `d`, creating it from the `NPC is`, `NPC is NOT`, `player ally`, and `player enemy` reference lists on the first lookup. Later calls reuse the same query rather than reloading changed data.",
+        "checkAllStatesInObject": "Evaluates queries referenced by `what`'s `listname`. A reference's first integer value of 1 requires true; other values require false. Returns true for an empty list; references that do not resolve to a query are skipped."
+      }
     },
     {
       "description": "Static query methods for WorldEventStateQuery world state evaluation.",
       "fields": [
         {
-          "description": "Evaluates all world event state conditions defined on the given data object.",
+          "description": "Evaluates the named world-state reference list. Each reference requires true only when its first integer value is 1; other values require false. An empty list passes, and unresolved queries are skipped.",
           "name": "checkAllStatesInObject",
           "type": "fun(data: GameData, listName: string): boolean"
         },
         {
-          "description": "Retrieves world event state query data from a game data object.",
+          "description": "Returns the cached query for `d`, loading its NPC and player-faction relation requirements on the first lookup. Later calls reuse the same query.",
           "name": "getFromData",
           "type": "fun(data: GameData): WorldEventStateQuery|nil"
         }
@@ -4703,7 +4417,7 @@
     {
       "fields": [
         {
-          "description": "Raw ResearchItem pointer.",
+          "description": "Research queue entry represented by this view, used to obtain its name and progress. Exposed as a borrowed opaque `ResearchItem` address, or nil when no entry is assigned.",
           "name": "item",
           "type": "lightuserdata|nil"
         }
@@ -4743,17 +4457,17 @@
           "type": "integer"
         },
         {
-          "description": "Ogre::Vector3 encoded as the binding's vector table.",
+          "description": "Translation offset supplied for this navigation-mesh generation task, exposed as a copied Vector3 table with `x`, `y`, and `z` components.",
           "name": "offset",
           "type": "table"
         },
         {
-          "description": "Raw Ogre::Aabb pointer.",
+          "description": "Geometry bounds for the generation task. The lightuserdata points to the task's embedded `Ogre::Aabb`; assignment copies an `Ogre::Aabb` from the supplied address.",
           "name": "bounds",
           "type": "lightuserdata"
         },
         {
-          "description": "Raw hkaiNavMesh pointer.",
+          "description": "Havok navigation mesh associated with this generation task, exposed as borrowed opaque lightuserdata, or nil when no mesh is assigned.",
           "name": "mesh",
           "type": "lightuserdata|nil"
         },
@@ -4805,27 +4519,30 @@
     {
       "fields": [
         {
-          "description": "Raw Ogre::Vector3 pointer.",
+          "description": "Address of the extracted vertex-position array used by appearance lookups. Exposed as opaque lightuserdata; this binding provides no Lua array indexing or vertex count.",
           "name": "verts",
           "type": "lightuserdata|nil"
         },
         {
-          "description": "Raw Ogre::Vector2 pointer.",
+          "description": "Address of the texture-coordinate array paired with the extracted vertices. Exposed as opaque lightuserdata, not a Lua table of UV pairs.",
           "name": "uvs",
           "type": "lightuserdata|nil"
         }
       ],
-      "name": "MeshDataLookup"
+      "name": "MeshDataLookup",
+      "description": "Mesh vertex positions and texture coordinates used by appearance lookups. Lua exposes the native array addresses; element access, bone assignments, and vertex count are not bound."
     },
     {
       "fields": [
         {
           "name": "add",
-          "type": "fun(self: DialogChoiceList, conversation: GameData, parent: DialogLineData)"
+          "type": "fun(self: DialogChoiceList, conversation: GameData, parent: DialogLineData)",
+          "description": "Adds the conversation's cached `DialogLineData` unless its `GameData` is already present. Inserts it in descending priority order, including the highest immediate child score for empty nodes, and assigns `parent` to the added node. Returns no value."
         },
         {
           "name": "conversationChoices",
-          "type": "Lektor<DialogLineData>"
+          "type": "Lektor<DialogLineData>",
+          "description": "Dialogue choices ordered by the priority used by `add`, with higher scores first. Direct edits to this container do not run `add`'s duplicate or ordering checks."
         }
       ],
       "name": "DialogChoiceList"
@@ -4905,14 +4622,22 @@
         },
         {
           "name": "togglePause",
-          "type": "fun(self: GameWorld, on: boolean)"
+          "type": "fun(self: GameWorld, on: boolean)",
+          "description": "Sets the pause request to `on`; a zero `frameSpeedMult` also forces the world to remain paused. Updates worker pause states and the pause/speed GUI when the state changes."
         },
         {
           "name": "isPaused",
           "type": "fun(self: GameWorld): boolean"
         }
       ],
-      "name": "GameWorld"
+      "name": "GameWorld",
+      "descriptions": {
+        "getTimeStamp": "Returns seconds on the world performance timer. This is a real-time timestamp, separate from the world clock in game hours.",
+        "getTimeFromStamp": "With a numeric timestamp from `getTimeStamp`, returns elapsed performance-timer seconds as a number. With a `TimeOfDay`, returns a new `TimeOfDay` containing current world game hours minus that timestamp.",
+        "getTimeFromStamp_inGameHours": "Converts elapsed performance-timer seconds since the numeric `stamp` to hours by dividing by `getLengthOfHourInRealSeconds()`. The input is a real-time timestamp from `getTimeStamp`, not a game-hour timestamp.",
+        "getTimeStamp_inGameHours": "Returns a new `TimeOfDay` containing the current world clock in game hours.",
+        "getLengthOfHourInRealSeconds": "Returns the fixed conversion factor of approximately 109.09091 real seconds per game hour. This value does not change with the current game speed."
+      }
     },
     {
       "fields": [
@@ -5651,7 +5376,7 @@
       "description": "GUI data panel with lines grouped into categories.",
       "fields": [
         {
-          "description": "Adds or updates a line using one of the runtime setLine overloads.",
+          "description": "Creates or reuses a line in `category` and returns its borrowed `DataPanelLine`. Explicit-key forms use `keyValue` to identify the line; other forms use `s1`. Supports custom skins, `last`/`keyVisible` flags, or a numeric `barValue` for a progress line.",
           "name": "setLine",
           "type": "fun(self: DatapanelGUI, s1: string, s2: string, valueOrSkin: integer|number|string, categoryOrSkin: boolean|integer|string, lastOrCategory?: boolean|integer|string, keyVisible?: boolean|integer): DataPanelLine"
         }
@@ -6157,12 +5882,12 @@
           "type": "fun(self: GameDataContainer, filename: string, moreData?: Serialisable): boolean"
         },
         {
-          "description": "Static function exposed through the instance method table; call with dot syntax.",
+          "description": "Deletes every record in the global deferred-deletion set and empties the set, invalidating references to those records. Static function exposed through the instance method table; call with dot syntax and no self argument.",
           "name": "flushKillList",
           "type": "fun()"
         },
         {
-          "description": "Static function exposed through the instance method table; call with dot syntax.",
+          "description": "Requests deferred deletion of `dat` when `validity` is 123456, `readOnly` is false, and both `stringID` and `name` are nonempty. It does not test `sourceContainer`. Call with dot syntax and the record as the first argument.",
           "name": "destroyHomelessData",
           "type": "fun(data: GameData)"
         },
@@ -6171,7 +5896,7 @@
           "type": "fun(self: GameDataContainer, out: Lektor<GameData>, what: GameData, ofType: integer, listName: string)"
         },
         {
-          "description": "Static function exposed through the instance method table; call with dot syntax.",
+          "description": "Adds `d` to the global deferred-deletion set when the engine permits queuing; deletion occurs in `flushKillList`. Call with dot syntax and the record as the first argument.",
           "name": "_addToKillList",
           "type": "fun(data: GameData)"
         },
@@ -6256,7 +5981,8 @@
         },
         {
           "name": "getState",
-          "type": "fun(self: GameSaveState, itemType: integer): GameData|nil"
+          "type": "fun(self: GameSaveState, itemType: integer): GameData|nil",
+          "description": "Returns the stored `GameData` state for the specified `itemType`, or nil if that type has no state. This lookup does not create a record."
         },
         {
           "name": "numStates",
@@ -6288,7 +6014,8 @@
         },
         {
           "name": "operator_bool",
-          "type": "fun(self: GameSaveState): boolean"
+          "type": "fun(self: GameSaveState): boolean",
+          "description": "Returns true only when both `baseData` and `dataSource` are non-nil. Call this method explicitly; Lua userdata itself remains truthy."
         },
         {
           "name": "baseData",
@@ -6323,7 +6050,8 @@
           "type": "OgreUnorderedMap<integer, GameData>"
         }
       ],
-      "name": "GameSaveState"
+      "name": "GameSaveState",
+      "description": "Save/load state for one object instance: its base template, source database, placement, instance ID, and state records indexed by `itemType`."
     },
     {
       "fields": [],
@@ -6337,11 +6065,13 @@
       "fields": [
         {
           "name": "getLinearValue",
-          "type": "fun(self: iVector2): integer"
+          "type": "fun(self: iVector2): integer",
+          "description": "Returns the integer key `x * 10000 + y`; no grid width is supplied and distinct coordinate pairs can produce the same key."
         },
         {
           "name": "getAsString",
-          "type": "fun(self: iVector2): string"
+          "type": "fun(self: iVector2): string",
+          "description": "Returns the two integer coordinates separated by a comma, in `x,y` order."
         },
         {
           "name": "operator_eq",
@@ -6353,7 +6083,8 @@
         },
         {
           "name": "operator_lt",
-          "type": "fun(self: iVector2, other: iVector2): boolean"
+          "type": "fun(self: iVector2, other: iVector2): boolean",
+          "description": "Compares `x * 10000 + y` with the other vector's key. Also bound to Lua `<`; this is not a component-by-component comparison."
         },
         {
           "name": "operator_add",
@@ -6525,7 +6256,7 @@
           "type": "fun(self: InventoryItemBase): integer"
         },
         {
-          "description": "Returns the raw const char pointer exposed by the binding.",
+          "description": "Returns the inventory sound-category address selected from the item type and material, such as Weapon_Metal, Fabric, or Robotic_Component. Lua receives opaque lightuserdata pointing to a C string, not a Lua string; unsupported types produce null lightuserdata.",
           "name": "getItemSound",
           "type": "fun(self: InventoryItemBase): lightuserdata"
         },
@@ -6538,7 +6269,7 @@
           "type": "fun(self: InventoryItemBase): number"
         },
         {
-          "description": "Accepts either (active, yesNoMaybe) or (active, position, rotation, flag, yesNoMaybe, finalFlag).",
+          "description": "Activates the item's scene representation through its virtual engine method. Accepts `(createPhysical, bareWeapon)` or `(createPhysical, position, rotation, fixedPosition, bareWeapon, dynamicPhysics)`; `bareWeapon` is a `YesNoMaybe` value.",
           "name": "activate",
           "type": "fun(self: InventoryItemBase, active: boolean, modeOrPosition: integer|table, rotation?: table, flag?: boolean, yesNoMaybe?: integer, finalFlag?: boolean)"
         },
@@ -6687,7 +6418,7 @@
           "type": "boolean"
         },
         {
-          "description": "Raw BuildingItemGroup pointer.",
+          "description": "Building-item group associated with this item. Exposed as borrowed opaque `BuildingItemGroup` lightuserdata; group members are not available through this binding.",
           "name": "itemGroup",
           "type": "lightuserdata"
         }
@@ -6699,51 +6430,62 @@
       "fields": [
         {
           "name": "setNull",
-          "type": "fun(self: AABB2D)"
+          "type": "fun(self: AABB2D)",
+          "description": "Sets all four bounds to zero, producing a zero-size box at the origin."
         },
         {
           "name": "pointWithin",
-          "type": "fun(self: AABB2D, point: table): boolean"
+          "type": "fun(self: AABB2D, point: table): boolean",
+          "description": "Tests the Vector3 point's `x` and `z` against the stored bounds, including the edges. The point's height (`y`) is ignored."
         },
         {
           "name": "inflate",
-          "type": "fun(self: AABB2D, amount: number)"
+          "type": "fun(self: AABB2D, amount: number)",
+          "description": "Subtracts `amount` from `x` and `y` and adds it to `x2` and `y2`. Negative amounts shrink the bounds."
         },
         {
           "name": "sizeX",
-          "type": "fun(self: AABB2D): number"
+          "type": "fun(self: AABB2D): number",
+          "description": "Returns `x2 - x`, the extent along world X."
         },
         {
           "name": "sizeY",
-          "type": "fun(self: AABB2D): number"
+          "type": "fun(self: AABB2D): number",
+          "description": "Returns `y2 - y`, the extent along world Z."
         },
         {
-          "description": "Accepts another AABB2D, a Vector3 and radius, or two Vector3 values.",
+          "description": "Tests overlap with another `AABB2D`, a Vector3 position expanded by `radius` along X and Z, or the X/Z projection of a segment between two Vector3 endpoints. The radius overload uses an axis-aligned square, not a circle-distance test.",
           "name": "intersects",
           "type": "fun(self: AABB2D, otherOrStart: AABB2D|table, endOrRadius?: table|number): boolean"
         },
         {
           "name": "intersects2",
-          "type": "fun(self: AABB2D, rayOrigin: table, rayDirection: table): table"
+          "type": "fun(self: AABB2D, rayOrigin: table, rayDirection: table): table",
+          "description": "Returns the 2D ray entry point, or the ray origin if it is strictly inside the box. A miss returns `{x = 0, y = 0}`, which can also be a valid hit point."
         },
         {
           "name": "x",
-          "type": "number"
+          "type": "number",
+          "description": "Lower bound along world X."
         },
         {
           "name": "y",
-          "type": "number"
+          "type": "number",
+          "description": "Lower bound along world Z; named `y` in this 2D representation."
         },
         {
           "name": "x2",
-          "type": "number"
+          "type": "number",
+          "description": "Upper bound along world X."
         },
         {
           "name": "y2",
-          "type": "number"
+          "type": "number",
+          "description": "Upper bound along world Z; named `y2` in this 2D representation."
         }
       ],
-      "name": "AABB2D"
+      "name": "AABB2D",
+      "description": "Axis-aligned bounds on the world X/Z plane. Vector3 queries ignore height; the stored `y` and `y2` coordinates represent world Z."
     },
     {
       "fields": [
@@ -6863,7 +6605,7 @@
           "type": "ZoneMap|nil"
         },
         {
-          "description": "Raw SpacialCell** pointer.",
+          "description": "Address of this zone's array of `SpacialCell` pointers, allocated by the spatial grid's cell factory. Exposed as opaque lightuserdata or nil, not a Lua array.",
           "name": "cells",
           "type": "lightuserdata|nil"
         }
@@ -6874,15 +6616,17 @@
       "fields": [
         {
           "name": "data",
-          "type": "integer"
+          "type": "integer",
+          "description": "Integer trace-result data, initialized to -1 by the default constructor."
         },
         {
-          "description": "Ogre::Vector3 encoded as { x, y, z } or positional indices.",
+          "description": "Stored 3D trace position, initialized to zero. Reading returns a copied Vector3 table; assign a Vector3 table to replace the stored position.",
           "name": "hit",
           "type": "table"
         }
       ],
-      "name": "rendHit"
+      "name": "rendHit",
+      "description": "Renderer trace-result record containing integer result data and a 3D position. A default record contains `data = -1` and a zero vector."
     },
     {
       "fields": [],
@@ -6941,7 +6685,8 @@
         },
         {
           "name": "IsSupported",
-          "type": "fun(self: CPerfTimer): boolean"
+          "type": "fun(self: CPerfTimer): boolean",
+          "description": "Returns whether high-resolution performance-counter support was detected. This is an instance method and requires a `CPerfTimer` as self."
         },
         {
           "name": "Resolution",
@@ -6982,7 +6727,7 @@
     {
       "fields": [
         {
-          "description": "DialogConditionEnum value.",
+          "description": "Condition category (`DialogConditionEnum`) associated with this flag requirement's `want` and `flags` values.",
           "name": "key",
           "type": "integer"
         },
@@ -7001,37 +6746,44 @@
       "fields": [
         {
           "name": "count",
-          "type": "integer"
+          "type": "integer",
+          "description": "Stored number of times this dialogue event has been counted; initialized to zero."
         },
         {
           "name": "lastTimeStamp",
-          "type": "number"
+          "type": "number",
+          "description": "Performance-timer timestamp in seconds when this event was last counted; initialized to zero."
         },
         {
           "name": "resetTime",
-          "type": "number"
+          "type": "number",
+          "description": "Stored repetition reset interval in seconds, initialized to 60. `RepetitionCounter:getCount()` does not apply this interval."
         }
       ],
-      "name": "DialogState"
+      "name": "DialogState",
+      "description": "Count, performance-timer timestamp, and reset interval for one event in `Dialogue::RepetitionCounter`."
     },
     {
       "fields": [
         {
           "name": "messageType",
-          "type": "integer"
+          "type": "integer",
+          "description": "Command selector from `MessageForB.MessageType`; defaults to `M_UNSELECT_ALL` in `MessageForB.new()`."
         },
         {
           "name": "messageInt",
-          "type": "integer"
+          "type": "integer",
+          "description": "Integer payload interpreted by the selected command; defaults to zero in `MessageForB.new()`."
         }
       ],
-      "name": "MessageForB"
+      "name": "MessageForB",
+      "description": "Command message containing a `MessageForB.MessageType` selector and an integer payload. `MessageForB.new` creates an owned value; dispatch is a separate operation."
     },
     {
       "description": "Static factory constructors for MessageForB messages.",
       "fields": [
         {
-          "description": "Constructs a new MessageForB command instance.",
+          "description": "Creates an owned message value with the given `MessageForB.MessageType` and optional integer payload. With no arguments, defaults to `M_UNSELECT_ALL` and zero; creating the value does not dispatch it.",
           "name": "new",
           "type": "fun(messageType?: integer, messageInt?: integer): MessageForB"
         }
@@ -7125,10 +6877,11 @@
       "fields": [
         {
           "name": "finish",
-          "type": "fun(self: ResourceLoadRequestMesh)"
+          "type": "fun(self: ResourceLoadRequestMesh)",
+          "description": "Initializes the target entity, applies the request's mesh settings, and invokes its native completion callback if present. Returns no value."
         },
         {
-          "description": "Raw Ogre::Entity pointer.",
+          "description": "Target `Ogre::Entity` initialized when this mesh request finishes. Read-only borrowed lightuserdata; it does not expose an entity wrapper or transfer ownership.",
           "name": "entity",
           "type": "lightuserdata|nil"
         }
@@ -7139,10 +6892,11 @@
       "fields": [
         {
           "name": "isMaterialValid",
-          "type": "fun(self: ResourceLoadRequestTexture): boolean"
+          "type": "fun(self: ResourceLoadRequestTexture): boolean",
+          "description": "Returns true when the material is non-null and its shared-pointer reference count exceeds the resource system's retained-reference count plus one."
         },
         {
-          "description": "Raw Ogre::TextureUnitState pointer.",
+          "description": "Material texture slot that receives the loaded texture when the engine completes the request. Read-only borrowed `Ogre::TextureUnitState` lightuserdata, not a Lua texture object.",
           "name": "textureUnitState",
           "type": "lightuserdata|nil"
         }
@@ -7160,7 +6914,7 @@
           "type": "boolean"
         },
         {
-          "description": "Raw MyGUI delegate pointer.",
+          "description": "Native callback invoked with the button's integer result when the message box is removed. Read-only opaque delegate lightuserdata; this is not a callable Lua function.",
           "name": "callback",
           "type": "lightuserdata|nil"
         }
@@ -7377,18 +7131,22 @@
       "fields": [
         {
           "name": "getTime",
-          "type": "fun(self: SimpleTimeStamper, lastStamp: number): number"
+          "type": "fun(self: SimpleTimeStamper, lastStamp: number): number",
+          "description": "Returns current elapsed seconds on `timer` minus `lastStamp`. Use a value from this stamper's `stampTime` as the timestamp."
         },
         {
           "name": "stampTime",
-          "type": "fun(self: SimpleTimeStamper): number"
+          "type": "fun(self: SimpleTimeStamper): number",
+          "description": "Returns current elapsed seconds on `timer`. Reading the timestamp does not restart or reset the timer."
         },
         {
           "name": "timer",
-          "type": "CPerfTimer"
+          "type": "CPerfTimer",
+          "description": "Embedded performance timer supplying this stamper's timestamps; exposed as a borrowed `CPerfTimer`."
         }
       ],
-      "name": "SimpleTimeStamper"
+      "name": "SimpleTimeStamper",
+      "description": "Timestamp helper using elapsed seconds from an embedded `CPerfTimer`. Reading a stamp does not modify the timer."
     },
     {
       "fields": [
@@ -7531,22 +7289,27 @@
       "fields": [
         {
           "name": "setup",
-          "type": "fun(self: RepetitionCounter)"
+          "type": "fun(self: RepetitionCounter)",
+          "description": "Sets the `EV_ANNOUNCEMENT` reset interval to the largest finite float. Other event records are created lazily with a default interval of 60 seconds."
         },
         {
           "name": "count",
-          "type": "fun(self: RepetitionCounter, event: integer): boolean"
+          "type": "fun(self: RepetitionCounter, event: integer): boolean",
+          "description": "Increments the count for `event`, records the current performance-timer timestamp in seconds, and returns true. Creates a default event record if needed."
         },
         {
           "name": "getTimeSinceLastTrigger",
-          "type": "fun(self: RepetitionCounter, event: integer): number"
+          "type": "fun(self: RepetitionCounter, event: integer): number",
+          "description": "Returns performance-timer seconds since `event` was last counted. An unrecorded event is created with a zero timestamp, so the result is the current timer value."
         },
         {
           "name": "getCount",
-          "type": "fun(self: RepetitionCounter, event: integer): integer"
+          "type": "fun(self: RepetitionCounter, event: integer): integer",
+          "description": "Returns the stored count for `event`, creating a zero-count record if needed. This method does not expire or reset the count."
         }
       ],
-      "name": "RepetitionCounter"
+      "name": "RepetitionCounter",
+      "description": "Dialogue event counts and timestamps keyed by `EventTriggerEnum`. Timestamps use the world performance timer in real seconds, separately from the game-hour clock."
     },
     {
       "fields": [
@@ -7768,11 +7531,13 @@
         },
         {
           "name": "takeMoney",
-          "type": "fun(self: Character, amount: integer): boolean"
+          "type": "fun(self: Character, amount: integer): boolean",
+          "description": "Deducts `amount` from the balance returned by `getOwnerships()` and reports success. Player characters use the player faction's shared balance; nonnegative amounts fail if funds are insufficient. A negative amount adds money."
         },
         {
           "name": "say",
-          "type": "fun(self: Character, text: string)"
+          "type": "fun(self: Character, text: string)",
+          "description": "Passes `text` to the character's dialogue component for display as speech, without an associated `DialogLineData`."
         },
         {
           "name": "rememberCharacter",
@@ -7784,11 +7549,13 @@
         },
         {
           "name": "setProneState",
-          "type": "fun(self: Character, state: ProneState)"
+          "type": "fun(self: Character, state: ProneState)",
+          "description": "Changes the prone state and corresponding AI repertoire flag. Returning to `PS_NORMAL` can enqueue a get-up order; transitions between normal and prone refresh the click hull."
         },
         {
           "name": "setFaction",
-          "type": "fun(self: Character, faction: Faction, platoon: ActivePlatoon)"
+          "type": "fun(self: Character, faction: Faction, platoon: ActivePlatoon)",
+          "description": "Assigns the character to `faction` and `platoon`, then clears its AI goals and rebuilds its AI setup. Both arguments are required by the Lua binding."
         },
         {
           "name": "getName",
@@ -7827,7 +7594,10 @@
         }
       ],
       "inventory_fields": "CharStats",
-      "name": "CharStats"
+      "name": "CharStats",
+      "descriptions": {
+        "getMeleeAttackRef": "Returns the numeric value of `unarmed` when `currentWeaponType` is `SKILL_UNARMED`, otherwise `__meleeAttack`. Lua receives a number, not a writable reference."
+      }
     },
     {
       "fields": [
@@ -8091,12 +7861,6 @@
       "type": "MyGUI.ClipboardManagerStatic"
     },
     {
-      "description": "Global alias of MyGUI.Colour.",
-      "initialValue": "{}",
-      "name": "Colour",
-      "type": "MyGUI.ColourConstructor"
-    },
-    {
       "description": "Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.",
       "initialValue": "{}",
       "name": "Events",
@@ -8127,46 +7891,10 @@
       "type": "MyGUI.FloatSizeConstructor"
     },
     {
-      "description": "Global table exposing the MyGUI Gui singleton.",
-      "initialValue": "{}",
-      "name": "Gui",
-      "type": "MyGUI.GuiStatic"
-    },
-    {
       "description": "Static utility table for HavokCharacter physics controllers.",
       "initialValue": "{}",
       "name": "HavokCharacter",
       "type": "HavokCharacterStatic"
-    },
-    {
-      "description": "Global table exposing the MyGUI input-manager singleton.",
-      "initialValue": "{}",
-      "name": "InputManager",
-      "type": "MyGUI.InputManagerStatic"
-    },
-    {
-      "description": "Global alias of MyGUI.IntCoord.",
-      "initialValue": "{}",
-      "name": "IntCoord",
-      "type": "MyGUI.IntCoordConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.IntPoint.",
-      "initialValue": "{}",
-      "name": "IntPoint",
-      "type": "MyGUI.IntPointConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.IntRect.",
-      "initialValue": "{}",
-      "name": "IntRect",
-      "type": "MyGUI.IntRectConstructor"
-    },
-    {
-      "description": "Global alias of MyGUI.IntSize.",
-      "initialValue": "{}",
-      "name": "IntSize",
-      "type": "MyGUI.IntSizeConstructor"
     },
     {
       "description": "Static utility table for inventory layouts.",
@@ -8179,18 +7907,6 @@
       "initialValue": "{}",
       "name": "KenshiLua",
       "type": "KenshiLua.Api"
-    },
-    {
-      "description": "Global table exposing the MyGUI layer-manager singleton.",
-      "initialValue": "{}",
-      "name": "LayerManager",
-      "type": "MyGUI.LayerManagerStatic"
-    },
-    {
-      "description": "Global table exposing the MyGUI layout-manager singleton.",
-      "initialValue": "{}",
-      "name": "LayoutManager",
-      "type": "MyGUI.LayoutManagerStatic"
     },
     {
       "description": "Static manager table for in-game modal message boxes.",
@@ -8221,24 +7937,6 @@
       "initialValue": "{}",
       "name": "NxVec3",
       "type": "NxVec3Static"
-    },
-    {
-      "description": "Global table exposing the MyGUI pointer-manager singleton.",
-      "initialValue": "{}",
-      "name": "PointerManager",
-      "type": "MyGUI.PointerManagerStatic"
-    },
-    {
-      "description": "Global table exposing the MyGUI render-manager singleton.",
-      "initialValue": "{}",
-      "name": "RenderManager",
-      "type": "MyGUI.RenderManagerStatic"
-    },
-    {
-      "description": "Global table exposing the MyGUI skin-manager singleton.",
-      "initialValue": "{}",
-      "name": "SkinManager",
-      "type": "MyGUI.SkinManagerStatic"
     },
     {
       "description": "Global TownBase binding table.",

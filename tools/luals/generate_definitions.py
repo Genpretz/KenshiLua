@@ -548,25 +548,30 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
     for entry in metadata.get("classes", []):
         class_entry = dict(entry)
         fields = list(entry.get("fields", []))
+        existing_names = {f["name"] for f in fields}
         class_name = entry["name"]
         if class_name in nested_table_fields:
             for f in sorted(nested_table_fields[class_name].keys()):
-                target_type = nested_table_fields[class_name][f]
-                fields.append({
-                    "name": f,
-                    "type": target_type,
-                    "description": "Nested enum table `{0}`.".format(target_type),
-                })
-        for g in metadata.get("globals", []):
-            if g.get("type") == class_name and g.get("name") in nested_table_fields and g.get("name") != class_name:
-                parent_name = g["name"]
-                for f in sorted(nested_table_fields[parent_name].keys()):
-                    target_type = nested_table_fields[parent_name][f]
+                if f not in existing_names:
+                    target_type = nested_table_fields[class_name][f]
                     fields.append({
                         "name": f,
                         "type": target_type,
                         "description": "Nested enum table `{0}`.".format(target_type),
                     })
+                    existing_names.add(f)
+        for g in metadata.get("globals", []):
+            if g.get("type") == class_name and g.get("name") in nested_table_fields and g.get("name") != class_name:
+                parent_name = g["name"]
+                for f in sorted(nested_table_fields[parent_name].keys()):
+                    if f not in existing_names:
+                        target_type = nested_table_fields[parent_name][f]
+                        fields.append({
+                            "name": f,
+                            "type": target_type,
+                            "description": "Nested enum table `{0}`.".format(target_type),
+                        })
+                        existing_names.add(f)
         class_entry["fields"] = fields
         emit_class(lines, class_entry)
 

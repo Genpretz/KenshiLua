@@ -134,9 +134,12 @@ def type_from_metatable(metatable, metatable_types):
 
 
 def emitted_globals():
-    """Global names the generated definitions actually declare."""
+    """Global names and dotted table paths the definitions actually declare."""
     text = DEFINITIONS_PATH.read_text(encoding="utf-8") if DEFINITIONS_PATH.exists() else ""
-    return set(re.findall(r"^(?:function\s+)?([A-Za-z_]\w*)\s*(?:=|\()", text, re.MULTILINE))
+    return set(re.findall(
+        r"^(?:function\s+)?([A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*)\s*(?:=|\()",
+        text, re.MULTILINE,
+    ))
 
 
 def runtime_globals():

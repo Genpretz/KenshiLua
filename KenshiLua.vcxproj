@@ -918,6 +918,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Bindings\MyGUI\MenuItemBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\MultiListBoxBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\MyGUIBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MyGUIEnumBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\MyGuiCallbacks.h" />
     <ClInclude Include="src\Bindings\MyGUI\MyGuiTypes.h" />
     <ClInclude Include="src\Bindings\MyGUI\PointerManagerBinding.h" />
@@ -1481,6 +1482,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Bindings\MyGUI\MenuItemBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\MultiListBoxBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\MyGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MyGUIEnumBinding.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\MyGuiCallbacks.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\MyGuiTypes.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\PointerManagerBinding.cpp" />

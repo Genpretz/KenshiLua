@@ -3,6 +3,7 @@
   <ItemGroup>
     <ClCompile Include="src\Benchmark.cpp" />
     <ClCompile Include="src\Bindings\MyGUI\MyGUIBinding.cpp" />
+    <ClCompile Include="src\Bindings\MyGUI\MyGUIEnumBinding.cpp" />
     <ClCompile Include="src\Callbacks.cpp" />
     <ClCompile Include="src\Compatibility\LegacyCompat.cpp" />
     <ClCompile Include="src\Config.cpp" />
@@ -1095,6 +1096,7 @@
     <ClInclude Include="src\Bindings\MyGUI\MenuItemBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\MultiListBoxBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\MyGUIBinding.h" />
+    <ClInclude Include="src\Bindings\MyGUI\MyGUIEnumBinding.h" />
     <ClInclude Include="src\Bindings\MyGUI\MyGuiCallbacks.h" />
     <ClInclude Include="src\Bindings\MyGUI\MyGuiTypes.h" />
     <ClInclude Include="src\Bindings\MyGUI\PointerManagerBinding.h" />

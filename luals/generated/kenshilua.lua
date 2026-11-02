@@ -2790,133 +2790,6 @@ taskPriority = {
 --- Returns the report of the samples collected so far without stopping the profiler.
 ---@field profileDump fun(): string
 
---- Bitmask enumeration specifying widget anchoring and resizing alignment within parent containers.
----@class MyGUI.Align
---- Align horizontally centered within the parent container.
----@field HCenter integer
---- Align vertically centered within the parent container.
----@field VCenter integer
---- Align both horizontally and vertically centered within the parent container.
----@field Center integer
---- Anchor to the left edge of the parent container.
----@field Left integer
---- Anchor to the right edge of the parent container.
----@field Right integer
---- Stretch horizontally to track the width of the parent container.
----@field HStretch integer
---- Anchor to the top edge of the parent container.
----@field Top integer
---- Anchor to the bottom edge of the parent container.
----@field Bottom integer
---- Stretch vertically to track the height of the parent container.
----@field VStretch integer
---- Stretch both horizontally and vertically to track the size of the parent container.
----@field Stretch integer
---- Default alignment anchoring to the top-left corner (Left | Top).
----@field Default integer
-
---- Enumeration defining the windowing hierarchy and clipping behavior of a widget.
----@class MyGUI.WidgetStyle
---- Standard child widget clipped by parent boundaries without overlapping sibling widgets.
----@field Child integer
---- Child widget clipped by parent boundaries that can overlap sibling widgets and receive focus.
----@field Overlapped integer
---- Floating popup widget attached to a parent but not clipped by parent boundaries.
----@field Popup integer
-
---- Enumeration defining the item layout progression and filling direction in multi-item containers.
----@class MyGUI.FlowDirection
---- Arrange items horizontally from left to right.
----@field LeftToRight integer
---- Arrange items horizontally from right to left.
----@field RightToLeft integer
---- Arrange items vertically from top to bottom.
----@field TopToBottom integer
---- Arrange items vertically from bottom to top.
----@field BottomToTop integer
-
---- Enumeration defining the behavioral category and appearance of a menu item.
----@class MyGUI.MenuItemType
---- Standard clickable menu command item.
----@field Normal integer
---- Submenu parent item that expands an associated popup menu on hover or click.
----@field Popup integer
---- Non-clickable visual divider line separating groups of menu items.
----@field Separator integer
-
---- Enumeration identifying physical and logical mouse buttons for pointer input events.
----@class MyGUI.MouseButton
---- Primary left mouse button (equivalent to Button0).
----@field Left integer
---- Secondary right mouse button (equivalent to Button1).
----@field Right integer
---- Middle mouse button or scroll wheel click (equivalent to Button2).
----@field Middle integer
---- First mouse button, typically the left button.
----@field Button0 integer
---- Second mouse button, typically the right button.
----@field Button1 integer
---- Third mouse button, typically the middle button.
----@field Button2 integer
---- Fourth mouse button, typically the backward thumb button.
----@field Button3 integer
---- Fifth mouse button, typically the forward thumb button.
----@field Button4 integer
---- Sixth extra mouse button.
----@field Button5 integer
---- Seventh extra mouse button.
----@field Button6 integer
---- Eighth extra mouse button.
----@field Button7 integer
---- No mouse button pressed.
----@field None integer
-
---- Enumeration of keyboard key scan codes for low-level key press, release, and shortcut handling.
----@class MyGUI.KeyCode
---- No key pressed or unassigned key code.
----@field None integer
---- Escape key.
----@field Escape integer
---- Return or Enter key on the main keyboard.
----@field Return integer
---- Space bar key.
----@field Space integer
---- Tab key.
----@field Tab integer
---- Backspace key.
----@field Backspace integer
---- Delete key on the navigation keypad.
----@field Delete integer
---- Left Shift modifier key.
----@field LeftShift integer
---- Right Shift modifier key.
----@field RightShift integer
---- Left Control modifier key.
----@field LeftControl integer
---- Right Control modifier key.
----@field RightControl integer
---- Left Alt modifier key.
----@field LeftAlt integer
---- Right Alt modifier key.
----@field RightAlt integer
---- Up arrow navigation key.
----@field ArrowUp integer
---- Down arrow navigation key.
----@field ArrowDown integer
---- Left arrow navigation key.
----@field ArrowLeft integer
---- Right arrow navigation key.
----@field ArrowRight integer
-
---- Enumeration defining how a container or widget automatically resizes in response to content or parent size changes.
----@class MyGUI.ResizingPolicy
---- Automatically adjusts size based on child content dimensions.
----@field Auto integer
---- Maintains a fixed size regardless of content changes.
----@field Fixed integer
---- Expands to fill all available space within the parent container.
----@field Fill integer
-
 --- Represents a 2D integer pixel coordinate point with horizontal and vertical components.
 ---@class MyGUI.IntPoint
 --- Horizontal pixel coordinate.
@@ -4321,20 +4194,6 @@ taskPriority = {
 ---@field upLayerItem fun(widget: MyGUI.Widget)
 --- Brings the specified widget to the front of its current layer.
 ---@field bringToFront fun(widget: MyGUI.Widget)
---- Alignment flags enum specifying widget anchor points and stretch behaviors.
----@field Align MyGUI.Align
---- Widget style enum defining whether a widget is child, overlapped, or popup.
----@field WidgetStyle MyGUI.WidgetStyle
---- Flow direction enum defining layout filling directions.
----@field FlowDirection MyGUI.FlowDirection
---- Menu item type enum distinguishing normal items, submenu popups, and separators.
----@field MenuItemType MyGUI.MenuItemType
---- Mouse button identifier enum for pointer click and press events.
----@field MouseButton MyGUI.MouseButton
---- Keyboard scan code enum for key press and release events.
----@field KeyCode MyGUI.KeyCode
---- Resizing policy enum defining auto-sizing and fill behaviors.
----@field ResizingPolicy MyGUI.ResizingPolicy
 --- Constructor and static methods for integer 2D point values.
 ---@field IntPoint MyGUI.IntPointConstructor
 --- Constructor and static methods for integer 2D size values.
@@ -4369,6 +4228,20 @@ taskPriority = {
 ---@field SkinManager MyGUI.SkinManagerStatic
 --- Singleton manager managing UI rendering layers and widget z-ordering.
 ---@field LayerManager MyGUI.LayerManagerStatic
+--- Nested enum table `MyGUI.Align`.
+---@field Align MyGUI.Align
+--- Nested enum table `MyGUI.FlowDirection`.
+---@field FlowDirection MyGUI.FlowDirection
+--- Nested enum table `MyGUI.KeyCode`.
+---@field KeyCode MyGUI.KeyCode
+--- Nested enum table `MyGUI.MenuItemType`.
+---@field MenuItemType MyGUI.MenuItemType
+--- Nested enum table `MyGUI.MouseButton`.
+---@field MouseButton MyGUI.MouseButton
+--- Nested enum table `MyGUI.ResizingPolicy`.
+---@field ResizingPolicy MyGUI.ResizingPolicy
+--- Nested enum table `MyGUI.WidgetStyle`.
+---@field WidgetStyle MyGUI.WidgetStyle
 
 --- Manages character dialogue state, active conversations, speech bubbles, word swaps, and dialogue event triggers for an individual character.
 ---@class Dialogue
@@ -4376,7 +4249,7 @@ taskPriority = {
 ---@field getCharacter fun(self: Dialogue): Character|nil
 --- Returns the current conversation target handle.
 ---@field getConversationTarget fun(self: Dialogue): hand|nil
---- Ends the current dialogue conversation, optionally marking it as completely finished (`definitelyTheEnd`).
+--- Ends the current speech, clears its bubble and current line, and records the conversation event in the repetition counter. With `definitelyTheEnd` true, clears the conversation even when awaiting a reply; false can retain it while waiting. A call during the game worker thread queues the end operation.
 ---@field endDialogue fun(self: Dialogue, definitelyTheEnd: boolean)
 --- Resolves and returns the replacement string for a word swap key (`key`) given a target `Character`, boolean flag, and `DialogLineData`.
 ---@field getWordSwap fun(self: Dialogue, key: string, _target: Character, arg3?: boolean, _line: DialogLineData): string
@@ -4567,7 +4440,7 @@ taskPriority = {
 --- Nested enum table `Dialogue.DT_MSG`.
 ---@field DT_MSG Dialogue.DT_MSG
 
---- Represents a single dialogue line or node in a conversation tree, including its text variants, speaker, conditions, actions, and child responses.
+--- Dialogue tree node containing text variants, speaker selection, conditions, actions, and child choices. Some nodes are structural or interjections rather than spoken text.
 ---@class DialogLineData
 --- Returns the parent `DialogLineData` node in the conversation tree, or nil if this is a root node.
 ---@field getParent fun(self: DialogLineData): DialogLineData|nil
@@ -4577,27 +4450,27 @@ taskPriority = {
 ---@field hasSpecificCharacterRequirement fun(self: DialogLineData): boolean
 --- Initializes the child `DialogChoiceList` from the underlying `GameData`.
 ---@field setupChildren fun(self: DialogLineData)
---- Returns true if this dialogue line satisfies its once-only and minimum repeat interval limits.
+--- Checks only the minimum repeat interval in game hours. Returns true if the interval is nonpositive, `lastTimeSaid.time` is at most -99, or enough game hours have elapsed; it does not check `onceOnly`.
 ---@field checkRepeatLimits fun(self: DialogLineData): boolean
 --- Checks character, race, faction, town, and item tag requirements between `me` (`Character`) and `target` (`Character`), returning true if satisfied.
 ---@field checkTags fun(self: DialogLineData, me: Character, target: Character): boolean
 --- Returns the name of the underlying `GameData` for this dialogue line.
 ---@field getName fun(self: DialogLineData): string
---- Returns true if this dialogue line has already been spoken at least once.
+--- Returns true when `lastTimeSaid.time` is greater than -99, the dialogue sentinel for a line that has not yet been spoken.
 ---@field saidItBefore fun(self: DialogLineData): boolean
---- Returns true if this dialogue line or its children permit talking to enemies.
+--- Returns false unconditionally in the supported engine implementation; it does not inspect child lines.
 ---@field willTalkToEnemies fun(self: DialogLineData): boolean
---- Returns true if this dialogue node contains no text lines (`lineCount == 0`).
+--- Returns true for a `DIALOGUE` container record, a missing `texts` array, or an interjection node. This does not simply test `lineCount`.
 ---@field isEmptyNode fun(self: DialogLineData): boolean
---- Returns true if this dialogue line is configured as an announcement.
+--- Returns the value of `isMonologue`.
 ---@field isAnnouncement fun(self: DialogLineData): boolean
---- Updates `lastTimeSaid` to the current game time.
+--- Stamps this line and every ancestor with the current world time in game hours.
 ---@field stampLastTimeSaid fun(self: DialogLineData)
---- Calculates and returns the selection priority score of this dialogue line for `target` (`Character`).
+--- Returns `score`, adding 2 when `target` has a race related to an entry in `isTargetRace`.
 ---@field getScore fun(self: DialogLineData, target: Character): integer
---- Returns the score of this dialogue line for `target` (`Character`), or includes child scores if this node is empty.
+--- Returns this node's base `score`; for an empty node, adds the highest immediate child score for `target`, with a minimum added value of zero. It does not sum all child scores.
 ---@field getScorePlusChildrenIfEmpty fun(self: DialogLineData, target: Character): integer
---- Returns true if this dialogue line has any child dialogue lines.
+--- Returns whether the `children` pointer is non-nil, even if its choice list is empty.
 ---@field hasChildren fun(self: DialogLineData): boolean
 --- Evaluates all conditions and tag checks for this line given `dialog` (`Dialogue`), `target` (`Character`), and `isWordswap` (`boolean`), returning true if valid.
 ---@field checkConditions fun(self: DialogLineData, dialogue: Dialogue, target: Character, isWordswap: boolean): boolean
@@ -4611,9 +4484,9 @@ taskPriority = {
 ---@field getChildByStringID fun(self: DialogLineData, id: string): DialogLineData|nil
 --- Sets the parent `DialogLineData` pointer (`p`) for this node.
 ---@field setParent fun(self: DialogLineData, parent: DialogLineData)
---- Returns the money cost required by any `DA_TAKE_MONEY` action on this line.
+--- Returns the value of the first `DA_TAKE_MONEY` or `DA_GIVE_MONEY` action. If neither exists, uses the first `DC_PLAYERMONEY` condition value, or zero if none exists.
 ---@field getMoneyCostForLine fun(self: DialogLineData): integer
---- Selects and returns a text string variant from this dialogue line, optionally stamping `lastTimeSaid` (`_stampTime`).
+--- Selects a random text variant and appends bracketed money amounts for `DA_TAKE_MONEY` actions. With `stampTime` true, stamps this line and its ancestors. Returns an empty string when there are no text variants.
 ---@field getText fun(self: DialogLineData, stampTime: boolean): string
 --- Populates the output `Lektor<DialogLineData>` (`out`) with valid player reply lines for `who` (`Dialogue`) and `target` (`Character`).
 ---@field getPlayerReplies fun(self: DialogLineData, out: Lektor<DialogLineData>, dialogue: Dialogue, target: Character)
@@ -4641,11 +4514,11 @@ taskPriority = {
 ---@field isTargetFaction Faction[]
 --- Lua array table of `Faction` objects required for the speaking character (converted to/from `std::set<Faction*>`).
 ---@field isMyFaction Faction[]
---- List (`Lektor<GameData>`) of character `GameData` templates required for the speaker or target.
+--- Character templates allowed for the speaking character (`dialog.me`). A nonempty list must include the speaker's template.
 ---@field isCharacter Lektor<GameData>
 --- List (`Lektor<GameData>`) of character `GameData` templates that the target must be carrying.
 ---@field isTargetCarryingCharacter Lektor<GameData>
---- List (`Lektor<GameData>`) of dialogue package `GameData` objects associated with this line (binds C++ `_hasPackage`).
+--- Dialogue packages required on the speaking character. A nonempty list passes when at least one entry is in `dialog.pacakgesIHave`; this field wraps C++ `_hasPackage`.
 ---@field hasPackage Lektor<GameData>
 --- List (`Lektor<GameData>`) of race `GameData` templates allowed for the speaker.
 ---@field isMyRace Lektor<GameData>
@@ -4663,7 +4536,7 @@ taskPriority = {
 ---@field onceOnly boolean
 --- Whether this dialogue line is a monologue that does not require a target.
 ---@field isMonologue boolean
---- Required `CharacterTypeEnum` integer for the speaker or target.
+--- Required `CharacterTypeEnum` for the target. A nonpositive value imposes no restriction; `OT_SLAVE` also accepts slave or escaping-slave states.
 ---@field forCertainType CharacterTypeEnum
 --- Child dialogue choices (`DialogChoiceList`) branching from this line.
 ---@field children DialogChoiceList|nil
@@ -4679,7 +4552,7 @@ taskPriority = {
 ---@field parent DialogLineData|nil
 --- Permanent percentage chance for this line to be available.
 ---@field chancePermanent number
---- Temporary percentage chance for this line to be selected.
+--- Percentage threshold rerolled during `checkConditions`. Values below 99 are tested against a random value from 0 to 100; values of 99 or higher bypass the roll.
 ---@field chanceTemporary number
 --- Whether this dialogue line is unique to a single owner character.
 ---@field unique boolean
@@ -4691,7 +4564,7 @@ taskPriority = {
 ---@field lastTimeSaid TimeOfDay
 --- Base priority score for selecting this dialogue line.
 ---@field score integer
---- Whether only one character can speak this line at a time.
+--- Prevents this line from passing `checkConditions` while a member of the speaker's platoon has the same active conversation.
 ---@field oneAtATime boolean
 --- Whether this dialogue line is locked by default.
 ---@field isLocked boolean
@@ -4730,58 +4603,58 @@ taskPriority = {
 --- Target integer value compared against the evaluated condition.
 ---@field value integer
 
---- Defines parameters for triggering a military or diplomatic campaign from dialogue, including the campaign template, delay window, and probability.
+--- Campaign template, random request delay range in game hours, and selection chance used by dialogue campaign triggers.
 ---@class CampaignTriggerData
 --- The campaign `GameData` template to trigger.
 ---@field what GameData|nil
---- Minimum delay time before the triggered campaign starts.
+--- Lower bound of the random campaign request delay, in game hours.
 ---@field minTime integer
---- Maximum delay time before the triggered campaign starts.
+--- Upper bound of the random campaign request delay, in game hours.
 ---@field maxTime integer
---- Probability weight or chance of triggering the campaign.
+--- Chance contribution copied into the campaign selector when dialogue data is loaded. Changing this field alone does not rebuild the selector's stored weights.
 ---@field chance number
 
---- Represents a game timestamp or time-of-day value measured in hours, with helpers for time arithmetic, elapsed time comparisons, and human-readable formatting.
+--- Game timestamp or duration stored in game hours. Zero represents an unset value; elapsed-time helpers compare against the world game clock.
 ---@class TimeOfDay
---- Resets the timestamp to an unset/null value.
+--- Sets `time` to zero, the value recognized by `isUnset`.
 ---@field setNull fun(self: TimeOfDay)
---- Returns true if this TimeOfDay instance has not been set.
+--- Returns true when `time` is exactly zero.
 ---@field isUnset fun(self: TimeOfDay): boolean
---- Sets the internal time value in hours.
+--- Replaces `time` with the supplied number of game hours, without wrapping it to a 24-hour clock.
 ---@field setTime fun(self: TimeOfDay, hours: number)
---- Adds the specified number of hours to this timestamp.
+--- Adds game hours to `time`, without wrapping it to a 24-hour clock.
 ---@field addHours fun(self: TimeOfDay, hours: number)
---- Adds the specified number of minutes to this timestamp.
+--- Adds game minutes to `time`, converting them to hours.
 ---@field addMinutes fun(self: TimeOfDay, minutes: number)
---- Returns the timestamp value converted to total hours.
+--- Returns `time` in game hours.
 ---@field getTotalHours fun(self: TimeOfDay): number
---- Returns the timestamp value converted to total minutes.
+--- Returns `time * 60` in game minutes.
 ---@field getTotalMinutes fun(self: TimeOfDay): number
---- Returns the timestamp value converted to total in-game seconds.
+--- Returns `time * 3600` in game seconds.
 ---@field getTotalSeconds fun(self: TimeOfDay): number
---- Returns the timestamp value converted to real-life seconds at normal game speed.
+--- Converts the stored game hours using `time * 3600 / 33 * 0.5`. This is a fixed conversion, independent of pause state and game speed; it does not measure wall-clock time.
 ---@field getRealLifeSeconds fun(self: TimeOfDay): number
---- Returns the number of real-life seconds elapsed since this timestamp.
+--- Applies the fixed `hours * 3600 / 33 * 0.5` conversion to `getHoursPassed()`. It does not measure wall-clock time elapsed since the timestamp.
 ---@field getRealLifeSecondsPassed fun(self: TimeOfDay): number
---- Returns the timestamp value converted to total days.
+--- Returns `time / 24` in game days.
 ---@field getTotalDays fun(self: TimeOfDay): number
---- Sets this TimeOfDay to the current in-game world time.
+--- Copies the current world clock in game hours into `time`.
 ---@field stampTime fun(self: TimeOfDay)
---- Returns the number of in-game hours elapsed since this timestamp.
+--- Returns current world game hours minus `time`. A future timestamp produces a negative result.
 ---@field getHoursPassed fun(self: TimeOfDay): number
---- Returns the number of in-game minutes elapsed since this timestamp.
+--- Returns `getHoursPassed() * 60` in game minutes.
 ---@field getMinutesPassed fun(self: TimeOfDay): number
---- Returns the number of in-game seconds elapsed since this timestamp.
+--- Returns `getHoursPassed() * 3600` in game seconds.
 ---@field getSecondsPassed fun(self: TimeOfDay): number
---- Returns true if the current world time has passed this timestamp plus additionalHours.
+--- Returns true when `time` is zero or the current world game hours are strictly greater than `time + additionalHours`. Equality does not pass.
 ---@field timeOfDayHasPassed fun(self: TimeOfDay, additionalHours: number): boolean
---- Returns the raw time difference elapsed since this timestamp.
+--- Returns current world game hours minus `time`, the same difference as `getHoursPassed()`.
 ---@field timePassed fun(self: TimeOfDay): number
---- Returns a formatted string describing the time elapsed since this timestamp.
+--- Formats current world game hours minus `time` using `getTotalTimeString`.
 ---@field getTimePassedString fun(self: TimeOfDay): string
---- Returns a formatted string describing the time remaining until this timestamp.
+--- Formats `time` minus current world game hours using `getTotalTimeString`; a past deadline produces the localized expired message.
 ---@field getTimeRemainingString fun(self: TimeOfDay): string
---- Returns a formatted string representing the total duration stored in this TimeOfDay.
+--- Formats the stored duration with localized units: floored minutes up to one hour, floored hours up to one day, or days and remaining whole hours above one day. Negative durations produce the localized expired message.
 ---@field getTotalTimeString fun(self: TimeOfDay): string
 --- Returns true if this TimeOfDay is greater than the given TimeOfDay.
 ---@field operator_gt fun(self: TimeOfDay, other: TimeOfDay): boolean
@@ -4795,48 +4668,48 @@ taskPriority = {
 ---@field operator_eq fun(self: TimeOfDay, other: TimeOfDay): boolean
 --- Copies the time value from another TimeOfDay into this instance and returns self.
 ---@field operator_assign fun(self: TimeOfDay, other: TimeOfDay): TimeOfDay
---- The raw time value stored as a double-precision number.
+--- Timestamp or duration in game hours, stored as a double. Zero is also the unset value; values are not restricted to a 24-hour clock.
 ---@field time number
 
 --- Holds a collection of `WorldEventStateQuery` pointers and their expected boolean outcomes for evaluating compound world state requirements.
 ---@class WorldEventStateQueryList
---- Populates this query list from the named reference list (`listname`) on `d` (`GameData`) and returns true if any queries were added.
+--- Adds or updates queries from `data`'s named reference list without clearing existing entries. A reference's first integer value of 1 requires true; other values require false. Returns false for a missing or empty source list, otherwise whether the resulting query map is nonempty.
 ---@field setupFrom fun(self: WorldEventStateQueryList, data: GameData, listName: string): boolean
---- Clears all world state queries from this list.
+--- Clears the query/expected-result map without destroying the cached query objects.
 ---@field reset fun(self: WorldEventStateQueryList)
---- Returns true if all `WorldEventStateQuery` entries in `statesList` match their required boolean states.
+--- Returns true if every query matches its stored expected boolean result. An empty list returns true.
 ---@field isTrue fun(self: WorldEventStateQueryList): boolean
 --- Map (`OgreUnorderedMap<WorldEventStateQuery, boolean>`) associating each `WorldEventStateQuery` with its expected boolean truth value.
 ---@field statesList OgreUnorderedMap<WorldEventStateQuery, boolean>
 
---- Evaluates a set of world state conditions, such as unique NPC life/imprisonment states, town states, faction alliances/wars, and player involvement.
+--- Cached world-state requirements for unique NPCs and player-faction relations. Evaluates required/forbidden NPC states and expected alliance/enemy results; the SDK-declared town map is not used by `isTrue()`.
 ---@class WorldEventStateQuery
---- Evaluates all world state requirements in this query and returns true if all conditions are currently met.
+--- Checks required and forbidden unique-NPC states and the player faction's alliance/enemy requirements. All evaluated requirements must pass; an empty query returns true. The `towns` map is not evaluated.
 ---@field isTrue fun(self: WorldEventStateQuery): boolean
---- Whether player involvement is required for the world state condition.
+--- When enabled, requires recorded player involvement for required non-ALIVE unique-NPC states and for forbidden ALIVE states. This flag is not a general town or faction involvement test.
 ---@field playerInvolvement boolean
 --- Map (`OgreUnorderedMap<Faction, boolean>`) of factions and whether the player must be allied with them.
 ---@field isAllyOf OgreUnorderedMap<Faction, boolean>
 --- Map (`OgreUnorderedMap<Faction, boolean>`) of factions and whether the player must be hostile to them.
 ---@field isEnemyOf OgreUnorderedMap<Faction, boolean>
---- Map (`OgreUnorderedMap<GameData, integer>`) of town `GameData` objects to their required `WorldStateEnum` integer state.
+--- SDK-declared town-state map. The supported engine's `isTrue()` does not evaluate this map.
 ---@field towns OgreUnorderedMap<GameData, integer>
 --- Map (`OgreUnorderedMap<GameData, integer>`) of character `GameData` objects to the `WorldStateEnum` integer state they must match.
 ---@field uniqueNPCsAre OgreUnorderedMap<GameData, integer>
 --- Map (`OgreUnorderedMap<GameData, integer>`) of character `GameData` objects to the `WorldStateEnum` integer state they must not match.
 ---@field uniqueNPCsAreNot OgreUnorderedMap<GameData, integer>
---- Static method (callable on the global `WorldEventStateQuery` table or an instance) that checks all world state queries listed under `listname` in `what` (`GameData`) and returns true if satisfied.
+--- Evaluates queries referenced by `what`'s `listname`. A reference's first integer value of 1 requires true; other values require false. Returns true for an empty list; references that do not resolve to a query are skipped.
 ---@field checkAllStatesInObject fun(what: GameData, listname: string): boolean
---- Static method (callable on the global `WorldEventStateQuery` table or an instance) that retrieves or creates the cached `WorldEventStateQuery` for `d` (`GameData`).
+--- Returns the cached query for `d`, creating it from the `NPC is`, `NPC is NOT`, `player ally`, and `player enemy` reference lists on the first lookup. Later calls reuse the same query rather than reloading changed data.
 ---@field getFromData fun(d: GameData): WorldEventStateQuery
 --- Nested enum table `WorldEventStateQuery.WarStateEnum`.
 ---@field WarStateEnum WorldEventStateQuery.WarStateEnum
 
 --- Static query methods for WorldEventStateQuery world state evaluation.
 ---@class WorldEventStateQueryStatic
---- Evaluates all world event state conditions defined on the given data object.
+--- Evaluates the named world-state reference list. Each reference requires true only when its first integer value is 1; other values require false. An empty list passes, and unresolved queries are skipped.
 ---@field checkAllStatesInObject fun(data: GameData, listName: string): boolean
---- Retrieves world event state query data from a game data object.
+--- Returns the cached query for `d`, loading its NPC and player-faction relation requirements on the first lookup. Later calls reuse the same query.
 ---@field getFromData fun(data: GameData): WorldEventStateQuery|nil
 --- Nested enum table `WorldEventStateQuery.WarStateEnum`.
 ---@field WarStateEnum WorldEventStateQuery.WarStateEnum
@@ -4880,7 +4753,7 @@ taskPriority = {
 
 --- Associative data structure linking a UI research item view cell with its underlying ResearchItem on the tech tree screen.
 ---@class ManagementScreen_TechItemViewData
---- Raw ResearchItem pointer.
+--- Research queue entry represented by this view, used to obtain its name and progress. Exposed as a borrowed opaque `ResearchItem` address, or nil when no entry is assigned.
 ---@field item lightuserdata|nil
 
 --- GUI overlay element representing a road or travel path line drawn on the world map screen.
@@ -4901,11 +4774,11 @@ taskPriority = {
 ---@field buildings Lektor<hand>
 --- Unique hash identifying the static geometry state for this navmesh tile.
 ---@field hash integer
---- Ogre::Vector3 encoded as the binding's vector table.
+--- Translation offset supplied for this navigation-mesh generation task, exposed as a copied Vector3 table with `x`, `y`, and `z` components.
 ---@field offset table
---- Raw Ogre::Aabb pointer.
+--- Geometry bounds for the generation task. The lightuserdata points to the task's embedded `Ogre::Aabb`; assignment copies an `Ogre::Aabb` from the supplied address.
 ---@field bounds lightuserdata
---- Raw hkaiNavMesh pointer.
+--- Havok navigation mesh associated with this generation task, exposed as borrowed opaque lightuserdata, or nil when no mesh is assigned.
 ---@field mesh lightuserdata|nil
 --- Pointer to the resulting NavInstance object containing the baked navigation mesh.
 ---@field output NavInstance|nil
@@ -5044,20 +4917,20 @@ taskPriority = {
 --- Pointer to the next MessageQueue_Node in the linked list.
 ---@field next MessageQueue_Node|nil
 
---- Mesh vertex and texture coordinate lookup cache used for character appearance customization and body deformations.
+--- Mesh vertex positions and texture coordinates used by appearance lookups. Lua exposes the native array addresses; element access, bone assignments, and vertex count are not bound.
 ---@class MeshDataLookup
---- Raw Ogre::Vector3 pointer.
+--- Address of the extracted vertex-position array used by appearance lookups. Exposed as opaque lightuserdata; this binding provides no Lua array indexing or vertex count.
 ---@field verts lightuserdata|nil
---- Raw Ogre::Vector2 pointer.
+--- Address of the texture-coordinate array paired with the extracted vertices. Exposed as opaque lightuserdata, not a Lua table of UV pairs.
 ---@field uvs lightuserdata|nil
 --- Nested enum table `MeshDataLookup.Dir`.
 ---@field Dir MeshDataLookup.Dir
 
 --- Holds a list of `DialogLineData` conversation choices that can be evaluated and selected during dialogue.
 ---@class DialogChoiceList
---- Creates or retrieves a `DialogLineData` for `conversation` (`GameData`) with `parent` (`DialogLineData`) and appends it to `conversationChoices`.
+--- Adds the conversation's cached `DialogLineData` unless its `GameData` is already present. Inserts it in descending priority order, including the highest immediate child score for empty nodes, and assigns `parent` to the added node. Returns no value.
 ---@field add fun(self: DialogChoiceList, conversation: GameData, parent: DialogLineData)
---- List (`Lektor<DialogLineData>`) of child or root dialogue line choices.
+--- Dialogue choices ordered by the priority used by `add`, with higher scores first. Direct edits to this container do not run `add`'s duplicate or ordering checks.
 ---@field conversationChoices Lektor<DialogLineData>
 
 --- Engine handle that identifies a game object by object type, index, and serial. Resolve it with a getter such as `getCharacter`, which returns nil when the handle does not resolve to an object of that type.
@@ -5206,7 +5079,7 @@ taskPriority = {
 ---@field player PlayerInterface|nil
 --- Global faction relationship and diplomacy coordinator.
 ---@field factionMgr FactionManager|nil
---- Toggles the game simulation pause state on or off.
+--- Sets the pause request to `on`; a zero `frameSpeedMult` also forces the world to remain paused. Updates worker pause states and the pause/speed GUI when the state changes.
 ---@field togglePause fun(self: GameWorld, on: boolean)
 --- Returns true if the world simulation is currently paused.
 ---@field isPaused fun(self: GameWorld): boolean
@@ -5270,7 +5143,7 @@ taskPriority = {
 ---@field sysMessage_noDuplicates fun(self: GameWorld, m: SysMessage)
 --- Determines the PhysX shape type and collision filtering group for the given item type.
 ---@field getCollisionGroupType fun(self: GameWorld, type: integer): integer, integer
---- Calculates the elapsed in-game time interval since the specified timestamp.
+--- With a numeric timestamp from `getTimeStamp`, returns elapsed performance-timer seconds as a number. With a `TimeOfDay`, returns a new `TimeOfDay` containing current world game hours minus that timestamp.
 ---@field getTimeFromStamp fun(self: GameWorld, arg1: TimeOfDay|number): TimeOfDay|number
 --- Returns true if the specified root object is currently queued for deferred destruction.
 ---@field getIsInKillList fun(self: GameWorld, obj: RootObject): boolean
@@ -5364,13 +5237,13 @@ taskPriority = {
 ---@field loadAllPlatoons fun(self: GameWorld)
 --- Recalculates interior vs exterior wall containment states for all active characters in the world.
 ---@field reCalculateFortificationInsideOutsideStateForAllCharacters fun(self: GameWorld)
---- Returns the current high-precision game world timestamp.
+--- Returns seconds on the world performance timer. This is a real-time timestamp, separate from the world clock in game hours.
 ---@field getTimeStamp fun(self: GameWorld): number
---- Calculates elapsed in-game time in hours since the given timestamp.
+--- Converts elapsed performance-timer seconds since the numeric `stamp` to hours by dividing by `getLengthOfHourInRealSeconds()`. The input is a real-time timestamp from `getTimeStamp`, not a game-hour timestamp.
 ---@field getTimeFromStamp_inGameHours fun(self: GameWorld, stamp: number): number
---- Returns the current world simulation time formatted as `TimeOfDay`.
+--- Returns a new `TimeOfDay` containing the current world clock in game hours.
 ---@field getTimeStamp_inGameHours fun(self: GameWorld): TimeOfDay
---- Returns the duration of one in-game hour measured in real-world seconds.
+--- Returns the fixed conversion factor of approximately 109.09091 real seconds per game hour. This value does not change with the current game speed.
 ---@field getLengthOfHourInRealSeconds fun(self: GameWorld): number
 --- Background worker thread executing AI and non-render simulations.
 ---@field _AINonRenderThread lightuserdata
@@ -8020,7 +7893,7 @@ taskPriority = {
 
 --- GUI data panel with lines grouped into categories.
 ---@class DatapanelGUI : GUIWindow
---- Adds or updates a line using one of the runtime setLine overloads.
+--- Creates or reuses a line in `category` and returns its borrowed `DataPanelLine`. Explicit-key forms use `keyValue` to identify the line; other forms use `s1`. Supports custom skins, `last`/`keyVisible` flags, or a numeric `barValue` for a progress line.
 ---@field setLine fun(self: DatapanelGUI, s1: string, s2: string, valueOrSkin: integer|number|string, categoryOrSkin: boolean|integer|string, lastOrCategory?: boolean|integer|string, keyVisible?: boolean|integer): DataPanelLine
 --- Enables frequent update mode for high-frequency data refresh.
 ---@field setFrequentUpdateMode fun(self: DatapanelGUI)
@@ -8591,13 +8464,13 @@ taskPriority = {
 ---@field load fun(self: GameDataContainer, filename: string, modName: string, modIndex: integer, moreData?: Serialisable, keepDeletedInstances?: boolean): boolean
 --- Serializes all records in this container to disk at `filename`, invoking auxiliary serialization via `moreData`.
 ---@field save fun(self: GameDataContainer, filename: string, moreData?: Serialisable): boolean
---- Static function exposed through the instance method table; call with dot syntax.
+--- Deletes every record in the global deferred-deletion set and empties the set, invalidating references to those records. Static function exposed through the instance method table; call with dot syntax and no self argument.
 ---@field flushKillList fun()
---- Static function exposed through the instance method table; call with dot syntax.
+--- Requests deferred deletion of `dat` when `validity` is 123456, `readOnly` is false, and both `stringID` and `name` are nonempty. It does not test `sourceContainer`. Call with dot syntax and the record as the first argument.
 ---@field destroyHomelessData fun(data: GameData)
 --- Scans all records in container, collecting every record of type `ofType` that references target record `what` inside reference list `listname`.
 ---@field findAllDataThatReferencesThis fun(self: GameDataContainer, out: Lektor<GameData>, what: GameData, ofType: integer, listName: string)
---- Static function exposed through the instance method table; call with dot syntax.
+--- Adds `d` to the global deferred-deletion set when the engine permits queuing; deletion occurs in `flushKillList`. Call with dot syntax and the record as the first argument.
 ---@field _addToKillList fun(data: GameData)
 --- Next sequential unique integer ID to allocate.
 ---@field currentID integer
@@ -8629,7 +8502,7 @@ taskPriority = {
 --- Populates a list of all building `GameData` templates belonging to the specified construction category.
 ---@field getBuildings fun(self: GameDataManager, list: Lektor<GameData>, category: string)
 
---- Component save state delta container capturing runtime modifications, deleted entity tombstones, and differential GameData records for a specific engine subsystem.
+--- Save/load state for one object instance: its base template, source database, placement, instance ID, and state records indexed by `itemType`.
 ---@class GameSaveState
 --- Generates and assigns a fresh unique instance ID for this object in the save game data container.
 ---@field generateNewInstanceID fun(self: GameSaveState)
@@ -8639,7 +8512,7 @@ taskPriority = {
 ---@field createState fun(self: GameSaveState, itemType: integer): GameData|nil
 --- Returns true if a state record exists for the given `itemType`.
 ---@field hasState fun(self: GameSaveState, itemType: integer): boolean
---- Returns the `GameData` state record corresponding to the specified `itemType`, or nullptr.
+--- Returns the stored `GameData` state for the specified `itemType`, or nil if that type has no state. This lookup does not create a record.
 ---@field getState fun(self: GameSaveState, itemType: integer): GameData|nil
 --- Returns the number of distinct serialized state components associated with this object.
 ---@field numStates fun(self: GameSaveState): integer
@@ -8655,7 +8528,7 @@ taskPriority = {
 ---@field addState fun(self: GameSaveState, state: GameData)
 --- Returns the unique string `InstanceID` identifying this object in savegame files.
 ---@field getInstanceID fun(self: GameSaveState): InstanceID
---- Returns true if this GameSaveState holds valid base GameData.
+--- Returns true only when both `baseData` and `dataSource` are non-nil. Call this method explicitly; Lua userdata itself remains truthy.
 ---@field operator_bool fun(self: GameSaveState): boolean
 --- Base FCS GameData template record for the serialized object.
 ---@field baseData GameData|nil
@@ -8725,15 +8598,15 @@ taskPriority = {
 --- Two-dimensional integer vector representing 2D grid coordinates, tile offsets, or cell sizes.
 ---@class iVector2
 ---@operator add(iVector2): iVector2
---- Returns the linearized 1D index representation of this 2D coordinate.
+--- Returns the integer key `x * 10000 + y`; no grid width is supplied and distinct coordinate pairs can produce the same key.
 ---@field getLinearValue fun(self: iVector2): integer
---- Returns the formatted string representation of the vector.
+--- Returns the two integer coordinates separated by a comma, in `x,y` order.
 ---@field getAsString fun(self: iVector2): string
 --- Returns true if both x and y coordinates are equal.
 ---@field operator_eq fun(self: iVector2, other: iVector2): boolean
 --- Returns true if either x or y coordinates differ.
 ---@field operator_ne fun(self: iVector2, other: iVector2): boolean
---- Returns true if this coordinate is ordered before the other in standard coordinate ordering.
+--- Compares `x * 10000 + y` with the other vector's key. Also bound to Lua `<`; this is not a component-by-component comparison.
 ---@field operator_lt fun(self: iVector2, other: iVector2): boolean
 --- Adds two iVector2 vectors component-wise and returns the resulting iVector2 value.
 ---@field operator_add fun(self: iVector2, other: iVector2): iVector2
@@ -8801,13 +8674,13 @@ taskPriority = {
 ---@field isResearchArtifact fun(self: InventoryItemBase): boolean
 --- Returns the quality or tech level of the item.
 ---@field getLevel fun(self: InventoryItemBase): integer
---- Returns the raw const char pointer exposed by the binding.
+--- Returns the inventory sound-category address selected from the item type and material, such as Weapon_Metal, Fabric, or Robotic_Component. Lua receives opaque lightuserdata pointing to a C string, not a Lua string; unsupported types produce null lightuserdata.
 ---@field getItemSound fun(self: InventoryItemBase): lightuserdata
 --- Returns true if the item is marked as stolen, optionally including items with unknown theft status when includeUnknown is true.
 ---@field isStolen fun(self: InventoryItemBase, includeUnknown: boolean): boolean
 --- Returns the merchant price multiplier applied to this item.
 ---@field merchantPriceMod fun(self: InventoryItemBase): number
---- Accepts either (active, yesNoMaybe) or (active, position, rotation, flag, yesNoMaybe, finalFlag).
+--- Activates the item's scene representation through its virtual engine method. Accepts `(createPhysical, bareWeapon)` or `(createPhysical, position, rotation, fixedPosition, bareWeapon, dynamicPhysics)`; `bareWeapon` is a `YesNoMaybe` value.
 ---@field activate fun(self: InventoryItemBase, active: boolean, modeOrPosition: integer|table, rotation?: table, flag?: boolean, yesNoMaybe?: integer, finalFlag?: boolean)
 --- Appends stolen-item status lines to the provided OgreVector<StringPair> container for tooltip display.
 ---@field getStolenItemGUIInfo fun(self: InventoryItemBase, lines: OgreVector<StringPair>)
@@ -8873,32 +8746,32 @@ taskPriority = {
 ---@field _whosInventoryWeAreIn hand
 --- Internal flag indicating whether this item is a research artifact.
 ---@field _isResearchArtifact boolean
---- Raw BuildingItemGroup pointer.
+--- Building-item group associated with this item. Exposed as borrowed opaque `BuildingItemGroup` lightuserdata; group members are not available through this binding.
 ---@field itemGroup lightuserdata
 
---- Two-dimensional axis-aligned bounding box used for zone management and planar spatial queries.
+--- Axis-aligned bounds on the world X/Z plane. Vector3 queries ignore height; the stored `y` and `y2` coordinates represent world Z.
 ---@class AABB2D
---- Resets the bounding box to an empty, uninitialized state.
+--- Sets all four bounds to zero, producing a zero-size box at the origin.
 ---@field setNull fun(self: AABB2D)
---- Returns true if the specified 3D vector position falls within the 2D bounding box boundaries.
+--- Tests the Vector3 point's `x` and `z` against the stored bounds, including the edges. The point's height (`y`) is ignored.
 ---@field pointWithin fun(self: AABB2D, point: table): boolean
---- Expands the dimensions of the bounding box uniformly in all directions by the specified amount.
+--- Subtracts `amount` from `x` and `y` and adds it to `x2` and `y2`. Negative amounts shrink the bounds.
 ---@field inflate fun(self: AABB2D, amount: number)
---- Returns the horizontal width of the bounding box along the X axis.
+--- Returns `x2 - x`, the extent along world X.
 ---@field sizeX fun(self: AABB2D): number
---- Returns the vertical height of the bounding box along the Y axis.
+--- Returns `y2 - y`, the extent along world Z.
 ---@field sizeY fun(self: AABB2D): number
---- Accepts another AABB2D, a Vector3 and radius, or two Vector3 values.
+--- Tests overlap with another `AABB2D`, a Vector3 position expanded by `radius` along X and Z, or the X/Z projection of a segment between two Vector3 endpoints. The radius overload uses an axis-aligned square, not a circle-distance test.
 ---@field intersects fun(self: AABB2D, otherOrStart: AABB2D|table, endOrRadius?: table|number): boolean
---- Calculates ray intersection against the 2D bounding box from a ray origin and direction vector, returning the intersection point as a 2D vector.
+--- Returns the 2D ray entry point, or the ray origin if it is strictly inside the box. A miss returns `{x = 0, y = 0}`, which can also be a valid hit point.
 ---@field intersects2 fun(self: AABB2D, rayOrigin: table, rayDirection: table): table
---- Minimum horizontal coordinate of the bounding box.
+--- Lower bound along world X.
 ---@field x number
---- Minimum vertical coordinate of the bounding box.
+--- Lower bound along world Z; named `y` in this 2D representation.
 ---@field y number
---- Maximum horizontal coordinate of the bounding box.
+--- Upper bound along world X.
 ---@field x2 number
---- Maximum vertical coordinate of the bounding box.
+--- Upper bound along world Z; named `y2` in this 2D representation.
 ---@field y2 number
 
 --- Stores player-configurable squad AI behavior toggles (such as auto-healing, rescuing allies, and sharing food) on PlayerInterface.
@@ -8963,14 +8836,14 @@ taskPriority = {
 ---@class ZoneSpacialGrid_ZoneCell
 --- The ZoneMap instance encompassing this spatial cell.
 ---@field zone ZoneMap|nil
---- Raw SpacialCell** pointer.
+--- Address of this zone's array of `SpacialCell` pointers, allocated by the spatial grid's cell factory. Exposed as opaque lightuserdata or nil, not a Lua array.
 ---@field cells lightuserdata|nil
 
---- Raycast collision result storing an intersected object identifier and the 3D world hit point.
+--- Renderer trace-result record containing integer result data and a 3D position. A default record contains `data = -1` and a zero vector.
 ---@class rendHit
---- Integer identifier or material/face index returned by the raycast intersection.
+--- Integer trace-result data, initialized to -1 by the default constructor.
 ---@field data integer
---- Ogre::Vector3 encoded as { x, y, z } or positional indices.
+--- Stored 3D trace position, initialized to zero. Reading returns a copied Vector3 table; assign a Vector3 table to replace the stored position.
 ---@field hit table
 
 --- A specialized `Gear` subclass that represents equippable robotic limb replacements. It handles tracking specific limb condition (damage, wear) and computing character stat multipliers (e.g. stealth, athletics, strength) based on the tier and type of the limb.
@@ -9028,7 +8901,7 @@ taskPriority = {
 ---@field Stop fun(self: CPerfTimer)
 --- Returns true if the performance counter is currently active and running.
 ---@field IsRunning fun(self: CPerfTimer): boolean
---- Static method returning true if the system hardware supports high-resolution performance counters.
+--- Returns whether high-resolution performance-counter support was detected. This is an instance method and requires a `CPerfTimer` as self.
 ---@field IsSupported fun(self: CPerfTimer): boolean
 --- Returns the timer resolution in seconds as a number.
 ---@field Resolution fun(self: CPerfTimer): number
@@ -9048,27 +8921,27 @@ taskPriority = {
 
 --- Represents a bitmask flag requirement on a `DialogLineData` (wrapping `DialogLineData::FlagCondition`).
 ---@class FlagCondition
---- DialogConditionEnum value.
+--- Condition category (`DialogConditionEnum`) associated with this flag requirement's `want` and `flags` values.
 ---@field key integer
 --- Whether the specified flags must be present (`true`) or absent (`false`).
 ---@field want boolean
 --- Bitmask of unsigned integer flags to test.
 ---@field flags integer
 
---- Tracks trigger count, last trigger timestamp, and reset interval for a single dialogue event in `Dialogue::RepetitionCounter`.
+--- Count, performance-timer timestamp, and reset interval for one event in `Dialogue::RepetitionCounter`.
 ---@class DialogState
---- Number of times the dialogue event has been triggered.
+--- Stored number of times this dialogue event has been counted; initialized to zero.
 ---@field count integer
---- Game time when the dialogue event was last triggered.
+--- Performance-timer timestamp in seconds when this event was last counted; initialized to zero.
 ---@field lastTimeStamp number
---- Time interval after which the repetition count resets.
+--- Stored repetition reset interval in seconds, initialized to 60. `RepetitionCounter:getCount()` does not apply this interval.
 ---@field resetTime number
 
---- Internal message payload structure used for communicating UI events and player control state transitions across game subsystems.
+--- Command message containing a `MessageForB.MessageType` selector and an integer payload. `MessageForB.new` creates an owned value; dispatch is a separate operation.
 ---@class MessageForB
---- The MessageForB::MessageType enumeration code defining the message action.
+--- Command selector from `MessageForB.MessageType`; defaults to `M_UNSELECT_ALL` in `MessageForB.new()`.
 ---@field messageType integer
---- Integer payload or parameter accompanying the message.
+--- Integer payload interpreted by the selected command; defaults to zero in `MessageForB.new()`.
 ---@field messageInt integer
 --- Constructs and returns a new MessageForB value with optional MessageType and integer payload.
 ---@field new fun(arg1: integer, arg2: integer): MessageForB
@@ -9079,7 +8952,7 @@ taskPriority = {
 
 --- Static factory constructors for MessageForB messages.
 ---@class MessageForBStatic
---- Constructs a new MessageForB command instance.
+--- Creates an owned message value with the given `MessageForB.MessageType` and optional integer payload. With no arguments, defaults to `M_UNSELECT_ALL` and zero; creating the value does not dispatch it.
 ---@field new fun(messageType?: integer, messageInt?: integer): MessageForB
 --- Nested enum table `MessageForB.MessageType`.
 ---@field MessageType MessageForB.MessageType
@@ -9156,16 +9029,16 @@ taskPriority = {
 
 --- Asynchronous background loading request for a 3D mesh entity managed by ResourceLoader.
 ---@class ResourceLoadRequestMesh
---- Finalizes mesh loading on the main thread and applies materials and skeleton bindings to the entity.
+--- Initializes the target entity, applies the request's mesh settings, and invokes its native completion callback if present. Returns no value.
 ---@field finish fun(self: ResourceLoadRequestMesh)
---- Raw Ogre::Entity pointer.
+--- Target `Ogre::Entity` initialized when this mesh request finishes. Read-only borrowed lightuserdata; it does not expose an entity wrapper or transfer ownership.
 ---@field entity lightuserdata|nil
 
 --- Represents an asynchronous texture loading request managed by ResourceLoader to bind a loaded texture onto an Ogre material.
 ---@class ResourceLoadRequestTexture
---- Returns true if the target Ogre material for this texture request is valid and loaded.
+--- Returns true when the material is non-null and its shared-pointer reference count exceeds the resource system's retained-reference count plus one.
 ---@field isMaterialValid fun(self: ResourceLoadRequestTexture): boolean
---- Raw Ogre::TextureUnitState pointer.
+--- Material texture slot that receives the loaded texture when the engine completes the request. Read-only borrowed `Ogre::TextureUnitState` lightuserdata, not a Lua texture object.
 ---@field textureUnitState lightuserdata|nil
 
 --- Message box dialog layout derived from BaseLayout, displaying notifications, prompts, and modal confirmation buttons.
@@ -9174,7 +9047,7 @@ taskPriority = {
 ---@field buttonClick fun(self: Box, sender?: MyGUI.Widget)
 --- Whether this dialog box is modal and blocks interaction with underlying interface elements.
 ---@field modal boolean
---- Raw MyGUI delegate pointer.
+--- Native callback invoked with the button's integer result when the message box is removed. Read-only opaque delegate lightuserdata; this is not a callable Lua function.
 ---@field callback lightuserdata|nil
 
 --- Asynchronous texture loading task descriptor used by ResourceLoader to track texture assets.
@@ -9296,13 +9169,13 @@ taskPriority = {
 --- The integer hkResultEnum status value (0 for HK_SUCCESS, 1 for HK_FAILURE).
 ---@field m_enum integer
 
---- High-precision timestamp tracker measuring elapsed intervals using an internal CPerfTimer.
+--- Timestamp helper using elapsed seconds from an embedded `CPerfTimer`. Reading a stamp does not modify the timer.
 ---@class SimpleTimeStamper
---- Returns elapsed time in seconds since the provided _lastStamp timestamp.
+--- Returns current elapsed seconds on `timer` minus `lastStamp`. Use a value from this stamper's `stampTime` as the timestamp.
 ---@field getTime fun(self: SimpleTimeStamper, lastStamp: number): number
---- Records and returns the current time in seconds from the internal timer.
+--- Returns current elapsed seconds on `timer`. Reading the timestamp does not restart or reset the timer.
 ---@field stampTime fun(self: SimpleTimeStamper): number
---- The underlying CPerfTimer instance used for high-resolution time measurements.
+--- Embedded performance timer supplying this stamper's timestamps; exposed as a borrowed `CPerfTimer`.
 ---@field timer CPerfTimer
 
 --- Level editor tool window for browsing and selecting squad templates, filtered by faction.
@@ -9377,15 +9250,15 @@ taskPriority = {
 --- Whether word wrapping is enabled for the edit box.
 ---@field wordWrap boolean
 
---- Tracks how many times and how recently each `EventTriggerEnum` dialogue event has been triggered for a `Dialogue` instance (wrapping `Dialogue::RepetitionCounter`).
+--- Dialogue event counts and timestamps keyed by `EventTriggerEnum`. Timestamps use the world performance timer in real seconds, separately from the game-hour clock.
 ---@class RepetitionCounter
---- Initializes the repetition counter's event state map with default reset times.
+--- Sets the `EV_ANNOUNCEMENT` reset interval to the largest finite float. Other event records are created lazily with a default interval of 60 seconds.
 ---@field setup fun(self: RepetitionCounter)
---- Increments the trigger counter for the specified `EventTriggerEnum` (`ev`) and returns true.
+--- Increments the count for `event`, records the current performance-timer timestamp in seconds, and returns true. Creates a default event record if needed.
 ---@field count fun(self: RepetitionCounter, event: integer): boolean
---- Returns the elapsed game time since the specified `EventTriggerEnum` (`ev`) was last triggered.
+--- Returns performance-timer seconds since `event` was last counted. An unrecorded event is created with a zero timestamp, so the result is the current timer value.
 ---@field getTimeSinceLastTrigger fun(self: RepetitionCounter, event: integer): number
---- Returns the current trigger count for the specified `EventTriggerEnum` (`ev`), resetting it first if the reset interval has elapsed.
+--- Returns the stored count for `event`, creating a zero-count record if needed. This method does not expire or reset the count.
 ---@field getCount fun(self: RepetitionCounter, event: integer): integer
 
 --- Specialized inventory section for shopkeeper trade windows with automatic item arrangement.
@@ -9866,17 +9739,17 @@ taskPriority = {
 ---@field getBody fun(self: Character): CharBody|nil
 --- Returns the `CharStats` component managing this character's skills and attributes.
 ---@field getStats fun(self: Character): CharStats|nil
---- Deducts the specified amount of Cats from this character's money, returning true if sufficient funds were available.
+--- Deducts `amount` from the balance returned by `getOwnerships()` and reports success. Player characters use the player faction's shared balance; nonnegative amounts fail if funds are insufficient. A negative amount adds money.
 ---@field takeMoney fun(self: Character, amount: integer): boolean
---- Displays floating overhead speech text and triggers the corresponding dialogue audio.
+--- Passes `text` to the character's dialogue component for display as speech, without an associated `DialogLineData`.
 ---@field say fun(self: Character, text: string)
 --- Records a short-term or long-term perception tag into character memory for the specified character.
 ---@field rememberCharacter fun(self: Character, who: Character, tag: integer|string, isLongTerm: boolean)
 --- Retrieves the active prone posture enumeration (`PS_NORMAL`, `PS_STAYING_LOW`, `PS_CRIPPLED`, `PS_PLAYING_DEAD`, `PS_KO`).
 ---@field getProneState fun(self: Character): ProneState
---- Sets the active posture state and updates skeletal animation stance flags and movement speeds.
+--- Changes the prone state and corresponding AI repertoire flag. Returning to `PS_NORMAL` can enqueue a get-up order; transitions between normal and prone refresh the click hull.
 ---@field setProneState fun(self: Character, state: ProneState)
---- Assigns the character to a new faction and optionally joins the specified active platoon.
+--- Assigns the character to `faction` and `platoon`, then clears its AI goals and rebuilds its AI setup. Both arguments are required by the Lua binding.
 ---@field setFaction fun(self: Character, faction: Faction, platoon: ActivePlatoon)
 --- Returns the character's display name.
 ---@field getName fun(self: Character): string
@@ -11559,7 +11432,7 @@ taskPriority = {
 ---@field getStatRef fun(self: CharStats, what: integer): number
 --- Static utility returning human-readable string name for an enumerated stat ID.
 ---@field getStatName fun(what: integer): string
---- Returns a direct reference to internal `__meleeAttack` member for mutation.
+--- Returns the numeric value of `unarmed` when `currentWeaponType` is `SKILL_UNARMED`, otherwise `__meleeAttack`. Lua receives a number, not a writable reference.
 ---@field getMeleeAttackRef fun(self: CharStats): number
 --- Retrieves appropriate pain animation state string corresponding to an anatomical body part hit.
 ---@field getPainAnim fun(self: CharStats, anatomyHit: GameData): string
@@ -11826,6 +11699,20 @@ taskPriority = {
 
 --- Global MyGUI root table exposing widget factory functions and GUI subsystem singletons.
 ---@class MyGUI
+--- Nested enum table `MyGUI.Align`.
+---@field Align MyGUI.Align
+--- Nested enum table `MyGUI.FlowDirection`.
+---@field FlowDirection MyGUI.FlowDirection
+--- Nested enum table `MyGUI.KeyCode`.
+---@field KeyCode MyGUI.KeyCode
+--- Nested enum table `MyGUI.MenuItemType`.
+---@field MenuItemType MyGUI.MenuItemType
+--- Nested enum table `MyGUI.MouseButton`.
+---@field MouseButton MyGUI.MouseButton
+--- Nested enum table `MyGUI.ResizingPolicy`.
+---@field ResizingPolicy MyGUI.ResizingPolicy
+--- Nested enum table `MyGUI.WidgetStyle`.
+---@field WidgetStyle MyGUI.WidgetStyle
 
 --- OIS SDK enum tables for input events, device/component categories, errors, and force feedback.
 ---@class OIS
@@ -16976,7 +16863,7 @@ taskPriority = {
 --- The current growth progress or age value of the plant.
 ---@field age number
 --- The lektor list of sub-plant component parts making up this plant.
----@field parts any
+---@field parts Lektor<FarmBuilding_SubPlant>
 --- The 3D world position (Ogre::Vector3) of the plant within the farm.
 ---@field position table
 
@@ -19460,7 +19347,7 @@ taskPriority = {
 --- Hash integer identifying geometry state for change detection.
 ---@field hash integer
 --- Array of building interior navigation info records within the affected area.
----@field interiors any
+---@field interiors Lektor<NavMesh_BuildingInfo>
 --- MessageType enum value indicating the navmesh action (such as loading, unloading, or building changes).
 ---@field message integer
 --- Pointer to the next NavMeshMessage in the queue.
@@ -22924,7 +22811,7 @@ taskPriority = {
 ---@field addNest fun(self: TownList, n: RootObject)
 ---@field reassessTownPositions fun(self: TownList, t: TownBase)
 ---@field mergePlayerTowns fun(self: TownList, a: Town, b: Town)
----@field deletedTowns any
+---@field deletedTowns Lektor<Town>
 ---@field nests Lektor<RootObject>
 ---@field newTownsDiscovered boolean
 ---@field noTown lightuserdata
@@ -24691,6 +24578,15 @@ taskPriority = {
 --- Nested enum table `CharacterStatsWindow.StatGroup`.
 ---@field StatGroup CharacterStatsWindow.StatGroup
 
+--- Static functions registered on the `MyGUI.ClipboardManager` global table.
+---@class MyGUI.ClipboardManagerStatics
+---@field getInstance fun(): MyGUI.ClipboardManager|nil
+
+--- Static functions registered on the `MyGUI.Colour` global table.
+---@class MyGUI.ColourStatics
+---@field new fun(arg1?: number, arg2?: number, arg3?: number, arg4?: number): MyGUI.Colour
+---@field parse fun(_value: string): MyGUI.Colour
+
 --- Static functions registered on the `CombatClass` global table.
 ---@class CombatClassStatics
 --- Initializes global static particle memory pools for combat effects (blood splatters, weapon sparks, dust clouds).
@@ -24718,6 +24614,22 @@ taskPriority = {
 --- Retrieves the singleton FCS manufacturer template record representing player-crafted weapon branding and grade thresholds.
 ---@field playerManufacturerData fun(): GameData
 
+--- Static functions registered on the `MyGUI.FloatCoord` global table.
+---@class MyGUI.FloatCoordStatics
+---@field new fun(arg1?: number, arg2?: number, arg3?: number, arg4?: number): MyGUI.FloatCoord
+
+--- Static functions registered on the `MyGUI.FloatPoint` global table.
+---@class MyGUI.FloatPointStatics
+---@field new fun(arg1?: number, arg2?: number): MyGUI.FloatPoint
+
+--- Static functions registered on the `MyGUI.FloatRect` global table.
+---@class MyGUI.FloatRectStatics
+---@field new fun(arg1?: number, arg2?: number, arg3?: number, arg4?: number): MyGUI.FloatRect
+
+--- Static functions registered on the `MyGUI.FloatSize` global table.
+---@class MyGUI.FloatSizeStatics
+---@field new fun(arg1?: number, arg2?: number): MyGUI.FloatSize
+
 --- Static functions registered on the `FoliageSystem` global table.
 ---@class FoliageSystemStatics
 --- Releases static cached foliage entity definitions and batched tree placement queues across all zones.
@@ -24728,10 +24640,34 @@ taskPriority = {
 --- Updates and reloads GUI font sizes across all widget skins based on user settings.
 ---@field changeFontSize fun()
 
+--- Static functions registered on the `MyGUI.Gui` global table.
+---@class MyGUI.GuiStatics
+---@field getInstance fun(): MyGUI.Gui|nil
+
+--- Static functions registered on the `MyGUI.InputManager` global table.
+---@class MyGUI.InputManagerStatics
+---@field getInstance fun(): MyGUI.InputManager|nil
+
 --- Static functions registered on the `InstanceID` global table.
 ---@class InstanceIDStatics
 --- Can be called as an instance method or statically with a string identifier to retrieve the mod index.
 ---@field getModIndex fun(s: InstanceID|string, arg2?: string): integer
+
+--- Static functions registered on the `MyGUI.IntCoord` global table.
+---@class MyGUI.IntCoordStatics
+---@field new fun(arg1?: integer, arg2?: integer, arg3?: integer, arg4?: integer): MyGUI.IntCoord
+
+--- Static functions registered on the `MyGUI.IntPoint` global table.
+---@class MyGUI.IntPointStatics
+---@field new fun(arg1?: integer, arg2?: integer): MyGUI.IntPoint
+
+--- Static functions registered on the `MyGUI.IntRect` global table.
+---@class MyGUI.IntRectStatics
+---@field new fun(arg1?: integer, arg2?: integer, arg3?: integer, arg4?: integer): MyGUI.IntRect
+
+--- Static functions registered on the `MyGUI.IntSize` global table.
+---@class MyGUI.IntSizeStatics
+---@field new fun(arg1?: integer, arg2?: integer): MyGUI.IntSize
 
 --- Static functions registered on the `InteriorModeButtonWindow` global table.
 ---@class InteriorModeButtonWindowStatics
@@ -24775,6 +24711,14 @@ taskPriority = {
 ---@field getItemSize fun(itemData: GameData): integer, integer
 --- Static method that converts grid cell coordinates (x, y) into pixel coordinates, returning left and top integer values.
 ---@field getItemPosition fun(x: integer, y: integer): integer, integer
+
+--- Static functions registered on the `MyGUI.LayerManager` global table.
+---@class MyGUI.LayerManagerStatics
+---@field getInstance fun(): MyGUI.LayerManager
+
+--- Static functions registered on the `MyGUI.LayoutManager` global table.
+---@class MyGUI.LayoutManagerStatics
+---@field getInstance fun(): MyGUI.LayoutManager|nil
 
 --- Static functions registered on the `LoadingWindow` global table.
 ---@class LoadingWindowStatics
@@ -24839,6 +24783,10 @@ taskPriority = {
 --- Assigns the physical material (friction, restitution) to all shapes on the specified actor.
 ---@field setActorMaterial fun(actor: lightuserdata, material: integer)
 
+--- Static functions registered on the `MyGUI.PointerManager` global table.
+---@class MyGUI.PointerManagerStatics
+---@field getInstance fun(): MyGUI.PointerManager|nil
+
 --- Static functions registered on the `PortraitMainCellView` global table.
 ---@class PortraitMainCellViewStatics
 --- Static function calculating the coordinate and dimension bounding box for portrait cell items.
@@ -24873,6 +24821,10 @@ taskPriority = {
 --- Static method returning the global singleton RaceLimiter instance.
 ---@field getSingleton fun(): RaceLimiter
 
+--- Static functions registered on the `MyGUI.RenderManager` global table.
+---@class MyGUI.RenderManagerStatics
+---@field getInstance fun(): MyGUI.RenderManager|nil
+
 --- Static functions registered on the `ResourceLoader` global table.
 ---@class ResourceLoaderStatics
 --- Static method returning the singleton ResourceLoader instance.
@@ -24900,6 +24852,10 @@ taskPriority = {
 ---@field Flags SaveManager.Flags
 --- Nested enum table `SaveManager.Signal`.
 ---@field Signal SaveManager.Signal
+
+--- Static functions registered on the `MyGUI.SkinManager` global table.
+---@class MyGUI.SkinManagerStatics
+---@field getInstance fun(): MyGUI.SkinManager|nil
 
 --- Static functions registered on the `SquadCellView` global table.
 ---@class SquadCellViewStatics
@@ -25023,11 +24979,6 @@ CharStats = {}
 ---@diagnostic disable-next-line: missing-fields
 ClipboardManager = {}
 
---- Global alias of MyGUI.Colour.
----@type MyGUI.ColourConstructor
----@diagnostic disable-next-line: missing-fields
-Colour = {}
-
 --- Registers Lua handlers for engine events. An event's engine hook is installed when its first handler is registered.
 ---@type KenshiLua.Events
 ---@diagnostic disable-next-line: missing-fields
@@ -25053,40 +25004,10 @@ FloatRect = {}
 ---@diagnostic disable-next-line: missing-fields
 FloatSize = {}
 
---- Global table exposing the MyGUI Gui singleton.
----@type MyGUI.GuiStatic
----@diagnostic disable-next-line: missing-fields
-Gui = {}
-
 --- Static utility table for HavokCharacter physics controllers.
 ---@type HavokCharacterStatic
 ---@diagnostic disable-next-line: missing-fields
 HavokCharacter = {}
-
---- Global table exposing the MyGUI input-manager singleton.
----@type MyGUI.InputManagerStatic
----@diagnostic disable-next-line: missing-fields
-InputManager = {}
-
---- Global alias of MyGUI.IntCoord.
----@type MyGUI.IntCoordConstructor
----@diagnostic disable-next-line: missing-fields
-IntCoord = {}
-
---- Global alias of MyGUI.IntPoint.
----@type MyGUI.IntPointConstructor
----@diagnostic disable-next-line: missing-fields
-IntPoint = {}
-
---- Global alias of MyGUI.IntRect.
----@type MyGUI.IntRectConstructor
----@diagnostic disable-next-line: missing-fields
-IntRect = {}
-
---- Global alias of MyGUI.IntSize.
----@type MyGUI.IntSizeConstructor
----@diagnostic disable-next-line: missing-fields
-IntSize = {}
 
 --- Static utility table for inventory layouts.
 ---@type InventoryLayoutStatic
@@ -25097,16 +25018,6 @@ InventoryLayout = {}
 ---@type KenshiLua.Api
 ---@diagnostic disable-next-line: missing-fields
 KenshiLua = {}
-
---- Global table exposing the MyGUI layer-manager singleton.
----@type MyGUI.LayerManagerStatic
----@diagnostic disable-next-line: missing-fields
-LayerManager = {}
-
---- Global table exposing the MyGUI layout-manager singleton.
----@type MyGUI.LayoutManagerStatic
----@diagnostic disable-next-line: missing-fields
-LayoutManager = {}
 
 --- Static manager table for in-game modal message boxes.
 ---@type MessageBoxManagerStatic
@@ -25132,21 +25043,6 @@ NxMat33 = {}
 ---@type NxVec3Static
 ---@diagnostic disable-next-line: missing-fields
 NxVec3 = {}
-
---- Global table exposing the MyGUI pointer-manager singleton.
----@type MyGUI.PointerManagerStatic
----@diagnostic disable-next-line: missing-fields
-PointerManager = {}
-
---- Global table exposing the MyGUI render-manager singleton.
----@type MyGUI.RenderManagerStatic
----@diagnostic disable-next-line: missing-fields
-RenderManager = {}
-
---- Global table exposing the MyGUI skin-manager singleton.
----@type MyGUI.SkinManagerStatic
----@diagnostic disable-next-line: missing-fields
-SkinManager = {}
 
 --- Global TownBase binding table.
 ---@type TownBase
@@ -25247,6 +25143,16 @@ BuildModeWindow = {}
 ---@diagnostic disable-next-line: missing-fields
 CharacterStatsWindow = {}
 
+--- Global table of static functions for `MyGUI.ClipboardManager`.
+---@type MyGUI.ClipboardManagerStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.ClipboardManager = {}
+
+--- Global table of static functions for `MyGUI.Colour`.
+---@type MyGUI.ColourStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.Colour = {}
+
 --- Global table of static functions for `CombatClass`.
 ---@type CombatClassStatics
 ---@diagnostic disable-next-line: missing-fields
@@ -25262,6 +25168,26 @@ ConstructionState = {}
 ---@diagnostic disable-next-line: missing-fields
 CraftingBuilding = {}
 
+--- Global table of static functions for `MyGUI.FloatCoord`.
+---@type MyGUI.FloatCoordStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.FloatCoord = {}
+
+--- Global table of static functions for `MyGUI.FloatPoint`.
+---@type MyGUI.FloatPointStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.FloatPoint = {}
+
+--- Global table of static functions for `MyGUI.FloatRect`.
+---@type MyGUI.FloatRectStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.FloatRect = {}
+
+--- Global table of static functions for `MyGUI.FloatSize`.
+---@type MyGUI.FloatSizeStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.FloatSize = {}
+
 --- Global table of static functions for `FoliageSystem`.
 ---@type FoliageSystemStatics
 ---@diagnostic disable-next-line: missing-fields
@@ -25272,10 +25198,40 @@ FoliageSystem = {}
 ---@diagnostic disable-next-line: missing-fields
 ForgottenGUI = {}
 
+--- Global table of static functions for `MyGUI.Gui`.
+---@type MyGUI.GuiStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.Gui = {}
+
+--- Global table of static functions for `MyGUI.InputManager`.
+---@type MyGUI.InputManagerStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.InputManager = {}
+
 --- Global table of static functions for `InstanceID`.
 ---@type InstanceIDStatics
 ---@diagnostic disable-next-line: missing-fields
 InstanceID = {}
+
+--- Global table of static functions for `MyGUI.IntCoord`.
+---@type MyGUI.IntCoordStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.IntCoord = {}
+
+--- Global table of static functions for `MyGUI.IntPoint`.
+---@type MyGUI.IntPointStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.IntPoint = {}
+
+--- Global table of static functions for `MyGUI.IntRect`.
+---@type MyGUI.IntRectStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.IntRect = {}
+
+--- Global table of static functions for `MyGUI.IntSize`.
+---@type MyGUI.IntSizeStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.IntSize = {}
 
 --- Global table of static functions for `InteriorModeButtonWindow`.
 ---@type InteriorModeButtonWindowStatics
@@ -25291,6 +25247,16 @@ InventoryGUI = {}
 ---@type InventoryIconStatics
 ---@diagnostic disable-next-line: missing-fields
 InventoryIcon = {}
+
+--- Global table of static functions for `MyGUI.LayerManager`.
+---@type MyGUI.LayerManagerStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.LayerManager = {}
+
+--- Global table of static functions for `MyGUI.LayoutManager`.
+---@type MyGUI.LayoutManagerStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.LayoutManager = {}
 
 --- Global table of static functions for `LoadingWindow`.
 ---@type LoadingWindowStatics
@@ -25337,6 +25303,11 @@ OrderCellView = {}
 ---@diagnostic disable-next-line: missing-fields
 PhysicsActual = {}
 
+--- Global table of static functions for `MyGUI.PointerManager`.
+---@type MyGUI.PointerManagerStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.PointerManager = {}
+
 --- Global table of static functions for `PortraitMainCellView`.
 ---@type PortraitMainCellViewStatics
 ---@diagnostic disable-next-line: missing-fields
@@ -25367,6 +25338,11 @@ ProspectingWindow = {}
 ---@diagnostic disable-next-line: missing-fields
 RaceLimiter = {}
 
+--- Global table of static functions for `MyGUI.RenderManager`.
+---@type MyGUI.RenderManagerStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.RenderManager = {}
+
 --- Global table of static functions for `ResourceLoader`.
 ---@type ResourceLoaderStatics
 ---@diagnostic disable-next-line: missing-fields
@@ -25386,6 +25362,11 @@ SaveFileSystem = {}
 ---@type SaveManagerStatics
 ---@diagnostic disable-next-line: missing-fields
 SaveManager = {}
+
+--- Global table of static functions for `MyGUI.SkinManager`.
+---@type MyGUI.SkinManagerStatics
+---@diagnostic disable-next-line: missing-fields
+MyGUI.SkinManager = {}
 
 --- Global table of static functions for `SquadCellView`.
 ---@type SquadCellViewStatics
@@ -26014,6 +25995,94 @@ MessageForB.StandingOrder = {
     M_SET_ORDER_RANGED = 17,
 }
 
+--- Engine enum `MyGUI.Align`.
+---@enum MyGUI.Align
+MyGUI.Align = {
+    HCenter = 0,
+    VCenter = 1,
+    Center = 2,
+    Left = 3,
+    Right = 4,
+    HStretch = 5,
+    Top = 6,
+    Bottom = 7,
+    VStretch = 8,
+    Stretch = 9,
+    Default = 10,
+}
+
+--- Engine enum `MyGUI.FlowDirection`.
+---@enum MyGUI.FlowDirection
+MyGUI.FlowDirection = {
+    LeftToRight = 0,
+    RightToLeft = 1,
+    TopToBottom = 2,
+    BottomToTop = 3,
+}
+
+--- Engine enum `MyGUI.KeyCode`.
+---@enum MyGUI.KeyCode
+MyGUI.KeyCode = {
+    None = 0,
+    Escape = 1,
+    Return = 28,
+    Space = 57,
+    Tab = 15,
+    Backspace = 14,
+    Delete = 211,
+    LeftShift = 42,
+    RightShift = 54,
+    LeftControl = 29,
+    RightControl = 157,
+    LeftAlt = 56,
+    RightAlt = 184,
+    ArrowUp = 200,
+    ArrowDown = 208,
+    ArrowLeft = 203,
+    ArrowRight = 205,
+}
+
+--- Engine enum `MyGUI.MenuItemType`.
+---@enum MyGUI.MenuItemType
+MyGUI.MenuItemType = {
+    Normal = 0,
+    Popup = 1,
+    Separator = 2,
+}
+
+--- Engine enum `MyGUI.MouseButton`.
+---@enum MyGUI.MouseButton
+MyGUI.MouseButton = {
+    Left = 0,
+    Right = 1,
+    Middle = 2,
+    Button0 = 0,
+    Button1 = 1,
+    Button2 = 2,
+    Button3 = 3,
+    Button4 = 4,
+    Button5 = 5,
+    Button6 = 6,
+    Button7 = 7,
+    None = -1,
+}
+
+--- Engine enum `MyGUI.ResizingPolicy`.
+---@enum MyGUI.ResizingPolicy
+MyGUI.ResizingPolicy = {
+    Auto = 0,
+    Fixed = 1,
+    Fill = 2,
+}
+
+--- Engine enum `MyGUI.WidgetStyle`.
+---@enum MyGUI.WidgetStyle
+MyGUI.WidgetStyle = {
+    Child = 0,
+    Overlapped = 2,
+    Popup = 1,
+}
+
 --- PhysX serialization file format type.
 ---@enum NXU.NXU_FileType
 NXU.NXU_FileType = {
@@ -26606,7 +26675,7 @@ hkVector4ComparisonMask.Mask = {
     MASK_XYZW = 15,
 }
 
---- Creates Lua-owned `lektor` lists; also callable as `lektor(typeName)`.
+--- Creates Lua-owned `lektor` lists. Type strings use `T` for values and `T*` for pointers; also callable as `lektor(typeName)`.
 ---@class LektorFactory
 ---@overload fun(typeName: "lektor<int>"): Lektor<integer>
 ---@overload fun(typeName: "int"): Lektor<integer>
@@ -26614,6 +26683,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
 ---@overload fun(typeName: "lektor<AnimationClassBase::AnimationLayer*>"): Lektor<AnimationClassBase.AnimationLayer>
 ---@overload fun(typeName: "AnimationClassBase::AnimationLayer*"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
+---@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "lektor<AnimationData*>"): Lektor<AnimationData>
 ---@overload fun(typeName: "AnimationData*"): Lektor<AnimationData>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
@@ -26666,6 +26737,8 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "ModInfo"): Lektor<ModInfo>
 ---@overload fun(typeName: "lektor<MyGUI::Button*>"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "MyGUI::Button*"): Lektor<MyGUI.Button>
+---@overload fun(typeName: "lektor<OrdersReceiver::TaskRequestSimple*>"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "OrdersReceiver::TaskRequestSimple*"): Lektor<OrdersReceiver_TaskRequestSimple>
 ---@overload fun(typeName: "lektor<Platoon*>"): Lektor<Platoon>
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
 ---@overload fun(typeName: "lektor<RenderEntityT*>"): Lektor<lightuserdata>
@@ -26674,28 +26747,36 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
----@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
----@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
----@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
----@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "Building::ConsumptionItem"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
+---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
+---@overload fun(typeName: "lektor<Town*>"): Lektor<Town>
+---@overload fun(typeName: "Town*"): Lektor<Town>
 ---@overload fun(typeName: "lektor<TownBase*>"): Lektor<TownBase>
 ---@overload fun(typeName: "TownBase*"): Lektor<TownBase>
 ---@overload fun(typeName: "lektor<ZoneMap*>"): Lektor<ZoneMap>
 ---@overload fun(typeName: "ZoneMap*"): Lektor<ZoneMap>
 ---@overload fun(typeName: "lektor<std::string>"): Lektor<string>
 ---@overload fun(typeName: "std::string"): Lektor<string>
----@overload fun(typeName: "string"): Lektor<string>
 ---@overload fun(typeName: "lektor<string>"): Lektor<string>
+---@overload fun(typeName: "string"): Lektor<string>
 ---@overload fun(typeName: "lektor<Faction::BuildingSwaps>"): Lektor<BuildingSwaps>
 ---@overload fun(typeName: "Faction::BuildingSwaps"): Lektor<BuildingSwaps>
 ---@overload fun(typeName: "lektor<FarmBuilding::Plant>"): Lektor<FarmBuilding_Plant>
 ---@overload fun(typeName: "FarmBuilding::Plant"): Lektor<FarmBuilding_Plant>
+---@overload fun(typeName: "lektor<FarmBuilding::SubPlant>"): Lektor<FarmBuilding_SubPlant>
+---@overload fun(typeName: "FarmBuilding::SubPlant"): Lektor<FarmBuilding_SubPlant>
+---@overload fun(typeName: "lektor<NavMesh::BuildingInfo>"): Lektor<NavMesh_BuildingInfo>
+---@overload fun(typeName: "NavMesh::BuildingInfo"): Lektor<NavMesh_BuildingInfo>
 ---@overload fun(typeName: "lektor<SaveInfo>"): Lektor<SaveInfo>
 ---@overload fun(typeName: "SaveInfo"): Lektor<SaveInfo>
 ---@overload fun(typeName: "lektor<StringPair>"): Lektor<StringPair>
 ---@overload fun(typeName: "StringPair"): Lektor<StringPair>
+---@overload fun(typeName: "lektor<TaskRequest>"): Lektor<TaskRequest>
+---@overload fun(typeName: "TaskRequest"): Lektor<TaskRequest>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "lektor<float>"): Lektor<number>
@@ -26710,48 +26791,6 @@ hkVector4ComparisonMask.Mask = {
 ---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
----@overload fun(typeName: "lektor<TaskRequest>"): Lektor<TaskRequest>
----@overload fun(typeName: "TaskRequest"): Lektor<TaskRequest>
----@overload fun(typeName: "lektor<OrdersReceiver::TaskRequestSimple*>"): Lektor<OrdersReceiver_TaskRequestSimple>
----@overload fun(typeName: "OrdersReceiver::TaskRequestSimple*"): Lektor<OrdersReceiver_TaskRequestSimple>
----@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
----@overload fun(typeName: "Tasker*"): Lektor<Tasker>
----@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
----@overload fun(typeName: "AnimationClassBase::AnimationLayer"): Lektor<AnimationClassBase.AnimationLayer>
----@overload fun(typeName: "AnimationData"): Lektor<AnimationData>
----@overload fun(typeName: "Armour"): Lektor<Armour>
----@overload fun(typeName: "Building"): Lektor<Building>
----@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
----@overload fun(typeName: "CampaignData"): Lektor<CampaignData>
----@overload fun(typeName: "CampaignInstance"): Lektor<CampaignInstance>
----@overload fun(typeName: "Character"): Lektor<Character>
----@overload fun(typeName: "CombatTechniqueData"): Lektor<CombatTechniqueData>
----@overload fun(typeName: "DatapanelGUI"): Lektor<DatapanelGUI>
----@overload fun(typeName: "DialogLineData"): Lektor<DialogLineData>
----@overload fun(typeName: "DialogAction"): Lektor<DialogAction>
----@overload fun(typeName: "DialogCondition"): Lektor<DialogCondition>
----@overload fun(typeName: "Faction"): Lektor<Faction>
----@overload fun(typeName: "FactionUniqueSquadManager::UniqueSpawnData"): Lektor<UniqueSpawnData>
----@overload fun(typeName: "FactionWarMgr::CampaignRequest"): Lektor<CampaignRequest>
----@overload fun(typeName: "FarmBuilding"): Lektor<FarmBuilding>
----@overload fun(typeName: "FarmBuilding::PlantSource"): Lektor<FarmBuilding_PlantSource>
----@overload fun(typeName: "GUIWindow"): Lektor<GUIWindow>
----@overload fun(typeName: "GameData"): Lektor<GameData>
----@overload fun(typeName: "GameData::ObjectInstance"): Lektor<ObjectInstance>
----@overload fun(typeName: "InventorySection"): Lektor<InventorySection>
----@overload fun(typeName: "Item"): Lektor<Item>
----@overload fun(typeName: "HealthPartStatus"): Lektor<MedicalSystem_HealthPartStatus>
----@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
----@overload fun(typeName: "Platoon"): Lektor<Platoon>
----@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
----@overload fun(typeName: "RootObject"): Lektor<RootObject>
----@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
----@overload fun(typeName: "SingleAnimation"): Lektor<AnimationClassBase.SingleAnimation>
----@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
----@overload fun(typeName: "TownBase"): Lektor<TownBase>
----@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
----@overload fun(typeName: "OrdersReceiver::TaskRequestSimple"): Lektor<OrdersReceiver_TaskRequestSimple>
----@overload fun(typeName: "Tasker"): Lektor<Tasker>
 ---@overload fun(typeName: string|table): Lektor<any>
 lektor = {}
 
@@ -26762,6 +26801,8 @@ lektor = {}
 ---@overload fun(typeName: "AIPackage*"): Lektor<AIPackage>
 ---@overload fun(typeName: "lektor<AnimationClassBase::AnimationLayer*>"): Lektor<AnimationClassBase.AnimationLayer>
 ---@overload fun(typeName: "AnimationClassBase::AnimationLayer*"): Lektor<AnimationClassBase.AnimationLayer>
+---@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
+---@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
 ---@overload fun(typeName: "lektor<AnimationData*>"): Lektor<AnimationData>
 ---@overload fun(typeName: "AnimationData*"): Lektor<AnimationData>
 ---@overload fun(typeName: "lektor<Armour*>"): Lektor<Armour>
@@ -26814,6 +26855,8 @@ lektor = {}
 ---@overload fun(typeName: "ModInfo"): Lektor<ModInfo>
 ---@overload fun(typeName: "lektor<MyGUI::Button*>"): Lektor<MyGUI.Button>
 ---@overload fun(typeName: "MyGUI::Button*"): Lektor<MyGUI.Button>
+---@overload fun(typeName: "lektor<OrdersReceiver::TaskRequestSimple*>"): Lektor<OrdersReceiver_TaskRequestSimple>
+---@overload fun(typeName: "OrdersReceiver::TaskRequestSimple*"): Lektor<OrdersReceiver_TaskRequestSimple>
 ---@overload fun(typeName: "lektor<Platoon*>"): Lektor<Platoon>
 ---@overload fun(typeName: "Platoon*"): Lektor<Platoon>
 ---@overload fun(typeName: "lektor<RenderEntityT*>"): Lektor<lightuserdata>
@@ -26822,28 +26865,36 @@ lektor = {}
 ---@overload fun(typeName: "RootObject*"): Lektor<RootObject>
 ---@overload fun(typeName: "lektor<ScreenLabelInterface*>"): Lektor<ScreenLabelInterface>
 ---@overload fun(typeName: "ScreenLabelInterface*"): Lektor<ScreenLabelInterface>
----@overload fun(typeName: "lektor<SingleAnimation*>"): Lektor<AnimationClassBase.SingleAnimation>
----@overload fun(typeName: "SingleAnimation*"): Lektor<AnimationClassBase.SingleAnimation>
----@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
----@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "lektor<Building::ConsumptionItem>"): Lektor<ConsumptionItem>
 ---@overload fun(typeName: "Building::ConsumptionItem"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "lektor<StorageBuilding::ConsumptionItem*>"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "StorageBuilding::ConsumptionItem*"): Lektor<ConsumptionItem>
+---@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
+---@overload fun(typeName: "Tasker*"): Lektor<Tasker>
+---@overload fun(typeName: "lektor<Town*>"): Lektor<Town>
+---@overload fun(typeName: "Town*"): Lektor<Town>
 ---@overload fun(typeName: "lektor<TownBase*>"): Lektor<TownBase>
 ---@overload fun(typeName: "TownBase*"): Lektor<TownBase>
 ---@overload fun(typeName: "lektor<ZoneMap*>"): Lektor<ZoneMap>
 ---@overload fun(typeName: "ZoneMap*"): Lektor<ZoneMap>
 ---@overload fun(typeName: "lektor<std::string>"): Lektor<string>
 ---@overload fun(typeName: "std::string"): Lektor<string>
----@overload fun(typeName: "string"): Lektor<string>
 ---@overload fun(typeName: "lektor<string>"): Lektor<string>
+---@overload fun(typeName: "string"): Lektor<string>
 ---@overload fun(typeName: "lektor<Faction::BuildingSwaps>"): Lektor<BuildingSwaps>
 ---@overload fun(typeName: "Faction::BuildingSwaps"): Lektor<BuildingSwaps>
 ---@overload fun(typeName: "lektor<FarmBuilding::Plant>"): Lektor<FarmBuilding_Plant>
 ---@overload fun(typeName: "FarmBuilding::Plant"): Lektor<FarmBuilding_Plant>
+---@overload fun(typeName: "lektor<FarmBuilding::SubPlant>"): Lektor<FarmBuilding_SubPlant>
+---@overload fun(typeName: "FarmBuilding::SubPlant"): Lektor<FarmBuilding_SubPlant>
+---@overload fun(typeName: "lektor<NavMesh::BuildingInfo>"): Lektor<NavMesh_BuildingInfo>
+---@overload fun(typeName: "NavMesh::BuildingInfo"): Lektor<NavMesh_BuildingInfo>
 ---@overload fun(typeName: "lektor<SaveInfo>"): Lektor<SaveInfo>
 ---@overload fun(typeName: "SaveInfo"): Lektor<SaveInfo>
 ---@overload fun(typeName: "lektor<StringPair>"): Lektor<StringPair>
 ---@overload fun(typeName: "StringPair"): Lektor<StringPair>
+---@overload fun(typeName: "lektor<TaskRequest>"): Lektor<TaskRequest>
+---@overload fun(typeName: "TaskRequest"): Lektor<TaskRequest>
 ---@overload fun(typeName: "lektor<ResidentData>"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "ResidentData"): Lektor<TownBase_ResidentData>
 ---@overload fun(typeName: "lektor<float>"): Lektor<number>
@@ -26858,53 +26909,11 @@ lektor = {}
 ---@overload fun(typeName: "GameDataGroup"): LektorReadOnly<GameDataGroup>
 ---@overload fun(typeName: "lektor<GameDataValuePair>"): LektorReadOnly<GameDataValuePair>
 ---@overload fun(typeName: "GameDataValuePair"): LektorReadOnly<GameDataValuePair>
----@overload fun(typeName: "lektor<TaskRequest>"): Lektor<TaskRequest>
----@overload fun(typeName: "TaskRequest"): Lektor<TaskRequest>
----@overload fun(typeName: "lektor<OrdersReceiver::TaskRequestSimple*>"): Lektor<OrdersReceiver_TaskRequestSimple>
----@overload fun(typeName: "OrdersReceiver::TaskRequestSimple*"): Lektor<OrdersReceiver_TaskRequestSimple>
----@overload fun(typeName: "lektor<Tasker*>"): Lektor<Tasker>
----@overload fun(typeName: "Tasker*"): Lektor<Tasker>
----@overload fun(typeName: "AIPackage"): Lektor<AIPackage>
----@overload fun(typeName: "AnimationClassBase::AnimationLayer"): Lektor<AnimationClassBase.AnimationLayer>
----@overload fun(typeName: "AnimationData"): Lektor<AnimationData>
----@overload fun(typeName: "Armour"): Lektor<Armour>
----@overload fun(typeName: "Building"): Lektor<Building>
----@overload fun(typeName: "Building::ConstructionState::BuildMaterial"): Lektor<BuildMaterial>
----@overload fun(typeName: "CampaignData"): Lektor<CampaignData>
----@overload fun(typeName: "CampaignInstance"): Lektor<CampaignInstance>
----@overload fun(typeName: "Character"): Lektor<Character>
----@overload fun(typeName: "CombatTechniqueData"): Lektor<CombatTechniqueData>
----@overload fun(typeName: "DatapanelGUI"): Lektor<DatapanelGUI>
----@overload fun(typeName: "DialogLineData"): Lektor<DialogLineData>
----@overload fun(typeName: "DialogAction"): Lektor<DialogAction>
----@overload fun(typeName: "DialogCondition"): Lektor<DialogCondition>
----@overload fun(typeName: "Faction"): Lektor<Faction>
----@overload fun(typeName: "FactionUniqueSquadManager::UniqueSpawnData"): Lektor<UniqueSpawnData>
----@overload fun(typeName: "FactionWarMgr::CampaignRequest"): Lektor<CampaignRequest>
----@overload fun(typeName: "FarmBuilding"): Lektor<FarmBuilding>
----@overload fun(typeName: "FarmBuilding::PlantSource"): Lektor<FarmBuilding_PlantSource>
----@overload fun(typeName: "GUIWindow"): Lektor<GUIWindow>
----@overload fun(typeName: "GameData"): Lektor<GameData>
----@overload fun(typeName: "GameData::ObjectInstance"): Lektor<ObjectInstance>
----@overload fun(typeName: "InventorySection"): Lektor<InventorySection>
----@overload fun(typeName: "Item"): Lektor<Item>
----@overload fun(typeName: "HealthPartStatus"): Lektor<MedicalSystem_HealthPartStatus>
----@overload fun(typeName: "MyGUI::Button"): Lektor<MyGUI.Button>
----@overload fun(typeName: "Platoon"): Lektor<Platoon>
----@overload fun(typeName: "RenderEntityT"): Lektor<lightuserdata>
----@overload fun(typeName: "RootObject"): Lektor<RootObject>
----@overload fun(typeName: "ScreenLabelInterface"): Lektor<ScreenLabelInterface>
----@overload fun(typeName: "SingleAnimation"): Lektor<AnimationClassBase.SingleAnimation>
----@overload fun(typeName: "StorageBuilding::ConsumptionItem"): Lektor<ConsumptionItem>
----@overload fun(typeName: "TownBase"): Lektor<TownBase>
----@overload fun(typeName: "ZoneMap"): Lektor<ZoneMap>
----@overload fun(typeName: "OrdersReceiver::TaskRequestSimple"): Lektor<OrdersReceiver_TaskRequestSimple>
----@overload fun(typeName: "Tasker"): Lektor<Tasker>
 ---@param typeName string|table
 ---@return Lektor<any>
 function lektor.new(typeName) end
 
---- Creates Lua-owned `ogre_unordered_set` sets; also callable as `ogre_unordered_set(typeName)`.
+--- Creates Lua-owned `ogre_unordered_set` sets. Type strings use `T` for values and `T*` for pointers; also callable as `ogre_unordered_set(typeName)`.
 ---@class OgreUnorderedSetFactory
 ---@overload fun(typeName: "ogre_unordered_set<Character*>"): OgreUnorderedSet<Character>
 ---@overload fun(typeName: "Character*"): OgreUnorderedSet<Character>
@@ -26922,12 +26931,6 @@ function lektor.new(typeName) end
 ---@overload fun(typeName: "ZoneMap*"): OgreUnorderedSet<ZoneMap>
 ---@overload fun(typeName: "ogre_unordered_set<hand>"): OgreUnorderedSet<hand>
 ---@overload fun(typeName: "hand"): OgreUnorderedSet<hand>
----@overload fun(typeName: "Character"): OgreUnorderedSet<Character>
----@overload fun(typeName: "GameData"): OgreUnorderedSet<GameData>
----@overload fun(typeName: "RootObject"): OgreUnorderedSet<RootObject>
----@overload fun(typeName: "TownBase"): OgreUnorderedSet<TownBase>
----@overload fun(typeName: "TownBuildingsManager"): OgreUnorderedSet<TownBuildingsManager>
----@overload fun(typeName: "ZoneMap"): OgreUnorderedSet<ZoneMap>
 ---@overload fun(typeName: string|table): OgreUnorderedSet<any>
 ogre_unordered_set = {}
 
@@ -26948,44 +26951,12 @@ ogre_unordered_set = {}
 ---@overload fun(typeName: "ZoneMap*"): OgreUnorderedSet<ZoneMap>
 ---@overload fun(typeName: "ogre_unordered_set<hand>"): OgreUnorderedSet<hand>
 ---@overload fun(typeName: "hand"): OgreUnorderedSet<hand>
----@overload fun(typeName: "Character"): OgreUnorderedSet<Character>
----@overload fun(typeName: "GameData"): OgreUnorderedSet<GameData>
----@overload fun(typeName: "RootObject"): OgreUnorderedSet<RootObject>
----@overload fun(typeName: "TownBase"): OgreUnorderedSet<TownBase>
----@overload fun(typeName: "TownBuildingsManager"): OgreUnorderedSet<TownBuildingsManager>
----@overload fun(typeName: "ZoneMap"): OgreUnorderedSet<ZoneMap>
 ---@param typeName string|table
 ---@return OgreUnorderedSet<any>
 function ogre_unordered_set.new(typeName) end
 
---- Creates Lua-owned `ogre_unordered_map` maps from key and value type names or one full type string; also callable as `ogre_unordered_map(...)`.
+--- Creates Lua-owned `ogre_unordered_map` maps from key and value type names or one full type string. Each type uses `T` for values and `T*` for pointers; also callable as `ogre_unordered_map(...)`.
 ---@class OgreUnorderedMapFactory
----@overload fun(typeName: "ogre_unordered_map<TutorialItem*, TutorialGUILine*>"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(typeName: "ogre_unordered_map<Faction*, Bounty>"): OgreUnorderedMap<Faction, Bounty>
----@overload fun(keyType: "Faction*", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>
----@overload fun(typeName: "ogre_unordered_map<GameData*, int>"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "GameData*", valueType: "int"): OgreUnorderedMap<GameData, integer>
----@overload fun(typeName: "ogre_unordered_map<GameData*, WorldStateEnum>"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
----@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
----@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
----@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
----@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
----@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
----@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
----@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
----@overload fun(keyType: "hand", valueType: "TaskRequest"): OgreUnorderedMap<hand, TaskRequest>
----@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
----@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
----@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
----@overload fun(keyType: "GameData*", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
----@overload fun(typeName: "ogre_unordered_map<hand, PortraitData*>"): OgreUnorderedMap<hand, PortraitData>
----@overload fun(keyType: "hand", valueType: "PortraitData*"): OgreUnorderedMap<hand, PortraitData>
----@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerCharacter*>"): OgreUnorderedMap<hand, MapMarkerCharacter>
----@overload fun(keyType: "hand", valueType: "MapMarkerCharacter*"): OgreUnorderedMap<hand, MapMarkerCharacter>
----@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerTown*>"): OgreUnorderedMap<hand, MapMarkerTown>
----@overload fun(keyType: "hand", valueType: "MapMarkerTown*"): OgreUnorderedMap<hand, MapMarkerTown>
 ---@overload fun(typeName: "ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>"): OgreUnorderedMap<Building, TownBuildingsManager_BuildingInfo>
 ---@overload fun(keyType: "Building*", valueType: "TownBuildingsManager::BuildingInfo"): OgreUnorderedMap<Building, TownBuildingsManager_BuildingInfo>
 ---@overload fun(typeName: "ogre_unordered_map<Character*, float>"): OgreUnorderedMap<Character, number>
@@ -26994,94 +26965,68 @@ function ogre_unordered_set.new(typeName) end
 ---@overload fun(keyType: "CropType", valueType: "float"): OgreUnorderedMap<integer, number>
 ---@overload fun(typeName: "ogre_unordered_map<StatsEnumerated, float>"): OgreUnorderedMap<integer, number>
 ---@overload fun(keyType: "StatsEnumerated", valueType: "float"): OgreUnorderedMap<integer, number>
+---@overload fun(typeName: "ogre_unordered_map<Faction*, Bounty>"): OgreUnorderedMap<Faction, Bounty>
+---@overload fun(keyType: "Faction*", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>
 ---@overload fun(typeName: "ogre_unordered_map<Faction*, FactionRelationData>"): OgreUnorderedMap<Faction, RelationData>
 ---@overload fun(keyType: "Faction*", valueType: "FactionRelationData"): OgreUnorderedMap<Faction, RelationData>
 ---@overload fun(typeName: "ogre_unordered_map<Faction*, bool>"): OgreUnorderedMap<Faction, boolean>
 ---@overload fun(keyType: "Faction*", valueType: "bool"): OgreUnorderedMap<Faction, boolean>
 ---@overload fun(typeName: "ogre_unordered_map<Faction*, float>"): OgreUnorderedMap<Faction, number>
 ---@overload fun(keyType: "Faction*", valueType: "float"): OgreUnorderedMap<Faction, number>
+---@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
+---@overload fun(keyType: "GameData*", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, RaceLimiter::Limiter>"): OgreUnorderedMap<GameData, Limiter>
 ---@overload fun(keyType: "GameData*", valueType: "RaceLimiter::Limiter"): OgreUnorderedMap<GameData, Limiter>
+---@overload fun(typeName: "ogre_unordered_map<GameData*, WorldStateEnum>"): OgreUnorderedMap<GameData, integer>
+---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
+---@overload fun(typeName: "ogre_unordered_map<GameData*, int>"): OgreUnorderedMap<GameData, integer>
+---@overload fun(keyType: "GameData*", valueType: "int"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, float>"): OgreUnorderedMap<GameData, number>
 ---@overload fun(keyType: "GameData*", valueType: "float"): OgreUnorderedMap<GameData, number>
 ---@overload fun(typeName: "ogre_unordered_map<RootObject*, float>"): OgreUnorderedMap<RootObject, number>
 ---@overload fun(keyType: "RootObject*", valueType: "float"): OgreUnorderedMap<RootObject, number>
+---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
+---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
+---@overload fun(typeName: "ogre_unordered_map<TutorialItem*, TutorialGUILine*>"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
+---@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
 ---@overload fun(typeName: "ogre_unordered_map<WorldEventStateQuery*, bool>"): OgreUnorderedMap<WorldEventStateQuery, boolean>
 ---@overload fun(keyType: "WorldEventStateQuery*", valueType: "bool"): OgreUnorderedMap<WorldEventStateQuery, boolean>
 ---@overload fun(typeName: "ogre_unordered_map<ZoneMap*, bool>"): OgreUnorderedMap<ZoneMap, boolean>
 ---@overload fun(keyType: "ZoneMap*", valueType: "bool"): OgreUnorderedMap<ZoneMap, boolean>
 ---@overload fun(typeName: "ogre_unordered_map<ZoneMap*, unsigned char>"): OgreUnorderedMap<ZoneMap, integer>
 ---@overload fun(keyType: "ZoneMap*", valueType: "unsigned char"): OgreUnorderedMap<ZoneMap, integer>
+---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
+---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Character*>"): OgreUnorderedMap<hand, Character>
 ---@overload fun(keyType: "hand", valueType: "Character*"): OgreUnorderedMap<hand, Character>
+---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventorySection*>"): OgreUnorderedMap<hand, InventorySection>
 ---@overload fun(keyType: "hand", valueType: "InventorySection*"): OgreUnorderedMap<hand, InventorySection>
+---@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerCharacter*>"): OgreUnorderedMap<hand, MapMarkerCharacter>
+---@overload fun(keyType: "hand", valueType: "MapMarkerCharacter*"): OgreUnorderedMap<hand, MapMarkerCharacter>
+---@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerTown*>"): OgreUnorderedMap<hand, MapMarkerTown>
+---@overload fun(keyType: "hand", valueType: "MapMarkerTown*"): OgreUnorderedMap<hand, MapMarkerTown>
+---@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
+---@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
+---@overload fun(typeName: "ogre_unordered_map<hand, PortraitData*>"): OgreUnorderedMap<hand, PortraitData>
+---@overload fun(keyType: "hand", valueType: "PortraitData*"): OgreUnorderedMap<hand, PortraitData>
+---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
+---@overload fun(keyType: "hand", valueType: "TaskRequest"): OgreUnorderedMap<hand, TaskRequest>
 ---@overload fun(typeName: "ogre_unordered_map<hand, float>"): OgreUnorderedMap<hand, number>
 ---@overload fun(keyType: "hand", valueType: "float"): OgreUnorderedMap<hand, number>
+---@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
+---@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
 ---@overload fun(typeName: "ogre_unordered_map<int, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "int", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<itemType, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, CombatState>
----@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
----@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
----@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(keyType: "Faction", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>
----@overload fun(keyType: "GameData", valueType: "int"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "GameData", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "hand", valueType: "InventoryGUI"): OgreUnorderedMap<hand, InventoryGUI>
----@overload fun(keyType: "GameData", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
----@overload fun(keyType: "hand", valueType: "PortraitData"): OgreUnorderedMap<hand, PortraitData>
----@overload fun(keyType: "hand", valueType: "MapMarkerCharacter"): OgreUnorderedMap<hand, MapMarkerCharacter>
----@overload fun(keyType: "hand", valueType: "MapMarkerTown"): OgreUnorderedMap<hand, MapMarkerTown>
----@overload fun(keyType: "Building", valueType: "TownBuildingsManager::BuildingInfo"): OgreUnorderedMap<Building, TownBuildingsManager_BuildingInfo>
----@overload fun(keyType: "Character", valueType: "float"): OgreUnorderedMap<Character, number>
----@overload fun(keyType: "Faction", valueType: "FactionRelationData"): OgreUnorderedMap<Faction, RelationData>
----@overload fun(keyType: "Faction", valueType: "bool"): OgreUnorderedMap<Faction, boolean>
----@overload fun(keyType: "Faction", valueType: "float"): OgreUnorderedMap<Faction, number>
----@overload fun(keyType: "GameData", valueType: "RaceLimiter::Limiter"): OgreUnorderedMap<GameData, Limiter>
----@overload fun(keyType: "GameData", valueType: "float"): OgreUnorderedMap<GameData, number>
----@overload fun(keyType: "RootObject", valueType: "float"): OgreUnorderedMap<RootObject, number>
----@overload fun(keyType: "WorldEventStateQuery", valueType: "bool"): OgreUnorderedMap<WorldEventStateQuery, boolean>
----@overload fun(keyType: "ZoneMap", valueType: "bool"): OgreUnorderedMap<ZoneMap, boolean>
----@overload fun(keyType: "ZoneMap", valueType: "unsigned char"): OgreUnorderedMap<ZoneMap, integer>
----@overload fun(keyType: "hand", valueType: "Character"): OgreUnorderedMap<hand, Character>
----@overload fun(keyType: "hand", valueType: "InventorySection"): OgreUnorderedMap<hand, InventorySection>
----@overload fun(keyType: "int", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "itemType", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(keyType: string|table, valueType: string|table): OgreUnorderedMap<any, any>
 ogre_unordered_map = {}
 
 --- Creates an empty Lua-owned container; raises for an unknown type name.
----@overload fun(typeName: "ogre_unordered_map<TutorialItem*, TutorialGUILine*>"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(typeName: "ogre_unordered_map<Faction*, Bounty>"): OgreUnorderedMap<Faction, Bounty>
----@overload fun(keyType: "Faction*", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>
----@overload fun(typeName: "ogre_unordered_map<GameData*, int>"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "GameData*", valueType: "int"): OgreUnorderedMap<GameData, integer>
----@overload fun(typeName: "ogre_unordered_map<GameData*, WorldStateEnum>"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
----@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
----@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
----@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
----@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
----@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
----@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
----@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
----@overload fun(keyType: "hand", valueType: "TaskRequest"): OgreUnorderedMap<hand, TaskRequest>
----@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
----@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
----@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
----@overload fun(keyType: "GameData*", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
----@overload fun(typeName: "ogre_unordered_map<hand, PortraitData*>"): OgreUnorderedMap<hand, PortraitData>
----@overload fun(keyType: "hand", valueType: "PortraitData*"): OgreUnorderedMap<hand, PortraitData>
----@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerCharacter*>"): OgreUnorderedMap<hand, MapMarkerCharacter>
----@overload fun(keyType: "hand", valueType: "MapMarkerCharacter*"): OgreUnorderedMap<hand, MapMarkerCharacter>
----@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerTown*>"): OgreUnorderedMap<hand, MapMarkerTown>
----@overload fun(keyType: "hand", valueType: "MapMarkerTown*"): OgreUnorderedMap<hand, MapMarkerTown>
 ---@overload fun(typeName: "ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>"): OgreUnorderedMap<Building, TownBuildingsManager_BuildingInfo>
 ---@overload fun(keyType: "Building*", valueType: "TownBuildingsManager::BuildingInfo"): OgreUnorderedMap<Building, TownBuildingsManager_BuildingInfo>
 ---@overload fun(typeName: "ogre_unordered_map<Character*, float>"): OgreUnorderedMap<Character, number>
@@ -27090,64 +27035,64 @@ ogre_unordered_map = {}
 ---@overload fun(keyType: "CropType", valueType: "float"): OgreUnorderedMap<integer, number>
 ---@overload fun(typeName: "ogre_unordered_map<StatsEnumerated, float>"): OgreUnorderedMap<integer, number>
 ---@overload fun(keyType: "StatsEnumerated", valueType: "float"): OgreUnorderedMap<integer, number>
+---@overload fun(typeName: "ogre_unordered_map<Faction*, Bounty>"): OgreUnorderedMap<Faction, Bounty>
+---@overload fun(keyType: "Faction*", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>
 ---@overload fun(typeName: "ogre_unordered_map<Faction*, FactionRelationData>"): OgreUnorderedMap<Faction, RelationData>
 ---@overload fun(keyType: "Faction*", valueType: "FactionRelationData"): OgreUnorderedMap<Faction, RelationData>
 ---@overload fun(typeName: "ogre_unordered_map<Faction*, bool>"): OgreUnorderedMap<Faction, boolean>
 ---@overload fun(keyType: "Faction*", valueType: "bool"): OgreUnorderedMap<Faction, boolean>
 ---@overload fun(typeName: "ogre_unordered_map<Faction*, float>"): OgreUnorderedMap<Faction, number>
 ---@overload fun(keyType: "Faction*", valueType: "float"): OgreUnorderedMap<Faction, number>
+---@overload fun(typeName: "ogre_unordered_map<GameData*, HealthPartStatus>"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
+---@overload fun(keyType: "GameData*", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, RaceLimiter::Limiter>"): OgreUnorderedMap<GameData, Limiter>
 ---@overload fun(keyType: "GameData*", valueType: "RaceLimiter::Limiter"): OgreUnorderedMap<GameData, Limiter>
+---@overload fun(typeName: "ogre_unordered_map<GameData*, WorldStateEnum>"): OgreUnorderedMap<GameData, integer>
+---@overload fun(keyType: "GameData*", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
+---@overload fun(typeName: "ogre_unordered_map<GameData*, int>"): OgreUnorderedMap<GameData, integer>
+---@overload fun(keyType: "GameData*", valueType: "int"): OgreUnorderedMap<GameData, integer>
 ---@overload fun(typeName: "ogre_unordered_map<GameData*, float>"): OgreUnorderedMap<GameData, number>
 ---@overload fun(keyType: "GameData*", valueType: "float"): OgreUnorderedMap<GameData, number>
 ---@overload fun(typeName: "ogre_unordered_map<RootObject*, float>"): OgreUnorderedMap<RootObject, number>
 ---@overload fun(keyType: "RootObject*", valueType: "float"): OgreUnorderedMap<RootObject, number>
+---@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
+---@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
+---@overload fun(typeName: "ogre_unordered_map<TutorialItem*, TutorialGUILine*>"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
+---@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
 ---@overload fun(typeName: "ogre_unordered_map<WorldEventStateQuery*, bool>"): OgreUnorderedMap<WorldEventStateQuery, boolean>
 ---@overload fun(keyType: "WorldEventStateQuery*", valueType: "bool"): OgreUnorderedMap<WorldEventStateQuery, boolean>
 ---@overload fun(typeName: "ogre_unordered_map<ZoneMap*, bool>"): OgreUnorderedMap<ZoneMap, boolean>
 ---@overload fun(keyType: "ZoneMap*", valueType: "bool"): OgreUnorderedMap<ZoneMap, boolean>
 ---@overload fun(typeName: "ogre_unordered_map<ZoneMap*, unsigned char>"): OgreUnorderedMap<ZoneMap, integer>
 ---@overload fun(keyType: "ZoneMap*", valueType: "unsigned char"): OgreUnorderedMap<ZoneMap, integer>
+---@overload fun(typeName: "ogre_unordered_map<hand, Blackboard::TaskInfo>"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
+---@overload fun(keyType: "hand", valueType: "Blackboard::TaskInfo"): OgreUnorderedMap<hand, Blackboard_TaskInfo>
 ---@overload fun(typeName: "ogre_unordered_map<hand, Character*>"): OgreUnorderedMap<hand, Character>
 ---@overload fun(keyType: "hand", valueType: "Character*"): OgreUnorderedMap<hand, Character>
+---@overload fun(typeName: "ogre_unordered_map<hand, InventoryGUI*>"): OgreUnorderedMap<hand, InventoryGUI>
+---@overload fun(keyType: "hand", valueType: "InventoryGUI*"): OgreUnorderedMap<hand, InventoryGUI>
 ---@overload fun(typeName: "ogre_unordered_map<hand, InventorySection*>"): OgreUnorderedMap<hand, InventorySection>
 ---@overload fun(keyType: "hand", valueType: "InventorySection*"): OgreUnorderedMap<hand, InventorySection>
+---@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerCharacter*>"): OgreUnorderedMap<hand, MapMarkerCharacter>
+---@overload fun(keyType: "hand", valueType: "MapMarkerCharacter*"): OgreUnorderedMap<hand, MapMarkerCharacter>
+---@overload fun(typeName: "ogre_unordered_map<hand, MapMarkerTown*>"): OgreUnorderedMap<hand, MapMarkerTown>
+---@overload fun(keyType: "hand", valueType: "MapMarkerTown*"): OgreUnorderedMap<hand, MapMarkerTown>
+---@overload fun(typeName: "ogre_unordered_map<hand, Vector3>"): OgreUnorderedMap<hand, table>
+---@overload fun(keyType: "hand", valueType: "Vector3"): OgreUnorderedMap<hand, table>
+---@overload fun(typeName: "ogre_unordered_map<hand, PortraitData*>"): OgreUnorderedMap<hand, PortraitData>
+---@overload fun(keyType: "hand", valueType: "PortraitData*"): OgreUnorderedMap<hand, PortraitData>
+---@overload fun(typeName: "ogre_unordered_map<hand, TaskRequest>"): OgreUnorderedMap<hand, TaskRequest>
+---@overload fun(keyType: "hand", valueType: "TaskRequest"): OgreUnorderedMap<hand, TaskRequest>
 ---@overload fun(typeName: "ogre_unordered_map<hand, float>"): OgreUnorderedMap<hand, number>
 ---@overload fun(keyType: "hand", valueType: "float"): OgreUnorderedMap<hand, number>
+---@overload fun(typeName: "ogre_unordered_map<hand, hand>"): OgreUnorderedMap<hand, hand>
+---@overload fun(keyType: "hand", valueType: "hand"): OgreUnorderedMap<hand, hand>
 ---@overload fun(typeName: "ogre_unordered_map<int, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "int", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<itemType, GameData*>"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(keyType: "itemType", valueType: "GameData*"): OgreUnorderedMap<integer, GameData>
 ---@overload fun(typeName: "ogre_unordered_map<swordStateEnum, CombatState*>"): OgreUnorderedMap<integer, CombatState>
 ---@overload fun(keyType: "swordStateEnum", valueType: "CombatState*"): OgreUnorderedMap<integer, CombatState>
----@overload fun(typeName: "ogre_unordered_map<TaskType, hand>"): OgreUnorderedMap<integer, hand>
----@overload fun(keyType: "TaskType", valueType: "hand"): OgreUnorderedMap<integer, hand>
----@overload fun(keyType: "TutorialItem", valueType: "TutorialGUILine*"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(keyType: "TutorialItem*", valueType: "TutorialGUILine"): OgreUnorderedMap<TutorialItem, TutorialGUILine>
----@overload fun(keyType: "Faction", valueType: "Bounty"): OgreUnorderedMap<Faction, Bounty>
----@overload fun(keyType: "GameData", valueType: "int"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "GameData", valueType: "WorldStateEnum"): OgreUnorderedMap<GameData, integer>
----@overload fun(keyType: "hand", valueType: "InventoryGUI"): OgreUnorderedMap<hand, InventoryGUI>
----@overload fun(keyType: "GameData", valueType: "HealthPartStatus"): OgreUnorderedMap<GameData, MedicalSystem_HealthPartStatus>
----@overload fun(keyType: "hand", valueType: "PortraitData"): OgreUnorderedMap<hand, PortraitData>
----@overload fun(keyType: "hand", valueType: "MapMarkerCharacter"): OgreUnorderedMap<hand, MapMarkerCharacter>
----@overload fun(keyType: "hand", valueType: "MapMarkerTown"): OgreUnorderedMap<hand, MapMarkerTown>
----@overload fun(keyType: "Building", valueType: "TownBuildingsManager::BuildingInfo"): OgreUnorderedMap<Building, TownBuildingsManager_BuildingInfo>
----@overload fun(keyType: "Character", valueType: "float"): OgreUnorderedMap<Character, number>
----@overload fun(keyType: "Faction", valueType: "FactionRelationData"): OgreUnorderedMap<Faction, RelationData>
----@overload fun(keyType: "Faction", valueType: "bool"): OgreUnorderedMap<Faction, boolean>
----@overload fun(keyType: "Faction", valueType: "float"): OgreUnorderedMap<Faction, number>
----@overload fun(keyType: "GameData", valueType: "RaceLimiter::Limiter"): OgreUnorderedMap<GameData, Limiter>
----@overload fun(keyType: "GameData", valueType: "float"): OgreUnorderedMap<GameData, number>
----@overload fun(keyType: "RootObject", valueType: "float"): OgreUnorderedMap<RootObject, number>
----@overload fun(keyType: "WorldEventStateQuery", valueType: "bool"): OgreUnorderedMap<WorldEventStateQuery, boolean>
----@overload fun(keyType: "ZoneMap", valueType: "bool"): OgreUnorderedMap<ZoneMap, boolean>
----@overload fun(keyType: "ZoneMap", valueType: "unsigned char"): OgreUnorderedMap<ZoneMap, integer>
----@overload fun(keyType: "hand", valueType: "Character"): OgreUnorderedMap<hand, Character>
----@overload fun(keyType: "hand", valueType: "InventorySection"): OgreUnorderedMap<hand, InventorySection>
----@overload fun(keyType: "int", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "itemType", valueType: "GameData"): OgreUnorderedMap<integer, GameData>
----@overload fun(keyType: "swordStateEnum", valueType: "CombatState"): OgreUnorderedMap<integer, CombatState>
 ---@param keyType string|table
 ---@param valueType string|table
 ---@return OgreUnorderedMap<any, any>

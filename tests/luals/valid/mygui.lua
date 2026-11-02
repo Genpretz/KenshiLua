@@ -416,5 +416,5 @@ if input then
     input:injectMouseMove(mouseX, mouseY)
 end
 
-local point = IntPoint.new(10, 20)
+local point = MyGUI.IntPoint.new(10, 20)
 assert(point.x == 10 and point.y == 20)
