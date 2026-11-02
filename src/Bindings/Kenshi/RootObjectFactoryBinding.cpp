@@ -469,7 +469,6 @@ void RootObjectFactoryBinding::registerBinding(lua_State* L)
     registerSetter(L, "todoList", RootObjectFactory_set_todoList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    CreatelistItemDequeBinding::registerBinding(L, "std::deque<CreatelistItem*>", CreatelistItemBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, RootObjectFactoryBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

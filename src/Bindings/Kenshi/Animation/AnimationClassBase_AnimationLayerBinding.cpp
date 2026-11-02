@@ -434,7 +434,6 @@ void AnimationClassBase_AnimationLayerBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1);
 
-    LektorPtrBinding<SingleAnimation*>::registerBinding(L, "lektor<SingleAnimation*>", AnimationClassBase_SingleAnimationBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

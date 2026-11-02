@@ -1630,7 +1630,6 @@ int TownBinding::chooseResidents(lua_State* L)
 
 void TownBinding::registerBinding(lua_State* L)
 {
-    TownFacilitiesTagsBinding::registerBinding(L, "KenshiLua.TagsClass<BuildingDesignation>");
 
     static const luaL_Reg meta[] = {
         { "__gc",       TownBinding::gc },
@@ -1819,7 +1818,6 @@ void TownBinding::registerBinding(lua_State* L)
     registerSetter(L, "tradeGoodsMults", Town_set_tradeGoodsMults);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    HandFastArrayBinding::registerBinding(L, "Ogre::FastArray<hand>");
 
     // Wire up inheritance to TownBase
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

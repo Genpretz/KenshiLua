@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include <set>
 #include <ogre/OgreMemoryAllocatorConfig.h>
 #include "Lua/BindingHelpers.h"
@@ -16,8 +17,10 @@ namespace KenshiLua
     struct StdSetBinding
     {
         typedef std::set<T, Compare, Alloc> SetType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef SetType ContainerType;
+        typedef StdSetBinding<T, Compare, Alloc> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -43,7 +46,7 @@ namespace KenshiLua
             }
 
             // Otherwise, check containment for elements
-            T elem = LuaCodec<T>::read(L, 2, elemMetaName);
+            T elem = LuaCodec<T>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->find(elem) != s->end() ? 1 : 0);
             return 1;
         }
@@ -53,7 +56,7 @@ namespace KenshiLua
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
 
-            T elem = LuaCodec<T>::read(L, 2, elemMetaName);
+            T elem = LuaCodec<T>::read(L, 2, metadata[0]);
 
             // boolean value dictates inclusion/exclusion (or nil to erase)
             bool add = lua_toboolean(L, 3) != 0;
@@ -78,7 +81,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) { lua_pushboolean(L, 0); return 1; }
-            T elem = LuaCodec<T>::read(L, 2, elemMetaName);
+            T elem = LuaCodec<T>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->find(elem) != s->end() ? 1 : 0);
             return 1;
         }
@@ -87,7 +90,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
-            T elem = LuaCodec<T>::read(L, 2, elemMetaName);
+            T elem = LuaCodec<T>::read(L, 2, metadata[0]);
             s->insert(elem);
             return 0;
         }
@@ -96,7 +99,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
-            T elem = LuaCodec<T>::read(L, 2, elemMetaName);
+            T elem = LuaCodec<T>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->erase(elem) > 0 ? 1 : 0);
             return 1;
         }
@@ -116,7 +119,7 @@ namespace KenshiLua
             int idx = 1;
             for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it, ++idx)
             {
-                LuaCodec<T>::push(L, *it, elemMetaName);
+                LuaCodec<T>::push(L, *it, metadata[0]);
                 lua_rawseti(L, -2, idx);
             }
             return 1;
@@ -134,7 +137,7 @@ namespace KenshiLua
                 for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
                 {
                     ++count;
-                    LuaCodec<T>::push(L, *it, elemMetaName);
+                    LuaCodec<T>::push(L, *it, metadata[0]);
                     lua_rawseti(L, -2, 2 * count - 1);
                     lua_pushboolean(L, 1);
                     lua_rawseti(L, -2, 2 * count);
@@ -143,10 +146,9 @@ namespace KenshiLua
             return pushSnapshotIterator(L, count);
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -169,9 +171,4 @@ namespace KenshiLua
         }
     };
 
-    template <typename T, typename Compare, typename Alloc>
-    const char* StdSetBinding<T, Compare, Alloc>::metaName = nullptr;
-
-    template <typename T, typename Compare, typename Alloc>
-    const char* StdSetBinding<T, Compare, Alloc>::elemMetaName = nullptr;
 }

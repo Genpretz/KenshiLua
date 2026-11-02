@@ -17,6 +17,7 @@
 
 #include <bcrypt.h>
 #include <fstream>
+#include <exception>
 
 namespace KenshiLua
 {
@@ -141,7 +142,15 @@ bool Plugin::initialize(void* hModule)
     }
     logToFile("LuaState initialized");
 
-    LuaBindings::registerAll(g_luaState->getState());
+    try {
+        LuaBindings::registerAll(g_luaState->getState());
+    }
+    catch (const std::exception& error) {
+        logToFileError(std::string("FAILED: Lua binding registration: ") + error.what());
+        delete g_luaState;
+        g_luaState = NULL;
+        return false;
+    }
     logToFile("Lua bindings registered");
 
     if (!EventSystem::get().initialize(g_luaState->getState())) {

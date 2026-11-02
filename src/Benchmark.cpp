@@ -226,7 +226,15 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
             total_state_creation += t_state.elapsed_ms();
 
             HighResTimer t_bind;
-            LuaBindings::registerAll(L_temp);
+            try {
+                LuaBindings::registerAll(L_temp);
+            }
+            catch (const std::exception& error) {
+                logToFileError(std::string("Benchmark binding registration failed: ") + error.what());
+                lua_close(L_temp);
+                lua_pushnil(L);
+                return 1;
+            }
             total_binding_registration += t_bind.elapsed_ms();
 
             lua_close(L_temp);

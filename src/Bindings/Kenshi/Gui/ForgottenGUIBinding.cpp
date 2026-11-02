@@ -1814,8 +1814,6 @@ int ForgottenGUIBinding::tostring(lua_State* L)
 
 void ForgottenGUIBinding::registerBinding(lua_State* L)
 {
-    ForgottenInventoryWindowsOpenMapBinding::registerBinding(L, "ogre_unordered_map<hand, InventoryGUI*>", HandBinding::getMetatableName(), InventoryGUIBinding::getMetatableName());
-    ForgottenInventoryWindowsPermanentSetBinding::registerBinding(L, "ogre_unordered_set<hand>", HandBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       ForgottenGUIBinding::gc },

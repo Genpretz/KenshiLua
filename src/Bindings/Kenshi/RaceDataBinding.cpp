@@ -711,9 +711,6 @@ void RaceDataBinding::registerBinding(lua_State* L)
     registerSetter(L, "weatherImmunities", RaceData_set_weatherImmunities);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", GameDataBinding::getMetatableName());
-    OgreUnorderedMapBinding<StatsEnumerated, float>::registerBinding(L, "ogre_unordered_map<StatsEnumerated, float>", nullptr, nullptr);
-    OgreUnorderedSetBinding<WeatherAffecting>::registerBinding(L, "ogre_unordered_set<WeatherAffecting>", nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

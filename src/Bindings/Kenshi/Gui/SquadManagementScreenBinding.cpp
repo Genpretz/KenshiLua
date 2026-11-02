@@ -275,7 +275,6 @@ int SquadManagementScreenBinding::tostring(lua_State* L)
 
 void SquadManagementScreenBinding::registerBinding(lua_State* L)
 {
-    SquadsMapBinding::registerBinding(L, "std::map<ActivePlatoon*, SquadData*>", ActivePlatoonBinding::getMetatableName(), SquadDataBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       SquadManagementScreenBinding::gc },

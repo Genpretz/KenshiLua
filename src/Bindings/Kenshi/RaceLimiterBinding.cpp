@@ -147,12 +147,6 @@ void RaceLimiterBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    OgreUnorderedMapBinding<GameData*, RaceLimiter::Limiter>::registerBinding(
-        L, 
-        "ogre_unordered_map<GameData*, RaceLimiter::Limiter>", 
-        GameDataBinding::getMetatableName(), 
-        LimiterBinding::getMetatableName()
-    );
 
     // Register global class table for static methods
     pushGlobalTable(L, "RaceLimiter");

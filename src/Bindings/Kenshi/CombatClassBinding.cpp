@@ -222,14 +222,14 @@ static int CombatClass_get_targetsInAttackZone(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    return pushObject<lektor<hand>>(L, &instance->targetsInAttackZone, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand>>(L, &instance->targetsInAttackZone, LektorValueBinding<hand>::metaName);
 }
 
 static int CombatClass_get_attackersH(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    return pushObject<lektor<hand>>(L, &instance->attackersH, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand>>(L, &instance->attackersH, LektorValueBinding<hand>::metaName);
 }
 
 static int CombatClass_get_threats(lua_State* L)
@@ -243,14 +243,14 @@ static int CombatClass_get_threatsH(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    return pushObject<lektor<hand>>(L, &instance->threatsH, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand>>(L, &instance->threatsH, LektorValueBinding<hand>::metaName);
 }
 
 static int CombatClass_get_notifiedThreats(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    return pushObject<lektor<hand>>(L, &instance->notifiedThreats, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand>>(L, &instance->notifiedThreats, LektorValueBinding<hand>::metaName);
 }
 
 static int CombatClass_get_lastIncomingAttackComboSection(lua_State* L)
@@ -593,7 +593,7 @@ static int CombatClass_set_targetsInAttackZone(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueBinding<hand>::metaName);
     if (val) instance->targetsInAttackZone = *val;
     return 0;
 }
@@ -602,7 +602,7 @@ static int CombatClass_set_attackersH(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueBinding<hand>::metaName);
     if (val) instance->attackersH = *val;
     return 0;
 }
@@ -620,7 +620,7 @@ static int CombatClass_set_threatsH(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueBinding<hand>::metaName);
     if (val) instance->threatsH = *val;
     return 0;
 }
@@ -629,7 +629,7 @@ static int CombatClass_set_notifiedThreats(lua_State* L)
 {
     CombatClass* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CombatClass is nil");
-    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    auto* val = checkObject<lektor<hand>>(L, 2, LektorValueBinding<hand>::metaName);
     if (val) instance->notifiedThreats = *val;
     return 0;
 }
@@ -1063,7 +1063,7 @@ int CombatClassBinding::getAttackers(lua_State* L)
     if (!instance) return luaL_error(L, "CombatClass is nil");
 
     lektor<hand>& result = instance->getAttackers();
-    return pushObject<lektor<hand>>(L, &result, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand>>(L, &result, LektorValueBinding<hand>::metaName);
 }
 
 int CombatClassBinding::getNumOpponents(lua_State* L)
@@ -1875,9 +1875,6 @@ void CombatClassBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    SwordStateMapBinding::registerBinding(L, "ogre_unordered_map<swordStateEnum, CombatState*>", nullptr, nullptr);
-    LektorValueReadOnlyBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
-    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
 /*
 LIGHTUSERDATA DEPENDENCIES:

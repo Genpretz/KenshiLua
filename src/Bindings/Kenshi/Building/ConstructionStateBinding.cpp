@@ -355,7 +355,6 @@ int ConstructionStateBinding::tostring(lua_State* L)
 
 void ConstructionStateBinding::registerBinding(lua_State* L)
 {
-    LektorPtrBinding<Building::ConstructionState::BuildMaterial*>::registerBinding(L, "lektor<Building::ConstructionState::BuildMaterial*>", BuildMaterialBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       ConstructionStateBinding::gc },

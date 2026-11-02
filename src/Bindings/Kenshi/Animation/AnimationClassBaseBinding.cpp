@@ -809,7 +809,6 @@ void AnimationClassBaseBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    LektorPtrBinding<AnimationClassBase::AnimationLayer*>::registerBinding(L, "lektor<AnimationClassBase::AnimationLayer*>", AnimationClassBase_AnimationLayerBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

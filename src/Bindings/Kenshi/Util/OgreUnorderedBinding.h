@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include <type_traits>
 #include <string>
 #include <unordered_map>
@@ -17,35 +18,15 @@ namespace KenshiLua
     typedef int (*OgreSetFactoryFn)(lua_State* L);
     typedef int (*OgreMapFactoryFn)(lua_State* L);
 
-    inline std::unordered_map<std::string, OgreSetFactoryFn>& getOgreSetFactories()
-    {
-        static std::unordered_map<std::string, OgreSetFactoryFn> s_setFactories;
-        return s_setFactories;
-    }
-
-    inline void registerOgreSetFactory(const std::string& typeName, OgreSetFactoryFn fn)
-    {
-        getOgreSetFactories()[typeName] = fn;
-    }
-
-    inline std::unordered_map<std::string, OgreMapFactoryFn>& getOgreMapFactories()
-    {
-        static std::unordered_map<std::string, OgreMapFactoryFn> s_mapFactories;
-        return s_mapFactories;
-    }
-
-    inline void registerOgreMapFactory(const std::string& typeName, OgreMapFactoryFn fn)
-    {
-        getOgreMapFactories()[typeName] = fn;
-    }
-
     // Set Binding
     template <typename K>
     struct OgreUnorderedSetBinding
     {
         typedef typename ogre_unordered_set<K>::type SetType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef SetType ContainerType;
+        typedef OgreUnorderedSetBinding<K> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -98,7 +79,7 @@ namespace KenshiLua
                 }
             }
 
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->find(key) != s->end() ? 1 : 0);
             return 1;
         }
@@ -108,7 +89,7 @@ namespace KenshiLua
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
 
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
 
             if (lua_isnil(L, 3) || (lua_isboolean(L, 3) && !lua_toboolean(L, 3)))
             {
@@ -132,7 +113,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) { lua_pushboolean(L, 0); return 1; }
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->find(key) != s->end() ? 1 : 0);
             return 1;
         }
@@ -141,7 +122,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             auto res = s->insert(key);
             lua_pushboolean(L, res.second ? 1 : 0);
             return 1;
@@ -151,7 +132,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->erase(key) > 0 ? 1 : 0);
             return 1;
         }
@@ -170,7 +151,7 @@ namespace KenshiLua
             lua_createtable(L, 0, (int)s->size());
             for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
             {
-                LuaCodec<K>::push(L, *it, elemMetaName);
+                LuaCodec<K>::push(L, *it, metadata[0]);
                 lua_pushboolean(L, 1);
                 lua_settable(L, -3);
             }
@@ -189,7 +170,7 @@ namespace KenshiLua
                 for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
                 {
                     ++count;
-                    LuaCodec<K>::push(L, *it, elemMetaName);
+                    LuaCodec<K>::push(L, *it, metadata[0]);
                     lua_rawseti(L, -2, 2 * count - 1);
                     lua_pushboolean(L, 1);
                     lua_rawseti(L, -2, 2 * count);
@@ -198,10 +179,9 @@ namespace KenshiLua
             return pushSnapshotIterator(L, count);
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -225,31 +205,18 @@ namespace KenshiLua
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
-
-            registerOgreSetFactory(name, createNew);
-            if (elemName)
-            {
-                registerOgreSetFactory(elemName, createNew);
-                registerOgreSetFactory(std::string(elemName) + "*", createNew);
-            }
         }
     };
-
-    template <typename K>
-    const char* OgreUnorderedSetBinding<K>::metaName = nullptr;
-
-    template <typename K>
-    const char* OgreUnorderedSetBinding<K>::elemMetaName = nullptr;
-
 
     // Map Binding
     template <typename K, typename V>
     struct OgreUnorderedMapBinding
     {
         typedef typename ogre_unordered_map<K, V>::type MapType;
-        static const char* metaName;
-        static const char* keyMetaName;
-        static const char* valMetaName;
+        typedef MapType ContainerType;
+        typedef OgreUnorderedMapBinding<K, V> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -302,12 +269,12 @@ namespace KenshiLua
                 }
             }
 
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             auto it = m->find(key);
             if (it == m->end()) { lua_pushnil(L); return 1; }
-            if (valMetaName)
+            if (metadata[1])
             {
-                return MapValue<V>::push(L, it->second, valMetaName);
+                return MapValue<V>::push(L, it->second, metadata[1]);
             }
             else
             {
@@ -323,7 +290,7 @@ namespace KenshiLua
 
             if (lua_isnil(L, 3))
             {
-                K key = LuaCodec<K>::read(L, 2, keyMetaName);
+                K key = LuaCodec<K>::read(L, 2, metadata[0]);
                 m->erase(key);
                 return 0;
             }
@@ -334,16 +301,16 @@ namespace KenshiLua
             }
 
             V val;
-            if (valMetaName)
+            if (metadata[1])
             {
-                val = MapValue<V>::read(L, 3, valMetaName);
+                val = MapValue<V>::read(L, 3, metadata[1]);
             }
             else
             {
                 val = LuaCodec<V>::read(L, 3, nullptr);
             }
 
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             (*m)[key] = val;
             return 0;
         }
@@ -359,7 +326,7 @@ namespace KenshiLua
         {
             MapType* m = getInstance(L, 1);
             if (!m) { lua_pushboolean(L, 0); return 1; }
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, m->find(key) != m->end() ? 1 : 0);
             return 1;
         }
@@ -368,7 +335,7 @@ namespace KenshiLua
         {
             MapType* m = getInstance(L, 1);
             if (!m) return luaL_error(L, "map is nil");
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, m->erase(key) > 0 ? 1 : 0);
             return 1;
         }
@@ -387,10 +354,10 @@ namespace KenshiLua
             lua_createtable(L, 0, (int)m->size());
             for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
             {
-                LuaCodec<K>::push(L, it->first, keyMetaName);
-                if (valMetaName)
+                LuaCodec<K>::push(L, it->first, metadata[0]);
+                if (metadata[1])
                 {
-                    MapValue<V>::push(L, it->second, valMetaName);
+                    MapValue<V>::push(L, it->second, metadata[1]);
                 }
                 else
                 {
@@ -413,10 +380,10 @@ namespace KenshiLua
                 for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
                 {
                     ++count;
-                    LuaCodec<K>::push(L, it->first, keyMetaName);
+                    LuaCodec<K>::push(L, it->first, metadata[0]);
                     lua_rawseti(L, -2, 2 * count - 1);
-                    if (valMetaName)
-                        MapValue<V>::push(L, it->second, valMetaName);
+                    if (metadata[1])
+                        MapValue<V>::push(L, it->second, metadata[1]);
                     else
                         LuaCodec<V>::push(L, it->second, nullptr);
                     lua_rawseti(L, -2, 2 * count);
@@ -425,11 +392,9 @@ namespace KenshiLua
             return pushSnapshotIterator(L, count);
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* keyName = nullptr, const char* valName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            keyMetaName = keyName;
-            valMetaName = valName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -451,70 +416,16 @@ namespace KenshiLua
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
-
-            registerOgreMapFactory(name, createNew);
-            if (keyName && valName)
-            {
-                std::string pairKey = std::string(keyName) + "," + std::string(valName);
-                registerOgreMapFactory(pairKey, createNew);
-            }
         }
     };
 
-    template <typename K, typename V>
-    const char* OgreUnorderedMapBinding<K, V>::metaName = nullptr;
-
-    template <typename K, typename V>
-    const char* OgreUnorderedMapBinding<K, V>::keyMetaName = nullptr;
-
-    template <typename K, typename V>
-    const char* OgreUnorderedMapBinding<K, V>::valMetaName = nullptr;
-
-    inline OgreSetFactoryFn resolveOgreSetFactory(const std::string& typeName)
+    inline OgreSetFactoryFn resolveOgreSetFactory(lua_State* L, const std::string& typeName)
     {
-        auto& factories = getOgreSetFactories();
-        auto it = factories.find(typeName);
-        if (it != factories.end())
-            return it->second;
-
+        lua_CFunction fn = findExplicitContainerFactory(L, "ogre_unordered_set", typeName);
+        if (fn) return fn;
         if (typeName.length() > 20 && typeName.rfind("ogre_unordered_set<", 0) == 0 && typeName.back() == '>')
-        {
-            std::string inner = typeName.substr(19, typeName.length() - 20);
-            it = factories.find(inner);
-            if (it != factories.end())
-                return it->second;
-
-            if (inner.back() != '*')
-            {
-                it = factories.find(inner + "*");
-                if (it != factories.end())
-                    return it->second;
-            }
-        }
-
-        it = factories.find(typeName + "*");
-        if (it != factories.end())
-            return it->second;
-
-        if (!typeName.empty() && typeName.back() == '*')
-        {
-            it = factories.find(typeName.substr(0, typeName.length() - 1));
-            if (it != factories.end())
-                return it->second;
-        }
-
-        it = factories.find("ogre_unordered_set<" + typeName + ">");
-        if (it != factories.end())
-            return it->second;
-
-        if (typeName.back() != '*')
-        {
-            it = factories.find("ogre_unordered_set<" + typeName + "*>");
-            if (it != factories.end())
-                return it->second;
-        }
-
-        return nullptr;
+            return findExplicitContainerFactory(L, "ogre_unordered_set", typeName.substr(19, typeName.length() - 20));
+        return findExplicitContainerFactory(L, "ogre_unordered_set", "ogre_unordered_set<" + typeName + ">");
     }
 
     inline int lua_ogre_unordered_set_new(lua_State* L)
@@ -522,13 +433,15 @@ namespace KenshiLua
         OgreSetFactoryFn fn = nullptr;
         {
             std::string typeName = extractContainerTypeName(L, 1);
+            if (!lua_isstring(L, 1))
+                typeName = findContainerFactoryElementType(L, "ogre_unordered_set", 0, typeName);
             if (typeName.empty())
             {
-                lua_pushfstring(L, "ogre_unordered_set.new: expected type name or class table as argument 1, got %s", luaL_typename(L, 1));
+                lua_pushfstring(L, "ogre_unordered_set.new: expected an explicit type name ('T' or 'T*') or an unambiguous bound type as argument 1, got %s", luaL_typename(L, 1));
             }
             else
             {
-                fn = resolveOgreSetFactory(typeName);
+                fn = resolveOgreSetFactory(L, typeName);
                 if (!fn)
                 {
                     lua_pushfstring(L, "ogre_unordered_set.new: unsupported or unknown type '%s'", typeName.c_str());
@@ -540,41 +453,11 @@ namespace KenshiLua
         return fn(L);
     }
 
-    inline OgreMapFactoryFn resolveOgreMapFactory(const std::string& kStr, const std::string& vStr)
+    inline OgreMapFactoryFn resolveOgreMapFactory(lua_State* L, const std::string& kStr, const std::string& vStr)
     {
-        auto& factories = getOgreMapFactories();
-
-        auto it = factories.find(kStr + "," + vStr);
-        if (it != factories.end())
-            return it->second;
-
-        it = factories.find("ogre_unordered_map<" + kStr + ", " + vStr + ">");
-        if (it != factories.end())
-            return it->second;
-
-        if (kStr.back() != '*')
-        {
-            it = factories.find(kStr + "*," + vStr);
-            if (it != factories.end())
-                return it->second;
-
-            it = factories.find("ogre_unordered_map<" + kStr + "*, " + vStr + ">");
-            if (it != factories.end())
-                return it->second;
-        }
-
-        if (vStr.back() != '*')
-        {
-            it = factories.find(kStr + "," + vStr + "*");
-            if (it != factories.end())
-                return it->second;
-
-            it = factories.find("ogre_unordered_map<" + kStr + ", " + vStr + "*>");
-            if (it != factories.end())
-                return it->second;
-        }
-
-        return nullptr;
+        lua_CFunction fn = findExplicitContainerFactory(L, "ogre_unordered_map", kStr + "," + vStr);
+        if (fn) return fn;
+        return findExplicitContainerFactory(L, "ogre_unordered_map", "ogre_unordered_map<" + kStr + ", " + vStr + ">");
     }
 
     inline int lua_ogre_unordered_map_new(lua_State* L)
@@ -585,13 +468,17 @@ namespace KenshiLua
             {
                 std::string kStr = extractContainerTypeName(L, 1);
                 std::string vStr = extractContainerTypeName(L, 2);
+                if (!lua_isstring(L, 1))
+                    kStr = findContainerFactoryElementType(L, "ogre_unordered_map", 0, kStr);
+                if (!lua_isstring(L, 2))
+                    vStr = findContainerFactoryElementType(L, "ogre_unordered_map", 1, vStr);
                 if (kStr.empty() || vStr.empty())
                 {
-                    lua_pushliteral(L, "ogre_unordered_map.new: expected type names or class tables for key and value");
+                    lua_pushliteral(L, "ogre_unordered_map.new: expected explicit key and value types ('T' or 'T*') or unambiguous bound types");
                 }
                 else
                 {
-                    fn = resolveOgreMapFactory(kStr, vStr);
+                    fn = resolveOgreMapFactory(L, kStr, vStr);
                     if (!fn)
                     {
                         lua_pushfstring(L, "ogre_unordered_map.new: unsupported map type (%s, %s)", kStr.c_str(), vStr.c_str());
@@ -601,11 +488,8 @@ namespace KenshiLua
             else if (lua_isstring(L, 1))
             {
                 std::string mapTypeStr = lua_tostring(L, 1);
-                auto& factories = getOgreMapFactories();
-                auto it = factories.find(mapTypeStr);
-                if (it != factories.end())
-                    fn = it->second;
-                else
+                fn = findExplicitContainerFactory(L, "ogre_unordered_map", mapTypeStr);
+                if (!fn)
                     lua_pushfstring(L, "ogre_unordered_map.new: unsupported map type '%s'", mapTypeStr.c_str());
             }
             else

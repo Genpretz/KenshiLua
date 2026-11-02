@@ -432,7 +432,6 @@ int TutorialGUIBinding::tostring(lua_State* L)
 
 void TutorialGUIBinding::registerBinding(lua_State* L)
 {
-    ActiveTutorialsMapBinding::registerBinding(L, "ogre_unordered_map<TutorialItem*, TutorialGUILine*>", TutorialItemBinding::getMetatableName(), TutorialGUILineBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       TutorialGUIBinding::gc },

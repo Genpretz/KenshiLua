@@ -1057,7 +1057,6 @@ int FarmBuildingBinding::tostring(lua_State* L)
 
 void FarmBuildingBinding::registerBinding(lua_State* L)
 {
-    OgreUnorderedMapBinding<CropType, float>::registerBinding(L, "ogre_unordered_map<CropType, float>", nullptr, nullptr);
 
     static const luaL_Reg meta[] = {
         { "__gc",       FarmBuildingBinding::gc },

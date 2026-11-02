@@ -52,7 +52,8 @@ static int ProductionBuilding_get_consumptionItems(lua_State* L)
 {
     ProductionBuilding* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "ProductionBuilding is nil");
-    return pushObject<lektor<StorageBuilding::ConsumptionItem>>(L, &instance->consumptionItems, "lektor<StorageBuilding::ConsumptionItem>");
+    return pushObject<lektor<StorageBuilding::ConsumptionItem>>(L, &instance->consumptionItems,
+        LektorValueBinding<StorageBuilding::ConsumptionItem>::getMetatableName());
 }
 
 // --- Setters for ProductionBuilding ---
@@ -950,7 +951,6 @@ void ProductionBuildingBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    LektorValueBinding<StorageBuilding::ConsumptionItem>::registerBinding(L, "lektor<Building::ConsumptionItem>", ConsumptionItemBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

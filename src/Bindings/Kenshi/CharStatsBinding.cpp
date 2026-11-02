@@ -3650,9 +3650,6 @@ void CharStatsBinding::registerBinding(lua_State* L)
     registerSetter(L, "blocks", CharStats_set_blocks);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    WeatherProtectionsMapBinding::registerBinding(L, "std::map<WeatherAffecting, float>", nullptr, nullptr);
-    BonusRacesMapBinding::registerBinding(L, "std::map<GameData*, float>", GameDataBinding::getMetatableName(), nullptr);
-    CombatTechniqueDataLektorBinding::registerBinding(L, "lektor<CombatTechniqueData*>", CombatTechniqueDataBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, CharStatsBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

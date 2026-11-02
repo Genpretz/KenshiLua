@@ -314,9 +314,8 @@ def cpp_spellings(template, args):
 
 
 # Lua factories that create Lua-owned containers (LektorBinding.h,
-# OgreUnorderedBinding.h). Every registerBinding of these templates also
-# registers its type names with the factory, so each inventoried instance is
-# one accepted spelling.
+# OgreUnorderedBinding.h). The catalog determines which specializations have
+# factories. Explicit type spellings preserve pointer/value distinctions.
 FACTORIES = {
     "lektor": {
         "class": "LektorFactory",
@@ -325,7 +324,7 @@ FACTORIES = {
         "prefix": "lektor",
         "fallback": "Lektor<any>",
         "extra": {"LektorStringBinding": ["string", "lektor<string>"]},
-        "description": "Creates Lua-owned `lektor` lists; also callable as `lektor(typeName)`.",
+        "description": "Creates Lua-owned `lektor` lists. Type strings use `T` for values and `T*` for pointers; also callable as `lektor(typeName)`.",
     },
     "ogre_unordered_set": {
         "class": "OgreUnorderedSetFactory",
@@ -333,7 +332,7 @@ FACTORIES = {
         "prefix": "ogre_unordered_set",
         "fallback": "OgreUnorderedSet<any>",
         "extra": {},
-        "description": "Creates Lua-owned `ogre_unordered_set` sets; also callable as `ogre_unordered_set(typeName)`.",
+        "description": "Creates Lua-owned `ogre_unordered_set` sets. Type strings use `T` for values and `T*` for pointers; also callable as `ogre_unordered_set(typeName)`.",
     },
     "ogre_unordered_map": {
         "class": "OgreUnorderedMapFactory",
@@ -343,7 +342,8 @@ FACTORIES = {
         "extra": {},
         "description": (
             "Creates Lua-owned `ogre_unordered_map` maps from key and value type names "
-            "or one full type string; also callable as `ogre_unordered_map(...)`."
+            "or one full type string. Each type uses `T` for values and `T*` for pointers; "
+            "also callable as `ogre_unordered_map(...)`."
         ),
     },
 }
@@ -369,35 +369,36 @@ def _template_arguments(spelling, prefix):
 def factory_overloads(inventory_classes):
     """global name -> list of (params, return type) for each accepted spelling.
 
-    Exact registered spellings come first. A pointer argument written without
-    its ``*`` (``"Character"`` for ``lektor<Character*>``) resolves through the
-    factory's retry with ``*`` appended, so it is added only when no instance
-    claims the spelling exactly.
+    Element names retain their ``*``. Aliases are included only when they
+    preserve the pointer depth of each registered argument.
     """
     result = {}
     for global_name, spec in FACTORIES.items():
-        exact, bare = {}, {}
+        exact = {}
         for entry in inventory_classes:
             if entry.get("kind") != "template_instance" or entry.get("template") not in spec["templates"]:
                 continue
             lua_type = entry["lua_type"]
-            spellings = [entry["metatable"]] + entry.get("metatable_aliases", [])
+            factories = entry.get("factories")
+            if factories is not None:
+                factories = [factory for factory in factories if factory["family"] == global_name]
+                spellings = [factory["metatable"] for factory in factories]
+            else:
+                spellings = [entry["metatable"]] + entry.get("metatable_aliases", [])
             for spelling in spellings:
                 args = _template_arguments(spelling, spec["prefix"])
                 if not args:
                     continue
                 exact.setdefault((spelling,), lua_type)
                 exact.setdefault(tuple(args), lua_type)
-                # The factories retry with "*" appended to one argument at a time.
-                for index, arg in enumerate(args):
-                    if arg.endswith("*"):
-                        variant = list(args)
-                        variant[index] = arg[:-1]
-                        bare.setdefault(tuple(variant), lua_type)
-            for name in spec["extra"].get(entry["template"], []):
+            if factories is not None:
+                extra = [name for factory in factories for name in factory["aliases"]
+                         if "KenshiLua." not in name and factory_spelling_matches(
+                             global_name, name, factory["metatable"])]
+            else:
+                extra = spec["extra"].get(entry["template"], [])
+            for name in extra:
                 exact.setdefault((name,), lua_type)
-        for key, lua_type in bare.items():
-            exact.setdefault(key, lua_type)
         overloads = []
         for key, lua_type in exact.items():
             if global_name == "ogre_unordered_map" and len(key) == 2:
@@ -409,3 +410,22 @@ def factory_overloads(inventory_classes):
             overloads.append((params, lua_type))
         result[global_name] = overloads
     return result
+
+
+def factory_spelling_matches(family, spelling, metatable):
+    """Whether a registered lookup alias preserves every explicit pointer depth."""
+    actual = _template_arguments(metatable, family)
+    requested = _template_arguments(spelling, family)
+    if requested is None:
+        requested = _template_arguments(family + "<" + spelling + ">", family)
+    count = 2 if family == "ogre_unordered_map" else 1
+    if (not actual or not requested or len(actual) != count or len(requested) != count
+            or any(not argument for argument in actual + requested)):
+        return False
+
+    def pointer_depth(argument):
+        text = re.sub(r"[ \t]", "", argument)
+        return len(text) - len(text.rstrip("*"))
+
+    return all(pointer_depth(first) == pointer_depth(second)
+               for first, second in zip(actual, requested))

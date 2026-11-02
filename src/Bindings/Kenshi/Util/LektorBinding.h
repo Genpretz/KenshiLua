@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include <kenshi/util/lektor.h>
 #include <kenshi/ModInfo.h>
 #include "Bindings/Kenshi/ModInfoBinding.h"
@@ -123,17 +124,6 @@ namespace KenshiLua
 {
     typedef int (*LektorFactoryFn)(lua_State* L);
 
-    inline std::unordered_map<std::string, LektorFactoryFn>& getLektorFactories()
-    {
-        static std::unordered_map<std::string, LektorFactoryFn> s_factories;
-        return s_factories;
-    }
-
-    inline void registerLektorFactory(const std::string& typeName, LektorFactoryFn fn)
-    {
-        getLektorFactories()[typeName] = fn;
-    }
-
     template <typename T>
     inline int pushLektorValue(lua_State* L, T* value, const char* elemMetaName)
     {
@@ -174,13 +164,6 @@ namespace KenshiLua
             return val;
         }
 
-        static void registerExtraFactories(const char* elemName, LektorFactoryFn fn)
-        {
-            if (elemName)
-            {
-                registerLektorFactory(std::string(elemName) + "*", fn);
-            }
-        }
     };
 
     template <typename T>
@@ -226,9 +209,6 @@ namespace KenshiLua
             }
         }
 
-        static void registerExtraFactories(const char* /*elemName*/, LektorFactoryFn /*fn*/)
-        {
-        }
     };
 
     template <typename T>
@@ -256,13 +236,6 @@ namespace KenshiLua
             return std::string(s, len);
         }
 
-        static void registerExtraFactories(const char* /*elemName*/, LektorFactoryFn fn)
-        {
-            registerLektorFactory("string", fn);
-            registerLektorFactory("std::string", fn);
-            registerLektorFactory("lektor<string>", fn);
-            registerLektorFactory("lektor<std::string>", fn);
-        }
     };
 
     struct LektorIntPolicy
@@ -283,11 +256,6 @@ namespace KenshiLua
             return (int)luaL_checkinteger(L, idx);
         }
 
-        static void registerExtraFactories(const char* /*elemName*/, LektorFactoryFn fn)
-        {
-            registerLektorFactory("int", fn);
-            registerLektorFactory("lektor<int>", fn);
-        }
     };
 
     // =========================================================================
@@ -297,8 +265,10 @@ namespace KenshiLua
     template <typename T, typename Policy>
     struct LektorReadOnlyContainerBinding
     {
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef lektor<T> ContainerType;
+        typedef LektorReadOnlyContainerBinding<T, Policy> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -374,7 +344,7 @@ namespace KenshiLua
             {
                 uint32_t i = (uint32_t)lua_tointeger(L, 2);
                 if (i < 1 || i > lek->count) { lua_pushnil(L); return 1; }
-                return Policy::pushElement(L, lek->stuff[i - 1], elemMetaName);
+                return Policy::pushElement(L, lek->stuff[i - 1], metadata[0]);
             }
 
             // fall through to metatable methods
@@ -400,7 +370,7 @@ namespace KenshiLua
             lua_createtable(L, (int)lek->count, 0);
             for (uint32_t i = 0; i < lek->count; ++i)
             {
-                Policy::pushElement(L, lek->stuff[i], elemMetaName);
+                Policy::pushElement(L, lek->stuff[i], metadata[0]);
                 lua_rawseti(L, -2, (int)(i + 1));
             }
             return 1;
@@ -413,7 +383,7 @@ namespace KenshiLua
             uint32_t i = (uint32_t)lua_tointeger(L, 2) + 1;
             if (i > lek->count) return 0;
             lua_pushinteger(L, (lua_Integer)i);
-            Policy::pushElement(L, lek->stuff[i - 1], elemMetaName);
+            Policy::pushElement(L, lek->stuff[i - 1], metadata[0]);
             return 2;
         }
 
@@ -427,10 +397,9 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = NULL)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -448,21 +417,8 @@ namespace KenshiLua
                 { 0, 0 }
             };
             registerClass(L, metaName, meta, methods, index, newindex);
-
-            registerLektorFactory(name, createNew);
-            if (elemName)
-            {
-                registerLektorFactory(elemName, createNew);
-            }
-            Policy::registerExtraFactories(elemName, createNew);
         }
     };
-
-    template <typename T, typename Policy>
-    const char* LektorReadOnlyContainerBinding<T, Policy>::metaName = NULL;
-
-    template <typename T, typename Policy>
-    const char* LektorReadOnlyContainerBinding<T, Policy>::elemMetaName = NULL;
 
     // =========================================================================
     // Writable Generic Lektor Container Binding
@@ -493,7 +449,7 @@ namespace KenshiLua
                     i, lek->count, lek->count + 1);
             }
 
-            T val = Policy::readElement(L, 3, Base::elemMetaName);
+            T val = Policy::readElement(L, 3, Base::metadata[0]);
             if (i <= lek->count)
             {
                 lek->stuff[i - 1] = val;
@@ -507,7 +463,7 @@ namespace KenshiLua
         {
             lektor<T>* lek = Base::getInstance(L, 1);
             if (!lek) return luaL_error(L, "lektor is nil");
-            T val = Policy::readElement(L, 2, Base::elemMetaName);
+            T val = Policy::readElement(L, 2, Base::metadata[0]);
             lektor_push_back(*lek, val);
             return 0;
         }
@@ -518,7 +474,7 @@ namespace KenshiLua
             if (!lek) return luaL_error(L, "lektor is nil");
             if (lek->count == 0) return luaL_error(L, "lektor:pop container is empty");
             T val = lektor_pop_back_val(*lek);
-            return Policy::pushPopped(L, val, Base::elemMetaName);
+            return Policy::pushPopped(L, val, Base::metadata[0]);
         }
 
         static int removeAt(lua_State* L)
@@ -544,10 +500,9 @@ namespace KenshiLua
             return 0;
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = NULL)
+        static void registerBinding(lua_State* L)
         {
-            Base::metaName = name;
-            Base::elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<typename Base::MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       Base::gc },
@@ -569,13 +524,6 @@ namespace KenshiLua
                 { 0, 0 }
             };
             registerClass(L, Base::metaName, meta, methods, Base::index, newindex);
-
-            registerLektorFactory(name, Base::createNew);
-            if (elemName)
-            {
-                registerLektorFactory(elemName, Base::createNew);
-            }
-            Policy::registerExtraFactories(elemName, Base::createNew);
         }
     };
 
@@ -608,56 +556,13 @@ namespace KenshiLua
     {
     };
 
-    inline LektorFactoryFn resolveLektorFactory(const std::string& typeName)
+    inline LektorFactoryFn resolveLektorFactory(lua_State* L, const std::string& typeName)
     {
-        std::unordered_map<std::string, LektorFactoryFn>& factories = getLektorFactories();
-        std::unordered_map<std::string, LektorFactoryFn>::iterator it = factories.find(typeName);
-        if (it != factories.end())
-            return it->second;
-
-        // 1. If wrapped in lektor<...>, extract inner
+        lua_CFunction fn = findExplicitContainerFactory(L, "lektor", typeName);
+        if (fn) return fn;
         if (typeName.length() > 8 && typeName.rfind("lektor<", 0) == 0 && typeName.back() == '>')
-        {
-            std::string inner = typeName.substr(7, typeName.length() - 8);
-            it = factories.find(inner);
-            if (it != factories.end())
-                return it->second;
-
-            if (inner.back() != '*')
-            {
-                it = factories.find(inner + "*");
-                if (it != factories.end())
-                    return it->second;
-            }
-        }
-
-        // 2. Try appending '*'
-        it = factories.find(typeName + "*");
-        if (it != factories.end())
-            return it->second;
-
-        // 3. Try removing '*'
-        if (!typeName.empty() && typeName.back() == '*')
-        {
-            it = factories.find(typeName.substr(0, typeName.length() - 1));
-            if (it != factories.end())
-                return it->second;
-        }
-
-        // 4. Try wrapping with lektor<...>
-        it = factories.find("lektor<" + typeName + ">");
-        if (it != factories.end())
-            return it->second;
-
-        // 5. A pointer element named without '*' ("Character" -> lektor<Character*>)
-        if (typeName.back() != '*')
-        {
-            it = factories.find("lektor<" + typeName + "*>");
-            if (it != factories.end())
-                return it->second;
-        }
-
-        return NULL;
+            return findExplicitContainerFactory(L, "lektor", typeName.substr(7, typeName.length() - 8));
+        return findExplicitContainerFactory(L, "lektor", "lektor<" + typeName + ">");
     }
 
     inline int lua_lektor_new(lua_State* L)
@@ -665,13 +570,15 @@ namespace KenshiLua
         LektorFactoryFn fn = NULL;
         {
             std::string typeName = extractContainerTypeName(L, 1);
+            if (!lua_isstring(L, 1))
+                typeName = findContainerFactoryElementType(L, "lektor", 0, typeName);
             if (typeName.empty())
             {
-                lua_pushfstring(L, "lektor.new: expected type name or class table as argument 1, got %s", luaL_typename(L, 1));
+                lua_pushfstring(L, "lektor.new: expected an explicit type name ('T' or 'T*') or an unambiguous bound type as argument 1, got %s", luaL_typename(L, 1));
             }
             else
             {
-                fn = resolveLektorFactory(typeName);
+                fn = resolveLektorFactory(L, typeName);
                 if (!fn)
                 {
                     lua_pushfstring(L, "lektor.new: unsupported or unknown type '%s'", typeName.c_str());

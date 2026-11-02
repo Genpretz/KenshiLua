@@ -254,7 +254,6 @@ int FactionsScreenBinding::tostring(lua_State* L)
 
 void FactionsScreenBinding::registerBinding(lua_State* L)
 {
-    FactionLinesMapBinding::registerBinding(L, "std::map<Faction*, FactionRelationsLine*>", FactionBinding::getMetatableName(), FactionRelationsLineBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       FactionsScreenBinding::gc },

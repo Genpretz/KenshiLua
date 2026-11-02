@@ -1430,15 +1430,6 @@ void MedicalSystemBinding::registerBinding(lua_State* L)
     lua_setfield(L, -2, "__setters"); // Bind to metatable
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    HealthStatusMapBinding::registerBinding(
-        L, 
-        "ogre_unordered_map<GameData*, HealthPartStatus>", 
-        GameDataBinding::getMetatableName(), 
-        HealthPartStatusBinding::getMetatableName()
-    );
-    LektorPtrBinding<Armour*>::registerBinding(L, "lektor<Armour*>", ArmourBinding::getMetatableName());
-    LektorPtrBinding<MedicalSystem::HealthPartStatus*>::registerBinding(L, "lektor<HealthPartStatus*>", HealthPartStatusBinding::getMetatableName());
-    WoundFastArrayBinding::registerBinding(L, "Ogre::FastArray<Wound*>", nullptr);
 }
 
 // --- Static Methods ---

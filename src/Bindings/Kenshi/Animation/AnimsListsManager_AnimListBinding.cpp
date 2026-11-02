@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/Containers/CommonTypes.h"
 #include "kenshi/Animation/AnimationClass.h"
 #include "AnimsListsManager_AnimListBinding.h"
 #include "AnimationDataBinding.h"
@@ -11,8 +12,8 @@ namespace KenshiLua
 {
 
 typedef AnimsListsManager::AnimList AnimList;
-typedef boost::unordered::unordered_map<std::string, AnimationData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, AnimationData*>, Ogre::GeneralAllocPolicy> > AnimStringMap;
-typedef BoostUnorderedMapBinding<std::string, AnimationData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<std::string const, AnimationData*>, Ogre::GeneralAllocPolicy> > AnimStringMapBinding;
+typedef Containers::AnimStringMapBinding::ContainerType AnimStringMap;
+typedef Containers::AnimStringMapBinding AnimStringMapBinding;
 
 static_assert(offsetof(AnimList, movementAnimsBase) == 0x0, "AnimList::movementAnimsBase offset mismatch");
 static_assert(offsetof(AnimList, movementAnimsUpper) == 0x18, "AnimList::movementAnimsUpper offset mismatch");
@@ -241,7 +242,6 @@ void AnimsListsManager_AnimListBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1);
 
-    AnimStringMapBinding::registerBinding(L, "boost_unordered_map<std::string, AnimationData*>", nullptr, AnimationDataBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

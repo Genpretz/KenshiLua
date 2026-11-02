@@ -121,7 +121,6 @@ void LimiterBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    StdSetBinding<RaceData*>::registerBinding(L, "std::set<RaceData*>", RaceDataBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

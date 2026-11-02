@@ -1056,10 +1056,6 @@ int MainBarGUIBinding::tostring(lua_State* L)
 
 void MainBarGUIBinding::registerBinding(lua_State* L)
 {
-    MainBarDatapanelsMapBinding::registerBinding(L, "boost::unordered_map<std::string, DatapanelGUI*>", nullptr, DatapanelGUIBinding::getMetatableName());
-    MainBarPortraitsMapBinding::registerBinding(L, "ogre_unordered_map<hand, PortraitData*>", HandBinding::getMetatableName(), PortraitDataBinding::getMetatableName());
-    SpeedButtonsFastArrayBinding::registerBinding(L, "Ogre::FastArray<MyGUI::Button*>", nullptr);
-    TabPortraitsFastArrayBinding::registerBinding(L, "Ogre::FastArray<MainTabPortraitPlatoon>", MainTabPortraitPlatoonBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       MainBarGUIBinding::gc },

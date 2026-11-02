@@ -1245,8 +1245,6 @@ void ZoneManagerBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
 
-    LektorPtrBinding<ZoneMap*>::registerBinding(L, "lektor<ZoneMap*>", ZoneMapBinding::getMetatableName());
-    LektorValueBinding<iVector2>::registerBinding(L, "lektor<iVector2>", iVector2Binding::getMetatableName());
 
     registerClass(
         L, 

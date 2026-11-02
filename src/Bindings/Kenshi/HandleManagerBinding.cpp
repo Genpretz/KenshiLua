@@ -381,7 +381,6 @@ void HandleManagerBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1);
 
-    HandHandMapBinding::registerBinding(L, "ogre_unordered_map<hand, hand>", HandBinding::getMetatableName(), HandBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "Lua/ContainerBinding.h"
 
 extern "C" {
 #include <lua.h>
@@ -15,13 +16,13 @@ class LuaBindings
 {
 public:
     static void registerAll(lua_State* L);
-    static void registerLektor(lua_State* L);
-    static void registerOgreUnordered(lua_State* L);
-    static void registerSTL(lua_State* L);
-    static void registerStdSet(lua_State* L);
-    static void registerStdMap(lua_State* L);
-    static void registerStdDeque(lua_State* L);
-    static void registerFitnessSelector(lua_State* L);
+    static void registerContainers(lua_State* L);
+    static void collectStdContainers(ContainerBindingList& definitions);
+    static void collectLektor(ContainerBindingList& definitions);
+    static void collectOgreUnordered(ContainerBindingList& definitions);
+    static void collectBoostContainers(ContainerBindingList& definitions);
+    static void collectArrays(ContainerBindingList& definitions);
+    static void collectFitnessSelectors(ContainerBindingList& definitions);
     static void registerClasses(lua_State* L);
 };
 

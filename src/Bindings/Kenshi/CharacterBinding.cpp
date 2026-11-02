@@ -6501,9 +6501,6 @@ void CharacterBinding::registerBinding(lua_State* L)
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, CharacterBinding::getMetatableName(), RootObjectBinding::getMetatableName());
 
-    //LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
-
-    CharacterRagdollMsgDequeBinding::registerBinding(L, "std::deque<Character::RagdollMsg>", Character_RagdollMsgBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

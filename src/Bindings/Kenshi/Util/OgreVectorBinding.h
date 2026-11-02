@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include "Lua/LuaCodec.h"
 #include <vector>
 #include <ogre/OgreMemoryAllocatorConfig.h>
@@ -10,8 +11,10 @@ namespace KenshiLua
     struct OgreVectorValueBinding
     {
         typedef typename Ogre::vector<T>::type VecType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef VecType ContainerType;
+        typedef OgreVectorValueBinding<T> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static VecType* getInstance(lua_State* L, int idx)
         {
@@ -39,9 +42,9 @@ namespace KenshiLua
                 if (i < 1 || i > vec->size()) { lua_pushnil(L); return 1; }
                 
                 // Return by pointer if element is a class/struct, otherwise by value via LuaCodec
-                if (elemMetaName)
+                if (metadata[0])
                 {
-                    return pushObject<T>(L, &(*vec)[i - 1], elemMetaName);
+                    return pushObject<T>(L, &(*vec)[i - 1], metadata[0]);
                 }
                 else
                 {
@@ -71,9 +74,9 @@ namespace KenshiLua
             }
 
             T val;
-            if (elemMetaName)
+            if (metadata[0])
             {
-                T* ptr = checkObject<T>(L, 3, elemMetaName);
+                T* ptr = checkObject<T>(L, 3, metadata[0]);
                 if (!ptr) return luaL_error(L, "vector: expected valid object for assignment");
                 val = *ptr;
             }
@@ -97,9 +100,9 @@ namespace KenshiLua
             if (!vec) return luaL_error(L, "vector is nil");
 
             T val;
-            if (elemMetaName)
+            if (metadata[0])
             {
-                T* ptr = checkObject<T>(L, 2, elemMetaName);
+                T* ptr = checkObject<T>(L, 2, metadata[0]);
                 if (!ptr) return luaL_error(L, "vector:push expected valid object");
                 val = *ptr;
             }
@@ -119,9 +122,9 @@ namespace KenshiLua
             if (vec->empty()) return luaL_error(L, "vector:pop container is empty");
             T val = vec->back();
             vec->pop_back();
-            if (elemMetaName)
+            if (metadata[0])
             {
-                return pushValue<T>(L, val, elemMetaName);
+                return pushValue<T>(L, val, metadata[0]);
             }
             else
             {
@@ -159,8 +162,8 @@ namespace KenshiLua
             lua_createtable(L, (int)vec->size(), 0);
             for (size_t i = 0; i < vec->size(); ++i)
             {
-                if (elemMetaName)
-                    pushObject<T>(L, &(*vec)[i], elemMetaName);
+                if (metadata[0])
+                    pushObject<T>(L, &(*vec)[i], metadata[0]);
                 else
                     LuaCodec<T>::push(L, (*vec)[i], nullptr);
                 lua_rawseti(L, -2, (int)(i + 1));
@@ -177,8 +180,8 @@ namespace KenshiLua
             i += 1; // advance to next (1-based)
             if (i > vec->size()) return 0;
             lua_pushinteger(L, (lua_Integer)i);
-            if (elemMetaName)
-                pushObject<T>(L, &(*vec)[i - 1], elemMetaName);
+            if (metadata[0])
+                pushObject<T>(L, &(*vec)[i - 1], metadata[0]);
             else
                 LuaCodec<T>::push(L, (*vec)[i - 1], nullptr);
             return 2;
@@ -197,10 +200,9 @@ namespace KenshiLua
             return pairs(L); // same semantics for sequential container
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -224,19 +226,16 @@ namespace KenshiLua
         }
     };
 
-    template <typename T>
-    const char* OgreVectorValueBinding<T>::metaName = nullptr;
-    template <typename T>
-    const char* OgreVectorValueBinding<T>::elemMetaName = nullptr;
-
     // Ogre Vector Binding for Pointer Types (T is U*)
     template <typename T>
     struct OgreVectorPtrBinding
     {
         typedef typename std::remove_pointer<T>::type BaseType;
         typedef typename Ogre::vector<T>::type VecType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef VecType ContainerType;
+        typedef OgreVectorPtrBinding<T> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static VecType* getInstance(lua_State* L, int idx)
         {
@@ -263,8 +262,8 @@ namespace KenshiLua
                 if (i < 1 || i > vec->size()) { lua_pushnil(L); return 1; }
                 T val = (*vec)[i - 1];
                 if (!val) { lua_pushnil(L); return 1; }
-                if (elemMetaName)
-                    return pushObject<BaseType>(L, val, elemMetaName);
+                if (metadata[0])
+                    return pushObject<BaseType>(L, val, metadata[0]);
                 else
                 {
                     lua_pushlightuserdata(L, (void*)val);
@@ -287,8 +286,8 @@ namespace KenshiLua
             T val = nullptr;
             if (!lua_isnoneornil(L, 3))
             {
-                if (elemMetaName)
-                    val = checkObject<BaseType>(L, 3, elemMetaName);
+                if (metadata[0])
+                    val = checkObject<BaseType>(L, 3, metadata[0]);
                 else if (lua_islightuserdata(L, 3))
                     val = (T)lua_touserdata(L, 3);
                 else
@@ -319,8 +318,8 @@ namespace KenshiLua
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
             {
-                if (elemMetaName)
-                    val = checkObject<BaseType>(L, 2, elemMetaName);
+                if (metadata[0])
+                    val = checkObject<BaseType>(L, 2, metadata[0]);
                 else if (lua_islightuserdata(L, 2))
                     val = (T)lua_touserdata(L, 2);
             }
@@ -336,8 +335,8 @@ namespace KenshiLua
             T val = vec->back();
             vec->pop_back();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -374,8 +373,8 @@ namespace KenshiLua
                 T val = (*vec)[i];
                 if (!val)
                     lua_pushnil(L);
-                else if (elemMetaName)
-                    pushObject<BaseType>(L, val, elemMetaName);
+                else if (metadata[0])
+                    pushObject<BaseType>(L, val, metadata[0]);
                 else
                     lua_pushlightuserdata(L, (void*)val);
                 lua_rawseti(L, -2, (int)(i + 1));
@@ -393,8 +392,8 @@ namespace KenshiLua
             T val = (*vec)[i - 1];
             if (!val)
                 lua_pushnil(L);
-            else if (elemMetaName)
-                pushObject<BaseType>(L, val, elemMetaName);
+            else if (metadata[0])
+                pushObject<BaseType>(L, val, metadata[0]);
             else
                 lua_pushlightuserdata(L, (void*)val);
             return 2;
@@ -410,10 +409,9 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -437,8 +435,4 @@ namespace KenshiLua
         }
     };
 
-    template <typename T>
-    const char* OgreVectorPtrBinding<T>::metaName = nullptr;
-    template <typename T>
-    const char* OgreVectorPtrBinding<T>::elemMetaName = nullptr;
 }

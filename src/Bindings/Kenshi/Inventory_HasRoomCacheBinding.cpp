@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/Containers/CommonTypes.h"
 #include "kenshi\Inventory.h"
 #include "Inventory_HasRoomCacheBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -8,7 +9,7 @@
 namespace KenshiLua
 {
 
-typedef StdMapBinding<GameData*, bool, std::less<GameData*>, std::allocator<std::pair<GameData* const, bool>>> GameDataBoolStdMapBinding;
+typedef Containers::StdMap_GameDataPtr_boolBinding GameDataBoolStdMapBinding;
 
 static HasRoomCache* getInstance(lua_State* L, int idx)
 {

@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include <ogre/OgreFastArray.h>
 #include <type_traits>
 #include "Lua/BindingHelpers.h"
@@ -12,8 +13,10 @@ namespace KenshiLua
     {
         typedef typename std::remove_pointer<T>::type BaseType;
         typedef Ogre::FastArray<T> ArrayType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef ArrayType ContainerType;
+        typedef OgreFastArrayPtrBinding<T> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -60,8 +63,8 @@ namespace KenshiLua
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             T val = arr->front();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -75,8 +78,8 @@ namespace KenshiLua
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
             T val = arr->back();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -95,8 +98,8 @@ namespace KenshiLua
                 if (i < 1 || i > arr->size()) { lua_pushnil(L); return 1; }
                 T val = (*arr)[i - 1];
                 if (!val) { lua_pushnil(L); return 1; }
-                if (elemMetaName)
-                    return pushObject<BaseType>(L, val, elemMetaName);
+                if (metadata[0])
+                    return pushObject<BaseType>(L, val, metadata[0]);
                 else
                 {
                     lua_pushlightuserdata(L, (void*)val);
@@ -119,8 +122,8 @@ namespace KenshiLua
             T val = nullptr;
             if (!lua_isnoneornil(L, 3))
             {
-                if (elemMetaName)
-                    val = checkObject<BaseType>(L, 3, elemMetaName);
+                if (metadata[0])
+                    val = checkObject<BaseType>(L, 3, metadata[0]);
                 else if (lua_islightuserdata(L, 3))
                     val = (T)lua_touserdata(L, 3);
                 else
@@ -151,8 +154,8 @@ namespace KenshiLua
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
             {
-                if (elemMetaName)
-                    val = checkObject<BaseType>(L, 2, elemMetaName);
+                if (metadata[0])
+                    val = checkObject<BaseType>(L, 2, metadata[0]);
                 else if (lua_islightuserdata(L, 2))
                     val = (T)lua_touserdata(L, 2);
             }
@@ -168,8 +171,8 @@ namespace KenshiLua
             T val = arr->back();
             arr->pop_back();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -204,8 +207,8 @@ namespace KenshiLua
                 T val = (*arr)[i];
                 if (val)
                 {
-                    if (elemMetaName)
-                        pushObject<BaseType>(L, val, elemMetaName);
+                    if (metadata[0])
+                        pushObject<BaseType>(L, val, metadata[0]);
                     else
                         lua_pushlightuserdata(L, (void*)val);
                 }
@@ -226,8 +229,8 @@ namespace KenshiLua
             T val = (*arr)[i - 1];
             if (val)
             {
-                if (elemMetaName)
-                    pushObject<BaseType>(L, val, elemMetaName);
+                if (metadata[0])
+                    pushObject<BaseType>(L, val, metadata[0]);
                 else
                     lua_pushlightuserdata(L, (void*)val);
             }
@@ -246,10 +249,9 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -279,19 +281,15 @@ namespace KenshiLua
         }
     };
 
-    template <typename T>
-    const char* OgreFastArrayPtrBinding<T>::metaName = nullptr;
-    template <typename T>
-    const char* OgreFastArrayPtrBinding<T>::elemMetaName = nullptr;
-
-
     // For fast arrays with values as elements
     template <typename T>
     struct OgreFastArrayValueBinding
     {
         typedef Ogre::FastArray<T> ArrayType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef ArrayType ContainerType;
+        typedef OgreFastArrayValueBinding<T> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -336,8 +334,8 @@ namespace KenshiLua
         {
             ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<T>(L, &arr->front(), elemMetaName);
+            if (metadata[0])
+                return pushObject<T>(L, &arr->front(), metadata[0]);
             else
             {
                 LuaCodec<T>::push(L, arr->front(), nullptr);
@@ -349,8 +347,8 @@ namespace KenshiLua
         {
             ArrayType* arr = getInstance(L, 1);
             if (!arr || arr->empty()) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<T>(L, &arr->back(), elemMetaName);
+            if (metadata[0])
+                return pushObject<T>(L, &arr->back(), metadata[0]);
             else
             {
                 LuaCodec<T>::push(L, arr->back(), nullptr);
@@ -367,8 +365,8 @@ namespace KenshiLua
             {
                 size_t i = (size_t)lua_tointeger(L, 2);
                 if (i < 1 || i > arr->size()) { lua_pushnil(L); return 1; }
-                if (elemMetaName)
-                    return pushObject<T>(L, &(*arr)[i - 1], elemMetaName);
+                if (metadata[0])
+                    return pushObject<T>(L, &(*arr)[i - 1], metadata[0]);
                 else
                 {
                     LuaCodec<T>::push(L, (*arr)[i - 1], nullptr);
@@ -395,9 +393,9 @@ namespace KenshiLua
                     arr->erase(arr->begin() + (i - 1));
                 else
                 {
-                    if (elemMetaName)
+                    if (metadata[0])
                     {
-                        T* ptr = checkObject<T>(L, 3, elemMetaName);
+                        T* ptr = checkObject<T>(L, 3, metadata[0]);
                         if (!ptr) return luaL_error(L, "FastArray: expected valid object for assignment");
                         (*arr)[i - 1] = *ptr;
                     }
@@ -412,9 +410,9 @@ namespace KenshiLua
             {
                 if (!lua_isnil(L, 3))
                 {
-                    if (elemMetaName)
+                    if (metadata[0])
                     {
-                        T* ptr = checkObject<T>(L, 3, elemMetaName);
+                        T* ptr = checkObject<T>(L, 3, metadata[0]);
                         if (!ptr) return luaL_error(L, "FastArray: expected valid object for assignment");
                         arr->push_back(*ptr);
                     }
@@ -432,9 +430,9 @@ namespace KenshiLua
         {
             ArrayType* arr = getInstance(L, 1);
             if (!arr) return luaL_error(L, "FastArray is nil");
-            if (elemMetaName)
+            if (metadata[0])
             {
-                T* ptr = checkObject<T>(L, 2, elemMetaName);
+                T* ptr = checkObject<T>(L, 2, metadata[0]);
                 if (!ptr) return luaL_error(L, "FastArray: expected valid object for push");
                 arr->push_back(*ptr);
             }
@@ -452,8 +450,8 @@ namespace KenshiLua
             if (arr->empty()) return luaL_error(L, "FastArray: pop called on empty container");
             T val = arr->back();
             arr->pop_back();
-            if (elemMetaName)
-                return pushValue<T>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushValue<T>(L, val, metadata[0]);
             else
             {
                 LuaCodec<T>::push(L, val, nullptr);
@@ -485,8 +483,8 @@ namespace KenshiLua
             lua_createtable(L, (int)arr->size(), 0);
             for (size_t i = 0; i < arr->size(); ++i)
             {
-                if (elemMetaName)
-                    pushObject<T>(L, &(*arr)[i], elemMetaName);
+                if (metadata[0])
+                    pushObject<T>(L, &(*arr)[i], metadata[0]);
                 else
                     LuaCodec<T>::push(L, (*arr)[i], nullptr);
                 lua_rawseti(L, -2, (int)(i + 1));
@@ -501,8 +499,8 @@ namespace KenshiLua
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > arr->size()) return 0;
             lua_pushinteger(L, (lua_Integer)i);
-            if (elemMetaName)
-                pushObject<T>(L, &(*arr)[i - 1], elemMetaName);
+            if (metadata[0])
+                pushObject<T>(L, &(*arr)[i - 1], metadata[0]);
             else
                 LuaCodec<T>::push(L, (*arr)[i - 1], nullptr);
             return 2;
@@ -518,10 +516,9 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -551,18 +548,15 @@ namespace KenshiLua
         }
     };
 
-    template <typename T>
-    const char* OgreFastArrayValueBinding<T>::metaName = nullptr;
-    template <typename T>
-    const char* OgreFastArrayValueBinding<T>::elemMetaName = nullptr;
-
-
     // For fast arrays with scalar/primitive, hand, string types as elements
     template <typename T>
     struct OgreFastArrayPrimitiveBinding
     {
         typedef Ogre::FastArray<T> ArrayType;
-        static const char* metaName;
+        typedef ArrayType ContainerType;
+        typedef OgreFastArrayPrimitiveBinding<T> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -732,9 +726,9 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -763,8 +757,5 @@ namespace KenshiLua
             registerClass(L, metaName, meta, methods, index, newindex);
         }
     };
-
-    template <typename T>
-    const char* OgreFastArrayPrimitiveBinding<T>::metaName = nullptr;
 
 } // namespace KenshiLua

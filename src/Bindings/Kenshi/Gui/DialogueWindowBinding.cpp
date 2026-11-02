@@ -500,7 +500,6 @@ void DialogueWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "replyTexts", DialogueWindow_set_replyTexts);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    EditBoxFastArrayBinding::registerBinding(L, "Ogre::FastArray<MyGUI::EditBox*>", nullptr);
 
     // Wire up inheritance to GUIWindow
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

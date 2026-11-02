@@ -247,8 +247,6 @@ void LocaleManagerBinding::registerBinding(lua_State* L)
     registerStaticMethod(L, "isEastAsian", LocaleManagerBinding::isEastAsian);
     lua_setglobal(L, "LocaleManager");
 
-    LocaleInfoPtrFastArrayBinding::registerBinding(L, "Ogre::FastArray<LocaleInfo*>", LocaleInfoBinding::getMetatableName());
-    LocaleInfoValueFastArrayBinding::registerBinding(L, "Ogre::FastArray<LocaleInfo>", LocaleInfoBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

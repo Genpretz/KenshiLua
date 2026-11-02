@@ -943,7 +943,6 @@ static int InventoryItemBase_set_itemGroup(lua_State* L)
 
 void InventoryItemBaseBinding::registerBinding(lua_State* L)
 {
-    OgreVectorValueBinding<StringPair>::registerBinding(L, "KenshiLua.OgreVectorStringPair", StringPairBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       InventoryItemBaseBinding::gc },

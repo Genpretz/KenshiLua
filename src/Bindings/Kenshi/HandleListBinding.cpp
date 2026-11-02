@@ -213,7 +213,6 @@ void HandleListBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1);
 
-    HandleShiftMapBinding::registerBinding(L, "std::map<unsigned __int64, unsigned int>", nullptr, nullptr);
 }
 
 } // namespace KenshiLua

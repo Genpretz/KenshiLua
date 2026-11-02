@@ -914,8 +914,6 @@ void InventorySectionBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
 
-    Array2dBinding<Item>::registerBinding(L, "KenshiLua.Array2d<Item>", ItemBinding::getMetatableName());
-    InventorySectionItemsVectorBinding::registerBinding(L, "ogre_vector<InventorySection::SectionItem>", SectionItemBinding::getMetatableName());
 
     registerClass(
         L, 

@@ -295,7 +295,6 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
     registerSetter(L, "texturesLoaded", ResourceLoader_set_texturesLoaded);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    TextureLoadDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<TextureLoadData*>", nullptr);
 
     // Wire up inheritance to Ogre::ResourceBackgroundQueue::Listener
     // setMetatableParent(L, ResourceLoaderBinding::getMetatableName(), Ogre::ResourceBackgroundQueue::ListenerBinding::getMetatableName());

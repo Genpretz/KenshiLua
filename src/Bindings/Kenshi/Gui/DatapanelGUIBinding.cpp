@@ -1458,7 +1458,6 @@ void DatapanelGUIBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    LektorPtrBinding<MyGUI::Button*>::registerBinding(L, "lektor<MyGUI::Button*>", ButtonBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

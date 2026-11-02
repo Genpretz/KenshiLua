@@ -24,6 +24,8 @@ python tools/bindings/generate_class.py extern/KenshiLib/Include/kenshi/Building
 
 The class-binding generator automatically discovers bindings in `src/Bindings`, registered enums in `src/Bindings/**/*EnumBinding.cpp`, and their associated headers. `--bind-map`, `--classes`, and `--enums` remain available for one-off additions or overrides.
 
+Generated FastArray consumers report their required container specialization and element metadata in comments for review against `src/Lua/Containers/RegisterArrays.cpp`. Add or reuse the central definition before integrating the scaffold; class binding files must not register container specializations. See the [container catalog guide](../src/Lua/Containers/README.md#adding-or-changing-a-specialization).
+
 ## Documentation and audits
 
 | Script | Purpose | Output |
@@ -53,6 +55,8 @@ python tools/audit/generate_unbound_reference.py
 ```
 
 Review generated documentation before committing it.
+
+The binding inventory follows the container collectors reachable from startup across `src/Lua/Containers/`, reads their shared `*Types.h` aliases and `KENSHILUA_DEFINE_CONTAINER` entries, and records factory aliases from those definitions. It rejects duplicate metatable names, conflicting factory aliases, unreachable definitions, and container registration calls in class binding sources. C++ type identity and runtime registration still require the native build and game checks.
 
 ### LuaLS descriptions
 

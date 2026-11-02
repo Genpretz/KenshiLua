@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 
 extern "C" {
 #include <lua.h>
@@ -15,9 +16,11 @@ namespace KenshiLua
     {
     public:
         typedef Array2d<T> ArrayType;
+        typedef ArrayType ContainerType;
+        typedef Array2dBinding<T> MetadataType;
 
-        static const char* metaName;
-        static const char* elemMetaName;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -114,8 +117,8 @@ namespace KenshiLua
                 lua_pushnil(L);
                 return 1;
             }
-            return pushObject<T>(L, val, elemMetaName);
-            return pushObject<T>(L, *pVal, elemMetaName);
+            return pushObject<T>(L, val, metadata[0]);
+            return pushObject<T>(L, *pVal, metadata[0]);
         }
 
         static int setElement(lua_State* L)
@@ -128,7 +131,7 @@ namespace KenshiLua
             {
                 return luaL_error(L, "Index out of bounds: (%d, %d)", row, col);
             }
-            T* val = lua_isnoneornil(L, 4) ? nullptr : checkObject<T>(L, 4, elemMetaName);
+            T* val = lua_isnoneornil(L, 4) ? nullptr : checkObject<T>(L, 4, metadata[0]);
             (*instance)(row, col) = val;
             typedef T** (*OpFn)(void*, unsigned int, unsigned int);
             static OpFn fn = (OpFn)((char*)GetModuleHandleA(NULL) + 0x5D6000);
@@ -148,10 +151,9 @@ namespace KenshiLua
         }
         */
 
-        static void registerBinding(lua_State* L, const char* name, const char* elementMetatable = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elementMetatable;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -190,6 +192,4 @@ namespace KenshiLua
         }
     };
 
-    template <typename T> const char* Array2dBinding<T>::metaName = nullptr;
-    template <typename T> const char* Array2dBinding<T>::elemMetaName = nullptr;
 }

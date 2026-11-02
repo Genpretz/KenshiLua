@@ -166,7 +166,7 @@ static int CampaignInstance_get_membersInOrder(lua_State* L)
 {
     CampaignInstance* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "CampaignInstance is nil");
-    return pushObject<lektor<hand> >(L, &instance->membersInOrder, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand> >(L, &instance->membersInOrder, LektorValueBinding<hand>::metaName);
 }
 
 // --- Setters for CampaignInstance ---

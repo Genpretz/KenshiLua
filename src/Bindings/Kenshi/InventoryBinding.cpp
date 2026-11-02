@@ -1215,7 +1215,6 @@ void InventoryBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    BoostUnorderedMapBinding<std::string, InventorySection*>::registerBinding(L, "boost_unordered_map<std::string, InventorySection*>", nullptr, InventorySectionBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

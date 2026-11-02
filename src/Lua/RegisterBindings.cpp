@@ -1230,11 +1230,7 @@ void LuaBindings::registerAll(lua_State* L)
     registerEnumBindings(L);
     registerOISEnumBindings(L);
 
-    // Register templates centrally before classes are bound
-    registerLektor(L);
-    registerOgreUnordered(L);
-    registerSTL(L);
-    registerFitnessSelector(L);
+    registerContainers(L);
 
     registerClasses(L);
     registerInheritance(L);

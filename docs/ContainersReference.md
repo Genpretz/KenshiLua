@@ -2,6 +2,8 @@
 
 KenshiLua exposes native C++ and engine-specific containers directly to Lua. These containers serve as the primary conduits for exchanging collections of objects, components, and state between Lua scripts and Kenshi's engine.
 
+For an explanation of the C++ registration files and how they work together, see [How container registration now works](ContainerRegistrationExplained.md).
+
 ---
 
 ## Architecture, Ownership, and Memory Rules
@@ -25,6 +27,10 @@ Game entities held inside containers (e.g. `Character*`, `RootObject*`, `Item*`,
 * **Do not allocate containers every frame**: Avoid creating new containers with `.new(...)` inside high-frequency frame events or tick hooks (e.g., `onFrame`, `onUpdate`).
 * **Reuse scratch containers**: Allocate a persistent module-level container, clear it with `:clear()`, and pass it to engine query methods. This avoids triggering unnecessary GC cycles and prevents virtual memory arena exhaustion under LuaJIT's 2GB memory model.
 
+### Whole-Field `lektor` Assignment
+
+The checked-out SDK's `lektor` assignment copies its count, capacity, and backing-storage pointer. It does not copy the elements or transfer ownership. A field setter using that assignment therefore aliases the source storage. Assigning a Lua-owned list to an engine field does not keep that list alive or establish that the engine can free its allocation. Container registration does not make that operation safe; use only field operations whose ownership and engine behavior have been verified.
+
 ---
 
 ## Container Overview
@@ -45,6 +51,16 @@ Game entities held inside containers (e.g. `Character*`, `RootObject*`, `Item*`,
 
 ---
 
+## Explicit Factory Types
+
+In string arguments, `T` requests elements stored by value and `T*` requests pointers to existing objects. The requested specialization must be registered. Factories never add or remove `*` to find another type. The same rule applies to each key and value argument of a map factory, and to full container type strings.
+
+For example, `lektor.new("ModInfo")` creates a value list and `lektor.new("ModInfo*")` creates a pointer list. A pointer-only type must be requested with its `*`. The factory reports an unsupported type when no matching value or pointer specialization exists.
+
+Class tables and userdata can select a type only when that class identifies one element type for the corresponding factory argument. `ModInfo` and `ConsumptionItem` have both value and pointer lektors, so using their class or userdata alone is ambiguous and produces an error. Select their element type with an explicit string.
+
+This alpha change intentionally removes the previous pointer guessing for string arguments. Scripts that relied on omitted pointer markers must supply them. Existing metatable names and lookup aliases are retained internally; a string alias cannot change the requested pointer depth.
+
 ## `lektor<T>`
 
 The primary dynamic array container used across Kenshi's engine.
@@ -57,14 +73,16 @@ local charList = lektor.new("Character*")
 -- Callable table syntax
 local intList = lektor("int")
 
--- From class tables or userdata
-local rootList = lektor.new(RootObject)
+-- Given an existing Character userdata named character
+local sameTypeList = lektor.new(character)
 ```
 
 #### Supported Types
-* **Pointers**: `"RootObject*"`, `"Character*"`, `"Building*"`, `"FarmBuilding*"`, `"Item*"`, `"InventorySection*"`, `"CombatTechniqueData*"`, `"GameData*"`, `"ModInfo*"`, `"DialogLineData*"`, `"DialogCondition*"`, `"DialogAction*"`
-* **Primitives and Values**: `"int"`, `"string"`, `"std::string"`, `"hand"`, `"ModInfo"`, `"SaveInfo"`
-* **Short Type Names**: A pointer element type may be written without `*`: `"Character"`, `"Item"`, and `"RootObject"` create the same lists as `"Character*"`, `"Item*"`, and `"RootObject*"`. `ogre_unordered_set.new` accepts the same short names.
+* **Pointers**: `"RootObject*"`, `"Character*"`, `"Building*"`, `"FarmBuilding*"`, `"Item*"`, `"InventorySection*"`, `"CombatTechniqueData*"`, `"GameData*"`, `"ModInfo*"`, `"Town*"`, `"DialogLineData*"`, `"DialogCondition*"`, `"DialogAction*"`
+* **Primitives and Values**: `"int"`, `"string"`, `"std::string"`, `"hand"`, `"ModInfo"`, `"SaveInfo"`, `"FarmBuilding::SubPlant"`, `"NavMesh::BuildingInfo"`
+* **Explicit Pointer Types**: Pointer elements require `*` in string arguments, for example `"Character*"`, `"Item*"`, and `"RootObject*"`. Value names select only registered value specializations.
+
+When value and pointer forms both exist, select the form with an explicit string; passing a `ModInfo` userdata alone is ambiguous. `TownList.deletedTowns` exposes a borrowed `lektor<Town*>`.
 
 ### Methods and Operators
 | Operation | Syntax | Description |
@@ -93,6 +111,8 @@ local handSet = ogre_unordered_set.new("hand")
 
 #### Supported Types
 `"hand"`, `"GameData*"`, `"TownBase*"`, `"Character*"`, `"RootObject*"`, `"ZoneMap*"`, `"TownBuildingsManager*"`
+
+ZoneMap set elements and map keys use the typed userdata returned by a zone manager's `getAllActiveZones()` method. Iteration returns typed ZoneMap userdata as well.
 
 ### Methods and Operators
 | Operation | Syntax | Description |

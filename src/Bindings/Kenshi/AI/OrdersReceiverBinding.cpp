@@ -684,8 +684,6 @@ int OrdersReceiverBinding::tostring(lua_State* L)
 
 void OrdersReceiverBinding::registerBinding(lua_State* L)
 {
-    TaskerLektorBinding::registerBinding(L, "lektor<Tasker*>", TaskerBinding::getMetatableName());
-    TaskRequestSimpleLektorBinding::registerBinding(L, "lektor<OrdersReceiver::TaskRequestSimple*>", OrdersReceiver_TaskRequestSimpleBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       OrdersReceiverBinding::gc },

@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Util/ContainerIteration.h"
 #include "Bindings/Kenshi/Util/MapValue.h"
@@ -24,9 +25,10 @@ namespace KenshiLua
     struct StdMapBinding
     {
         typedef std::map<K, V, Compare, Alloc> MapType;
-        static const char* metaName;
-        static const char* keyMetaName;
-        static const char* valMetaName;
+        typedef MapType ContainerType;
+        typedef StdMapBinding<K, V, Compare, Alloc> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -52,14 +54,14 @@ namespace KenshiLua
             }
 
             // Otherwise, route to key lookup
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             typename MapType::iterator it = m->find(key);
             if (it == m->end()) { lua_pushnil(L); return 1; }
             
-            if (valMetaName)
+            if (metadata[1])
             {
                 // Borrow a stored value in place, or push the object a pointer value refers to
-                return MapValue<V>::push(L, it->second, valMetaName);
+                return MapValue<V>::push(L, it->second, metadata[1]);
             }
             else
             {
@@ -76,7 +78,7 @@ namespace KenshiLua
             // Setting value to nil erases the key
             if (lua_isnil(L, 3))
             {
-                K key = LuaCodec<K>::read(L, 2, keyMetaName);
+                K key = LuaCodec<K>::read(L, 2, metadata[0]);
                 m->erase(key);
                 return 0;
             }
@@ -87,16 +89,16 @@ namespace KenshiLua
             }
 
             V val;
-            if (valMetaName)
+            if (metadata[1])
             {
-                val = MapValue<V>::read(L, 3, valMetaName);
+                val = MapValue<V>::read(L, 3, metadata[1]);
             }
             else
             {
                 val = LuaCodec<V>::read(L, 3, nullptr);
             }
 
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             (*m)[key] = val;
             return 0;
         }
@@ -112,7 +114,7 @@ namespace KenshiLua
         {
             MapType* m = getInstance(L, 1);
             if (!m) { lua_pushboolean(L, 0); return 1; }
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, m->find(key) != m->end() ? 1 : 0);
             return 1;
         }
@@ -121,7 +123,7 @@ namespace KenshiLua
         {
             MapType* m = getInstance(L, 1);
             if (!m) return luaL_error(L, "map is nil");
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, m->erase(key) > 0 ? 1 : 0);
             return 1;
         }
@@ -140,10 +142,10 @@ namespace KenshiLua
             lua_createtable(L, 0, (int)m->size());
             for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
             {
-                LuaCodec<K>::push(L, it->first, keyMetaName);
-                if (valMetaName)
+                LuaCodec<K>::push(L, it->first, metadata[0]);
+                if (metadata[1])
                 {
-                    MapValue<V>::push(L, it->second, valMetaName);
+                    MapValue<V>::push(L, it->second, metadata[1]);
                 }
                 else
                 {
@@ -166,10 +168,10 @@ namespace KenshiLua
                 for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
                 {
                     ++count;
-                    LuaCodec<K>::push(L, it->first, keyMetaName);
+                    LuaCodec<K>::push(L, it->first, metadata[0]);
                     lua_rawseti(L, -2, 2 * count - 1);
-                    if (valMetaName)
-                        MapValue<V>::push(L, it->second, valMetaName);
+                    if (metadata[1])
+                        MapValue<V>::push(L, it->second, metadata[1]);
                     else
                         LuaCodec<V>::push(L, it->second, nullptr);
                     lua_rawseti(L, -2, 2 * count);
@@ -178,11 +180,9 @@ namespace KenshiLua
             return pushSnapshotIterator(L, count);
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* keyName = nullptr, const char* valName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            keyMetaName = keyName;
-            valMetaName = valName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -204,12 +204,4 @@ namespace KenshiLua
         }
     };
 
-    template <typename K, typename V, typename Compare, typename Alloc>
-    const char* StdMapBinding<K, V, Compare, Alloc>::metaName = nullptr;
-
-    template <typename K, typename V, typename Compare, typename Alloc>
-    const char* StdMapBinding<K, V, Compare, Alloc>::keyMetaName = nullptr;
-
-    template <typename K, typename V, typename Compare, typename Alloc>
-    const char* StdMapBinding<K, V, Compare, Alloc>::valMetaName = nullptr;
 }

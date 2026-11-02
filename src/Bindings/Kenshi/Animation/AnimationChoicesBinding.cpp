@@ -126,8 +126,6 @@ void AnimationChoicesBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1);
 
-    LektorPtrBinding<AnimationData*>::registerBinding(L, "lektor<AnimationData*>", AnimationDataBinding::getMetatableName());
-    LektorValueBinding<float>::registerBinding(L, "lektor<float>", nullptr);
 }
 
 } // namespace KenshiLua

@@ -303,12 +303,6 @@ void TownBuildingsManagerBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    OgreUnorderedMapBinding<Building*, TownBuildingsManager::BuildingInfo>::registerBinding(
-        L, 
-        "ogre_unordered_map<Building*, TownBuildingsManager::BuildingInfo>", 
-        BuildingBinding::getMetatableName(), 
-        TownBuildingsManager_BuildingInfoBinding::getMetatableName()
-    );
 }
 
 } // namespace KenshiLua

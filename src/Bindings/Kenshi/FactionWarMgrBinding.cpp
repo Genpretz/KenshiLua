@@ -60,7 +60,7 @@ static int FactionWarMgr_get_hiredForces(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    return pushObject<lektor<hand>>(L, &instance->hiredForces, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand>>(L, &instance->hiredForces, LektorValueBinding<hand>::metaName);
 }
 
 static int FactionWarMgr_get_activeCampaigns(lua_State* L)
@@ -146,7 +146,7 @@ static int FactionWarMgr_set_hiredForces(lua_State* L)
 {
     FactionWarMgr* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "FactionWarMgr is nil");
-    lektor<hand>* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    lektor<hand>* val = checkObject<lektor<hand>>(L, 2, LektorValueBinding<hand>::metaName);
     if (!val) return luaL_error(L, "Expected lektor<hand>");
     instance->hiredForces = *val;
     return 0;
@@ -585,7 +585,6 @@ void FactionWarMgrBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    LektorPtrBinding<FactionWarMgr::CampaignRequest*>::registerBinding(L, "lektor<FactionWarMgr::CampaignRequest*>", CampaignRequestBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

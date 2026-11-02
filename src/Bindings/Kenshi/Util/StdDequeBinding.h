@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include <deque>
 #include <type_traits>
 #include <ogre/OgreMemoryAllocatorConfig.h>
@@ -9,12 +10,14 @@ namespace KenshiLua
 {
     // Std Deque Binding for Bound Value/Struct Types whose elements Lua may only view (T = CraftingItem, etc.)
     // Elements are borrowed; nothing here copies, assigns, or destroys a T.
-    template <typename T, typename Alloc = std::allocator<T>>
+    template <typename T, typename Alloc = std::allocator<T>, typename Access = ReadOnlyContainerAccess>
     struct StdDequeValueReadOnlyBinding
     {
         typedef std::deque<T, Alloc> DequeType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef DequeType ContainerType;
+        typedef StdDequeValueReadOnlyBinding<T, Alloc, Access> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -41,7 +44,7 @@ namespace KenshiLua
             {
                 size_t i = (size_t)lua_tointeger(L, 2);
                 if (i < 1 || i > d->size()) { lua_pushnil(L); return 1; }
-                return pushObject<T>(L, &(*d)[i - 1], elemMetaName);
+                return pushObject<T>(L, &(*d)[i - 1], metadata[0]);
             }
 
             luaL_getmetatable(L, metaName);
@@ -58,14 +61,14 @@ namespace KenshiLua
         {
             DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
-            return pushObject<T>(L, &d->front(), elemMetaName);
+            return pushObject<T>(L, &d->front(), metadata[0]);
         }
 
         static int back(lua_State* L)
         {
             DequeType* d = getInstance(L, 1);
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
-            return pushObject<T>(L, &d->back(), elemMetaName);
+            return pushObject<T>(L, &d->back(), metadata[0]);
         }
 
         static int empty(lua_State* L)
@@ -84,7 +87,7 @@ namespace KenshiLua
             lua_createtable(L, (int)d->size(), 0);
             for (size_t i = 0; i < d->size(); ++i)
             {
-                pushObject<T>(L, &(*d)[i], elemMetaName);
+                pushObject<T>(L, &(*d)[i], metadata[0]);
                 lua_rawseti(L, -2, (int)(i + 1));
             }
             return 1;
@@ -97,7 +100,7 @@ namespace KenshiLua
             size_t i = (size_t)lua_tointeger(L, 2) + 1;
             if (i > d->size()) return 0;
             lua_pushinteger(L, (lua_Integer)i);
-            pushObject<T>(L, &(*d)[i - 1], elemMetaName);
+            pushObject<T>(L, &(*d)[i - 1], metadata[0]);
             return 2;
         }
 
@@ -111,10 +114,9 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -134,16 +136,11 @@ namespace KenshiLua
         }
     };
 
-    template <typename T, typename Alloc>
-    const char* StdDequeValueReadOnlyBinding<T, Alloc>::metaName = nullptr;
-    template <typename T, typename Alloc>
-    const char* StdDequeValueReadOnlyBinding<T, Alloc>::elemMetaName = nullptr;
-
     // Std Deque Binding for Bound Value/Struct Types (T = Character::RagdollMsg, etc.)
     template <typename T, typename Alloc = std::allocator<T>>
-    struct StdDequeValueBinding : public StdDequeValueReadOnlyBinding<T, Alloc>
+    struct StdDequeValueBinding : public StdDequeValueReadOnlyBinding<T, Alloc, WritableContainerAccess>
     {
-        typedef StdDequeValueReadOnlyBinding<T, Alloc> Base;
+        typedef StdDequeValueReadOnlyBinding<T, Alloc, WritableContainerAccess> Base;
         typedef typename Base::DequeType DequeType;
 
         static int newindex(lua_State* L)
@@ -160,7 +157,7 @@ namespace KenshiLua
                     d->erase(d->begin() + (i - 1));
                 else
                 {
-                    T* ptr = checkObject<T>(L, 3, Base::elemMetaName);
+                    T* ptr = checkObject<T>(L, 3, Base::metadata[0]);
                     if (!ptr) return luaL_error(L, "deque: expected valid object for assignment");
                     (*d)[i - 1] = *ptr;
                 }
@@ -170,7 +167,7 @@ namespace KenshiLua
             {
                 if (!lua_isnil(L, 3))
                 {
-                    T* ptr = checkObject<T>(L, 3, Base::elemMetaName);
+                    T* ptr = checkObject<T>(L, 3, Base::metadata[0]);
                     if (!ptr) return luaL_error(L, "deque: expected valid object for assignment");
                     d->push_back(*ptr);
                 }
@@ -183,7 +180,7 @@ namespace KenshiLua
         {
             DequeType* d = Base::getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
-            T* ptr = checkObject<T>(L, 2, Base::elemMetaName);
+            T* ptr = checkObject<T>(L, 2, Base::metadata[0]);
             if (!ptr) return luaL_error(L, "deque: expected valid object for push");
             d->push_back(*ptr);
             return 0;
@@ -193,7 +190,7 @@ namespace KenshiLua
         {
             DequeType* d = Base::getInstance(L, 1);
             if (!d) return luaL_error(L, "deque is nil");
-            T* ptr = checkObject<T>(L, 2, Base::elemMetaName);
+            T* ptr = checkObject<T>(L, 2, Base::metadata[0]);
             if (!ptr) return luaL_error(L, "deque: expected valid object for push_front");
             d->push_front(*ptr);
             return 0;
@@ -206,7 +203,7 @@ namespace KenshiLua
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->back();
             d->pop_back();
-            return pushValue<T>(L, val, Base::elemMetaName);
+            return pushValue<T>(L, val, Base::metadata[0]);
         }
 
         static int pop_front(lua_State* L)
@@ -216,7 +213,7 @@ namespace KenshiLua
             if (d->empty()) return luaL_error(L, "deque is empty");
             T val = d->front();
             d->pop_front();
-            return pushValue<T>(L, val, Base::elemMetaName);
+            return pushValue<T>(L, val, Base::metadata[0]);
         }
 
         static int removeAt(lua_State* L)
@@ -236,10 +233,9 @@ namespace KenshiLua
             return 0;
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName)
+        static void registerBinding(lua_State* L)
         {
-            Base::metaName = name;
-            Base::elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<typename Base::MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       Base::gc },
@@ -270,13 +266,15 @@ namespace KenshiLua
         }
     };
 
-
     // Std Deque Binding for Primitive Types (float, int, etc.)
     template <typename T, typename Alloc = std::allocator<T>>
     struct StdDequePrimitiveBinding
     {
         typedef std::deque<T, Alloc> DequeType;
-        static const char* metaName;
+        typedef DequeType ContainerType;
+        typedef StdDequePrimitiveBinding<T, Alloc> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -451,9 +449,10 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
+
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
                 { "__len",      len },
@@ -483,18 +482,16 @@ namespace KenshiLua
         }
     };
 
-    template <typename T, typename Alloc>
-    const char* StdDequePrimitiveBinding<T, Alloc>::metaName = nullptr;
-
-
     // Std Deque Binding for Pointer Types (T = U*)
     template <typename T, typename Alloc = std::allocator<T>>
     struct StdDequePtrBinding
     {
         typedef typename std::remove_pointer<T>::type BaseType;
         typedef std::deque<T, Alloc> DequeType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef DequeType ContainerType;
+        typedef StdDequePtrBinding<T, Alloc> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -523,8 +520,8 @@ namespace KenshiLua
                 if (i < 1 || i > d->size()) { lua_pushnil(L); return 1; }
                 T val = (*d)[i - 1];
                 if (!val) { lua_pushnil(L); return 1; }
-                if (elemMetaName)
-                    return pushObject<BaseType>(L, val, elemMetaName);
+                if (metadata[0])
+                    return pushObject<BaseType>(L, val, metadata[0]);
                 else
                 {
                     lua_pushlightuserdata(L, (void*)val);
@@ -547,8 +544,8 @@ namespace KenshiLua
             T val = nullptr;
             if (!lua_isnoneornil(L, 3))
             {
-                if (elemMetaName)
-                    val = checkObject<BaseType>(L, 3, elemMetaName);
+                if (metadata[0])
+                    val = checkObject<BaseType>(L, 3, metadata[0]);
                 else if (lua_islightuserdata(L, 3))
                     val = (T)lua_touserdata(L, 3);
                 else
@@ -579,8 +576,8 @@ namespace KenshiLua
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
             {
-                if (elemMetaName)
-                    val = checkObject<BaseType>(L, 2, elemMetaName);
+                if (metadata[0])
+                    val = checkObject<BaseType>(L, 2, metadata[0]);
                 else if (lua_islightuserdata(L, 2))
                     val = (T)lua_touserdata(L, 2);
             }
@@ -595,8 +592,8 @@ namespace KenshiLua
             T val = nullptr;
             if (!lua_isnoneornil(L, 2))
             {
-                if (elemMetaName)
-                    val = checkObject<BaseType>(L, 2, elemMetaName);
+                if (metadata[0])
+                    val = checkObject<BaseType>(L, 2, metadata[0]);
                 else if (lua_islightuserdata(L, 2))
                     val = (T)lua_touserdata(L, 2);
             }
@@ -612,8 +609,8 @@ namespace KenshiLua
             T val = d->back();
             d->pop_back();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -629,8 +626,8 @@ namespace KenshiLua
             T val = d->front();
             d->pop_front();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -644,8 +641,8 @@ namespace KenshiLua
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             T val = d->front();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -659,8 +656,8 @@ namespace KenshiLua
             if (!d || d->empty()) { lua_pushnil(L); return 1; }
             T val = d->back();
             if (!val) { lua_pushnil(L); return 1; }
-            if (elemMetaName)
-                return pushObject<BaseType>(L, val, elemMetaName);
+            if (metadata[0])
+                return pushObject<BaseType>(L, val, metadata[0]);
             else
             {
                 lua_pushlightuserdata(L, (void*)val);
@@ -704,8 +701,8 @@ namespace KenshiLua
                 T val = (*d)[i];
                 if (val)
                 {
-                    if (elemMetaName)
-                        pushObject<BaseType>(L, val, elemMetaName);
+                    if (metadata[0])
+                        pushObject<BaseType>(L, val, metadata[0]);
                     else
                         lua_pushlightuserdata(L, (void*)val);
                 }
@@ -726,8 +723,8 @@ namespace KenshiLua
             T val = (*d)[i - 1];
             if (val)
             {
-                if (elemMetaName)
-                    pushObject<BaseType>(L, val, elemMetaName);
+                if (metadata[0])
+                    pushObject<BaseType>(L, val, metadata[0]);
                 else
                     lua_pushlightuserdata(L, (void*)val);
             }
@@ -746,10 +743,9 @@ namespace KenshiLua
 
         static int ipairs(lua_State* L) { return pairs(L); }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -780,8 +776,4 @@ namespace KenshiLua
         }
     };
 
-    template <typename T, typename Alloc>
-    const char* StdDequePtrBinding<T, Alloc>::metaName = nullptr;
-    template <typename T, typename Alloc>
-    const char* StdDequePtrBinding<T, Alloc>::elemMetaName = nullptr;
 }

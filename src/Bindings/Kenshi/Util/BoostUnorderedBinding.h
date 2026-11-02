@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Util/ContainerIteration.h"
 #include "Bindings/Kenshi/Util/MapValue.h"
@@ -23,8 +24,10 @@ namespace KenshiLua
     struct BoostUnorderedSetBinding
     {
         typedef boost::unordered::unordered_set<K, Hash, Pred, Alloc> SetType;
-        static const char* metaName;
-        static const char* elemMetaName;
+        typedef SetType ContainerType;
+        typedef BoostUnorderedSetBinding<K, Hash, Pred, Alloc> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -48,7 +51,7 @@ namespace KenshiLua
                 lua_pop(L, 2);
             }
 
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->find(key) != s->end() ? 1 : 0);
             return 1;
         }
@@ -58,7 +61,7 @@ namespace KenshiLua
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
 
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
 
             if (lua_isnil(L, 3) || (lua_isboolean(L, 3) && !lua_toboolean(L, 3)))
             {
@@ -82,7 +85,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) { lua_pushboolean(L, 0); return 1; }
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->find(key) != s->end() ? 1 : 0);
             return 1;
         }
@@ -91,7 +94,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             auto res = s->insert(key);
             lua_pushboolean(L, res.second ? 1 : 0);
             return 1;
@@ -101,7 +104,7 @@ namespace KenshiLua
         {
             SetType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "set is nil");
-            K key = LuaCodec<K>::read(L, 2, elemMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, s->erase(key) > 0 ? 1 : 0);
             return 1;
         }
@@ -120,7 +123,7 @@ namespace KenshiLua
             lua_createtable(L, 0, (int)s->size());
             for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
             {
-                LuaCodec<K>::push(L, *it, elemMetaName);
+                LuaCodec<K>::push(L, *it, metadata[0]);
                 lua_pushboolean(L, 1);
                 lua_settable(L, -3);
             }
@@ -139,7 +142,7 @@ namespace KenshiLua
                 for (typename SetType::const_iterator it = s->begin(); it != s->end(); ++it)
                 {
                     ++count;
-                    LuaCodec<K>::push(L, *it, elemMetaName);
+                    LuaCodec<K>::push(L, *it, metadata[0]);
                     lua_rawseti(L, -2, 2 * count - 1);
                     lua_pushboolean(L, 1);
                     lua_rawseti(L, -2, 2 * count);
@@ -153,10 +156,9 @@ namespace KenshiLua
             return pushObject<SetType>(L, ptr, metaName);
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -179,13 +181,6 @@ namespace KenshiLua
         }
     };
 
-    template <typename K, typename Hash, typename Pred, typename Alloc>
-    const char* BoostUnorderedSetBinding<K, Hash, Pred, Alloc>::metaName = nullptr;
-
-    template <typename K, typename Hash, typename Pred, typename Alloc>
-    const char* BoostUnorderedSetBinding<K, Hash, Pred, Alloc>::elemMetaName = nullptr;
-
-
     // Generic Boost Unordered Map Binding
     //
     // Alloc defaults to the Ogre::STLAllocator<..., GeneralAllocPolicy> convention
@@ -200,9 +195,10 @@ namespace KenshiLua
     struct BoostUnorderedMapBinding
     {
         typedef boost::unordered::unordered_map<K, V, Hash, Pred, Alloc> MapType;
-        static const char* metaName;
-        static const char* keyMetaName;
-        static const char* valMetaName;
+        typedef MapType ContainerType;
+        typedef BoostUnorderedMapBinding<K, V, Hash, Pred, Alloc> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -226,12 +222,12 @@ namespace KenshiLua
                 lua_pop(L, 2);
             }
 
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             auto it = m->find(key);
             if (it == m->end()) { lua_pushnil(L); return 1; }
-            if (valMetaName)
+            if (metadata[1])
             {
-                return MapValue<V>::push(L, it->second, valMetaName);
+                return MapValue<V>::push(L, it->second, metadata[1]);
             }
             else
             {
@@ -247,7 +243,7 @@ namespace KenshiLua
 
             if (lua_isnil(L, 3))
             {
-                K key = LuaCodec<K>::read(L, 2, keyMetaName);
+                K key = LuaCodec<K>::read(L, 2, metadata[0]);
                 m->erase(key);
                 return 0;
             }
@@ -258,16 +254,16 @@ namespace KenshiLua
             }
 
             V val;
-            if (valMetaName)
+            if (metadata[1])
             {
-                val = MapValue<V>::read(L, 3, valMetaName);
+                val = MapValue<V>::read(L, 3, metadata[1]);
             }
             else
             {
                 val = LuaCodec<V>::read(L, 3, nullptr);
             }
 
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             (*m)[key] = val;
             return 0;
         }
@@ -283,7 +279,7 @@ namespace KenshiLua
         {
             MapType* m = getInstance(L, 1);
             if (!m) { lua_pushboolean(L, 0); return 1; }
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, m->find(key) != m->end() ? 1 : 0);
             return 1;
         }
@@ -292,7 +288,7 @@ namespace KenshiLua
         {
             MapType* m = getInstance(L, 1);
             if (!m) return luaL_error(L, "map is nil");
-            K key = LuaCodec<K>::read(L, 2, keyMetaName);
+            K key = LuaCodec<K>::read(L, 2, metadata[0]);
             lua_pushboolean(L, m->erase(key) > 0 ? 1 : 0);
             return 1;
         }
@@ -311,10 +307,10 @@ namespace KenshiLua
             lua_createtable(L, 0, (int)m->size());
             for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
             {
-                LuaCodec<K>::push(L, it->first, keyMetaName);
-                if (valMetaName)
+                LuaCodec<K>::push(L, it->first, metadata[0]);
+                if (metadata[1])
                 {
-                    MapValue<V>::push(L, it->second, valMetaName);
+                    MapValue<V>::push(L, it->second, metadata[1]);
                 }
                 else
                 {
@@ -337,10 +333,10 @@ namespace KenshiLua
                 for (typename MapType::const_iterator it = m->begin(); it != m->end(); ++it)
                 {
                     ++count;
-                    LuaCodec<K>::push(L, it->first, keyMetaName);
+                    LuaCodec<K>::push(L, it->first, metadata[0]);
                     lua_rawseti(L, -2, 2 * count - 1);
-                    if (valMetaName)
-                        MapValue<V>::push(L, it->second, valMetaName);
+                    if (metadata[1])
+                        MapValue<V>::push(L, it->second, metadata[1]);
                     else
                         LuaCodec<V>::push(L, it->second, nullptr);
                     lua_rawseti(L, -2, 2 * count);
@@ -354,11 +350,9 @@ namespace KenshiLua
             return pushObject<MapType>(L, ptr, metaName);
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* keyName = nullptr, const char* valName = nullptr)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            keyMetaName = keyName;
-            valMetaName = valName;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -379,14 +373,5 @@ namespace KenshiLua
             registerClass(L, metaName, meta, methods, index, newindex);
         }
     };
-
-    template <typename K, typename V, typename Hash, typename Pred, typename Alloc>
-    const char* BoostUnorderedMapBinding<K, V, Hash, Pred, Alloc>::metaName = nullptr;
-
-    template <typename K, typename V, typename Hash, typename Pred, typename Alloc>
-    const char* BoostUnorderedMapBinding<K, V, Hash, Pred, Alloc>::keyMetaName = nullptr;
-
-    template <typename K, typename V, typename Hash, typename Pred, typename Alloc>
-    const char* BoostUnorderedMapBinding<K, V, Hash, Pred, Alloc>::valMetaName = nullptr;
 
 } // namespace KenshiLua

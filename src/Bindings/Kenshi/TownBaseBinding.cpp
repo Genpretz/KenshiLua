@@ -2271,7 +2271,6 @@ void TownBaseBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
 
-    LektorValueBinding<TownBase::ResidentData>::registerBinding(L, "lektor<ResidentData>", TownBase_ResidentDataBinding::getMetatableName());
 
     registerClass(
         L, 
@@ -2363,11 +2362,6 @@ void TownBaseBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    OgreUnorderedSetBinding<ZoneMap*>::registerBinding(L, "ogre_unordered_set<ZoneMap*>");
-    OgreUnorderedMapBinding<ZoneMap*, bool>::registerBinding(L, "ogre_unordered_map<ZoneMap*, bool>");
-    StdSetBinding<hand>::registerBinding(L, "std::set<hand>");
-    StdSetBinding<Faction*>::registerBinding(L, "std::set<Faction*>", FactionBinding::getMetatableName());
-    LektorValueBinding<TownBase::ResidentData>::registerBinding(L, "lektor<ResidentData>", TownBase_ResidentDataBinding::getMetatableName());
 
     // Register global class table for static methods
     pushGlobalTable(L, "TownBase");

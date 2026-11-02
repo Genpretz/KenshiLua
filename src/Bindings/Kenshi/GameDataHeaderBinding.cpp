@@ -176,7 +176,6 @@ void GameDataHeaderBinding::registerBinding(lua_State* L)
     registerSetter(L, "references", GameDataHeader_set_references);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    LektorStringBinding<std::string>::registerBinding(L, "lektor<std::string>");
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -244,7 +244,6 @@ int RobotLimbItemBinding::tostring(lua_State* L)
 
 void RobotLimbItemBinding::registerBinding(lua_State* L)
 {
-    OgreUnorderedMapBinding<StatsEnumerated, float>::registerBinding(L, "ogre_unordered_map<StatsEnumerated, float>", nullptr, nullptr);
 
     static const luaL_Reg meta[] = {
         { "__gc",       RobotLimbItemBinding::gc },

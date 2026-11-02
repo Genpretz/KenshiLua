@@ -805,10 +805,6 @@ int MapScreenBinding::tostring(lua_State* L)
 
 void MapScreenBinding::registerBinding(lua_State* L)
 {
-    MapMarkersTownsMapBinding::registerBinding(L, "ogre_unordered_map<hand, MapMarkerTown*>", HandBinding::getMetatableName(), MapMarkerTownBinding::getMetatableName());
-    MapMarkersCharactersMapBinding::registerBinding(L, "ogre_unordered_map<hand, MapMarkerCharacter*>", HandBinding::getMetatableName(), MapMarkerCharacterBinding::getMetatableName());
-    SquadsListSetBinding::registerBinding(L, "ogre_unordered_set<hand>", HandBinding::getMetatableName());
-    HandFastArrayBinding::registerBinding(L, "Ogre::FastArray<hand>");
 
     static const luaL_Reg meta[] = {
         { "__gc",       MapScreenBinding::gc },

@@ -67,7 +67,6 @@ void CharacterInventoryLayoutBinding::registerBinding(lua_State* L)
         { 0, 0 }
     };
 
-    InventorySectionsMapBinding::registerBinding(L, "std::map<std::string, InventorySectionGUI*>", nullptr, InventorySectionGUIBinding::getMetatableName());
 
     registerClass(
         L, 

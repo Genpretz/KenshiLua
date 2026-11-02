@@ -576,7 +576,6 @@ void BountyManagerBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    BountiesMapBinding::registerBinding(L, "ogre_unordered_map<Faction*, Bounty>", FactionBinding::getMetatableName(), BountyBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

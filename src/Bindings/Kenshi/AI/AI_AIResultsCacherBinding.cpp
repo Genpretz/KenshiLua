@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/Containers/CommonTypes.h"
 // Tasker.h must come before AI.h; see TaskDataBinding.cpp.
 #include "kenshi/Tasker.h"
 #include "kenshi/AI/AI.h"
@@ -22,7 +23,7 @@ static_assert(offsetof(AI::AIResultsCacher, resourceSourceCache) == 0x80, "AI::A
 typedef StdMapBinding<TaskMatch, bool> TaskMatchBoolMapBinding;
 // resourceSourceCache uses std::allocator rather than the Ogre allocator. Hand values are copied
 // through LuaCodec<hand>; a value metatable would push borrowed hands.
-typedef StdMapBinding<GameData*, hand, std::less<GameData*>, std::allocator<std::pair<GameData* const, hand> > > GameDataHandMapBinding;
+typedef Containers::GameDataHandMapBinding GameDataHandMapBinding;
 
 static AI::AIResultsCacher* getInstance(lua_State* L, int idx)
 {
@@ -209,8 +210,6 @@ int AI_AIResultsCacherBinding::tostring(lua_State* L)
 
 void AI_AIResultsCacherBinding::registerBinding(lua_State* L)
 {
-    TaskMatchBoolMapBinding::registerBinding(L, "std::map<TaskMatch, bool>", TaskMatchBinding::getMetatableName(), nullptr);
-    GameDataHandMapBinding::registerBinding(L, "std::map<GameData*, hand>", GameDataBinding::getMetatableName(), nullptr);
 
     static const luaL_Reg meta[] = {
         { "__gc",       AI_AIResultsCacherBinding::gc },

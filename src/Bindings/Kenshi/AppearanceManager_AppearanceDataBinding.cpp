@@ -190,8 +190,6 @@ void AppearanceManager_AppearanceDataBinding::registerBinding(lua_State* L)
     registerSetter(L, "headsDataProb", AppearanceData_set_headsDataProb);
     lua_setfield(L, -2, "__setters");
 
-    GameDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<GameData*>", GameDataBinding::getMetatableName());
-    FloatFastArrayBinding::registerBinding(L, "Ogre::FastArray<float>");
 
     lua_pop(L, 1);
 }

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/Containers/CommonTypes.h"
 #include "kenshi\GameWorld.h"
 #include "GameWorldBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -29,8 +30,8 @@
 
 namespace KenshiLua
 {
-typedef StdDequePtrBinding<RootObject*, Ogre::STLAllocator<RootObject*, Ogre::GeneralAllocPolicy>> KillListPhase2DequeBinding;
-typedef StdDequePtrBinding<NestBatcher*, Ogre::STLAllocator<NestBatcher*, Ogre::GeneralAllocPolicy>> NestBatcherKillListDequeBinding;
+typedef Containers::KillListPhase2DequeBinding KillListPhase2DequeBinding;
+typedef Containers::NestBatcherKillListDequeBinding NestBatcherKillListDequeBinding;
 
 
 static GameWorld* getInstance(lua_State* L, int idx)
@@ -1334,7 +1335,7 @@ static int GameWorld_set_baseMods(lua_State* L)
 {
     GameWorld* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "GameWorld is nil");
-    auto* val = LektorValueReadOnlyBinding<ModInfo>::getInstance(L, 2);
+    auto* val = LektorValueBinding<ModInfo>::getInstance(L, 2);
     if (!val) return luaL_error(L, "Argument 2 to set baseMods must be lektor<ModInfo>");
     instance->baseMods = *val;
     return 0;
@@ -1822,21 +1823,6 @@ void GameWorldBinding::registerBinding(lua_State* L)
     registerSetter(L, "mainUpdateListRemovalQueue", GameWorld_set_mainUpdateListRemovalQueue);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    LektorValueReadOnlyBinding<ModInfo>::registerBinding(L, "lektor<ModInfo>", ModInfoBinding::getMetatableName());
-    LektorStringBinding<std::string>::registerBinding(L, "lektor<std::string>");
-    LektorPtrBinding<ModInfo*>::registerBinding(L, "lektor<ModInfo*>", ModInfoBinding::getMetatableName());
-    AvailableModsMapBinding::registerBinding(L, "std::map<std::string, ModInfo>", nullptr, ModInfoBinding::getMetatableName());
-    OgreUnorderedSetBinding<Character*>::registerBinding(L, "ogre_unordered_set<Character*>", CharacterBinding::getMetatableName());
-    OgreUnorderedMapBinding<hand, float>::registerBinding(L, "ogre_unordered_map<hand, float>", HandBinding::getMetatableName(), nullptr);
-    LektorValueReadOnlyBinding<hand>::registerBinding(L, "lektor<hand>", HandBinding::getMetatableName());
-    OgreUnorderedSetBinding<TownBuildingsManager*>::registerBinding(L, "ogre_unordered_set<TownBuildingsManager*>", TownBuildingsManagerBinding::getMetatableName());
-    OgreUnorderedMapBinding<hand, Character*>::registerBinding(L, "ogre_unordered_map<hand, Character*>", HandBinding::getMetatableName(), CharacterBinding::getMetatableName());
-    OgreUnorderedSetBinding<Character*>::registerBinding(L, "ogre_unordered_set<Character*>", CharacterBinding::getMetatableName());
-    OgreUnorderedSetBinding<RootObject*>::registerBinding(L, "ogre_unordered_set<RootObject*>", RootObjectBinding::getMetatableName());
-    OgreUnorderedMapBinding<RootObject*, float>::registerBinding(L, "ogre_unordered_map<RootObject*, float>", RootObjectBinding::getMetatableName(), nullptr);
-    KillListPhase2DequeBinding::registerBinding(L, "std::deque<RootObject*>", RootObjectBinding::getMetatableName());
-    NestBatcherKillListDequeBinding::registerBinding(L, "std::deque<NestBatcher*>", nullptr);
-    LektorPtrBinding<Character*>::registerBinding(L, "lektor<Character*>", CharacterBinding::getMetatableName());
 
 /*
 LIGHTUSERDATA DEPENDENCIES:

@@ -1204,12 +1204,6 @@ int BlackboardBinding::tostring(lua_State* L)
 
 void BlackboardBinding::registerBinding(lua_State* L)
 {
-    LektorPtrBinding<AIPackage*>::registerBinding(L, "lektor<AIPackage*>", AIPackageBinding::getMetatableName());
-    TaskTypeHandMapBinding::registerBinding(L, "ogre_unordered_map<TaskType, hand>");
-    HandVector3MapBinding::registerBinding(L, "ogre_unordered_map<hand, Vector3>", HandBinding::getMetatableName());
-    HandTaskRequestMapBinding::registerBinding(L, "ogre_unordered_map<hand, TaskRequest>", HandBinding::getMetatableName(), TaskRequestBinding::getMetatableName());
-    HandTaskInfoMapBinding::registerBinding(L, "ogre_unordered_map<hand, Blackboard::TaskInfo>", HandBinding::getMetatableName(), Blackboard_TaskInfoBinding::getMetatableName());
-    TaskRequestLektorBinding::registerBinding(L, "lektor<TaskRequest>", TaskRequestBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       BlackboardBinding::gc },

@@ -618,18 +618,6 @@ void FactionRelationsBinding::registerBinding(lua_State* L)
     registerSetter(L, "defaultFactionRelation", FactionRelations_set_defaultFactionRelation);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    OgreUnorderedMapBinding<Faction*, float>::registerBinding(
-        L, 
-        "ogre_unordered_map<Faction*, float>", 
-        FactionBinding::getMetatableName(), 
-        nullptr
-    );
-    OgreUnorderedMapBinding<Faction*, FactionRelations::RelationData>::registerBinding(
-        L, 
-        "ogre_unordered_map<Faction*, FactionRelationData>", 
-        FactionBinding::getMetatableName(), 
-        RelationDataBinding::getMetatableName()
-    );
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

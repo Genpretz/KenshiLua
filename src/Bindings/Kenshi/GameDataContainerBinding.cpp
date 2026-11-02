@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/Containers/CommonTypes.h"
 #include "kenshi\gamedatamanager.h"
 #include "GameDataContainerBinding.h"
 #include "Lua/BindingHelpers.h"
@@ -49,7 +50,7 @@ static int GameDataContainer_get_readOnly(lua_State* L)
     return 1;
 }
 
-typedef boost::unordered::unordered_map<std::string, GameData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<const std::string, GameData*>, Ogre::GeneralAllocPolicy> > GameDataSIDMap;
+typedef Containers::BoostUnorderedMap_std_string_GameDataPtrBinding::ContainerType GameDataSIDMap;
 
 static int GameDataContainer_get_gamedataID(lua_State* L)
 {
@@ -520,10 +521,6 @@ void GameDataContainerBinding::registerBinding(lua_State* L)
     registerSetter(L, "mainList", GameDataContainer_set_mainList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    OgreUnorderedMapBinding<int, GameData*>::registerBinding(L, "ogre_unordered_map<int, GameData*>", nullptr, GameDataBinding::getMetatableName());
-    BoostUnorderedMapBinding<std::string, GameData*, boost::hash<std::string>, std::equal_to<std::string>, Ogre::STLAllocator<std::pair<const std::string, GameData*>, Ogre::GeneralAllocPolicy>>::registerBinding(L, "boost_unordered_map<std::string, GameData*>", nullptr, GameDataBinding::getMetatableName());
-    OgreUnorderedSetBinding<GameData*>::registerBinding(L, "ogre_unordered_set<GameData*>", GameDataBinding::getMetatableName());
-    LektorPtrBinding<GameData*>::registerBinding(L, "lektor<GameData*>", GameDataBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, GameDataContainerBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

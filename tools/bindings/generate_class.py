@@ -769,11 +769,15 @@ def generate_cpp(info, header_path, extra_enums, known_bindings, known_headers=N
             raw_elem = base_type(elem_type)
             binding = binding_for_type(raw_elem, known_bindings)
             meta = f"{binding}::getMetatableName()" if binding else "nullptr"
-            out.append(f'    OgreFastArrayPtrBinding<{elem_type}>::registerBinding(L, "{clean_arr_type}", {meta});')
+            wrapper = f"OgreFastArrayPtrBinding<{elem_type}>"
         elif is_scalar_type(elem_type) or is_string_type(elem_type) or elem_type == "hand":
-            out.append(f'    OgreFastArrayPrimitiveBinding<{elem_type}>::registerBinding(L, "{clean_arr_type}");')
+            wrapper = f"OgreFastArrayPrimitiveBinding<{elem_type}>"
+            meta = "nullptr"
         else:
-            out.append(f'    OgreFastArrayValueBinding<{elem_type}>::registerBinding(L, "{clean_arr_type}");')
+            wrapper = f"OgreFastArrayValueBinding<{elem_type}>"
+            binding = binding_for_type(elem_type, known_bindings)
+            meta = f"{binding}::getMetatableName()" if binding else "nullptr"
+        out.append(f'    // Review src/Lua/Containers/RegisterArrays.cpp for {wrapper}, "{clean_arr_type}", element {meta}.')
     if fast_arrays:
         out.append("")
     

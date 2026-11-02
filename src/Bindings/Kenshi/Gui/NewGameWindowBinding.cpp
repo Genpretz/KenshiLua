@@ -340,7 +340,6 @@ void NewGameWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "startsData", NewGameWindow_set_startsData);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    GameDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<GameData*>", GameDataBinding::getMetatableName());
 
     // Wire up inheritance to GUIWindow
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

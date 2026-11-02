@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 
 extern "C" {
 #include <lua.h>
@@ -15,8 +16,11 @@ namespace KenshiLua
     {
     public:
         typedef TagsClass<T> TagsType;
+        typedef TagsType ContainerType;
+        typedef TagsClassBinding<T> MetadataType;
 
-        static const char* metaName;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static const char* getMetatableName() { return metaName; }
 
@@ -129,9 +133,9 @@ namespace KenshiLua
             return 0;
         }
 
-        static void registerBinding(lua_State* L, const char* name)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc",       gc },
@@ -172,7 +176,6 @@ namespace KenshiLua
         }
     };
 
-    template <typename T> const char* TagsClassBinding<T>::metaName = nullptr;
 }
 
 template <typename T>

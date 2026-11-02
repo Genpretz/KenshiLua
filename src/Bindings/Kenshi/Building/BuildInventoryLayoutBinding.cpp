@@ -427,7 +427,6 @@ int BuildInventoryLayoutBinding::tostring(lua_State* L)
 
 void BuildInventoryLayoutBinding::registerBinding(lua_State* L)
 {
-    StdMapBinding<std::string, InventorySectionGUI*>::registerBinding(L, "std::map<std::string, InventorySectionGUI*>", nullptr, InventorySectionGUIBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       BuildInventoryLayoutBinding::gc },

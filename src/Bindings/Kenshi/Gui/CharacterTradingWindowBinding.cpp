@@ -219,7 +219,6 @@ void CharacterTradingWindowBinding::registerBinding(lua_State* L)
     registerSetter(L, "tradingBoxes", CharacterTradingWindow_set_tradingBoxes);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    CharacterTradingBoxFastArrayBinding::registerBinding(L, "Ogre::FastArray<CharacterTradingBox*>", nullptr);
 
     // Wire up inheritance to GUIWindow
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()

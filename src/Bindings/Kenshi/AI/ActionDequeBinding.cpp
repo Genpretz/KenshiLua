@@ -156,7 +156,6 @@ int ActionDequeBinding::tostring(lua_State* L)
 
 void ActionDequeBinding::registerBinding(lua_State* L)
 {
-    TaskerDequeBinding::registerBinding(L, "std::deque<Tasker*>", TaskerBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       ActionDequeBinding::gc },

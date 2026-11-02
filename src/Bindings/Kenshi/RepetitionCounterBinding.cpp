@@ -123,7 +123,6 @@ void RepetitionCounterBinding::registerBinding(lua_State* L)
     lua_newtable(L); // Create __setters table
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    RepetitionStatesMapBinding::registerBinding(L, "std::map<std::string, DialogState*>", nullptr, DialogStateBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -536,7 +536,6 @@ void StorageBuildingBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    LektorPtrBinding<StorageBuilding::ConsumptionItem*>::registerBinding(L, "lektor<StorageBuilding::ConsumptionItem*>", ConsumptionItemBinding::getMetatableName());
 }
 
 } // namespace KenshiLua

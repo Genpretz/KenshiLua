@@ -1457,9 +1457,6 @@ void AppearanceBaseBinding::registerBinding(lua_State* L)
     registerSetter(L, "woundsList", AppearanceBase_set_woundsList);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    HarpoonFastArrayBinding::registerBinding(L, "Ogre::FastArray<Harpoon*>", nullptr);
-    AttachedEffectFastArrayBinding::registerBinding(L, "Ogre::FastArray<AttachedEffect*>", nullptr);
-    WoundFastArrayBinding::registerBinding(L, "Ogre::FastArray<Wound*>", nullptr);
 
     // Inheritance wired in RegisterBindings.cpp::registerInheritance()
     // setMetatableParent(L, AppearanceBaseBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

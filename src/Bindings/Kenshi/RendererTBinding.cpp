@@ -83,7 +83,6 @@ void RendererTBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1);
 
-    LektorPtrBinding<RenderEntityT*>::registerBinding(L, "lektor<RenderEntityT*>", nullptr);
 }
 
 } // namespace KenshiLua

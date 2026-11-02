@@ -182,9 +182,6 @@ void AppearanceManager_DataCategoryBinding::registerBinding(lua_State* L)
     registerSetter(L, "vectorRanges", DataCategory_set_vectorRanges);
     lua_setfield(L, -2, "__setters");
 
-    DataRangeFastArrayBinding::registerBinding(L, "Ogre::FastArray<DataRange>", AppearanceManager_DataRangeBinding::getMetatableName());
-    DataRangePoseFastArrayBinding::registerBinding(L, "Ogre::FastArray<DataRangePose>", AppearanceManager_DataRangePoseBinding::getMetatableName());
-    DataRangeVectorFastArrayBinding::registerBinding(L, "Ogre::FastArray<DataRangeVector>", AppearanceManager_DataRangeVectorBinding::getMetatableName());
 
     lua_pop(L, 1);
 }

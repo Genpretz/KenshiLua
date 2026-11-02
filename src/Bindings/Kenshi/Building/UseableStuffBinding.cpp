@@ -1863,11 +1863,6 @@ void UseableStuffBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    StdSetBinding<hand, std::less<hand>, Ogre::STLAllocator<hand, Ogre::GeneralAllocPolicy>>::registerBinding(
-        L, 
-        "std::set<hand>", 
-        HandBinding::getMetatableName()
-    );
 }
 
 } // namespace KenshiLua

@@ -116,7 +116,6 @@ void MotionFilterBinding::registerBinding(lua_State* L)
     registerSetter(L, "mHistoryBufferX", MotionFilter_set_mHistoryBufferX);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    FloatDequeBinding::registerBinding(L, "std::deque<float>", nullptr);
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

@@ -1325,12 +1325,6 @@ void DialogLineDataBinding::registerBinding(lua_State* L)
     registerSetter(L, "speaker", DialogLineData_set_speaker);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    FitnessSelectorBinding<CampaignTriggerData*>::registerBinding(L, "FitnessSelector<CampaignTriggerData*>", CampaignTriggerDataBinding::getMetatableName(), nullptr, nullptr);
-    //LektorValueReadOnlyBinding<GameDataValuePair>::registerBinding(L, "lektor<GameDataValuePair>", GameDataValuePairBinding::getMetatableName());
-    //LektorPtrBinding<DialogLineData::DialogCondition*>::registerBinding(L, "lektor<DialogCondition*>", DialogConditionBinding::getMetatableName());
-    //LektorPtrBinding<DialogLineData::DialogAction*>::registerBinding(L, "lektor<DialogAction*>", DialogActionBinding::getMetatableName());
-    FactionRelationEffectsMapBinding::registerBinding(L, "ogre_unordered_map<GameData*, int>", GameDataBinding::getMetatableName(), nullptr);
-
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

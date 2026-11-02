@@ -1623,4 +1623,21 @@
     <None Include="extern\kenshilib\Include\ogre\OgreMovableObject.inl" />
     <None Include=".github\copilot-instructions.md" />
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Lua\ContainerBinding.cpp" />
+    <ClInclude Include="src\Lua\ContainerBinding.h" />
+    <ClInclude Include="src\Lua\Containers\LektorTypes.h" />
+    <ClInclude Include="src\Lua\Containers\CommonTypes.h" />
+    <ClInclude Include="src\Lua\Containers\StdContainersTypes.h" />
+    <ClInclude Include="src\Lua\Containers\OgreUnorderedTypes.h" />
+    <ClInclude Include="src\Lua\Containers\BoostContainersTypes.h" />
+    <ClInclude Include="src\Lua\Containers\ArraysTypes.h" />
+    <ClInclude Include="src\Lua\Containers\FitnessSelectorsTypes.h" />
+    <ClCompile Include="src\Lua\Containers\RegisterArrays.cpp" />
+    <ClCompile Include="src\Lua\Containers\RegisterBoostContainers.cpp" />
+    <ClCompile Include="src\Lua\Containers\RegisterFitnessSelectors.cpp" />
+    <ClCompile Include="src\Lua\Containers\RegisterLektor.cpp" />
+    <ClCompile Include="src\Lua\Containers\RegisterOgreUnordered.cpp" />
+    <ClCompile Include="src\Lua\Containers\RegisterStdContainers.cpp" />
+  </ItemGroup>
 </Project>

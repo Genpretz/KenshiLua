@@ -1,4 +1,5 @@
 #pragma once
+#include "Lua/ContainerBinding.h"
 #include "Lua/LuaCodec.h"
 #include "kenshi/FitnessSelector.h"
 #include "Lua/BindingHelpers.h"
@@ -9,10 +10,10 @@ namespace KenshiLua
     struct FitnessSelectorBinding
     {
         typedef FitnessSelector<T> SelectorType;
-        static const char* metaName;
-        static const char* elemMetaName;
-        static const char* listMetaName;
-        static const char* itemsScoresMetaName;
+        typedef SelectorType ContainerType;
+        typedef FitnessSelectorBinding<T> MetadataType;
+        static const char* const metaName;
+        static const char* const metadata[3];
 
         static SelectorType* getInstance(lua_State* L, int idx)
         {
@@ -57,7 +58,7 @@ namespace KenshiLua
         {
             SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
-            if (elemMetaName) return pushObject<T>(L, &s->highestItem, elemMetaName);
+            if (metadata[0]) return pushObject<T>(L, &s->highestItem, metadata[0]);
             LuaCodec<T>::push(L, s->highestItem, nullptr);
             return 1;
         }
@@ -66,8 +67,8 @@ namespace KenshiLua
         {
             SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
-            if (elemMetaName) {
-                T* ptr = checkObject<T>(L, 3, elemMetaName);
+            if (metadata[0]) {
+                T* ptr = checkObject<T>(L, 3, metadata[0]);
                 if (ptr) s->highestItem = *ptr;
             } else {
                 s->highestItem = LuaCodec<T>::read(L, 3, nullptr);
@@ -79,7 +80,7 @@ namespace KenshiLua
         {
             SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
-            if (listMetaName) return pushObject(L, &s->list, listMetaName);
+            if (metadata[1]) return pushObject(L, &s->list, metadata[1]);
             lua_pushnil(L);
             return 1;
         }
@@ -88,17 +89,14 @@ namespace KenshiLua
         {
             SelectorType* s = getInstance(L, 1);
             if (!s) return luaL_error(L, "FitnessSelector is nil");
-            if (itemsScoresMetaName) return pushObject(L, &s->itemsScores, itemsScoresMetaName);
+            if (metadata[2]) return pushObject(L, &s->itemsScores, metadata[2]);
             lua_pushnil(L);
             return 1;
         }
 
-        static void registerBinding(lua_State* L, const char* name, const char* elemMeta, const char* listMeta, const char* itemsScoresMeta)
+        static void registerBinding(lua_State* L)
         {
-            metaName = name;
-            elemMetaName = elemMeta;
-            listMetaName = listMeta;
-            itemsScoresMetaName = itemsScoresMeta;
+            if (!beginContainerBinding(L, containerBindingDefinition<MetadataType>())) return;
 
             static const luaL_Reg meta[] = {
                 { "__gc", gc },
@@ -147,8 +145,4 @@ namespace KenshiLua
         }
     };
     
-    template<typename T> const char* FitnessSelectorBinding<T>::metaName = nullptr;
-    template<typename T> const char* FitnessSelectorBinding<T>::elemMetaName = nullptr;
-    template<typename T> const char* FitnessSelectorBinding<T>::listMetaName = nullptr;
-    template<typename T> const char* FitnessSelectorBinding<T>::itemsScoresMetaName = nullptr;
 }

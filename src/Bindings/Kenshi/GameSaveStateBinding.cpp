@@ -365,7 +365,6 @@ void GameSaveStateBinding::registerBinding(lua_State* L)
     registerSetter(L, "states", GameSaveState_set_states);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    StatesMapBinding::registerBinding(L, "ogre_unordered_map<itemType, GameData*>", nullptr, GameDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 }

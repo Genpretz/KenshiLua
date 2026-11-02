@@ -260,10 +260,6 @@ int ShopTraderInventoryBinding::tostring(lua_State* L)
 
 void ShopTraderInventoryBinding::registerBinding(lua_State* L)
 {
-    OgreUnorderedMapBinding<hand, InventorySection*>::registerBinding(
-        L, "ogre_unordered_map<hand, InventorySection*>", HandBinding::getMetatableName(), InventorySectionBinding::getMetatableName());
-    OgreVectorPtrBinding<InventorySection*>::registerBinding(
-        L, "ogre_vector<InventorySection*>", InventorySectionBinding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       ShopTraderInventoryBinding::gc },

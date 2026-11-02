@@ -505,9 +505,6 @@ void TutorialItemBinding::registerBinding(lua_State* L)
     registerSetter(L, "requiredTutorials", TutorialItem_set_requiredTutorials);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    TutorialSubItemFastArrayBinding::registerBinding(L, "Ogre::FastArray<TutorialSubItem*>", TutorialSubItemBinding::getMetatableName());
-    StringFastArrayBinding::registerBinding(L, "Ogre::FastArray<std::string>");
-    TutorialItemFastArrayBinding::registerBinding(L, "Ogre::FastArray<TutorialItem*>", TutorialItemBinding::getMetatableName());
 
     // Wire up inheritance to Ogre::GeneralAllocatedObject
     // setMetatableParent(L, TutorialItemBinding::getMetatableName(), Ogre::GeneralAllocatedObjectBinding::getMetatableName());

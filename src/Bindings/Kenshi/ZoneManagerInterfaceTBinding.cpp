@@ -93,7 +93,6 @@ int ZoneManagerInterfaceTBinding::tostring(lua_State* L)
 
 void ZoneManagerInterfaceTBinding::registerBinding(lua_State* L)
 {
-    LektorValueBinding<iVector2>::registerBinding(L, "lektor<iVector2>", iVector2Binding::getMetatableName());
 
     static const luaL_Reg meta[] = {
         { "__gc",       ZoneManagerInterfaceTBinding::gc },

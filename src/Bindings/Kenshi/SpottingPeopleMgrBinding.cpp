@@ -149,12 +149,6 @@ void SpottingPeopleMgrBinding::registerBinding(lua_State* L)
 
     lua_pop(L, 1); // Pop the metatable off the stack
 
-    StdMapBinding<hand, SensoryData::SpottingPeopleMgr::Spot>::registerBinding(
-        L, 
-        "std::map<hand, SensoryData::SpottingPeopleMgr::Spot>", 
-        HandBinding::getMetatableName(), 
-        SpotBinding::getMetatableName()
-    );
 }
 
 } // namespace KenshiLua

@@ -447,8 +447,6 @@ void AppearanceManagerBinding::registerBinding(lua_State* L)
     registerSetter(L, "characterIdleAnimations", AppearanceManager_set_characterIdleAnimations);
     lua_setfield(L, -2, "__setters");
 
-    GameDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<GameData*>", GameDataBinding::getMetatableName());
-    AnimationDataFastArrayBinding::registerBinding(L, "Ogre::FastArray<AnimationData*>", AnimationDataBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop metatable
 

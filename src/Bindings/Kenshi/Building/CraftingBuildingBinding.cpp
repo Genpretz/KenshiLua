@@ -887,7 +887,6 @@ void CraftingBuildingBinding::registerBinding(lua_State* L)
     registerSetter(L, "partialItems", CraftingBuilding_set_partialItems);
     lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-    CraftingItemDequeBinding::registerBinding(L, "std::deque<CraftingItem>", CraftingItemBinding::getMetatableName());
 
     lua_pop(L, 1); // Pop the metatable off the stack
 

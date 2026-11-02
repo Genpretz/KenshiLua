@@ -44,7 +44,7 @@ static int UniqueSpawnData_get_existingSquadsList(lua_State* L)
 {
     UniqueSpawnData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
-    return pushObject<lektor<hand>>(L, &instance->existingSquadsList, LektorValueReadOnlyBinding<hand>::metaName);
+    return pushObject<lektor<hand>>(L, &instance->existingSquadsList, LektorValueBinding<hand>::metaName);
 }
 
 // --- Setters for UniqueSpawnData ---
@@ -76,7 +76,7 @@ static int UniqueSpawnData_set_existingSquadsList(lua_State* L)
 {
     UniqueSpawnData* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "UniqueSpawnData is nil");
-    lektor<hand>* val = checkObject<lektor<hand>>(L, 2, LektorValueReadOnlyBinding<hand>::metaName);
+    lektor<hand>* val = checkObject<lektor<hand>>(L, 2, LektorValueBinding<hand>::metaName);
     if (!val) return luaL_error(L, "Expected lektor<hand> object");
     instance->existingSquadsList = *val;
     return 0;

@@ -255,7 +255,6 @@ void AppearanceManager_DataRangeVectorBinding::registerBinding(lua_State* L)
     registerSetter(L, "values", DataRangeVector_set_values);
     lua_setfield(L, -2, "__setters");
 
-    Vector3FastArrayBinding::registerBinding(L, "Ogre::FastArray<Ogre::Vector3>");
 
     lua_pop(L, 1);
 }

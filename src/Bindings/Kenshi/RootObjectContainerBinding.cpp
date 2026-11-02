@@ -319,7 +319,6 @@ int RootObjectContainerBinding::_NV_getSelectedObjects(lua_State* L)
         registerSetter(L, "things", RootObjectContainer_set_things);
         lua_setfield(L, -2, "__setters"); // Bind to metatable
 
-        LektorPtrBinding<RootObject*>::registerBinding(L, "lektor<RootObject*>", RootObjectBinding::getMetatableName());
 
         lua_pop(L, 1); // Pop the metatable off the stack
     }
