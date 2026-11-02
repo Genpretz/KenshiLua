@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<ModData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <id>3817000612</id>
+  <mod>KenshiLua</mod>
+  <title>KenshiLua - Lua Scripting Extension</title>
+  <tags>
+    <string>RE_Kenshi</string>
+  </tags>
+  <visibility>0</visibility>
+  <lastUpdate>2026-10-17T05:03:23-07:00</lastUpdate>
+</ModData>
