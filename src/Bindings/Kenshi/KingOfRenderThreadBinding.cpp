@@ -3,7 +3,7 @@
 #include "KingOfRenderThreadBinding.h"
 #include "RendererBinding.h"
 #include "CameraClassBinding.h"
-#include "TerrainBinding.h"
+#include "Bindings/Kenshi/Terrain/TerrainBinding.h"
 #include "Gui/TitleScreenBinding.h"
 #include "GameDataBinding.h"
 #include "MeshDataLookupBinding.h"

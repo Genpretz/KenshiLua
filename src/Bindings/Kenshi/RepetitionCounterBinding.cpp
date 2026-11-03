@@ -3,7 +3,7 @@
 #include "RepetitionCounterBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Util/StdMapBinding.h"
-#include "Bindings/Kenshi/DialogStateBinding.h"
+#include "Bindings/Kenshi/Dialogue/DialogStateBinding.h"
 
 typedef Dialogue::RepetitionCounter RepetitionCounter;
 

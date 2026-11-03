@@ -4,7 +4,7 @@
 #include "DialogueWindowBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
-#include "Bindings/Kenshi/DialogueBinding.h"
+#include "Bindings/Kenshi/Dialogue/DialogueBinding.h"
 #include "Bindings/Kenshi/Gui/GUIWindowBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
 

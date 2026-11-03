@@ -5,11 +5,11 @@
 #include "Bindings/Kenshi/Animation/AnimationDataBinding.h"
 #include "AnimationClassBase_SingleAnimationBinding.h"
 #include "AnimationClassBase_AnimationLayerBinding.h"
-#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h" 
 #include "Bindings/Kenshi/CharMovementBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
-#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/Util/BoostUnorderedBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/StdMapBinding.h"
@@ -17,11 +17,13 @@
 namespace KenshiLua
 {
 
+#ifndef __INTELLISENSE__
 static_assert(offsetof(AnimationClassBase, boneInitialWorldPositions) == 0x10, "AnimationClassBase::boneInitialWorldPositions offset does not match the game");
 static_assert(offsetof(AnimationClassBase, desiredOrientation) == 0x78, "AnimationClassBase::desiredOrientation offset does not match the game");
 static_assert(offsetof(AnimationClassBase, movement) == 0xC0, "AnimationClassBase::movement offset does not match the game");
 static_assert(offsetof(AnimationClassBase, layer) == 0xD0, "AnimationClassBase::layer offset does not match the game");
 static_assert(sizeof(AnimationClassBase) == 0xE8, "AnimationClassBase size does not match the game");
+#endif
 
 // Registered by GameDataBinding.
 typedef BoostUnorderedMapBinding<std::string, Ogre::Vector3> BoneVector3MapBinding;

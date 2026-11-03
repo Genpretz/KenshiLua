@@ -10,7 +10,7 @@
 #include "Bindings/Kenshi/Gui/InventoryLayoutBinding.h"
 #include "Bindings/Kenshi/InventoryBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
-#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/DamagesBinding.h"
 #include "Bindings/Kenshi/ItemBinding.h"
 #include "Bindings/Kenshi/RootObjectBinding.h"

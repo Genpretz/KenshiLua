@@ -4,7 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
-#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/DamagesBinding.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"

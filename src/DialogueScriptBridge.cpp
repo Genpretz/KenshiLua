@@ -8,8 +8,8 @@
 #include "Lua/LuaState.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
-#include "Bindings/Kenshi/DialogueBinding.h"
-#include "Bindings/Kenshi/DialogLineDataBinding.h"
+#include "Bindings/Kenshi/Dialogue/DialogueBinding.h"
+#include "Bindings/Kenshi/Dialogue/DialogLineDataBinding.h"
 #include "ScriptLoader.h"
 #include <core/Functions.h>
 #include <kenshi/GameDataManager.h>

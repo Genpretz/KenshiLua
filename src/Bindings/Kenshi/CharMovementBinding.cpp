@@ -12,7 +12,7 @@
 #include "Bindings/Kenshi/FormationMoverBinding.h"
 #include "Bindings/Kenshi/RootObjectBaseBinding.h"
 #include "Bindings/Kenshi/physHitBinding.h"
-#include "Bindings/Kenshi/HavokCharacterBinding.h"
+#include "Bindings/Kenshi/Havok/HavokCharacterBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 
 namespace KenshiLua

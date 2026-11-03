@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Bindings/Kenshi/EdgeCacheBinding.h"
-#include "Bindings/Kenshi/hkVector4fBinding.h"
+#include "Bindings/Kenshi/Havok/hkVector4fBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua

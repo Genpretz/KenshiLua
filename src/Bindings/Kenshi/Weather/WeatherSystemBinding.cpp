@@ -6,7 +6,7 @@
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/ListenerBinding.h"
 #include "Bindings/Kenshi/RotatingEntBinding.h"
-#include "Bindings/Kenshi/WeatherRegionBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherRegionBinding.h"
 #include "Bindings/Kenshi/Weather/WeatherSystem_FogValuesBinding.h"
 #include "Bindings/Kenshi/Weather/WeatherSystem_ZoneFogBinding.h"
 

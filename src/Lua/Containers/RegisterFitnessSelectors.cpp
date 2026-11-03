@@ -2,7 +2,7 @@
 #include "kenshi/Tasker.h"
 #include "kenshi/Dialogue.h"
 #include "Bindings/Kenshi/CampaignTriggerDataBinding.h"
-#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/FitnessSelectorBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Lua/LuaBindings.h"

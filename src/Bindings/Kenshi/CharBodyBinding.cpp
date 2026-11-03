@@ -7,7 +7,7 @@
 #include "Bindings/Kenshi/AI/AITaskSytemBinding.h"
 #include <kenshi\CharBody.h>
 #include "Bindings/Kenshi/CharBodyBinding.h"
-#include "Bindings/Kenshi/CombatClassBinding.h"
+#include "Bindings/Kenshi/Combat/CombatClassBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/CharStatsBinding.h"
 #include "Bindings/Kenshi/CharMovementBinding.h"

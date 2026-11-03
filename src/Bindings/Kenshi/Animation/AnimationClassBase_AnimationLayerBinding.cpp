@@ -5,7 +5,7 @@
 #include "AnimationClassBaseBinding.h"
 #include "AnimationDataBinding.h"
 #include "Bindings/Kenshi/CharMovementBinding.h"
-#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Lua/BindingHelpers.h"
 

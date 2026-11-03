@@ -3,7 +3,7 @@
 #include "SeasonBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
-#include "Bindings/Kenshi/WeatherRegionBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherRegionBinding.h"
 #include "Bindings/Kenshi/Weather/WeatherBinding.h"
 
 namespace KenshiLua

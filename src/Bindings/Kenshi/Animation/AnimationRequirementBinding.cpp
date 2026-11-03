@@ -2,7 +2,7 @@
 #include "kenshi/Animation/AnimationClass.h"
 #include "AnimationRequirementBinding.h"
 #include "AnimationDataBinding.h"
-#include "Bindings/Kenshi/CombatTechniqueDataBinding.h"
+#include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/MedianFilterBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/YesNoMaybeBinding.h"
