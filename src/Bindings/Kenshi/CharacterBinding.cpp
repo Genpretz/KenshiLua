@@ -2911,7 +2911,7 @@ int CharacterBinding::addGoal(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     TaskType t = (TaskType)luaL_checkinteger(L, 2);
-    RootObjectBase* subject = checkObject<RootObjectBase>(L, 3, RootObjectBaseBinding::getMetatableName());
+    RootObjectBase* subject = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObjectBase>(L, 3, RootObjectBaseBinding::getMetatableName());
     instance->addGoal(t, subject);
     return 0;
 }
@@ -2922,11 +2922,11 @@ int CharacterBinding::addJob(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     TaskType t = (TaskType)luaL_checkinteger(L, 2);
-    RootObject* subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
     bool shift = lua_toboolean(L, 4) != 0;
     bool addDontClear = lua_toboolean(L, 5) != 0;
     Ogre::Vector3 location;
-    readVector3(L, 6, location);
+    if (!readVector3(L, 6, location)) return luaL_argerror(L, 6, "Vector3 table expected");
     instance->addJob(t, subject, shift, addDontClear, location);
     return 0;
 }
@@ -3007,13 +3007,15 @@ int CharacterBinding::addOrder(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    Building* dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
     TaskType t = (TaskType)luaL_checkinteger(L, 3);
-    RootObject* subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    // checkPlayerOrderForProblems passes the subject of STAY_CLOSE_TO_TARGET to breakFollowOrderLoop, which dereferences it.
+    if (!subject && t == STAY_CLOSE_TO_TARGET) return luaL_argerror(L, 4, "STAY_CLOSE_TO_TARGET needs a subject");
     bool shift = lua_toboolean(L, 5) != 0;
     bool clear = lua_toboolean(L, 6) != 0;
     Ogre::Vector3 location;
-    readVector3(L, 7, location);
+    if (!readVector3(L, 7, location)) return luaL_argerror(L, 7, "Vector3 table expected");
     instance->addOrder(dest, t, subject, shift, clear, location);
     return 0;
 }
@@ -3023,11 +3025,11 @@ int CharacterBinding::updateLastTask(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    Building* dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
     TaskType t = (TaskType)luaL_checkinteger(L, 3);
-    RootObject* subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
     Ogre::Vector3 location;
-    readVector3(L, 5, location);
+    if (!readVector3(L, 5, location)) return luaL_argerror(L, 5, "Vector3 table expected");
     instance->updateLastTask(dest, t, subject, location);
     return 0;
 }
@@ -3037,11 +3039,11 @@ int CharacterBinding::_NV_updateLastTask(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    Building* dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
     TaskType t = (TaskType)luaL_checkinteger(L, 3);
-    RootObject* subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
     Ogre::Vector3 location;
-    readVector3(L, 5, location);
+    if (!readVector3(L, 5, location)) return luaL_argerror(L, 5, "Vector3 table expected");
     instance->_NV_updateLastTask(dest, t, subject, location);
     return 0;
 }
@@ -3051,10 +3053,10 @@ int CharacterBinding::playerMoveOrderDefault(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    Building* dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
-    RootObject* subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
     Ogre::Vector3 location;
-    readVector3(L, 4, location);
+    if (!readVector3(L, 4, location)) return luaL_argerror(L, 4, "Vector3 table expected");
     instance->playerMoveOrderDefault(dest, subject, location);
     return 0;
 }
@@ -3064,10 +3066,10 @@ int CharacterBinding::_NV_playerMoveOrderDefault(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    Building* dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
-    RootObject* subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
     Ogre::Vector3 location;
-    readVector3(L, 4, location);
+    if (!readVector3(L, 4, location)) return luaL_argerror(L, 4, "Vector3 table expected");
     instance->_NV_playerMoveOrderDefault(dest, subject, location);
     return 0;
 }
@@ -4173,7 +4175,9 @@ int CharacterBinding::checkPlayerOrderForProblems(lua_State* L)
     if (!instance) return luaL_error(L, "Character is nil");
 
     TaskType t = (TaskType)luaL_checkinteger(L, 2);
-    RootObject* subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    // The STAY_CLOSE_TO_TARGET check passes the subject to breakFollowOrderLoop, which dereferences it.
+    if (!subject && t == STAY_CLOSE_TO_TARGET) return luaL_argerror(L, 3, "STAY_CLOSE_TO_TARGET needs a subject");
     bool result = instance->checkPlayerOrderForProblems(t, subject);
     lua_pushboolean(L, result ? 1 : 0);
     return 1;
@@ -4997,10 +5001,10 @@ int CharacterBinding::calculateDestinationState(lua_State* L)
     Character* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "Character is nil");
 
-    Building* dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
-    RootObject* subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
     Ogre::Vector3 v;
-    readVector3(L, 4, v);
+    if (!readVector3(L, 4, v)) return luaL_argerror(L, 4, "Vector3 table expected");
     instance->calculateDestinationState(dest, subject, v);
     return 0;
 }

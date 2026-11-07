@@ -1982,11 +1982,17 @@ int PlayerInterfaceBinding::addOrderSelectedCharacters(lua_State* L)
 
 
 
-    Building* destinationIndoors = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    Building* destinationIndoors = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
 
     TaskType task = (TaskType)luaL_checkinteger(L, 3);
 
-    RootObject* subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+
+    // The engine dereferences the subject of the attack tasks here, and of STAY_CLOSE_TO_TARGET in breakFollowOrderLoop.
+
+    if (!subject && (task == FOCUSED_MELEE_ATTACK || task == ATTACK_ENEMIES || task == UNPROVOKED_FOCUSED_MELEE_ATTACK || task == STAY_CLOSE_TO_TARGET))
+
+        return luaL_argerror(L, 4, lua_pushfstring(L, "TaskType %d needs a subject", (int)task));
 
     bool shift = lua_toboolean(L, 5) != 0;
 
@@ -1994,7 +2000,7 @@ int PlayerInterfaceBinding::addOrderSelectedCharacters(lua_State* L)
 
     Ogre::Vector3 location;
 
-    readVector3(L, 7, location);
+    if (!readVector3(L, 7, location)) return luaL_argerror(L, 7, "Vector3 table expected");
 
     instance->addOrderSelectedCharacters(destinationIndoors, task, subject, shift, addDontClear, location);
 
@@ -2016,7 +2022,7 @@ int PlayerInterfaceBinding::addJobSelectedCharacters(lua_State* L)
 
     TaskType task = (TaskType)luaL_checkinteger(L, 2);
 
-    RootObject* subject = checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 3) ? nullptr : checkObject<RootObject>(L, 3, RootObjectBinding::getMetatableName());
 
     bool shift = lua_toboolean(L, 4) != 0;
 
@@ -2024,7 +2030,7 @@ int PlayerInterfaceBinding::addJobSelectedCharacters(lua_State* L)
 
     Ogre::Vector3 location;
 
-    readVector3(L, 6, location);
+    if (!readVector3(L, 6, location)) return luaL_argerror(L, 6, "Vector3 table expected");
 
     instance->addJobSelectedCharacters(task, subject, shift, add, location);
 
@@ -2466,17 +2472,17 @@ int PlayerInterfaceBinding::addTaskNearestSelectedCharacter(lua_State* L)
 
 
 
-    Building* dest = checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 2) ? nullptr : checkObject<Building>(L, 2, BuildingBinding::getMetatableName());
 
     TaskType t = (TaskType)luaL_checkinteger(L, 3);
 
-    RootObject* subject = checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
+    RootObject* subject = lua_isnoneornil(L, 4) ? nullptr : checkObject<RootObject>(L, 4, RootObjectBinding::getMetatableName());
 
     bool shift = lua_toboolean(L, 5) != 0;
 
     Ogre::Vector3 location;
 
-    readVector3(L, 6, location);
+    if (!readVector3(L, 6, location)) return luaL_argerror(L, 6, "Vector3 table expected");
 
     bool noAnimals = lua_toboolean(L, 7) != 0;
 
@@ -2500,9 +2506,9 @@ int PlayerInterfaceBinding::updateLastMoveWaypointSelectedCharacters(lua_State* 
 
     Ogre::Vector3 location;
 
-    readVector3(L, 2, location);
+    if (!readVector3(L, 2, location)) return luaL_argerror(L, 2, "Vector3 table expected");
 
-    Building* dest = checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
+    Building* dest = lua_isnoneornil(L, 3) ? nullptr : checkObject<Building>(L, 3, BuildingBinding::getMetatableName());
 
     instance->updateLastMoveWaypointSelectedCharacters(location, dest);
 
