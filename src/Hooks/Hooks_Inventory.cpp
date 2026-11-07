@@ -9,7 +9,7 @@ static InventorySection* (*Inventory_getSectionOfType_orig)(Inventory*, int) = N
 static InventorySection* Inventory_getSectionOfType_hook(Inventory* thisptr, int type)
 {
     InventorySection* current = Inventory_getSectionOfType_orig(thisptr, type);
-    InventorySection* overrideSection = CallInventoryGetSectionOfTypeCallbacks(thisptr, type);
+    InventorySection* overrideSection = CallInventoryGetSectionOfTypeCallbacks(thisptr, type, current);
     return overrideSection ? overrideSection : current;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_Inventory_getSectionOfType,
@@ -21,7 +21,7 @@ static Item* (*Inventory_getBestFoodItem_orig)(const Inventory*, Character*) = N
 static Item* Inventory_getBestFoodItem_hook(const Inventory* thisptr, Character* race)
 {
     Item* current = Inventory_getBestFoodItem_orig(thisptr, race);
-    Item* overrideFood = CallInventoryGetBestFoodItemCallbacks(const_cast<Inventory*>(thisptr), race);
+    Item* overrideFood = CallInventoryGetBestFoodItemCallbacks(const_cast<Inventory*>(thisptr), race, current);
     return overrideFood ? overrideFood : current;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_Inventory_getBestFoodItem,
@@ -43,9 +43,8 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryItemBase_getValueSingle,
 static bool (*Inventory_NV_addItem_orig)(Inventory*, Item*, int, bool, bool) = NULL;
 static bool Inventory_NV_addItem_hook(Inventory* thisptr, Item* item, int quantity, bool dropOnFail, bool destroyOnFail)
 {
-    if (!CallInventoryAddItemCallbacks(thisptr, item, quantity, dropOnFail, destroyOnFail))
-        return false;
-    return Inventory_NV_addItem_orig(thisptr, item, quantity, dropOnFail, destroyOnFail);
+    bool current = Inventory_NV_addItem_orig(thisptr, item, quantity, dropOnFail, destroyOnFail);
+    return CallInventoryAddItemCallbacks(thisptr, item, quantity, dropOnFail, destroyOnFail, current);
 }
 DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_addItem,
     "Inventory::_NV_addItem",
@@ -56,7 +55,7 @@ static Item* (*Inventory_NV_removeItemDontDestroy_returnsItem_orig)(Inventory*, 
 static Item* Inventory_NV_removeItemDontDestroy_returnsItem_hook(Inventory* thisptr, Item* it, int howmany, bool returnCopyIfSomeLeft)
 {
     Item* current = Inventory_NV_removeItemDontDestroy_returnsItem_orig(thisptr, it, howmany, returnCopyIfSomeLeft);
-    Item* overrideItem = CallInventoryRemoveItemCallbacks(thisptr, it, howmany, returnCopyIfSomeLeft);
+    Item* overrideItem = CallInventoryRemoveItemCallbacks(thisptr, it, howmany, returnCopyIfSomeLeft, current);
     return overrideItem ? overrideItem : current;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_Inventory_NV_removeItemDontDestroy_returnsItem,
@@ -68,7 +67,7 @@ static Item* (*Inventory_buyItem_orig)(Inventory*, Item*, RootObject*) = NULL;
 static Item* Inventory_buyItem_hook(Inventory* thisptr, Item* itemToBuy, RootObject* sendingTo)
 {
     Item* current = Inventory_buyItem_orig(thisptr, itemToBuy, sendingTo);
-    Item* overrideItem = CallInventoryBuyItemCallbacks(thisptr, itemToBuy, sendingTo);
+    Item* overrideItem = CallInventoryBuyItemCallbacks(thisptr, itemToBuy, sendingTo, current);
     return overrideItem ? overrideItem : current;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_Inventory_buyItem,

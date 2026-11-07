@@ -22,6 +22,7 @@ class RootObject;
 class Damages;
 class Platoon;
 class Tasker;
+class OrdersReceiver;
 class Building;
 class UseableStuff;
 class PlayerInterface;
@@ -408,13 +409,13 @@ void CallItemStolenCallbacks(Item* item, RootObject* obj);
 
 // Fired by Inventory::getSectionOfType hook
 // Lua event name: "Inventory::getSectionOfType"
-// Lua signature:  function(self, type) -> InventorySection
-InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type);
+// Lua signature:  function(self, type, defaultVal) -> InventorySection
+InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type, InventorySection* defaultVal);
 
 // Fired by Inventory::getBestFoodItem hook
 // Lua event name: "Inventory::getBestFoodItem"
-// Lua signature:  function(self, race) -> Item
-Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race);
+// Lua signature:  function(self, race, defaultVal) -> Item
+Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race, Item* defaultVal);
 
 // Fired by Inventory::getBaseValueSingle hook
 // Lua event name: "InventoryItemBase::getValueSingle"
@@ -668,19 +669,20 @@ void CallMedicalSystemKnockoutCallbacks(MedicalSystem* med, float skill);
 bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med, bool defaultVal = true);
 
 // Fired by Inventory::addItem hook
+// item may already be queued for destruction when it merged into an existing stack or failed with destroyOnFail.
 // Lua event name: "Inventory::_NV_addItem"
-// Lua signature:  function(self, item, quantity, dropOnFail, destroyOnFail) -> boolean
-bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail);
+// Lua signature:  function(self, item, quantity, dropOnFail, destroyOnFail, defaultVal) -> boolean
+bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail, bool defaultVal);
 
 // Fired by Inventory::removeItemDontDestroy_returnsItem hook
 // Lua event name: "Inventory::_NV_removeItemDontDestroy_returnsItem"
-// Lua signature:  function(self, item, howmany, returnCopyIfSomeLeft) -> Item
-Item* CallInventoryRemoveItemCallbacks(Inventory* inv, Item* item, int howmany, bool returnCopyIfSomeLeft);
+// Lua signature:  function(self, item, howmany, returnCopyIfSomeLeft, defaultVal) -> Item
+Item* CallInventoryRemoveItemCallbacks(Inventory* inv, Item* item, int howmany, bool returnCopyIfSomeLeft, Item* defaultVal);
 
 // Fired by Inventory::buyItem hook
 // Lua event name: "Inventory::buyItem"
-// Lua signature:  function(self, item, sendingTo) -> Item
-Item* CallInventoryBuyItemCallbacks(Inventory* inv, Item* item, RootObject* sender);
+// Lua signature:  function(self, item, sendingTo, defaultVal) -> Item
+Item* CallInventoryBuyItemCallbacks(Inventory* inv, Item* item, RootObject* sender, Item* defaultVal);
 
 // Fired by Faction::createNewEmptyActivePlatoon hook
 // Lua event name: "Faction::createNewEmptyActivePlatoon"
@@ -1071,6 +1073,14 @@ GameData* CallGameDataConstructedCallbacks(GameData* thisptr, GameData* defaultV
 // Lua event name: "Tasker::_CONSTRUCTOR"
 // Lua signature:  function(self, defaultVal) -> Tasker
 Tasker* CallTaskerConstructedCallbacks(Tasker* thisptr, Tasker* defaultVal);
+
+// Fired by OrdersReceiver::_NV_serialise hook.
+// Lua event name: "OrdersReceiver::_NV_serialise"
+// Lua signature:  function(self, data)
+// Fires after the engine writes its job data. Notification only; self and data
+// are borrowed. Runs synchronously on the Lua thread; calls from other threads
+// do not dispatch Lua handlers.
+void CallOrdersReceiverSerialiseCallbacks(OrdersReceiver* thisptr, GameData* data);
 
 // Fired by AppearanceManager::_CONSTRUCTOR hook.
 // Lua event name: "AppearanceManager::_CONSTRUCTOR"

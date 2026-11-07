@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Callbacks.h"
 #include "EventSystem.h"
+#include "Plugin.h"
 #include "Lua/BindingHelpers.h"
 
 //Bindings
@@ -131,6 +132,7 @@
 #include "Bindings/Kenshi/ShopTraderBinding.h"
 #include "Bindings/Kenshi/SwordBinding.h"
 #include "Bindings/Kenshi/TaskerBinding.h"
+#include "Bindings/Kenshi/AI/OrdersReceiverBinding.h"
 #include "Bindings/Kenshi/TownBaseBinding.h"
 #include "Bindings/Kenshi/TownBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
@@ -298,6 +300,7 @@ namespace KenshiLua
     static inline const char* OrdersPanelMetatable()                                { return OrdersPanelBinding::getMetatableName(); }
     static inline const char* OrderCellViewMetatable()                              { return OrderCellViewBinding::getMetatableName(); }
     static inline const char* OrderDataMetatable()                                  { return OrderDataBinding::getMetatableName(); }
+    static inline const char* OrdersReceiverMetatable()                             { return OrdersReceiverBinding::getMetatableName(); }
     static inline const char* OrdersItemBoxMetatable()                              { return OrdersItemBoxBinding::getMetatableName(); }
     static inline const char* OptionsWindowMetatable()                              { return OptionsWindowBinding::getMetatableName(); }
     static inline const char* OwnershipsMetatable()                                 { return OwnershipsBinding::getMetatableName(); }
@@ -426,6 +429,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Inventory* val)                        { pushObject<Inventory>(L, val, InventoryMetatable()); }
     static inline void pushArg(lua_State* L, InventoryGUI* val)                     { pushObject<InventoryGUI>(L, val, InventoryGUIMetatable()); }
     static inline void pushArg(lua_State* L, InventoryIcon* val)                    { pushObject<InventoryIcon>(L, val, InventoryIconMetatable()); }
+    static inline void pushArg(lua_State* L, InventorySection* val)                 { pushObject<InventorySection>(L, val, InventorySectionMetatable()); }
     static inline void pushArg(lua_State* L, InventorySectionGUI* val)              { pushObject<InventorySectionGUI>(L, val, InventorySectionGUIMetatable()); }
     static inline void pushArg(lua_State* L, InventoryGUI::InventoryTradeData* val) { pushObject<InventoryGUI::InventoryTradeData>(L, val, InventoryTradeDataMetatable()); }
     static inline void pushArg(lua_State* L, InventoryGUI::TradeResult* val)        { pushObject<InventoryGUI::TradeResult>(L, val, InventoryTradeResultMetatable()); }
@@ -473,6 +477,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, SplashScreen* val)                     { pushObject<SplashScreen>(L, val, SplashScreenMetatable()); }
     static inline void pushArg(lua_State* L, Sword* val)                            { pushObject<Sword>(L, val, SwordMetatable()); }
     static inline void pushArg(lua_State* L, Tasker* val)                           { pushObject<Tasker>(L, val, TaskerMetatable()); }
+    static inline void pushArg(lua_State* L, OrdersReceiver* val)                   { pushObject<OrdersReceiver>(L, val, OrdersReceiverMetatable()); }
     static inline void pushArg(lua_State* L, TitleScreen* val)                      { pushObject<TitleScreen>(L, val, TitleScreenMetatable()); }
     static inline void pushArg(lua_State* L, TortureBuilding* val)                  { pushObject<TortureBuilding>(L, val, TortureBuildingMetatable()); }
     static inline void pushArg(lua_State* L, Town* val)                             { pushObject<Town>(L, val, TownMetatable()); }
@@ -1045,16 +1050,18 @@ void CallMyGUIGuiFrameStartCallbacks(float time)
     KenshiLua::EventSystem::get().callHandlers("MyGUI::Gui::eventFrameStart", &pusher);
 }
 
-InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type)
+InventorySection* CallInventoryGetSectionOfTypeCallbacks(Inventory* inventory, int type, InventorySection* defaultVal)
 {
-    ArgPusher2<Inventory*, int> pusher(inventory, type);
-    return static_cast<InventorySection*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::getSectionOfType", "KenshiLua.InventorySection", &pusher));
+    ArgPusher3<Inventory*, int, InventorySection*> pusher(inventory, type, defaultVal);
+    InventorySection* overrideObj = static_cast<InventorySection*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::getSectionOfType", KenshiLua::InventorySectionMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
 }
 
-Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race)
+Item* CallInventoryGetBestFoodItemCallbacks(Inventory* inventory, Character* race, Item* defaultVal)
 {
-    ArgPusher2<Inventory*, Character*> pusher(inventory, race);
-    return static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::getBestFoodItem", "KenshiLua.Item", &pusher));
+    ArgPusher3<Inventory*, Character*, Item*> pusher(inventory, race, defaultVal);
+    Item* overrideObj = static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::getBestFoodItem", KenshiLua::ItemMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
 }
 
 bool CallCharacterIsItOkForMeToLootCallbacks(Character* me, RootObject* victim, Item* item, bool defaultVal)
@@ -1244,22 +1251,24 @@ bool CallMedicalSystemCanGetUpWakeUpCallbacks(MedicalSystem* med, bool defaultVa
     return KenshiLua::EventSystem::get().callHandlersBool("MedicalSystem::canGetUpWakeUp", &pusher, defaultVal);
 }
 
-bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail)
+bool CallInventoryAddItemCallbacks(Inventory* inv, Item* item, int quantity, bool dropOnFail, bool destroyOnFail, bool defaultVal)
 {
-    ArgPusher5<Inventory*, Item*, int, bool, bool> pusher(inv, item, quantity, dropOnFail, destroyOnFail);
-    return KenshiLua::EventSystem::get().callHandlersBool("Inventory::_NV_addItem", &pusher, true);
+    ArgPusher6<Inventory*, Item*, int, bool, bool, bool> pusher(inv, item, quantity, dropOnFail, destroyOnFail, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("Inventory::_NV_addItem", &pusher, defaultVal);
 }
 
-Item* CallInventoryRemoveItemCallbacks(Inventory* inv, Item* item, int howmany, bool returnCopyIfSomeLeft)
+Item* CallInventoryRemoveItemCallbacks(Inventory* inv, Item* item, int howmany, bool returnCopyIfSomeLeft, Item* defaultVal)
 {
-    ArgPusher4<Inventory*, Item*, int, bool> pusher(inv, item, howmany, returnCopyIfSomeLeft);
-    return static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::_NV_removeItemDontDestroy_returnsItem", KenshiLua::ItemMetatable(), &pusher));
+    ArgPusher5<Inventory*, Item*, int, bool, Item*> pusher(inv, item, howmany, returnCopyIfSomeLeft, defaultVal);
+    Item* overrideObj = static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::_NV_removeItemDontDestroy_returnsItem", KenshiLua::ItemMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
 }
 
-Item* CallInventoryBuyItemCallbacks(Inventory* inv, Item* item, RootObject* sender)
+Item* CallInventoryBuyItemCallbacks(Inventory* inv, Item* item, RootObject* sender, Item* defaultVal)
 {
-    ArgPusher3<Inventory*, Item*, RootObject*> pusher(inv, item, sender);
-    return static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::buyItem", KenshiLua::ItemMetatable(), &pusher));
+    ArgPusher4<Inventory*, Item*, RootObject*, Item*> pusher(inv, item, sender, defaultVal);
+    Item* overrideObj = static_cast<Item*>(KenshiLua::EventSystem::get().callHandlersObject("Inventory::buyItem", KenshiLua::ItemMetatable(), &pusher));
+    return overrideObj ? overrideObj : defaultVal;
 }
 
 void CallFactionActivePlatoonCreatedCallbacks(Faction* faction, Platoon* platoon)
@@ -5179,6 +5188,14 @@ void CallOrderDataSetCallbacks(OrderData* self, Tasker* task, int index, bool en
 {
     ArgPusher4<OrderData*, Tasker*, int, bool> pusher(self, task, index, enabled);
     KenshiLua::EventSystem::get().callHandlers("OrderData::set", &pusher);
+}
+
+void CallOrdersReceiverSerialiseCallbacks(OrdersReceiver* thisptr, GameData* data)
+{
+    if (!KenshiLua::Plugin::get().isInitialized() || !KenshiLua::Plugin::get().isLuaThread())
+        return;
+    ArgPusher2<OrdersReceiver*, GameData*> pusher(thisptr, data);
+    KenshiLua::EventSystem::get().callHandlers("OrdersReceiver::_NV_serialise", &pusher);
 }
 
 void CallOrderDataUpdateTextCallbacks(OrderData* self)

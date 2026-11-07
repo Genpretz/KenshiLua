@@ -24,6 +24,9 @@ namespace KenshiLua
         // GameWorld.h          
         { "GameWorld::charsUpdate",                                          InstallHook_GameWorld_CharsUpdate },
 
+        // AITaskSystem.h
+        { "OrdersReceiver::_NV_serialise",                                   InstallHook_OrdersReceiver_NV_serialise },
+
         // Character.h          
         { "Character::_NV_say",                                              InstallHook_Character_Say },
         { "Character::_NV_select",                                           InstallHook_Character_Select },

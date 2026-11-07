@@ -21,7 +21,7 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
-## Notification Callbacks (663)
+## Notification Callbacks (664)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -114,6 +114,7 @@ Events.off(handlerId)
 | `Inventory::_NV__sectionRemoveItemCallback` | `function(self: Inventory, item: Item)` |
 | `Inventory::_NV__sectionUpdateItemCallback` | `function(self: Inventory, item: Item, prevQuantity: integer)` |
 | `Inventory::_NV_dropItem` | `function(self: Inventory, item: Item)` |
+| `OrdersReceiver::_NV_serialise` | `function(self: OrdersReceiver, data: GameData)` |
 | `UseableStuff::_NV_tryOperate` | `function(self: UseableStuff, userHandle: hand, success: boolean)` |
 | `UseableStuff::stopOperating` | `function(self: UseableStuff, userHandle: hand)` |
 | `UseableStuff::occupantHandleChangedEvent` | `function(self: UseableStuff, newOccupantHandle: hand)` |
@@ -700,8 +701,8 @@ Events.off(handlerId)
 | `Platoon::iBuyStolenGoods` | `function(self: Platoon, item: Item, defaultVal: boolean) -> boolean` |
 | `Platoon::iBuyIllegalGoods` | `function(self: Platoon, defaultVal: boolean) -> boolean` |
 | `Ownerships::canIUseThisBuilding` | `function(self: Ownerships, building: Building, character: Character, defaultVal: boolean) -> boolean` |
-| `Inventory::getSectionOfType` | `function(self: Inventory, type: integer) -> InventorySection` |
-| `Inventory::getBestFoodItem` | `function(self: Inventory, race: Character) -> Item` |
+| `Inventory::getSectionOfType` | `function(self: Inventory, type: integer, defaultVal: InventorySection) -> InventorySection` |
+| `Inventory::getBestFoodItem` | `function(self: Inventory, race: Character, defaultVal: Item) -> Item` |
 | `InventoryItemBase::getValueSingle` | `function(self: InventoryItemBase, isPlayer: boolean, defaultVal: integer) -> integer` |
 | `Faction::chooseARace` | `function(self: Faction, character: GameData, squadTemplate: GameData, defaultVal: GameData) -> GameData` |
 | `Faction::getBuildingReplacement` | `function(self: Faction, building: GameData, defaultVal: GameData) -> GameData` |
@@ -715,9 +716,9 @@ Events.off(handlerId)
 | `CharMovement::isRunning` | `function(self: CharMovement, defaultVal: boolean) -> boolean` |
 | `CharMovement::isRunningAway` | `function(self: CharMovement, from: Vector3, defaultVal: boolean) -> boolean` |
 | `MedicalSystem::canGetUpWakeUp` | `function(self: MedicalSystem, defaultVal: boolean) -> boolean` |
-| `Inventory::_NV_addItem` | `function(self: Inventory, item: Item, quantity: integer, dropOnFail: boolean, destroyOnFail: boolean) -> boolean` |
-| `Inventory::_NV_removeItemDontDestroy_returnsItem` | `function(self: Inventory, item: Item, howmany: integer, returnCopyIfSomeLeft: boolean) -> Item` |
-| `Inventory::buyItem` | `function(self: Inventory, item: Item, sendingTo: RootObject) -> Item` |
+| `Inventory::_NV_addItem` | `function(self: Inventory, item: Item, quantity: integer, dropOnFail: boolean, destroyOnFail: boolean, defaultVal: boolean) -> boolean` |
+| `Inventory::_NV_removeItemDontDestroy_returnsItem` | `function(self: Inventory, item: Item, howmany: integer, returnCopyIfSomeLeft: boolean, defaultVal: Item) -> Item` |
+| `Inventory::buyItem` | `function(self: Inventory, item: Item, sendingTo: RootObject, defaultVal: Item) -> Item` |
 | `Character::_CONSTRUCTOR` | `function(self: Character, dat: GameData, own: Faction, handle: hand, defaultVal: Character) -> Character` |
 | `Item::_CONSTRUCTOR` | `function(self: Item, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: Item) -> Item` |
 | `Gear::_CONSTRUCTOR` | `function(self: Gear, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, uniform: Faction, defaultVal: Gear) -> Gear` |
@@ -5508,14 +5509,16 @@ Events.off(handlerId)
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `Inventory::addItem`
-- **Lua Signature**: `function(self, item, quantity, dropOnFail, destroyOnFail)`
+- **Lua Signature**: `function(self, item, quantity, dropOnFail, destroyOnFail, defaultVal)`
 - **Parameters**:
   - `self`: `Inventory`
   - `item`: `Item`
   - `quantity`: `integer`
   - `dropOnFail`: `boolean`
   - `destroyOnFail`: `boolean`
+  - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Notes**: item may already be queued for destruction when it merged into an existing stack or failed with destroyOnFail.
 
 ### `Inventory::_NV_dropItem`
 
@@ -5529,40 +5532,44 @@ Events.off(handlerId)
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `Inventory::removeItemDontDestroy_returnsItem`
-- **Lua Signature**: `function(self, item, howmany, returnCopyIfSomeLeft)`
+- **Lua Signature**: `function(self, item, howmany, returnCopyIfSomeLeft, defaultVal)`
 - **Parameters**:
   - `self`: `Inventory`
   - `item`: `Item`
   - `howmany`: `integer`
   - `returnCopyIfSomeLeft`: `boolean`
+  - `defaultVal`: `Item`
 - **Returns**: `Item`
 
 ### `Inventory::buyItem`
 
 - **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, item, sendingTo)`
+- **Lua Signature**: `function(self, item, sendingTo, defaultVal)`
 - **Parameters**:
   - `self`: `Inventory`
   - `item`: `Item`
   - `sendingTo`: `RootObject`
+  - `defaultVal`: `Item`
 - **Returns**: `Item`
 
 ### `Inventory::getBestFoodItem`
 
 - **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, race)`
+- **Lua Signature**: `function(self, race, defaultVal)`
 - **Parameters**:
   - `self`: `Inventory`
   - `race`: `Character`
+  - `defaultVal`: `Item`
 - **Returns**: `Item`
 
 ### `Inventory::getSectionOfType`
 
 - **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, type)`
+- **Lua Signature**: `function(self, type, defaultVal)`
 - **Parameters**:
   - `self`: `Inventory`
   - `type`: `integer`
+  - `defaultVal`: `InventorySection`
 - **Returns**: `InventorySection`
 
 ### `InventoryGUI::FenceCallbackData::_DESTRUCTOR`
@@ -8244,6 +8251,15 @@ Events.off(handlerId)
 - **Parameters**:
   - `self`: `OrdersPanel`
   - `character`: `Character`
+
+### `OrdersReceiver::_NV_serialise`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `OrdersReceiver`
+  - `data`: `GameData`
+- **Notes**: Fires after the engine writes its job data. Notification only; self and data are borrowed. Runs synchronously on the Lua thread; calls from other threads do not dispatch Lua handlers.
 
 ### `Ownerships::canIUseThisBuilding`
 

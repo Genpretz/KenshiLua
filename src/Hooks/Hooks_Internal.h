@@ -8,6 +8,7 @@
 
 bool InstallHook_InputHandler_KeyDown();
 bool InstallHook_GameWorld_CharsUpdate();
+bool InstallHook_OrdersReceiver_NV_serialise();
 bool InstallHook_Character_Say();
 bool InstallHook_Character_Select();
 bool InstallHook_Character_Unselect();
