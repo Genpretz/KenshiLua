@@ -54,6 +54,22 @@ namespace
         return KENSHILUA_STATUS_OK;
     }
 
+    const void* registryOf(lua_State* state)
+    {
+        lua_pushvalue(state, LUA_REGISTRYINDEX);
+        const void* registry = lua_topointer(state, -1);
+        lua_pop(state, 1);
+        return registry;
+    }
+
+    // A coroutine has its own lua_State but shares the registry of the state that created it.
+    bool belongsToRuntime(lua_State* state, lua_State* runtimeState)
+    {
+        if (!state || !runtimeState)
+            return false;
+        return state == runtimeState || registryOf(state) == registryOf(runtimeState);
+    }
+
     class StackTopRestorer
     {
     public:
@@ -381,7 +397,7 @@ namespace
             int validation = validateRuntime(&runtimeState, NULL, 0);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
-            if (!state || state != runtimeState || !metatableName || !*metatableName)
+            if (!belongsToRuntime(state, runtimeState) || !metatableName || !*metatableName)
                 return KENSHILUA_STATUS_INVALID_ARGUMENT;
             if (!pointer)
             {
@@ -415,7 +431,7 @@ namespace
     {
         lua_State* runtimeState = NULL;
         if (validateRuntime(&runtimeState, NULL, 0) != KENSHILUA_STATUS_OK ||
-            !state || state != runtimeState || !metatableName || !*metatableName)
+            !belongsToRuntime(state, runtimeState) || !metatableName || !*metatableName)
             return NULL;
         return KenshiLua::checkObject<void>(state, index, metatableName);
     }
@@ -427,7 +443,7 @@ namespace
         {
             lua_State* runtimeState = NULL;
             if (validateRuntime(&runtimeState, NULL, 0) != KENSHILUA_STATUS_OK ||
-                !state || state != runtimeState || !metatableName || !*metatableName)
+                !belongsToRuntime(state, runtimeState) || !metatableName || !*metatableName)
                 return NULL;
             return KenshiLua::testObject<void>(state, index, metatableName);
         }
@@ -488,7 +504,7 @@ namespace
     {
         lua_State* runtimeState = NULL;
         return state && validateRuntime(&runtimeState, NULL, 0) == KENSHILUA_STATUS_OK &&
-            state == runtimeState;
+            belongsToRuntime(state, runtimeState);
     }
 
     void KENSHILUA_CALL apiPushNil(lua_State* state) { if (validLuaAccess(state)) lua_pushnil(state); }

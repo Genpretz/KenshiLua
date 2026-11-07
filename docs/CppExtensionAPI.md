@@ -33,6 +33,14 @@ Lua state must run on the thread that initialized KenshiLua. Calls from another
 thread fail with `STATUS_WRONG_THREAD`. Logging and ABI discovery are the only
 operations that do not require the Lua thread.
 
+### Lua states
+
+Functions that take a `lua_State*` accept the state returned by `GetState()` and
+the state Lua passes to a registered native function, including the state of a
+coroutine that calls it. Pass only states obtained from KenshiLua. Object
+marshalling rejects any other state with `NULL` or `STATUS_INVALID_ARGUMENT`,
+and the stack helpers ignore it.
+
 ### Errors
 
 Operations returning `KenshiLua::Status` optionally populate a `std::string`.
