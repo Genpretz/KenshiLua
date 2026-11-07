@@ -16,8 +16,8 @@ return {
     -- FCS Game Constants override these fallback values. Per-animal breeding values,
     -- products, prices, and mating groups come from ANIMAL_CHARACTER records.
     breeding = {
-        -- In-game hours between pregnancy rolls.
-        checkIntervalHours = 1,
+        -- In-game days between pregnancy rolls. Fractions are allowed (0.5 is 12 hours).
+        checkIntervalDays = 1,
         -- Minimum age for both parents.
         minAge = 0.6,
         -- Maximum distance between parents.
@@ -28,14 +28,16 @@ return {
 
     harvest = {
         -- Minimum harvesting age.
-        minAge = 0.6,
-        -- Maximum distance between the harvester and animal.
+        minAge = 0.4,
+        -- Maximum distance for manual harvesting through the Husbandry window.
         maxDistance = 200,
+        -- Maximum distance for automated Husbandry jobs.
+        jobMaxDistance = 50,
     },
 
     sales = {
         -- Maximum distance from either the buyer (or their building) or seller.
-        maxDistance = 250,
+        maxDistance = 200,
         -- Used when an ANIMAL_CHARACTER record has no base price.
         defaultBasePrice = 14000,
         -- Resale price multiplier applied when selling animals to vendors (0.50 matches player-crafted weapon production).

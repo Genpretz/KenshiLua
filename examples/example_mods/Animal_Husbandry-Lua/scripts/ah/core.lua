@@ -56,11 +56,12 @@ end
 
 local CONSTANT_MAP = {
     { section = "breeding", field = "babyAge",            key = "breeding.babyAge" },
-    { section = "breeding", field = "checkIntervalHours",  key = "breeding.checkIntervalHours" },
+    { section = "breeding", field = "checkIntervalDays",   key = "breeding.checkIntervalDays" },
     { section = "breeding", field = "maxPairDistance",     key = "breeding.maxPairDistance" },
     { section = "breeding", field = "minAge",              key = "breeding.minAge" },
     { section = "harvest",  field = "minAge",              key = "harvest.minAge" },
     { section = "harvest",  field = "maxDistance",         key = "harvest.maxDistance" },
+    { section = "harvest",  field = "jobMaxDistance",      key = "harvest.jobMaxDistance" },
     { section = "sales",    field = "defaultBasePrice",    key = "sales.defaultBasePrice" },
     { section = "sales",    field = "maxDistance",         key = "sales.maxDistance" },
     { section = "sales",    field = "resaleMultiplier",    key = "sales.resaleMultiplier" },
@@ -365,11 +366,12 @@ end
 
 -- Age, sex, and condition
 
+-- Returns the age of an animal as a fraction between 0 and 1.
 function AH.age(animal)
     return animal:getAge0to1()
 end
 
--- Returns "pup", "teen", "adult", or "elder" from the measured stage boundaries.
+-- Returns "pup", "teen", "adult", or "elder" from the boundaries in AH.config.stages.
 function AH.stageOf(age)
     local st = AH.config.stages
     if age >= st.elder then
@@ -393,6 +395,7 @@ function AH.ageText(entry)
     return string.format("%s (%d)", tostring(label), math.floor(age * 100))
 end
 
+-- Returns a formatted string for the given amount of money.
 function AH.moneyText(n)
     return "c." .. tostring(math.floor(n))
 end

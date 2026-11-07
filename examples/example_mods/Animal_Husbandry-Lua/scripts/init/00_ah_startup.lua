@@ -10,6 +10,7 @@ _G.AnimalHusbandryLua = nil
 local AH = require("ah.core")
 require("ah.breeding")
 local harvest = require("ah.harvest")
+local jobs = require("ah.jobs")
 local sales = require("ah.sales")
 
 local eventIds = {}
@@ -18,6 +19,7 @@ local function shutdown()
         Events.off(eventIds[i])
     end
     eventIds = {}
+    jobs.shutdown()
     sales.shutdown()
     harvest.shutdown()
 end
@@ -36,8 +38,7 @@ if not ok then
     error(err)
 end
 
--- Only dialogue and documented console entry points cross sandbox boundaries.
--- _shutdown is internal lifecycle plumbing for the next startup invocation.
+-- Expose the public API of Animal_Husbandry-Lua through the global table.
 _G.AnimalHusbandryLua = {
     printConstants = AH.printConstants,
     listDefs = AH.listDefs,
@@ -46,8 +47,10 @@ _G.AnimalHusbandryLua = {
     setDebug = AH.setDebug,
     forcePregnant = AH.forcePregnant,
     clearBreedingState = AH.clearBreedingState,
+    resetProductCooldowns = harvest.resetProductCooldowns,
     clearDefCache = AH.clearDefCache,
     sales = { open = sales.open },
+    jobs = { assign = AH.assignHusbandryJob },
     _shutdown = shutdown,
 }
 

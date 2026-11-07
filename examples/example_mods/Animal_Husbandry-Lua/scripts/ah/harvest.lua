@@ -200,7 +200,7 @@ local function formatHarvestCooldown(days)
 end
 
 -- Returns true, or false and the reason the product cannot be harvested now.
-local function canHarvest(entry, harvester, product, now)
+local function canHarvest(entry, harvester, product, now, ignoreDistance, maxDistance)
     local c = entry.char
     if c:isDead() then
         return false, "dead"
@@ -234,7 +234,7 @@ local function canHarvest(entry, harvester, product, now)
     if harvester:isDead() or harvester:isUnconcious() then
         return false, "harvester down"
     end
-    if AH.distance(harvester, c) > hcfg().maxDistance then
+    if not ignoreDistance and AH.distance(harvester, c) > (maxDistance or hcfg().maxDistance) then
         return false, "too far"
     end
     if not harvester:hasRoomForItem(product.data) then
@@ -245,9 +245,9 @@ end
 
 -- Creates the product's items in the harvester's inventory or backpack and starts its cooldown.
 -- Returns true, or false and a reason.
-local function harvest(entry, harvester, product)
+local function harvest(entry, harvester, product, limit, quiet, maxDistance)
     local now = AH.currentDay()
-    local ok, reason = canHarvest(entry, harvester, product, now)
+    local ok, reason = canHarvest(entry, harvester, product, now, false, maxDistance)
     if not ok then
         return false, reason
     end
@@ -263,7 +263,7 @@ local function harvest(entry, harvester, product)
     local available = (rem and rem > 0) and math.min(math.floor(rem), total) or total
 
     local given = 0
-    for i = 1, available do
+    for i = 1, math.min(available, limit or available) do
         if not harvester:hasRoomForItem(data) then
             break
         end
@@ -294,7 +294,9 @@ local function harvest(entry, harvester, product)
     end
 
     local count = given > 1 and (given .. " x ") or ""
-    if left > 0 then
+    if quiet then
+        return true
+    elseif left > 0 then
         AH.notify(string.format("%s harvested %s%s from %s (%d remaining - inventory full).",
             harvester:getName(), count, name, entry.char:getName(), left))
     else
@@ -302,6 +304,22 @@ local function harvest(entry, harvester, product)
             harvester:getName(), count, name, entry.char:getName()))
     end
     return true
+end
+
+local function resetProductCooldowns()
+    local animals = AH.playerAnimals()
+    local cleared = 0
+    for _, entry in ipairs(animals) do
+        for _, product in ipairs((entry.def and entry.def.products) or {}) do
+            local key = nextHarvestKey(product)
+            if AH.getValue(entry.char, key) ~= nil then
+                AH.clearValue(entry.char, key)
+                cleared = cleared + 1
+            end
+        end
+    end
+    AH.log(string.format("Reset %d product cooldown(s) across %d player animal(s).", cleared, #animals))
+    return cleared
 end
 
 -- Husbandry window
@@ -460,7 +478,7 @@ local function rebuildProducts(entry)
     local targetHandle = state.target
     state.rows = {}
 
-    -- Replace product rows when switching animals, including any layout previews.
+    -- Replace product rows when switching animals.
     while productsArea:getChildCount() > 0 do
         local child = productsArea:getChildAt(0)
         -- The child count above guarantees that index 0 exists.
@@ -479,7 +497,7 @@ local function rebuildProducts(entry)
 
     -- Let MyGUI decide whether vertical scrolling is needed from the actual
     -- viewport. Resetting the canvas first removes scrollbar state left by the
-    -- previously selected animal. Horizontal scrolling is never useful here.
+    -- previously selected animal.
     productsArea:setVisibleHScroll(false)
     productsArea:setVisibleVScroll(true)
     productsArea:setCanvasSize(1, 1)
@@ -692,6 +710,18 @@ local function menuHasRow(optionsList)
     return false
 end
 
+local function activateHusbandry(targetHandle, harvesterHandle)
+    local input = MyGUI.InputManager.getInstance()
+    if input and input:isShiftPressed() then
+        if AH.assignHusbandryJob then
+            local ok, reason = AH.assignHusbandryJob(targetHandle, harvesterHandle)
+            if not ok then AH.notify("Cannot assign Husbandry: " .. tostring(reason) .. ".") end
+        end
+    else
+        AH.openHusbandryWindow(targetHandle, harvesterHandle)
+    end
+end
+
 local function addMenuRow(menuGUI, targetHandle, harvesterHandle)
     local ol = menuGUI.optionsList
     local main = menuGUI:getMainWidget()
@@ -744,7 +774,7 @@ local function addMenuRow(menuGUI, targetHandle, harvesterHandle)
         menuState.target = nil
         menuState.focused = false
         if t then
-            AH.openHusbandryWindow(t, h)
+            activateHusbandry(t, h)
         end
         -- The engine does not know about this button, so close the menu ourselves,
         -- as the engine's own option buttons do from their click handlers.
@@ -783,7 +813,7 @@ local function onMenuShowOrHide(menu, on, what)
     menuState.harvester = nil
     menuState.focused = false
     if t and focused then
-        local ok, err = pcall(AH.openHusbandryWindow, t, h)
+        local ok, err = pcall(activateHusbandry, t, h)
         if not ok then
             AH.log("Husbandry window failed: " .. tostring(err))
         end
@@ -844,4 +874,9 @@ local function shutdown()
     destroyWindow()
 end
 
-return { shutdown = shutdown }
+return {
+    shutdown = shutdown,
+    canHarvest = canHarvest,
+    harvest = harvest,
+    resetProductCooldowns = resetProductCooldowns,
+}

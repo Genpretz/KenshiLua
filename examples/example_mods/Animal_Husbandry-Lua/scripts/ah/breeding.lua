@@ -7,7 +7,7 @@ local KEY_DUE = "PregnantUntil"
 local KEY_COOLDOWN = "BreedCooldownUntil"
 
 -- How often births are checked, in in-game hours. Pregnancy rolls use the slower
--- breeding.checkIntervalHours from the config.
+-- breeding.checkIntervalDays from the config.
 local BIRTH_CHECK_INTERVAL_HOURS = 0.25
 
 local function cfg()
@@ -193,7 +193,7 @@ function AH.describeBreeding(entry, now)
 end
 
 AH.addTask("births", BIRTH_CHECK_INTERVAL_HOURS, birthCheck)
-AH.addTask("breeding", function() return cfg().checkIntervalHours end, breedingCheck)
+AH.addTask("breeding", function() return cfg().checkIntervalDays * 24 end, breedingCheck)
 
 -- Console commands
 
