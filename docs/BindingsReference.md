@@ -11,6 +11,14 @@
 - **Enums**: Enum values are Lua integers. Enum type names identify the constant table documented in the [Enums Reference](EnumsReference.md); types marked as bitmasks may combine multiple enum flags.
 - **MyGUI User Interface**: For MyGUI widgets, dialogs, layouts, properties, and event callbacks, see the dedicated [MyGUI Reference](MyGUIReference.md).
 
+### Inheritance
+- **Inherits from** lists a class's parent class, then that class's parent, and so on. An object can use the fields and methods of every class in the list.
+- A class's Fields and Methods tables list only the members its own binding registers. **Inherited Members** lists the rest, grouped by the class that registers them. Types and signatures are in that class's section.
+- When a class and its parent classes register the same name, the nearest registration is used, so only that one is listed.
+- Inherited static methods can be called on an instance. Through a class table, call them on the class that registers them.
+- **Subclasses** lists the classes that inherit directly from a class.
+- **Enclosing Class** names the class a nested type is declared in. It is not a parent class.
+
 ## Table of Contents
 - [MyGUI UI Reference](MyGUIReference.md)
 - [`AABB2D`](#aabb2d)
@@ -18,13 +26,13 @@
 - [`ActionDeque`](#actiondeque)
 - [`ActivePlatoon`](#activeplatoon)
 - [`AI`](#ai)
-  - [`AI::AIResultsCacher`](#ai::airesultscacher)
+  - [`AI::AIResultsCacher`](#aiairesultscacher)
 - [`AIEventClass`](#aieventclass)
 - [`AIPackage`](#aipackage)
 - [`AIPatrolToTown`](#aipatroltotown)
 - [`AITaskSytem`](#aitasksytem)
-  - [`AITaskSytem::ActionsListMgr`](#aitasksytem::actionslistmgr)
-  - [`AITaskSytem::FailedTask`](#aitasksytem::failedtask)
+  - [`AITaskSytem::ActionsListMgr`](#aitasksytemactionslistmgr)
+  - [`AITaskSytem::FailedTask`](#aitasksytemfailedtask)
 - [`AkSoundPosition`](#aksoundposition)
 - [`AkVector`](#akvector)
 - [`AnimalInventoryLayout`](#animalinventorylayout)
@@ -32,8 +40,8 @@
 - [`AnimationClass`](#animationclass)
 - [`AnimationClassAnimal`](#animationclassanimal)
 - [`AnimationClassBase`](#animationclassbase)
-  - [`AnimationClassBase::AnimationLayer`](#animationclassbase::animationlayer)
-  - [`AnimationClassBase::SingleAnimation`](#animationclassbase::singleanimation)
+  - [`AnimationClassBase::AnimationLayer`](#animationclassbaseanimationlayer)
+  - [`AnimationClassBase::SingleAnimation`](#animationclassbasesingleanimation)
 - [`AnimationClassHuman`](#animationclasshuman)
 - [`AnimationData`](#animationdata)
 - [`AnimationEvent`](#animationevent)
@@ -43,17 +51,17 @@
 - [`AnimationRequirement`](#animationrequirement)
 - [`AnimationSFXEvent`](#animationsfxevent)
 - [`AnimsListsManager`](#animslistsmanager)
-  - [`AnimsListsManager::AnimList`](#animslistsmanager::animlist)
+  - [`AnimsListsManager::AnimList`](#animslistsmanageranimlist)
 - [`AppearanceAnimal`](#appearanceanimal)
 - [`AppearanceBase`](#appearancebase)
 - [`AppearanceHuman`](#appearancehuman)
 - [`AppearanceManager`](#appearancemanager)
-  - [`AppearanceManager::AppearanceData`](#appearancemanager::appearancedata)
-  - [`AppearanceManager::DataCategory`](#appearancemanager::datacategory)
-  - [`AppearanceManager::DataRange`](#appearancemanager::datarange)
-  - [`AppearanceManager::DataRangePose`](#appearancemanager::datarangepose)
-  - [`AppearanceManager::DataRangeVector`](#appearancemanager::datarangevector)
-  - [`AppearanceManager::Gender`](#appearancemanager::gender)
+  - [`AppearanceManager::AppearanceData`](#appearancemanagerappearancedata)
+  - [`AppearanceManager::DataCategory`](#appearancemanagerdatacategory)
+  - [`AppearanceManager::DataRange`](#appearancemanagerdatarange)
+  - [`AppearanceManager::DataRangePose`](#appearancemanagerdatarangepose)
+  - [`AppearanceManager::DataRangeVector`](#appearancemanagerdatarangevector)
+  - [`AppearanceManager::Gender`](#appearancemanagergender)
 - [`Armour`](#armour)
 - [`Array2d`](#array2d)
 - [`AttackState`](#attackstate)
@@ -61,49 +69,49 @@
 - [`BackThreadMessagesToMainT`](#backthreadmessagestomaint)
 - [`BadSize`](#badsize)
 - [`Blackboard`](#blackboard)
-  - [`Blackboard::TaskInfo`](#blackboard::taskinfo)
+  - [`Blackboard::TaskInfo`](#blackboardtaskinfo)
 - [`BlueprintItem`](#blueprintitem)
 - [`BoundsViolation`](#boundsviolation)
 - [`Bounty`](#bounty)
 - [`BountyManager`](#bountymanager)
 - [`Building`](#building)
-  - [`Building::ConstructionState`](#building::constructionstate)
-  - [`Building::ConstructionState::BuildMaterial`](#building::constructionstate::buildmaterial)
+  - [`Building::ConstructionState`](#buildingconstructionstate)
+  - [`Building::ConstructionState::BuildMaterial`](#buildingconstructionstatebuildmaterial)
 - [`BuildingContainerInventoryLayout`](#buildingcontainerinventorylayout)
 - [`BuildingPlacementGroundType`](#buildingplacementgroundtype)
 - [`BuildInventoryLayout`](#buildinventorylayout)
 - [`BuildModeWindow`](#buildmodewindow)
-  - [`BuildModeWindow::BuildingCategory`](#buildmodewindow::buildingcategory)
-  - [`BuildModeWindow::BuildingGroup`](#buildmodewindow::buildinggroup)
+  - [`BuildModeWindow::BuildingCategory`](#buildmodewindowbuildingcategory)
+  - [`BuildModeWindow::BuildingGroup`](#buildmodewindowbuildinggroup)
 - [`CameraClass`](#cameraclass)
 - [`CampaignData`](#campaigndata)
 - [`CampaignInstance`](#campaigninstance)
 - [`CampaignTriggerData`](#campaigntriggerdata)
 - [`Character`](#character)
-  - [`Character::AttachedArrowManager`](#character::attachedarrowmanager)
-  - [`Character::CarryMsg`](#character::carrymsg)
-  - [`Character::RagdollMsg`](#character::ragdollmsg)
-  - [`Character::WhoSeesMe`](#character::whoseesme)
+  - [`Character::AttachedArrowManager`](#characterattachedarrowmanager)
+  - [`Character::CarryMsg`](#charactercarrymsg)
+  - [`Character::RagdollMsg`](#characterragdollmsg)
+  - [`Character::WhoSeesMe`](#characterwhoseesme)
 - [`CharacterAnimal`](#characteranimal)
 - [`CharacterEditWindow`](#charactereditwindow)
 - [`CharacterHuman`](#characterhuman)
 - [`CharacterInventoryLayout`](#characterinventorylayout)
 - [`CharacterStatsWindow`](#characterstatswindow)
-  - [`CharacterStatsWindow::Stat`](#characterstatswindow::stat)
-  - [`CharacterStatsWindow::StatGroup`](#characterstatswindow::statgroup)
+  - [`CharacterStatsWindow::Stat`](#characterstatswindowstat)
+  - [`CharacterStatsWindow::StatGroup`](#characterstatswindowstatgroup)
 - [`CharacterTradingWindow`](#charactertradingwindow)
 - [`CharBody`](#charbody)
 - [`CharMovement`](#charmovement)
 - [`CharStats`](#charstats)
 - [`CircleStateAI`](#circlestateai)
 - [`CombatClass`](#combatclass)
-  - [`CombatClass::AttackSlotManager`](#combatclass::attackslotmanager)
-  - [`CombatClass::AttackSlotManager::SlotData`](#combatclass::attackslotmanager::slotdata)
-  - [`CombatClass::EffectData`](#combatclass::effectdata)
+  - [`CombatClass::AttackSlotManager`](#combatclassattackslotmanager)
+  - [`CombatClass::AttackSlotManager::SlotData`](#combatclassattackslotmanagerslotdata)
+  - [`CombatClass::EffectData`](#combatclasseffectdata)
 - [`CombatMovementController`](#combatmovementcontroller)
 - [`CombatState`](#combatstate)
 - [`CombatTechniqueData`](#combattechniquedata)
-  - [`CombatTechniqueData::ImpactPoint`](#combattechniquedata::impactpoint)
+  - [`CombatTechniqueData::ImpactPoint`](#combattechniquedataimpactpoint)
 - [`ContainerItem`](#containeritem)
 - [`ContextMenu`](#contextmenu)
 - [`ContextMenuGUI`](#contextmenugui)
@@ -136,57 +144,57 @@
 - [`DialogChoiceList`](#dialogchoicelist)
 - [`DialogDataManager`](#dialogdatamanager)
 - [`DialogLineData`](#dialoglinedata)
-  - [`DialogLineData::DialogAction`](#dialoglinedata::dialogaction)
-  - [`DialogLineData::DialogCondition`](#dialoglinedata::dialogcondition)
-  - [`DialogLineData::FlagCondition`](#dialoglinedata::flagcondition)
+  - [`DialogLineData::DialogAction`](#dialoglinedatadialogaction)
+  - [`DialogLineData::DialogCondition`](#dialoglinedatadialogcondition)
+  - [`DialogLineData::FlagCondition`](#dialoglinedataflagcondition)
 - [`Dialogue`](#dialogue)
-  - [`Dialogue::RepetitionCounter`](#dialogue::repetitioncounter)
-  - [`Dialogue::RepetitionCounter::DialogState`](#dialogue::repetitioncounter::dialogstate)
+  - [`Dialogue::RepetitionCounter`](#dialoguerepetitioncounter)
+  - [`Dialogue::RepetitionCounter::DialogState`](#dialoguerepetitioncounterdialogstate)
 - [`DialogueSpeechBubble`](#dialoguespeechbubble)
 - [`DialogueWindow`](#dialoguewindow)
 - [`DoorStuff`](#doorstuff)
 - [`EdgeCache`](#edgecache)
-  - [`EdgeCache::Edge`](#edgecache::edge)
+  - [`EdgeCache::Edge`](#edgecacheedge)
 - [`EdgePathNode`](#edgepathnode)
 - [`Faction`](#faction)
-  - [`Faction::BuildingSwaps`](#faction::buildingswaps)
-  - [`Faction::CharacteristicsData`](#faction::characteristicsdata)
+  - [`Faction::BuildingSwaps`](#factionbuildingswaps)
+  - [`Faction::CharacteristicsData`](#factioncharacteristicsdata)
 - [`FactionLeader`](#factionleader)
 - [`FactionManager`](#factionmanager)
 - [`FactionRelations`](#factionrelations)
-  - [`FactionRelations::RelationData`](#factionrelations::relationdata)
+  - [`FactionRelations::RelationData`](#factionrelationsrelationdata)
 - [`FactionsScreen`](#factionsscreen)
-  - [`FactionsScreen::FactionRelationsLine`](#factionsscreen::factionrelationsline)
-  - [`FactionsScreen::FactionRelationsLine::LessSort`](#factionsscreen::factionrelationsline::lesssort)
+  - [`FactionsScreen::FactionRelationsLine`](#factionsscreenfactionrelationsline)
+  - [`FactionsScreen::FactionRelationsLine::LessSort`](#factionsscreenfactionrelationslinelesssort)
 - [`FactionUniqueSquadManager`](#factionuniquesquadmanager)
-  - [`FactionUniqueSquadManager::UniqueSpawnData`](#factionuniquesquadmanager::uniquespawndata)
+  - [`FactionUniqueSquadManager::UniqueSpawnData`](#factionuniquesquadmanageruniquespawndata)
 - [`FactionWarMgr`](#factionwarmgr)
-  - [`FactionWarMgr::CampaignRequest`](#factionwarmgr::campaignrequest)
+  - [`FactionWarMgr::CampaignRequest`](#factionwarmgrcampaignrequest)
 - [`FactoryCallbackInterface`](#factorycallbackinterface)
 - [`FarmBuilding`](#farmbuilding)
-  - [`FarmBuilding::FarmBatch`](#farmbuilding::farmbatch)
-  - [`FarmBuilding::Plant`](#farmbuilding::plant)
-  - [`FarmBuilding::PlantSource`](#farmbuilding::plantsource)
-  - [`FarmBuilding::SubPlant`](#farmbuilding::subplant)
+  - [`FarmBuilding::FarmBatch`](#farmbuildingfarmbatch)
+  - [`FarmBuilding::Plant`](#farmbuildingplant)
+  - [`FarmBuilding::PlantSource`](#farmbuildingplantsource)
+  - [`FarmBuilding::SubPlant`](#farmbuildingsubplant)
 - [`FloatingProgressBar`](#floatingprogressbar)
-  - [`FloatingProgressBar::ProgressBarWidget`](#floatingprogressbar::progressbarwidget)
+  - [`FloatingProgressBar::ProgressBarWidget`](#floatingprogressbarprogressbarwidget)
 - [`FlockingTools`](#flockingtools)
 - [`FogEditor`](#fogeditor)
 - [`FoliageSystem`](#foliagesystem)
-  - [`FoliageSystem::EntData`](#foliagesystem::entdata)
-  - [`FoliageSystem::TreeData`](#foliagesystem::treedata)
+  - [`FoliageSystem::EntData`](#foliagesystementdata)
+  - [`FoliageSystem::TreeData`](#foliagesystemtreedata)
 - [`ForgottenGUI`](#forgottengui)
 - [`Formation`](#formation)
 - [`FormationMover`](#formationmover)
 - [`FurnaceBuilding`](#furnacebuilding)
 - [`FurnaceInventoryLayout`](#furnaceinventorylayout)
 - [`GameData`](#gamedata)
-  - [`GameData::ItemData`](#gamedata::itemdata)
-  - [`GameData::ObjectInstance`](#gamedata::objectinstance)
+  - [`GameData::ItemData`](#gamedataitemdata)
+  - [`GameData::ObjectInstance`](#gamedataobjectinstance)
 - [`GameDataContainer`](#gamedatacontainer)
 - [`GameDataCopyStandalone`](#gamedatacopystandalone)
 - [`GameDataEditorWindow`](#gamedataeditorwindow)
-  - [`GameDataEditorWindow::DataItem`](#gamedataeditorwindow::dataitem)
+  - [`GameDataEditorWindow::DataItem`](#gamedataeditorwindowdataitem)
 - [`GameDataGroup`](#gamedatagroup)
 - [`GameDataHeader`](#gamedataheader)
 - [`GameDataManager`](#gamedatamanager)
@@ -196,7 +204,7 @@
 - [`GameplayOptions`](#gameplayoptions)
 - [`GameSaveState`](#gamesavestate)
 - [`GameWorld`](#gameworld)
-  - [`GameWorld::SysMessage`](#gameworld::sysmessage)
+  - [`GameWorld::SysMessage`](#gameworldsysmessage)
 - [`GatewayBuilding`](#gatewaybuilding)
 - [`Gear`](#gear)
 - [`GeneratorBuilding`](#generatorbuilding)
@@ -218,44 +226,44 @@
 - [`hkArrayBase`](#hkarraybase)
 - [`hkBool`](#hkbool)
 - [`hkContainerHeapAllocator`](#hkcontainerheapallocator)
-  - [`hkContainerHeapAllocator::Allocator`](#hkcontainerheapallocator::allocator)
+  - [`hkContainerHeapAllocator::Allocator`](#hkcontainerheapallocatorallocator)
 - [`hkMemoryAllocator`](#hkmemoryallocator)
-  - [`hkMemoryAllocator::ExtendedInterface`](#hkmemoryallocator::extendedinterface)
-  - [`hkMemoryAllocator::MemoryStatistics`](#hkmemoryallocator::memorystatistics)
+  - [`hkMemoryAllocator::ExtendedInterface`](#hkmemoryallocatorextendedinterface)
+  - [`hkMemoryAllocator::MemoryStatistics`](#hkmemoryallocatormemorystatistics)
 - [`hkResult`](#hkresult)
-- [`hkTrait::TraitBool`](#hktrait::traitbool)
+- [`hkTrait::TraitBool`](#hktraittraitbool)
 - [`hkVector4f`](#hkvector4f)
 - [`hkVector4fComparison`](#hkvector4fcomparison)
 - [`ImportGameMenu`](#importgamemenu)
 - [`InputHandler`](#inputhandler)
-  - [`InputHandler::Command`](#inputhandler::command)
+  - [`InputHandler::Command`](#inputhandlercommand)
 - [`InstanceID`](#instanceid)
 - [`InteriorModeButtonWindow`](#interiormodebuttonwindow)
 - [`Inventory`](#inventory)
-  - [`Inventory::HasRoomCache`](#inventory::hasroomcache)
+  - [`Inventory::HasRoomCache`](#inventoryhasroomcache)
 - [`InventoryGUI`](#inventorygui)
-  - [`InventoryGUI::FenceCallbackData`](#inventorygui::fencecallbackdata)
-  - [`InventoryGUI::InventoryTradeData`](#inventorygui::inventorytradedata)
-  - [`InventoryGUI::TradeResult`](#inventorygui::traderesult)
+  - [`InventoryGUI::FenceCallbackData`](#inventoryguifencecallbackdata)
+  - [`InventoryGUI::InventoryTradeData`](#inventoryguiinventorytradedata)
+  - [`InventoryGUI::TradeResult`](#inventoryguitraderesult)
 - [`InventoryIcon`](#inventoryicon)
 - [`InventoryItemBase`](#inventoryitembase)
 - [`InventoryLayout`](#inventorylayout)
 - [`InventorySection`](#inventorysection)
-  - [`InventorySection::SectionItem`](#inventorysection::sectionitem)
+  - [`InventorySection::SectionItem`](#inventorysectionsectionitem)
 - [`InventorySectionGUI`](#inventorysectiongui)
 - [`InventoryTraderGUI`](#inventorytradergui)
 - [`Item`](#item)
 - [`ItemHandleList`](#itemhandlelist)
 - [`iVector2`](#ivector2)
-- [`KenshiLib::BinaryVersion`](#kenshilib::binaryversion)
+- [`KenshiLib::BinaryVersion`](#kenshilibbinaryversion)
 - [`KingOfRenderThread`](#kingofrenderthread)
 - [`LevelEditor`](#leveleditor)
-  - [`LevelEditor::FactionListWindow`](#leveleditor::factionlistwindow)
-  - [`LevelEditor::GamedataSelectionList`](#leveleditor::gamedataselectionlist)
-  - [`LevelEditor::ItemListWindow`](#leveleditor::itemlistwindow)
-  - [`LevelEditor::NpcListWindow`](#leveleditor::npclistwindow)
-  - [`LevelEditor::SquadListWindow`](#leveleditor::squadlistwindow)
-  - [`LevelEditor::TownListWindow`](#leveleditor::townlistwindow)
+  - [`LevelEditor::FactionListWindow`](#leveleditorfactionlistwindow)
+  - [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist)
+  - [`LevelEditor::ItemListWindow`](#leveleditoritemlistwindow)
+  - [`LevelEditor::NpcListWindow`](#leveleditornpclistwindow)
+  - [`LevelEditor::SquadListWindow`](#leveleditorsquadlistwindow)
+  - [`LevelEditor::TownListWindow`](#leveleditortownlistwindow)
 - [`LightBuilding`](#lightbuilding)
 - [`LimbsInventoryLayout`](#limbsinventorylayout)
 - [`ListScrollBar`](#listscrollbar)
@@ -269,23 +277,23 @@
 - [`MainTabPortraitPlatoon`](#maintabportraitplatoon)
 - [`MainthreadStateReaderT`](#mainthreadstatereadert)
 - [`ManagementScreen`](#managementscreen)
-  - [`ManagementScreen::TechItemViewData`](#managementscreen::techitemviewdata)
+  - [`ManagementScreen::TechItemViewData`](#managementscreentechitemviewdata)
 - [`MapItem`](#mapitem)
 - [`MapScreen`](#mapscreen)
-  - [`MapScreen::MapMarkerCharacter`](#mapscreen::mapmarkercharacter)
-  - [`MapScreen::MapMarkerTown`](#mapscreen::mapmarkertown)
-  - [`MapScreen::MapRoad`](#mapscreen::maproad)
+  - [`MapScreen::MapMarkerCharacter`](#mapscreenmapmarkercharacter)
+  - [`MapScreen::MapMarkerTown`](#mapscreenmapmarkertown)
+  - [`MapScreen::MapRoad`](#mapscreenmaproad)
 - [`MedianFilter`](#medianfilter)
 - [`MedianFilter2DVector`](#medianfilter2dvector)
 - [`MedicalSystem`](#medicalsystem)
-  - [`MedicalSystem::HealthPartStatus`](#medicalsystem::healthpartstatus)
+  - [`MedicalSystem::HealthPartStatus`](#medicalsystemhealthpartstatus)
 - [`MeshDataLookup`](#meshdatalookup)
 - [`MessageBoxManager`](#messageboxmanager)
-  - [`MessageBoxManager::Box`](#messageboxmanager::box)
+  - [`MessageBoxManager::Box`](#messageboxmanagerbox)
 - [`MessageChain`](#messagechain)
 - [`MessageForB`](#messageforb)
 - [`MessageQueue`](#messagequeue)
-  - [`MessageQueue::Node`](#messagequeue::node)
+  - [`MessageQueue::Node`](#messagequeuenode)
 - [`ModInfo`](#modinfo)
 - [`MoneyItem`](#moneyitem)
 - [`MotionFilter`](#motionfilter)
@@ -293,17 +301,17 @@
 - [`MustEndWithSemiColon`](#mustendwithsemicolon)
 - [`NavInstance`](#navinstance)
 - [`NavMesh`](#navmesh)
-  - [`NavMesh::BuildingInfo`](#navmesh::buildinginfo)
-  - [`NavMesh::NavMeshMessage`](#navmesh::navmeshmessage)
+  - [`NavMesh::BuildingInfo`](#navmeshbuildinginfo)
+  - [`NavMesh::NavMeshMessage`](#navmeshnavmeshmessage)
 - [`NavMeshGenerator`](#navmeshgenerator)
-  - [`NavMeshGenerator::Task`](#navmeshgenerator::task)
-  - [`NavMeshGenerator::TaskQueue`](#navmeshgenerator::taskqueue)
+  - [`NavMeshGenerator::Task`](#navmeshgeneratortask)
+  - [`NavMeshGenerator::TaskQueue`](#navmeshgeneratortaskqueue)
 - [`NavMeshSeeds`](#navmeshseeds)
 - [`NestItem`](#nestitem)
 - [`NewGameOptionsWindow`](#newgameoptionswindow)
 - [`NewGameWindow`](#newgamewindow)
 - [`Nx9Real`](#nx9real)
-  - [`Nx9Real::S`](#nx9real::s)
+  - [`Nx9Real::S`](#nx9reals)
 - [`NxBox`](#nxbox)
 - [`NxMat33`](#nxmat33)
 - [`NxUserControllerHitReport`](#nxusercontrollerhitreport)
@@ -317,40 +325,40 @@
 - [`OrdersItemBox`](#ordersitembox)
 - [`OrdersPanel`](#orderspanel)
 - [`OrdersReceiver`](#ordersreceiver)
-  - [`OrdersReceiver::TaskRequestSimple`](#ordersreceiver::taskrequestsimple)
+  - [`OrdersReceiver::TaskRequestSimple`](#ordersreceivertaskrequestsimple)
 - [`Ownerships`](#ownerships)
 - [`ParticlePool`](#particlepool)
-  - [`ParticlePool::ParticleData`](#particlepool::particledata)
+  - [`ParticlePool::ParticleData`](#particlepoolparticledata)
 - [`physHit`](#physhit)
 - [`PhysicalEntity`](#physicalentity)
 - [`PhysicsActual`](#physicsactual)
-  - [`PhysicsActual::TriggerCallback`](#physicsactual::triggercallback)
+  - [`PhysicsActual::TriggerCallback`](#physicsactualtriggercallback)
 - [`PhysicsCollection`](#physicscollection)
-  - [`PhysicsCollection::LightEnt`](#physicscollection::lightent)
-  - [`PhysicsCollection::RotatingEnt`](#physicscollection::rotatingent)
-  - [`PhysicsCollection::StaticEnt`](#physicscollection::staticent)
+  - [`PhysicsCollection::LightEnt`](#physicscollectionlightent)
+  - [`PhysicsCollection::RotatingEnt`](#physicscollectionrotatingent)
+  - [`PhysicsCollection::StaticEnt`](#physicscollectionstaticent)
 - [`PhysicsInterface`](#physicsinterface)
 - [`Platoon`](#platoon)
 - [`PlatoonHandleContainerList`](#platoonhandlecontainerlist)
 - [`PlayerInterface`](#playerinterface)
-  - [`PlayerInterface::AIOptions`](#playerinterface::aioptions)
+  - [`PlayerInterface::AIOptions`](#playerinterfaceaioptions)
 - [`PortraitData`](#portraitdata)
 - [`PortraitImage`](#portraitimage)
 - [`PortraitMainCellView`](#portraitmaincellview)
 - [`PortraitManager`](#portraitmanager)
 - [`PreviewBuilding`](#previewbuilding)
-  - [`PreviewBuilding::Footprint`](#previewbuilding::footprint)
-  - [`PreviewBuilding::FootprintNode`](#previewbuilding::footprintnode)
+  - [`PreviewBuilding::Footprint`](#previewbuildingfootprint)
+  - [`PreviewBuilding::FootprintNode`](#previewbuildingfootprintnode)
 - [`ProductionBuilding`](#productionbuilding)
 - [`ProductionInventoryLayout`](#productioninventorylayout)
 - [`ProspectingWindow`](#prospectingwindow)
-  - [`ProspectingWindow::ResourceLinePanel`](#prospectingwindow::resourcelinepanel)
+  - [`ProspectingWindow::ResourceLinePanel`](#prospectingwindowresourcelinepanel)
 - [`ProsperityManager`](#prosperitymanager)
 - [`RaceData`](#racedata)
 - [`RaceLimiter`](#racelimiter)
-  - [`RaceLimiter::Limiter`](#racelimiter::limiter)
+  - [`RaceLimiter::Limiter`](#racelimiterlimiter)
 - [`RagdollAnimation`](#ragdollanimation)
-  - [`RagdollAnimation::RagdollAnimationTrack`](#ragdollanimation::ragdollanimationtrack)
+  - [`RagdollAnimation::RagdollAnimationTrack`](#ragdollanimationragdollanimationtrack)
 - [`RainCollectorBuilding`](#raincollectorbuilding)
 - [`RangedCombatClass`](#rangedcombatclass)
 - [`Renderer`](#renderer)
@@ -359,39 +367,39 @@
 - [`rendHit`](#rendhit)
 - [`ReorderableList`](#reorderablelist)
 - [`Research`](#research)
-  - [`Research::BuildingUpgrades`](#research::buildingupgrades)
+  - [`Research::BuildingUpgrades`](#researchbuildingupgrades)
 - [`ResearchBuilding`](#researchbuilding)
 - [`ResearchBuildingInventoryLayout`](#researchbuildinginventorylayout)
 - [`ResearchItem`](#researchitem)
 - [`ResourceLoader`](#resourceloader)
-  - [`ResourceLoader::MeshLoadData`](#resourceloader::meshloaddata)
-  - [`ResourceLoader::ResourceLoadRequestMesh`](#resourceloader::resourceloadrequestmesh)
-  - [`ResourceLoader::ResourceLoadRequestTexture`](#resourceloader::resourceloadrequesttexture)
-  - [`ResourceLoader::TextureArrayLoadData`](#resourceloader::texturearrayloaddata)
-  - [`ResourceLoader::TextureLoadData`](#resourceloader::textureloaddata)
+  - [`ResourceLoader::MeshLoadData`](#resourceloadermeshloaddata)
+  - [`ResourceLoader::ResourceLoadRequestMesh`](#resourceloaderresourceloadrequestmesh)
+  - [`ResourceLoader::ResourceLoadRequestTexture`](#resourceloaderresourceloadrequesttexture)
+  - [`ResourceLoader::TextureArrayLoadData`](#resourceloadertexturearrayloaddata)
+  - [`ResourceLoader::TextureLoadData`](#resourceloadertextureloaddata)
 - [`RobotLimbItem`](#robotlimbitem)
 - [`RobotLimbs`](#robotlimbs)
 - [`RootObject`](#rootobject)
 - [`RootObjectBase`](#rootobjectbase)
 - [`RootObjectContainer`](#rootobjectcontainer)
-  - [`RootObjectContainer::SpecificItemLoadFirst`](#rootobjectcontainer::specificitemloadfirst)
+  - [`RootObjectContainer::SpecificItemLoadFirst`](#rootobjectcontainerspecificitemloadfirst)
 - [`RootObjectFactory`](#rootobjectfactory)
-  - [`RootObjectFactory::CreatelistItem`](#rootobjectfactory::createlistitem)
+  - [`RootObjectFactory::CreatelistItem`](#rootobjectfactorycreatelistitem)
 - [`SaveFileSystem`](#savefilesystem)
-  - [`SaveFileSystem::FileMessage`](#savefilesystem::filemessage)
+  - [`SaveFileSystem::FileMessage`](#savefilesystemfilemessage)
 - [`SaveInfo`](#saveinfo)
 - [`SaveManager`](#savemanager)
 - [`ScreenLabel`](#screenlabel)
 - [`ScreenLabelDebug`](#screenlabeldebug)
 - [`ScreenLabelInterface`](#screenlabelinterface)
-- [`Scythe::PhysicsClass`](#scythe::physicsclass)
+- [`Scythe::PhysicsClass`](#scythephysicsclass)
 - [`Season`](#season)
 - [`SeenSomeone`](#seensomeone)
 - [`SelectionBox`](#selectionbox)
 - [`SenseItr`](#senseitr)
 - [`SensoryData`](#sensorydata)
-  - [`SensoryData::SpottingPeopleMgr`](#sensorydata::spottingpeoplemgr)
-  - [`SensoryData::SpottingPeopleMgr::Spot`](#sensorydata::spottingpeoplemgr::spot)
+  - [`SensoryData::SpottingPeopleMgr`](#sensorydataspottingpeoplemgr)
+  - [`SensoryData::SpottingPeopleMgr::Spot`](#sensorydataspottingpeoplemgrspot)
 - [`Serialisable`](#serialisable)
 - [`SeveredLimbItem`](#severedlimbitem)
 - [`SharedKing`](#sharedking)
@@ -403,15 +411,15 @@
 - [`SpeedGroup`](#speedgroup)
 - [`SplashScreen`](#splashscreen)
 - [`SquadManagementScreen`](#squadmanagementscreen)
-  - [`SquadManagementScreen::PortraitSquadCellView`](#squadmanagementscreen::portraitsquadcellview)
-  - [`SquadManagementScreen::PortraitSquadItemBox`](#squadmanagementscreen::portraitsquaditembox)
-  - [`SquadManagementScreen::SquadCellView`](#squadmanagementscreen::squadcellview)
-  - [`SquadManagementScreen::SquadData`](#squadmanagementscreen::squaddata)
-  - [`SquadManagementScreen::SquadItemBox`](#squadmanagementscreen::squaditembox)
+  - [`SquadManagementScreen::PortraitSquadCellView`](#squadmanagementscreenportraitsquadcellview)
+  - [`SquadManagementScreen::PortraitSquadItemBox`](#squadmanagementscreenportraitsquaditembox)
+  - [`SquadManagementScreen::SquadCellView`](#squadmanagementscreensquadcellview)
+  - [`SquadManagementScreen::SquadData`](#squadmanagementscreensquaddata)
+  - [`SquadManagementScreen::SquadItemBox`](#squadmanagementscreensquaditembox)
 - [`StateBroadcastData`](#statebroadcastdata)
 - [`StateFunctionList`](#statefunctionlist)
 - [`StorageBuilding`](#storagebuilding)
-  - [`StorageBuilding::ConsumptionItem`](#storagebuilding::consumptionitem)
+  - [`StorageBuilding::ConsumptionItem`](#storagebuildingconsumptionitem)
 - [`StringPair`](#stringpair)
 - [`Sword`](#sword)
 - [`TagsClass`](#tagsclass)
@@ -423,30 +431,30 @@
 - [`TaskRequest`](#taskrequest)
 - [`TaskStateData`](#taskstatedata)
 - [`Terrain`](#terrain)
-  - [`Terrain::BloodQueue`](#terrain::bloodqueue)
-  - [`Terrain::Box`](#terrain::box)
-  - [`Terrain::Hit`](#terrain::hit)
-  - [`Terrain::Info`](#terrain::info)
+  - [`Terrain::BloodQueue`](#terrainbloodqueue)
+  - [`Terrain::Box`](#terrainbox)
+  - [`Terrain::Hit`](#terrainhit)
+  - [`Terrain::Info`](#terraininfo)
 - [`ThreadClass`](#threadclass)
 - [`ThreadWannabe`](#threadwannabe)
 - [`TimeOfDay`](#timeofday)
 - [`TimerClass`](#timerclass)
 - [`TitleScreen`](#titlescreen)
 - [`ToolTip`](#tooltip)
-  - [`ToolTip::ToolTipLine`](#tooltip::tooltipline)
+  - [`ToolTip::ToolTipLine`](#tooltiptooltipline)
 - [`ToolTipDynamic`](#tooltipdynamic)
 - [`ToolTipFixed`](#tooltipfixed)
 - [`ToolTipInventory`](#tooltipinventory)
 - [`ToolTipStatic`](#tooltipstatic)
 - [`TortureBuilding`](#torturebuilding)
 - [`Town`](#town)
-  - [`Town::NestSpot`](#town::nestspot)
+  - [`Town::NestSpot`](#townnestspot)
 - [`TownBase`](#townbase)
-  - [`TownBase::DelayedSpawnMsg`](#townbase::delayedspawnmsg)
-  - [`TownBase::ResidentData`](#townbase::residentdata)
-  - [`TownBase::TownPositionCacher`](#townbase::townpositioncacher)
+  - [`TownBase::DelayedSpawnMsg`](#townbasedelayedspawnmsg)
+  - [`TownBase::ResidentData`](#townbaseresidentdata)
+  - [`TownBase::TownPositionCacher`](#townbasetownpositioncacher)
 - [`TownBuildingsManager`](#townbuildingsmanager)
-  - [`TownBuildingsManager::BuildingInfo`](#townbuildingsmanager::buildinginfo)
+  - [`TownBuildingsManager::BuildingInfo`](#townbuildingsmanagerbuildinginfo)
 - [`TownHandleContainerList`](#townhandlecontainerlist)
 - [`TownList`](#townlist)
 - [`TradeCulture`](#tradeculture)
@@ -455,7 +463,7 @@
 - [`TripleInt`](#tripleint)
 - [`TurretBuilding`](#turretbuilding)
 - [`TutorialGUI`](#tutorialgui)
-  - [`TutorialGUI::TutorialGUILine`](#tutorialgui::tutorialguiline)
+  - [`TutorialGUI::TutorialGUILine`](#tutorialguitutorialguiline)
 - [`TutorialItem`](#tutorialitem)
 - [`TutorialpediaGUI`](#tutorialpediagui)
 - [`TutorialSubItem`](#tutorialsubitem)
@@ -468,28 +476,28 @@
 - [`Weather`](#weather)
 - [`WeatherInstance`](#weatherinstance)
 - [`WeatherRegion`](#weatherregion)
-  - [`WeatherRegion::Listener`](#weatherregion::listener)
+  - [`WeatherRegion::Listener`](#weatherregionlistener)
 - [`WeatherSystem`](#weathersystem)
-  - [`WeatherSystem::FogValues`](#weathersystem::fogvalues)
-  - [`WeatherSystem::ZoneFog`](#weathersystem::zonefog)
+  - [`WeatherSystem::FogValues`](#weathersystemfogvalues)
+  - [`WeatherSystem::ZoneFog`](#weathersystemzonefog)
 - [`WindGeneratorBuilding`](#windgeneratorbuilding)
 - [`WorldEventStateQuery`](#worldeventstatequery)
 - [`WorldEventStateQueryList`](#worldeventstatequerylist)
 - [`YesNoMaybe`](#yesnomaybe)
 - [`ZoneManager`](#zonemanager)
-  - [`ZoneManager::BiomeGroundEffects`](#zonemanager::biomegroundeffects)
+  - [`ZoneManager::BiomeGroundEffects`](#zonemanagerbiomegroundeffects)
 - [`ZoneManagerInterfaceT`](#zonemanagerinterfacet)
 - [`ZoneMap`](#zonemap)
-  - [`ZoneMap::StateT`](#zonemap::statet)
+  - [`ZoneMap::StateT`](#zonemapstatet)
 - [`ZoneMapContent`](#zonemapcontent)
-  - [`ZoneMapContent::HandleDummy`](#zonemapcontent::handledummy)
-  - [`ZoneMapContent::ZoneMapContentOrderLoader`](#zonemapcontent::zonemapcontentorderloader)
+  - [`ZoneMapContent::HandleDummy`](#zonemapcontenthandledummy)
+  - [`ZoneMapContent::ZoneMapContentOrderLoader`](#zonemapcontentzonemapcontentorderloader)
 - [`ZoneMapHandleContainerList`](#zonemaphandlecontainerlist)
 - [`ZoneSmell`](#zonesmell)
-  - [`ZoneSmell::Smell`](#zonesmell::smell)
-  - [`ZoneSmell::SmellMsg`](#zonesmell::smellmsg)
+  - [`ZoneSmell::Smell`](#zonesmellsmell)
+  - [`ZoneSmell::SmellMsg`](#zonesmellsmellmsg)
 - [`ZoneSpacialGrid`](#zonespacialgrid)
-  - [`ZoneSpacialGrid::ZoneCell`](#zonespacialgrid::zonecell)
+  - [`ZoneSpacialGrid::ZoneCell`](#zonespacialgridzonecell)
 
 ## AABB2D
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
@@ -519,6 +527,10 @@
 ## AbstractMovementBase
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
 **Metatable:** `KenshiLua.AbstractMovementBase`
+
+**Inherits from:** [`NxUserControllerHitReport`](#nxusercontrollerhitreport)
+
+**Subclasses:** [`CharMovement`](#charmovement)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -591,6 +603,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
 **Metatable:** `KenshiLua.ActionDeque`
 
+**Subclasses:** [`AITaskSytem::ActionsListMgr`](#aitasksytemactionslistmgr)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -614,6 +628,8 @@
 ## ActivePlatoon
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
 **Metatable:** `KenshiLua.ActivePlatoon`
+
+**Inherits from:** [`RootObjectContainer`](#rootobjectcontainer) > [`DataObjectContainer`](#dataobjectcontainer)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -685,6 +701,17 @@
 | loadFromDisk | `force: boolean, extra: Serialisable` | `boolean` | `obj:loadFromDisk(force, extra)` |
 | getCharactersInArea | `pos: Vector3, radius: number, standingOnly: boolean` | `void` | `obj:getCharactersInArea(pos, radius, standingOnly)` |
 | loadInstance | `state: GameSaveState, skipSaveState: boolean, pos: Vector3, rot: Quaternion, callback: FactoryCallbackInterface, positionMoved: Vector3` | `void` | `obj:loadInstance(state, skipSaveState, pos, rot, callback, positionMoved)` |
+
+### Inherited Members
+**From [`RootObjectContainer`](#rootobjectcontainer):**
+
+- Fields: `things`
+- Methods: `getNumThings`, `getSelectedObjects`, `getThing`, `getThings`, `loadToReality`, `serialiseThings`
+
+**From [`DataObjectContainer`](#dataobjectcontainer):**
+
+- Fields: `datasFile`, `isStored`, `objectDatas`, `selfType`
+- Methods: `destroyObjectDatas`, `getType`, `setupDataFile`
 
 ## AI
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AI.h`
@@ -1106,7 +1133,7 @@
 
 ## AI::AIResultsCacher
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AI.h`
-**Parent Class:** [`AI`](#ai)
+**Enclosing Class:** [`AI`](#ai)
 **Metatable:** `KenshiLua.AI_AIResultsCacher`
 
 ### Methods
@@ -1127,6 +1154,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AIEventClass.h`
 **Metatable:** `KenshiLua.AIEventClass`
 
+**Subclasses:** [`AIPatrolToTown`](#aipatroltotown)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -1143,6 +1172,8 @@
 ## AIPackage
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AIPackage.h`
 **Metatable:** `KenshiLua.AIPackage`
+
+**Subclasses:** [`Contract_Timed`](#contract_timed), [`Contract_UntilExSlave`](#contract_untilexslave)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -1189,14 +1220,23 @@
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AIEventClass.h`
 **Metatable:** `KenshiLua.AIPatrolToTown`
 
+**Inherits from:** [`AIEventClass`](#aieventclass)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | update | `` | `void` | `obj:update()` |
 
+### Inherited Members
+**From [`AIEventClass`](#aieventclass):**
+
+- Fields: `repeatRate`, `repeatTimer`, `sendWhoToDoIt`, `target`
+
 ## AITaskSytem
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
 **Metatable:** `KenshiLua.AITaskSytem`
+
+**Inherits from:** [`OrdersReceiver`](#ordersreceiver)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -1279,10 +1319,18 @@
 | setCurrentTask | `from: AITaskSytem::ActionsListMgr` | `boolean` | `obj:setCurrentTask(from)` |
 | runGOAP | `task: Tasker, _a2: boolean, playerOrder: boolean` | `number` | `obj:runGOAP(task, _a2, playerOrder)` |
 
+### Inherited Members
+**From [`OrdersReceiver`](#ordersreceiver):**
+
+- Fields: `aggroMode`, `aiImplementation`, `choosingGoalMode`, `currentGoal`, `currentGoalPriority`, `currentGoalScore`, `doJobsEnabled`, `goals`, `holdPositionOrders`, `jobs`, `mainGoalTarget`, `me`, `needGOAP`, `orders`, `permajobs`, `slaveJobs`, `squadAIPackage`, `superDefenseMode`
+- Methods: `_clearGoals`, `_forceOrderInsert`, `addGoal`, `addJob`, `addOrder`, `clearCurrentGoal`, `clearJobs`, `clearOrders`, `clearPermajobs`, `clearSlaveJobs`, `getCurrentGoal`, `getFirstOrder`, `getPermajob`, `getPermajobCount`, `getPermajobData`, `getPermajobName`, `hasGoal`, `hasOrders`, `hasPermajob`, `hasPlayerOrder`, `hasPlayerOrders`, `isInChoosingGoalMode`, `isJobsEnabled`, `movePermajob`, `removeGoal`, `removeJob`, `removePermajob`, `setHoldPositionOrders`, `setJobsEnabled`, `tryToGetCurrentGoal`, `updateLastOrder`
+
 ## AITaskSytem::ActionsListMgr
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
-**Parent Class:** [`AITaskSytem`](#aitasksytem)
+**Enclosing Class:** [`AITaskSytem`](#aitasksytem)
 **Metatable:** `KenshiLua.AITaskSytem_ActionsListMgr`
+
+**Inherits from:** [`ActionDeque`](#actiondeque)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -1292,9 +1340,15 @@
 | getTaskAfterCurrent | `` | `Tasker` | `obj:getTaskAfterCurrent()` |
 | get2TasksAfterCurrent | `` | `Tasker` | `obj:get2TasksAfterCurrent()` |
 
+### Inherited Members
+**From [`ActionDeque`](#actiondeque):**
+
+- Fields: `list`
+- Methods: `addTask`, `clearAndDelete`, `clearOnly`, `getFirstTask`, `getLastTask`, `getSecondTask`, `hasTask`, `insertTask`, `isEmpty`, `isOnlyOne`, `passOnCurrentTask`
+
 ## AITaskSytem::FailedTask
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
-**Parent Class:** [`AITaskSytem`](#aitasksytem)
+**Enclosing Class:** [`AITaskSytem`](#aitasksytem)
 **Metatable:** `KenshiLua.AITaskSytem_FailedTask`
 
 ## AkSoundPosition
@@ -1322,10 +1376,21 @@
 **Header:** `extern/KenshiLib/Include/kenshi/CharacterAnimal.h`
 **Metatable:** `KenshiLua.AnimalInventoryLayout`
 
+**Inherits from:** [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
+
+### Inherited Members
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## AnimationChoices
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
@@ -1347,6 +1412,10 @@
 ## AnimationClass
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
 **Metatable:** `KenshiLua.AnimationClass`
+
+**Inherits from:** [`AnimationClassBase`](#animationclassbase)
+
+**Subclasses:** [`AnimationClassAnimal`](#animationclassanimal), [`AnimationClassHuman`](#animationclasshuman)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -1486,9 +1555,17 @@
 | processIdleAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, frameTIME: number` | `void` | `obj:processIdleAnims(anims, req, frameTIME)` |
 | processCombatIdleAnims | `anims: lektor<AnimationData*>, req: AnimationRequirement, frameTIME: number, weightLimit: number` | `void` | `obj:processCombatIdleAnims(anims, req, frameTIME, weightLimit)` |
 
+### Inherited Members
+**From [`AnimationClassBase`](#animationclassbase):**
+
+- Fields: `activateFlag`, `boneInitialWorldOrientations`, `boneInitialWorldPositions`, `desiredOrientation`, `isActivated`, `isIdle`, `isVisible`, `lastAnimRelocation`, `layer`, `masterSpeed`, `masterTime`, `movement`, `rootBonePosition`, `zeroOutTheBlending`
+- Methods: `clearAllAnimationUT`, `getAnimation_Lockpick`, `getAnimation_Medic`, `getAnimationCurrentWeight`, `getAnimationPlaying`, `getAnimationPlaying_animName`, `getAnimationPlaying_datName`, `getAnimationProgress`, `getBoneInitialLocalOrientation`, `getBoneInitialLocalPosition`, `getBoneInitialWorldOrientation`, `getBoneInitialWorldPosition`, `getBoneLocalOrientation`, `getBoneLocalPosition`, `getBoneWorldOrientation`, `getBoneWorldPosition`, `getHasBone`, `getMasterTime`, `getMasterTimeSpeed`, `getOrientation`, `getRootBoneLocalPosition`, `getRootBoneWorldPosition`, `getSceneNodeOrientation`, `getSceneNodePosition`, `getTotalActionAnimationWeight`, `getVisible`, `hasAnimation`, `initBoneInitialWorldPositions`, `isAnimationPlaying`, `isVisibleEntity`, `resetOrientation`, `setMasterTimeSpeed`, `setVerticalPosition`, `setVisible`, `stillPlayingAnActionOrSomething`, `stopAllAnimation`
+
 ## AnimationClassAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassAnimal.h`
 **Metatable:** `KenshiLua.AnimationClassAnimal`
+
+**Inherits from:** [`AnimationClass`](#animationclass) > [`AnimationClassBase`](#animationclassbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -1497,9 +1574,22 @@
 | _isTurningFar | `boolean` | RW | `obj._isTurningFar = <value>` |
 | lastRot | `Quaternion` | RW | `obj.lastRot = <value>` |
 
+### Inherited Members
+**From [`AnimationClass`](#animationclass):**
+
+- Fields: `animationRequirements`, `appearance`, `bootHeight`, `defaultIdleAnimation`, `disableRagdollKinematics`, `feetHeight`, `me`, `myAnimList`, `ragdollAnimation`, `ragdollParts`, `strafeBlendFilter`, `totalActionWeight`
+- Methods: `activateVisuals`, `animationSelection`, `animationSelectionCombatMode`, `beingCarriedUpdate`, `breathing`, `calculateFeetHeight`, `calculatePositionWithWaterHeight`, `chooseAnims`, `chooseRandomAnim`, `chooseStumbleAnim`, `currentlyStumbling`, `deactivateVisuals`, `debugGetAllAnimations`, `endCombatAnimation`, `endSlaveAnim`, `endStumble`, `estimateAnimationTime`, `getAnimationData`, `getAnimationDataByOgreName`, `getAnimationDatasList`, `getAppearanceData`, `getAudioObject`, `getBoneScale`, `getCharacter`, `getCurrentlyStumbleAnim`, `getEvents`, `getFloatingAnim`, `getFootHeight`, `getHeight`, `getIdleAnimation`, `getIsActivated`, `getLookDirection`, `getMaximumSpeed`, `getPosition`, `getStandingUpAnim`, `getWeatherStrength`, `getWeatherType`, `hasAction`, `hasRagdollPart`, `isBeingCarried`, `isCurrentlyIncapableOfWaypointMovemode`, `isHuman`, `isLinearAnimationDone`, `isLinearAnimationDone_byName`, `isPhysical`, `isRagdoll`, `isRagdollAnimated`, `isSlaveAnimating`, `isSlaveAttachToBoneMode`, `isTotallyRagdoll`, `isTurning`, `isTurningFar`, `lookAt`, `notifyRagdollNeedsAnUpdate`, `notifyRelocatedAnimLoop`, `overlaidAnimationSelection`, `playAction`, `playSlaveAnim`, `postRagdollCreationCallbackMT`, `processCombatIdleAnims`, `processIdleAnims`, `processMoveAnims`, `processTurnAnim`, `ragdollAnimateTo`, `ragdollModeUT`, `ragdollTheWeapons`, `randomiseAnimationPosition`, `rangedCombatModeUpdate`, `resetBody`, `restartAction`, `rotateEntityAroundBone`, `rotationUpdate`, `runAnimation`, `runAnimation_manualTiming`, `runCombatAnimation`, `runSlaveAnim`, `runStrafe`, `scoreAnim`, `serialiseAppearance`, `setAnimationMoveSpeed`, `setAppearanceData`, `setBootHeight`, `setCarryMode`, `setCombatMode`, `setCombatModeLegsIdle`, `setCombatModeUpperIdle`, `setDesiredPainOverlayAnimOverride`, `setEquipmentInHand`, `setLegDamage`, `setMaximumSpeed`, `setPosition`, `setSlaveHandle`, `setStance`, `setStanceAnimation`, `setStealthMode`, `setStrafeSpeed`, `setWeatherType`, `slaveAttachToBoneMode`, `startAnimation`, `startCombatAnimation`, `startStumble`, `stopAction`, `stopAnimation`, `threadSafeRagdollUpdateUT`, `update`, `updateAnimationCharacterEditor`, `updateAnimationTransforms`, `updateThreaded`
+
+**From [`AnimationClassBase`](#animationclassbase):**
+
+- Fields: `activateFlag`, `boneInitialWorldOrientations`, `boneInitialWorldPositions`, `desiredOrientation`, `isActivated`, `isIdle`, `isVisible`, `lastAnimRelocation`, `layer`, `masterSpeed`, `masterTime`, `movement`, `rootBonePosition`, `zeroOutTheBlending`
+- Methods: `clearAllAnimationUT`, `getAnimation_Lockpick`, `getAnimation_Medic`, `getAnimationCurrentWeight`, `getAnimationPlaying`, `getAnimationPlaying_animName`, `getAnimationPlaying_datName`, `getAnimationProgress`, `getBoneInitialLocalOrientation`, `getBoneInitialLocalPosition`, `getBoneInitialWorldOrientation`, `getBoneInitialWorldPosition`, `getBoneLocalOrientation`, `getBoneLocalPosition`, `getBoneWorldOrientation`, `getBoneWorldPosition`, `getHasBone`, `getMasterTime`, `getMasterTimeSpeed`, `getOrientation`, `getRootBoneLocalPosition`, `getRootBoneWorldPosition`, `getSceneNodeOrientation`, `getSceneNodePosition`, `getTotalActionAnimationWeight`, `getVisible`, `hasAnimation`, `initBoneInitialWorldPositions`, `isAnimationPlaying`, `isVisibleEntity`, `resetOrientation`, `setMasterTimeSpeed`, `setVerticalPosition`, `setVisible`, `stillPlayingAnActionOrSomething`, `stopAllAnimation`
+
 ## AnimationClassBase
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
 **Metatable:** `KenshiLua.AnimationClassBase`
+
+**Subclasses:** [`AnimationClass`](#animationclass)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -1567,7 +1657,7 @@
 
 ## AnimationClassBase::AnimationLayer
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
-**Parent Class:** [`AnimationClassBase`](#animationclassbase)
+**Enclosing Class:** [`AnimationClassBase`](#animationclassbase)
 **Metatable:** `KenshiLua.AnimationClassBase.AnimationLayer`
 
 ### Methods
@@ -1606,7 +1696,7 @@
 
 ## AnimationClassBase::SingleAnimation
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
-**Parent Class:** [`AnimationClassBase`](#animationclassbase)
+**Enclosing Class:** [`AnimationClassBase`](#animationclassbase)
 **Metatable:** `KenshiLua.AnimationClassBase.SingleAnimation`
 
 ### Methods
@@ -1627,6 +1717,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClassHuman.h`
 **Metatable:** `KenshiLua.AnimationClassHuman`
 
+**Inherits from:** [`AnimationClass`](#animationclass) > [`AnimationClassBase`](#animationclassbase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -1638,6 +1730,17 @@
 | lookDirection | `Vector3` | RW | `obj.lookDirection = <value>` |
 | hipspos | `Vector3` | RW | `obj.hipspos = <value>` |
 | breatheTimer | `number` | RW | `obj.breatheTimer = <value>` |
+
+### Inherited Members
+**From [`AnimationClass`](#animationclass):**
+
+- Fields: `animationRequirements`, `appearance`, `bootHeight`, `defaultIdleAnimation`, `disableRagdollKinematics`, `feetHeight`, `me`, `myAnimList`, `ragdollAnimation`, `ragdollParts`, `strafeBlendFilter`, `totalActionWeight`
+- Methods: `activateVisuals`, `animationSelection`, `animationSelectionCombatMode`, `beingCarriedUpdate`, `breathing`, `calculateFeetHeight`, `calculatePositionWithWaterHeight`, `chooseAnims`, `chooseRandomAnim`, `chooseStumbleAnim`, `currentlyStumbling`, `deactivateVisuals`, `debugGetAllAnimations`, `endCombatAnimation`, `endSlaveAnim`, `endStumble`, `estimateAnimationTime`, `getAnimationData`, `getAnimationDataByOgreName`, `getAnimationDatasList`, `getAppearanceData`, `getAudioObject`, `getBoneScale`, `getCharacter`, `getCurrentlyStumbleAnim`, `getEvents`, `getFloatingAnim`, `getFootHeight`, `getHeight`, `getIdleAnimation`, `getIsActivated`, `getLookDirection`, `getMaximumSpeed`, `getPosition`, `getStandingUpAnim`, `getWeatherStrength`, `getWeatherType`, `hasAction`, `hasRagdollPart`, `isBeingCarried`, `isCurrentlyIncapableOfWaypointMovemode`, `isHuman`, `isLinearAnimationDone`, `isLinearAnimationDone_byName`, `isPhysical`, `isRagdoll`, `isRagdollAnimated`, `isSlaveAnimating`, `isSlaveAttachToBoneMode`, `isTotallyRagdoll`, `isTurning`, `isTurningFar`, `lookAt`, `notifyRagdollNeedsAnUpdate`, `notifyRelocatedAnimLoop`, `overlaidAnimationSelection`, `playAction`, `playSlaveAnim`, `postRagdollCreationCallbackMT`, `processCombatIdleAnims`, `processIdleAnims`, `processMoveAnims`, `processTurnAnim`, `ragdollAnimateTo`, `ragdollModeUT`, `ragdollTheWeapons`, `randomiseAnimationPosition`, `rangedCombatModeUpdate`, `resetBody`, `restartAction`, `rotateEntityAroundBone`, `rotationUpdate`, `runAnimation`, `runAnimation_manualTiming`, `runCombatAnimation`, `runSlaveAnim`, `runStrafe`, `scoreAnim`, `serialiseAppearance`, `setAnimationMoveSpeed`, `setAppearanceData`, `setBootHeight`, `setCarryMode`, `setCombatMode`, `setCombatModeLegsIdle`, `setCombatModeUpperIdle`, `setDesiredPainOverlayAnimOverride`, `setEquipmentInHand`, `setLegDamage`, `setMaximumSpeed`, `setPosition`, `setSlaveHandle`, `setStance`, `setStanceAnimation`, `setStealthMode`, `setStrafeSpeed`, `setWeatherType`, `slaveAttachToBoneMode`, `startAnimation`, `startCombatAnimation`, `startStumble`, `stopAction`, `stopAnimation`, `threadSafeRagdollUpdateUT`, `update`, `updateAnimationCharacterEditor`, `updateAnimationTransforms`, `updateThreaded`
+
+**From [`AnimationClassBase`](#animationclassbase):**
+
+- Fields: `activateFlag`, `boneInitialWorldOrientations`, `boneInitialWorldPositions`, `desiredOrientation`, `isActivated`, `isIdle`, `isVisible`, `lastAnimRelocation`, `layer`, `masterSpeed`, `masterTime`, `movement`, `rootBonePosition`, `zeroOutTheBlending`
+- Methods: `clearAllAnimationUT`, `getAnimation_Lockpick`, `getAnimation_Medic`, `getAnimationCurrentWeight`, `getAnimationPlaying`, `getAnimationPlaying_animName`, `getAnimationPlaying_datName`, `getAnimationProgress`, `getBoneInitialLocalOrientation`, `getBoneInitialLocalPosition`, `getBoneInitialWorldOrientation`, `getBoneInitialWorldPosition`, `getBoneLocalOrientation`, `getBoneLocalPosition`, `getBoneWorldOrientation`, `getBoneWorldPosition`, `getHasBone`, `getMasterTime`, `getMasterTimeSpeed`, `getOrientation`, `getRootBoneLocalPosition`, `getRootBoneWorldPosition`, `getSceneNodeOrientation`, `getSceneNodePosition`, `getTotalActionAnimationWeight`, `getVisible`, `hasAnimation`, `initBoneInitialWorldPositions`, `isAnimationPlaying`, `isVisibleEntity`, `resetOrientation`, `setMasterTimeSpeed`, `setVerticalPosition`, `setVisible`, `stillPlayingAnActionOrSomething`, `stopAllAnimation`
 
 ## AnimationData
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
@@ -1696,6 +1799,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
 **Metatable:** `KenshiLua.AnimationEvent`
 
+**Subclasses:** [`AnimationGroundEvent`](#animationgroundevent), [`AnimationReloadEvent`](#animationreloadevent), [`AnimationSFXEvent`](#animationsfxevent)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
@@ -1727,6 +1832,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
 **Metatable:** `KenshiLua.AnimationGroundEvent`
 
+**Inherits from:** [`AnimationEvent`](#animationevent)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -1738,14 +1845,26 @@
 | trigger | `character: Character` | `void` | `obj:trigger(character)` |
 | toString | `` | `string` | `obj:toString()` |
 
+### Inherited Members
+**From [`AnimationEvent`](#animationevent):**
+
+- Methods: `finish`
+
 ## AnimationReloadEvent
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
 **Metatable:** `KenshiLua.AnimationReloadEvent`
+
+**Inherits from:** [`AnimationEvent`](#animationevent)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | trigger | `character: Character` | `void` | `obj:trigger(character)` |
+
+### Inherited Members
+**From [`AnimationEvent`](#animationevent):**
+
+- Methods: `finish`, `toString`
 
 ## AnimationRequirement
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
@@ -1811,6 +1930,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationEvent.h`
 **Metatable:** `KenshiLua.AnimationSFXEvent`
 
+**Inherits from:** [`AnimationEvent`](#animationevent)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -1846,7 +1967,7 @@
 
 ## AnimsListsManager::AnimList
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/AnimationClass.h`
-**Parent Class:** [`AnimsListsManager`](#animslistsmanager)
+**Enclosing Class:** [`AnimsListsManager`](#animslistsmanager)
 **Metatable:** `KenshiLua.AnimsListsManager.AnimList`
 
 ### Methods
@@ -1859,15 +1980,25 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
 **Metatable:** `KenshiLua.AppearanceAnimal`
 
+**Inherits from:** [`AppearanceBase`](#appearancebase)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | createBody | `` | `void` | `obj:createBody()` |
 | updateCharaterTexture | `` | `void` | `obj:updateCharaterTexture()` |
 
+### Inherited Members
+**From [`AppearanceBase`](#appearancebase):**
+
+- Fields: `animation`, `appearanceData`, `attachedEffects`, `attachedEffectsToRemove`, `attachedHarpoons`, `barefoot`, `body`, `bodyFilename`, `bodyLoader`, `bodyRadius`, `characterHeight`, `characterHeight_0to1`, `characterHeightSpeedMultiplier`, `factionColor`, `female`, `hairStyle`, `hideAttachments`, `isCreatingBody`, `me`, `msgClearHarpoons`, `raceData`, `shaved`, `slots`, `suid`, `updateBody`, `updatedAppearanceData`, `updatedAttachments`, `visible`, `waterline`, `waterLineFadeTimer`, `woundsList`
+- Methods: `_detachAllHarpoons`, `activate`, `attachEffect`, `attachItem`, `attachItem_Hair`, `buildAttachments`, `chooseBodyMesh`, `createAttachedObject`, `deactivate`, `detachAllHarpoonsT`, `detachItem`, `failedToLoad`, `forceUpdateAnimationTransforms`, `getAnimationSystem`, `getAppearanceData`, `getAttachedEntity`, `getAttachmentPosition`, `getAttachmentsLoaded`, `getBody`, `getBodyRadius`, `getBoneOrientation`, `getBonePosition`, `getCharacterHeight`, `getCharacterHeightSpeedMultiplier`, `getNormalisedCharacterHeight`, `getRace`, `getRandomVertex`, `getRandomVertexPosition`, `getSceneNode`, `getSkeleton`, `getVertexPosition`, `getVertexWorldPosition`, `getVisible`, `hasLights`, `hasSlot`, `isBarefoot`, `isFemale`, `isFlayed`, `isShaved`, `notifyDirty`, `periodicUpdate`, `reload`, `serialise`, `setAppearanceData`, `setAttachmentsVisible`, `setFlayed`, `setGender`, `setHairTexture`, `setVisible`, `shaveHead`, `switchLights`, `update`, `updateAnimationTransforms`, `updateAppearance`, `updateBloodyness`, `updateMovementScale`, `updateOverlap`, `updatePortrait`, `updateWetness`
+
 ## AppearanceBase
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
 **Metatable:** `KenshiLua.AppearanceBase`
+
+**Subclasses:** [`AppearanceAnimal`](#appearanceanimal), [`AppearanceHuman`](#appearancehuman)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -1975,6 +2106,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Appearance.h`
 **Metatable:** `KenshiLua.AppearanceHuman`
 
+**Inherits from:** [`AppearanceBase`](#appearancebase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -2005,6 +2138,12 @@
 | updatePhysiqueMuscleMults | `` | `void` | `obj:updatePhysiqueMuscleMults()` |
 | updateCharaterTexture | `` | `void` | `obj:updateCharaterTexture()` |
 | setPosture | `posture: number, neck: number, shoulders: number` | `void` | `obj:setPosture(posture, neck, shoulders)` |
+
+### Inherited Members
+**From [`AppearanceBase`](#appearancebase):**
+
+- Fields: `animation`, `appearanceData`, `attachedEffects`, `attachedEffectsToRemove`, `attachedHarpoons`, `barefoot`, `body`, `bodyFilename`, `bodyLoader`, `bodyRadius`, `characterHeight`, `characterHeight_0to1`, `characterHeightSpeedMultiplier`, `factionColor`, `female`, `hairStyle`, `hideAttachments`, `isCreatingBody`, `me`, `msgClearHarpoons`, `raceData`, `shaved`, `slots`, `suid`, `updateBody`, `updatedAppearanceData`, `updatedAttachments`, `visible`, `waterline`, `waterLineFadeTimer`, `woundsList`
+- Methods: `_detachAllHarpoons`, `activate`, `attachEffect`, `attachItem`, `attachItem_Hair`, `buildAttachments`, `chooseBodyMesh`, `createAttachedObject`, `deactivate`, `detachAllHarpoonsT`, `detachItem`, `failedToLoad`, `forceUpdateAnimationTransforms`, `getAnimationSystem`, `getAppearanceData`, `getAttachedEntity`, `getAttachmentPosition`, `getAttachmentsLoaded`, `getBody`, `getBodyRadius`, `getBoneOrientation`, `getBonePosition`, `getCharacterHeight`, `getCharacterHeightSpeedMultiplier`, `getNormalisedCharacterHeight`, `getRace`, `getRandomVertex`, `getRandomVertexPosition`, `getSceneNode`, `getSkeleton`, `getVertexPosition`, `getVertexWorldPosition`, `getVisible`, `hasLights`, `hasSlot`, `isBarefoot`, `isFemale`, `isShaved`, `notifyDirty`, `reload`, `serialise`, `setAppearanceData`, `setHairTexture`, `setVisible`, `shaveHead`, `switchLights`, `update`, `updateAnimationTransforms`, `updateBloodyness`, `updateMovementScale`, `updateOverlap`, `updatePortrait`, `updateWetness`
 
 ## AppearanceManager
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -2056,7 +2195,7 @@
 
 ## AppearanceManager::AppearanceData
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
-**Parent Class:** [`AppearanceManager`](#appearancemanager)
+**Enclosing Class:** [`AppearanceManager`](#appearancemanager)
 **Metatable:** `KenshiLua.AppearanceManager_AppearanceData`
 
 ### Methods
@@ -2067,7 +2206,7 @@
 
 ## AppearanceManager::DataCategory
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
-**Parent Class:** [`AppearanceManager`](#appearancemanager)
+**Enclosing Class:** [`AppearanceManager`](#appearancemanager)
 **Metatable:** `KenshiLua.AppearanceManager_DataCategory`
 
 ### Methods
@@ -2080,8 +2219,10 @@
 
 ## AppearanceManager::DataRange
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
-**Parent Class:** [`AppearanceManager`](#appearancemanager)
+**Enclosing Class:** [`AppearanceManager`](#appearancemanager)
 **Metatable:** `KenshiLua.AppearanceManager_DataRange`
+
+**Subclasses:** [`AppearanceManager::DataRangePose`](#appearancemanagerdatarangepose), [`AppearanceManager::DataRangeVector`](#appearancemanagerdatarangevector)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -2092,8 +2233,10 @@
 
 ## AppearanceManager::DataRangePose
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
-**Parent Class:** [`AppearanceManager`](#appearancemanager)
+**Enclosing Class:** [`AppearanceManager`](#appearancemanager)
 **Metatable:** `KenshiLua.AppearanceManager_DataRangePose`
+
+**Inherits from:** [`AppearanceManager::DataRange`](#appearancemanagerdatarange)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -2104,8 +2247,10 @@
 
 ## AppearanceManager::DataRangeVector
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
-**Parent Class:** [`AppearanceManager`](#appearancemanager)
+**Enclosing Class:** [`AppearanceManager`](#appearancemanager)
 **Metatable:** `KenshiLua.AppearanceManager_DataRangeVector`
+
+**Inherits from:** [`AppearanceManager::DataRange`](#appearancemanagerdatarange)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -2120,7 +2265,7 @@
 
 ## AppearanceManager::Gender
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
-**Parent Class:** [`AppearanceManager`](#appearancemanager)
+**Enclosing Class:** [`AppearanceManager`](#appearancemanager)
 **Metatable:** `KenshiLua.AppearanceManager_Gender`
 
 ### Methods
@@ -2134,6 +2279,10 @@
 ## Armour
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.Armour`
+
+**Inherits from:** [`Gear`](#gear) > [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`LockedArmour`](#lockedarmour)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -2179,6 +2328,32 @@
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 | getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
 
+### Inherited Members
+**From [`Gear`](#gear):**
+
+- Fields: `crafter`, `isUniform`, `level`, `level_0_100`, `value`
+- Methods: `_loadFromSerialise`, `_serialise`, `getLevel`, `getLevel01`, `isAFactionUniform`, `isGear`, `isPlayerCrafted`, `setInventoryWeAreIn`
+
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getCraftMaterialMult`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isCrossbow`, `isFood`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## Array2d
 **Header:** `extern/KenshiLib/Include/kenshi/util/array2d.h`
 **Metatable:** `KenshiLua.Array2d`
@@ -2186,6 +2361,8 @@
 ## AttackState
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
 **Metatable:** `KenshiLua.AttackState`
+
+**Inherits from:** [`CombatState`](#combatstate)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -2201,14 +2378,34 @@
 | update | `time: number` | `void` | `obj:update(time)` |
 | end | `` | `void` | `obj:end()` |
 
+### Inherited Members
+**From [`CombatState`](#combatstate):**
+
+- Fields: `combat`, `stateTimer`
+
 ## BackpackInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.BackpackInventoryLayout`
+
+**Inherits from:** [`GenericFixedInventoryLayout`](#genericfixedinventorylayout) > [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
+
+### Inherited Members
+**From [`GenericFixedInventoryLayout`](#genericfixedinventorylayout):**
+
+- Methods: `setSize`
+
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## BackThreadMessagesToMainT
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
@@ -2335,7 +2532,7 @@
 
 ## Blackboard::TaskInfo
 **Header:** `extern/KenshiLib/Include/kenshi/AI/Blackboard.h`
-**Parent Class:** [`Blackboard`](#blackboard)
+**Enclosing Class:** [`Blackboard`](#blackboard)
 **Metatable:** `KenshiLua.Blackboard_TaskInfo`
 
 ### Methods
@@ -2352,6 +2549,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 **Metatable:** `KenshiLua.BlueprintItem`
 
+**Inherits from:** [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -2366,6 +2565,27 @@
 | getResearchData | `` | `GameData` | `obj:getResearchData()` |
 | learnResearch | `` | `boolean` | `obj:learnResearch()` |
 | getGUIData | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(datapanel, category)` |
+
+### Inherited Members
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `_loadFromSerialise`, `_serialise`, `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getCraftMaterialMult`, `getCraftTime`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getLevel`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isAFactionUniform`, `isArmour`, `isCrossbow`, `isFood`, `isGear`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setInventoryWeAreIn`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getItemSound`, `getItemType`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## BoundsViolation
 **Header:** `extern/KenshiLib/Include/kenshi/util/Array2d.h`
@@ -2442,6 +2662,10 @@
 ## Building
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
 **Metatable:** `KenshiLua.Building`
+
+**Inherits from:** [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`DoorStuff`](#doorstuff), [`GatewayBuilding`](#gatewaybuilding), [`UseableStuff`](#useablestuff), [`WallBuilding`](#wallbuilding)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -2665,9 +2889,20 @@
 |---|---|---|---|
 | getEntityMaterialName | `` | `string` | `Building.getEntityMaterialName()`<br>`obj:getEntityMaterialName()` |
 
+### Inherited Members
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `unequipItem`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## Building::ConstructionState
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
-**Parent Class:** [`Building`](#building)
+**Enclosing Class:** [`Building`](#building)
 **Metatable:** `KenshiLua.ConstructionState`
 
 ### Fields
@@ -2711,7 +2946,7 @@
 
 ## Building::ConstructionState::BuildMaterial
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
-**Parent Class:** [`Building`](#building)
+**Enclosing Class:** [`Building`](#building)
 **Metatable:** `KenshiLua.BuildMaterial`
 
 ### Fields
@@ -2731,6 +2966,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/StorageBuilding.h`
 **Metatable:** `KenshiLua.BuildingContainerInventoryLayout`
 
+**Inherits from:** [`GenericInventoryLayout`](#genericinventorylayout) > [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -2742,6 +2979,20 @@
 | setCapacity | `value: integer, full: boolean` | `void` | `obj:setCapacity(value, full)` |
 | setupSections | `inventoryGUI: InventoryGUI, sections: SectionsMap, inventory: Inventory` | `void` | `obj:setupSections(inventoryGUI, sections, inventory)` |
 
+### Inherited Members
+**From [`GenericInventoryLayout`](#genericinventorylayout):**
+
+- Fields: `arrangeButton`
+- Methods: `setSize`
+
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## BuildingPlacementGroundType
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
 **Metatable:** `KenshiLua.BuildingPlacementGroundType`
@@ -2749,6 +3000,10 @@
 ## BuildInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ProductionBuilding.h`
 **Metatable:** `KenshiLua.BuildInventoryLayout`
+
+**Inherits from:** [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
+**Subclasses:** [`CraftingInventoryLayout`](#craftinginventorylayout), [`FurnaceInventoryLayout`](#furnaceinventorylayout), [`ProductionInventoryLayout`](#productioninventorylayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -2784,9 +3039,20 @@
 | setInputItem | `inputIdx: integer, item: Item, visible: boolean` | `void` | `obj:setInputItem(inputIdx, item, visible)` |
 | setOutputItem | `item: Item, visible: boolean` | `void` | `obj:setOutputItem(item, visible)` |
 
+### Inherited Members
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## BuildModeWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/BuildModeWindow.h`
 **Metatable:** `KenshiLua.BuildModeWindow`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -2845,9 +3111,12 @@
 |---|---|---|---|
 | compareBuildMaterials | `` | `boolean` | `BuildModeWindow.compareBuildMaterials()`<br>`obj:compareBuildMaterials()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## BuildModeWindow::BuildingCategory
 **Header:** `extern/KenshiLib/Include/kenshi/gui/BuildModeWindow.h`
-**Parent Class:** [`BuildModeWindow`](#buildmodewindow)
+**Enclosing Class:** [`BuildModeWindow`](#buildmodewindow)
 **Metatable:** `KenshiLua.BuildingCategory`
 
 ### Fields
@@ -2863,7 +3132,7 @@
 
 ## BuildModeWindow::BuildingGroup
 **Header:** `extern/KenshiLib/Include/kenshi/gui/BuildModeWindow.h`
-**Parent Class:** [`BuildModeWindow`](#buildmodewindow)
+**Enclosing Class:** [`BuildModeWindow`](#buildmodewindow)
 **Metatable:** `KenshiLua.BuildingGroup`
 
 ### Fields
@@ -3065,6 +3334,10 @@
 ## Character
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 **Metatable:** `KenshiLua.Character`
+
+**Inherits from:** [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`CharacterAnimal`](#characteranimal), [`CharacterHuman`](#characterhuman)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -3481,9 +3754,20 @@
 | setChainedMode | `on: boolean, owner: hand` | `void` | `obj:setChainedMode(on, owner)` |
 | _ragdollMode | `on: boolean, part: integer` | `boolean` | `obj:_ragdollMode(on, part)` |
 
+### Inherited Members
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `dropItem`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getLayoutInstanceID`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getZoneMapLocation`, `needsSaving`, `notifyOutdoors`, `setFloor`, `setIsInsideBuilding`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getFaction`, `getGameData`, `getHandle`, `getPositionForWaypoint`, `hasFaction`, `isValid`, `typeIsAnItem`
+
 ## Character::AttachedArrowManager
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
-**Parent Class:** [`Character`](#character)
+**Enclosing Class:** [`Character`](#character)
 **Metatable:** `KenshiLua.AttachedArrowManager`
 
 ### Fields
@@ -3501,12 +3785,12 @@
 
 ## Character::CarryMsg
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
-**Parent Class:** [`Character`](#character)
+**Enclosing Class:** [`Character`](#character)
 **Metatable:** `KenshiLua.Character_CarryMsg`
 
 ## Character::RagdollMsg
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
-**Parent Class:** [`Character`](#character)
+**Enclosing Class:** [`Character`](#character)
 **Metatable:** `KenshiLua.Character_RagdollMsg`
 
 ### Methods
@@ -3516,7 +3800,7 @@
 
 ## Character::WhoSeesMe
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
-**Parent Class:** [`Character`](#character)
+**Enclosing Class:** [`Character`](#character)
 **Metatable:** `KenshiLua.WhoSeesMe`
 
 ### Fields
@@ -3529,6 +3813,8 @@
 ## CharacterAnimal
 **Header:** `extern/KenshiLib/Include/kenshi/CharacterAnimal.h`
 **Metatable:** `KenshiLua.CharacterAnimal`
+
+**Inherits from:** [`Character`](#character) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -3558,9 +3844,27 @@
 | eatItemInMouth | `` | `void` | `obj:eatItemInMouth()` |
 | dropItem | `itembase: RootObject` | `void` | `obj:dropItem(itembase)` |
 
+### Inherited Members
+**From [`Character`](#character):**
+
+- Fields: `_currentProneState`, `_destinationInsideBuilding`, `_destinationInsideWalls`, `_isBeingCarried`, `_isEngagedWithAPlayer`, `_isLiterallyUnderMeleeAttackRightNowForSure`, `_isOnARoof`, `_lightLevel`, `_myMemory`, `activeEffects`, `ai`, `animation`, `armourType`, `audioData`, `audioEmitter`, `audioObject`, `body`, `bodyDecayTimer`, `carringObjectLeftOrRight`, `carryingObject`, `crimes`, `currentSkillUsing`, `currentStumblePainAnimation`, `dialogue`, `diplomacyMultiplier`, `disguiseGUIFeedbacks`, `frameTIME`, `frameTIME_P`, `frameTIMEfour`, `groundType`, `inDoorsSetCooldown`, `inSomething`, `inventory`, `inWhat`, `isCarryingLeftSide`, `isCarryingSomething`, `isChained`, `isCurrentlyGettingUp`, `isGettingEaten`, `isOnScreen`, `isPhysicalMode`, `isUsingTurret`, `isVisibleAndNear`, `isVisibleUpdateMode`, `lastGuyWhoDefeatedMe`, `lastUsedWeaponCategory`, `medical`, `messages`, `messageSubject`, `movement`, `msgCarryMode`, `myRace`, `nameTag`, `naturalWeapon`, `needsLightLevel`, `offscreenFrameTime`, `platoon`, `playerWantsMeToGetUp`, `portraitIndex`, `portraitSerial`, `ragdollMessages`, `ragdollNavmeshPosition`, `rangedCombat`, `setVisibleMsg`, `sex`, `slaveOwner`, `squadMemberID`, `stateBroadcast`, `stats`, `stealthMarkerArrows`, `stealthMode`, `stealthUnseen`, `terrainHeightPosition`, `whoSeesMeSneaking`
+- Methods: `_carryMode`, `_getRawPosition`, `_isLiterallyUnderMeleeAttackRightNowForSure_update`, `_killRagdoll`, `_printRaceXPBonusLine`, `_ragdollMode`, `_setPlatoon`, `_startStumble`, `addGoal`, `addJob`, `addOrder`, `AIDestinationIndoorOutdoorCheck`, `amInsideTownWalls`, `amSomeoneWhoNeedsToEatToLive`, `areYouGonnaGetMe`, `attackingYou`, `attackTarget`, `audioEvent`, `audioValue`, `breakFollowOrderLoop`, `calculateDestinationState`, `calculateMainArmourType`, `canAssignBounties`, `canGoIndoors`, `canSpeakNormally`, `canTakePlayerOrdersAtThisTime`, `carryModeT`, `changeSlaveOwner`, `checkPlayerOrderForProblems`, `chooseCarryObjectLeftOrRight`, `clearAllAIGoals`, `clearAllTempEnemyStatuses`, `clearPermajobs`, `clearTempEnemyStatus`, `conglomerateTagsFor`, `convertCutDirection`, `createAnimationClass`, `createComponents`, `createInventoryLayout`, `createPhysical`, `dailyUpdate`, `debugIndicateCharacters`, `declareDead`, `destinationIndoors`, `destinationInsideWalls`, `destroyPhysical`, `drawWeapon`, `dropCarriedObject`, `dropGearOnDeath`, `eatItem`, `endCombatMode`, `endSlaveAnim`, `equipItem`, `foodUpdate`, `formationUpdateCallback`, `fourFrameUpdate`, `frameSkip`, `generateWeapon`, `getAABB`, `getAge`, `getAge0to1`, `getAgeInverse`, `getAgeString`, `getAI`, `getAllAttackers`, `getAllAttackersCount`, `getAnimationClass`, `getAppearance`, `getAppearanceData`, `getAttackOriginationDirection`, `getAttackTarget`, `getAudioObject`, `getBlackboard`, `getBody`, `getBoneWorldPosition`, `getCarryingObject`, `getChainedModeShackles`, `getCharacterMemoryTag`, `getCombatClass`, `getCurrentNoiseRange`, `getCurrentTownLocation`, `getCurrentWeapon`, `getCurrentWeatherAffectStatus`, `getCurrentWeatherAffectStrength`, `getDataType`, `getDefaultTaskRepertoireEnum`, `getDiplomacyMultiplier`, `getDropped`, `getEnemyFormation`, `getFencingSuccessChance`, `getFormation`, `getFrameTime`, `getGroundType`, `getGUIData`, `getHPMultiplier`, `getIDForMemoryTagging`, `getIntendedAggression`, `getInventory`, `getKidnappingChance`, `getKidnappingEscapeChance_skill`, `getKidnappingEscapeChance_strength`, `getLightLevel`, `getLockpickChance`, `getLowerBodyArmour`, `getMagicHungerSetting`, `getMainArmourType`, `getMedical`, `getMoney`, `getMovement`, `getMovementDirection`, `getMovementSpeed`, `getMovementSpeedOrders`, `getMySlaveOwner`, `getName`, `getNumFoodItems`, `getOrdersReciever`, `getOwnerships`, `getPerceptionMult`, `getPermajob`, `getPermajobCount`, `getPermajobData`, `getPermajobName`, `getPickedUp`, `getPlatoon`, `getPosition`, `getPositionBip01`, `getPredictedPosition`, `getProneState`, `getRace`, `getRadius`, `getRagdollPhysicsRootPos`, `getRangedWeapon`, `getRawEntityPosition`, `getRoughLevel`, `getSensoryData`, `getSquadLeader`, `getSquadMissionTarget`, `getStandingOrder`, `getStateBroadcast`, `getStats`, `getStealingSuccessChance`, `getStealthKOChance`, `getTerrainHeightPosition`, `getThePreferredWeapon`, `gettingEaten`, `getTotalCarryWeight`, `getTotalRelativeStrengthOfAttackers`, `getUniformColorScheme`, `getUpperBodyArmour`, `getVisible`, `getWaterLevel`, `giveBirth`, `giveItem`, `hasABackpackOn`, `hasAmmoFor`, `hasDialogue`, `hasItem`, `hasItemsFrom`, `hasPlatoon`, `hasRoomForItem`, `hasSimilarItem`, `haveMetBefore`, `healCompletely`, `hitByMeleeAttack`, `ifImASmithShouldIDitchMyBackWeapon`, `IHateThisGuyBecauseOfStuffThatHappened`, `ILoveThisGuyBecauseOfStuffThatHappened`, `ImStealingDoYouNotice`, `init`, `isAlly`, `isATrader`, `isBeingCarried`, `isChainedMode`, `isCrippled`, `isDead`, `isDestroyed`, `isDiplomaticStatus`, `isDisabled`, `isDown`, `isEnemy`, `isFemale`, `isFleeing`, `isHeadShaven`, `iShotYou`, `iShouldntAggravateThisTarget`, `isHuman`, `isImmuneToOffscreenMode`, `isInAPersistentPlatoon`, `isInAWarCampaign`, `isInCombatMode`, `isIndoors`, `isIndoorsRagdoll`, `isInjured`, `isInRangedCombatMode`, `isInventoryVisible`, `isItOkForMeToLoot`, `isItSafeToGetUp`, `isKidnapped`, `isLawEnforcement`, `isLeadingAWarCampaign`, `isLiterallyUnconciousNotPretending`, `isLiterallyUnderMeleeAttackRightNowForSure`, `isMyFactionsSlave`, `isMySlave`, `isOnARoof`, `isOnAWall`, `isPhysical`, `isPlayerCharacter`, `isPrisonerFreeToGo`, `isRagdoll`, `isResident`, `isSlave`, `isStandingOnBuilding`, `isStealthMode`, `isStealthModeOrCrawling`, `isUnconcious`, `isUnique`, `isWithThePlayer`, `lastSeenInHoursAgo`, `lineOfSightCheck`, `loadFromSerialise`, `loadFromSerialisePostCreationStage`, `loadUnloadCheck`, `lookatPosition`, `movePermajob`, `notifyEffect`, `notifyICanSeeYouSneaking`, `notifyIndoors`, `notifyTheCampaignOfAnAttack`, `offscreenUpdate`, `pathExists`, `pausedUpdate`, `periodicUpdate`, `pickupObject`, `playerMoveOrderDefault`, `postRagdollCallback`, `postUpdate`, `preventRagdollMode`, `processCharacterLoadTimeMessages`, `ragdollMode`, `ragdollUpdatesUT`, `reCalculateNaturalWeapon`, `recalculateTotalEquipmentSkillBonus`, `relocationTeleport`, `rememberCharacter`, `removeJob`, `removePermajob`, `resetRagdollNavmeshSafePos`, `reThinkCurrentAIAction`, `runSlaveAnim`, `say`, `say_WithARepeatLimiter`, `sayALine`, `select`, `sellingUniformDetectionCheck`, `sendDialogEvent`, `sendDialogEventOverride`, `sendMessage`, `separateIntoMyOwnSquad`, `serialise`, `setAge`, `setAppearanceData`, `setBedMode`, `setChainedMode`, `setDestination`, `setDestinationIndoors`, `setDisguiseMessage`, `setEffectBT`, `setFaction`, `setGroundType`, `setHandle`, `setInsideTownWalls`, `setName`, `setNameTagVisible`, `setPrisonMode`, `setProneState`, `setRace`, `setRagdollNavmeshSafePos`, `setSlaveAIJob`, `setSquadMemberType`, `setStandingOrder`, `setStealthMode`, `setTerrainHeightPosition`, `setupAI`, `setupAudio`, `setupInventorySections`, `setupPlatoonAI`, `setVisible`, `sheatheWeapon`, `shouldIHelpThisGuy`, `shouldIScrewThisGuyOver`, `shouldUseRangedWeapons`, `slaveAttachToBoneMode`, `smugglingTradeCheck`, `startEffect`, `stealthUpdate`, `stolenGoodsDetectionCheck`, `stopAllEffects`, `stopEffect`, `stumbleState`, `switchLights`, `takeMoney`, `teleport`, `teleportFromAnimation`, `teleportVisuallyOnly`, `threadedUpdate`, `threadedUpdate4`, `threadedUpdatePeriodic`, `unequipItem`, `uniqueStateUpdate`, `unselect`, `update`, `updateGUIStatsDetails`, `updateLastTask`, `updateOnScreenCheck`, `updatePortraitGUIState`, `updateStateBroadcast`, `updateTimes`, `updateUT`, `validateInventorySections`, `wantsPathfinderActive`, `wantsToEatNow`, `wantsToTriggerCampaigns`, `wearingUniformOf`, `weatherUpdate`, `willTalkToEnemies`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getLayoutInstanceID`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getZoneMapLocation`, `needsSaving`, `notifyOutdoors`, `setFloor`, `setIsInsideBuilding`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getFaction`, `getGameData`, `getHandle`, `getPositionForWaypoint`, `hasFaction`, `isValid`, `typeIsAnItem`
+
 ## CharacterEditWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterEditWindow.h`
 **Metatable:** `KenshiLua.CharacterEditWindow`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -3660,9 +3964,14 @@
 | toggleClothes | `sender: MyGUI::Widget` | `void` | `obj:toggleClothes(sender)` |
 | confirmButton | `sender: MyGUI::Widget` | `void` | `obj:confirmButton(sender)` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## CharacterHuman
 **Header:** `extern/KenshiLib/Include/kenshi/CharacterHuman.h`
 **Metatable:** `KenshiLua.CharacterHuman`
+
+**Inherits from:** [`Character`](#character) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -3680,18 +3989,47 @@
 | dropWeaponInHandsFake | `` | `void` | `obj:dropWeaponInHandsFake()` |
 | leaveSheathEquipped | `section: string, ypos: integer` | `void` | `obj:leaveSheathEquipped(section, ypos)` |
 
+### Inherited Members
+**From [`Character`](#character):**
+
+- Fields: `_currentProneState`, `_destinationInsideBuilding`, `_destinationInsideWalls`, `_isBeingCarried`, `_isEngagedWithAPlayer`, `_isLiterallyUnderMeleeAttackRightNowForSure`, `_isOnARoof`, `_lightLevel`, `_myMemory`, `activeEffects`, `ai`, `animation`, `armourType`, `audioData`, `audioEmitter`, `audioObject`, `body`, `bodyDecayTimer`, `carringObjectLeftOrRight`, `carryingObject`, `crimes`, `currentSkillUsing`, `currentStumblePainAnimation`, `dialogue`, `diplomacyMultiplier`, `disguiseGUIFeedbacks`, `frameTIME`, `frameTIME_P`, `frameTIMEfour`, `groundType`, `inDoorsSetCooldown`, `inSomething`, `inventory`, `inWhat`, `isCarryingLeftSide`, `isCarryingSomething`, `isChained`, `isCurrentlyGettingUp`, `isGettingEaten`, `isOnScreen`, `isPhysicalMode`, `isUsingTurret`, `isVisibleAndNear`, `isVisibleUpdateMode`, `lastGuyWhoDefeatedMe`, `lastUsedWeaponCategory`, `medical`, `messages`, `messageSubject`, `movement`, `msgCarryMode`, `myRace`, `nameTag`, `naturalWeapon`, `needsLightLevel`, `offscreenFrameTime`, `platoon`, `playerWantsMeToGetUp`, `portraitIndex`, `portraitSerial`, `ragdollMessages`, `ragdollNavmeshPosition`, `rangedCombat`, `setVisibleMsg`, `sex`, `slaveOwner`, `squadMemberID`, `stateBroadcast`, `stats`, `stealthMarkerArrows`, `stealthMode`, `stealthUnseen`, `terrainHeightPosition`, `whoSeesMeSneaking`
+- Methods: `_carryMode`, `_getRawPosition`, `_isLiterallyUnderMeleeAttackRightNowForSure_update`, `_killRagdoll`, `_printRaceXPBonusLine`, `_ragdollMode`, `_setPlatoon`, `_startStumble`, `addGoal`, `addJob`, `addOrder`, `AIDestinationIndoorOutdoorCheck`, `amInsideTownWalls`, `amSomeoneWhoNeedsToEatToLive`, `areYouGonnaGetMe`, `attackingYou`, `attackTarget`, `audioEvent`, `audioValue`, `breakFollowOrderLoop`, `calculateDestinationState`, `calculateMainArmourType`, `canAssignBounties`, `canGoIndoors`, `canSpeakNormally`, `canTakePlayerOrdersAtThisTime`, `carryModeT`, `changeSlaveOwner`, `checkPlayerOrderForProblems`, `chooseCarryObjectLeftOrRight`, `clearAllAIGoals`, `clearAllTempEnemyStatuses`, `clearPermajobs`, `clearTempEnemyStatus`, `conglomerateTagsFor`, `convertCutDirection`, `createAnimationClass`, `createComponents`, `createInventoryLayout`, `createPhysical`, `dailyUpdate`, `debugIndicateCharacters`, `declareDead`, `destinationIndoors`, `destinationInsideWalls`, `destroyPhysical`, `drawWeapon`, `dropCarriedObject`, `dropGearOnDeath`, `eatItem`, `endCombatMode`, `endSlaveAnim`, `equipItem`, `foodUpdate`, `formationUpdateCallback`, `fourFrameUpdate`, `frameSkip`, `generateWeapon`, `getAABB`, `getAge`, `getAge0to1`, `getAgeInverse`, `getAgeString`, `getAI`, `getAllAttackers`, `getAllAttackersCount`, `getAnimationClass`, `getAppearance`, `getAppearanceData`, `getAttackOriginationDirection`, `getAttackTarget`, `getAudioObject`, `getBlackboard`, `getBody`, `getBoneWorldPosition`, `getCarryingObject`, `getChainedModeShackles`, `getCharacterMemoryTag`, `getCombatClass`, `getCurrentNoiseRange`, `getCurrentTownLocation`, `getCurrentWeapon`, `getCurrentWeatherAffectStatus`, `getCurrentWeatherAffectStrength`, `getDataType`, `getDefaultTaskRepertoireEnum`, `getDiplomacyMultiplier`, `getDropped`, `getEnemyFormation`, `getFencingSuccessChance`, `getFormation`, `getFrameTime`, `getGroundType`, `getGUIData`, `getHPMultiplier`, `getIDForMemoryTagging`, `getIntendedAggression`, `getInventory`, `getKidnappingChance`, `getKidnappingEscapeChance_skill`, `getKidnappingEscapeChance_strength`, `getLightLevel`, `getLockpickChance`, `getLowerBodyArmour`, `getMagicHungerSetting`, `getMainArmourType`, `getMedical`, `getMoney`, `getMovement`, `getMovementDirection`, `getMovementSpeed`, `getMovementSpeedOrders`, `getMySlaveOwner`, `getName`, `getNumFoodItems`, `getOrdersReciever`, `getOwnerships`, `getPerceptionMult`, `getPermajob`, `getPermajobCount`, `getPermajobData`, `getPermajobName`, `getPickedUp`, `getPlatoon`, `getPosition`, `getPositionBip01`, `getPredictedPosition`, `getProneState`, `getRace`, `getRadius`, `getRagdollPhysicsRootPos`, `getRangedWeapon`, `getRawEntityPosition`, `getRoughLevel`, `getSensoryData`, `getSquadLeader`, `getSquadMissionTarget`, `getStandingOrder`, `getStateBroadcast`, `getStats`, `getStealingSuccessChance`, `getStealthKOChance`, `getTerrainHeightPosition`, `getThePreferredWeapon`, `gettingEaten`, `getTotalCarryWeight`, `getTotalRelativeStrengthOfAttackers`, `getUniformColorScheme`, `getUpperBodyArmour`, `getVisible`, `getWaterLevel`, `giveBirth`, `giveItem`, `hasABackpackOn`, `hasAmmoFor`, `hasDialogue`, `hasItem`, `hasItemsFrom`, `hasPlatoon`, `hasRoomForItem`, `hasSimilarItem`, `haveMetBefore`, `healCompletely`, `hitByMeleeAttack`, `ifImASmithShouldIDitchMyBackWeapon`, `IHateThisGuyBecauseOfStuffThatHappened`, `ILoveThisGuyBecauseOfStuffThatHappened`, `ImStealingDoYouNotice`, `init`, `isAlly`, `isAnimal`, `isATrader`, `isBeingCarried`, `isChainedMode`, `isCrippled`, `isDead`, `isDestroyed`, `isDiplomaticStatus`, `isDisabled`, `isDown`, `isEnemy`, `isFemale`, `isFleeing`, `isHeadShaven`, `iShotYou`, `iShouldntAggravateThisTarget`, `isImmuneToOffscreenMode`, `isInAPersistentPlatoon`, `isInAWarCampaign`, `isInCombatMode`, `isIndoors`, `isIndoorsRagdoll`, `isInjured`, `isInRangedCombatMode`, `isInventoryVisible`, `isItOkForMeToLoot`, `isItSafeToGetUp`, `isKidnapped`, `isLawEnforcement`, `isLeadingAWarCampaign`, `isLiterallyUnconciousNotPretending`, `isLiterallyUnderMeleeAttackRightNowForSure`, `isMyFactionsSlave`, `isMySlave`, `isOnARoof`, `isOnAWall`, `isPhysical`, `isPlayerCharacter`, `isPrisonerFreeToGo`, `isRagdoll`, `isResident`, `isSlave`, `isStandingOnBuilding`, `isStealthMode`, `isStealthModeOrCrawling`, `isUnconcious`, `isUnique`, `isWithThePlayer`, `lastSeenInHoursAgo`, `lineOfSightCheck`, `loadFromSerialise`, `loadFromSerialisePostCreationStage`, `loadUnloadCheck`, `lookatPosition`, `movePermajob`, `notifyEffect`, `notifyICanSeeYouSneaking`, `notifyIndoors`, `notifyTheCampaignOfAnAttack`, `offscreenUpdate`, `pathExists`, `pausedUpdate`, `periodicUpdate`, `pickupObject`, `playerMoveOrderDefault`, `postRagdollCallback`, `postUpdate`, `preventRagdollMode`, `processCharacterLoadTimeMessages`, `ragdollMode`, `ragdollUpdatesUT`, `reCalculateNaturalWeapon`, `recalculateTotalEquipmentSkillBonus`, `relocationTeleport`, `rememberCharacter`, `removeJob`, `removePermajob`, `resetRagdollNavmeshSafePos`, `reThinkCurrentAIAction`, `runSlaveAnim`, `say`, `say_WithARepeatLimiter`, `sayALine`, `select`, `sellingUniformDetectionCheck`, `sendDialogEvent`, `sendDialogEventOverride`, `sendMessage`, `separateIntoMyOwnSquad`, `serialise`, `setAge`, `setAppearanceData`, `setBedMode`, `setChainedMode`, `setDestination`, `setDestinationIndoors`, `setDisguiseMessage`, `setEffectBT`, `setFaction`, `setGroundType`, `setHandle`, `setInsideTownWalls`, `setName`, `setNameTagVisible`, `setPrisonMode`, `setProneState`, `setRace`, `setRagdollNavmeshSafePos`, `setSlaveAIJob`, `setSquadMemberType`, `setStandingOrder`, `setStealthMode`, `setTerrainHeightPosition`, `setupAI`, `setupAudio`, `setupInventorySections`, `setupPlatoonAI`, `setVisible`, `sheatheWeapon`, `shouldIHelpThisGuy`, `shouldIScrewThisGuyOver`, `shouldUseRangedWeapons`, `slaveAttachToBoneMode`, `smugglingTradeCheck`, `startEffect`, `stealthUpdate`, `stolenGoodsDetectionCheck`, `stopAllEffects`, `stopEffect`, `stumbleState`, `switchLights`, `takeMoney`, `teleport`, `teleportFromAnimation`, `teleportVisuallyOnly`, `threadedUpdate`, `threadedUpdate4`, `threadedUpdatePeriodic`, `unequipItem`, `uniqueStateUpdate`, `unselect`, `update`, `updateGUIStatsDetails`, `updateLastTask`, `updateOnScreenCheck`, `updatePortraitGUIState`, `updateStateBroadcast`, `updateTimes`, `updateUT`, `validateInventorySections`, `wantsPathfinderActive`, `wantsToEatNow`, `wantsToTriggerCampaigns`, `wearingUniformOf`, `weatherUpdate`, `willTalkToEnemies`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getLayoutInstanceID`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getZoneMapLocation`, `needsSaving`, `notifyOutdoors`, `setFloor`, `setIsInsideBuilding`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getFaction`, `getGameData`, `getHandle`, `getPositionForWaypoint`, `hasFaction`, `isValid`, `typeIsAnItem`
+
 ## CharacterInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 **Metatable:** `KenshiLua.CharacterInventoryLayout`
+
+**Inherits from:** [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
 
+### Inherited Members
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## CharacterStatsWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterStatsWindow.h`
 **Metatable:** `KenshiLua.CharacterStatsWindow`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -3734,9 +4072,15 @@
 | getStat | `type: StatsEnumerated` | `boolean\|integer` | `CharacterStatsWindow.getStat(type)`<br>`obj:getStat(type)` |
 | getStatById | `` | `boolean\|integer` | `CharacterStatsWindow.getStatById()`<br>`obj:getStatById()` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `resize`, `setPosition`, `setPositionReal`
+
 ## CharacterStatsWindow::Stat
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterStatsWindow.h`
-**Parent Class:** [`CharacterStatsWindow`](#characterstatswindow)
+**Enclosing Class:** [`CharacterStatsWindow`](#characterstatswindow)
 **Metatable:** `KenshiLua.Stat`
 
 ### Fields
@@ -3755,7 +4099,7 @@
 
 ## CharacterStatsWindow::StatGroup
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterStatsWindow.h`
-**Parent Class:** [`CharacterStatsWindow`](#characterstatswindow)
+**Enclosing Class:** [`CharacterStatsWindow`](#characterstatswindow)
 **Metatable:** `KenshiLua.StatGroup`
 
 ### Fields
@@ -3767,6 +4111,8 @@
 ## CharacterTradingWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterTradingWindow.h`
 **Metatable:** `KenshiLua.CharacterTradingWindow`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -3785,6 +4131,12 @@
 | isVisible | `` | `boolean` | `obj:isVisible()` |
 | update | `` | `void` | `obj:update()` |
 | close | `` | `void` | `obj:close()` |
+
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `autoChangeSelectedObject`, `clear`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `resize`, `setPosition`, `setPositionReal`
 
 ## CharBody
 **Header:** `extern/KenshiLib/Include/kenshi/CharBody.h`
@@ -3843,6 +4195,8 @@
 ## CharMovement
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
 **Metatable:** `KenshiLua.CharMovement`
+
+**Inherits from:** [`AbstractMovementBase`](#abstractmovementbase) > [`NxUserControllerHitReport`](#nxusercontrollerhitreport)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -3928,6 +4282,12 @@
 | setMovementMode | `mode: MovementMode` | `void` | `obj:setMovementMode(mode)` |
 | isStandingOnSomething | `` | `hand` | `obj:isStandingOnSomething()` |
 | combatMovementOffensive | `target: hand, minDistance: number, maxDistance: number, circle: number, power: boolean, speedLimit: number` | `void` | `obj:combatMovementOffensive(target, minDistance, maxDistance, circle, power, speedLimit)` |
+
+### Inherited Members
+**From [`AbstractMovementBase`](#abstractmovementbase):**
+
+- Fields: `currentlyMoving`, `currentMotion`, `currentSpeed`, `desiredSpeed`, `destination`, `direction`, `maxSpeed`, `officiallyStopped`, `pathDestination`, `pos`, `positionSmoother`, `roadFollower`, `roadWeight`, `speedGroup`, `speedOrders`, `walkSpeed`
+- Methods: `amInsideTownWalls`, `create`, `extractRoadFollower`, `getCurrentMotion`, `getCurrentSpeed`, `getCurrentSpeedRelativeToMax01`, `getDestination`, `getFacingDirection`, `getMaxSpeed`, `getPosition`, `getSpeedOrders`, `getStandardWalkSpeed`, `isCurrentlyMoving`, `isProbablyStuck`, `leaveSpeedGroup`, `onControllerHit`, `onShapeHit`, `restoreDesiredSpeed`, `setCurrentRoadFollower`, `setDesiredSpeed`, `setDesiredSpeedOrders`, `setMaxSpeed`, `setPatrolInput`, `setRoadDestination`, `setRoadPreference`, `setStandardWalkSpeed`
 
 ## CharStats
 **Header:** `extern/KenshiLib/Include/kenshi/CharStats.h`
@@ -4189,6 +4549,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
 **Metatable:** `KenshiLua.CircleStateAI`
 
+**Inherits from:** [`CombatState`](#combatstate)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -4202,6 +4564,11 @@
 | initialise | `` | `boolean` | `obj:initialise()` |
 | update | `time: number` | `void` | `obj:update(time)` |
 | end | `` | `void` | `obj:end()` |
+
+### Inherited Members
+**From [`CombatState`](#combatstate):**
+
+- Fields: `combat`, `stateTimer`
 
 ## CombatClass
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
@@ -4338,7 +4705,7 @@
 
 ## CombatClass::AttackSlotManager
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
-**Parent Class:** [`CombatClass`](#combatclass)
+**Enclosing Class:** [`CombatClass`](#combatclass)
 **Metatable:** `KenshiLua.AttackSlotManager`
 
 ### Fields
@@ -4362,12 +4729,12 @@
 
 ## CombatClass::AttackSlotManager::SlotData
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
-**Parent Class:** [`CombatClass`](#combatclass)
+**Enclosing Class:** [`CombatClass`](#combatclass)
 **Metatable:** `KenshiLua.CombatClass_AttackSlotManager_SlotData`
 
 ## CombatClass::EffectData
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatClass.h`
-**Parent Class:** [`CombatClass`](#combatclass)
+**Enclosing Class:** [`CombatClass`](#combatclass)
 **Metatable:** `KenshiLua.CombatClass_EffectData`
 
 ### Methods
@@ -4440,6 +4807,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
 **Metatable:** `KenshiLua.CombatState`
 
+**Subclasses:** [`AttackState`](#attackstate), [`CircleStateAI`](#circlestateai), [`WaitingStateAI`](#waitingstateai)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -4491,7 +4860,7 @@
 
 ## CombatTechniqueData::ImpactPoint
 **Header:** `extern/KenshiLib/Include/kenshi/Terrain.h`
-**Parent Class:** [`CombatTechniqueData`](#combattechniquedata)
+**Enclosing Class:** [`CombatTechniqueData`](#combattechniquedata)
 **Metatable:** `KenshiLua.ImpactPoint`
 
 ### Fields
@@ -4511,6 +4880,8 @@
 ## ContainerItem
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 **Metatable:** `KenshiLua.ContainerItem`
+
+**Inherits from:** [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -4543,6 +4914,27 @@
 | loadFromSerialise | `state: GameSaveState` | `void` | `obj:loadFromSerialise(state)` |
 | setProperOwner | `h: hand` | `void` | `obj:setProperOwner(h)` |
 
+### Inherited Members
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getCraftMaterialMult`, `getCraftTime`, `getEntity`, `getInventoryWeAreIn`, `getLevel`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isAFactionUniform`, `isArmour`, `isCrossbow`, `isFood`, `isGear`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setInventoryWeAreIn`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeight`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `getValueSingle`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `threadedUpdate`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## ContextMenu
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ContextMenu.h`
 **Metatable:** `KenshiLua.ContextMenu`
@@ -4569,6 +4961,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ContextMenu.h`
 **Metatable:** `KenshiLua.ContextMenuGUI`
 
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -4587,11 +4981,16 @@
 | getVisible | `` | `boolean` | `obj:getVisible()` |
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
 | show | `ordersList: lektor<int>, name: string, offset: boolean` | `void` | `obj:show(ordersList, name, offset)` |
-| optionSelected | `sender: MyGUI::Widget, left: integer, top: integer, id: integer` | `void` | `obj:optionSelected(sender, left, top, id)` |
+| optionSelected | `sender: MyGUI::Widget, left: integer, top: integer, id: MyGUI::MouseButton` | `void` | `obj:optionSelected(sender, left, top, id)` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## Contract_DefendPlayerBase
 **Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
 **Metatable:** `KenshiLua.Contract_DefendPlayerBase`
+
+**Inherits from:** [`Contract_HiredAlly`](#contract_hiredally) > [`Contract_Timed`](#contract_timed) > [`AIPackage`](#aipackage)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4603,9 +5002,27 @@
 | periodicUpdate | `` | `void` | `obj:periodicUpdate()` |
 | assessNeutral | `who: Character` | `void` | `obj:assessNeutral(who)` |
 
+### Inherited Members
+**From [`Contract_HiredAlly`](#contract_hiredally):**
+
+- Methods: `assessEnemy`, `endPackage`, `notifyBetrayal`, `showEndedMessage`, `showManagementPanelCallback`, `signalEnd`, `wantsRenewButton`
+
+**From [`Contract_Timed`](#contract_timed):**
+
+- Methods: `signalStart`
+
+**From [`AIPackage`](#aipackage):**
+
+- Fields: `blackboard`, `endingDialogActive`, `endingDialogPassive`, `key`, `leadsToPackage`, `missionEmployer`, `missionTarget`, `missionTown`, `packageData`, `priorityLevel`, `squad`, `unloadedMode`, `wasBetrayed`
+- Methods: `autoNotifyJobsPanel`, `getLeader`, `iAmActivePackage`, `load`, `notifyMyTargetPathfindImpossible`, `save`, `wasASuccess`
+
 ## Contract_HiredAlly
 **Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
 **Metatable:** `KenshiLua.Contract_HiredAlly`
+
+**Inherits from:** [`Contract_Timed`](#contract_timed) > [`AIPackage`](#aipackage)
+
+**Subclasses:** [`Contract_DefendPlayerBase`](#contract_defendplayerbase)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4623,9 +5040,23 @@
 | wantsRenewButton | `` | `boolean` | `obj:wantsRenewButton()` |
 | showManagementPanelCallback | `` | `void` | `obj:showManagementPanelCallback()` |
 
+### Inherited Members
+**From [`Contract_Timed`](#contract_timed):**
+
+- Methods: `signalStart`
+
+**From [`AIPackage`](#aipackage):**
+
+- Fields: `blackboard`, `endingDialogActive`, `endingDialogPassive`, `key`, `leadsToPackage`, `missionEmployer`, `missionTarget`, `missionTown`, `packageData`, `priorityLevel`, `squad`, `unloadedMode`, `wasBetrayed`
+- Methods: `autoNotifyJobsPanel`, `getLeader`, `getMyTarget`, `iAmActivePackage`, `load`, `notifyMyTargetPathfindImpossible`, `save`, `wasASuccess`
+
 ## Contract_Timed
 **Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
 **Metatable:** `KenshiLua.Contract_Timed`
+
+**Inherits from:** [`AIPackage`](#aipackage)
+
+**Subclasses:** [`Contract_HiredAlly`](#contract_hiredally), [`Contract_UntilOutOfDanger`](#contract_untiloutofdanger)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4633,9 +5064,17 @@
 | signalStart | `` | `boolean` | `obj:signalStart()` |
 | signalEnd | `` | `boolean` | `obj:signalEnd()` |
 
+### Inherited Members
+**From [`AIPackage`](#aipackage):**
+
+- Fields: `blackboard`, `endingDialogActive`, `endingDialogPassive`, `key`, `leadsToPackage`, `missionEmployer`, `missionTarget`, `missionTown`, `packageData`, `priorityLevel`, `squad`, `unloadedMode`, `wasBetrayed`
+- Methods: `activateAndSetup`, `assessEnemy`, `assessNeutral`, `autoNotifyJobsPanel`, `endPackage`, `getDesiredTravelSpeed`, `getGUIData`, `getLeader`, `getMyTarget`, `iAmActivePackage`, `load`, `notifyBetrayal`, `notifyMyTargetPathfindImpossible`, `periodicUpdate`, `save`, `showManagementPanelCallback`, `wantsRenewButton`, `wasASuccess`
+
 ## Contract_UntilExSlave
 **Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
 **Metatable:** `KenshiLua.Contract_UntilExSlave`
+
+**Inherits from:** [`AIPackage`](#aipackage)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4643,9 +5082,17 @@
 | getDesiredTravelSpeed | `me: Character` | `integer` | `obj:getDesiredTravelSpeed(me)` |
 | signalEnd | `` | `boolean` | `obj:signalEnd()` |
 
+### Inherited Members
+**From [`AIPackage`](#aipackage):**
+
+- Fields: `blackboard`, `endingDialogActive`, `endingDialogPassive`, `key`, `leadsToPackage`, `missionEmployer`, `missionTarget`, `missionTown`, `packageData`, `priorityLevel`, `squad`, `unloadedMode`, `wasBetrayed`
+- Methods: `activateAndSetup`, `assessEnemy`, `assessNeutral`, `autoNotifyJobsPanel`, `endPackage`, `getGUIData`, `getLeader`, `getMyTarget`, `iAmActivePackage`, `load`, `notifyBetrayal`, `notifyMyTargetPathfindImpossible`, `periodicUpdate`, `save`, `showManagementPanelCallback`, `signalStart`, `wantsRenewButton`, `wasASuccess`
+
 ## Contract_UntilOutOfDanger
 **Header:** `extern/KenshiLib/Include/kenshi/AI/Contract.h`
 **Metatable:** `KenshiLua.Contract_UntilOutOfDanger`
+
+**Inherits from:** [`Contract_Timed`](#contract_timed) > [`AIPackage`](#aipackage)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4655,9 +5102,21 @@
 | getDesiredTravelSpeed | `me: Character` | `integer` | `obj:getDesiredTravelSpeed(me)` |
 | signalEnd | `` | `boolean` | `obj:signalEnd()` |
 
+### Inherited Members
+**From [`Contract_Timed`](#contract_timed):**
+
+- Methods: `signalStart`
+
+**From [`AIPackage`](#aipackage):**
+
+- Fields: `blackboard`, `endingDialogActive`, `endingDialogPassive`, `key`, `leadsToPackage`, `missionEmployer`, `missionTarget`, `missionTown`, `packageData`, `priorityLevel`, `squad`, `unloadedMode`, `wasBetrayed`
+- Methods: `assessEnemy`, `assessNeutral`, `autoNotifyJobsPanel`, `endPackage`, `getGUIData`, `getLeader`, `getMyTarget`, `iAmActivePackage`, `load`, `notifyBetrayal`, `notifyMyTargetPathfindImpossible`, `save`, `showManagementPanelCallback`, `wantsRenewButton`, `wasASuccess`
+
 ## CPerfTimer
 **Header:** `extern/KenshiLib/Include/kenshi/util/PerfTimer.h`
 **Metatable:** `KenshiLua.CPerfTimer`
+
+**Subclasses:** [`CPerfTimerT`](#cperftimert)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4686,9 +5145,18 @@
 **Header:** `extern/KenshiLib/Include/kenshi/util/PerfTimer.h`
 **Metatable:** `KenshiLua.CPerfTimerT`
 
+**Inherits from:** [`CPerfTimer`](#cperftimer)
+
+### Inherited Members
+**From [`CPerfTimer`](#cperftimer):**
+
+- Methods: `Elapsed`, `Elapsedms`, `Elapsedus`, `IsRunning`, `IsSupported`, `operator_add`, `operator_add_assign`, `operator_assign`, `operator_ge`, `operator_gt`, `operator_le`, `operator_lt`, `operator_sub`, `operator_sub_assign`, `Resolution`, `Resolutionms`, `Resolutionus`, `Start`, `Stop`
+
 ## CraftingBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/CraftingBuilding.h`
 **Metatable:** `KenshiLua.CraftingBuilding`
+
+**Inherits from:** [`ProductionBuilding`](#productionbuilding) > [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -4746,9 +5214,43 @@
 |---|---|---|---|
 | playerManufacturerData | `` | `GameData` | `CraftingBuilding.playerManufacturerData()`<br>`obj:playerManufacturerData()` |
 
+### Inherited Members
+**From [`ProductionBuilding`](#productionbuilding):**
+
+- Fields: `_resourceMiningLevel`, `consumptionItems`, `outSection`, `productionState`
+- Methods: `getConsumtionItems`, `getDefaultTask`, `getGUIFertility`, `getGUIToolTipForGroundResourceEfficiency`, `getInputValue`, `getMiningResourceLevel`, `getMouseCursor`, `getNumConsumtionItems`, `getOutput`, `getOutputBasedRotationSpeedMult`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getResourcesNeededBecauseEmpty`, `getResourcesNeededBecauseNotFull`, `isAnyInputsEmpty`, `isAnyInputsFull`, `isProductionEmpty`, `limitInputsOutputRate`, `needsUpdate`, `setupMiningResourceLevel`, `updateInputs`
+
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getFunctionStuff`, `getProductionItem`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## CraftingInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Building/CraftingBuilding.h`
 **Metatable:** `KenshiLua.CraftingInventoryLayout`
+
+**Inherits from:** [`BuildInventoryLayout`](#buildinventorylayout) > [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -4765,6 +5267,20 @@
 | setOutputType | `type: itemType` | `void` | `obj:setOutputType(type)` |
 | setCraftingName | `name: string` | `void` | `obj:setCraftingName(name)` |
 | getQueueButton | `` | `MyGUI::Widget` | `obj:getQueueButton()` |
+
+### Inherited Members
+**From [`BuildInventoryLayout`](#buildinventorylayout):**
+
+- Fields: `input1Item`, `input1ItemIcon`, `input1NameText`, `input1Panel`, `input1Progress`, `input1StatusText`, `input2Item`, `input2ItemIcon`, `input2NameText`, `input2Panel`, `input2Progress`, `input2StatusText`, `inputs`, `outputItem`, `outputItemIcon`, `outputNameText`, `outputProgress`, `outputs`
+- Methods: `setInput`, `setInputEnabled`, `setInputItem`, `setInputProgress`, `setOutput`, `setOutputItem`, `setOutputProgress`
+
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## CraftingItem
 **Header:** `extern/KenshiLib/Include/kenshi/Building/CraftingBuilding.h`
@@ -4786,6 +5302,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.Crossbow`
 
+**Inherits from:** [`Weapon`](#weapon) > [`Gear`](#gear) > [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -4804,6 +5322,37 @@
 | setVisible | `on: boolean` | `void` | `obj:setVisible(on)` |
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 | getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
+
+### Inherited Members
+**From [`Weapon`](#weapon):**
+
+- Fields: `bleedDamage`, `category`, `category_animationOverride`, `combatWeight`, `modAttack`
+- Methods: `getCategory`, `getCategory_animationOverride`, `getCombatWeight`, `getItemWeight`, `getSkillModIndoors`, `getValueSingle`, `is2HandedOnly`, `isSword`, `isWeapon`
+
+**From [`Gear`](#gear):**
+
+- Fields: `crafter`, `isUniform`, `level`, `level_0_100`, `value`
+- Methods: `_loadFromSerialise`, `_serialise`, `getLevel`, `getLevel01`, `isAFactionUniform`, `isGear`, `isPlayerCrafted`, `setInventoryWeAreIn`
+
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyPhysical`, `findProperOwner`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isArmour`, `isFood`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setPersistant`, `setPositionRotation`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## Damages
 **Header:** `extern/KenshiLib/Include/kenshi/Damages.h`
@@ -4829,6 +5378,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
 **Metatable:** `KenshiLua.DataObjectContainer`
 
+**Subclasses:** [`RootObjectContainer`](#rootobjectcontainer)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -4847,6 +5398,8 @@
 ## DatapanelGUI
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DatapanelGUI.h`
 **Metatable:** `KenshiLua.DatapanelGUI`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -4938,9 +5491,17 @@
 | setObject | `obj: hand` | `void` | `obj:setObject(obj)` |
 | getCoords | `left: number, top: number, width: number, height: number` | `MyGUI::IntCoord` | `obj:getCoords(left, top, width, height)` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `isVisible`
+
 ## DataPanelLine
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine`
+
+**Subclasses:** [`DataPanelLine_Button`](#datapanelline_button), [`DataPanelLine_CheckBox`](#datapanelline_checkbox), [`DataPanelLine_DropBox`](#datapanelline_dropbox), [`DataPanelLine_Faction`](#datapanelline_faction), [`DataPanelLine_KeyConfig`](#datapanelline_keyconfig), [`DataPanelLine_Progress`](#datapanelline_progress), [`DataPanelLine_Research`](#datapanelline_research), [`DataPanelLine_Slider`](#datapanelline_slider), [`DataPanelLine_SliderEditable`](#datapanelline_slidereditable), [`DataPanelLine_Text`](#datapanelline_text), [`DataPanelLine_TextEditable`](#datapanelline_texteditable)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -4975,6 +5536,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_Button`
 
+**Inherits from:** [`DataPanelLine`](#datapanelline)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -4990,9 +5553,17 @@
 | getUserData | `` | `hand` | `obj:getUserData()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_CheckBox
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_CheckBox`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5011,9 +5582,17 @@
 | getCheckBox | `` | `MyGUI::Widget` | `obj:getCheckBox()` |
 | createMe | `parent: DatapanelGUI, topReal: number, lastLine: boolean` | `void` | `obj:createMe(parent, topReal, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_DropBox
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_DropBox`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5036,9 +5615,17 @@
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 | refresh | `` | `void` | `obj:refresh()` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_Faction
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_Faction`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5054,9 +5641,17 @@
 |---|---|---|---|
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_KeyConfig
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_KeyConfig`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5076,9 +5671,17 @@
 | createMe | `p: DatapanelGUI, vpos: number, lastLine: boolean` | `void` | `obj:createMe(p, vpos, lastLine)` |
 | getCommand | `` | `void` | `obj:getCommand()` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_Progress
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_Progress`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5094,9 +5697,17 @@
 | setProgress | `value: number, text: string` | `void` | `obj:setProgress(value, text)` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_Research
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_Research`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5114,9 +5725,17 @@
 |---|---|---|---|
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_Slider
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_Slider`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5135,9 +5754,17 @@
 | refresh | `` | `void` | `obj:refresh()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_SliderEditable
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_SliderEditable`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5163,9 +5790,17 @@
 | setPrecision | `dp: integer` | `void` | `obj:setPrecision(dp)` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_Text
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_Text`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5178,9 +5813,17 @@
 |---|---|---|---|
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+
 ## DataPanelLine_TextEditable
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
 **Metatable:** `KenshiLua.DataPanelLine_TextEditable`
+
+**Inherits from:** [`DataPanelLine`](#datapanelline)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5197,6 +5840,12 @@
 | getEditBox | `` | `MyGUI::EditBox` | `obj:getEditBox()` |
 | getNameBox | `` | `MyGUI::EditBox` | `obj:getNameBox()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
+
+### Inherited Members
+**From [`DataPanelLine`](#datapanelline):**
+
+- Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
 
 ## DialogChoiceList
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
@@ -5312,7 +5961,7 @@
 
 ## DialogLineData::DialogAction
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
-**Parent Class:** [`DialogLineData`](#dialoglinedata)
+**Enclosing Class:** [`DialogLineData`](#dialoglinedata)
 **Metatable:** `KenshiLua.DialogAction`
 
 ### Fields
@@ -5323,7 +5972,7 @@
 
 ## DialogLineData::DialogCondition
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
-**Parent Class:** [`DialogLineData`](#dialoglinedata)
+**Enclosing Class:** [`DialogLineData`](#dialoglinedata)
 **Metatable:** `KenshiLua.DialogCondition`
 
 ### Fields
@@ -5336,7 +5985,7 @@
 
 ## DialogLineData::FlagCondition
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
-**Parent Class:** [`DialogLineData`](#dialoglinedata)
+**Enclosing Class:** [`DialogLineData`](#dialoglinedata)
 **Metatable:** `KenshiLua.FlagCondition`
 
 ### Fields
@@ -5458,7 +6107,7 @@
 
 ## Dialogue::RepetitionCounter
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
-**Parent Class:** [`Dialogue`](#dialogue)
+**Enclosing Class:** [`Dialogue`](#dialogue)
 **Metatable:** `KenshiLua.RepetitionCounter`
 
 ### Fields
@@ -5476,7 +6125,7 @@
 
 ## Dialogue::RepetitionCounter::DialogState
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
-**Parent Class:** [`Dialogue`](#dialogue)
+**Enclosing Class:** [`Dialogue`](#dialogue)
 **Metatable:** `KenshiLua.DialogState`
 
 ### Fields
@@ -5489,6 +6138,8 @@
 ## DialogueSpeechBubble
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
 **Metatable:** `KenshiLua.DialogueSpeechBubble`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5511,9 +6162,14 @@
 | getAlpha | `` | `number` | `obj:getAlpha()` |
 | getRect | `` | `integer` | `obj:getRect()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## DialogueWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DialogueWindow.h`
 **Metatable:** `KenshiLua.DialogueWindow`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5554,9 +6210,17 @@
 | changePortrait | `character: Character, player: boolean` | `void` | `obj:changePortrait(character, player)` |
 | updatePanelsPosition | `` | `void` | `obj:updatePanelsPosition()` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `autoChangeSelectedObject`, `clear`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `resize`, `setPosition`, `setPositionReal`
+
 ## DoorStuff
 **Header:** `extern/KenshiLib/Include/kenshi/Building/DoorStuff.h`
 **Metatable:** `KenshiLua.DoorStuff`
+
+**Inherits from:** [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5633,6 +6297,23 @@
 | _serialise | `save: GameData, id: string` | `void` | `obj:_serialise(save, id)` |
 | _loadFromSerialise | `save: GameData, id: string, firstTime: boolean` | `void` | `obj:_loadFromSerialise(save, id, firstTime)` |
 
+### Inherited Members
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateEfficiencyMult`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getFunctionStuff`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIState`, `getGUIUpgrade`, `getInstanceID`, `getInventory`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getOutputBasedRotationSpeedMult`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getUseableStuff`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isForSale`, `isFurniture`, `isFurnitureOrDoor`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPowerOn`, `isSign`, `isThePlayer`, `loadFromSerialise`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `serialise`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setup`, `setupAudio`, `setupFromData`, `setupLevelData`, `setupMiningResourceLevel`, `setVisible`, `switchLights`, `switchPowerOn`, `threadedUpdate`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `unequipItem`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## EdgeCache
 **Header:** `extern/KenshiLib/Include/kenshi/HavokCharacter.h`
 **Metatable:** `KenshiLua.EdgeCache`
@@ -5646,7 +6327,7 @@
 
 ## EdgeCache::Edge
 **Header:** `extern/KenshiLib/Include/kenshi/HavokCharacter.h`
-**Parent Class:** [`EdgeCache`](#edgecache)
+**Enclosing Class:** [`EdgeCache`](#edgecache)
 **Metatable:** `KenshiLua.EdgeCache_Edge`
 
 ## EdgePathNode
@@ -5779,7 +6460,7 @@
 
 ## Faction::BuildingSwaps
 **Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
-**Parent Class:** [`Faction`](#faction)
+**Enclosing Class:** [`Faction`](#faction)
 **Metatable:** `KenshiLua.BuildingSwaps`
 
 ### Fields
@@ -5797,7 +6478,7 @@
 
 ## Faction::CharacteristicsData
 **Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
-**Parent Class:** [`Faction`](#faction)
+**Enclosing Class:** [`Faction`](#faction)
 **Metatable:** `KenshiLua.Faction_CharacteristicsData`
 
 ## FactionLeader
@@ -5898,7 +6579,7 @@
 
 ## FactionRelations::RelationData
 **Header:** `extern/KenshiLib/Include/kenshi/FactionRelations.h`
-**Parent Class:** [`FactionRelations`](#factionrelations)
+**Enclosing Class:** [`FactionRelations`](#factionrelations)
 **Metatable:** `KenshiLua.RelationData`
 
 ### Fields
@@ -5953,8 +6634,10 @@
 
 ## FactionsScreen::FactionRelationsLine
 **Header:** `extern/KenshiLib/Include/kenshi/gui/FactionsScreen.h`
-**Parent Class:** [`FactionsScreen`](#factionsscreen)
+**Enclosing Class:** [`FactionsScreen`](#factionsscreen)
 **Metatable:** `KenshiLua.FactionRelationsLine`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -5970,9 +6653,12 @@
 |---|---|---|---|
 | update | `` | `void` | `obj:update()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## FactionsScreen::FactionRelationsLine::LessSort
 **Header:** `extern/KenshiLib/Include/kenshi/gui/FactionsScreen.h`
-**Parent Class:** [`FactionsScreen`](#factionsscreen)
+**Enclosing Class:** [`FactionsScreen`](#factionsscreen)
 **Metatable:** `KenshiLua.FactionsScreen_FactionRelationsLine_LessSort`
 
 ## FactionUniqueSquadManager
@@ -6004,7 +6690,7 @@
 
 ## FactionUniqueSquadManager::UniqueSpawnData
 **Header:** `extern/KenshiLib/Include/kenshi/FactionUniqueSquadManager.h`
-**Parent Class:** [`FactionUniqueSquadManager`](#factionuniquesquadmanager)
+**Enclosing Class:** [`FactionUniqueSquadManager`](#factionuniquesquadmanager)
 **Metatable:** `KenshiLua.UniqueSpawnData`
 
 ### Fields
@@ -6071,7 +6757,7 @@
 
 ## FactionWarMgr::CampaignRequest
 **Header:** `extern/KenshiLib/Include/kenshi/FactionWarMgr.h`
-**Parent Class:** [`FactionWarMgr`](#factionwarmgr)
+**Enclosing Class:** [`FactionWarMgr`](#factionwarmgr)
 **Metatable:** `KenshiLua.CampaignRequest`
 
 ### Fields
@@ -6093,6 +6779,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
 **Metatable:** `KenshiLua.FactoryCallbackInterface`
 
+**Subclasses:** [`PlayerInterface`](#playerinterface), [`TownBuildingsManager`](#townbuildingsmanager)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
@@ -6101,6 +6789,8 @@
 ## FarmBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
 **Metatable:** `KenshiLua.FarmBuilding`
+
+**Inherits from:** [`ProductionBuilding`](#productionbuilding) > [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -6172,9 +6862,41 @@
 | createEntity | `batch: FarmBuilding::FarmBatch` | `void` | `obj:createEntity(batch)` |
 | resetFarm | `` | `void` | `obj:resetFarm()` |
 
+### Inherited Members
+**From [`ProductionBuilding`](#productionbuilding):**
+
+- Fields: `_resourceMiningLevel`, `consumptionItems`, `outSection`, `productionState`
+- Methods: `canHaveSomeOfThese`, `createInventoryLayout`, `getConsumtionItems`, `getDefaultTask`, `getGUIToolTipForGroundResourceEfficiency`, `getInputValue`, `getItemsWeWantRidOf`, `getMiningResourceLevel`, `getMouseCursor`, `getNumConsumtionItems`, `getOutput`, `getOutputBasedRotationSpeedMult`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getResourcesNeededBecauseEmpty`, `getResourcesNeededBecauseNotFull`, `isAnyInputsFull`, `isAnyInputsInvalidType`, `isProductionEmpty`, `limitInputsOutputRate`, `setProductionItem`, `setupFromData`, `updateInputs`, `updateInventoryWindow`, `updateOutput`
+
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getCurrentProductionQuantity`, `getFunctionStuff`, `getProductionItem`, `getProductionItemData`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## FarmBuilding::FarmBatch
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
-**Parent Class:** [`FarmBuilding`](#farmbuilding)
+**Enclosing Class:** [`FarmBuilding`](#farmbuilding)
 **Metatable:** `KenshiLua.FarmBatch`
 
 ### Fields
@@ -6197,7 +6919,7 @@
 
 ## FarmBuilding::Plant
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
-**Parent Class:** [`FarmBuilding`](#farmbuilding)
+**Enclosing Class:** [`FarmBuilding`](#farmbuilding)
 **Metatable:** `KenshiLua.FarmBuilding_Plant`
 
 ### Methods
@@ -6208,17 +6930,19 @@
 
 ## FarmBuilding::PlantSource
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
-**Parent Class:** [`FarmBuilding`](#farmbuilding)
+**Enclosing Class:** [`FarmBuilding`](#farmbuilding)
 **Metatable:** `KenshiLua.FarmBuilding_PlantSource`
 
 ## FarmBuilding::SubPlant
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
-**Parent Class:** [`FarmBuilding`](#farmbuilding)
+**Enclosing Class:** [`FarmBuilding`](#farmbuilding)
 **Metatable:** `KenshiLua.FarmBuilding_SubPlant`
 
 ## FloatingProgressBar
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ForgottenGUI.h`
 **Metatable:** `KenshiLua.FloatingProgressBar`
+
+**Inherits from:** [`ScreenLabelInterface`](#screenlabelinterface)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -6234,10 +6958,18 @@
 | setCaption | `value: string` | `void` | `obj:setCaption(value)` |
 | update | `` | `void` | `obj:update()` |
 
+### Inherited Members
+**From [`ScreenLabelInterface`](#screenlabelinterface):**
+
+- Fields: `needUpdate`, `position`, `visible`
+- Methods: `setPosition`, `setVisible`
+
 ## FloatingProgressBar::ProgressBarWidget
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ForgottenGUI.h`
-**Parent Class:** [`FloatingProgressBar`](#floatingprogressbar)
+**Enclosing Class:** [`FloatingProgressBar`](#floatingprogressbar)
 **Metatable:** `KenshiLua.ProgressBarWidget`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -6252,6 +6984,9 @@
 | setProgress | `value: integer` | `void` | `obj:setProgress(value)` |
 | setPosition | `x: integer, y: integer` | `void` | `obj:setPosition(x, y)` |
 | setCaption | `value: string` | `void` | `obj:setCaption(value)` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## FlockingTools
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
@@ -6282,6 +7017,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/FogEditor.h`
 **Metatable:** `KenshiLua.FogEditor`
 
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -6311,6 +7048,9 @@
 | updateFogName | `line: DataPanelLine` | `void` | `obj:updateFogName(line)` |
 | updateFogValues | `_a1: DataPanelLine` | `void` | `obj:updateFogValues(_a1)` |
 | selectNextEdge | `_a1: DataPanelLine` | `void` | `obj:selectNextEdge(_a1)` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## FoliageSystem
 **Header:** `extern/KenshiLib/Include/kenshi/FoliageSystem.h`
@@ -6345,7 +7085,7 @@
 
 ## FoliageSystem::EntData
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
-**Parent Class:** [`FoliageSystem`](#foliagesystem)
+**Enclosing Class:** [`FoliageSystem`](#foliagesystem)
 **Metatable:** `KenshiLua.EntData`
 
 ### Fields
@@ -6398,7 +7138,7 @@
 
 ## FoliageSystem::TreeData
 **Header:** `extern/KenshiLib/Include/kenshi/FoliageSystem.h`
-**Parent Class:** [`FoliageSystem`](#foliagesystem)
+**Enclosing Class:** [`FoliageSystem`](#foliagesystem)
 **Metatable:** `KenshiLua.TreeData`
 
 ### Fields
@@ -6545,7 +7285,7 @@
 | setInventoryPosition | `owner: hand, inventory: InventoryGUI` | `void` | `obj:setInventoryPosition(owner, inventory)` |
 | inventoriesSelectedObjectUpdate | `obj: hand` | `void` | `obj:inventoriesSelectedObjectUpdate(obj)` |
 | _showTradeWindow | `a: RootObject, b: RootObject, tradeType: TradeWindowType` | `void` | `obj:_showTradeWindow(a, b, tradeType)` |
-| createFloatingLabel | `top: number, left: number, width: number, height: number, text: string, a: integer, layer: string` | `MyGUI::Window` | `obj:createFloatingLabel(top, left, width, height, text, a, layer)` |
+| createFloatingLabel | `top: number, left: number, width: number, height: number, text: string, a: MyGUI::Align, layer: string` | `MyGUI::Window` | `obj:createFloatingLabel(top, left, width, height, text, a, layer)` |
 | createImage | `parent: MyGUI::Widget, top: number, left: number, width: number, height: number, image: string` | `MyGUI::ImageBox` | `obj:createImage(parent, top, left, width, height, image)` |
 | createImageAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, image: string` | `MyGUI::ImageBox` | `obj:createImageAbs(parent, top, left, width, height, image)` |
 | createRotatableImageAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, image: string` | `MyGUI::ImageBox` | `obj:createRotatableImageAbs(parent, top, left, width, height, image)` |
@@ -6616,6 +7356,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FurnaceBuilding.h`
 **Metatable:** `KenshiLua.FurnaceBuilding`
 
+**Inherits from:** [`ProductionBuilding`](#productionbuilding) > [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -6640,18 +7382,68 @@
 | operate | `stats: Character, amount: number` | `void` | `obj:operate(stats, amount)` |
 | getIronAmountInItem | `data: GameData` | `number` | `obj:getIronAmountInItem(data)` |
 
+### Inherited Members
+**From [`ProductionBuilding`](#productionbuilding):**
+
+- Fields: `_resourceMiningLevel`, `consumptionItems`, `outSection`, `productionState`
+- Methods: `getConsumtionItems`, `getGUIFertility`, `getGUIState`, `getGUIToolTipForGroundResourceEfficiency`, `getItemsWeWantRidOf`, `getMiningResourceLevel`, `getMouseCursor`, `getNumConsumtionItems`, `getOutput`, `getOutputBasedRotationSpeedMult`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `isAnyInputsEmpty`, `isAnyInputsFull`, `isAnyInputsInvalidType`, `isProductionEmpty`, `isProductionFull`, `loadFromSerialise`, `needsUpdate`, `serialise`, `setProductionItem`, `setupMiningResourceLevel`, `update`, `updateInventoryWindow`
+
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getCurrentProductionQuantity`, `getFunctionStuff`, `getProductionItem`, `getProductionItemData`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## FurnaceInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FurnaceBuilding.h`
 **Metatable:** `KenshiLua.FurnaceInventoryLayout`
+
+**Inherits from:** [`BuildInventoryLayout`](#buildinventorylayout) > [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
 
+### Inherited Members
+**From [`BuildInventoryLayout`](#buildinventorylayout):**
+
+- Fields: `input1Item`, `input1ItemIcon`, `input1NameText`, `input1Panel`, `input1Progress`, `input1StatusText`, `input2Item`, `input2ItemIcon`, `input2NameText`, `input2Panel`, `input2Progress`, `input2StatusText`, `inputs`, `outputItem`, `outputItemIcon`, `outputNameText`, `outputProgress`, `outputs`
+- Methods: `setInput`, `setInputEnabled`, `setInputItem`, `setInputProgress`, `setOutput`, `setOutputItem`, `setOutputProgress`
+
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## GameData
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
 **Metatable:** `KenshiLua.GameData`
+
+**Subclasses:** [`GameDataCopyStandalone`](#gamedatacopystandalone)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -6724,7 +7516,7 @@
 
 ## GameData::ItemData
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
-**Parent Class:** [`GameData`](#gamedata)
+**Enclosing Class:** [`GameData`](#gamedata)
 **Metatable:** `KenshiLua.ItemData`
 
 ### Fields
@@ -6742,7 +7534,7 @@
 
 ## GameData::ObjectInstance
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
-**Parent Class:** [`GameData`](#gamedata)
+**Enclosing Class:** [`GameData`](#gamedata)
 **Metatable:** `KenshiLua.ObjectInstance`
 
 ### Fields
@@ -6762,6 +7554,8 @@
 ## GameDataContainer
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
 **Metatable:** `KenshiLua.GameDataContainer`
+
+**Subclasses:** [`GameDataManager`](#gamedatamanager)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -6810,6 +7604,14 @@
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
 **Metatable:** `KenshiLua.GameDataCopyStandalone`
 
+**Inherits from:** [`GameData`](#gamedata)
+
+### Inherited Members
+**From [`GameData`](#gamedata):**
+
+- Fields: `activeValues`, `bdata`, `createdIndex`, `currentID`, `fdata`, `filesdata`, `id`, `idata`, `isFromActiveFile`, `isStandalone`, `name`, `quatdata`, `readOnly`, `sdata`, `sourceContainer`, `stringID`, `type`, `validity`, `vecdata`
+- Methods: `_getReferenceList_nonConst`, `add`, `addDeletedInstance`, `addFileName`, `addString`, `addToList`, `clearEverything`, `clearInstances`, `clearList`, `deleteInstancedObject`, `destroy`, `findInList`, `getAllFromList`, `getColorVec`, `getFromList`, `getFromList_random`, `getFromListAsData`, `getGameDataReferenceObject`, `getHandle`, `getListSize`, `getNewID`, `getReferenceList`, `getReferenceListIfExists`, `getSourceContainer`, `getValueFromList`, `initialise`, `isRefActive`, `isValid`, `isValueActive`, `listExists`, `listExistsAndNotEmpty`, `loadFromFile`, `removeFromList`, `saveToFile`, `storeHandle`, `storeHandleList`, `updateFrom`
+
 ## GameDataEditorWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/GameDataEditorWindow.h`
 **Metatable:** `KenshiLua.GameDataEditorWindow`
@@ -6827,7 +7629,7 @@
 
 ## GameDataEditorWindow::DataItem
 **Header:** `extern/KenshiLib/Include/kenshi/gui/GameDataEditorWindow.h`
-**Parent Class:** [`GameDataEditorWindow`](#gamedataeditorwindow)
+**Enclosing Class:** [`GameDataEditorWindow`](#gamedataeditorwindow)
 **Metatable:** `KenshiLua.GameDataEditorWindow_DataItem`
 
 ## GameDataGroup
@@ -6863,6 +7665,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/GameDataManager.h`
 **Metatable:** `KenshiLua.GameDataManager`
 
+**Inherits from:** [`GameDataContainer`](#gamedatacontainer)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
@@ -6872,6 +7676,12 @@
 | updateDatasOfType | `fromcontainer: GameDataContainer, type: itemType, isMod: boolean` | `void` | `obj:updateDatasOfType(fromcontainer, type, isMod)` |
 | updateData | `from: GameData, isMod: boolean` | `void` | `obj:updateData(from, isMod)` |
 | getBuildings | `category: string` | `void` | `obj:getBuildings(category)` |
+
+### Inherited Members
+**From [`GameDataContainer`](#gamedatacontainer):**
+
+- Fields: `currentID`, `gamedataID`, `gamedataSID`, `isBaseDatafile`, `mainList`, `name`, `readOnly`
+- Methods: `_addToKillList`, `_getAllData`, `addNewData`, `checkForDuplicates`, `clearAllReferencePtrs`, `clearAndDestroy`, `clearButDontDestroy`, `clearButDontDestroyPlatoons`, `clearInstances`, `createNewData`, `destroyData`, `destroyHomelessData`, `findAllDataThatReferencesThis`, `flushKillList`, `getData`, `getDataByName`, `getDataOfType`, `getNewID`, `load`, `loadGameDataReturn`, `preLoadAllReferencePtrs`, `removeAllDataOfType`, `removeData`, `removeDuplicatesOf`, `renameData`, `save`, `setName`
 
 ## GameDataReference
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
@@ -6894,10 +7704,15 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Campaign.h`
 **Metatable:** `KenshiLua.GameDataScoredList`
 
+**Inherits from:** `FitnessSelector<GameData*>`
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setupFromData | `spawnData: GameData, listname: string, typ: itemType` | `void` | `obj:setupFromData(spawnData, listname, typ)` |
+
+### Inherited Members
+**From `FitnessSelector<GameData*>`:** its fields and methods are not listed in this reference.
 
 ## GameDataValuePair
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
@@ -7115,7 +7930,7 @@
 
 ## GameWorld::SysMessage
 **Header:** `extern/KenshiLib/Include/kenshi/GameWorld.h`
-**Parent Class:** [`GameWorld`](#gameworld)
+**Enclosing Class:** [`GameWorld`](#gameworld)
 **Metatable:** `KenshiLua.SysMessage`
 
 ### Fields
@@ -7137,6 +7952,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/GatewayBuilding.h`
 **Metatable:** `KenshiLua.GatewayBuilding`
 
+**Inherits from:** [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
@@ -7152,9 +7969,30 @@
 | separatesAreas | `` | `boolean` | `obj:separatesAreas()` |
 | setHandle | `h: hand` | `void` | `obj:setHandle(h)` |
 
+### Inherited Members
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateEfficiencyMult`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDefaultTask`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getDoorLock`, `getFunctionStuff`, `getGroundType`, `getGUICondition`, `getGUIData`, `getGUIDestroyButton`, `getGUIName`, `getGUIState`, `getGUIUpgrade`, `getInstanceID`, `getInventory`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuilding`, `getMountedBuildings`, `getMouseCursor`, `getNumFloors`, `getNumInternalBuildings`, `getOutputBasedRotationSpeedMult`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getReachRange`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasDoorLock`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isBroken`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPowerOn`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `needsUpdate`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `serialise`, `setBroken`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupFromData`, `setupLevelData`, `setupMiningResourceLevel`, `setVisible`, `switchLights`, `switchPowerOn`, `threadedUpdate`, `togglePublic`, `update`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `unequipItem`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## Gear
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.Gear`
+
+**Inherits from:** [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`Armour`](#armour), [`RobotLimbItem`](#robotlimbitem), [`Weapon`](#weapon)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -7177,9 +8015,34 @@
 | isPlayerCrafted | `` | `boolean` | `obj:isPlayerCrafted()` |
 | setInventoryWeAreIn | `h: hand` | `void` | `obj:setInventoryWeAreIn(h)` |
 
+### Inherited Members
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getClassType`, `getCraftMaterialMult`, `getCraftTime`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isArmour`, `isCrossbow`, `isFood`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeight`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `getValueSingle`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## GeneratorBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/GeneratorBuilding.h`
 **Metatable:** `KenshiLua.GeneratorBuilding`
+
+**Inherits from:** [`ProductionBuilding`](#productionbuilding) > [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`WindGeneratorBuilding`](#windgeneratorbuilding)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7189,18 +8052,67 @@
 | getGUIState | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIState(datapanel, category)` |
 | getInputValue | `item: Item` | `number` | `obj:getInputValue(item)` |
 
+### Inherited Members
+**From [`ProductionBuilding`](#productionbuilding):**
+
+- Fields: `_resourceMiningLevel`, `consumptionItems`, `outSection`, `productionState`
+- Methods: `canHaveSomeOfThese`, `createInventoryLayout`, `getConsumtionItems`, `getDefaultTask`, `getGUIData`, `getGUIFertility`, `getGUIToolTipForGroundResourceEfficiency`, `getItemsWeWantRidOf`, `getMiningResourceLevel`, `getMouseCursor`, `getNumConsumtionItems`, `getOutput`, `getOutputBasedRotationSpeedMult`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getResourcesNeededBecauseEmpty`, `getResourcesNeededBecauseNotFull`, `isAnyInputsEmpty`, `isAnyInputsFull`, `isAnyInputsInvalidType`, `isProductionEmpty`, `isProductionFull`, `limitInputsOutputRate`, `loadFromSerialise`, `needsUpdate`, `operate`, `serialise`, `setProductionItem`, `setupFromData`, `setupMiningResourceLevel`, `update`, `updateInputs`, `updateInventoryWindow`, `updateOutput`
+
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getCurrentProductionQuantity`, `getFunctionStuff`, `getProductionItem`, `getProductionItemData`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## GenericFixedInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.GenericFixedInventoryLayout`
+
+**Inherits from:** [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
+**Subclasses:** [`BackpackInventoryLayout`](#backpackinventorylayout)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setSize | `slotsW: integer, slotsH: integer` | `void` | `obj:setSize(slotsW, slotsH)` |
 
+### Inherited Members
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`, `setupSections`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## GenericInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Building/UseableStuff.h`
 **Metatable:** `KenshiLua.GenericInventoryLayout`
+
+**Inherits from:** [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
+**Subclasses:** [`BuildingContainerInventoryLayout`](#buildingcontainerinventorylayout), [`ResearchBuildingInventoryLayout`](#researchbuildinginventorylayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -7211,6 +8123,15 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setSize | `slotsW: integer, slotsH: integer, hasArrange: boolean, hasType: boolean` | `void` | `obj:setSize(slotsW, slotsH, hasArrange, hasType)` |
+
+### Inherited Members
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`, `setupSections`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## Global
 **Header:** `extern/KenshiLib/Include/kenshi/Globals.h`
@@ -7332,6 +8253,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/GUIWindow.h`
 **Metatable:** `KenshiLua.GUIWindow`
 
+**Subclasses:** [`CharacterStatsWindow`](#characterstatswindow), [`CharacterTradingWindow`](#charactertradingwindow), [`DatapanelGUI`](#datapanelgui), [`DialogueWindow`](#dialoguewindow), [`InventoryGUI`](#inventorygui), [`MainBarGUI`](#mainbargui), [`NewGameWindow`](#newgamewindow), [`OptionsWindow`](#optionswindow), [`TitleScreen`](#titlescreen), [`TutorialGUI`](#tutorialgui), [`TutorialpediaGUI`](#tutorialpediagui)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -7358,6 +8281,8 @@
 ## GunClass
 **Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
 **Metatable:** `KenshiLua.GunClass`
+
+**Subclasses:** [`GunClassPersonal`](#gunclasspersonal), [`GunClassTurret`](#gunclassturret)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -7387,6 +8312,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
 **Metatable:** `KenshiLua.GunClassPersonal`
 
+**Inherits from:** [`GunClass`](#gunclass)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -7395,15 +8322,27 @@
 | animReadyToShoot | `boolean` | RW | `obj.animReadyToShoot = <value>` |
 | character | `hand` | RW | `obj.character = <value>` |
 
+### Inherited Members
+**From [`GunClass`](#gunclass):**
+
+- Fields: `accuracyDeviationBase`, `accuracySkillRequired`, `active`, `aimSpeed`, `ammoType`, `gunBarrelOffsetPos`, `gunData`, `maxRange`, `numShotsCurrent`, `numShotsMax`, `orientation`, `position`, `reloadAnimation`, `reloadState`, `reloadTimeMax`, `reloadTimeMin`, `shotSpeed`, `user`, `userSkill01`, `visible`
+
 ## GunClassTurret
 **Header:** `extern/KenshiLib/Include/kenshi/GunClass.h`
 **Metatable:** `KenshiLua.GunClassTurret`
+
+**Inherits from:** [`GunClass`](#gunclass)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
 | lastTarget | `Vector3` | RW | `obj.lastTarget = <value>` |
 | turretBuilding | `TurretBuilding` | RW | `obj.turretBuilding = <value>` |
+
+### Inherited Members
+**From [`GunClass`](#gunclass):**
+
+- Fields: `accuracyDeviationBase`, `accuracySkillRequired`, `active`, `aimSpeed`, `ammoType`, `gunBarrelOffsetPos`, `gunData`, `maxRange`, `numShotsCurrent`, `numShotsMax`, `orientation`, `position`, `reloadAnimation`, `reloadState`, `reloadTimeMax`, `reloadTimeMin`, `shotSpeed`, `user`, `userSkill01`, `visible`
 
 ## Hand
 **Header:** `extern/KenshiLib/Include/kenshi/util/hand.h`
@@ -7438,14 +8377,28 @@
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.HandleContainerList`
 
+**Inherits from:** [`HandleListBase`](#handlelistbase) > [`Serialisable`](#serialisable)
+
+**Subclasses:** [`PlatoonHandleContainerList`](#platoonhandlecontainerlist), [`TownHandleContainerList`](#townhandlecontainerlist), [`ZoneMapHandleContainerList`](#zonemaphandlecontainerlist)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | add | `o: RootObjectBase` | `hand` | `obj:add(o)` |
 
+### Inherited Members
+**From [`HandleListBase`](#handlelistbase):**
+
+- Fields: `lastID`, `maxSize`
+- Methods: `addExisting`, `clearToZero`, `destroy`, `get`, `isUnloadedNotDead`, `setUnloaded`
+
 ## HandleList
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.HandleList`
+
+**Inherits from:** [`HandleListBase`](#handlelistbase) > [`Serialisable`](#serialisable)
+
+**Subclasses:** [`ItemHandleList`](#itemhandlelist)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -7462,9 +8415,19 @@
 | addExistingAndForceContainer | `o: RootObjectBase, h: hand` | `hand` | `obj:addExistingAndForceContainer(o, h)` |
 | destroy | `h: hand` | `void` | `obj:destroy(h)` |
 
+### Inherited Members
+**From [`HandleListBase`](#handlelistbase):**
+
+- Fields: `lastID`, `maxSize`
+- Methods: `clearToZero`, `isUnloadedNotDead`, `setUnloaded`
+
 ## HandleListBase
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.HandleListBase`
+
+**Inherits from:** [`Serialisable`](#serialisable)
+
+**Subclasses:** [`HandleContainerList`](#handlecontainerlist), [`HandleList`](#handlelist)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -7485,6 +8448,8 @@
 ## HandleManager
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.HandleManager`
+
+**Inherits from:** [`Serialisable`](#serialisable)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -7612,12 +8577,21 @@
 
 ## hkContainerHeapAllocator::Allocator
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
-**Parent Class:** [`hkContainerHeapAllocator`](#hkcontainerheapallocator)
+**Enclosing Class:** [`hkContainerHeapAllocator`](#hkcontainerheapallocator)
 **Metatable:** `KenshiLua.hkContainerHeapAllocator_Allocator`
+
+**Inherits from:** [`hkMemoryAllocator`](#hkmemoryallocator)
+
+### Inherited Members
+**From [`hkMemoryAllocator`](#hkmemoryallocator):**
+
+- Methods: `blockAlloc`, `getExtendedInterface`, `resetPeakMemoryStatistics`
 
 ## hkMemoryAllocator
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
 **Metatable:** `KenshiLua.hkMemoryAllocator`
+
+**Subclasses:** [`hkContainerHeapAllocator::Allocator`](#hkcontainerheapallocatorallocator)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7628,12 +8602,12 @@
 
 ## hkMemoryAllocator::ExtendedInterface
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
-**Parent Class:** [`hkMemoryAllocator`](#hkmemoryallocator)
+**Enclosing Class:** [`hkMemoryAllocator`](#hkmemoryallocator)
 **Metatable:** `KenshiLua.hkMemoryAllocator_ExtendedInterface`
 
 ## hkMemoryAllocator::MemoryStatistics
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
-**Parent Class:** [`hkMemoryAllocator`](#hkmemoryallocator)
+**Enclosing Class:** [`hkMemoryAllocator`](#hkmemoryallocator)
 **Metatable:** `KenshiLua.hkMemoryAllocator_MemoryStatistics`
 
 ## hkResult
@@ -7784,6 +8758,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LoadSaveWindow.h`
 **Metatable:** `KenshiLua.ImportGameMenu`
 
+**Inherits from:** [`LoadSaveWindow`](#loadsavewindow) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -7795,6 +8771,14 @@
 | select | `index: integer` | `void` | `obj:select(index)` |
 | importPress | `sender: MyGUI::Widget` | `void` | `obj:importPress(sender)` |
 | toggleAdvancedOptions | `sender: MyGUI::Widget` | `void` | `obj:toggleAdvancedOptions(sender)` |
+
+### Inherited Members
+**From [`LoadSaveWindow`](#loadsavewindow):**
+
+- Fields: `games`, `infoPanel`, `list`
+- Methods: `addOption`, `close`, `createInfo`, `deleteSelectedSave`, `enableOption`, `getOptions`, `getWidget`, `keyPressed`, `selectGame`, `toggleCheck`, `updateInfo`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## InputHandler
 **Header:** `extern/KenshiLib/Include/kenshi/InputHandler.h`
@@ -7881,7 +8865,7 @@
 
 ## InputHandler::Command
 **Header:** `extern/KenshiLib/Include/kenshi/InputHandler.h`
-**Parent Class:** [`InputHandler`](#inputhandler)
+**Enclosing Class:** [`InputHandler`](#inputhandler)
 **Metatable:** `KenshiLua.InputHandler_Command`
 
 ### Methods
@@ -7927,6 +8911,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InteriorModeButtonWindow.h`
 **Metatable:** `KenshiLua.InteriorModeButtonWindow`
 
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -7968,7 +8954,7 @@
 | setExteriorLayout | `name: string` | `void` | `obj:setExteriorLayout(name)` |
 | recheckOutsideFurniture | `building: Building` | `void` | `obj:recheckOutsideFurniture(building)` |
 | interiorModePressed | `sender: MyGUI::Widget` | `void` | `obj:interiorModePressed(sender)` |
-| interiorModeButtonUpdate | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: integer` | `void` | `obj:interiorModeButtonUpdate(sender, a2, a3, a4)` |
+| interiorModeButtonUpdate | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: MyGUI::MouseButton` | `void` | `obj:interiorModeButtonUpdate(sender, a2, a3, a4)` |
 | interiorModeButtonUpdate2 | `sender: MyGUI::Widget, sender2: MyGUI::Widget` | `void` | `obj:interiorModeButtonUpdate2(sender, sender2)` |
 | deleteButtonPressed | `sender: MyGUI::Widget` | `void` | `obj:deleteButtonPressed(sender)` |
 | deleteButtonPressed2 | `sender: MyGUI::Widget` | `void` | `obj:deleteButtonPressed2(sender)` |
@@ -7989,9 +8975,14 @@
 |---|---|---|---|
 | wasTheInteriorLoadedFromASave | `` | `boolean` | `InteriorModeButtonWindow.wasTheInteriorLoadedFromASave()`<br>`obj:wasTheInteriorLoadedFromASave()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## Inventory
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
 **Metatable:** `KenshiLua.Inventory`
+
+**Subclasses:** [`ShopTraderInventory`](#shoptraderinventory)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8083,7 +9074,7 @@
 
 ## Inventory::HasRoomCache
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
-**Parent Class:** [`Inventory`](#inventory)
+**Enclosing Class:** [`Inventory`](#inventory)
 **Metatable:** `KenshiLua.Inventory_HasRoomCache`
 
 ### Methods
@@ -8097,6 +9088,10 @@
 ## InventoryGUI
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.InventoryGUI`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
+
+**Subclasses:** [`InventoryTraderGUI`](#inventorytradergui)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8158,8 +9153,8 @@
 | windowButtonPressed | `name: string` | `void` | `obj:windowButtonPressed(name)` |
 | fencingConfirmation | `item: Item, thief: RootObject, fence: Character, sectionName: string` | `boolean` | `obj:fencingConfirmation(item, thief, fence, sectionName)` |
 | getTrader1Trader2 | `` | `InventoryGUI` | `obj:getTrader1Trader2()` |
-| sectionMouseButtonPressed | `sender: MyGUI::Widget, left: integer, top: integer, id: integer` | `void` | `obj:sectionMouseButtonPressed(sender, left, top, id)` |
-| sectionMouseButtonReleased | `sender: MyGUI::Widget, left: integer, top: integer, id: integer` | `void` | `obj:sectionMouseButtonReleased(sender, left, top, id)` |
+| sectionMouseButtonPressed | `sender: MyGUI::Widget, left: integer, top: integer, id: MyGUI::MouseButton` | `void` | `obj:sectionMouseButtonPressed(sender, left, top, id)` |
+| sectionMouseButtonReleased | `sender: MyGUI::Widget, left: integer, top: integer, id: MyGUI::MouseButton` | `void` | `obj:sectionMouseButtonReleased(sender, left, top, id)` |
 | onWindowFocus | `sender: MyGUI::Widget, focus: boolean` | `void` | `obj:onWindowFocus(sender, focus)` |
 | windowMoved | `sender: MyGUI::Window` | `void` | `obj:windowMoved(sender)` |
 
@@ -8179,14 +9174,20 @@
 | lockedItemCheck | `` | `boolean` | `InventoryGUI.lockedItemCheck()`<br>`obj:lockedItemCheck()` |
 | makeIconForItem | `` | `InventoryIcon` | `InventoryGUI.makeIconForItem()`<br>`obj:makeIconForItem()` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `clear`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `resize`, `setPosition`
+
 ## InventoryGUI::FenceCallbackData
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
-**Parent Class:** [`InventoryGUI`](#inventorygui)
+**Enclosing Class:** [`InventoryGUI`](#inventorygui)
 **Metatable:** `KenshiLua.InventoryGUI_FenceCallbackData`
 
 ## InventoryGUI::InventoryTradeData
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryTraderGUI.h`
-**Parent Class:** [`InventoryGUI`](#inventorygui)
+**Enclosing Class:** [`InventoryGUI`](#inventorygui)
 **Metatable:** `KenshiLua.InventoryTradeData`
 
 ### Fields
@@ -8206,7 +9207,7 @@
 
 ## InventoryGUI::TradeResult
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterTradingWindow.h`
-**Parent Class:** [`InventoryGUI`](#inventorygui)
+**Enclosing Class:** [`InventoryGUI`](#inventorygui)
 **Metatable:** `KenshiLua.TradeResult`
 
 ### Fields
@@ -8228,6 +9229,8 @@
 ## InventoryIcon
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.InventoryIcon`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8252,9 +9255,16 @@
 | getItemSize | `` | `integer` | `InventoryIcon.getItemSize()`<br>`obj:getItemSize()` |
 | getItemPosition | `` | `integer` | `InventoryIcon.getItemPosition()`<br>`obj:getItemPosition()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## InventoryItemBase
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
 **Metatable:** `KenshiLua.InventoryItemBase`
+
+**Inherits from:** [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`Item`](#item)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8324,9 +9334,24 @@
 | setProperOwner | `h: hand` | `void` | `obj:setProperOwner(h)` |
 | getTooltipTradeValue | `` | `void` | `obj:getTooltipTradeValue()` |
 
+### Inherited Members
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `createPhysical`, `destroyPhysical`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getVisible`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `isPhysical`, `loadUnloadCheck`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `setVisible`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## InventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.InventoryLayout`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
+
+**Subclasses:** [`AnimalInventoryLayout`](#animalinventorylayout), [`BuildInventoryLayout`](#buildinventorylayout), [`CharacterInventoryLayout`](#characterinventorylayout), [`GenericFixedInventoryLayout`](#genericfixedinventorylayout), [`GenericInventoryLayout`](#genericinventorylayout), [`LimbsInventoryLayout`](#limbsinventorylayout), [`TraderInventoryLayout`](#traderinventorylayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8353,9 +9378,14 @@
 |---|---|---|---|
 | notifyCellSizeChanged | `` | `void` | `InventoryLayout.notifyCellSizeChanged()`<br>`obj:notifyCellSizeChanged()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## InventorySection
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
 **Metatable:** `KenshiLua.InventorySection`
+
+**Subclasses:** [`ShopTraderInventorySection`](#shoptraderinventorysection)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8431,7 +9461,7 @@
 
 ## InventorySection::SectionItem
 **Header:** `extern/KenshiLib/Include/kenshi/Inventory.h`
-**Parent Class:** [`InventorySection`](#inventorysection)
+**Enclosing Class:** [`InventorySection`](#inventorysection)
 **Metatable:** `KenshiLua.SectionItem`
 
 ### Fields
@@ -8468,6 +9498,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryTraderGUI.h`
 **Metatable:** `KenshiLua.InventoryTraderGUI`
 
+**Inherits from:** [`InventoryGUI`](#inventorygui) > [`GUIWindow`](#guiwindow)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -8482,9 +9514,25 @@
 | getCallbackObject | `` | `RootObject` | `obj:getCallbackObject()` |
 | refreshSection | `section: InventorySection` | `void` | `obj:refreshSection(section)` |
 
+### Inherited Members
+**From [`InventoryGUI`](#inventorygui):**
+
+- Fields: `callbackObject`, `childInventory`, `inventorySections`, `layoutMgr`, `mouseFocus`, `needItemsUpdate`, `ownerInventory`, `visible`
+- Methods: `autoArrangeButton`, `autoChangeSelectedObject`, `fencingConfirmation`, `fencingConfirmationCallback`, `getBackpack`, `getMouseItem`, `getPlayerTradeCharacter`, `getSection`, `getSectionWithMouseLocal`, `getSelectedItem`, `getSlotWithMouse`, `getTrader1Trader2`, `getWindowCoord`, `hasMouse`, `hasSameOwner`, `isStealing`, `isTradingForMoney`, `isVisible`, `isWithinRangeToTrade`, `onWindowFocus`, `openBackpackButton`, `openLimbsInterface`, `pickupItemToMouse`, `placeItemFromMouse`, `playSound`, `RClickAutoTrade`, `RClickAutoTradeAll`, `refreshAllSections`, `returnItem`, `rightClickAutoEquipping`, `sectionMouseButtonPressed`, `sectionMouseButtonReleased`, `setItemToPlayerPortrait`, `setPositionReal`, `show`, `showBackpack`, `stealingGUIInfoUpdate`, `takeCertainAmountFrom`, `tryToEquip`, `update`, `updateDatapanel`, `windowButtonPressed`, `windowMoved`
+- Static methods: `addTradePartner`, `canDropMouseItemWithoutPaying`, `clearTradePartners`, `getNPCTrader`, `getTraderPriceMultiplier`, `getTradingTown`, `isTradingAndStealing_static`, `isTradingForMoney_static`, `lockedItemCheck`, `makeIconForItem`, `removeTradePartner`, `setTradingTown`
+
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `clear`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `resize`, `setPosition`
+
 ## Item
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 **Metatable:** `KenshiLua.Item`
+
+**Inherits from:** [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`BlueprintItem`](#blueprintitem), [`ContainerItem`](#containeritem), [`Gear`](#gear), [`MapItem`](#mapitem), [`MoneyItem`](#moneyitem), [`NestItem`](#nestitem), [`SeveredLimbItem`](#severedlimbitem)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8551,14 +9599,43 @@
 | setPersistant [2] | `p: boolean` | `void` | `obj:setPersistant(p)` |
 | itemEntityCreated | `ent: userdata` | `void` | `obj:itemEntityCreated(ent)` |
 
+### Inherited Members
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeight`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `getValueSingle`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## ItemHandleList
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.ItemHandleList`
+
+**Inherits from:** [`HandleList`](#handlelist) > [`HandleListBase`](#handlelistbase) > [`Serialisable`](#serialisable)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
+
+### Inherited Members
+**From [`HandleList`](#handlelist):**
+
+- Fields: `containerHandle`, `handleShift`
+- Methods: `add`, `addExisting`, `addExistingAndForceContainer`, `destroy`, `get`
+
+**From [`HandleListBase`](#handlelistbase):**
+
+- Fields: `lastID`, `maxSize`
+- Methods: `clearToZero`, `isUnloadedNotDead`
 
 ## iVector2
 **Header:** `extern/KenshiLib/Include/kenshi/util/iVector2.h`
@@ -8726,18 +9803,28 @@
 
 ## LevelEditor::FactionListWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
-**Parent Class:** [`LevelEditor`](#leveleditor)
+**Enclosing Class:** [`LevelEditor`](#leveleditor)
 **Metatable:** `KenshiLua.FactionListWindow`
+
+**Inherits from:** [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | itemSelected | `item: GameData` | `void` | `obj:itemSelected(item)` |
 
+### Inherited Members
+**From [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist):**
+
+- Fields: `items`, `lastItem`, `levelEditor`, `list`, `win`
+- Methods: `changeFilter`, `deselectItem`, `formatItem`, `getSelectedItem`, `listItemSelected`, `selectItem`
+
 ## LevelEditor::GamedataSelectionList
 **Header:** `extern/KenshiLib/Include/kenshi/gui/GameDataEditorWindow.h`
-**Parent Class:** [`LevelEditor`](#leveleditor)
+**Enclosing Class:** [`LevelEditor`](#leveleditor)
 **Metatable:** `KenshiLua.GamedataSelectionList`
+
+**Subclasses:** [`LevelEditor::FactionListWindow`](#leveleditorfactionlistwindow), [`LevelEditor::ItemListWindow`](#leveleditoritemlistwindow), [`LevelEditor::NpcListWindow`](#leveleditornpclistwindow), [`LevelEditor::SquadListWindow`](#leveleditorsquadlistwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8761,28 +9848,48 @@
 
 ## LevelEditor::ItemListWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
-**Parent Class:** [`LevelEditor`](#leveleditor)
+**Enclosing Class:** [`LevelEditor`](#leveleditor)
 **Metatable:** `KenshiLua.ItemListWindow`
+
+**Inherits from:** [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | itemSelected | `item: GameData` | `void` | `obj:itemSelected(item)` |
+
+### Inherited Members
+**From [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist):**
+
+- Fields: `items`, `lastItem`, `levelEditor`, `list`, `win`
+- Methods: `changeFilter`, `deselectItem`, `formatItem`, `getSelectedItem`, `listItemSelected`, `selectItem`
 
 ## LevelEditor::NpcListWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
-**Parent Class:** [`LevelEditor`](#leveleditor)
+**Enclosing Class:** [`LevelEditor`](#leveleditor)
 **Metatable:** `KenshiLua.NpcListWindow`
+
+**Inherits from:** [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist)
+
+**Subclasses:** [`LevelEditor::TownListWindow`](#leveleditortownlistwindow)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | itemSelected | `item: GameData` | `void` | `obj:itemSelected(item)` |
 
+### Inherited Members
+**From [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist):**
+
+- Fields: `items`, `lastItem`, `levelEditor`, `list`, `win`
+- Methods: `changeFilter`, `deselectItem`, `formatItem`, `getSelectedItem`, `listItemSelected`, `selectItem`
+
 ## LevelEditor::SquadListWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
-**Parent Class:** [`LevelEditor`](#leveleditor)
+**Enclosing Class:** [`LevelEditor`](#leveleditor)
 **Metatable:** `KenshiLua.SquadListWindow`
+
+**Inherits from:** [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -8790,19 +9897,39 @@
 | refresh | `faction: GameData` | `void` | `obj:refresh(faction)` |
 | itemSelected | `item: GameData` | `void` | `obj:itemSelected(item)` |
 
+### Inherited Members
+**From [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist):**
+
+- Fields: `items`, `lastItem`, `levelEditor`, `list`, `win`
+- Methods: `changeFilter`, `deselectItem`, `formatItem`, `getSelectedItem`, `listItemSelected`, `selectItem`
+
 ## LevelEditor::TownListWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LevelEditor.h`
-**Parent Class:** [`LevelEditor`](#leveleditor)
+**Enclosing Class:** [`LevelEditor`](#leveleditor)
 **Metatable:** `KenshiLua.TownListWindow`
+
+**Inherits from:** [`LevelEditor::NpcListWindow`](#leveleditornpclistwindow) > [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | formatItem | `o: GameData` | `string` | `obj:formatItem(o)` |
 
+### Inherited Members
+**From [`LevelEditor::NpcListWindow`](#leveleditornpclistwindow):**
+
+- Methods: `itemSelected`
+
+**From [`LevelEditor::GamedataSelectionList`](#leveleditorgamedataselectionlist):**
+
+- Fields: `items`, `lastItem`, `levelEditor`, `list`, `win`
+- Methods: `changeFilter`, `deselectItem`, `getSelectedItem`, `listItemSelected`, `selectItem`
+
 ## LightBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/LightBuilding.h`
 **Metatable:** `KenshiLua.LightBuilding`
+
+**Inherits from:** [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8821,9 +9948,33 @@
 | getMountedBuilding | `` | `hand` | `obj:getMountedBuilding()` |
 | setMountedBuilding | `b: Building` | `void` | `obj:setMountedBuilding(b)` |
 
+### Inherited Members
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `canHaveSomeOfThese`, `couldIOperate`, `createInventoryLayout`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDefaultTask`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIToolTipForGroundResourceEfficiency`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getOutputBasedRotationSpeedMult`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `getUseableStuff`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isAnyInputsEmpty`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needsUpdate`, `occupantHandleChangedEvent`, `operate`, `resetPower`, `setBroken`, `setup`, `setupFromData`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getFunctionStuff`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIState`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setupMiningResourceLevel`, `setVisible`, `switchLights`, `togglePublic`, `update`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## LimbsInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
 **Metatable:** `KenshiLua.LimbsInventoryLayout`
+
+**Inherits from:** [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8834,6 +9985,15 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
+
+### Inherited Members
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## ListScrollBar
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_ListScrollBar.h`
@@ -8858,6 +10018,8 @@
 ## LoadingWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LoadingWindow.h`
 **Metatable:** `KenshiLua.LoadingWindow`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8885,9 +10047,16 @@
 |---|---|---|---|
 | getInstance | `` | `LoadingWindow` | `LoadingWindow.getInstance()`<br>`obj:getInstance()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## LoadSaveWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/LoadSaveWindow.h`
 **Metatable:** `KenshiLua.LoadSaveWindow`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
+
+**Subclasses:** [`ImportGameMenu`](#importgamemenu)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -8907,10 +10076,13 @@
 | getOptions | `` | `integer` | `obj:getOptions()` |
 | close | `sender: MyGUI::Widget` | `void` | `obj:close(sender)` |
 | selectGame | `sender: MyGUI::MultiListBox, index: integer` | `void` | `obj:selectGame(sender, index)` |
-| keyPressed | `w: MyGUI::Widget, key: integer, a3: integer` | `void` | `obj:keyPressed(w, key, a3)` |
+| keyPressed | `w: MyGUI::Widget, key: MyGUI::KeyCode, a3: integer` | `void` | `obj:keyPressed(w, key, a3)` |
 | toggleCheck | `sender: MyGUI::Widget` | `void` | `obj:toggleCheck(sender)` |
 | createInfo | `panel: MyGUI::Widget` | `void` | `obj:createInfo(panel)` |
 | updateInfo | `index: integer` | `void` | `obj:updateInfo(index)` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## LocaleInfo
 **Header:** `extern/KenshiLib/Include/kenshi/LocaleInfo.h`
@@ -8958,6 +10130,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.LockedArmour`
 
+**Inherits from:** [`Armour`](#armour) > [`Gear`](#gear) > [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -8972,6 +10146,37 @@
 | _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 | getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
+
+### Inherited Members
+**From [`Armour`](#armour):**
+
+- Fields: `armourClassEnum`, `assassinMult`, `athleticsMult`, `bluntResistance`, `bodypartCoverage`, `combatSkillBonusAttk`, `combatSkillBonusDef`, `combatSpeedMult`, `craftTime`, `cutResistance`, `cutToStun`, `damageMult`, `dexterityMult`, `dodgeMult`, `fistInjuryMult`, `materialType`, `minCutResistance`, `perceptionBonus`, `pierceResistance`, `rangedSkillMult`, `stealthMult`, `stigma`, `unarmedBonus`, `weatherProtectionAmount`, `weatherProtections`
+- Methods: `didIHitFlesh`, `getArmourCraftingMaterialConsumptionRate`, `getClassType`, `getCraftTime`, `getItemWeight`, `getValueSingle`, `getWeatherProtection_simple`, `hasArmourCoverage`
+
+**From [`Gear`](#gear):**
+
+- Fields: `crafter`, `isUniform`, `level`, `level_0_100`, `value`
+- Methods: `getLevel`, `getLevel01`, `isAFactionUniform`, `isGear`, `isPlayerCrafted`, `setInventoryWeAreIn`
+
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getCraftMaterialMult`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isCrossbow`, `isFood`, `isGoodFood`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## Logger
 **Header:** `extern/KenshiLib/Include/kenshi/Logger.h`
@@ -8989,6 +10194,8 @@
 ## MainBarGUI
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MainBarGUI.h`
 **Metatable:** `KenshiLua.MainBarGUI`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9075,12 +10282,18 @@
 | getBuildingInventoryPosition | `` | `void` | `obj:getBuildingInventoryPosition()` |
 | getTabPlatoonPortrait [1] | `tabIndex: integer` | `MainTabPortraitPlatoon` | `obj:getTabPlatoonPortrait(tabIndex)` |
 | getTabPlatoonPortrait [2] | `platoon: ActivePlatoon` | `MainTabPortraitPlatoon` | `obj:getTabPlatoonPortrait(platoon)` |
-| extendInfoPanel | `_sender: MyGUI::Widget, _a2: integer, _a3: integer, arg4: integer` | `void` | `obj:extendInfoPanel(_sender, _a2, _a3, arg4)` |
+| extendInfoPanel | `_sender: MyGUI::Widget, _a2: integer, _a3: integer, arg4: MyGUI::MouseButton` | `void` | `obj:extendInfoPanel(_sender, _a2, _a3, arg4)` |
 | toggleInventory | `_sender: MyGUI::Widget` | `void` | `obj:toggleInventory(_sender)` |
 | toggleStatsWindow | `_sender: MyGUI::Widget` | `void` | `obj:toggleStatsWindow(_sender)` |
 | toggleHelpWindow | `_a1: MyGUI::Widget` | `void` | `obj:toggleHelpWindow(_a1)` |
 | changeSpeed | `_sender: MyGUI::Widget` | `void` | `obj:changeSpeed(_sender)` |
 | buildButton | `_sender: MyGUI::Widget` | `void` | `obj:buildButton(_sender)` |
+
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `isVisible`, `resize`, `setPosition`, `setPositionReal`
 
 ## MainTabPortraitPlatoon
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MainBarGUI.h`
@@ -9126,6 +10339,8 @@
 ## ManagementScreen
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ManagementScreen.h`
 **Metatable:** `KenshiLua.ManagementScreen`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9186,8 +10401,8 @@
 | closeEverythingButton | `widget: MyGUI::Window, name: string` | `void` | `obj:closeEverythingButton(widget, name)` |
 | tabCallback | `sender: MyGUI::TabControl, index: integer` | `void` | `obj:tabCallback(sender, index)` |
 | researchTypeSelect | `sender: MyGUI::ListBox, index: integer` | `void` | `obj:researchTypeSelect(sender, index)` |
-| addButtonPress | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: integer` | `void` | `obj:addButtonPress(sender, a2, a3, a4)` |
-| removeButtonPress | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: integer` | `void` | `obj:removeButtonPress(sender, a2, a3, a4)` |
+| addButtonPress | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: MyGUI::MouseButton` | `void` | `obj:addButtonPress(sender, a2, a3, a4)` |
+| removeButtonPress | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: MyGUI::MouseButton` | `void` | `obj:removeButtonPress(sender, a2, a3, a4)` |
 | mouseOverCallback | `sender: MyGUI::Widget, a2: integer, a3: integer` | `void` | `obj:mouseOverCallback(sender, a2, a3)` |
 
 ### Static Methods
@@ -9196,14 +10411,19 @@
 | printResearch | `` | `void` | `ManagementScreen.printResearch()`<br>`obj:printResearch()` |
 | getSingleton | `` | `ManagementScreen` | `ManagementScreen.getSingleton()`<br>`obj:getSingleton()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## ManagementScreen::TechItemViewData
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ManagementScreen.h`
-**Parent Class:** [`ManagementScreen`](#managementscreen)
+**Enclosing Class:** [`ManagementScreen`](#managementscreen)
 **Metatable:** `KenshiLua.ManagementScreen_TechItemViewData`
 
 ## MapItem
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 **Metatable:** `KenshiLua.MapItem`
+
+**Inherits from:** [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9221,6 +10441,27 @@
 | getTownsDiscovered | `` | `integer` | `obj:getTownsDiscovered()` |
 | _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
 | _serialise | `container: GameDataContainer, typ: itemType` | `GameData` | `obj:_serialise(container, typ)` |
+
+### Inherited Members
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getClassType`, `getCraftMaterialMult`, `getCraftTime`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getLevel`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isAFactionUniform`, `isArmour`, `isCrossbow`, `isFood`, `isGear`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setInventoryWeAreIn`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## MapScreen
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
@@ -9283,8 +10524,8 @@
 | worldToMapCoords | `pos: Vector3` | `void` | `obj:worldToMapCoords(pos)` |
 | mapCoordsToWorld | `left: integer, top: integer` | `Vector3` | `obj:mapCoordsToWorld(left, top)` |
 | mapMouseWheel | `sender: MyGUI::Widget, rel: integer` | `void` | `obj:mapMouseWheel(sender, rel)` |
-| mapMousePressed | `sender: MyGUI::Widget, left: integer, top: integer, id: integer` | `void` | `obj:mapMousePressed(sender, left, top, id)` |
-| mapMouseReleased | `sender: MyGUI::Widget, left: integer, top: integer, id: integer` | `void` | `obj:mapMouseReleased(sender, left, top, id)` |
+| mapMousePressed | `sender: MyGUI::Widget, left: integer, top: integer, id: MyGUI::MouseButton` | `void` | `obj:mapMousePressed(sender, left, top, id)` |
+| mapMouseReleased | `sender: MyGUI::Widget, left: integer, top: integer, id: MyGUI::MouseButton` | `void` | `obj:mapMouseReleased(sender, left, top, id)` |
 | centerButton | `sender: MyGUI::Widget` | `void` | `obj:centerButton(sender)` |
 | zoomInButton | `sender: MyGUI::Widget` | `void` | `obj:zoomInButton(sender)` |
 | zoomOutButton | `sender: MyGUI::Widget` | `void` | `obj:zoomOutButton(sender)` |
@@ -9296,7 +10537,7 @@
 
 ## MapScreen::MapMarkerCharacter
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
-**Parent Class:** [`MapScreen`](#mapscreen)
+**Enclosing Class:** [`MapScreen`](#mapscreen)
 **Metatable:** `KenshiLua.MapMarkerCharacter`
 
 ### Fields
@@ -9313,7 +10554,7 @@
 
 ## MapScreen::MapMarkerTown
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
-**Parent Class:** [`MapScreen`](#mapscreen)
+**Enclosing Class:** [`MapScreen`](#mapscreen)
 **Metatable:** `KenshiLua.MapMarkerTown`
 
 ### Fields
@@ -9333,7 +10574,7 @@
 
 ## MapScreen::MapRoad
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
-**Parent Class:** [`MapScreen`](#mapscreen)
+**Enclosing Class:** [`MapScreen`](#mapscreen)
 **Metatable:** `KenshiLua.MapScreen_MapRoad`
 
 ## MedianFilter
@@ -9489,7 +10730,7 @@
 
 ## MedicalSystem::HealthPartStatus
 **Header:** `extern/KenshiLib/Include/kenshi/MedicalSystem.h`
-**Parent Class:** [`MedicalSystem`](#medicalsystem)
+**Enclosing Class:** [`MedicalSystem`](#medicalsystem)
 **Metatable:** `KenshiLua.MedicalSystem_HealthPartStatus`
 
 ### Fields
@@ -9559,8 +10800,10 @@
 
 ## MessageBoxManager::Box
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MessageBoxManager.h`
-**Parent Class:** [`MessageBoxManager`](#messageboxmanager)
+**Enclosing Class:** [`MessageBoxManager`](#messageboxmanager)
 **Metatable:** `KenshiLua.Box`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9572,6 +10815,9 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | buttonClick | `sender: MyGUI::Widget` | `void` | `obj:buttonClick(sender)` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## MessageChain
 **Header:** `extern/KenshiLib/Include/kenshi/physicsactual.h`
@@ -9598,7 +10844,7 @@
 
 ## MessageQueue::Node
 **Header:** `extern/KenshiLib/Include/kenshi/NavMesh.h`
-**Parent Class:** [`MessageQueue`](#messagequeue)
+**Enclosing Class:** [`MessageQueue`](#messagequeue)
 **Metatable:** `KenshiLua.MessageQueue_Node`
 
 ## ModInfo
@@ -9626,11 +10872,34 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 **Metatable:** `KenshiLua.MoneyItem`
 
+**Inherits from:** [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getValueSingle | `isPlayer: boolean` | `integer` | `obj:getValueSingle(isPlayer)` |
 | consume | `` | `boolean` | `obj:consume()` |
+
+### Inherited Members
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `_loadFromSerialise`, `_serialise`, `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getClassType`, `getCraftMaterialMult`, `getCraftTime`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getLevel`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isAFactionUniform`, `isArmour`, `isCrossbow`, `isFood`, `isGear`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setInventoryWeAreIn`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeight`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## MotionFilter
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -9651,6 +10920,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_MultiSlider.h`
 **Metatable:** `KenshiLua.MultiSlider`
 
+**Inherits from:** [`MyGUI.Widget`](MyGUIReference.md#widget)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -9663,6 +10934,9 @@
 | initialiseOverride | `` | `void` | `obj:initialiseOverride()` |
 | shutdownOverride | `` | `void` | `obj:shutdownOverride()` |
 | getTypeName | `` | `void` | `obj:getTypeName()` |
+
+### Inherited Members
+**From [`MyGUI.Widget`](MyGUIReference.md#widget):** its fields and methods are listed in the MyGUI Reference.
 
 ## MustEndWithSemiColon
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -9685,6 +10959,8 @@
 ## NavMesh
 **Header:** `extern/KenshiLib/Include/kenshi/NavMesh.h`
 **Metatable:** `KenshiLua.NavMesh`
+
+**Inherits from:** [`ThreadClass`](#threadclass)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9742,9 +11018,15 @@
 | hashZone | `` | `integer` | `NavMesh.hashZone()`<br>`obj:hashZone()` |
 | getFilename | `` | `string` | `NavMesh.getFilename()`<br>`obj:getFilename()` |
 
+### Inherited Members
+**From [`ThreadClass`](#threadclass):**
+
+- Fields: `_running`, `frameTime`, `infiniteMode`, `lockedWhileRunningMute`, `name`, `pretendThread`, `runMute`, `threadHandle`, `threadID`
+- Methods: `beginThread`, `canIRun`, `endThread`, `isRunning`, `setName`, `setThreadName`, `setup`, `startRunning`, `stopRunning`, `waitForRunningStop_Blocking`
+
 ## NavMesh::BuildingInfo
 **Header:** `extern/KenshiLib/Include/kenshi/NavMesh.h`
-**Parent Class:** [`NavMesh`](#navmesh)
+**Enclosing Class:** [`NavMesh`](#navmesh)
 **Metatable:** `KenshiLua.NavMesh_BuildingInfo`
 
 ### Methods
@@ -9755,12 +11037,14 @@
 
 ## NavMesh::NavMeshMessage
 **Header:** `extern/KenshiLib/Include/kenshi/NavMesh.h`
-**Parent Class:** [`NavMesh`](#navmesh)
+**Enclosing Class:** [`NavMesh`](#navmesh)
 **Metatable:** `KenshiLua.NavMesh_NavMeshMessage`
 
 ## NavMeshGenerator
 **Header:** `extern/KenshiLib/Include/kenshi/NavMeshGenerator.h`
 **Metatable:** `KenshiLua.NavMeshGenerator`
+
+**Inherits from:** [`ThreadClass`](#threadclass)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9793,14 +11077,20 @@
 | hasJob | `zone: ZoneMap` | `boolean` | `obj:hasJob(zone)` |
 | update | `` | `void` | `obj:update()` |
 
+### Inherited Members
+**From [`ThreadClass`](#threadclass):**
+
+- Fields: `_running`, `frameTime`, `infiniteMode`, `lockedWhileRunningMute`, `name`, `pretendThread`, `runMute`, `threadHandle`, `threadID`
+- Methods: `beginThread`, `canIRun`, `endThread`, `isRunning`, `setName`, `setThreadName`, `setup`, `startRunning`, `stopRunning`, `waitForRunningStop_Blocking`
+
 ## NavMeshGenerator::Task
 **Header:** `extern/KenshiLib/Include/kenshi/NavMeshGenerator.h`
-**Parent Class:** [`NavMeshGenerator`](#navmeshgenerator)
+**Enclosing Class:** [`NavMeshGenerator`](#navmeshgenerator)
 **Metatable:** `KenshiLua.NavMeshGenerator_Task`
 
 ## NavMeshGenerator::TaskQueue
 **Header:** `extern/KenshiLib/Include/kenshi/NavMeshGenerator.h`
-**Parent Class:** [`NavMeshGenerator`](#navmeshgenerator)
+**Enclosing Class:** [`NavMeshGenerator`](#navmeshgenerator)
 **Metatable:** `KenshiLua.NavMeshGenerator_TaskQueue`
 
 ## NavMeshSeeds
@@ -9823,15 +11113,40 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 **Metatable:** `KenshiLua.NestItem`
 
+**Inherits from:** [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getClassType | `` | `integer` | `obj:getClassType()` |
 | getModelName | `` | `string` | `obj:getModelName()` |
 
+### Inherited Members
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `_loadFromSerialise`, `_serialise`, `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getCraftMaterialMult`, `getCraftTime`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getLevel`, `getTimeout`, `getVisible`, `hasIngredients`, `isAFactionUniform`, `isArmour`, `isCrossbow`, `isFood`, `isGear`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setInventoryWeAreIn`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeight`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `getValueSingle`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## NewGameOptionsWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/NewGameOptionsWindow.h`
 **Metatable:** `KenshiLua.NewGameOptionsWindow`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9848,9 +11163,14 @@
 | update | `` | `void` | `obj:update()` |
 | setOptions | `options: GameplayOptions` | `void` | `obj:setOptions(options)` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## NewGameWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/NewGameWindow.h`
 **Metatable:** `KenshiLua.NewGameWindow`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -9879,13 +11199,19 @@
 | newGameStart | `a1: MyGUI::Widget` | `void` | `obj:newGameStart(a1)` |
 | toggleAdvancedOptions | `sender: MyGUI::Widget` | `void` | `obj:toggleAdvancedOptions(sender)` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `autoChangeSelectedObject`, `clear`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `isVisible`, `resize`, `setPositionReal`
+
 ## Nx9Real
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
 **Metatable:** `KenshiLua.Nx9Real`
 
 ## Nx9Real::S
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
-**Parent Class:** [`Nx9Real`](#nx9real)
+**Enclosing Class:** [`Nx9Real`](#nx9real)
 **Metatable:** `KenshiLua.Nx9Real_S`
 
 ## NxBox
@@ -9936,9 +11262,13 @@
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
 **Metatable:** `KenshiLua.NxUserControllerHitReport`
 
+**Subclasses:** [`AbstractMovementBase`](#abstractmovementbase)
+
 ## NxUserTriggerReport
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
 **Metatable:** `KenshiLua.NxUserTriggerReport`
+
+**Subclasses:** [`PhysicsActual::TriggerCallback`](#physicsactualtriggercallback)
 
 ## NxVec3
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
@@ -9993,6 +11323,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/OpenSaveFileDialog.h`
 **Metatable:** `KenshiLua.OpenSaveFileDialog`
 
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -10027,6 +11359,9 @@
 | notifyListChangePosition | `sender: MyGUI::ListBox, index: integer` | `void` | `obj:notifyListChangePosition(sender, index)` |
 | notifyListSelectAccept | `sender: MyGUI::ListBox, index: integer` | `void` | `obj:notifyListSelectAccept(sender, index)` |
 | closeWindow | `sender: MyGUI::Window, name: string` | `void` | `obj:closeWindow(sender, name)` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## OptionsHolder
 **Header:** `extern/KenshiLib/Include/kenshi/OptionsHolder.h`
@@ -10110,6 +11445,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/OptionsWindow.h`
 **Metatable:** `KenshiLua.OptionsWindow`
 
+**Inherits from:** [`GUIWindow`](#guiwindow)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -10152,6 +11489,12 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getSingleton | `` | `OptionsWindow` | `OptionsWindow.getSingleton()`<br>`obj:getSingleton()` |
+
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `autoChangeSelectedObject`, `clear`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `resize`, `setPosition`, `setPositionReal`
 
 ## OrderCellView
 **Header:** `extern/KenshiLib/Include/kenshi/gui/OrdersPanel.h`
@@ -10253,6 +11596,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
 **Metatable:** `KenshiLua.OrdersReceiver`
 
+**Subclasses:** [`AITaskSytem`](#aitasksytem)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -10315,7 +11660,7 @@
 
 ## OrdersReceiver::TaskRequestSimple
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
-**Parent Class:** [`OrdersReceiver`](#ordersreceiver)
+**Enclosing Class:** [`OrdersReceiver`](#ordersreceiver)
 **Metatable:** `KenshiLua.OrdersReceiver_TaskRequestSimple`
 
 ### Methods
@@ -10390,7 +11735,7 @@
 
 ## ParticlePool::ParticleData
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
-**Parent Class:** [`ParticlePool`](#particlepool)
+**Enclosing Class:** [`ParticlePool`](#particlepool)
 **Metatable:** `KenshiLua.ParticlePool_ParticleData`
 
 ## physHit
@@ -10428,6 +11773,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/physicscollection.h`
 **Metatable:** `KenshiLua.PhysicalEntity`
 
+**Subclasses:** [`PhysicsCollection::StaticEnt`](#physicscollectionstaticent)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -10443,6 +11790,8 @@
 ## PhysicsActual
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
 **Metatable:** `KenshiLua.PhysicsActual`
+
+**Inherits from:** [`PhysicsInterface`](#physicsinterface) > [`ThreadWannabe`](#threadwannabe) > [`ThreadClass`](#threadclass)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -10480,10 +11829,28 @@
 | getActorCollisionGroup | `` | `integer` | `PhysicsActual.getActorCollisionGroup()`<br>`obj:getActorCollisionGroup()` |
 | setActorMaterial | `` | `void` | `PhysicsActual.setActorMaterial()`<br>`obj:setActorMaterial()` |
 
+### Inherited Members
+**From [`PhysicsInterface`](#physicsinterface):**
+
+- Fields: `_queuesClear`, `nWorld`, `queuesClearMuto`
+- Methods: `createStaticCapsule`, `createTriggerHull`, `doorWantsSetup`, `getBackthread`, `loadScytheFileMT`, `queuesAreClearMT`, `scytheInsertPreview`, `setQueuesAreClear`
+
+**From [`ThreadWannabe`](#threadwannabe):**
+
+- Fields: `haltEverythingMutex`, `mute`, `paused`, `speedMult`
+- Methods: `forceLoopMT`, `isPaused`, `setPaused`, `threadProc`
+
+**From [`ThreadClass`](#threadclass):**
+
+- Fields: `_running`, `frameTime`, `infiniteMode`, `lockedWhileRunningMute`, `name`, `pretendThread`, `runMute`, `threadHandle`, `threadID`
+- Methods: `beginThread`, `canIRun`, `endThread`, `isRunning`, `setName`, `setThreadName`, `startRunning`, `stopRunning`, `waitForRunningStop_Blocking`
+
 ## PhysicsActual::TriggerCallback
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
-**Parent Class:** [`PhysicsActual`](#physicsactual)
+**Enclosing Class:** [`PhysicsActual`](#physicsactual)
 **Metatable:** `KenshiLua.TriggerCallback`
+
+**Inherits from:** [`NxUserTriggerReport`](#nxusertriggerreport)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10508,7 +11875,7 @@
 
 ## PhysicsCollection::LightEnt
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
-**Parent Class:** [`PhysicsCollection`](#physicscollection)
+**Enclosing Class:** [`PhysicsCollection`](#physicscollection)
 **Metatable:** `KenshiLua.LightEnt`
 
 ### Fields
@@ -10526,8 +11893,10 @@
 
 ## PhysicsCollection::RotatingEnt
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsCollection.h`
-**Parent Class:** [`PhysicsCollection`](#physicscollection)
+**Enclosing Class:** [`PhysicsCollection`](#physicscollection)
 **Metatable:** `KenshiLua.RotatingEnt`
+
+**Inherits from:** [`PhysicsCollection::StaticEnt`](#physicscollectionstaticent) > [`PhysicalEntity`](#physicalentity)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -10555,10 +11924,19 @@
 | isRotatingEnt | `` | `boolean` | `obj:isRotatingEnt()` |
 | getRotationPower | `` | `number` | `obj:getRotationPower()` |
 
+### Inherited Members
+**From [`PhysicalEntity`](#physicalentity):**
+
+- Fields: `ent`, `floorNumber`, `instanced`, `isEmissive`, `isShell`, `mat`, `parent`, `partData`
+
 ## PhysicsCollection::StaticEnt
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsCollection.h`
-**Parent Class:** [`PhysicsCollection`](#physicscollection)
+**Enclosing Class:** [`PhysicsCollection`](#physicscollection)
 **Metatable:** `KenshiLua.StaticEnt`
+
+**Inherits from:** [`PhysicalEntity`](#physicalentity)
+
+**Subclasses:** [`PhysicsCollection::RotatingEnt`](#physicscollectionrotatingent)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10567,9 +11945,18 @@
 | updateAim | `rotSpeed: number, target: Vector3` | `number` | `obj:updateAim(rotSpeed, target)` |
 | isRotatingEnt | `` | `boolean` | `obj:isRotatingEnt()` |
 
+### Inherited Members
+**From [`PhysicalEntity`](#physicalentity):**
+
+- Fields: `ent`, `floorNumber`, `instanced`, `isEmissive`, `isShell`, `mat`, `parent`, `partData`
+
 ## PhysicsInterface
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
 **Metatable:** `KenshiLua.PhysicsInterface`
+
+**Inherits from:** [`ThreadWannabe`](#threadwannabe) > [`ThreadClass`](#threadclass)
+
+**Subclasses:** [`PhysicsActual`](#physicsactual)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -10592,9 +11979,22 @@
 | queuesAreClearMT | `` | `boolean` | `obj:queuesAreClearMT()` |
 | setQueuesAreClear | `on: boolean` | `void` | `obj:setQueuesAreClear(on)` |
 
+### Inherited Members
+**From [`ThreadWannabe`](#threadwannabe):**
+
+- Fields: `haltEverythingMutex`, `mute`, `paused`, `speedMult`
+- Methods: `forceLoopMT`, `isPaused`, `setPaused`, `threadProc`
+
+**From [`ThreadClass`](#threadclass):**
+
+- Fields: `_running`, `frameTime`, `infiniteMode`, `lockedWhileRunningMute`, `name`, `pretendThread`, `runMute`, `threadHandle`, `threadID`
+- Methods: `beginThread`, `canIRun`, `endThread`, `isRunning`, `setName`, `setThreadName`, `setup`, `startRunning`, `stopRunning`, `waitForRunningStop_Blocking`
+
 ## Platoon
 **Header:** `extern/KenshiLib/Include/kenshi/Platoon.h`
 **Metatable:** `KenshiLua.Platoon`
+
+**Inherits from:** [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -10687,9 +12087,17 @@
 | setRoamingMapArea | `a: userdata` | `void` | `obj:setRoamingMapArea(a)` |
 | getSquadLeader_theRealOne | `` | `hand` | `obj:getSquadLeader_theRealOne()` |
 
+### Inherited Members
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getFaction`, `getFloor`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `hasFaction`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## PlatoonHandleContainerList
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.PlatoonHandleContainerList`
+
+**Inherits from:** [`HandleContainerList`](#handlecontainerlist) > [`HandleListBase`](#handlelistbase) > [`Serialisable`](#serialisable)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10700,9 +12108,21 @@
 | setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
 | destroy | `h: hand` | `void` | `obj:destroy(h)` |
 
+### Inherited Members
+**From [`HandleContainerList`](#handlecontainerlist):**
+
+- Methods: `add`
+
+**From [`HandleListBase`](#handlelistbase):**
+
+- Fields: `lastID`, `maxSize`
+- Methods: `addExisting`, `clearToZero`, `get`, `isUnloadedNotDead`
+
 ## PlayerInterface
 **Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
 **Metatable:** `KenshiLua.PlayerInterface`
+
+**Inherits from:** [`FactoryCallbackInterface`](#factorycallbackinterface)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -10840,7 +12260,7 @@
 
 ## PlayerInterface::AIOptions
 **Header:** `extern/KenshiLib/Include/kenshi/PlayerInterface.h`
-**Parent Class:** [`PlayerInterface`](#playerinterface)
+**Enclosing Class:** [`PlayerInterface`](#playerinterface)
 **Metatable:** `KenshiLua.AIOptions`
 
 ### Fields
@@ -11081,8 +12501,10 @@
 
 ## PreviewBuilding::Footprint
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
-**Parent Class:** [`PreviewBuilding`](#previewbuilding)
+**Enclosing Class:** [`PreviewBuilding`](#previewbuilding)
 **Metatable:** `KenshiLua.Footprint`
+
+**Subclasses:** [`PreviewBuilding::FootprintNode`](#previewbuildingfootprintnode)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11119,8 +12541,10 @@
 
 ## PreviewBuilding::FootprintNode
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
-**Parent Class:** [`PreviewBuilding`](#previewbuilding)
+**Enclosing Class:** [`PreviewBuilding`](#previewbuilding)
 **Metatable:** `KenshiLua.FootprintNode`
+
+**Inherits from:** [`PreviewBuilding::Footprint`](#previewbuildingfootprint)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11136,9 +12560,19 @@
 | getNodeId | `` | `void` | `obj:getNodeId()` |
 | operator_assign | `other: FootprintNode` | `void` | `obj:operator_assign(other)` |
 
+### Inherited Members
+**From [`PreviewBuilding::Footprint`](#previewbuildingfootprint):**
+
+- Fields: `ent`, `groundType`, `lower`, `parent`, `pos`, `rot`, `scale`, `space`, `valid`, `wantsAboveGround`
+- Methods: `collisionTestBuildings`, `collisionTestCharacters`, `fakeOppositeValidate`, `getGroundHeight`, `getMarker`, `getSpace`, `getValid`, `getWorldCorner`, `isGroundValid`, `isIndoorsOK`, `setValid`, `validate`, `validFloorTest`
+
 ## ProductionBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ProductionBuilding.h`
 **Metatable:** `KenshiLua.ProductionBuilding`
+
+**Inherits from:** [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`CraftingBuilding`](#craftingbuilding), [`FarmBuilding`](#farmbuilding), [`FurnaceBuilding`](#furnacebuilding), [`GeneratorBuilding`](#generatorbuilding), [`RainCollectorBuilding`](#raincollectorbuilding), [`TortureBuilding`](#torturebuilding)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11189,13 +12623,58 @@
 | getGUIFertility | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIFertility(datapanel, category)` |
 | getGUIState | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIState(datapanel, category)` |
 
+### Inherited Members
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getCurrentProductionQuantity`, `getFunctionStuff`, `getProductionItem`, `getProductionItemData`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## ProductionInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ProductionBuilding.h`
 **Metatable:** `KenshiLua.ProductionInventoryLayout`
 
+**Inherits from:** [`BuildInventoryLayout`](#buildinventorylayout) > [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
+### Inherited Members
+**From [`BuildInventoryLayout`](#buildinventorylayout):**
+
+- Fields: `input1Item`, `input1ItemIcon`, `input1NameText`, `input1Panel`, `input1Progress`, `input1StatusText`, `input2Item`, `input2ItemIcon`, `input2NameText`, `input2Panel`, `input2Progress`, `input2StatusText`, `inputs`, `outputItem`, `outputItemIcon`, `outputNameText`, `outputProgress`, `outputs`
+- Methods: `setInput`, `setInputEnabled`, `setInputItem`, `setInputProgress`, `setOutput`, `setOutputItem`, `setOutputProgress`, `setupSections`
+
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## ProspectingWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ProspectingWindow.h`
 **Metatable:** `KenshiLua.ProspectingWindow`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11233,10 +12712,15 @@
 |---|---|---|---|
 | getSingleton | `` | `ProspectingWindow` | `ProspectingWindow.getSingleton()`<br>`obj:getSingleton()` |
 
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
+
 ## ProspectingWindow::ResourceLinePanel
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ManagementScreen.h`
-**Parent Class:** [`ProspectingWindow`](#prospectingwindow)
+**Enclosing Class:** [`ProspectingWindow`](#prospectingwindow)
 **Metatable:** `KenshiLua.ResourceLinePanel`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11247,6 +12731,9 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getWidget | `` | `MyGUI::Widget` | `obj:getWidget()` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## ProsperityManager
 **Header:** `extern/KenshiLib/Include/kenshi/FactionUniqueSquadManager.h`
@@ -11344,7 +12831,7 @@
 
 ## RaceLimiter::Limiter
 **Header:** `extern/KenshiLib/Include/kenshi/RaceData.h`
-**Parent Class:** [`RaceLimiter`](#racelimiter)
+**Enclosing Class:** [`RaceLimiter`](#racelimiter)
 **Metatable:** `KenshiLua.Limiter`
 
 ### Fields
@@ -11385,12 +12872,14 @@
 
 ## RagdollAnimation::RagdollAnimationTrack
 **Header:** `extern/KenshiLib/Include/kenshi/Animation/RagdollAnimation.h`
-**Parent Class:** [`RagdollAnimation`](#ragdollanimation)
+**Enclosing Class:** [`RagdollAnimation`](#ragdollanimation)
 **Metatable:** `KenshiLua.RagdollAnimation.RagdollAnimationTrack`
 
 ## RainCollectorBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/RainCollectorBuilding.h`
 **Metatable:** `KenshiLua.RainCollectorBuilding`
+
+**Inherits from:** [`ProductionBuilding`](#productionbuilding) > [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -11399,6 +12888,38 @@
 | getRainAmount | `` | `number` | `obj:getRainAmount()` |
 | getGUIState | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIState(datapanel, category)` |
 | getGUIToolTipForGroundResourceEfficiency | `` | `void` | `obj:getGUIToolTipForGroundResourceEfficiency()` |
+
+### Inherited Members
+**From [`ProductionBuilding`](#productionbuilding):**
+
+- Fields: `_resourceMiningLevel`, `consumptionItems`, `outSection`, `productionState`
+- Methods: `canHaveSomeOfThese`, `createInventoryLayout`, `getConsumtionItems`, `getDefaultTask`, `getGUIData`, `getGUIFertility`, `getInputValue`, `getItemsWeWantRidOf`, `getMiningResourceLevel`, `getMouseCursor`, `getNumConsumtionItems`, `getOutput`, `getOutputBasedRotationSpeedMult`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getResourcesNeededBecauseEmpty`, `getResourcesNeededBecauseNotFull`, `isAnyInputsEmpty`, `isAnyInputsFull`, `isAnyInputsInvalidType`, `isProductionEmpty`, `isProductionFull`, `limitInputsOutputRate`, `loadFromSerialise`, `needsUpdate`, `operate`, `serialise`, `setProductionItem`, `setupFromData`, `setupMiningResourceLevel`, `update`, `updateInputs`, `updateInventoryWindow`, `updateOutput`
+
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getCurrentProductionQuantity`, `getFunctionStuff`, `getProductionItem`, `getProductionItemData`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `couldIOperate`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
 
 ## RangedCombatClass
 **Header:** `extern/KenshiLib/Include/kenshi/combat/RangedCombatClass.h`
@@ -11417,6 +12938,8 @@
 ## Renderer
 **Header:** `extern/KenshiLib/Include/kenshi/Renderer.h`
 **Metatable:** `KenshiLua.Renderer`
+
+**Inherits from:** [`RendererT`](#renderert)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11455,9 +12978,16 @@
 | setupPostProcessing | `str: string` | `void` | `obj:setupPostProcessing(str)` |
 | refreshActiveCompositor | `` | `void` | `obj:refreshActiveCompositor()` |
 
+### Inherited Members
+**From [`RendererT`](#renderert):**
+
+- Fields: `debugEntsUpdateListT`
+
 ## RendererT
 **Header:** `extern/KenshiLib/Include/kenshi/Renderer.h`
 **Metatable:** `KenshiLua.RendererT`
+
+**Subclasses:** [`Renderer`](#renderer)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11571,12 +13101,14 @@
 
 ## Research::BuildingUpgrades
 **Header:** `extern/KenshiLib/Include/kenshi/Research.h`
-**Parent Class:** [`Research`](#research)
+**Enclosing Class:** [`Research`](#research)
 **Metatable:** `KenshiLua.Research_BuildingUpgrades`
 
 ## ResearchBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ResearchBuilding.h`
 **Metatable:** `KenshiLua.ResearchBuilding`
+
+**Inherits from:** [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -11591,9 +13123,33 @@
 | getGUIData | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(datapanel, category)` |
 | showResearchWindow | `` | `void` | `obj:showResearchWindow()` |
 
+### Inherited Members
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `canHaveSomeOfThese`, `couldIOperate`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIToolTipForGroundResourceEfficiency`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getMouseCursor`, `getOccupant`, `getOutputBasedRotationSpeedMult`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `getUseableStuff`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isAnyInputsEmpty`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `loadFromSerialise`, `needPowerRightNow`, `needsUpdate`, `occupantHandleChangedEvent`, `resetPower`, `serialise`, `setBroken`, `setup`, `setupFromData`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getFunctionStuff`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIState`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setupMiningResourceLevel`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## ResearchBuildingInventoryLayout
 **Header:** `extern/KenshiLib/Include/kenshi/Building/ResearchBuilding.h`
 **Metatable:** `KenshiLua.ResearchBuildingInventoryLayout`
+
+**Inherits from:** [`GenericInventoryLayout`](#genericinventorylayout) > [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11605,6 +13161,20 @@
 |---|---|---|---|
 | getResearchButton | `` | `MyGUI::Widget` | `obj:getResearchButton()` |
 | setupSections | `inventoryGUI: InventoryGUI, sections: SectionsMap, inventory: Inventory` | `void` | `obj:setupSections(inventoryGUI, sections, inventory)` |
+
+### Inherited Members
+**From [`GenericInventoryLayout`](#genericinventorylayout):**
+
+- Fields: `arrangeButton`
+- Methods: `setSize`
+
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## ResearchItem
 **Header:** `extern/KenshiLib/Include/kenshi/Research.h`
@@ -11626,6 +13196,8 @@
 ## ResourceLoader
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
 **Metatable:** `KenshiLua.ResourceLoader`
+
+**Inherits from:** [`ThreadClass`](#threadclass)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11657,9 +13229,15 @@
 |---|---|---|---|
 | getInstance | `` | `void` | `ResourceLoader.getInstance()`<br>`obj:getInstance()` |
 
+### Inherited Members
+**From [`ThreadClass`](#threadclass):**
+
+- Fields: `_running`, `frameTime`, `infiniteMode`, `lockedWhileRunningMute`, `name`, `pretendThread`, `runMute`, `threadHandle`, `threadID`
+- Methods: `beginThread`, `canIRun`, `endThread`, `isRunning`, `setName`, `setThreadName`, `setup`, `startRunning`, `stopRunning`, `waitForRunningStop_Blocking`
+
 ## ResourceLoader::MeshLoadData
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
-**Parent Class:** [`ResourceLoader`](#resourceloader)
+**Enclosing Class:** [`ResourceLoader`](#resourceloader)
 **Metatable:** `KenshiLua.MeshLoadData`
 
 ### Fields
@@ -11671,7 +13249,7 @@
 
 ## ResourceLoader::ResourceLoadRequestMesh
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
-**Parent Class:** [`ResourceLoader`](#resourceloader)
+**Enclosing Class:** [`ResourceLoader`](#resourceloader)
 **Metatable:** `KenshiLua.ResourceLoadRequestMesh`
 
 ### Fields
@@ -11686,7 +13264,7 @@
 
 ## ResourceLoader::ResourceLoadRequestTexture
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
-**Parent Class:** [`ResourceLoader`](#resourceloader)
+**Enclosing Class:** [`ResourceLoader`](#resourceloader)
 **Metatable:** `KenshiLua.ResourceLoadRequestTexture`
 
 ### Fields
@@ -11701,18 +13279,27 @@
 
 ## ResourceLoader::TextureArrayLoadData
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
-**Parent Class:** [`ResourceLoader`](#resourceloader)
+**Enclosing Class:** [`ResourceLoader`](#resourceloader)
 **Metatable:** `KenshiLua.TextureArrayLoadData`
+
+**Inherits from:** [`ResourceLoader::TextureLoadData`](#resourceloadertextureloaddata)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | loadImage | `` | `void` | `obj:loadImage()` |
 
+### Inherited Members
+**From [`ResourceLoader::TextureLoadData`](#resourceloadertextureloaddata):**
+
+- Fields: `group`, `loaded`, `name`, `queued`, `success`
+
 ## ResourceLoader::TextureLoadData
 **Header:** `extern/KenshiLib/Include/kenshi/ResourceLoader.h`
-**Parent Class:** [`ResourceLoader`](#resourceloader)
+**Enclosing Class:** [`ResourceLoader`](#resourceloader)
 **Metatable:** `KenshiLua.TextureLoadData`
+
+**Subclasses:** [`ResourceLoader::TextureArrayLoadData`](#resourceloadertexturearrayloaddata)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11731,6 +13318,8 @@
 ## RobotLimbItem
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.RobotLimbItem`
+
+**Inherits from:** [`Gear`](#gear) > [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11751,6 +13340,32 @@
 | getCraftTime | `` | `number` | `obj:getCraftTime()` |
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 | getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
+
+### Inherited Members
+**From [`Gear`](#gear):**
+
+- Fields: `crafter`, `isUniform`, `level`, `level_0_100`, `value`
+- Methods: `getLevel`, `getLevel01`, `isAFactionUniform`, `isGear`, `isPlayerCrafted`, `setInventoryWeAreIn`
+
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getClassType`, `getCraftMaterialMult`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isArmour`, `isCrossbow`, `isFood`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeight`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipTradeValue`, `getValueAll`, `getValueSingle`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## RobotLimbs
 **Header:** `extern/KenshiLib/Include/kenshi/MedicalSystem.h`
@@ -11780,6 +13395,10 @@
 ## RootObject
 **Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
 **Metatable:** `KenshiLua.RootObject`
+
+**Inherits from:** [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`Building`](#building), [`Character`](#character), [`InventoryItemBase`](#inventoryitembase), [`ShopTrader`](#shoptrader), [`TownBase`](#townbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11847,9 +13466,17 @@
 | hitByMeleeAttack [1] | `who: Character` | `void` | `obj:hitByMeleeAttack(who)` |
 | hitByMeleeAttack [2] | `attack: CombatTechniqueData` | `void` | `obj:hitByMeleeAttack(attack)` |
 
+### Inherited Members
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `loadFromSerialise`, `serialise`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## RootObjectBase
 **Header:** `extern/KenshiLib/Include/kenshi/RootObjectBase.h`
 **Metatable:** `KenshiLua.RootObjectBase`
+
+**Subclasses:** [`Platoon`](#platoon), [`RootObject`](#rootobject), [`ZoneMapContent::HandleDummy`](#zonemapcontenthandledummy)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11892,6 +13519,10 @@
 **Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
 **Metatable:** `KenshiLua.RootObjectContainer`
 
+**Inherits from:** [`DataObjectContainer`](#dataobjectcontainer)
+
+**Subclasses:** [`ActivePlatoon`](#activeplatoon), [`TownList`](#townlist), [`ZoneMapContent`](#zonemapcontent)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -11912,10 +13543,18 @@
 | serialiseThings [2] | `outputToInstanceCollectionOfSomeKind: GameData, source: GameDataContainer, offsetPosToSubtract: PosRotPair, mod: string` | `void` | `obj:serialiseThings(outputToInstanceCollectionOfSomeKind, source, offsetPosToSubtract, mod)` |
 | loadInstance | `state: GameSaveState, skipSaveState: boolean, pos: Vector3, rot: Quaternion, callback: FactoryCallbackInterface, positionMoved: Vector3` | `void` | `obj:loadInstance(state, skipSaveState, pos, rot, callback, positionMoved)` |
 
+### Inherited Members
+**From [`DataObjectContainer`](#dataobjectcontainer):**
+
+- Fields: `datasFile`, `isStored`, `objectDatas`, `selfType`
+- Methods: `destroyObjectDatas`, `getType`, `setupDataFile`
+
 ## RootObjectContainer::SpecificItemLoadFirst
 **Header:** `extern/KenshiLib/Include/kenshi/RootObject.h`
-**Parent Class:** [`RootObjectContainer`](#rootobjectcontainer)
+**Enclosing Class:** [`RootObjectContainer`](#rootobjectcontainer)
 **Metatable:** `KenshiLua.SpecificItemLoadFirst`
+
+**Subclasses:** [`ZoneMapContent::ZoneMapContentOrderLoader`](#zonemapcontentzonemapcontentorderloader)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -11969,7 +13608,7 @@
 
 ## RootObjectFactory::CreatelistItem
 **Header:** `extern/KenshiLib/Include/kenshi/RootObjectFactory.h`
-**Parent Class:** [`RootObjectFactory`](#rootobjectfactory)
+**Enclosing Class:** [`RootObjectFactory`](#rootobjectfactory)
 **Metatable:** `KenshiLua.CreatelistItem`
 
 ### Fields
@@ -11989,6 +13628,8 @@
 ## SaveFileSystem
 **Header:** `extern/KenshiLib/Include/kenshi/SaveFileSystem.h`
 **Metatable:** `KenshiLua.SaveFileSystem`
+
+**Inherits from:** [`ThreadClass`](#threadclass)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -12030,9 +13671,15 @@
 |---|---|---|---|
 | getSingleton | `` | `void` | `SaveFileSystem.getSingleton()`<br>`obj:getSingleton()` |
 
+### Inherited Members
+**From [`ThreadClass`](#threadclass):**
+
+- Fields: `_running`, `frameTime`, `infiniteMode`, `lockedWhileRunningMute`, `name`, `pretendThread`, `runMute`, `threadHandle`, `threadID`
+- Methods: `beginThread`, `canIRun`, `endThread`, `isRunning`, `setName`, `setThreadName`, `setup`, `startRunning`, `stopRunning`, `waitForRunningStop_Blocking`
+
 ## SaveFileSystem::FileMessage
 **Header:** `extern/KenshiLib/Include/kenshi/SaveFileSystem.h`
-**Parent Class:** [`SaveFileSystem`](#savefilesystem)
+**Enclosing Class:** [`SaveFileSystem`](#savefilesystem)
 **Metatable:** `KenshiLua.SaveFileSystem_FileMessage`
 
 ### Methods
@@ -12127,6 +13774,10 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
 **Metatable:** `KenshiLua.ScreenLabel`
 
+**Inherits from:** [`ScreenLabelInterface`](#screenlabelinterface)
+
+**Subclasses:** [`ScreenLabelDebug`](#screenlabeldebug)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -12151,9 +13802,17 @@
 | update | `` | `void` | `obj:update()` |
 | destroy | `` | `void` | `obj:destroy()` |
 
+### Inherited Members
+**From [`ScreenLabelInterface`](#screenlabelinterface):**
+
+- Fields: `needUpdate`, `position`, `visible`
+- Methods: `setVisible`
+
 ## ScreenLabelDebug
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
 **Metatable:** `KenshiLua.ScreenLabelDebug`
+
+**Inherits from:** [`ScreenLabel`](#screenlabel) > [`ScreenLabelInterface`](#screenlabelinterface)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -12166,9 +13825,22 @@
 | update | `` | `void` | `obj:update()` |
 | getCaption | `` | `void` | `obj:getCaption()` |
 
+### Inherited Members
+**From [`ScreenLabel`](#screenlabel):**
+
+- Fields: `caption`, `color`, `destroyed`, `labelSize`, `risingHeight`, `risingSpeed`, `textWidget`, `trackingHandle`, `trackingOffset`
+- Methods: `destroy`, `setCaption`, `setColor`, `setPosition`, `setRisingSpeed`, `setTracking`
+
+**From [`ScreenLabelInterface`](#screenlabelinterface):**
+
+- Fields: `needUpdate`, `position`, `visible`
+- Methods: `setVisible`
+
 ## ScreenLabelInterface
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ScreenLabel.h`
 **Metatable:** `KenshiLua.ScreenLabelInterface`
+
+**Subclasses:** [`FloatingProgressBar`](#floatingprogressbar), [`ScreenLabel`](#screenlabel)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -12360,7 +14032,7 @@
 
 ## SensoryData::SpottingPeopleMgr
 **Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
-**Parent Class:** [`SensoryData`](#sensorydata)
+**Enclosing Class:** [`SensoryData`](#sensorydata)
 **Metatable:** `KenshiLua.SpottingPeopleMgr`
 
 ### Fields
@@ -12380,7 +14052,7 @@
 
 ## SensoryData::SpottingPeopleMgr::Spot
 **Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
-**Parent Class:** [`SensoryData`](#sensorydata)
+**Enclosing Class:** [`SensoryData`](#sensorydata)
 **Metatable:** `KenshiLua.Spot`
 
 ### Fields
@@ -12394,9 +14066,13 @@
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.Serialisable`
 
+**Subclasses:** [`HandleListBase`](#handlelistbase), [`HandleManager`](#handlemanager)
+
 ## SeveredLimbItem
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
 **Metatable:** `KenshiLua.SeveredLimbItem`
+
+**Inherits from:** [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -12415,6 +14091,27 @@
 | _loadFromSerialise | `container: GameDataContainer, state: GameData` | `void` | `obj:_loadFromSerialise(container, state)` |
 | getTimeout | `` | `TimeOfDay` | `obj:getTimeout()` |
 | destroyPhysical | `` | `void` | `obj:destroyPhysical()` |
+
+### Inherited Members
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `findProperOwner`, `getClassType`, `getCraftMaterialMult`, `getCraftTime`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getLevel`, `getModelName`, `getVisible`, `hasIngredients`, `isAFactionUniform`, `isArmour`, `isCrossbow`, `isFood`, `isGear`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `isWeapon`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setInventoryWeAreIn`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeight`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData1`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `getValueSingle`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## SharedKing
 **Header:** `extern/KenshiLib/Include/kenshi/SharedKing.h`
@@ -12435,6 +14132,8 @@
 ## ShopTrader
 **Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
 **Metatable:** `KenshiLua.ShopTrader`
+
+**Inherits from:** [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -12466,9 +14165,22 @@
 | equipItem | `sectionName: string, item: Item` | `void` | `obj:equipItem(sectionName, item)` |
 | unequipItem | `sectionName: string, item: Item` | `void` | `obj:unequipItem(sectionName, item)` |
 
+### Inherited Members
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `getAABB`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getOrders`, `getPlatoonAI`, `getRace`, `getVisible`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isOnARoof`, `loadUnloadCheck`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `threadedUpdate`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## ShopTraderInventory
 **Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
 **Metatable:** `KenshiLua.ShopTraderInventory`
+
+**Inherits from:** [`Inventory`](#inventory)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -12490,15 +14202,29 @@
 | _sectionUpdateItemCallback | `item: Item, prevQuantity: integer` | `void` | `obj:_sectionUpdateItemCallback(item, prevQuantity)` |
 | _sectionRemoveItemCallback | `item: Item` | `void` | `obj:_sectionRemoveItemCallback(item)` |
 
+### Inherited Members
+**From [`Inventory`](#inventory):**
+
+- Fields: `_allItems`, `callbackObject`, `hasRoomCache`, `owner`, `sections`, `sectionsInSearchOrder`, `totalWeight`
+- Methods: `_addToList`, `_getBestFoodItem`, `_getNumFoodItems`, `_removeFromList`, `addItem`, `autoArrange`, `buyItem`, `clearAll`, `countItems`, `deathCheck`, `equipItem`, `fillFromVendorList`, `getAllItems`, `getAllItemsOfType`, `getAllItemsWithFunction`, `getAllSections`, `getAllSectionsOfType`, `getAllStolenItems`, `getBestFoodItem`, `getBestItemWithFunction`, `getBestItemWithLowestCharges`, `getCallbackCharacter`, `getCallbackObject`, `getEquippedArmour`, `getEquippedWeapons`, `getExcessLoot`, `getHandle`, `getInventoryGUI`, `getItem`, `getMoney`, `getNumFoodItems`, `getNumItems`, `getOwner`, `getPrimaryWeapon`, `getResourceItems`, `getSecondaryWeapon`, `getSection`, `getSectionOfType`, `getTotalWeight`, `hasItem`, `hasItemFunction`, `hasItemType`, `hasRoomForItem`, `hasStolenItems`, `hasWeaponEquipped`, `isAContainer`, `isEmpty`, `isVisible`, `loadFrom`, `notifyModified`, `recalculateTotalWeight`, `removeAllSections`, `removeItemAutoDestroy`, `removeItemDontDestroy_returnsItem`, `resizeSection`, `serialise`, `takeItem_EntireStack`, `takeMoney`, `takeOneItemOnly`, `transferMouseItem`, `tryAddItem`
+
 ## ShopTraderInventorySection
 **Header:** `extern/KenshiLib/Include/kenshi/ShopTrader.h`
 **Metatable:** `KenshiLua.ShopTraderInventorySection`
+
+**Inherits from:** [`InventorySection`](#inventorysection)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | autoArrange | `` | `void` | `obj:autoArrange()` |
 | addItem | `item: Item, quantity: integer` | `boolean` | `obj:addItem(item, quantity)` |
+
+### Inherited Members
+**From [`InventorySection`](#inventorysection):**
+
+- Fields: `armourOnly`, `callbackObject`, `containerSlot`, `content`, `enabled`, `height`, `isAnEquippedItemSection`, `items`, `itemsLimit`, `limitedSlot`, `name`, `parentInventory`, `stackingBonusMin`, `stackingBonusMult`, `totalWeight`, `veryLimitedSlot`, `weightMultiplier`, `width`
+- Methods: `_addItem`, `addVeryLimitedSlot`, `applyStackingBonuses`, `canItemGoHere`, `clearAllItems`, `clearVeryLimitedSlot`, `existsItemInFootprint`, `findNearestPlaceForItem`, `getAllItemsOfName`, `getAllItemsOfType`, `getEnabled`, `getFillPercentage`, `getInventory`, `getItem`, `getItemAt`, `getItems`, `getItemsInFootprint`, `getItemsLimitReached`, `getLimitedSlot`, `getMaxStack`, `getNumItems`, `getValidInventoryPosition`, `hasItem`, `hasItemType`, `hasRoomForItem`, `isEmpty`, `isLimitedSlotCompatible`, `notifyModified`, `numItemsInFootprint`, `recalculateTotalWeight`, `removeItem`, `resize`, `setEnabled`, `setItemsLimitCount`, `setStackingBonus`, `setupContainerData`, `setupEquipCallbacks`, `setWeightMultiplier`
 
 ## SimpleTimeStamper
 **Header:** `extern/KenshiLib/Include/kenshi/GameWorld.h`
@@ -12519,6 +14245,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_Slider.h`
 **Metatable:** `KenshiLua.Slider`
 
+**Inherits from:** [`MyGUI.Widget`](MyGUIReference.md#widget)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -12535,6 +14263,9 @@
 | initialiseOverride | `` | `void` | `obj:initialiseOverride()` |
 | shutdownOverride | `` | `void` | `obj:shutdownOverride()` |
 | getTypeName | `` | `void` | `obj:getTypeName()` |
+
+### Inherited Members
+**From [`MyGUI.Widget`](MyGUIReference.md#widget):** its fields and methods are listed in the MyGUI Reference.
 
 ## SpeedGroup
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -12610,7 +14341,7 @@
 
 ## SquadManagementScreen::PortraitSquadCellView
 **Header:** `extern/KenshiLib/Include/kenshi/gui/PortraitManager.h`
-**Parent Class:** [`SquadManagementScreen`](#squadmanagementscreen)
+**Enclosing Class:** [`SquadManagementScreen`](#squadmanagementscreen)
 **Metatable:** `KenshiLua.PortraitSquadCellView`
 
 ### Fields
@@ -12635,7 +14366,7 @@
 
 ## SquadManagementScreen::PortraitSquadItemBox
 **Header:** `extern/KenshiLib/Include/kenshi/gui/PortraitManager.h`
-**Parent Class:** [`SquadManagementScreen`](#squadmanagementscreen)
+**Enclosing Class:** [`SquadManagementScreen`](#squadmanagementscreen)
 **Metatable:** `KenshiLua.PortraitSquadItemBox`
 
 ### Fields
@@ -12652,7 +14383,7 @@
 
 ## SquadManagementScreen::SquadCellView
 **Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
-**Parent Class:** [`SquadManagementScreen`](#squadmanagementscreen)
+**Enclosing Class:** [`SquadManagementScreen`](#squadmanagementscreen)
 **Metatable:** `KenshiLua.SquadCellView`
 
 ### Fields
@@ -12677,7 +14408,7 @@
 
 ## SquadManagementScreen::SquadData
 **Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
-**Parent Class:** [`SquadManagementScreen`](#squadmanagementscreen)
+**Enclosing Class:** [`SquadManagementScreen`](#squadmanagementscreen)
 **Metatable:** `KenshiLua.SquadData`
 
 ### Fields
@@ -12693,7 +14424,7 @@
 
 ## SquadManagementScreen::SquadItemBox
 **Header:** `extern/KenshiLib/Include/kenshi/gui/SquadManagementScreen.h`
-**Parent Class:** [`SquadManagementScreen`](#squadmanagementscreen)
+**Enclosing Class:** [`SquadManagementScreen`](#squadmanagementscreen)
 **Metatable:** `KenshiLua.SquadItemBox`
 
 ### Methods
@@ -12779,6 +14510,10 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/StorageBuilding.h`
 **Metatable:** `KenshiLua.StorageBuilding`
 
+**Inherits from:** [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`ProductionBuilding`](#productionbuilding)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -12811,9 +14546,31 @@
 | getResourcesNeededBecauseNotFull | `` | `void` | `obj:getResourcesNeededBecauseNotFull()` |
 | getConsumtionItems_inStock | `` | `void` | `obj:getConsumtionItems_inStock()` |
 
+### Inherited Members
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `createInventoryLayout`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIToolTipForGroundResourceEfficiency`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getMouseCursor`, `getOccupant`, `getOutputBasedRotationSpeedMult`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `loadFromSerialise`, `needPowerRightNow`, `needsUpdate`, `occupantHandleChangedEvent`, `operate`, `resetPower`, `serialise`, `setBroken`, `setup`, `setupFromData`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIState`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setupMiningResourceLevel`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## StorageBuilding::ConsumptionItem
 **Header:** `extern/KenshiLib/Include/kenshi/Building/StorageBuilding.h`
-**Parent Class:** [`StorageBuilding`](#storagebuilding)
+**Enclosing Class:** [`StorageBuilding`](#storagebuilding)
 **Metatable:** `KenshiLua.ConsumptionItem`
 
 ### Fields
@@ -12851,6 +14608,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.Sword`
 
+**Inherits from:** [`Weapon`](#weapon) > [`Gear`](#gear) > [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -12869,6 +14628,37 @@
 | getSkillModIndoors | `` | `integer` | `obj:getSkillModIndoors()` |
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
 | getTooltipData2 | `` | `void` | `obj:getTooltipData2()` |
+
+### Inherited Members
+**From [`Weapon`](#weapon):**
+
+- Fields: `bleedDamage`, `category`, `category_animationOverride`, `combatWeight`, `modAttack`
+- Methods: `getCategory`, `getCategory_animationOverride`, `getCombatWeight`, `getCraftMaterialMult`, `getCraftTime`, `getItemWeight`, `getValueSingle`, `is2HandedOnly`, `isCrossbow`, `isWeapon`
+
+**From [`Gear`](#gear):**
+
+- Fields: `crafter`, `isUniform`, `level`, `level_0_100`, `value`
+- Methods: `_loadFromSerialise`, `_serialise`, `getLevel`, `getLevel01`, `isAFactionUniform`, `isGear`, `isPlayerCrafted`, `setInventoryWeAreIn`
+
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isArmour`, `isFood`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## TagsClass
 **Header:** `extern/KenshiLib/Include/kenshi/util/TagsClass.h`
@@ -13145,27 +14935,29 @@
 
 ## Terrain::BloodQueue
 **Header:** `extern/KenshiLib/Include/kenshi/Terrain.h`
-**Parent Class:** [`Terrain`](#terrain)
+**Enclosing Class:** [`Terrain`](#terrain)
 **Metatable:** `KenshiLua.Terrain_BloodQueue`
 
 ## Terrain::Box
 **Header:** `extern/KenshiLib/Include/kenshi/Terrain.h`
-**Parent Class:** [`Terrain`](#terrain)
+**Enclosing Class:** [`Terrain`](#terrain)
 **Metatable:** `KenshiLua.Terrain_Box`
 
 ## Terrain::Hit
 **Header:** `extern/KenshiLib/Include/kenshi/Terrain.h`
-**Parent Class:** [`Terrain`](#terrain)
+**Enclosing Class:** [`Terrain`](#terrain)
 **Metatable:** `KenshiLua.Terrain_Hit`
 
 ## Terrain::Info
 **Header:** `extern/KenshiLib/Include/kenshi/Terrain.h`
-**Parent Class:** [`Terrain`](#terrain)
+**Enclosing Class:** [`Terrain`](#terrain)
 **Metatable:** `KenshiLua.Terrain_Info`
 
 ## ThreadClass
 **Header:** `extern/KenshiLib/Include/kenshi/ThreadClass.h`
 **Metatable:** `KenshiLua.ThreadClass`
+
+**Subclasses:** [`NavMesh`](#navmesh), [`NavMeshGenerator`](#navmeshgenerator), [`ResourceLoader`](#resourceloader), [`SaveFileSystem`](#savefilesystem), [`ThreadWannabe`](#threadwannabe)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13199,6 +14991,10 @@
 **Header:** `extern/KenshiLib/Include/kenshi/ThreadClass.h`
 **Metatable:** `KenshiLua.ThreadWannabe`
 
+**Inherits from:** [`ThreadClass`](#threadclass)
+
+**Subclasses:** [`PhysicsInterface`](#physicsinterface)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -13215,6 +15011,12 @@
 | setPaused | `on: boolean, _speedMult: number` | `void` | `obj:setPaused(on, _speedMult)` |
 | threadProc | `` | `integer` | `obj:threadProc()` |
 | forceLoopMT | `` | `void` | `obj:forceLoopMT()` |
+
+### Inherited Members
+**From [`ThreadClass`](#threadclass):**
+
+- Fields: `_running`, `frameTime`, `infiniteMode`, `lockedWhileRunningMute`, `name`, `pretendThread`, `runMute`, `threadHandle`, `threadID`
+- Methods: `beginThread`, `canIRun`, `endThread`, `isRunning`, `setName`, `setThreadName`, `setup`, `startRunning`, `stopRunning`, `waitForRunningStop_Blocking`
 
 ## TimeOfDay
 **Header:** `extern/KenshiLib/Include/kenshi/util/TimeOfDay.h`
@@ -13263,6 +15065,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TitleScreen.h`
 **Metatable:** `KenshiLua.TitleScreen`
 
+**Inherits from:** [`GUIWindow`](#guiwindow)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -13293,9 +15097,17 @@
 |---|---|---|---|
 | getSingleton | `` | `TitleScreen` | `TitleScreen.getSingleton()`<br>`obj:getSingleton()` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `autoChangeSelectedObject`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `isVisible`, `resize`, `setPosition`, `setPositionReal`
+
 ## ToolTip
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
 **Metatable:** `KenshiLua.ToolTip`
+
+**Subclasses:** [`ToolTipDynamic`](#tooltipdynamic), [`ToolTipFixed`](#tooltipfixed), [`ToolTipInventory`](#tooltipinventory), [`ToolTipStatic`](#tooltipstatic)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13333,7 +15145,7 @@
 
 ## ToolTip::ToolTipLine
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
-**Parent Class:** [`ToolTip`](#tooltip)
+**Enclosing Class:** [`ToolTip`](#tooltip)
 **Metatable:** `KenshiLua.ToolTipLine`
 
 ### Fields
@@ -13348,15 +15160,25 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
 **Metatable:** `KenshiLua.ToolTipDynamic`
 
+**Inherits from:** [`ToolTip`](#tooltip)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setVisible | `visible: boolean` | `void` | `obj:setVisible(visible)` |
 | setPosition | `` | `void` | `obj:setPosition()` |
 
+### Inherited Members
+**From [`ToolTip`](#tooltip):**
+
+- Fields: `caller`, `lineMarginH`, `lineSpacing`, `panel`, `panelMarginV`, `panelWidth`
+- Methods: `_setup`, `addLine`, `clear`, `clearData`, `clearLines`, `getVisible`, `hide`, `setContent`, `setup_gamedata`, `setup_hand`, `setup_stringpairs`, `setup_text`, `show`, `showGameData_hand`, `showGameData_widget`, `showMultiLine`, `showText`, `update`
+
 ## ToolTipFixed
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
 **Metatable:** `KenshiLua.ToolTipFixed`
+
+**Inherits from:** [`ToolTip`](#tooltip)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13375,9 +15197,17 @@
 | _setup | `widget: MyGUI::Widget` | `void` | `obj:_setup(widget)` |
 | mouseMoved | `sender: MyGUI::Widget, left: integer, top: integer` | `void` | `obj:mouseMoved(sender, left, top)` |
 
+### Inherited Members
+**From [`ToolTip`](#tooltip):**
+
+- Fields: `caller`, `lineMarginH`, `lineSpacing`, `panel`, `panelMarginV`, `panelWidth`
+- Methods: `addLine`, `clearData`, `clearLines`, `getVisible`, `hide`, `setContent`, `setup_gamedata`, `setup_hand`, `setup_stringpairs`, `setup_text`, `show`, `showGameData_hand`, `showGameData_widget`, `showMultiLine`, `showText`
+
 ## ToolTipInventory
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
 **Metatable:** `KenshiLua.ToolTipInventory`
+
+**Inherits from:** [`ToolTip`](#tooltip)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13396,9 +15226,17 @@
 | mouseMoved | `sender: MyGUI::Widget, left: integer, top: integer` | `void` | `obj:mouseMoved(sender, left, top)` |
 | setPosition | `` | `void` | `obj:setPosition()` |
 
+### Inherited Members
+**From [`ToolTip`](#tooltip):**
+
+- Fields: `caller`, `lineMarginH`, `lineSpacing`, `panel`, `panelMarginV`, `panelWidth`
+- Methods: `addLine`, `clear`, `clearLines`, `getVisible`, `hide`, `setup_gamedata`, `setup_hand`, `setup_stringpairs`, `setup_text`, `setVisible`, `showGameData_hand`, `showGameData_widget`, `showMultiLine`, `showText`
+
 ## ToolTipStatic
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ToolTip.h`
 **Metatable:** `KenshiLua.ToolTipStatic`
+
+**Inherits from:** [`ToolTip`](#tooltip)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -13410,9 +15248,17 @@
 | setPosition | `` | `void` | `obj:setPosition()` |
 | mouseMoved | `sender: MyGUI::Widget, left: integer, top: integer` | `void` | `obj:mouseMoved(sender, left, top)` |
 
+### Inherited Members
+**From [`ToolTip`](#tooltip):**
+
+- Fields: `caller`, `lineMarginH`, `lineSpacing`, `panel`, `panelMarginV`, `panelWidth`
+- Methods: `addLine`, `clearData`, `clearLines`, `getVisible`, `hide`, `setContent`, `setup_gamedata`, `setup_hand`, `setup_stringpairs`, `setup_text`, `show`, `showGameData_hand`, `showGameData_widget`, `showMultiLine`, `showText`
+
 ## TortureBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/TortureBuilding.h`
 **Metatable:** `KenshiLua.TortureBuilding`
+
+**Inherits from:** [`ProductionBuilding`](#productionbuilding) > [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13425,9 +15271,43 @@
 | getFunctionStuff | `` | `StorageBuilding` | `obj:getFunctionStuff()` |
 | update | `` | `void` | `obj:update()` |
 
+### Inherited Members
+**From [`ProductionBuilding`](#productionbuilding):**
+
+- Fields: `_resourceMiningLevel`, `consumptionItems`, `outSection`, `productionState`
+- Methods: `canHaveSomeOfThese`, `createInventoryLayout`, `getConsumtionItems`, `getDefaultTask`, `getGUIData`, `getGUIFertility`, `getGUIState`, `getGUIToolTipForGroundResourceEfficiency`, `getInputValue`, `getItemsWeWantRidOf`, `getMiningResourceLevel`, `getMouseCursor`, `getNumConsumtionItems`, `getOutput`, `getOutputBasedRotationSpeedMult`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getResourcesNeededBecauseEmpty`, `getResourcesNeededBecauseNotFull`, `isAnyInputsEmpty`, `isAnyInputsFull`, `isAnyInputsInvalidType`, `isProductionEmpty`, `isProductionFull`, `limitInputsOutputRate`, `loadFromSerialise`, `needsUpdate`, `operate`, `serialise`, `setProductionItem`, `setupFromData`, `setupMiningResourceLevel`, `updateInputs`, `updateInventoryWindow`, `updateOutput`
+
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getCurrentProductionQuantity`, `getProductionItem`, `getProductionItemData`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getPowerOutput`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## Town
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
 **Metatable:** `KenshiLua.Town`
+
+**Inherits from:** [`TownBase`](#townbase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13537,9 +15417,26 @@
 | getPlayerTownTypeEnum | `` | `TownType` | `obj:getPlayerTownTypeEnum()` |
 | serialise | `container: GameDataContainer, refList: GameData, offset: userdata` | `GameSaveState` | `obj:serialise(container, refList, offset)` |
 
+### Inherited Members
+**From [`TownBase`](#townbase):**
+
+- Fields: `alarmState`, `alreadyInitialisedPopulationParams`, `artifacts`, `biome`, `buildingsManager`, `clickHull`, `currentFloorVisibility`, `defaultResident`, `discovered`, `entityLabel`, `entityMarker`, `explored`, `factionsResidentHere`, `isActivated`, `isSecret`, `myZoneCoverage`, `nestBatcher`, `occupiers`, `p_TIME`, `populatedZones`, `population`, `positionCacher`, `recentlyDiscovered`, `residentsSpawned`, `residentsSpawned_BarsOrSomething`, `timeOfDeath`, `townType`, `unexploredName`
+- Methods: `_nestUpThisSpot`, `activate`, `addOccupier`, `allBuildingsDoorsOpen`, `createPhysical`, `destroyPhysical`, `distanceTo`, `distributeArtifacts`, `findAllBuildingsOfType`, `findAllBuildingsWithFunction`, `getAlarmState`, `getBiome`, `getBuildingFloorVisibility`, `getBuildingsManager`, `getCurrentTownLocation`, `getGearArtifactsMaxValue`, `getGearArtifactsMinValue`, `getItemArtifactsMaxValue`, `getItemArtifactsMinValue`, `getKnownName`, `getPosition`, `getPositionForWaypoint`, `getTownFloorVisiblity`, `getUnexploredName`, `getZonesCoverage`, `isDead`, `isDiscovered`, `isExplored`, `isIllegal`, `isNotFriendly`, `isOccupied`, `isPhysical`, `isRecentlyDiscovered`, `nestUpThisSpot`, `removeOccupier`, `resetBuildingsFloorVisibility`, `resetTownFloorVisibility`, `setAlarmState`, `setBuildingsFloorVisibility`, `setDead`, `setDiscovered`, `setExplored`, `setFaction`, `setRecentlyDiscovered`, `setTownFloorVisiblity`, `setVisible`, `setZonePopulated`, `spawnDebris`, `squaredDistanceTo`, `withinBordersRange`, `withinDiscoveryRange`
+- Static methods: `clearDelayedItemLoadingMessages`, `delayedSpawningChecks`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getInventory`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getVisible`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `loadUnloadCheck`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `say`, `select`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getFaction`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## Town::NestSpot
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
-**Parent Class:** [`Town`](#town)
+**Enclosing Class:** [`Town`](#town)
 **Metatable:** `KenshiLua.Town_NestSpot`
 
 ### Methods
@@ -13551,6 +15448,10 @@
 ## TownBase
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
 **Metatable:** `KenshiLua.TownBase`
+
+**Inherits from:** [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`Town`](#town)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13676,9 +15577,20 @@
 | delayedSpawningChecks | `` | `integer` | `TownBase.delayedSpawningChecks()`<br>`obj:delayedSpawningChecks()` |
 | clearDelayedItemLoadingMessages | `` | `void` | `TownBase.clearDelayedItemLoadingMessages()`<br>`obj:clearDelayedItemLoadingMessages()` |
 
+### Inherited Members
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getInventory`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getVisible`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `loadUnloadCheck`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `say`, `select`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## TownBase::DelayedSpawnMsg
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
-**Parent Class:** [`TownBase`](#townbase)
+**Enclosing Class:** [`TownBase`](#townbase)
 **Metatable:** `KenshiLua.DelayedSpawnMsg`
 
 ### Fields
@@ -13692,7 +15604,7 @@
 
 ## TownBase::ResidentData
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
-**Parent Class:** [`TownBase`](#townbase)
+**Enclosing Class:** [`TownBase`](#townbase)
 **Metatable:** `KenshiLua.TownBase_ResidentData`
 
 ### Methods
@@ -13703,7 +15615,7 @@
 
 ## TownBase::TownPositionCacher
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
-**Parent Class:** [`TownBase`](#townbase)
+**Enclosing Class:** [`TownBase`](#townbase)
 **Metatable:** `KenshiLua.TownPositionCacher`
 
 ### Fields
@@ -13722,6 +15634,8 @@
 ## TownBuildingsManager
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
 **Metatable:** `KenshiLua.TownBuildingsManager`
+
+**Inherits from:** [`FactoryCallbackInterface`](#factorycallbackinterface)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13748,16 +15662,30 @@
 
 ## TownBuildingsManager::BuildingInfo
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
-**Parent Class:** [`TownBuildingsManager`](#townbuildingsmanager)
+**Enclosing Class:** [`TownBuildingsManager`](#townbuildingsmanager)
 **Metatable:** `KenshiLua.TownBuildingsManager_BuildingInfo`
 
 ## TownHandleContainerList
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.TownHandleContainerList`
 
+**Inherits from:** [`HandleContainerList`](#handlecontainerlist) > [`HandleListBase`](#handlelistbase) > [`Serialisable`](#serialisable)
+
+### Inherited Members
+**From [`HandleContainerList`](#handlecontainerlist):**
+
+- Methods: `add`
+
+**From [`HandleListBase`](#handlelistbase):**
+
+- Fields: `lastID`, `maxSize`
+- Methods: `addExisting`, `clearToZero`, `destroy`, `get`, `isUnloadedNotDead`, `setUnloaded`
+
 ## TownList
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
 **Metatable:** `KenshiLua.TownList`
+
+**Inherits from:** [`RootObjectContainer`](#rootobjectcontainer) > [`DataObjectContainer`](#dataobjectcontainer)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -13809,6 +15737,17 @@
 | reassessTownPositions | `t: TownBase` | `void` | `obj:reassessTownPositions(t)` |
 | mergePlayerTowns | `a: Town, b: Town` | `void` | `obj:mergePlayerTowns(a, b)` |
 
+### Inherited Members
+**From [`RootObjectContainer`](#rootobjectcontainer):**
+
+- Fields: `things`
+- Methods: `getNumThings`, `getSelectedObjects`, `getThing`, `getThings`, `loadInstance`, `loadToReality`, `removeObject`, `serialiseThings`
+
+**From [`DataObjectContainer`](#dataobjectcontainer):**
+
+- Fields: `datasFile`, `isStored`, `objectDatas`, `selfType`
+- Methods: `destroyObjectDatas`, `getType`, `setupDataFile`
+
 ## TradeCulture
 **Header:** `extern/KenshiLib/Include/kenshi/TradeCulture.h`
 **Metatable:** `KenshiLua.TradeCulture`
@@ -13836,6 +15775,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/InventoryGUI.h`
 **Metatable:** `KenshiLua.TraderInventoryLayout`
 
+**Inherits from:** [`InventoryLayout`](#inventorylayout) > [`BaseLayout`](MyGUIReference.md#baselayout)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -13846,6 +15787,15 @@
 |---|---|---|---|
 | setupSections | `gui: InventoryGUI, sections: userdata, inv: Inventory` | `void` | `obj:setupSections(gui, sections, inv)` |
 | notifyMouseWheel | `widget: MyGUI::Widget, rel: integer` | `void` | `obj:notifyMouseWheel(widget, rel)` |
+
+### Inherited Members
+**From [`InventoryLayout`](#inventorylayout):**
+
+- Fields: `datapanel`, `dataPanelInfos`, `window`
+- Methods: `createSectionGUI`, `getDatapanel`, `getWidget`, `getWindow`, `resizeSection`, `resizeSectionWidget`, `setSectionGUIDisabled`, `setupDataPanelInfos`
+- Static methods: `notifyCellSizeChanged`
+
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## TransformWindow
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TransformWindow.h`
@@ -13925,6 +15875,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/TurretBuilding.h`
 **Metatable:** `KenshiLua.TurretBuilding`
 
+**Inherits from:** [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -13962,9 +15914,33 @@
 | getMountedBuilding | `` | `hand` | `obj:getMountedBuilding()` |
 | serialise | `container: GameDataContainer, refList: GameData, offset: userdata` | `GameSaveState` | `obj:serialise(container, refList, offset)` |
 
+### Inherited Members
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `canHaveSomeOfThese`, `couldIOperate`, `createInventoryLayout`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFuelConsumptionRate`, `getFunctionalityData`, `getGUIData`, `getGUIEfficiency`, `getGUIPower`, `getGUIPowerEfficiencyToolTipString`, `getGUIToolTipForGroundResourceEfficiency`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getMouseCursor`, `getOccupant`, `getOutputBasedRotationSpeedMult`, `getPowerOutput`, `getReachRange`, `getUseableStuff`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isAnyInputsEmpty`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `loadFromSerialise`, `needPowerRightNow`, `occupantHandleChangedEvent`, `operate`, `resetPower`, `setBroken`, `setupFromData`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearUsageNodes`, `confirmDismantle`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getFunctionStuff`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIState`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionDismantling`, `notifyEffect`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setupMiningResourceLevel`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## TutorialGUI
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TutorialGUI.h`
 **Metatable:** `KenshiLua.TutorialGUI`
+
+**Inherits from:** [`GUIWindow`](#guiwindow)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -14009,10 +15985,18 @@
 | tooltipOpen | `sender: MyGUI::Widget` | `void` | `obj:tooltipOpen(sender)` |
 | tooltipClose | `sender: MyGUI::Widget` | `void` | `obj:tooltipClose(sender)` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `autoChangeSelectedObject`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `isVisible`, `resize`, `setPosition`, `setPositionReal`
+
 ## TutorialGUI::TutorialGUILine
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TutorialGUI.h`
-**Parent Class:** [`TutorialGUI`](#tutorialgui)
+**Enclosing Class:** [`TutorialGUI`](#tutorialgui)
 **Metatable:** `KenshiLua.TutorialGUILine`
+
+**Inherits from:** [`BaseLayout`](MyGUIReference.md#baselayout)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -14025,6 +16009,9 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | updateHighlight | `time: number` | `boolean` | `obj:updateHighlight(time)` |
+
+### Inherited Members
+**From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
 ## TutorialItem
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TutorialGUI.h`
@@ -14072,6 +16059,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TutorialGUI.h`
 **Metatable:** `KenshiLua.TutorialpediaGUI`
 
+**Inherits from:** [`GUIWindow`](#guiwindow)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -14098,6 +16087,12 @@
 | tutorialActivateButtonEvent | `sender: MyGUI::Widget` | `void` | `obj:tutorialActivateButtonEvent(sender)` |
 | tutorialWindowButton | `sender: MyGUI::Window, name: string` | `void` | `obj:tutorialWindowButton(sender, name)` |
 
+### Inherited Members
+**From [`GUIWindow`](#guiwindow):**
+
+- Fields: `selectedObject`, `win`
+- Methods: `autoChangeSelectedObject`, `getHeight`, `getHeightReal`, `getWidget`, `getWidth`, `getWidthReal`, `resize`, `setPosition`, `setPositionReal`, `update`
+
 ## TutorialSubItem
 **Header:** `extern/KenshiLib/Include/kenshi/gui/TutorialGUI.h`
 **Metatable:** `KenshiLua.TutorialSubItem`
@@ -14118,6 +16113,10 @@
 ## UseableStuff
 **Header:** `extern/KenshiLib/Include/kenshi/Building/UseableStuff.h`
 **Metatable:** `KenshiLua.UseableStuff`
+
+**Inherits from:** [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`LightBuilding`](#lightbuilding), [`ResearchBuilding`](#researchbuilding), [`StorageBuilding`](#storagebuilding), [`TurretBuilding`](#turretbuilding)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -14222,6 +16221,23 @@
 | togglePowerButton | `line: DataPanelLine` | `void` | `obj:togglePowerButton(line)` |
 | toggleBattButton | `line: DataPanelLine` | `void` | `obj:toggleBattButton(line)` |
 
+### Inherited Members
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getFunctionStuff`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIState`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setupMiningResourceLevel`, `setVisible`, `switchLights`, `togglePublic`, `update`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## UtilityT
 **Header:** `extern/KenshiLib/Include/kenshi/util/UtilityT.h`
 **Metatable:** `KenshiLua.UtilityT`
@@ -14318,6 +16334,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`
 **Metatable:** `KenshiLua.WaitingStateAI`
 
+**Inherits from:** [`CombatState`](#combatstate)
+
 ### Fields
 | Lua Name | Type | R/W | Example |
 |---|---|---|---|
@@ -14331,9 +16349,16 @@
 | update | `time: number` | `void` | `obj:update(time)` |
 | end | `` | `void` | `obj:end()` |
 
+### Inherited Members
+**From [`CombatState`](#combatstate):**
+
+- Fields: `combat`, `stateTimer`
+
 ## WallBuilding
 **Header:** `extern/KenshiLib/Include/kenshi/Building/WallBuilding.h`
 **Metatable:** `KenshiLua.WallBuilding`
+
+**Inherits from:** [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -14369,9 +16394,30 @@
 | dismantleButton_all | `line: DataPanelLine` | `void` | `obj:dismantleButton_all(line)` |
 | letsShare | `who: WallBuilding` | `boolean` | `obj:letsShare(who)` |
 
+### Inherited Members
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateEfficiencyMult`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDefaultTask`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getDoorLock`, `getFunctionStuff`, `getGroundType`, `getGUICondition`, `getGUIData`, `getGUIName`, `getGUIState`, `getInstanceID`, `getInventory`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMiningResourceLevel`, `getMountedBuilding`, `getMountedBuildings`, `getMouseCursor`, `getNumFloors`, `getNumInternalBuildings`, `getOutputBasedRotationSpeedMult`, `getParentLayout`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSoundIntensity`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasDoorLock`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWallRamp`, `isBroken`, `isCeilingMounted`, `isCreated`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPowerOn`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `needsUpdate`, `notifyChange`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `serialise`, `setBroken`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setup`, `setupAudio`, `setupFromData`, `setupLevelData`, `setupMiningResourceLevel`, `setVisible`, `switchLights`, `switchPowerOn`, `threadedUpdate`, `togglePublic`, `update`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isDisabled`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `unequipItem`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
+
 ## Weapon
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
 **Metatable:** `KenshiLua.Weapon`
+
+**Inherits from:** [`Gear`](#gear) > [`Item`](#item) > [`InventoryItemBase`](#inventoryitembase) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
+**Subclasses:** [`Crossbow`](#crossbow), [`Sword`](#sword)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -14398,6 +16444,32 @@
 | isCrossbow | `` | `Crossbow` | `obj:isCrossbow()` |
 | getSkillModIndoors | `` | `integer` | `obj:getSkillModIndoors()` |
 | getTooltipData1 | `` | `void` | `obj:getTooltipData1()` |
+
+### Inherited Members
+**From [`Gear`](#gear):**
+
+- Fields: `crafter`, `isUniform`, `level`, `level_0_100`, `value`
+- Methods: `_loadFromSerialise`, `_serialise`, `getLevel`, `getLevel01`, `isAFactionUniform`, `isGear`, `isPlayerCrafted`, `setInventoryWeAreIn`
+
+**From [`Item`](#item):**
+
+- Fields: `_isPhysical`, `creatingPhysical`, `existAsBareWeapon`, `fixedPhysicalPosition`, `loadingEntity`, `persistant`, `physical`, `physicalEntity`, `physicalShouldExist`, `useDynamicPhysics`, `visible`
+- Methods: `activate`, `createItemEntityCallback_Equipping`, `createPhysical`, `deactivate`, `destroyItemEntityCallback_Equipping`, `destroyPhysical`, `findProperOwner`, `getClassType`, `getEntity`, `getInventory`, `getInventoryWeAreIn`, `getModelName`, `getTimeout`, `getVisible`, `hasIngredients`, `isArmour`, `isFood`, `isGoodFood`, `isLockedArmour`, `isPersistant`, `isPhysical`, `itemEntityCreated`, `loadFromSerialise`, `loadFromSerialiseInInventory`, `loadUnloadCheck`, `notifyTheftFrom`, `persistantOwnerExists`, `resetAfterCopy`, `serialise`, `serialiseInInventory`, `setPersistant`, `setPositionRotation`, `setVisible`
+
+**From [`InventoryItemBase`](#inventoryitembase):**
+
+- Fields: `_isResearchArtifact`, `_whosInventoryWeAreIn`, `chargesLeft`, `coloriseData`, `deathItem`, `inventoryPos`, `inventorySection`, `isEquipped`, `isInInventory`, `isTradeItem`, `isUnique`, `itemFunction`, `itemGroup`, `itemHeight`, `itemWidth`, `manufacturerData`, `materialData`, `objectType`, `originalFullChargeAmount`, `properOwner`, `quality`, `quantity`, `slotType`, `weight`
+- Methods: `addQuantity`, `canStackWith`, `getAvgPrice`, `getBuyBackGUIInfo`, `getGUIData`, `getItemSound`, `getItemType`, `getItemWeightSingle`, `getMaxAffordableNum`, `getProperOwner`, `getStolenItemGUIInfo`, `getTooltipData2`, `getTooltipTradeValue`, `getValueAll`, `isResearchArtifact`, `isSameAs`, `isStackable`, `isStolen`, `merchantPriceMod`, `onGround`, `resetCharges`, `setProperOwner`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `createInventoryLayout`, `dropItem`, `equipItem`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getInstanceID`, `getIntendedAggression`, `getLayoutInstanceID`, `getMoney`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `getZoneMapLocation`, `giveItem`, `hasItem`, `hasRoomForItem`, `hitByMeleeAttack`, `ImStealingDoYouNotice`, `isDisabled`, `isIndoors`, `isOnARoof`, `needsSaving`, `notifyEffect`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `select`, `setFaction`, `setFloor`, `setInsideTownWalls`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `takeMoney`, `threadedUpdate`, `unequipItem`, `unselect`, `update`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setHandle`, `setName`, `typeIsAnItem`
 
 ## Weather
 **Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
@@ -14529,7 +16601,7 @@
 
 ## WeatherRegion::Listener
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
-**Parent Class:** [`WeatherRegion`](#weatherregion)
+**Enclosing Class:** [`WeatherRegion`](#weatherregion)
 **Metatable:** `KenshiLua.Listener`
 
 ## WeatherSystem
@@ -14585,12 +16657,12 @@
 
 ## WeatherSystem::FogValues
 **Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
-**Parent Class:** [`WeatherSystem`](#weathersystem)
+**Enclosing Class:** [`WeatherSystem`](#weathersystem)
 **Metatable:** `KenshiLua.WeatherSystem_FogValues`
 
 ## WeatherSystem::ZoneFog
 **Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
-**Parent Class:** [`WeatherSystem`](#weathersystem)
+**Enclosing Class:** [`WeatherSystem`](#weathersystem)
 **Metatable:** `KenshiLua.WeatherSystem_ZoneFog`
 
 ### Methods
@@ -14604,6 +16676,8 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Building/GeneratorBuilding.h`
 **Metatable:** `KenshiLua.WindGeneratorBuilding`
 
+**Inherits from:** [`GeneratorBuilding`](#generatorbuilding) > [`ProductionBuilding`](#productionbuilding) > [`StorageBuilding`](#storagebuilding) > [`UseableStuff`](#useablestuff) > [`Building`](#building) > [`RootObject`](#rootobject) > [`RootObjectBase`](#rootobjectbase)
+
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
@@ -14612,6 +16686,42 @@
 | isAnyInputsEmpty | `` | `boolean` | `obj:isAnyInputsEmpty()` |
 | getGUIState | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIState(datapanel, category)` |
 | getGUIPower | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIPower(datapanel, category)` |
+
+### Inherited Members
+**From [`GeneratorBuilding`](#generatorbuilding):**
+
+- Methods: `getFuelConsumptionRate`, `getInputValue`
+
+**From [`ProductionBuilding`](#productionbuilding):**
+
+- Fields: `_resourceMiningLevel`, `consumptionItems`, `outSection`, `productionState`
+- Methods: `canHaveSomeOfThese`, `createInventoryLayout`, `getConsumtionItems`, `getDefaultTask`, `getGUIData`, `getGUIFertility`, `getGUIToolTipForGroundResourceEfficiency`, `getItemsWeWantRidOf`, `getMiningResourceLevel`, `getMouseCursor`, `getNumConsumtionItems`, `getOutput`, `getOutputBasedRotationSpeedMult`, `getProductionBuilding`, `getProductionMult`, `getProductionMultForGUI`, `getResourcesNeededBecauseEmpty`, `getResourcesNeededBecauseNotFull`, `isAnyInputsFull`, `isAnyInputsInvalidType`, `isProductionEmpty`, `isProductionFull`, `limitInputsOutputRate`, `loadFromSerialise`, `needsUpdate`, `operate`, `serialise`, `setProductionItem`, `setupFromData`, `setupMiningResourceLevel`, `update`, `updateInputs`, `updateInventoryWindow`, `updateOutput`
+
+**From [`StorageBuilding`](#storagebuilding):**
+
+- Fields: `endOfTheLine`, `manyLimitItems`, `productionItem`, `specialItemTypesOnly`
+- Methods: `getConsumtionItems_inStock`, `getCurrentProductionQuantity`, `getFunctionStuff`, `getProductionItem`, `getProductionItemData`, `getUseableStuff`, `limitedByType`
+
+**From [`UseableStuff`](#useablestuff):**
+
+- Fields: `_isBroken`, `_powerOutputMax`, `_powerTimeStoreMax`, `_recievesBatteryPower`, `animation`, `animationDazed`, `animationKO`, `batteryOutputStat`, `callbackOwner`, `currentOperators`, `currentPower`, `doorLock`, `functionalityData`, `hasProgressBarWhenUsed`, `hungerRate`, `inventory`, `maxUseRange`, `needsOperating`, `numOperatorsMax`, `occupantSelection`, `powerOn`, `powerTimeStored`, `progressBarLevel`, `sfxTime`, `shopOwner`, `usesStat`
+- Methods: `calculateEfficiencyMult`, `couldIOperate`, `dontNeedWorkRightNow`, `dropItem`, `equipItem`, `getAnimation`, `getAnimationDazed`, `getAnimationKO`, `getBatteryCharge`, `getBatteryChargeMax`, `getCostToUse`, `getDoorLock`, `getFunctionalityData`, `getGUIEfficiency`, `getGUIPowerEfficiencyToolTipString`, `getGUIWorkers`, `getInventory`, `getMaxPower`, `getMoney`, `getOccupant`, `getReachRange`, `getStatUsed`, `givePower`, `hasDoorLock`, `hasPower`, `hitByMeleeAttack`, `howMuchPowerDoYouWantForSortingFunction`, `howMuchPowerDoYouWantMax`, `howMuchPowerDoYouWantNow`, `isBattery`, `isBroken`, `isDisabled`, `isForSale`, `isFreeSlot`, `isGenerator`, `isOutOfPower`, `isPowerOn`, `isRecievesBatteryPower`, `needPowerRightNow`, `occupantHandleChangedEvent`, `resetPower`, `setBroken`, `setup`, `stopOperating`, `switchPowerOn`, `takeMoney`, `takePowerFrom`, `threadedUpdate`, `toggleBattButton`, `togglePowerButton`, `tryOperate`, `unequipItem`
+
+**From [`Building`](#building):**
+
+- Fields: `_buildState`, `_town`, `baseMaterial`, `buildingsManager`, `classType`, `designation`, `destroyed`, `doors`, `effectsActive`, `effectsVisible`, `enforceCeiling`, `entitiesLoaded`, `entitiesToLoad`, `exteriorGround`, `hasAudio`, `hasMovingParts`, `hasTerrainInside`, `heightAboveGround`, `imADoor`, `instanceID`, `interiorGround`, `interiorVisibility`, `isAnInteriorObject`, `isCavernous`, `isFoliage`, `isFurnitureOf`, `isNestItem`, `isOutsideFurniture`, `isRedDebugTextureMode`, `justBeenUpgradedFlag`, `layoutInstanceID`, `lightsVisible`, `materialName`, `myInterior`, `physical`, `positionMarker`, `productionMult`, `productionMult_baseData`, `publicDaytime`, `residentSquad`, `residentSquadTemplate`, `rootNode`, `saveVersion`, `soundEmitter`, `specialFunction`, `triggerVolume`, `updateNavmesh`, `visible`
+- Methods: `_changeTown`, `_loadBuildingState`, `_saveBuildingState`, `addAnInternalBuilding`, `addConstructionProgress`, `addDismantleProgress`, `addUsageNode`, `affectsNavmesh`, `allowAnimals`, `buildingComplete_RestoreMaterial`, `buyMeAsk`, `buyMeCallback`, `calculateLeftPost`, `calculateSaleValue`, `canBeDestroyed`, `canDismantle`, `canDowngrade`, `canUpgrade`, `checkLoadedProperly`, `clearTownBuildingsManagerPtr`, `clearUsageNodes`, `confirmDismantle`, `createPhysical`, `createTriggerHull`, `destroyAudioObject`, `destroyDoors`, `destroyPhysical`, `dismantleButton`, `doorParentBuilding`, `doorStuff`, `downgrade`, `dropMats`, `findAllFurnitureWithFunction`, `forceValidUsageNodesValidation`, `furnitureParentBuilding`, `getAudioObject`, `getBuildingClass`, `getBuildingDesignation`, `getBuildState`, `getBuildState_ActualNonShared`, `getCurrentTownLocation`, `getDirectionMarker`, `getDirectionMarkerQuat`, `getDoor`, `getGroundType`, `getGUICondition`, `getGUIDestroyButton`, `getGUIName`, `getGUIUpgrade`, `getInstanceID`, `getIsOutsideFurniture`, `getLayoutInstanceID`, `getLinkLength`, `getMountedBuilding`, `getMountedBuildings`, `getNumFloors`, `getNumInternalBuildings`, `getParentLayout`, `getRealTown`, `getResidentSquadLeader`, `getRootNode`, `getScale`, `getSeed`, `getSpecialFunction`, `getTown`, `getTownHandle`, `getVisible`, `getWallEndPosition`, `getZoneMapLocation`, `hasAnOpenDoor`, `hasInterior`, `hasShopCountersSelling`, `isAShop`, `isAWall`, `isAWallRamp`, `isCeilingMounted`, `isCreated`, `isDamaged`, `isDestroyed`, `isDoor`, `isFurniture`, `isFurnitureOrDoor`, `isGate`, `isIndoors`, `isIndoors_notDestroyed`, `isPhysical`, `isPublic`, `isSign`, `isThePlayer`, `loadFromSerialise_TheDoors`, `loadInteriorGraphics`, `loadInteriorPhysical`, `loadNodes`, `loadUnloadCheck`, `moveMountedBuildings`, `needsSaving`, `notifyChange`, `notifyConstructionComplete`, `notifyConstructionDismantling`, `notifyEffect`, `onBuildingLoaded`, `pauseButton`, `postCreationPathfinderSetupStuff`, `recalculateWorldAABB`, `reCheckInsideOutsideFortificationStatus`, `removeAnInternalBuilding`, `removeUsageNode`, `select`, `selectPartMaterial`, `setConstructionProgress`, `setDesignation`, `setDestroyed`, `setFaction`, `setFloorVisibility`, `setHandle`, `setInsideTownWalls`, `setIsOutsideFurniture`, `setNestTag`, `setResidentSquad`, `setToDefaultFactionDivision`, `setupAudio`, `setupLevelData`, `setVisible`, `switchLights`, `togglePublic`, `updateBadNodes`, `updatePhysicalWithProgress`, `updateUsageNodes`, `upgrade`
+- Static methods: `getEntityMaterialName`
+
+**From [`RootObject`](#rootobject):**
+
+- Fields: `container`, `floorNum`, `isInsideBuilding`, `isInsideTownWalls`, `outdoorDelayNotification_timer`, `rot`, `spacialKey`
+- Methods: `amInsideTownWalls`, `getAABB`, `getFloor`, `getGUIDataCategories`, `getIntendedAggression`, `getOrders`, `getOrientation`, `getPlatoonAI`, `getRace`, `giveItem`, `hasItem`, `hasRoomForItem`, `ImStealingDoYouNotice`, `isOnARoof`, `notifyIndoors`, `notifyOutdoors`, `periodicUpdate`, `say`, `setFloor`, `setIsInsideBuilding`, `setStandingOrder`, `stolenGoodsDetectionCheck`, `unselect`
+
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getDataType`, `getFaction`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `setName`, `typeIsAnItem`
 
 ## WorldEventStateQuery
 **Header:** `extern/KenshiLib/Include/kenshi/WorldEventStateQuery.h`
@@ -14678,6 +16788,8 @@
 ## ZoneManager
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
 **Metatable:** `KenshiLua.ZoneManager`
+
+**Inherits from:** [`ZoneManagerInterfaceT`](#zonemanagerinterfacet)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -14780,12 +16892,14 @@
 
 ## ZoneManager::BiomeGroundEffects
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
-**Parent Class:** [`ZoneManager`](#zonemanager)
+**Enclosing Class:** [`ZoneManager`](#zonemanager)
 **Metatable:** `KenshiLua.ZoneManager_BiomeGroundEffects`
 
 ## ZoneManagerInterfaceT
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
 **Metatable:** `KenshiLua.ZoneManagerInterfaceT`
+
+**Subclasses:** [`ZoneManager`](#zonemanager)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -14859,7 +16973,7 @@
 
 ## ZoneMap::StateT
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
-**Parent Class:** [`ZoneMap`](#zonemap)
+**Enclosing Class:** [`ZoneMap`](#zonemap)
 **Metatable:** `KenshiLua.StateT`
 
 ### Fields
@@ -14871,6 +16985,8 @@
 ## ZoneMapContent
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
 **Metatable:** `KenshiLua.ZoneMapContent`
+
+**Inherits from:** [`RootObjectContainer`](#rootobjectcontainer) > [`DataObjectContainer`](#dataobjectcontainer)
 
 ### Fields
 | Lua Name | Type | R/W | Example |
@@ -14920,10 +17036,23 @@
 | createLoadedItems | `` | `void` | `obj:createLoadedItems()` |
 | setLoadedT | `t: boolean` | `void` | `obj:setLoadedT(t)` |
 
+### Inherited Members
+**From [`RootObjectContainer`](#rootobjectcontainer):**
+
+- Fields: `things`
+- Methods: `addActiveObject`, `getNumThings`, `getSelectedObjects`, `getThing`, `getThings`, `loadInstance`, `loadToReality`, `serialiseThings`
+
+**From [`DataObjectContainer`](#dataobjectcontainer):**
+
+- Fields: `datasFile`, `isStored`, `objectDatas`, `selfType`
+- Methods: `destroyObjectDatas`, `getType`, `setupDataFile`
+
 ## ZoneMapContent::HandleDummy
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
-**Parent Class:** [`ZoneMapContent`](#zonemapcontent)
+**Enclosing Class:** [`ZoneMapContent`](#zonemapcontent)
 **Metatable:** `KenshiLua.ZoneMapContent.HandleDummy`
+
+**Inherits from:** [`RootObjectBase`](#rootobjectbase)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -14931,19 +17060,35 @@
 | getDataType | `` | `integer` | `obj:getDataType()` |
 | loadFromSerialise | `state: GameSaveState` | `void` | `obj:loadFromSerialise(state)` |
 
+### Inherited Members
+**From [`RootObjectBase`](#rootobjectbase):**
+
+- Fields: `data`, `displayName`, `handle`, `owner`, `pos`, `validKey`
+- Methods: `getCurrentTownLocation`, `getFaction`, `getFloor`, `getGameData`, `getHandle`, `getMovementDirection`, `getMovementSpeed`, `getName`, `getOwnerships`, `getPosition`, `getPositionForWaypoint`, `getSensoryData`, `getStateBroadcast`, `hasFaction`, `isUnconcious`, `isValid`, `serialise`, `setFaction`, `setHandle`, `setName`, `typeIsAnItem`
+
 ## ZoneMapContent::ZoneMapContentOrderLoader
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneMapContent.h`
-**Parent Class:** [`ZoneMapContent`](#zonemapcontent)
+**Enclosing Class:** [`ZoneMapContent`](#zonemapcontent)
 **Metatable:** `KenshiLua.ZoneMapContent.ZoneMapContentOrderLoader`
+
+**Inherits from:** [`RootObjectContainer::SpecificItemLoadFirst`](#rootobjectcontainerspecificitemloadfirst)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | shouldSkip | `state: GameSaveState` | `boolean` | `obj:shouldSkip(state)` |
 
+### Inherited Members
+**From [`RootObjectContainer::SpecificItemLoadFirst`](#rootobjectcontainerspecificitemloadfirst):**
+
+- Fields: `baseTypes`, `desiredSpecificProperty`, `specificProperty`, `stateEnum`
+- Methods: `flip`
+
 ## ZoneMapHandleContainerList
 **Header:** `extern/KenshiLib/Include/kenshi/HandleManager.h`
 **Metatable:** `KenshiLua.ZoneMapHandleContainerList`
+
+**Inherits from:** [`HandleContainerList`](#handlecontainerlist) > [`HandleListBase`](#handlelistbase) > [`Serialisable`](#serialisable)
 
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -14953,6 +17098,16 @@
 | setUnloaded | `h: hand` | `void` | `obj:setUnloaded(h)` |
 | destroy | `h: hand` | `void` | `obj:destroy(h)` |
 | getCorrectHandleList | `h: hand` | `HandleList` | `obj:getCorrectHandleList(h)` |
+
+### Inherited Members
+**From [`HandleContainerList`](#handlecontainerlist):**
+
+- Methods: `add`
+
+**From [`HandleListBase`](#handlelistbase):**
+
+- Fields: `lastID`, `maxSize`
+- Methods: `addExisting`, `clearToZero`, `get`, `isUnloadedNotDead`
 
 ## ZoneSmell
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
@@ -14977,7 +17132,7 @@
 
 ## ZoneSmell::Smell
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
-**Parent Class:** [`ZoneSmell`](#zonesmell)
+**Enclosing Class:** [`ZoneSmell`](#zonesmell)
 **Metatable:** `KenshiLua.ZoneSmell_Smell`
 
 ### Methods
@@ -14987,7 +17142,7 @@
 
 ## ZoneSmell::SmellMsg
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneSmell.h`
-**Parent Class:** [`ZoneSmell`](#zonesmell)
+**Enclosing Class:** [`ZoneSmell`](#zonesmell)
 **Metatable:** `KenshiLua.ZoneSmell_SmellMsg`
 
 ## ZoneSpacialGrid
@@ -15018,5 +17173,5 @@
 
 ## ZoneSpacialGrid::ZoneCell
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`
-**Parent Class:** [`ZoneSpacialGrid`](#zonespacialgrid)
+**Enclosing Class:** [`ZoneSpacialGrid`](#zonespacialgrid)
 **Metatable:** `KenshiLua.ZoneSpacialGrid_ZoneCell`

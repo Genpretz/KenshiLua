@@ -1535,5 +1535,66 @@ class BindingSuiteGeneratorTests(unittest.TestCase):
         committed = generate_binding_suite.DEFAULT_OUTPUT_PATH.read_text(encoding="utf-8")
         self.assertEqual(generated, committed)
 
+
+class BindingsReferenceTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        sys.path.insert(0, str(PROJECT_ROOT / "tools" / "docs"))
+        import generate_bindings_reference
+
+        cls.reference = generate_bindings_reference
+
+    def test_inheritance_links_follow_runtime_registration_order(self):
+        metatables = {
+            "ChildBinding": "KenshiLua.Child",
+            "ParentBinding": "KenshiLua.Parent",
+            "OtherBinding": "KenshiLua.Other",
+            "ListBinding": "KenshiLua.List",
+        }
+        bodies = {
+            "ChildBinding": "setMetatableParent(L, getMetatableName(), OtherBinding::getMetatableName());",
+            "OtherBinding": "setMetatableParent(L, OtherBinding::getMetatableName(), ParentBinding::getMetatableName());",
+        }
+        registry = (
+            "setMetatableParent(L, ChildBinding::getMetatableName(),   ParentBinding::getMetatableName());\n"
+            'setMetatableParent(L, ListBinding::getMetatableName(), "Selector<Data*>");\n'
+        )
+        self.assertEqual({
+            "KenshiLua.Child": "KenshiLua.Parent",
+            "KenshiLua.Other": "KenshiLua.Parent",
+            "KenshiLua.List": "Selector<Data*>",
+        }, self.reference.parse_metatable_parents(registry, bodies, metatables))
+
+    def test_inherited_members_omit_names_registered_nearer(self):
+        def methods(*names, static=()):
+            return ([{"lua_name": name, "is_static": False} for name in names]
+                    + [{"lua_name": name, "is_static": True} for name in static])
+
+        def fields(*names):
+            return [{"lua_name": name} for name in names]
+
+        groups = self.reference.inherited_members(fields("own"), methods("shared"), [
+            ("KenshiLua.Parent", fields("own", "level"), methods("shared", "getLevel", static=("getInstance",))),
+            ("KenshiLua.Grandparent", fields("level", "pos"), methods("getLevel", "getPosition")),
+            ("KenshiLua.MyGUI.Widget", None, None),
+        ])
+        self.assertEqual([
+            ("KenshiLua.Parent", ["level"], ["getLevel"], ["getInstance"]),
+            ("KenshiLua.Grandparent", ["pos"], ["getPosition"], []),
+            ("KenshiLua.MyGUI.Widget", None, None, None),
+        ], groups)
+
+    def test_inheritance_chain_stops_at_a_cycle(self):
+        parents = {"A": "B", "B": "C", "C": "A"}
+        self.assertEqual(["B", "C"], self.reference.inheritance_chain("A", parents))
+
+    def test_runtime_inheritance_matches_binding_inventory(self):
+        parents = self.reference.find_metatable_parents(self.reference.find_binding_registrations())
+        inventory = json.loads(generate_binding_inventory.OUTPUT_PATH.read_text(encoding="utf-8"))
+        for entry in inventory["classes"]:
+            if entry.get("parent_metatable"):
+                self.assertEqual(entry["parent_metatable"], parents.get(entry["metatable"]), entry["metatable"])
+        self.assertEqual("FitnessSelector<GameData*>", parents["KenshiLua.GameDataScoredList"])
+
 if __name__ == "__main__":
     unittest.main()

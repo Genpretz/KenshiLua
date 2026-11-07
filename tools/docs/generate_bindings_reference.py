@@ -5,7 +5,9 @@
 The script scans `src/Bindings/*.cpp` for field and method bindings,
 extracts the C++ class names, header locations, read/write flags, and
 creates usage examples. It also extracts enum bindings from files
-ending with `EnumBinding.cpp`.
+ending with `EnumBinding.cpp`. It follows the setMetatableParent links
+installed at startup to list each class's parent classes and the members
+it inherits from them.
 
 Output: `docs/BindingsReference.md`
 """
@@ -17,8 +19,15 @@ import pathlib
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 BINDINGS_DIR = PROJECT_ROOT / "src" / "Bindings"
 HEADERS_DIR = PROJECT_ROOT / "extern" / "KenshiLib" / "Include" / "kenshi"
+REGISTER_BINDINGS_PATH = PROJECT_ROOT / "src" / "Lua" / "RegisterBindings.cpp"
 DOCS_DIR = PROJECT_ROOT / "docs"
 DOCS_DIR.mkdir(parents=True, exist_ok=True)
+
+GET_METATABLE_NAME = re.compile(r'getMetatableName\(\)\s*\{?\s*return\s*\"([^\"]+)\"')
+METATABLE_ARGUMENT = r'\s*(\w+Binding::getMetatableName\s*\(\s*\)|getMetatableName\s*\(\s*\)|"[^"]+")\s*'
+SET_METATABLE_PARENT = re.compile(
+    r"setMetatableParent\s*\(\s*L\s*," + METATABLE_ARGUMENT + "," + METATABLE_ARGUMENT + r"\)"
+)
 
 def strip_cpp_comments(text: str) -> str:
     """Strip C/C++ comments from text while preserving line structure."""
@@ -800,14 +809,14 @@ def parse_binding_file(filepath: pathlib.Path):
             header = find_header_for_class(class_name)
 
         # Resolve Metatable Name
-        meta_m = re.search(r'getMetatableName\(\)\s*\{?\s*return\s*\"([^\"]+)\"', h_text)
+        meta_m = GET_METATABLE_NAME.search(h_text)
         if not meta_m:
-            meta_m = re.search(r'getMetatableName\(\)\s*\{?\s*return\s*\"([^\"]+)\"', content)
+            meta_m = GET_METATABLE_NAME.search(content)
         metatable = meta_m.group(1) if meta_m else f"KenshiLua.{class_name}"
 
-        # Resolve Display Name and Parent Class for nested types
+        # Resolve display name and enclosing class for nested types
         display_name = class_name
-        parent_class = None
+        enclosing_class = None
 
         typedefs = re.findall(r'typedef\s+([^;]+)\s+(\w+);', h_text + '\n' + content)
         get_m = re.search(r'static\s+([A-Za-z0-9_:<>\s]+)\s*\*\s*getInstance\s*\([^)]*\)\s*\{([^}]*)\}', content)
@@ -833,7 +842,7 @@ def parse_binding_file(filepath: pathlib.Path):
         display_name = re.sub(r'<[^>]*>', '', display_name)
 
         if '::' in display_name:
-            parent_class = display_name.split('::')[0]
+            enclosing_class = display_name.split('::')[0]
         elif '_' in class_name:
             cache = get_headers_cache()
             if not any(defines_class_or_struct(stripped_hdr, class_name) for _, stripped_hdr, _, _ in cache):
@@ -845,16 +854,16 @@ def parse_binding_file(filepath: pathlib.Path):
                     for _, stripped_hdr, _, raw_hdr in cache:
                         if re.search(r'\b(?:class|struct)\s+' + re.escape(parts[i-1]) + r'\b', raw_hdr) and re.search(r'\b(?:class|struct)\s+' + re.escape(parts[-1]) + r'\b', raw_hdr):
                             display_name = scoped
-                            parent_class = parts[0]
+                            enclosing_class = parts[0]
                             break
-                    if parent_class:
+                    if enclosing_class:
                         break
 
-        if parent_class:
-            parent_class = parent_class.lstrip(':')
-            parent_class = re.sub(r'<[^>]*>', '', parent_class)
-            if parent_class == class_name or parent_class == display_name:
-                parent_class = None
+        if enclosing_class:
+            enclosing_class = enclosing_class.lstrip(':')
+            enclosing_class = re.sub(r'<[^>]*>', '', enclosing_class)
+            if enclosing_class == class_name or enclosing_class == display_name:
+                enclosing_class = None
         
         index_body = find_function_body(content, cb + "::index")
         newindex_body = find_function_body(content, cb + "::newindex")
@@ -1042,7 +1051,7 @@ def parse_binding_file(filepath: pathlib.Path):
                         "is_static": is_static,
                         "overloads": overloads
                     })
-        classes.append((class_name, fields, methods, header, display_name, parent_class, metatable, has_constructor))
+        classes.append((class_name, fields, methods, header, display_name, enclosing_class, metatable, has_constructor))
     return classes
 
 def parse_enum_file(filepath: pathlib.Path):
@@ -1061,9 +1070,107 @@ def parse_enum_file(filepath: pathlib.Path):
             file_enums[enum_name] = values
     return file_enums
 
+def documented_in_mygui_reference(path: pathlib.Path) -> bool:
+    """Return whether a binding source belongs to the MyGUI Reference rather than this one."""
+    return 'MyGUI' in path.parts or path.name == 'BaseLayoutBinding.cpp'
+
+def find_binding_registrations():
+    """Map each binding class under src/Bindings to (metatable, source path, registration body).
+
+    The metatable is resolved as parse_binding_file resolves it: the binding's
+    header first, then its source file, then KenshiLua.<Class>. The body has its
+    comments stripped."""
+    headers = {path.stem: path for path in BINDINGS_DIR.rglob('*.h')}
+    registrations = {}
+    for path in BINDINGS_DIR.rglob('*.cpp'):
+        content = path.read_text(encoding='utf-8', errors='ignore')
+        stripped = strip_cpp_comments(content)
+        for binding in re.findall(r"\bvoid\s+(\w+Binding)::registerBinding\b", stripped):
+            header = headers.get(binding)
+            header_text = header.read_text(encoding='utf-8', errors='ignore') if header else ""
+            match = GET_METATABLE_NAME.search(header_text) or GET_METATABLE_NAME.search(content)
+            metatable = match.group(1) if match else "KenshiLua." + binding.replace('Binding', '')
+            body = find_function_body(stripped, binding + "::registerBinding")
+            registrations[binding] = (metatable, path, body)
+    return registrations
+
+def parse_metatable_parents(inheritance_body, binding_bodies, binding_metatables):
+    """Map each child metatable to the parent metatable that setMetatableParent links it to.
+
+    binding_bodies maps a binding to its registration body, where a bare
+    getMetatableName() names that binding. inheritance_body is registerInheritance,
+    which runs after every class registers, so its links replace earlier ones. A
+    string literal argument names a metatable directly."""
+    def resolve(argument, owner):
+        if argument.startswith('"'):
+            return argument[1:-1]
+        binding = argument.split('::')[0] if '::' in argument else owner
+        return binding_metatables.get(binding)
+
+    calls = []
+    for binding, body in binding_bodies.items():
+        calls.extend((child, parent, binding) for child, parent in SET_METATABLE_PARENT.findall(body))
+    calls.extend((child, parent, None) for child, parent in SET_METATABLE_PARENT.findall(inheritance_body))
+    parents = {}
+    for child_argument, parent_argument, owner in calls:
+        child = resolve(child_argument, owner)
+        parent = resolve(parent_argument, owner)
+        if child and parent and child != parent:
+            parents[child] = parent
+    return parents
+
+def find_metatable_parents(registrations):
+    """Read the runtime inheritance links from registerInheritance and the binding registrations."""
+    registry = strip_cpp_comments(REGISTER_BINDINGS_PATH.read_text(encoding='utf-8', errors='ignore'))
+    inheritance_body = find_function_body(registry, "static void registerInheritance(lua_State* L)")
+    if not inheritance_body:
+        raise ValueError(f"could not find registerInheritance in {REGISTER_BINDINGS_PATH}")
+    binding_bodies = {binding: body for binding, (_, _, body) in registrations.items()}
+    binding_metatables = {binding: metatable for binding, (metatable, _, _) in registrations.items()}
+    return parse_metatable_parents(inheritance_body, binding_bodies, binding_metatables)
+
+def inheritance_chain(metatable, parents):
+    """Return the metatables that metatable inherits from, nearest first."""
+    chain = []
+    current = parents.get(metatable)
+    while current and current != metatable and current not in chain:
+        chain.append(current)
+        current = parents.get(current)
+    return chain
+
+def sorted_names(names):
+    return sorted(set(names), key=lambda name: (name.lower(), name))
+
+def inherited_members(own_fields, own_methods, ancestors):
+    """Group the members a class reaches through its ancestors by the ancestor that registers them.
+
+    ancestors holds (metatable, fields, methods) nearest first, with fields and
+    methods set to None for an ancestor documented elsewhere. Runtime lookup
+    reaches the nearest registration of a name first, so a name that the class or
+    a nearer ancestor registers is left out. Returns (metatable, fields, methods,
+    static_methods) name lists per ancestor, or None lists for an ancestor
+    documented elsewhere."""
+    seen_fields = {f['lua_name'] for f in own_fields}
+    seen_methods = {m['lua_name'] for m in own_methods}
+    groups = []
+    for metatable, fields, methods in ancestors:
+        if fields is None:
+            groups.append((metatable, None, None, None))
+            continue
+        visible = [m for m in methods if m['lua_name'] not in seen_methods]
+        groups.append((
+            metatable,
+            sorted_names(f['lua_name'] for f in fields if f['lua_name'] not in seen_fields),
+            sorted_names(m['lua_name'] for m in visible if not m.get('is_static', False)),
+            sorted_names(m['lua_name'] for m in visible if m.get('is_static', False)),
+        ))
+        seen_fields.update(f['lua_name'] for f in fields)
+        seen_methods.update(m['lua_name'] for m in methods)
+    return groups
+
 def make_anchor(name: str) -> str:
     slug = name.lower().replace(" ", "-")
-    slug = re.sub(r'[^a-z0-9\-_:]', '', slug)
+    slug = re.sub(r'[^a-z0-9\-_]', '', slug)
     return slug
 
 def escape_table_cell(text: str) -> str:
@@ -1073,7 +1180,9 @@ def escape_table_cell(text: str) -> str:
     cleaned = re.sub(r'[\r\n]+', ' ', str(text)).strip()
     return re.sub(r'(?<!\\)\|', r'\|', cleaned)
 
-def generate_markdown(data_by_class, enums):
+def generate_markdown(data_by_class, enums, parents, mygui_metatables):
+    """Render the reference. parents maps child metatables to parent metatables,
+    and mygui_metatables holds the metatables documented in the MyGUI Reference."""
     lines = [
         "# Bindings Reference",
         "",
@@ -1088,6 +1197,14 @@ def generate_markdown(data_by_class, enums):
         "- **Enums**: Enum values are Lua integers. Enum type names identify the constant table documented in the [Enums Reference](EnumsReference.md); types marked as bitmasks may combine multiple enum flags.",
         "- **MyGUI User Interface**: For MyGUI widgets, dialogs, layouts, properties, and event callbacks, see the dedicated [MyGUI Reference](MyGUIReference.md).",
         "",
+        "### Inheritance",
+        "- **Inherits from** lists a class's parent class, then that class's parent, and so on. An object can use the fields and methods of every class in the list.",
+        "- A class's Fields and Methods tables list only the members its own binding registers. **Inherited Members** lists the rest, grouped by the class that registers them. Types and signatures are in that class's section.",
+        "- When a class and its parent classes register the same name, the nearest registration is used, so only that one is listed.",
+        "- Inherited static methods can be called on an instance. Through a class table, call them on the class that registers them.",
+        "- **Subclasses** lists the classes that inherit directly from a class.",
+        "- **Enclosing Class** names the class a nested type is declared in. It is not a parent class.",
+        "",
         "## Table of Contents",
         "- [MyGUI UI Reference](MyGUIReference.md)"
     ]
@@ -1100,44 +1217,69 @@ def generate_markdown(data_by_class, enums):
 
     # Separate top-level classes and nested classes
     top_level = []
-    nested_by_parent = {}
+    nested_by_enclosing = {}
 
-    for cls, (fields, methods, header, display_name, parent_class, metatable, has_constructor) in cleaned_data.items():
-        if parent_class and parent_class in cleaned_data and parent_class != cls:
-            nested_by_parent.setdefault(parent_class, []).append(cls)
+    for cls, (fields, methods, header, display_name, enclosing_class, metatable, has_constructor) in cleaned_data.items():
+        if enclosing_class and enclosing_class in cleaned_data and enclosing_class != cls:
+            nested_by_enclosing.setdefault(enclosing_class, []).append(cls)
         else:
             top_level.append(cls)
 
+    class_by_metatable = {val[5]: cls for cls, val in cleaned_data.items()}
+    subclasses = {}
+    for child, parent in parents.items():
+        if child in class_by_metatable and parent in class_by_metatable:
+            subclasses.setdefault(parent, []).append(class_by_metatable[child])
+
+    def class_link(metatable):
+        cls = class_by_metatable.get(metatable)
+        if cls:
+            display = cleaned_data[cls][3]
+            return f"[`{display}`](#{make_anchor(display)})"
+        name = metatable[len("KenshiLua."):] if metatable.startswith("KenshiLua.") else metatable
+        if metatable in mygui_metatables:
+            return f"[`{name}`](MyGUIReference.md#{make_anchor(name.split('.')[-1])})"
+        return f"`{name}`"
+
     # Generate TOC
-    for parent in sorted(top_level, key=lambda c: cleaned_data[c][3].lower()):
-        p_fields, p_methods, p_header, p_disp, p_parent, p_meta, *_ = cleaned_data[parent]
-        lines.append(f"- [`{p_disp}`](#{make_anchor(p_disp)})")
-        
-        if parent in nested_by_parent:
-            for child in sorted(nested_by_parent[parent], key=lambda c: cleaned_data[c][3].lower()):
-                c_fields, c_methods, c_header, c_disp, c_parent, c_meta, *_ = cleaned_data[child]
-                lines.append(f"  - [`{c_disp}`](#{make_anchor(c_disp)})")
+    for outer in sorted(top_level, key=lambda c: cleaned_data[c][3].lower()):
+        o_disp = cleaned_data[outer][3]
+        lines.append(f"- [`{o_disp}`](#{make_anchor(o_disp)})")
+
+        if outer in nested_by_enclosing:
+            for nested in sorted(nested_by_enclosing[outer], key=lambda c: cleaned_data[c][3].lower()):
+                n_disp = cleaned_data[nested][3]
+                lines.append(f"  - [`{n_disp}`](#{make_anchor(n_disp)})")
 
     if enums:
         lines.append("- [Enums](#enums)")
     lines.append("")
 
     # Generate Sections (order matches TOC)
-    for parent in sorted(top_level, key=lambda c: cleaned_data[c][3].lower()):
-        items_to_render = [parent]
-        if parent in nested_by_parent:
-            items_to_render.extend(sorted(nested_by_parent[parent], key=lambda c: cleaned_data[c][3].lower()))
+    for outer in sorted(top_level, key=lambda c: cleaned_data[c][3].lower()):
+        items_to_render = [outer]
+        if outer in nested_by_enclosing:
+            items_to_render.extend(sorted(nested_by_enclosing[outer], key=lambda c: cleaned_data[c][3].lower()))
 
         for item in items_to_render:
-            fields, methods, header, display_name, parent_class, metatable, has_constructor = cleaned_data[item]
+            fields, methods, header, display_name, enclosing_class, metatable, has_constructor = cleaned_data[item]
             lines.append(f"## {display_name}")
             lines.append(f"**Header:** `{header}`")
-            if parent_class and parent_class in cleaned_data and parent_class != item:
-                p_disp = cleaned_data[parent_class][3]
-                lines.append(f"**Parent Class:** [`{p_disp}`](#{make_anchor(p_disp)})")
+            if enclosing_class and enclosing_class in cleaned_data and enclosing_class != item:
+                e_disp = cleaned_data[enclosing_class][3]
+                lines.append(f"**Enclosing Class:** [`{e_disp}`](#{make_anchor(e_disp)})")
             if metatable:
                 lines.append(f"**Metatable:** `{metatable}`")
             lines.append("")
+
+            ancestors = inheritance_chain(metatable, parents)
+            if ancestors:
+                lines.append("**Inherits from:** " + " > ".join(class_link(a) for a in ancestors))
+                lines.append("")
+            direct_subclasses = sorted(subclasses.get(metatable, []), key=lambda c: cleaned_data[c][3].lower())
+            if direct_subclasses:
+                lines.append("**Subclasses:** " + ", ".join(class_link(cleaned_data[c][5]) for c in direct_subclasses))
+                lines.append("")
 
             if fields:
                 lines.append("### Fields")
@@ -1222,6 +1364,36 @@ def generate_markdown(data_by_class, enums):
                     lines.append(f"| {display_name} | `` | `{display_name}` | `local obj = {display_name}()` |")
                 lines.append("")
 
+            inherited_lines = []
+            ancestor_members = []
+            for ancestor in ancestors:
+                ancestor_cls = class_by_metatable.get(ancestor)
+                if ancestor_cls:
+                    ancestor_members.append((ancestor, cleaned_data[ancestor_cls][0], cleaned_data[ancestor_cls][1]))
+                else:
+                    ancestor_members.append((ancestor, None, None))
+            for ancestor, a_fields, a_methods, a_static in inherited_members(fields, methods, ancestor_members):
+                if a_fields is None:
+                    if ancestor in mygui_metatables:
+                        note = "its fields and methods are listed in the MyGUI Reference."
+                    else:
+                        note = "its fields and methods are not listed in this reference."
+                    inherited_lines.append(f"**From {class_link(ancestor)}:** {note}")
+                    inherited_lines.append("")
+                    continue
+                groups = [("Fields", a_fields), ("Methods", a_methods), ("Static methods", a_static)]
+                if not any(names for _, names in groups):
+                    continue
+                inherited_lines.append(f"**From {class_link(ancestor)}:**")
+                inherited_lines.append("")
+                for label, names in groups:
+                    if names:
+                        inherited_lines.append(f"- {label}: " + ", ".join(f"`{n}`" for n in names))
+                inherited_lines.append("")
+            if inherited_lines:
+                lines.append("### Inherited Members")
+                lines.extend(inherited_lines)
+
     if enums:
         lines.append("## Enums")
         lines.append("")
@@ -1239,22 +1411,23 @@ def build_reference():
     """Build the reference text without modifying the committed output."""
     data_by_class = {}
     for path in BINDINGS_DIR.rglob('*.cpp'):
-        if (
-            'MyGUI' in path.parts
-            or path.name == 'BaseLayoutBinding.cpp'
-            or path.name.endswith('EnumBinding.cpp')
-        ):
+        if documented_in_mygui_reference(path) or path.name.endswith('EnumBinding.cpp'):
             continue
         parsed_classes = parse_binding_file(path)
-        for cls, fields, methods, header, display_name, parent_class, metatable, has_constructor in parsed_classes:
-            data_by_class[cls] = (fields, methods, header, display_name, parent_class, metatable, has_constructor)
+        for cls, fields, methods, header, display_name, enclosing_class, metatable, has_constructor in parsed_classes:
+            data_by_class[cls] = (fields, methods, header, display_name, enclosing_class, metatable, has_constructor)
+    registrations = find_binding_registrations()
+    parents = find_metatable_parents(registrations)
+    mygui_metatables = {
+        metatable for metatable, path, _ in registrations.values() if documented_in_mygui_reference(path)
+    }
     enums = {}
     for path in BINDINGS_DIR.rglob('*.cpp'):
         if 'MyGUI' in path.parts or path.name.endswith('EnumBinding.cpp'):
             if path.name.endswith('EnumBinding.cpp') and 'MyGUI' not in path.parts:
                 file_enums = parse_enum_file(path)
                 enums.update(file_enums)
-    return generate_markdown(data_by_class, enums)
+    return generate_markdown(data_by_class, enums, parents, mygui_metatables)
 
 def main():
     md = build_reference()
