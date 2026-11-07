@@ -27,7 +27,7 @@ Loaded at runtime through RE_Kenshi, KenshiLua exposes selected portions of Kens
 
 ## How much of KenshiLib can be used from Lua?
 
-A large amount of KenshiLib has been exposed for use from Lua. KenshiLua is built against KenshiLib 0.5.0, the version RE_Kenshi ships. It covers almost all of the API that KenshiLib 0.3.0 provided, and the classes added in 0.5.0 are being bound in batches.
+A large amount of KenshiLib has been exposed for use from Lua. KenshiLua is built against KenshiLib 0.5.0, the version RE_Kenshi ships. It covers almost all of the API that KenshiLib 0.3.0 provided and part of the classes added in 0.5.0.
 * [BindingsReference.md](docs/BindingsReference.md) - View for a list of methods and properties available from Lua.
 * [EnumsReference.md](docs/EnumsReference.md) - View for a list of enums available from Lua.
 * [CallbacksReference.md](docs/CallbacksReference.md) - View for a list of event callbacks available from Lua.
@@ -159,7 +159,7 @@ Events.on("InputHandler::keyDownEvent", on_key_down)
 5. Build KenshiLua using the Release configuration available in `KenshiLua.vcxproj`. (Debug builds **will not work** as they are not compatible with the release version of Kenshi and KenshiLib and are not functional).
 6. `KenshiLua.vcxproj` includes a post-build event that will copy the built `KenshiLua.dll` along with all the other files and directories required for KenshiLua to run to `$(ProjectDir)bin/KenshiLua/`
 
-At runtime, KenshiLua uses the `KenshiLib.dll` that RE_Kenshi installs in the game folder, not the one built in step 4. A build loads only if that DLL and Kenshi's `MyGUIEngine_x64.dll` export every symbol KenshiLua imports; compare `dumpbin /imports` of `KenshiLua.dll` with `dumpbin /exports` of each DLL to check. These changes are the set used for the builds tested in Kenshi 1.0.65 GOG and Steam on 2026-10-23; they have not been rebuilt from a clean checkout on their own.
+At runtime, KenshiLua uses the `KenshiLib.dll` that RE_Kenshi installs in the game folder, not the one built in step 4. A build loads only if that DLL and Kenshi's `MyGUIEngine_x64.dll` export every symbol KenshiLua imports; compare `dumpbin /imports` of `KenshiLua.dll` with `dumpbin /exports` of each DLL to check.
 
 #### Notes on Toolchain Constraints
 * The game and KenshiLib are built against MSVC2010-era assumptions, including C++ ABI layout and runtime library behavior. KenshiLua and all ofther dependencies must match these constraints to ensure stable integration.

@@ -1,6 +1,6 @@
 # Container binding catalog
 
-For a plain-language walkthrough of how these files connect, start with [How container registration now works](../../../docs/ContainerRegistrationExplained.md).
+For a plain-language walkthrough of how these files connect, start with [How container registration works](../../../docs/ContainerRegistrationExplained.md).
 
 Concrete container bindings are defined and registered here. Class binding files keep their SDK methods, getters, and setters and consume these definitions. This includes specializations used by only one class.
 

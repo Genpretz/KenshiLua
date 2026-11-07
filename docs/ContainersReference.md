@@ -2,7 +2,7 @@
 
 KenshiLua exposes native C++ and engine-specific containers directly to Lua. These containers serve as the primary conduits for exchanging collections of objects, components, and state between Lua scripts and Kenshi's engine.
 
-For an explanation of the C++ registration files and how they work together, see [How container registration now works](ContainerRegistrationExplained.md).
+For an explanation of the C++ registration files and how they work together, see [How container registration works](ContainerRegistrationExplained.md).
 
 ---
 
@@ -29,7 +29,7 @@ Game entities held inside containers (e.g. `Character*`, `RootObject*`, `Item*`,
 
 ### Whole-Field `lektor` Assignment
 
-The checked-out SDK's `lektor` assignment copies its count, capacity, and backing-storage pointer. It does not copy the elements or transfer ownership. A field setter using that assignment therefore aliases the source storage. Assigning a Lua-owned list to an engine field does not keep that list alive or establish that the engine can free its allocation. Container registration does not make that operation safe; use only field operations whose ownership and engine behavior have been verified.
+KenshiLib's `lektor` assignment copies its count, capacity, and backing-storage pointer. It does not copy the elements or transfer ownership. A field setter using that assignment therefore aliases the source storage. Assigning a Lua-owned list to an engine field does not keep that list alive or establish that the engine can free its allocation, so avoid assigning a whole `lektor` to an engine field.
 
 ---
 
@@ -58,8 +58,6 @@ In string arguments, `T` requests elements stored by value and `T*` requests poi
 For example, `lektor.new("ModInfo")` creates a value list and `lektor.new("ModInfo*")` creates a pointer list. A pointer-only type must be requested with its `*`. The factory reports an unsupported type when no matching value or pointer specialization exists.
 
 Class tables and userdata can select a type only when that class identifies one element type for the corresponding factory argument. `ModInfo` and `ConsumptionItem` have both value and pointer lektors, so using their class or userdata alone is ambiguous and produces an error. Select their element type with an explicit string.
-
-This alpha change intentionally removes the previous pointer guessing for string arguments. Scripts that relied on omitted pointer markers must supply them. Existing metatable names and lookup aliases are retained internally; a string alias cannot change the requested pointer depth.
 
 ## `lektor<T>`
 

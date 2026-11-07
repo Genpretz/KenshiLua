@@ -1,6 +1,6 @@
-# How container registration now works
+# How container registration works
 
-The change gives each supported container type one place that describes how Lua should use it. Individual class bindings use that description when exposing a field or accepting an argument.
+Each supported container type has one definition that describes how Lua should use it. Individual class bindings use that description when exposing a field or accepting an argument.
 
 The files under `src/Lua/Containers/` are ordinary C++ source and header files. The word **catalog** means the collection of container definitions stored there.
 
@@ -29,7 +29,7 @@ A **metatable** is the Lua table that connects a container userdata to its opera
 | `Containers/*Types.h` | Gives names to the exact C++ helper specializations used by a family of containers. |
 | `Containers/Register*.cpp` | Describes those types and lists which definitions should be registered. |
 | [CommonTypes.h](../src/Lua/Containers/CommonTypes.h) | Shares several detailed C++ specializations between registration files and class bindings. |
-| Existing helper headers, such as [LektorBinding.h](../src/Bindings/Kenshi/Util/LektorBinding.h) | Implement indexing, iteration, insertion, removal, creation, and cleanup. |
+| Helper headers, such as [LektorBinding.h](../src/Bindings/Kenshi/Util/LektorBinding.h) | Implement indexing, iteration, insertion, removal, creation, and cleanup. |
 | Individual class binding files | Expose the class's fields and methods, using the registered container types. |
 
 The family files are paired as follows:
@@ -53,7 +53,7 @@ The family files are paired as follows:
 typedef LektorPtrBinding<Character*> LektorPtr_CharacterPtrBinding;
 ```
 
-This says: use the existing pointer-list helper for `Character*` elements. The typedef gives that specialization a name that the registration file can reuse. The underlying container is still `lektor<Character*>`.
+This says: use the pointer-list helper for `Character*` elements. The typedef gives that specialization a name that the registration file can reuse. The underlying container is still `lektor<Character*>`.
 
 This declaration alone does not install anything in Lua or allocate a list.
 
@@ -79,7 +79,7 @@ Read it as:
 | `CharacterBinding::getMetatableName()` | How the helper recognizes and exposes character elements. |
 | The two `NULL` values | This helper needs no additional conversion hints in those slots. |
 | `"lektor"` | The factory family through which this type can be created. |
-| `createNew` | The existing helper function that allocates a new list. |
+| `createNew` | The helper function that allocates a new list. |
 | The `Factories` array | Additional lookup names that select this same constructor. |
 
 The macro creates a record called `ContainerBindingDefinition` and defines the helper's fixed name and conversion metadata. That record also includes the full C++ type identities, the registration function, and the source filename for error messages.
@@ -132,7 +132,7 @@ print(characters:size())
 
 `lektor.new` resolves the requested name using the current Lua state's factory lookup, then calls the stored `createNew` function. The result wraps a newly allocated native `lektor<Character*>`. String requests preserve `*`: a value name requests values and a pointer name requests pointers. Class-table and userdata shortcuts require an unambiguous element type; see the [factory type contract](ContainersReference.md#explicit-factory-types).
 
-The `push` and `size` operations still come from the generic helper in `LektorBinding.h`. A bound SDK method expecting this container type can extract that same native list through the helper's `getInstance` function.
+The `push` and `size` operations come from the generic helper in `LektorBinding.h`. A bound SDK method expecting this container type can extract that same native list through the helper's `getInstance` function.
 
 ## What the longer C++ names mean
 
@@ -148,9 +148,9 @@ Some helpers share behavior through inheritance. For example, the writable lekto
 
 ## Why there are checks and a private registry
 
-Previously, several class binding files could register the same container with different metadata. A metatable could already exist while a later registration changed the helper's conversion settings. The resulting behavior depended on registration order.
+If two bindings registered the same container with different metadata, a metatable could already exist while a later registration changed the helper's conversion settings, and the resulting behavior would depend on registration order.
 
-The new checks compare the metatable name, complete C++ type, helper policy, conversion metadata, and factory aliases. Two incompatible definitions produce a startup error identifying the conflict. Identical repeated registration preserves the existing metatable. Checking the complete list first catches these conflicts before installing its public metatables and factories.
+The checks compare the metatable name, complete C++ type, helper policy, conversion metadata, and factory aliases. Two incompatible definitions produce a startup error identifying the conflict. Identical repeated registration preserves the existing metatable. Checking the complete list first catches these conflicts before installing its public metatables and factories.
 
 The checks use C++ runtime type information, or RTTI, to distinguish full specializations. Allocators, comparators, hashes, and predicates are part of that identity.
 
@@ -162,15 +162,9 @@ Each Lua state keeps its own lookup in a private table in Lua's registry. The ta
 
 These aliases can largely use forward declarations. Keeping them here lets consumers reuse the exact types without including the full SDK dependencies of a family header. Their actual registration entries remain in the appropriate family `.cpp` files.
 
-## Other changes made alongside the move
+## Ownership
 
-- Removed container registration calls from individual class bindings. Their getters, setters, and methods remain with those classes.
-- Corrected conflicting conversion metadata for ZoneMap containers and unified consumers of the existing writable `hand` and `ModInfo` list bindings.
-- Added missing registrations used by existing town, subplant, and navmesh-interior fields, and corrected the metatable lookup for `ProductionBuilding.consumptionItems`.
-- Updated the inventory generator to follow the collectors and read the new definitions. Updated the class scaffolder to point container requirements at the central files.
-- Moved fixed metadata definitions into the family `.cpp` files after the initial implementation produced excessive space in the DLL's C++ initializer table. Helpers now declare those fields in headers and read them directly during normal operations.
-
-Factory-created containers retain their purpose: Lua can allocate a native container and pass it to SDK methods. Existing ownership rules also remain: engine fields are borrowed, factory-created wrappers are Lua-owned, and pointer elements refer to borrowed game objects. The existing engine-filled lektor storage cleanup limitation and whole-field assignment hazards are separate from registration.
+Registration does not affect ownership: engine fields are borrowed, factory-created wrappers are Lua-owned, and pointer elements refer to borrowed game objects. See [Architecture, Ownership, and Memory Rules](ContainersReference.md#architecture-ownership-and-memory-rules).
 
 ## Finding the right file for a change
 

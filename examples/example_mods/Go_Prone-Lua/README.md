@@ -7,7 +7,7 @@ An example mod demonstrating how to bind keyboard shortcuts to execute in-game c
 The mod runs automatically upon game startup and listens for key presses to toggle the stance of all currently selected characters:
 
 - **Stance Toggle**: Transitions selected characters between normal standing posture ([`ProneState.PS_NORMAL`](../../../docs/EnumsReference.md#characterh)) and staying low/crawling ([`ProneState.PS_STAYING_LOW`](../../../docs/EnumsReference.md#characterh)).
-- **Hotkey**: Listens for the `V` key (virtual key code `47`).
+- **Hotkey**: Listens for the `V` key (OIS key code `47`, [`OIS.KeyCode.KC_V`](../../../docs/EnumsReference.md#oisoiskeyboardh)).
 - **Multi-Character Selection**: Supports toggling stance for multiple characters selected simultaneously using `PlayerInterface.selectedCharacters` (a [`lektor<hand>`](../../../docs/ContainersReference.md#lektort) container).
 
 ## Implementation Details
