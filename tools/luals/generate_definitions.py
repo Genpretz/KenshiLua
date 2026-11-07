@@ -25,10 +25,133 @@ ADDON_LIBRARY_PATH = PROJECT_ROOT / "luals" / "addon" / "kenshilua" / "library" 
 ADDON_CONFIG_PATH = PROJECT_ROOT / "luals" / "addon" / "kenshilua" / "config.json"
 INVENTORY_PATH = PROJECT_ROOT / "luals" / "generated" / "binding_inventory.json"
 DESCRIPTION_PATH = PROJECT_ROOT / "luals" / "metadata" / "kenshilib_descriptions.json"
+MYGUI_DESCRIPTION_PATH = PROJECT_ROOT / "luals" / "metadata" / "mygui_descriptions.json"
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 from extract_enum_values import parse_header_enums
 import container_contracts  # noqa: E402
+
+
+class RecordingMap(dict):
+    """Description map that records the key path of each description read from it."""
+
+    def __init__(self, data, used, path=()):
+        dict.__init__(self)
+        self.used = used
+        self.path = path
+        for key, value in data.items():
+            if isinstance(value, dict):
+                value = RecordingMap(value, used, path + (key,))
+            dict.__setitem__(self, key, value)
+
+    def __getitem__(self, key):
+        value = dict.__getitem__(self, key)
+        if isinstance(value, str):
+            self.used.add(self.path + (key,))
+        return value
+
+    def get(self, key, default=None):
+        return self[key] if key in self else default
+
+
+def description_paths():
+    paths = [DESCRIPTION_PATH]
+    default_kenshi = PROJECT_ROOT / "luals" / "metadata" / "kenshilib_descriptions.json"
+    if MYGUI_DESCRIPTION_PATH.exists() and DESCRIPTION_PATH == default_kenshi:
+        paths.append(MYGUI_DESCRIPTION_PATH)
+    return paths
+
+
+def load_all_descriptions(used=None):
+    """Load and merge the description catalogs, the only source of hover text.
+
+    When ``used`` is a set, it collects the key path of each description that
+    generation reads, so unused catalog entries can be reported.
+    """
+    merged = {
+        "classes": {},
+        "enums": {},
+        "functions": {},
+        "globals": {},
+        "aliases": {},
+    }
+    for p in description_paths():
+        if not p.exists():
+            continue
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except Exception:
+            continue
+        for section in ("classes", "enums", "functions", "globals", "aliases"):
+            if section in data:
+                if section == "classes":
+                    for cname, cinfo in data["classes"].items():
+                        target = merged["classes"].setdefault(cname, {})
+                        if cinfo.get("description"):
+                            target["description"] = cinfo["description"]
+                        target.setdefault("methods", {}).update(cinfo.get("methods", {}))
+                        target.setdefault("properties", {}).update(cinfo.get("properties", {}))
+                else:
+                    merged[section].update(data[section])
+    if used is not None:
+        return RecordingMap(merged, used)
+    return merged
+
+
+def unused_descriptions(used):
+    """Map each catalog path to the description keys generation never read.
+
+    ``_NV_`` dispatch helpers are hidden from the definitions, so their
+    descriptions are reported even when the member is bound.
+    """
+    unused = {}
+    for path in description_paths():
+        if not path.exists():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        keys = []
+        for section in ("aliases", "enums", "functions", "globals"):
+            keys.extend((section, name) for name in data.get(section, {}))
+        for class_name, entry in data.get("classes", {}).items():
+            if "description" in entry:
+                keys.append(("classes", class_name, "description"))
+            for kind in ("methods", "properties"):
+                keys.extend(("classes", class_name, kind, name) for name in entry.get(kind, {}))
+        missing = [key for key in keys if key not in used or key[-1].startswith("_NV_")]
+        if missing:
+            unused[path] = missing
+    return unused
+
+
+def format_description_key(key):
+    if key[0] != "classes":
+        return "{0} {1}".format(key[0], key[1])
+    if key[2] == "description":
+        return key[1]
+    return key[1] + "." + key[3]
+
+
+def reject_runtime_descriptions(metadata):
+    """Keep hover text out of runtime.json, which holds only Lua contracts."""
+    found = []
+
+    def visit(value, path):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                if key in ("description", "descriptions"):
+                    found.append(path + "." + key)
+                else:
+                    visit(child, path + "." + key)
+        elif isinstance(value, list):
+            for index, child in enumerate(value):
+                label = child.get("name", index) if isinstance(child, dict) else index
+                visit(child, "{0}[{1}]".format(path, label))
+
+    visit(metadata, "runtime.json")
+    if found:
+        raise ValueError(
+            "move descriptions to the description catalogs: " + ", ".join(found)
+        )
 
 
 def find_function_body(text, marker):
@@ -178,7 +301,7 @@ def emit_function(lines, entry):
     lines.append("")
 
 
-def expand_inventory_fields(metadata):
+def expand_inventory_fields(metadata, all_descriptions):
     """Expand inventory-backed classes into conservative LuaLS fields.
 
     Large engine classes are registered through hundreds of repetitive
@@ -197,23 +320,28 @@ def expand_inventory_fields(metadata):
     inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
     by_type = {entry["lua_type"]: entry for entry in inventory.get("classes", [])}
     by_binding = {entry["binding"]: entry for entry in inventory.get("classes", [])}
-    descriptions = {}
-    if DESCRIPTION_PATH.exists():
-        descriptions = json.loads(DESCRIPTION_PATH.read_text(encoding="utf-8")).get("classes", {})
+    descriptions = all_descriptions.get("classes", {})
     expanded = json.loads(json.dumps(metadata))
     override_by_inventory = {entry["inventory"]: entry for entry in overrides}
     for class_entry in expanded.get("classes", []):
-        inventory_name = class_entry.get("inventory_fields") or class_entry.get("name")
+        lua_type = class_entry["name"]
+        inventory_name = class_entry.get("inventory_fields") or lua_type
+        static_only = class_entry.pop("static_only", False)
+        doc_entry = descriptions.get(lua_type) or descriptions.get(inventory_name, {})
+        if not static_only and not class_entry.get("description") and doc_entry.get("description"):
+            class_entry["description"] = doc_entry["description"]
+
         if inventory_name not in by_type:
+            methods_desc = doc_entry.get("methods", {})
+            props_desc = doc_entry.get("properties", {})
+            for field in class_entry.get("fields", []):
+                if not field.get("description"):
+                    field["description"] = methods_desc.get(field["name"]) or props_desc.get(field["name"])
             continue
+
         source = by_type.get(inventory_name)
         if not source:
             raise ValueError("inventory-backed class not found: " + inventory_name)
-        lua_type = class_entry["name"]
-        static_only = class_entry.pop("static_only", False)
-        doc_entry = descriptions.get(lua_type) or descriptions.get(inventory_name, {})
-        if doc_entry.get("description") and not class_entry.get("description") and not static_only:
-            class_entry["description"] = doc_entry["description"]
         documentation_sources = [(lua_type, doc_entry.get("methods", {}))]
         property_descriptions = doc_entry.get("properties", {})
         parent_binding = source.get("parent_binding")
@@ -230,20 +358,12 @@ def expand_inventory_fields(metadata):
             parent_binding = parent_source.get("parent_binding")
 
         def method_description(name):
-            base_name = name[4:] if name.startswith("_NV_") else name
             for source_index, (owner_type, method_descriptions) in enumerate(documentation_sources):
                 description = method_descriptions.get(name)
-                used_base_name = False
-                if not description and name.startswith("_NV_"):
-                    description = method_descriptions.get(base_name)
-                    used_base_name = bool(description)
                 if description:
-                    prefix = ""
                     if source_index:
-                        prefix += "Inherited API from `{0}`. ".format(owner_type)
-                    if used_base_name:
-                        prefix += "Override dispatch for `{0}`. ".format(base_name)
-                    return prefix + description
+                        return "Inherited API from `{0}`. ".format(owner_type) + description
+                    return description
             return None
 
         fields = class_entry.setdefault("fields", [])
@@ -297,7 +417,7 @@ def expand_inventory_fields(metadata):
                 fields.append({
                     "name": name,
                     "type": method_type,
-                    "description": method_description(name),
+                    "description": method_description(name) or doc_entry.get("methods", {}).get(name) or property_descriptions.get(name),
                 })
                 names.add(name)
         for prop in [] if static_only else source.get("properties", []):
@@ -306,39 +426,20 @@ def expand_inventory_fields(metadata):
                 fields.append({
                     "name": name,
                     "type": prop.get("type", "any"),
-                    "description": property_descriptions.get(name),
+                    "description": property_descriptions.get(name) or doc_entry.get("methods", {}).get(name),
                 })
                 names.add(name)
         for field in fields:
             if field.get("description"):
                 continue
-            description = method_description(field["name"])
+            description = (
+                method_description(field["name"])
+                or property_descriptions.get(field["name"])
+                or doc_entry.get("methods", {}).get(field["name"])
+            )
             if description:
                 field["description"] = description
-            elif field["name"] in property_descriptions:
-                field["description"] = property_descriptions[field["name"]]
     return expanded
-
-
-def apply_description_overlays(metadata):
-    """Apply explicit reviewed member descriptions after documentation fallbacks.
-
-    A class's ``descriptions`` map in runtime.json names members by Lua name, so
-    inventory-backed members gain a description without pinning their
-    inferred types in a reviewed field.
-    """
-    for class_entry in metadata.get("classes", []):
-        overlay = class_entry.pop("descriptions", None)
-        if not overlay:
-            continue
-        fields = {field["name"]: field for field in class_entry.get("fields", [])}
-        unknown = sorted(set(overlay) - set(fields))
-        if unknown:
-            raise ValueError("descriptions for undeclared members of {0}: {1}".format(
-                class_entry["name"], ", ".join(unknown)))
-        for name, description in overlay.items():
-            fields[name]["description"] = description
-    return metadata
 
 
 def hide_internal_dispatch_methods(metadata):
@@ -358,7 +459,7 @@ def hide_internal_dispatch_methods(metadata):
     return metadata
 
 
-def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
+def add_inventory_forward_declarations(metadata, global_enums, nested_enums, all_descriptions):
     """Declare referenced engine object types even before their full API audit."""
     inventory = json.loads(INVENTORY_PATH.read_text(encoding="utf-8"))
     declared = {entry["name"] for entry in metadata.get("classes", [])}
@@ -369,9 +470,7 @@ def add_inventory_forward_declarations(metadata, global_enums, nested_enums):
         for entry in inventory.get("classes", [])
         if entry.get("metatable")
     }
-    descriptions_map = {}
-    if DESCRIPTION_PATH.exists():
-        descriptions_map = json.loads(DESCRIPTION_PATH.read_text(encoding="utf-8")).get("classes", {})
+    descriptions_map = all_descriptions.get("classes", {})
     for entry in inventory.get("classes", []):
         lua_type = entry["lua_type"]
         if lua_type not in declared and re.match(r"^[A-Za-z_]\w*(?:\.[A-Za-z_]\w*)*$", lua_type):
@@ -489,11 +588,13 @@ def add_container_generics(metadata, inventory, declared):
 
 
 def generate(metadata, version, global_enums, nested_enums, event_names):
-    # Forward declarations and overlays must not mutate the caller's contracts.
+    reject_runtime_descriptions(metadata)
+    # Forward declarations must not mutate the caller's contracts.
     metadata = json.loads(json.dumps(metadata))
-    metadata = add_inventory_forward_declarations(metadata, global_enums, nested_enums)
-    metadata = expand_inventory_fields(metadata)
-    metadata = apply_description_overlays(metadata)
+    used = set()
+    all_descriptions = load_all_descriptions(used)
+    metadata = add_inventory_forward_declarations(metadata, global_enums, nested_enums, all_descriptions)
+    metadata = expand_inventory_fields(metadata, all_descriptions)
     metadata = hide_internal_dispatch_methods(metadata)
 
     nested_table_fields = {
@@ -513,11 +614,12 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         "-- Generated by tools/luals/generate_definitions.py; DO NOT EDIT.",
         "-- KenshiLua runtime version: " + version,
         "-- Reviewed contracts: luals/metadata/runtime.json",
-        "-- Persistent descriptions: luals/metadata/kenshilib_descriptions.json",
+        "-- Persistent descriptions: luals/metadata/kenshilib_descriptions.json, luals/metadata/mygui_descriptions.json",
         "",
     ]
     for alias in metadata.get("aliases", []):
-        emit_comment(lines, alias.get("description"))
+        desc = alias.get("description") or all_descriptions.get("aliases", {}).get(alias["name"])
+        emit_comment(lines, desc)
         lines.append("---@alias {0} {1}".format(alias["name"], alias["definition"]))
     lines.append("")
     emit_comment(lines, "Engine event names supported by `Events.on`.")
@@ -526,9 +628,7 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
         lines.append('---| "' + event_name + '"')
     lines.append("")
 
-    enum_descriptions = {}
-    if DESCRIPTION_PATH.exists():
-        enum_descriptions = json.loads(DESCRIPTION_PATH.read_text(encoding="utf-8")).get("enums", {})
+    enum_descriptions = all_descriptions.get("enums", {})
 
     # Global enums
     for name, entries in global_enums.items():
@@ -594,6 +694,9 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
 
     # Reviewed globals
     for entry in metadata.get("globals", []):
+        if not entry.get("description"):
+            entry = dict(entry)
+            entry["description"] = all_descriptions.get("globals", {}).get(entry["name"])
         emit_global(lines, entry)
 
     # Global tables for nested enum parents
@@ -609,7 +712,11 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
     for parent, fields in nested_enums.items():
         for field, entries in fields.items():
             full_name = parent + "." + field
-            desc = enum_descriptions.get(full_name, enum_descriptions.get(field, "Engine enum `{0}`.".format(full_name)))
+            desc = (
+                enum_descriptions.get(full_name)
+                or enum_descriptions.get(field)
+                or "Engine enum `{0}`.".format(full_name)
+            )
             emit_comment(lines, desc)
             lines.append("---@enum " + full_name)
             lines.append(full_name + " = {")
@@ -622,7 +729,19 @@ def generate(metadata, version, global_enums, nested_enums, event_names):
 
     # Reviewed functions
     for entry in metadata.get("functions", []):
+        if not entry.get("description"):
+            entry = dict(entry)
+            entry["description"] = all_descriptions.get("functions", {}).get(entry["name"])
         emit_function(lines, entry)
+
+    unused = unused_descriptions(used)
+    if unused:
+        raise ValueError("; ".join(
+            "{0} has {1} descriptions the definitions never show: {2}".format(
+                path.name, len(keys), ", ".join(format_description_key(key) for key in keys)
+            )
+            for path, keys in unused.items()
+        ))
     return "\n".join(lines).rstrip() + "\n"
 
 
@@ -647,11 +766,11 @@ def main():
     version = read_version()
     try:
         global_enums, nested_enums = parse_enums()
+        event_names = parse_event_names()
+        generated = generate(metadata, version, global_enums, nested_enums, event_names)
     except (FileNotFoundError, ValueError) as exc:
         print("LuaLS definition generation failed: " + str(exc))
         return 1
-    event_names = parse_event_names()
-    generated = generate(metadata, version, global_enums, nested_enums, event_names)
 
     if args.check:
         if not OUTPUT_PATH.exists():

@@ -5352,7 +5352,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Character, t: integer, subject: RootObjectBase)",
+      "lua": "fun(self: Character, t: integer, subject?: RootObjectBase)",
       "member": "addGoal"
     },
     {
@@ -5369,7 +5369,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Character, t: integer, subject: RootObject, shift?: boolean, addDontClear?: boolean, location: table)",
+      "lua": "fun(self: Character, t: integer, subject?: RootObject, shift?: boolean, addDontClear?: boolean, location: table)",
       "member": "addJob"
     },
     {
@@ -5420,7 +5420,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Character, dest: Building, t: integer, subject: RootObject, shift?: boolean, clear?: boolean, location: table)",
+      "lua": "fun(self: Character, dest?: Building, t: integer, subject?: RootObject, shift?: boolean, clear?: boolean, location: table)",
       "member": "addOrder"
     },
     {
@@ -5437,7 +5437,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Character, dest: Building, t: integer, subject: RootObject, location: table)",
+      "lua": "fun(self: Character, dest?: Building, t: integer, subject?: RootObject, location: table)",
       "member": "updateLastTask"
     },
     {
@@ -5539,7 +5539,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: Character, t: integer, subject: RootObject): boolean",
+      "lua": "fun(self: Character, t: integer, subject?: RootObject): boolean",
       "member": "checkPlayerOrderForProblems"
     },
     {
@@ -14826,7 +14826,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: PlayerInterface, destinationIndoors: Building, task: integer, subject: RootObject, shift?: boolean, addDontClear?: boolean, location: table)",
+      "lua": "fun(self: PlayerInterface, destinationIndoors?: Building, task: integer, subject?: RootObject, shift?: boolean, addDontClear?: boolean, location: table)",
       "member": "addOrderSelectedCharacters"
     },
     {
@@ -14843,7 +14843,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: PlayerInterface, task: integer, subject: RootObject, shift?: boolean, add?: boolean, location: table)",
+      "lua": "fun(self: PlayerInterface, task: integer, subject?: RootObject, shift?: boolean, add?: boolean, location: table)",
       "member": "addJobSelectedCharacters"
     },
     {
@@ -14894,7 +14894,7 @@
         }
       ],
       "kind": "method",
-      "lua": "fun(self: PlayerInterface, dest: Building, t: integer, subject: RootObject, shift?: boolean, location: table, noAnimals?: boolean)",
+      "lua": "fun(self: PlayerInterface, dest?: Building, t: integer, subject?: RootObject, shift?: boolean, location: table, noAnimals?: boolean)",
       "member": "addTaskNearestSelectedCharacter"
     },
     {

@@ -1,0 +1,1030 @@
+{
+    "source": "KenshiLua MyGUI bindings documentation",
+    "aliases": {
+        "MyGUI.FactoryFirstArgument": "First parameter accepted by MyGUI specialized factory methods (skin name string, coordinate, or dimension).",
+        "MyGUI.LegacyWidgetEventName": "Legacy MyGUI widget event name spellings accepted with a deprecation warning.",
+        "MyGUI.WidgetEventHandler": "Widget event callback handler function receiving the widget sender and event-specific arguments.",
+        "MyGUI.WidgetEventName": "Canonical MyGUI widget event names used with widget:on and widget:off."
+    },
+    "globals": {
+        "ClipboardManager": "Global table exposing the MyGUI clipboard-manager singleton.",
+        "FloatCoord": "Global alias of MyGUI.FloatCoord.",
+        "FloatPoint": "Global alias of MyGUI.FloatPoint.",
+        "FloatRect": "Global alias of MyGUI.FloatRect.",
+        "FloatSize": "Global alias of MyGUI.FloatSize.",
+        "MyGUI": "Global MyGUI factory and utility table. Widgets returned from its factories are engine-owned."
+    },
+    "enums": {},
+    "classes": {
+        "MyGUI": {
+            "description": "Global MyGUI root table exposing widget factory functions and GUI subsystem singletons.",
+            "methods": {},
+            "properties": {}
+        },
+        "MyGUI.Api": {
+            "description": "Global MyGUI API table providing widget factory functions, layout loading, mouse pointer controls, clipboard utilities, screen dimensions, and access to core submodules.",
+            "methods": {
+                "bringToFront": "Brings the specified widget to the front of its current layer.",
+                "clearPointer": "Clears any overridden mouse cursor pointer and restores default pointer behavior.",
+                "createButton": "Creates a Button widget with integer pixel coordinates.",
+                "createButtonReal": "Creates a Button widget with relative coordinates (0.0 to 1.0).",
+                "createCanvas": "Creates a dynamic texture rendering canvas (Canvas) widget with integer pixel coordinates.",
+                "createCanvasReal": "Creates a dynamic texture rendering canvas (Canvas) widget with relative coordinates (0.0 to 1.0).",
+                "createComboBox": "Creates a drop-down selection (ComboBox) widget with integer pixel coordinates.",
+                "createComboBoxReal": "Creates a drop-down selection (ComboBox) widget with relative coordinates (0.0 to 1.0).",
+                "createDDContainer": "Creates a drag-and-drop container (DDContainer) widget with integer pixel coordinates.",
+                "createDDContainerReal": "Creates a drag-and-drop container (DDContainer) widget with relative coordinates (0.0 to 1.0).",
+                "createEditBox": "Creates an interactive text input (EditBox) widget with integer pixel coordinates.",
+                "createEditBoxReal": "Creates an interactive text input (EditBox) widget with relative coordinates (0.0 to 1.0).",
+                "createImageBox": "Creates an image display (ImageBox) widget with integer pixel coordinates.",
+                "createImageBoxReal": "Creates an image display (ImageBox) widget with relative coordinates (0.0 to 1.0).",
+                "createItemBox": "Creates an item grid container (ItemBox) widget with integer pixel coordinates.",
+                "createItemBoxReal": "Creates an item grid container (ItemBox) widget with relative coordinates (0.0 to 1.0).",
+                "createListBox": "Creates a single-column selectable list (ListBox) widget with integer pixel coordinates.",
+                "createListBoxReal": "Creates a single-column selectable list (ListBox) widget with relative coordinates (0.0 to 1.0).",
+                "createMenuBar": "Creates a horizontal top-level menu bar (MenuBar) widget with integer pixel coordinates.",
+                "createMenuBarReal": "Creates a horizontal top-level menu bar (MenuBar) widget with relative coordinates (0.0 to 1.0).",
+                "createMultiListBox": "Creates a multi-column tabular list (MultiListBox) widget with integer pixel coordinates.",
+                "createMultiListBoxReal": "Creates a multi-column tabular list (MultiListBox) widget with relative coordinates (0.0 to 1.0).",
+                "createPopupMenu": "Creates a floating contextual popup menu (PopupMenu) widget with integer pixel coordinates.",
+                "createPopupMenuReal": "Creates a floating contextual popup menu (PopupMenu) widget with relative coordinates (0.0 to 1.0).",
+                "createProgressBar": "Creates a progress bar (ProgressBar) widget with integer pixel coordinates.",
+                "createProgressBarReal": "Creates a progress bar (ProgressBar) widget with relative coordinates (0.0 to 1.0).",
+                "createScrollBar": "Creates a scroll bar (ScrollBar) widget with integer pixel coordinates.",
+                "createScrollBarReal": "Creates a scroll bar (ScrollBar) widget with relative coordinates (0.0 to 1.0).",
+                "createScrollView": "Creates a scrollable container view (ScrollView) widget with integer pixel coordinates.",
+                "createScrollViewReal": "Creates a scrollable container view (ScrollView) widget with relative coordinates (0.0 to 1.0).",
+                "createTabControl": "Creates a multi-tab container (TabControl) widget with integer pixel coordinates.",
+                "createTabControlReal": "Creates a multi-tab container (TabControl) widget with relative coordinates (0.0 to 1.0).",
+                "createTextBox": "Creates a static text label (TextBox) widget with integer pixel coordinates.",
+                "createTextBoxReal": "Creates a static text label (TextBox) widget with relative coordinates (0.0 to 1.0).",
+                "createWidget": "Creates a widget of the specified type with integer pixel coordinates, skin, and alignment on a parent widget or layer.",
+                "createWidgetReal": "Creates a widget of the specified type with relative coordinates (0.0 to 1.0), skin, and alignment on a parent widget or layer.",
+                "createWindow": "Creates a Window widget with integer pixel coordinates on the specified layer.",
+                "createWindowReal": "Creates a Window widget with relative coordinates (0.0 to 1.0) on the specified layer.",
+                "destroyWidget": "Destroys the specified widget, removing it from its parent and layer and freeing its resources.",
+                "destroyWidgets": "Destroys a list of widgets, removing each from its parent and layer and freeing resources.",
+                "findWidget": "Finds an existing widget by its unique string name across all layers.",
+                "findWidgetT": "Finds an existing widget by its unique string name and wraps it in its specific widget class.",
+                "getClipboardText": "Retrieves the current text content from the system clipboard.",
+                "getDefaultSkin": "Returns the default skin name configured for the given widget type.",
+                "getMousePosition": "Returns the current screen mouse cursor coordinates as two integers: x, y.",
+                "getViewHeight": "Returns the current GUI viewport height in pixels.",
+                "getViewSize": "Returns the current GUI viewport dimensions in pixels as two integers: width, height.",
+                "getViewWidth": "Returns the current GUI viewport width in pixels.",
+                "hidePointer": "Hides the graphical mouse cursor pointer.",
+                "isPointerVisible": "Returns true if the graphical mouse cursor pointer is currently visible.",
+                "isSkinExist": "Returns true if a skin with the specified name is registered in the skin manager.",
+                "loadLayout": "Loads and instantiates widgets from an XML layout file, returning an array of created root widgets.",
+                "setClipboardText": "Copies a text string to the system clipboard.",
+                "setDefaultSkin": "Sets the default skin name to use when creating widgets of the given widget type.",
+                "setPointer": "Sets the current mouse cursor pointer shape by name (such as 'arrow' or 'hand').",
+                "showPointer": "Shows the graphical mouse cursor pointer.",
+                "unloadLayout": "Destroys all widgets created by a previous loadLayout call.",
+                "upLayerItem": "Moves the specified widget to the top of its layer rendering order within its current depth."
+            },
+            "properties": {
+                "ClipboardManager": "Singleton manager interfacing with system clipboard text transfer.",
+                "Colour": "Constructor, parser, and static methods for RGBA color values.",
+                "FloatCoord": "Constructor and static methods for floating-point relative 2D coordinate values.",
+                "FloatPoint": "Constructor and static methods for floating-point relative 2D point values.",
+                "FloatRect": "Constructor and static methods for floating-point relative 2D bounding rectangle values.",
+                "FloatSize": "Constructor and static methods for floating-point relative 2D size values.",
+                "Gui": "Singleton manager providing core MyGUI subsystem operations and root widget instantiation.",
+                "InputManager": "Singleton manager handling mouse and keyboard focus, capture, and event injection.",
+                "IntCoord": "Constructor and static methods for integer 2D coordinate rectangle values.",
+                "IntPoint": "Constructor and static methods for integer 2D point values.",
+                "IntRect": "Constructor and static methods for integer 2D bounding rectangle values.",
+                "IntSize": "Constructor and static methods for integer 2D size values.",
+                "LayerManager": "Singleton manager managing UI rendering layers and widget z-ordering.",
+                "LayoutManager": "Singleton manager parsing and instantiating XML UI layout resources.",
+                "PointerManager": "Singleton manager controlling mouse cursor visibility, skin, and pointer graphics.",
+                "RenderManager": "Singleton manager providing rendering viewport dimensions and texture services.",
+                "SkinManager": "Singleton manager managing skin definitions, default skins, and skin resources."
+            }
+        },
+        "MyGUI.Button": {
+            "description": "Interactive clickable push-button widget that supports text captions, pressed and selected states, and state-dependent image skins.",
+            "methods": {
+                "getModeImage": "Returns true if the button has image mode enabled.",
+                "getStateSelected": "Returns true if the button is currently in the selected or toggled-on state.",
+                "setImageResource": "Assigns an image resource name to the button for skinning or icon display.",
+                "setModeImage": "Enables or disables image mode, where the button image changes dynamically based on state.",
+                "setStateSelected": "Sets whether the button is in the selected or toggled-on state."
+            },
+            "properties": {
+                "selected": "Alias of stateSelected.",
+                "stateSelected": "Whether the button is in the selected or toggled-on state."
+            }
+        },
+        "MyGUI.Canvas": {
+            "description": "Widget that renders a dynamic procedural or user-managed texture with configurable resizing modes.",
+            "methods": {
+                "createTexture": "With width and height, creates an explicitly sized texture. With zero or one argument, the argument is the resize mode.",
+                "destroyTexture": "Destroys the backing texture and frees associated graphics resources.",
+                "getResizeMode": "Returns the texture resizing mode.",
+                "getTextureFormat": "Returns the pixel format identifier of the canvas backing texture.",
+                "getTextureName": "Returns the unique resource name of the canvas backing texture.",
+                "getTextureRealHeight": "Returns the allocated hardware texture height in pixels.",
+                "getTextureRealSize": "Returns the allocated hardware texture width and height in pixels.",
+                "getTextureRealWidth": "Returns the allocated hardware texture width in pixels.",
+                "getTextureSrcHeight": "Returns the requested source content height of the texture in pixels.",
+                "getTextureSrcSize": "Returns the requested source content width and height in pixels.",
+                "getTextureSrcWidth": "Returns the requested source content width of the texture in pixels.",
+                "isTextureCreated": "Returns true if the backing texture has been created and currently exists.",
+                "isTextureManaged": "Returns true if the canvas widget manages and owns the lifecycle of the backing texture.",
+                "isTextureSrcSize": "Returns true if the allocated texture dimensions match the requested source dimensions exactly.",
+                "setResizeMode": "Sets the texture resizing mode.",
+                "setTextureManaged": "Sets whether the canvas widget manages the lifecycle of the backing texture.",
+                "updateTexture": "Notifies listeners and redraws the canvas backing texture."
+            },
+            "properties": {}
+        },
+        "MyGUI.ClipboardManager": {
+            "description": "Singleton manager providing access to clipboard data, text copying, and pasting.",
+            "methods": {
+                "clearClipboardData": "Clears clipboard data for the specified data type identifier.",
+                "getClipboardData": "Retrieves clipboard data string for the specified data type identifier.",
+                "getInstance": "Returns the singleton instance of ClipboardManager.",
+                "getText": "Retrieves text content from the system clipboard.",
+                "setClipboardData": "Sets clipboard data for the specified data type identifier (such as 'Text').",
+                "setText": "Sets text content in the system clipboard."
+            },
+            "properties": {}
+        },
+        "MyGUI.ClipboardManagerStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.ClipboardManager instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.ClipboardManager instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.Colour": {
+            "description": "Represents an RGBA color value with floating-point red, green, blue, and alpha channels normalized from 0.0 to 1.0.",
+            "methods": {
+                "new": "Constructs a new Colour instance with the given red, green, blue, and alpha channel floats (0.0 to 1.0).",
+                "parse": "Parses a hex or decimal color string into a Colour instance."
+            },
+            "properties": {
+                "a": "Alpha opacity channel alias for alpha.",
+                "alpha": "Alpha opacity channel (0.0 transparent to 1.0 fully opaque).",
+                "b": "Blue channel intensity alias for blue.",
+                "blue": "Blue channel intensity (0.0 to 1.0).",
+                "g": "Green channel intensity alias for green.",
+                "green": "Green channel intensity (0.0 to 1.0).",
+                "r": "Red channel intensity alias for red.",
+                "red": "Red channel intensity (0.0 to 1.0)."
+            }
+        },
+        "MyGUI.ColourConstructor": {
+            "description": "Factory and constructor table for creating and parsing MyGUI.Colour value instances.",
+            "methods": {
+                "new": "Constructs a new Colour with the specified red, green, blue, and alpha channel floats (defaults to 1.0, 1.0, 1.0, 1.0).",
+                "parse": "Parses a color from a string format such as hex '#RRGGBB', '#RRGGBBAA', or decimal 'r g b [a]'."
+            },
+            "properties": {}
+        },
+        "MyGUI.ComboBox": {
+            "description": "Drop-down selection widget combining a text display or edit field with a collapsible list of selectable items.",
+            "methods": {
+                "addItem": "Appends a new item with the specified label to the end of the drop-down list.",
+                "beginToItemAt": "Scrolls the drop-down list so that the item at the specified index is visible.",
+                "beginToItemFirst": "Scrolls the drop-down list to the first item.",
+                "beginToItemLast": "Scrolls the drop-down list to the last item.",
+                "beginToItemSelected": "Scrolls the drop-down list so that the currently selected item is visible.",
+                "clearIndexSelected": "Clears the current item selection.",
+                "findItemIndexWith": "Searches for an item matching the specified label and returns its zero-based index, or -1 when the item is not found.",
+                "getComboModeDrop": "Returns true if the combo box is in drop-down mode.",
+                "getFlowDirection": "Returns the direction enum value in which the drop-down list appears.",
+                "getIndexSelected": "Returns the zero-based index of the currently selected item, or -1 if nothing is selected.",
+                "getItemCount": "Returns the total number of items in the drop-down list.",
+                "getItemNameAt": "Returns the label of the item at the specified zero-based index.",
+                "getMaxListLength": "Returns the maximum visible height or length of the drop-down list in pixels.",
+                "getSmoothShow": "Returns true if smooth show animation is enabled for the drop-down list.",
+                "insertItemAt": "Inserts a new item with the specified label at the given zero-based index.",
+                "removeAllItems": "Removes all items from the drop-down list.",
+                "removeItemAt": "Removes the item at the specified zero-based index.",
+                "setComboModeDrop": "Enables or disables drop-down mode (when enabled, clicking the text field opens the list instead of editing).",
+                "setFlowDirection": "Sets the direction in which the drop-down list appears (MyGUI.FlowDirection).",
+                "setIndexSelected": "Selects the item at the specified zero-based index. Pass a negative index to clear the selection.",
+                "setItemNameAt": "Sets the label of the item at the specified zero-based index.",
+                "setMaxListLength": "Sets the maximum visible height or length of the drop-down list in pixels.",
+                "setSmoothShow": "Enables or disables smooth fading animation when displaying the drop-down list."
+            },
+            "properties": {
+                "comboModeDrop": "Whether the combo box operates in drop-down list mode.",
+                "count": "Read-only alias of itemCount.",
+                "indexSelected": "Zero-based index of the currently selected item, or -1 if nothing is selected.",
+                "itemCount": "Total number of items in the drop-down list. Read-only.",
+                "modeDrop": "Alias of comboModeDrop.",
+                "selectedIndex": "Alias of indexSelected."
+            }
+        },
+        "MyGUI.DDContainer": {
+            "description": "Container widget that supports drag-and-drop operations for child elements.",
+            "methods": {
+                "getNeedDragDrop": "Returns whether drag-and-drop support is enabled on the container.",
+                "resetDrag": "Aborts and resets any ongoing drag-and-drop operation.",
+                "setNeedDragDrop": "Enables or disables drag-and-drop support on the container."
+            },
+            "properties": {}
+        },
+        "MyGUI.EditBox": {
+            "description": "Interactive text input control supporting single-line and multi-line editing, password masking, text selection, scrolling, and clipboard operations.",
+            "methods": {
+                "addText": "Appends text to the end of the current content.",
+                "deleteTextSelection": "Deletes the currently selected text.",
+                "eraseText": "Erases the specified count of characters starting from the given character index.",
+                "getEditMultiLine": "Returns true if multi-line input mode is enabled.",
+                "getEditPassword": "Returns true if password masking mode is enabled.",
+                "getEditReadOnly": "Returns true if the edit box is in read-only mode.",
+                "getEditStatic": "Returns true if static text mode is enabled.",
+                "getEditWordWrap": "Returns true if word wrapping is enabled.",
+                "getMaxTextLength": "Returns the maximum number of characters permitted in the edit field.",
+                "getOnlyText": "Returns the plain text content with formatting and color tags stripped.",
+                "getOverflowToTheLeft": "Returns true if surplus characters push text off the left side of the edit field.",
+                "getPasswordChar": "Returns the character string used to mask text in password mode.",
+                "getTextCursor": "Returns the character position of the text caret cursor.",
+                "getTextInterval": "Returns a substring of characters including formatting tags starting from the specified index for count characters.",
+                "getTextLength": "Returns the total length of the text in characters, excluding formatting tags.",
+                "getTextSelection": "Returns the currently selected substring of text.",
+                "getTextSelectionEnd": "Returns the zero-based character index of the end of the selection, or -1 if nothing is selected.",
+                "getTextSelectionLength": "Returns the character length of the currently selected text.",
+                "getTextSelectionStart": "Returns the zero-based character index of the start of the selection, or -1 if nothing is selected.",
+                "insertText": "Inserts text at the specified character index, or at the end of the text if omitted.",
+                "isTextSelection": "Returns true if any text is currently selected.",
+                "setEditMultiLine": "Enables or disables multi-line input mode allowing line breaks.",
+                "setEditPassword": "Enables or disables password masking mode.",
+                "setEditReadOnly": "Enables or disables read-only mode, which prevents editing while still permitting selection.",
+                "setEditStatic": "Enables or disables static text mode, which prevents both editing and selection.",
+                "setEditWordWrap": "Enables or disables automatic word wrapping for multi-line text.",
+                "setMaxTextLength": "Sets the maximum number of characters permitted in the edit field.",
+                "setOnlyText": "Sets the text content directly without parsing formatting or color tags.",
+                "setOverflowToTheLeft": "Sets whether surplus characters push text off the left side of the edit field rather than being ignored.",
+                "setPasswordChar": "Sets the character displayed in password mode. Uses the first byte of a non-empty string.",
+                "setTextCursor": "Sets the character position of the text caret cursor.",
+                "setTextIntervalColour": "Applies a color tint to the specified character interval in the text.",
+                "setTextSelection": "Sets the start and end character indices of the selected text interval.",
+                "setTextSelectionColour": "Sets the text color applied to selected text."
+            },
+            "properties": {
+                "multiLine": "Whether multi-line text input mode is enabled.",
+                "readOnly": "Whether the edit box is read-only, preventing user editing while permitting selection.",
+                "wordWrap": "Whether automatic word wrapping is enabled."
+            }
+        },
+        "MyGUI.EnumeratorLayerSnapshot": {
+            "description": "Walks the layers copied by LayerManager:getEnumerator(), like MyGUI's LayerManager::EnumeratorLayer.",
+            "methods": {
+                "current": "Returns the layer next() moved to. Raises an error after next() returns false.",
+                "next": "Moves to the next layer. The first call moves to the first layer. Returns false once no layers remain."
+            },
+            "properties": {}
+        },
+        "MyGUI.EnumeratorWidgetPtrSnapshot": {
+            "description": "Walks the widgets copied by getEnumerator(), like MyGUI's EnumeratorWidgetPtr. Creating or destroying widgets during the walk is safe.",
+            "methods": {
+                "current": "Returns the widget next() moved to, or nil if it was destroyed after getEnumerator() was called. Raises an error after next() returns false.",
+                "next": "Moves to the next widget. The first call moves to the first widget. Returns false once no widgets remain."
+            },
+            "properties": {}
+        },
+        "MyGUI.FloatCoord": {
+            "description": "Represents a 2D relative floating-point position and size normalized from 0.0 to 1.0.",
+            "methods": {
+                "new": "Constructs a new bounding coordinate instance in normalized float units (0.0 to 1.0)."
+            },
+            "properties": {
+                "h": "Relative height dimension alias for height.",
+                "height": "Relative height dimension (0.0 to 1.0).",
+                "left": "Relative horizontal position of the top-left corner (0.0 to 1.0).",
+                "top": "Relative vertical position of the top-left corner (0.0 to 1.0).",
+                "w": "Relative width dimension alias for width.",
+                "width": "Relative width dimension (0.0 to 1.0).",
+                "x": "Relative horizontal position alias for left.",
+                "y": "Relative vertical position alias for top."
+            }
+        },
+        "MyGUI.FloatCoordConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.FloatCoord value instances.",
+            "methods": {
+                "new": "Constructs a new FloatCoord with the specified relative left, top, width, and height values (defaults to 0.0, 0.0, 0.0, 0.0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.FloatPoint": {
+            "description": "Represents a 2D relative floating-point coordinate point normalized from 0.0 to 1.0.",
+            "methods": {
+                "new": "Constructs a new coordinate value instance in normalized float units (0.0 to 1.0)."
+            },
+            "properties": {
+                "left": "Relative horizontal coordinate (0.0 to 1.0).",
+                "top": "Relative vertical coordinate (0.0 to 1.0).",
+                "x": "Relative horizontal coordinate alias for left.",
+                "y": "Relative vertical coordinate alias for top."
+            }
+        },
+        "MyGUI.FloatPointConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.FloatPoint value instances.",
+            "methods": {
+                "new": "Constructs a new FloatPoint with the specified relative left and top coordinates (defaults to 0.0, 0.0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.FloatRect": {
+            "description": "Represents a relative floating-point bounding rectangle defined by left, top, right, and bottom borders.",
+            "methods": {
+                "new": "Constructs a new bounding rectangle instance in normalized float units (0.0 to 1.0)."
+            },
+            "properties": {
+                "bottom": "Relative bottom border coordinate (0.0 to 1.0).",
+                "height": "Calculated relative height (bottom - top).",
+                "left": "Relative left border coordinate (0.0 to 1.0).",
+                "right": "Relative right border coordinate (0.0 to 1.0).",
+                "top": "Relative top border coordinate (0.0 to 1.0).",
+                "width": "Calculated relative width (right - left)."
+            }
+        },
+        "MyGUI.FloatRectConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.FloatRect value instances.",
+            "methods": {
+                "new": "Constructs a new FloatRect with the specified relative left, top, right, and bottom coordinates (defaults to 0.0, 0.0, 0.0, 0.0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.FloatSize": {
+            "description": "Represents a 2D relative floating-point size normalized from 0.0 to 1.0.",
+            "methods": {
+                "new": "Constructs a new dimension value instance in normalized float units (0.0 to 1.0)."
+            },
+            "properties": {
+                "h": "Relative height dimension alias for height.",
+                "height": "Relative height dimension (0.0 to 1.0).",
+                "w": "Relative width dimension alias for width.",
+                "width": "Relative width dimension (0.0 to 1.0)."
+            }
+        },
+        "MyGUI.FloatSizeConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.FloatSize value instances.",
+            "methods": {
+                "new": "Constructs a new FloatSize with the specified relative width and height dimensions (defaults to 0.0, 0.0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.Gui": {
+            "description": "Root GUI system manager providing widget creation, lookup, hierarchy enumeration, and pointer controls.",
+            "methods": {
+                "createWidget": "Creates a new widget using absolute pixel coordinates and attaches it to a layer or parent widget.",
+                "createWidgetReal": "Creates a new widget using relative normalized [0..1] coordinates and attaches it to a layer or parent widget.",
+                "destroyWidget": "Destroys the specified widget, cleaning up its children and removing it from the GUI hierarchy.",
+                "destroyWidgets": "Destroys an array table of widgets and cleans up their hierarchies.",
+                "findWidget": "Finds a widget by its unique name across all layers, returning nil if not found.",
+                "findWidgetT": "Alias of findWidget.",
+                "getEnumerator": "Returns an enumerator over a copy of the root widgets, taken now. Widgets created later are not included.",
+                "getInstance": "Returns the singleton instance of Gui.",
+                "hidePointer": "Hides the mouse pointer cursor via PointerManager.",
+                "isPointerVisible": "Returns whether the mouse pointer cursor is currently visible.",
+                "showPointer": "Shows the mouse pointer cursor via PointerManager."
+            },
+            "properties": {}
+        },
+        "MyGUI.GuiStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.Gui instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.Gui instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.ILayer": {
+            "description": "A MyGUI layer, borrowed from the LayerManager.",
+            "methods": {
+                "getLayerNodeCount": "Returns total number of root widget nodes attached to the layer.",
+                "getName": "Returns name identifier of the layer.",
+                "getPosition": "Converts a screen position to a position in this layer.",
+                "getSize": "Returns dimensions (IntSize) of the layer."
+            },
+            "properties": {}
+        },
+        "MyGUI.ImageBox": {
+            "description": "Widget that renders static or animated 2D textures, tiled sprites, or image set resources.",
+            "methods": {
+                "getImageIndex": "Returns current tile index.",
+                "getItemCount": "Returns total number of image items or sub-frames.",
+                "getItemSelect": "Returns index of currently selected image item.",
+                "resetItemSelect": "Clears currently selected image item.",
+                "setImageCoord": "Sets rectangular texture coordinates (left, top, width, height) from which tiles or subregions are sampled.",
+                "setImageIndex": "Sets current tile index within tiled texture.",
+                "setImageResource": "Alias of setItemResource.",
+                "setImageTexture": "Sets texture file name or resource name to display.",
+                "setImageTile": "Sets width and height of an individual sprite tile within texture coordinate area.",
+                "setItemResource": "Loads and selects an image resource by name, returning true if found.",
+                "setItemSelect": "Selects active image item by index."
+            },
+            "properties": {}
+        },
+        "MyGUI.InputManager": {
+            "description": "Singleton manager handling mouse and keyboard input injection, widget focus, modality, and capture.",
+            "methods": {
+                "addWidgetModal": "Pushes the widget onto the modal stack, restricting input to it and its children.",
+                "getInstance": "Returns the singleton instance of InputManager.",
+                "getKeyFocusWidget": "Returns the widget currently holding keyboard focus, or nil if none.",
+                "getMouseFocusWidget": "Returns the widget currently under mouse focus, or nil if none.",
+                "getMousePosition": "Returns the current mouse cursor position (x, y) in screen coordinates.",
+                "injectKeyPress": "Injects a keyboard key press event (keycode, character code), returning true if consumed.",
+                "injectKeyRelease": "Injects a keyboard key release event (keycode), returning true if consumed.",
+                "injectMouseMove": "Injects mouse movement coordinates (x, y, wheel delta), returning true if consumed.",
+                "injectMousePress": "Injects a mouse button press event at coordinates (x, y, button), returning true if consumed.",
+                "injectMouseRelease": "Injects a mouse button release event at coordinates (x, y, button), returning true if consumed.",
+                "isCaptureMouse": "Returns whether any widget has currently captured mouse input.",
+                "isControlPressed": "Returns whether either Control key is currently held down.",
+                "isFocusKey": "Returns whether any widget currently has keyboard focus.",
+                "isFocusMouse": "Returns whether any widget currently has mouse focus.",
+                "isModalAny": "Returns whether any modal widget is currently active.",
+                "isShiftPressed": "Returns whether either Shift key is currently held down.",
+                "removeWidgetModal": "Removes the widget from the modal stack.",
+                "resetKeyFocusWidget": "Clears keyboard focus, optionally only if currently held by the specified widget.",
+                "resetMouseCaptureWidget": "Releases any active mouse capture.",
+                "setKeyFocusWidget": "Sets keyboard focus to the specified widget, or clears focus if nil."
+            },
+            "properties": {}
+        },
+        "MyGUI.InputManagerStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.InputManager instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.InputManager instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.IntCoord": {
+            "description": "Represents a 2D integer pixel position and size combined into a bounding coordinate box.",
+            "methods": {
+                "new": "Constructs a new bounding coordinate instance (position and size) in integer pixel units."
+            },
+            "properties": {
+                "h": "Height dimension alias for height.",
+                "height": "Height dimension in pixels.",
+                "left": "Horizontal pixel position of the top-left corner.",
+                "point": "Position component as an IntPoint.",
+                "size": "Dimension component as an IntSize.",
+                "top": "Vertical pixel position of the top-left corner.",
+                "w": "Width dimension alias for width.",
+                "width": "Width dimension in pixels.",
+                "x": "Horizontal pixel position alias for left.",
+                "y": "Vertical pixel position alias for top."
+            }
+        },
+        "MyGUI.IntCoordConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.IntCoord value instances.",
+            "methods": {
+                "new": "Constructs a new IntCoord with the specified pixel left, top, width, and height (defaults to 0, 0, 0, 0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.IntPoint": {
+            "description": "Represents a 2D integer pixel coordinate point with horizontal and vertical components.",
+            "methods": {
+                "new": "Constructs a new coordinate value instance in integer pixel units."
+            },
+            "properties": {
+                "left": "Horizontal pixel coordinate.",
+                "top": "Vertical pixel coordinate.",
+                "x": "Horizontal pixel coordinate alias for left.",
+                "y": "Vertical pixel coordinate alias for top."
+            }
+        },
+        "MyGUI.IntPointConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.IntPoint value instances.",
+            "methods": {
+                "new": "Constructs a new IntPoint with the specified horizontal and vertical pixel coordinates (defaults to 0, 0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.IntRect": {
+            "description": "Represents an integer pixel bounding rectangle defined by left, top, right, and bottom borders.",
+            "methods": {
+                "new": "Constructs a new bounding rectangle instance (left, top, right, bottom) in integer pixel units."
+            },
+            "properties": {
+                "bottom": "Bottom border coordinate in pixels.",
+                "height": "Calculated height of the rectangle in pixels (bottom - top).",
+                "left": "Left border coordinate in pixels.",
+                "right": "Right border coordinate in pixels.",
+                "top": "Top border coordinate in pixels.",
+                "width": "Calculated width of the rectangle in pixels (right - left)."
+            }
+        },
+        "MyGUI.IntRectConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.IntRect value instances.",
+            "methods": {
+                "new": "Constructs a new IntRect with the specified pixel left, top, right, and bottom coordinates (defaults to 0, 0, 0, 0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.IntSize": {
+            "description": "Represents a 2D integer pixel size with width and height dimensions.",
+            "methods": {
+                "new": "Constructs a new dimension value instance in integer pixel units."
+            },
+            "properties": {
+                "h": "Height dimension alias for height.",
+                "height": "Height dimension in pixels.",
+                "w": "Width dimension alias for width.",
+                "width": "Width dimension in pixels."
+            }
+        },
+        "MyGUI.IntSizeConstructor": {
+            "description": "Factory and constructor table for creating MyGUI.IntSize value instances.",
+            "methods": {
+                "new": "Constructs a new IntSize with the specified pixel width and height (defaults to 0, 0)."
+            },
+            "properties": {}
+        },
+        "MyGUI.ItemBox": {
+            "description": "Scrollable grid or list widget of customizable items supporting selection and drag-and-drop.",
+            "methods": {
+                "addItem": "Appends a new item entry to the end of the box.",
+                "clearIndexSelected": "Deselects the currently selected item.",
+                "getIndexByWidget": "Returns item index corresponding to the given item widget, or -1 when the widget is not an item.",
+                "getIndexSelected": "Returns index of selected item, or -1 when no item is selected.",
+                "getItemCount": "Returns total number of items in the box.",
+                "getWidgetByIndex": "Returns visible item widget at index, or nil if not visible or invalid.",
+                "getWidgetDrag": "Returns widget representation currently being dragged, or nil if none.",
+                "insertItemAt": "Inserts a new item entry at the specified index.",
+                "redrawAllItems": "Forces a redraw and update of all visible items in the box.",
+                "redrawItemAt": "Forces a redraw and update of the item at the specified index.",
+                "removeAllItems": "Removes all item entries from the box.",
+                "removeItemAt": "Removes item entry at the specified index.",
+                "resetDrag": "Resets the active item drag-and-drop state.",
+                "setIndexSelected": "Selects item at index. Pass a negative index to clear the selection."
+            },
+            "properties": {}
+        },
+        "MyGUI.LayerManager": {
+            "description": "Singleton manager organizing widgets into distinct rendering layers with defined Z-order and depth stacking.",
+            "methods": {
+                "attachToLayerNode": "Attaches a root widget to the named layer. Raises an error if the layer does not exist.",
+                "detachFromLayer": "Detaches the widget from its current layer.",
+                "getByName": "Returns the named layer. A missing layer raises an error unless throw is false, which returns nil instead.",
+                "getCategoryName": "Returns the configuration category name for layers ('Layer').",
+                "getEnumerator": "Returns an enumerator over a copy of the layers, in drawing order, taken now. A layer MyGUI replaces later is not detected, so walk the layers when you need them instead of keeping the enumerator.",
+                "getInstance": "Returns the singleton instance of LayerManager.",
+                "getLayer": "Returns the layer at a 0-based index, in drawing order. Raises an error for an index outside 0 to getLayerCount() - 1.",
+                "getLayerCount": "Returns total number of configured layers.",
+                "getWidgetFromPoint": "Returns the top visible and enabled widget at the screen position.",
+                "isExist": "Returns true if a layer with the specified name exists.",
+                "upLayerItem": "Moves the widget to the top of its layer."
+            },
+            "properties": {}
+        },
+        "MyGUI.LayerManagerStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.LayerManager instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.LayerManager instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.LayoutManager": {
+            "description": "Singleton manager that parses and instantiates XML layout files into widget hierarchies.",
+            "methods": {
+                "getInstance": "Returns the singleton instance of LayoutManager.",
+                "loadLayout": "Loads an XML layout file, instantiating root widgets with an optional prefix and parent widget.",
+                "unloadLayout": "Destroys all widgets in the given layout table and frees their resources."
+            },
+            "properties": {}
+        },
+        "MyGUI.LayoutManagerStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.LayoutManager instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.LayoutManager instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.ListBox": {
+            "description": "Scrollable vertical list widget for displaying and selecting items with support for scrolling, item lookup, and custom widgets.",
+            "methods": {
+                "addItem": "Appends a new item with the specified label to the end of the list.",
+                "beginToItemAt": "Scrolls the list so that the item at the specified index is visible.",
+                "beginToItemFirst": "Scrolls the list to display the first item.",
+                "beginToItemLast": "Scrolls the list to display the last item.",
+                "beginToItemSelected": "Scrolls the list so that the currently selected item is visible.",
+                "clearIndexSelected": "Clears the current item selection.",
+                "findItemIndexWith": "Searches for an item matching the specified label and returns its zero-based index, or -1 when the item is not found.",
+                "getIndexSelected": "Returns the zero-based index of the currently selected item, or -1 when no item is selected.",
+                "getItemCount": "Returns the total number of items in the list.",
+                "getItemNameAt": "Returns the label of the item at the specified zero-based index.",
+                "getOptimalHeight": "Calculates and returns the optimal height in pixels required to display all items without scrolling.",
+                "getWidgetByIndex": "Returns the child widget representing the item at the specified index, or nil if not currently rendered.",
+                "insertItemAt": "Inserts a new item with the specified label at the given zero-based index.",
+                "isItemSelectedVisible": "Returns true if the currently selected item is visible within the list viewport.",
+                "isItemVisibleAt": "Returns true if the item at the specified index is currently visible within the list viewport.",
+                "removeAllItems": "Removes all items from the list.",
+                "removeItemAt": "Removes the item at the specified zero-based index.",
+                "setIndexSelected": "Selects the item at the specified zero-based index. Pass a negative index to clear the selection.",
+                "setItemNameAt": "Sets the label of the item at the specified zero-based index.",
+                "setScrollPosition": "Sets the vertical scroll position of the list.",
+                "setScrollVisible": "Shows or hides the vertical scroll bar.",
+                "swapItemsAt": "Swaps the positions of the two items at the specified zero-based indices."
+            },
+            "properties": {
+                "count": "Read-only alias of itemCount.",
+                "indexSelected": "Zero-based index of the currently selected item, or -1 if nothing is selected.",
+                "itemCount": "Total number of items in the list. Read-only.",
+                "selectedIndex": "Alias of indexSelected."
+            }
+        },
+        "MyGUI.MenuBar": {
+            "description": "Horizontal top-level menu bar widget displaying a strip of menu headers.",
+            "methods": {},
+            "properties": {}
+        },
+        "MyGUI.MenuControl": {
+            "description": "Base menu widget providing hierarchical menu items, submenus, and selection handling.",
+            "methods": {
+                "addItem": "Appends a new menu item to the end of the menu.",
+                "clearItemDataAt": "Clears user data from the menu item at the specified index.",
+                "createItemChildAt": "Creates and attaches a submenu MenuControl to the item at the specified index.",
+                "findItemIndexWith": "Returns index of the first menu item with matching text, or -1 when the item is not found.",
+                "getItemAt": "Returns MenuItem widget at the specified index, or nil if invalid.",
+                "getItemById": "Returns MenuItem widget matching the given string identifier, or nil if not found.",
+                "getItemCount": "Returns total number of items in the menu.",
+                "getItemIdAt": "Returns unique string identifier of the menu item at the specified index.",
+                "getItemIndex": "Returns index of the menu item, or -1 when the item is not in this menu.",
+                "getItemIndexById": "Returns index of the menu item with the given ID, or -1 when the ID is not found.",
+                "getItemNameAt": "Returns display text of the menu item at the specified index.",
+                "getItemTypeAt": "Returns menu item type for the item at the specified index.",
+                "getPopupAccept": "Returns whether clicking items with submenus generates accept events and closes the menu.",
+                "getPopupMode": "Alias of getPopupAccept.",
+                "getVerticalAlignment": "Returns whether menu items are laid out vertically.",
+                "insertItemAt": "Inserts a new menu item at the specified index.",
+                "removeAllItems": "Removes all menu items.",
+                "removeItemAt": "Removes the menu item at the specified index.",
+                "setItemChildVisibleAt": "Shows or hides submenu popup for the item at the specified index.",
+                "setItemDataAt": "Associates arbitrary user string data with the menu item at the specified index.",
+                "setItemIdAt": "Sets unique string identifier of the menu item at the specified index.",
+                "setItemNameAt": "Sets display text of the menu item at the specified index.",
+                "setItemTypeAt": "Sets menu item type for the item at the specified index.",
+                "setPopupAccept": "Enables or disables accepting clicks on items that have submenus to trigger events and close the menu.",
+                "setPopupMode": "Alias of setPopupAccept.",
+                "setVerticalAlignment": "Sets whether menu items are laid out vertically."
+            },
+            "properties": {}
+        },
+        "MyGUI.MenuItem": {
+            "description": "Interactive menu item button widget contained within a MenuControl, supporting check states, IDs, and submenus.",
+            "methods": {
+                "clearItemData": "Clears user data associated with this menu item.",
+                "createItemChild": "Creates and attaches a submenu MenuControl for this item, or returns nil on failure.",
+                "getItemChecked": "Returns whether this menu item is currently checked.",
+                "getItemChild": "Returns child submenu MenuControl attached to this menu item, or nil if none.",
+                "getItemId": "Returns unique string identifier of the menu item.",
+                "getItemIndex": "Returns 0-based index of this item in its parent menu, or -1 when the item is not attached to a menu.",
+                "getItemName": "Returns display text of the menu item.",
+                "getItemType": "Returns menu item type using MyGUI.MenuItemType.",
+                "removeItemChild": "Removes and destroys child submenu attached to this menu item.",
+                "setItemChecked": "Sets checkmark state for checkable menu items.",
+                "setItemChildVisible": "Shows or hides child submenu attached to this menu item.",
+                "setItemData": "Sets user string data associated with this menu item.",
+                "setItemId": "Sets unique string identifier of the menu item.",
+                "setItemName": "Sets display text of the menu item.",
+                "setItemType": "Sets menu item type using MyGUI.MenuItemType."
+            },
+            "properties": {
+                "checked": "Checkmark state for checkable menu items.",
+                "itemId": "Unique string identifier of the menu item.",
+                "itemName": "Display text of the menu item."
+            }
+        },
+        "MyGUI.MultiListBox": {
+            "description": "Multi-column tabular list widget supporting column headers, custom column widths, and tabular row and sub-item data.",
+            "methods": {
+                "addColumn": "Appends a new column with the specified header name and optional width in pixels to the end of the column list.",
+                "addItem": "Appends a new row with the specified primary column text to the end of the list.",
+                "clearIndexSelected": "Clears the current row selection.",
+                "findSubItemWith": "Searches the specified column for an item matching the given text and returns its zero-based row index, or -1 when the sub-item is not found.",
+                "getColumnCount": "Returns the total number of columns in the multi-list box.",
+                "getColumnNameAt": "Returns the header label of the column at the specified zero-based index.",
+                "getColumnWidthAt": "Returns the width in pixels of the column at the specified zero-based index.",
+                "getIndexSelected": "Returns the zero-based index of the currently selected row, or -1 when no row is selected.",
+                "getItemCount": "Returns the total number of rows in the multi-list box.",
+                "getItemNameAt": "Returns the primary column text of the row at the specified zero-based row index.",
+                "getSubItemNameAt": "Returns the cell text at the specified column and row indices.",
+                "insertColumnAt": "Inserts a new column at the specified zero-based column index with a header name and optional width in pixels.",
+                "insertItemAt": "Inserts a new row with the specified primary column text at the given zero-based row index.",
+                "removeAllColumns": "Removes all columns and their associated data from the multi-list box.",
+                "removeAllItems": "Removes all rows and sub-items from the multi-list box.",
+                "removeColumnAt": "Removes the column at the specified zero-based column index.",
+                "removeItemAt": "Removes the row at the specified zero-based row index.",
+                "setColumnNameAt": "Sets the header label of the column at the specified zero-based index.",
+                "setColumnWidthAt": "Sets the width in pixels of the column at the specified zero-based index.",
+                "setIndexSelected": "Selects the row at the specified zero-based index. Pass a negative index to clear the selection.",
+                "setItemNameAt": "Sets the primary column text of the row at the specified zero-based row index.",
+                "setSubItemNameAt": "Sets the cell text for the specified column and row indices.",
+                "swapItemsAt": "Swaps the positions of two rows at the specified zero-based indices."
+            },
+            "properties": {
+                "columnCount": "Total number of columns in the multi-list box. Read-only.",
+                "count": "Read-only alias of itemCount.",
+                "indexSelected": "Zero-based index of the currently selected row, or -1 if nothing is selected.",
+                "itemCount": "Total number of rows in the multi-list box. Read-only.",
+                "selectedIndex": "Alias of indexSelected."
+            }
+        },
+        "MyGUI.PointerManager": {
+            "description": "Singleton manager controlling mouse cursor appearance, default pointer skin, layer, and visibility.",
+            "methods": {
+                "clearPointer": "Resets the mouse cursor shape to the default pointer.",
+                "getDefaultPointer": "Returns resource name of the default mouse pointer.",
+                "getInstance": "Returns the singleton instance of PointerManager.",
+                "getLayerName": "Returns name of the GUI layer where the cursor is rendered.",
+                "getVisible": "Returns whether the mouse cursor is currently visible.",
+                "isVisible": "Returns whether the mouse cursor is currently visible.",
+                "setDefaultPointer": "Sets resource name of the default mouse pointer.",
+                "setLayerName": "Sets name of the GUI layer where the cursor is rendered.",
+                "setPointer": "Sets active mouse cursor shape by pointer resource name.",
+                "setVisible": "Sets whether the mouse cursor is visible."
+            },
+            "properties": {}
+        },
+        "MyGUI.PointerManagerStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.PointerManager instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.PointerManager instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.PopupMenu": {
+            "description": "Floating popup context menu widget displayed on demand.",
+            "methods": {},
+            "properties": {}
+        },
+        "MyGUI.ProgressBar": {
+            "description": "Visual indicator widget representing the progress of an operation or task.",
+            "methods": {
+                "getFlowDirection": "Returns direction of progress fill using MyGUI.FlowDirection.",
+                "getProgressAutoTrack": "Returns whether smooth tracking animation is enabled.",
+                "getProgressPosition": "Returns current progress position value.",
+                "getProgressRange": "Returns maximum progress range value.",
+                "setFlowDirection": "Sets direction of progress fill using MyGUI.FlowDirection.",
+                "setProgressAutoTrack": "Enables or disables smooth animated transition to target progress position.",
+                "setProgressPosition": "Sets current progress position value.",
+                "setProgressRange": "Sets maximum progress range value."
+            },
+            "properties": {
+                "position": "Alias of progressPosition.",
+                "progressPosition": "Current progress position value.",
+                "progressRange": "Maximum progress range value.",
+                "range": "Alias of progressRange."
+            }
+        },
+        "MyGUI.RenderManager": {
+            "description": "Singleton manager handling GUI viewport rendering, display surface dimensions, and draw passes.",
+            "methods": {
+                "getInstance": "Returns the singleton instance of RenderManager.",
+                "getViewHeight": "Returns the current rendering viewport height in pixels.",
+                "getViewSize": "Returns the current rendering viewport width and height in pixels.",
+                "getViewWidth": "Returns the current rendering viewport width in pixels."
+            },
+            "properties": {}
+        },
+        "MyGUI.RenderManagerStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.RenderManager instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.RenderManager instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.ScrollBar": {
+            "description": "Widget representing a horizontal or vertical scroll bar with track slider and step buttons.",
+            "methods": {
+                "getLineSize": "Returns the size in pixels of the area where the scroll track moves.",
+                "getMinTrackSize": "Returns the minimum track size in pixels.",
+                "getMoveToClick": "Returns whether the tracker jumps to cursor position when clicking on the scroll track.",
+                "getRepeatEnabled": "Returns whether repeating button clicks when held down is enabled.",
+                "getScrollPage": "Returns tracker step when scroll buttons are pressed.",
+                "getScrollPosition": "Returns the current scroll position.",
+                "getScrollRange": "Returns the scroll range.",
+                "getScrollViewPage": "Returns tracker step when clicking directly on the scroll track line.",
+                "getScrollWheelPage": "Returns tracker step when mouse wheel is scrolled.",
+                "getTrackSize": "Returns the slider track size in pixels.",
+                "getVerticalAlignment": "Returns whether the scroll bar is vertically oriented.",
+                "setMinTrackSize": "Sets the minimum track size in pixels.",
+                "setMoveToClick": "Enables or disables jumping the tracker directly to cursor position when clicking on the scroll track.",
+                "setRepeatEnabled": "Enables or disables repeating button clicks at set intervals while held down.",
+                "setScrollPage": "Sets tracker step when scroll buttons are pressed.",
+                "setScrollPosition": "Sets the current scroll position (value from 0 to range - 1).",
+                "setScrollRange": "Sets the scroll range (maximum scroll units).",
+                "setScrollViewPage": "Sets tracker step when clicking directly on the scroll track line.",
+                "setScrollWheelPage": "Sets tracker step when mouse wheel is scrolled.",
+                "setTrackSize": "Sets the slider track size in pixels.",
+                "setVerticalAlignment": "Sets whether the scroll bar is vertically oriented."
+            },
+            "properties": {
+                "position": "Alias of scrollPosition.",
+                "range": "Alias of scrollRange.",
+                "scrollPosition": "Current scroll position (from 0 to range - 1).",
+                "scrollRange": "Total scroll range."
+            }
+        },
+        "MyGUI.ScrollView": {
+            "description": "Container widget that provides a scrollable viewport for content larger than its display area.",
+            "methods": {
+                "getCanvasAlign": "Returns alignment of the interior canvas within the scroll view.",
+                "getCanvasSize": "Returns width and height dimensions of the scrollable canvas.",
+                "getViewCoord": "Returns viewport coordinates (left, top, width, height) relative to the widget.",
+                "getViewOffset": "Returns view scroll offset position.",
+                "isVisibleHScroll": "Returns whether the horizontal scroll bar visibility mode is enabled.",
+                "isVisibleVScroll": "Returns whether the vertical scroll bar visibility mode is enabled.",
+                "setCanvasAlign": "Sets alignment of the interior canvas within the scroll view.",
+                "setCanvasSize": "Sets width and height dimensions of the scrollable canvas.",
+                "setViewOffset": "Sets view scroll offset position.",
+                "setVisibleHScroll": "Sets whether the horizontal scroll bar is shown when content exceeds viewport width.",
+                "setVisibleVScroll": "Sets whether the vertical scroll bar is shown when content exceeds viewport height."
+            },
+            "properties": {}
+        },
+        "MyGUI.SkinManager": {
+            "description": "Singleton manager that maintains loaded widget skins, templates, and default skin assignments.",
+            "methods": {
+                "getDefaultSkin": "Returns the name of the default skin used when none is specified.",
+                "getInstance": "Returns the singleton instance of SkinManager.",
+                "isExist": "Returns true if a skin or resource with the specified name exists.",
+                "setDefaultSkin": "Sets the name of the default skin used when none is specified."
+            },
+            "properties": {}
+        },
+        "MyGUI.SkinManagerStatic": {
+            "description": "Static interface table for accessing the singleton MyGUI.SkinManager instance.",
+            "methods": {
+                "getInstance": "Returns the singleton MyGUI.SkinManager instance, or nil if uninitialized."
+            },
+            "properties": {}
+        },
+        "MyGUI.TabControl": {
+            "description": "Multi-page container widget that organizes child content pages under clickable tab buttons.",
+            "methods": {
+                "addItem": "Appends a new tab page with caption to the tab control.",
+                "clearIndexSelected": "Deselects the currently active tab page.",
+                "getButtonAutoWidth": "Returns whether tab buttons automatically adjust width to fit caption text.",
+                "getButtonDefaultWidth": "Returns default tab button width in pixels.",
+                "getButtonWidthAt": "Returns width in pixels of the tab button at index.",
+                "getIndexSelected": "Returns index of currently active tab page, or -1 when no tab is selected.",
+                "getItemAt": "Returns TabItem page widget at index, or nil if invalid.",
+                "getItemCount": "Returns total number of tab pages.",
+                "getItemNameAt": "Returns header caption text of the tab page at index.",
+                "getItemSelected": "Returns currently selected TabItem page widget, or nil if none.",
+                "getSmoothShow": "Returns whether smooth fade transition is enabled when switching tab pages.",
+                "insertItemAt": "Inserts a new tab page with caption at the specified index.",
+                "removeAllItems": "Removes all tab pages.",
+                "removeItemAt": "Removes tab page at the specified index.",
+                "setButtonAutoWidth": "Enables or disables automatic tab button width calculation based on caption text.",
+                "setButtonDefaultWidth": "Sets default tab button width in pixels and disables automatic width calculation.",
+                "setButtonWidthAt": "Sets width in pixels of the tab button at index.",
+                "setIndexSelected": "Selects active tab page by index. Pass a negative index to clear the selection.",
+                "setItemNameAt": "Sets header caption text of the tab page at index.",
+                "setSmoothShow": "Enables or disables smooth fade transition when switching tab pages."
+            },
+            "properties": {
+                "count": "Read-only alias of itemCount.",
+                "indexSelected": "Index of currently active tab page, or -1 when none is selected.",
+                "itemCount": "Read-only tab count.",
+                "selectedIndex": "Alias of indexSelected."
+            }
+        },
+        "MyGUI.TabItem": {
+            "description": "Page sheet widget representing a single tab page within a TabControl.",
+            "methods": {
+                "setButtonWidth": "Sets width in pixels for this tab sheet's corresponding header button."
+            },
+            "properties": {}
+        },
+        "MyGUI.TextBox": {
+            "description": "Text display widget for rendering single-line or multi-line formatted text with configurable fonts, alignment, colors, and shadow effects.",
+            "methods": {
+                "getFontHeight": "Returns the font height in pixels.",
+                "getFontName": "Returns the font resource name used to render the text.",
+                "getTextAlign": "Returns the text alignment flags (MyGUI.Align) used by the widget.",
+                "getTextColour": "Returns the foreground text colour, or nil if not set.",
+                "getTextRegion": "Returns the coordinate boundaries (left, top, width, height) of the rendered text region in pixels.",
+                "getTextSize": "Returns the measured dimensions (width, height) of the rendered text in pixels.",
+                "setCaptionWithReplacing": "Sets the caption text while replacing newline sequences ('\\n') with line breaks and '#{Keyword}' with localized strings.",
+                "setFontHeight": "Sets the font height in pixels.",
+                "setFontName": "Sets the font resource name used to render the text.",
+                "setTextAlign": "Sets the text alignment within the widget using MyGUI.Align flags.",
+                "setTextColour": "Sets the foreground text colour."
+            },
+            "properties": {
+                "fontHeight": "Height of the font in pixels.",
+                "fontName": "Font resource name used to render text in this text box."
+            }
+        },
+        "MyGUI.Widget": {
+            "description": "Base class for all visual interface elements in MyGUI, providing hierarchy management, positioning, coordinate transformation, skinning, styling, and event handling.",
+            "methods": {
+                "bringToFront": "Brings the widget to the front of all sibling widgets in its layer (alias of upLayerItem).",
+                "changeWidgetSkin": "Changes the skin resource applied to this widget.",
+                "clearUserString": "Removes the custom user string associated with the specified key.",
+                "createWidget": "Creates a new child widget with integer pixel coordinates and attaches it to this widget.",
+                "createWidgetReal": "Creates a new child widget with normalized relative coordinates (0.0 to 1.0) and attaches it to this widget.",
+                "destroy": "Destroys the widget and all of its child widgets, removing them from the GUI system.",
+                "findWidget": "Searches this widget and its descendants recursively for a child widget with the specified name.",
+                "getAbsoluteCoord": "Returns the widget coordinates (left, top, width, height) in absolute screen pixels.",
+                "getAbsolutePosition": "Returns the widget top-left position (left, top) in absolute screen pixels.",
+                "getAbsoluteRect": "Returns the widget bounding rectangle (left, top, right, bottom) in absolute screen pixels.",
+                "getAlign": "Returns the widget alignment policy flags (MyGUI.Align).",
+                "getAlpha": "Returns the opacity of the widget between 0.0 and 1.0.",
+                "getCaption": "Returns the text caption displayed on the widget.",
+                "getChildAt": "Returns the child widget at the specified zero-based index, or nil if out of bounds.",
+                "getChildCount": "Returns the number of child widgets directly attached to this widget.",
+                "getClientCoord": "Returns the inner client area coordinates (left, top, width, height) available for child widgets.",
+                "getClientWidget": "Returns a Window's client widget, or nil for a non-Window widget or when unavailable.",
+                "getCoord": "Returns the widget coordinates (left, top, width, height) relative to its parent in pixels.",
+                "getCoordReal": "Alias of getRealCoord.",
+                "getDepth": "Returns the rendering depth of the widget within its layer.",
+                "getEnabled": "Returns true if the widget is enabled for user interaction.",
+                "getEnumerator": "Returns an enumerator over a copy of this widget's children, taken now. Widgets created later are not included.",
+                "getInheritedEnabled": "Returns true if the widget and all of its ancestor widgets are enabled.",
+                "getInheritedVisible": "Returns true if the widget and all of its ancestor widgets are visible.",
+                "getInheritsAlpha": "Returns true if the widget inherits opacity from its parent widget.",
+                "getInheritsPick": "Returns true if mouse picking tests pass through to the parent widget.",
+                "getLayerName": "Currently returns an empty string.",
+                "getName": "Returns the unique string name assigned to this widget.",
+                "getNeedKeyFocus": "Returns true if the widget can accept keyboard input focus.",
+                "getNeedMouseFocus": "Returns true if the widget captures mouse hover and click events.",
+                "getParent": "Returns the parent widget, or nil if this widget has no parent.",
+                "getPointer": "Returns the mouse cursor pointer shape or resource name associated with this widget.",
+                "getPosition": "Returns the widget position (left, top) relative to its parent in pixels.",
+                "getRealCoord": "Returns the widget position and dimensions in normalized coordinates (0.0 to 1.0).",
+                "getRealPosition": "Returns the widget position relative to its parent in normalized coordinates (0.0 to 1.0).",
+                "getRealSize": "Returns the widget dimensions in normalized coordinates (0.0 to 1.0).",
+                "getRootWidget": "Returns the highest-level root ancestor widget in this widget hierarchy.",
+                "getSize": "Returns the widget dimensions (width, height) in pixels.",
+                "getType": "Returns the widget type name string.",
+                "getUserString": "Retrieves a custom string value associated with the specified key.",
+                "getVisible": "Returns true if the widget is set to be visible.",
+                "getWidgetStyle": "Returns the widget hierarchy style enum value (MyGUI.WidgetStyle).",
+                "isRootWidget": "Returns true if this widget has no parent and resides directly on a layer.",
+                "isUserString": "Returns true if a custom user string exists for the specified key.",
+                "off": "Unregisters a previously registered event callback by callback ID or event name.",
+                "on": "Registers a widget callback. Use the event-prefixed names in MyGUI.WidgetEventName. MyGUI.LegacyWidgetEventName and other historical spellings remain accepted with a deprecation warning.",
+                "registerCallback": "Compatibility alias of on.",
+                "setAlign": "Sets the widget alignment policy within its parent container using MyGUI.Align flags.",
+                "setAlpha": "Sets the opacity of the widget as a floating-point value between 0.0 (transparent) and 1.0 (opaque).",
+                "setCaption": "Sets the text caption displayed on the widget.",
+                "setColour": "Sets the color tint applied to the widget.",
+                "setCoord": "Sets the widget coordinates (position and dimensions: left, top, width, height) relative to its parent in pixels.",
+                "setCoordReal": "Alias of setRealCoord.",
+                "setDepth": "Sets the rendering depth of the widget within its layer.",
+                "setEnabled": "Enables or disables user interaction and input processing for the widget.",
+                "setInheritsAlpha": "Sets whether the widget inherits opacity from its parent widget.",
+                "setInheritsPick": "Sets whether mouse picking tests pass through to the parent widget.",
+                "setMaskPick": "Sets the texture mask filename used for non-rectangular pixel-accurate mouse picking.",
+                "setNeedKeyFocus": "Sets whether the widget can accept keyboard input focus.",
+                "setNeedMouseFocus": "Sets whether the widget captures mouse hover and click events.",
+                "setPointer": "Sets the mouse cursor pointer shape or resource name displayed when hovering over this widget.",
+                "setPosition": "Sets the widget position (left, top) relative to its parent in pixels.",
+                "setProperty": "Sets an arbitrary skin or layout property on the widget by key name and string value.",
+                "setRealCoord": "Sets the widget position and dimensions using normalized coordinates (0.0 to 1.0).",
+                "setRealPosition": "Sets the widget position relative to its parent using normalized coordinates (0.0 to 1.0).",
+                "setRealSize": "Sets the widget dimensions using normalized coordinates (0.0 to 1.0).",
+                "setSize": "Sets the widget dimensions (width, height) in pixels.",
+                "setUserString": "Stores a custom string key-value pair on the widget.",
+                "setVisible": "Sets the visibility state of the widget.",
+                "setWidgetStyle": "Sets the widget hierarchy style (Child, Popup, or Overlapped) and optionally reassigns its render layer.",
+                "upLayerItem": "Moves the widget to the top of its render layer z-order."
+            },
+            "properties": {
+                "alpha": "Widget opacity as a floating-point value from 0.0 (transparent) to 1.0 (opaque).",
+                "caption": "Text caption string displayed on the widget.",
+                "enabled": "Whether the widget is enabled for user interaction.",
+                "name": "The unique string name assigned to the widget. Read-only at runtime.",
+                "text": "Alias of caption.",
+                "type": "The widget type name string. Read-only at runtime.",
+                "visible": "Whether the widget is currently visible."
+            }
+        },
+        "MyGUI.Window": {
+            "description": "Movable and resizable top-level window container widget with a title bar, borders, auto-alpha fading, and a client content area.",
+            "methods": {
+                "destroySmooth": "Fades out and destroys the window widget smoothly.",
+                "getActionScale": "Returns the current directional action scale (IntCoord) applied when moving or resizing the window, or nil if unavailable.",
+                "getAutoAlpha": "Returns true if auto-alpha fading on mouse focus loss is enabled.",
+                "getCaptionWidget": "Returns the child widget representing the window title or caption bar, or nil if unavailable.",
+                "getMaxSize": "Returns the maximum allowable dimensions (width, height) for resizing the window.",
+                "getMinSize": "Returns the minimum allowable dimensions (width, height) for resizing the window.",
+                "getMovable": "Returns true if the window can be moved by dragging.",
+                "getSnap": "Returns true if window edge snapping is enabled.",
+                "setAutoAlpha": "Enables or disables automatic fading to lower opacity when the window loses mouse focus.",
+                "setMaxSize": "Sets the maximum allowable dimensions (width, height) when resizing the window.",
+                "setMinSize": "Sets the minimum allowable dimensions (width, height) when resizing the window.",
+                "setMovable": "Enables or disables whether the window can be moved by dragging its title bar.",
+                "setSnap": "Enables or disables snapping to screen or parent container edges when dragging the window.",
+                "setVisibleSmooth": "Shows or hides the window smoothly using fade animation."
+            },
+            "properties": {
+                "autoAlpha": "Whether the window automatically reduces opacity when mouse focus is lost.",
+                "movable": "Whether the window can be moved by dragging its title bar.",
+                "snap": "Whether the window snaps to screen or parent boundaries when dragged."
+            }
+        }
+    }
+}

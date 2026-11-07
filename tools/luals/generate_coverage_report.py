@@ -24,6 +24,7 @@ DEFINITIONS_PATH = PROJECT_ROOT / "luals" / "generated" / "kenshilua.lua"
 INTERNAL_GLOBALS = {"_benchGcStore"}
 METADATA_PATH = PROJECT_ROOT / "luals" / "metadata" / "runtime.json"
 DESCRIPTION_PATH = PROJECT_ROOT / "luals" / "metadata" / "kenshilib_descriptions.json"
+MYGUI_DESCRIPTION_PATH = PROJECT_ROOT / "luals" / "metadata" / "mygui_descriptions.json"
 OUTPUT_PATH = PROJECT_ROOT / "luals" / "generated" / "coverage_report.json"
 
 
@@ -179,6 +180,14 @@ def build_report():
     descriptions = {}
     if DESCRIPTION_PATH.exists():
         descriptions = json.loads(DESCRIPTION_PATH.read_text(encoding="utf-8")).get("classes", {})
+    if MYGUI_DESCRIPTION_PATH.exists():
+        mygui_descs = json.loads(MYGUI_DESCRIPTION_PATH.read_text(encoding="utf-8")).get("classes", {})
+        for cname, cinfo in mygui_descs.items():
+            target = descriptions.setdefault(cname, {})
+            if cinfo.get("description"):
+                target["description"] = cinfo["description"]
+            target.setdefault("methods", {}).update(cinfo.get("methods", {}))
+            target.setdefault("properties", {}).update(cinfo.get("properties", {}))
 
     inventory_types = [entry["lua_type"] for entry in inventory["classes"]]
     if len(inventory_types) != len(set(inventory_types)):

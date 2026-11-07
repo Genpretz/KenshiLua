@@ -22,7 +22,6 @@ import generate_binding_inventory
 import generate_coverage_report
 import generate_definitions
 import generate_type_audit
-import import_kenshilib_docs
 
 sys.path.insert(0, str(PROJECT_ROOT / "tools/bindings"))
 import generate_class as generate_class_scaffold
@@ -350,40 +349,71 @@ class EnumExtractionTests(unittest.TestCase):
 
 
 class DefinitionGenerationTests(unittest.TestCase):
-    def test_reviewed_descriptions_survive_generation_and_import_fallbacks(self):
-        metadata = {"classes": [{
-            "name": "Example", "inventory_fields": "Example",
-            "description": "Reviewed class description.",
-            "fields": [{"name": "name", "type": "string", "description": "Reviewed field description."}],
-            "descriptions": {"check": "Reviewed behavior and argument meaning."},
-        }]}
-        before = json.loads(json.dumps(metadata))
+    def generate_with_catalog(self, metadata, descriptions):
         inventory = {"classes": [{
             "binding": "ExampleBinding", "kind": "class", "lua_type": "Example",
             "methods": [{"name": "check", "signature": {"params": [], "returns": ["boolean"]}},
+                        {"name": "_NV_check", "signature": {"params": [], "returns": ["boolean"]}},
                         {"name": "other", "signature": {"params": [], "returns": ["string"]}}],
             "properties": [{"name": "name", "type": "string"}],
-        }, {"binding": "ExtraBinding", "kind": "class", "lua_type": "Extra"}]}
-        descriptions = {"classes": {"Example": {
-            "description": "Less accurate imported class.",
-            "methods": {"check": "Less accurate imported method.", "other": "Useful fallback description."},
-            "properties": {"name": "Less accurate imported field."},
-        }}}
+        }, {
+            "binding": "ChildBinding", "kind": "class", "lua_type": "Child",
+            "parent_binding": "ExampleBinding",
+            "methods": [{"name": "check", "signature": {"params": [], "returns": ["boolean"]}}],
+        }]}
         with tempfile.TemporaryDirectory() as temporary:
             inventory_path = pathlib.Path(temporary) / "inventory.json"
             description_path = pathlib.Path(temporary) / "descriptions.json"
             inventory_path.write_text(json.dumps(inventory), encoding="utf-8")
             description_path.write_text(json.dumps(descriptions), encoding="utf-8")
-            with mock.patch.object(generate_definitions, "INVENTORY_PATH", inventory_path), \
-                 mock.patch.object(generate_definitions, "DESCRIPTION_PATH", description_path):
-                first = generate_definitions.generate(metadata, "test", {}, {}, [])
-                second = generate_definitions.generate(metadata, "test", {}, {}, [])
+            with mock.patch.object(generate_definitions, "INVENTORY_PATH", inventory_path),                  mock.patch.object(generate_definitions, "DESCRIPTION_PATH", description_path):
+                return generate_definitions.generate(metadata, "test", {}, {}, [])
+
+    def test_catalog_descriptions_reach_reviewed_and_inventory_members(self):
+        metadata = {"classes": [{
+            "name": "Example", "inventory_fields": "Example",
+            "fields": [{"name": "name", "type": "string"}],
+        }]}
+        before = json.loads(json.dumps(metadata))
+        descriptions = {"classes": {"Example": {
+            "description": "Catalog class description.",
+            "methods": {"check": "Catalog check description.", "other": "Catalog other description."},
+            "properties": {"name": "Catalog field description."},
+        }}}
+        first = self.generate_with_catalog(metadata, descriptions)
+        second = self.generate_with_catalog(metadata, descriptions)
         self.assertEqual(before, metadata)
         self.assertEqual(first, second)
-        for text in ("Reviewed class description.", "Reviewed field description.",
-                     "Reviewed behavior and argument meaning.", "Useful fallback description."):
+        for text in ("Catalog class description.", "Catalog field description.",
+                     "--- Catalog check description.", "Catalog other description.",
+                     "Inherited API from `Example`. Catalog check description."):
             self.assertIn(text, first)
-        self.assertNotIn("Less accurate imported", first)
+
+    def test_unused_catalog_descriptions_fail_generation(self):
+        descriptions = {"classes": {
+            "Example": {"methods": {"check": "Shown.", "missing": "Not bound.", "_NV_check": "Hidden."}},
+            "Unbound": {"description": "Not bound."},
+        }}
+        with self.assertRaises(ValueError) as raised:
+            self.generate_with_catalog({"classes": [{"name": "Example", "inventory_fields": "Example"}]}, descriptions)
+        message = str(raised.exception)
+        for name in ("Example.missing", "Example._NV_check", "Unbound"):
+            self.assertIn(name, message)
+        self.assertNotIn("Example.check", message)
+
+    def test_runtime_descriptions_fail_generation(self):
+        metadata = {"classes": [{
+            "name": "Example", "inventory_fields": "Example",
+            "description": "Class text.",
+            "fields": [{"name": "name", "type": "string", "description": "Field text."}],
+            "descriptions": {"check": "Member text."},
+        }]}
+        with self.assertRaises(ValueError) as raised:
+            self.generate_with_catalog(metadata, {"classes": {}})
+        message = str(raised.exception)
+        for path in ("classes[Example].description", "classes[Example].fields[name].description",
+                     "classes[Example].descriptions"):
+            self.assertIn(path, message)
 
     def test_generation_failure_does_not_modify_outputs(self):
         output_before = generate_definitions.OUTPUT_PATH.read_bytes()
@@ -422,11 +452,10 @@ class DefinitionGenerationTests(unittest.TestCase):
         self.assertLess(root, parent)
         self.assertLess(parent, enum)
 
-    def test_kenshilib_documentation_is_emitted(self):
+    def test_kenshilib_descriptions_are_emitted(self):
         descriptions = json.loads(
             generate_definitions.DESCRIPTION_PATH.read_text(encoding="utf-8")
         )
-        self.assertEqual("KenshiLib-docs/docs", descriptions["source"])
         self.assertGreaterEqual(len(descriptions["classes"]), 90)
         self.assertGreaterEqual(
             sum(len(entry["methods"]) for entry in descriptions["classes"].values()),
@@ -457,8 +486,9 @@ class DefinitionGenerationTests(unittest.TestCase):
         for name in ("operator_eq", "operator_ne"):
             self.assertIn("other: hand|RootObjectBase|boolean", fields[name]["type"])
         generated = generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8")
-        self.assertIn(fields["isValid"]["description"], generated)
-        self.assertIn(fields["operator_bool"]["description"], generated)
+        descriptions = generate_definitions.load_all_descriptions()["classes"]["hand"]["methods"]
+        self.assertIn(descriptions["isValid"], generated)
+        self.assertIn(descriptions["operator_bool"], generated)
 
     def test_non_virtual_methods_are_hidden_but_event_names_remain(self):
         generated = generate_definitions.OUTPUT_PATH.read_text(encoding="utf-8")
@@ -484,29 +514,6 @@ class DefinitionGenerationTests(unittest.TestCase):
             "type: boolean|integer|table, barefoot?: boolean): string",
             generated,
         )
-
-
-class DescriptionImportTests(unittest.TestCase):
-    def test_import_writes_candidate_and_preserves_reviewed_metadata(self):
-        self.assertNotEqual(import_kenshilib_docs.OUTPUT_PATH, generate_definitions.DESCRIPTION_PATH)
-        reviewed_before = generate_definitions.DESCRIPTION_PATH.read_bytes()
-        with tempfile.TemporaryDirectory() as temporary:
-            root = pathlib.Path(temporary)
-            (root / "api").mkdir()
-            (root / "api" / "Example.md").write_text(
-                "---\nclass: Example\n---\n# Example\n\nImported class candidate.\n---\n"
-                "### `check`\n\nImported method candidate.\n**Parameters:**\nIgnored details.\n",
-                encoding="utf-8",
-            )
-            candidate = root / "generated" / "candidate.json"
-            with mock.patch.object(import_kenshilib_docs, "OUTPUT_PATH", candidate), \
-                 mock.patch.object(sys, "argv", ["import_kenshilib_docs.py", "--docs", str(root)]), \
-                 contextlib.redirect_stdout(io.StringIO()):
-                import_kenshilib_docs.main()
-            imported = json.loads(candidate.read_text(encoding="utf-8"))
-            self.assertEqual("Imported class candidate.", imported["classes"]["Example"]["description"])
-            self.assertEqual("Imported method candidate.", imported["classes"]["Example"]["methods"]["check"])
-        self.assertEqual(reviewed_before, generate_definitions.DESCRIPTION_PATH.read_bytes())
 
 
 class BindingInventoryTests(unittest.TestCase):

@@ -62,17 +62,12 @@ The binding inventory follows the container collectors reachable from startup ac
 
 Maintain hover text in the checked-in metadata, rather than editing generated Lua files:
 
-- `luals/metadata/runtime.json` holds reviewed Lua contracts. Class and field `description` values take precedence over the documentation fallback. A class's `descriptions` map overrides member text without fixing that member's inferred signature.
-- `luals/metadata/kenshilib_descriptions.json` holds persistent class, method, property and enum summaries. Use runtime Lua names as keys, including dotted names for nested classes. Check wording against the actual binding and SDK declaration; a method name alone does not establish behavior.
-- `luals/generated/kenshilua.lua` and the addon library are outputs. Regeneration reads the metadata and preserves reviewed descriptions; it does not import or invent prose.
+- luals/metadata/runtime.json holds reviewed Lua contracts, function signatures, and aliases.
+- luals/metadata/kenshilib_descriptions.json holds persistent class, method, property, function, global, and enum summaries for KenshiLib engine bindings.
+- luals/metadata/mygui_descriptions.json holds persistent class, method, property, alias, and global summaries for MyGUI bindings. Use runtime Lua names as keys, including dotted names for nested classes.
+- `luals/generated/kenshilua.lua` and the addon library are outputs. Regeneration reads the metadata and preserves reviewed descriptions.
 
-To extract candidate summaries from a local KenshiLib documentation checkout:
-
-```powershell
-python tools/luals/import_kenshilib_docs.py --docs C:/path/to/KenshiLib-docs/docs
-```
-
-This writes `tools/generated/kenshilib_descriptions.imported.json`, an ignored review candidate. Merge only verified entries into the persistent metadata. Imports do not overwrite the checked-in descriptions or enum summaries. Then run `python tools/luals/generate_definitions.py` to update both definition libraries.
+These files are the only description sources. A method without an entry on its own class uses the entry from the nearest parent class, prefixed with `Inherited API from`. Generation fails if runtime.json contains a `description` or `descriptions` key, or if a catalog entry is never shown, for example because it names an unbound member, a member registered only on a parent class, or an `_NV_` dispatch helper. After editing descriptions, run `python tools/luals/generate_definitions.py` to update both definition libraries.
 
 ## Release utilities
 

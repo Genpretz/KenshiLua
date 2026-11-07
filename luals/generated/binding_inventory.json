@@ -19570,7 +19570,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceAnimalBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceAnimalBinding.cpp"
     },
     {
       "binding": "AppearanceBaseBinding",
@@ -20725,7 +20725,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceBaseBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceBaseBinding.cpp"
     },
     {
       "binding": "AppearanceHumanBinding",
@@ -21067,7 +21067,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceHumanBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceHumanBinding.cpp"
     },
     {
       "binding": "AppearanceManagerBinding",
@@ -21712,7 +21712,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceManagerBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceManagerBinding.cpp"
     },
     {
       "binding": "AppearanceManager_AppearanceDataBinding",
@@ -21789,7 +21789,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceManager_AppearanceDataBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceManager_AppearanceDataBinding.cpp"
     },
     {
       "binding": "AppearanceManager_DataCategoryBinding",
@@ -21888,7 +21888,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceManager_DataCategoryBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceManager_DataCategoryBinding.cpp"
     },
     {
       "binding": "AppearanceManager_DataRangeBinding",
@@ -21986,7 +21986,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceManager_DataRangeBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceManager_DataRangeBinding.cpp"
     },
     {
       "binding": "AppearanceManager_DataRangePoseBinding",
@@ -22094,7 +22094,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceManager_DataRangePoseBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceManager_DataRangePoseBinding.cpp"
     },
     {
       "binding": "AppearanceManager_DataRangeVectorBinding",
@@ -22260,7 +22260,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceManager_DataRangeVectorBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceManager_DataRangeVectorBinding.cpp"
     },
     {
       "binding": "AppearanceManager_GenderBinding",
@@ -22327,7 +22327,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AppearanceManager_GenderBinding.cpp"
+      "source": "src/Bindings/Kenshi/Appearance/AppearanceManager_GenderBinding.cpp"
     },
     {
       "binding": "ArmourBinding",
@@ -22926,7 +22926,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AttackSlotManagerBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/AttackSlotManagerBinding.cpp"
     },
     {
       "binding": "AttackStateBinding",
@@ -23061,7 +23061,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/AttackStateBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/AttackStateBinding.cpp"
     },
     {
       "binding": "BackThreadMessagesToMainTBinding",
@@ -40348,7 +40348,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObjectBase"
               }
             ],
@@ -40369,7 +40369,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -40509,7 +40509,7 @@
             "params": [
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
@@ -40519,7 +40519,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -40550,7 +40550,7 @@
             "params": [
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
@@ -40560,7 +40560,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -40581,7 +40581,7 @@
             "params": [
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
@@ -40591,7 +40591,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -40612,12 +40612,12 @@
             "params": [
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -40638,12 +40638,12 @@
             "params": [
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -42210,7 +42210,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               }
             ],
@@ -43415,12 +43415,12 @@
             "params": [
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -46672,7 +46672,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/CircleStateAIBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/CircleStateAIBinding.cpp"
     },
     {
       "binding": "ClipboardManagerBinding",
@@ -48388,7 +48388,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/CombatClassBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/CombatClassBinding.cpp"
     },
     {
       "binding": "CombatClass_AttackSlotManager_SlotDataBinding",
@@ -48415,7 +48415,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/CombatClass_AttackSlotManager_SlotDataBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/CombatClass_AttackSlotManager_SlotDataBinding.cpp"
     },
     {
       "binding": "CombatClass_EffectDataBinding",
@@ -48492,7 +48492,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/CombatClass_EffectDataBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/CombatClass_EffectDataBinding.cpp"
     },
     {
       "binding": "CombatMovementControllerBinding",
@@ -49123,7 +49123,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/CombatStateBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/CombatStateBinding.cpp"
     },
     {
       "binding": "CombatTechniqueDataBinding",
@@ -49289,7 +49289,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/CombatTechniqueDataBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/CombatTechniqueDataBinding.cpp"
     },
     {
       "binding": "ComboBoxBinding",
@@ -56894,7 +56894,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogActionBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogActionBinding.cpp"
     },
     {
       "binding": "DialogChoiceListBinding",
@@ -56938,7 +56938,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogChoiceListBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogChoiceListBinding.cpp"
     },
     {
       "binding": "DialogConditionBinding",
@@ -56975,7 +56975,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogConditionBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogConditionBinding.cpp"
     },
     {
       "binding": "DialogDataManagerBinding",
@@ -57082,7 +57082,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogDataManagerBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogDataManagerBinding.cpp"
     },
     {
       "binding": "DialogLineDataBinding",
@@ -57713,7 +57713,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogLineDataBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogLineDataBinding.cpp"
     },
     {
       "binding": "DialogStateBinding",
@@ -57745,7 +57745,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogStateBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogStateBinding.cpp"
     },
     {
       "binding": "DialogueBinding",
@@ -59014,7 +59014,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogueBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogueBinding.cpp"
     },
     {
       "binding": "DialogueSpeechBubbleBinding",
@@ -59147,7 +59147,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/DialogueSpeechBubbleBinding.cpp"
+      "source": "src/Bindings/Kenshi/Dialogue/DialogueSpeechBubbleBinding.cpp"
     },
     {
       "binding": "DialogueWindowBinding",
@@ -65031,7 +65031,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/FactionsScreen_FactionRelationsLine_LessSortBinding.cpp"
+      "source": "src/Bindings/Kenshi/Gui/FactionsScreen_FactionRelationsLine_LessSortBinding.cpp"
     },
     {
       "binding": "FactoryCallbackInterfaceBinding",
@@ -72912,7 +72912,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/GameDataEditorWindow_DataItemBinding.cpp"
+      "source": "src/Bindings/Kenshi/Gui/GameDataEditorWindow_DataItemBinding.cpp"
     },
     {
       "binding": "GameDataGroupBinding",
@@ -78792,7 +78792,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/HavokCharacterBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/HavokCharacterBinding.cpp"
     },
     {
       "binding": "ILayerBinding",
@@ -79118,7 +79118,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/ImpactPointBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/ImpactPointBinding.cpp"
     },
     {
       "binding": "ImportGameMenuBinding",
@@ -84105,7 +84105,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/InventoryGUI_FenceCallbackDataBinding.cpp"
+      "source": "src/Bindings/Kenshi/Gui/InventoryGUI_FenceCallbackDataBinding.cpp"
     },
     {
       "binding": "InventoryIconBinding",
@@ -93394,7 +93394,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/ManagementScreen_TechItemViewDataBinding.cpp"
+      "source": "src/Bindings/Kenshi/Gui/ManagementScreen_TechItemViewDataBinding.cpp"
     },
     {
       "binding": "MapItemBinding",
@@ -94337,7 +94337,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/MapScreen_MapRoadBinding.cpp"
+      "source": "src/Bindings/Kenshi/Gui/MapScreen_MapRoadBinding.cpp"
     },
     {
       "binding": "MedianFilter2DVectorBinding",
@@ -106330,7 +106330,7 @@
             "params": [
               {
                 "name": "destinationIndoors",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
@@ -106340,7 +106340,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -106376,7 +106376,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -106722,7 +106722,7 @@
             "params": [
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               },
               {
@@ -106732,7 +106732,7 @@
               },
               {
                 "name": "subject",
-                "optional": false,
+                "optional": true,
                 "type": "RootObject"
               },
               {
@@ -106768,7 +106768,7 @@
               },
               {
                 "name": "dest",
-                "optional": false,
+                "optional": true,
                 "type": "Building"
               }
             ],
@@ -111964,7 +111964,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/RangedCombatClassBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/RangedCombatClassBinding.cpp"
     },
     {
       "binding": "RelationDataBinding",
@@ -127073,7 +127073,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/TerrainBinding.cpp"
+      "source": "src/Bindings/Kenshi/Terrain/TerrainBinding.cpp"
     },
     {
       "binding": "Terrain_BloodQueueBinding",
@@ -127110,7 +127110,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/Terrain_BloodQueueBinding.cpp"
+      "source": "src/Bindings/Kenshi/Terrain/Terrain_BloodQueueBinding.cpp"
     },
     {
       "binding": "Terrain_BoxBinding",
@@ -127157,7 +127157,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/Terrain_BoxBinding.cpp"
+      "source": "src/Bindings/Kenshi/Terrain/Terrain_BoxBinding.cpp"
     },
     {
       "binding": "Terrain_HitBinding",
@@ -127194,7 +127194,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/Terrain_HitBinding.cpp"
+      "source": "src/Bindings/Kenshi/Terrain/Terrain_HitBinding.cpp"
     },
     {
       "binding": "Terrain_InfoBinding",
@@ -127241,7 +127241,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/Terrain_InfoBinding.cpp"
+      "source": "src/Bindings/Kenshi/Terrain/Terrain_InfoBinding.cpp"
     },
     {
       "binding": "TextBoxBinding",
@@ -140749,7 +140749,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/WaitingStateAIBinding.cpp"
+      "source": "src/Bindings/Kenshi/Combat/WaitingStateAIBinding.cpp"
     },
     {
       "binding": "WallBuildingBinding",
@@ -142456,7 +142456,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/WeatherRegionBinding.cpp"
+      "source": "src/Bindings/Kenshi/Weather/WeatherRegionBinding.cpp"
     },
     {
       "binding": "WeatherSystemBinding",
@@ -148034,7 +148034,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkBoolBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkBoolBinding.cpp"
     },
     {
       "binding": "hkContainerHeapAllocatorBinding",
@@ -148050,7 +148050,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkContainerHeapAllocatorBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkContainerHeapAllocatorBinding.cpp"
     },
     {
       "binding": "hkContainerHeapAllocator_AllocatorBinding",
@@ -148066,7 +148066,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkContainerHeapAllocator_AllocatorBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkContainerHeapAllocator_AllocatorBinding.cpp"
     },
     {
       "binding": "hkMemoryAllocatorBinding",
@@ -148138,7 +148138,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkMemoryAllocatorBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkMemoryAllocatorBinding.cpp"
     },
     {
       "binding": "hkMemoryAllocator_ExtendedInterfaceBinding",
@@ -148154,7 +148154,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkMemoryAllocator_ExtendedInterfaceBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkMemoryAllocator_ExtendedInterfaceBinding.cpp"
     },
     {
       "binding": "hkMemoryAllocator_MemoryStatisticsBinding",
@@ -148201,7 +148201,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkMemoryAllocator_MemoryStatisticsBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkMemoryAllocator_MemoryStatisticsBinding.cpp"
     },
     {
       "binding": "hkResultBinding",
@@ -148258,7 +148258,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkResultBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkResultBinding.cpp"
     },
     {
       "binding": "hkVector4fBinding",
@@ -149270,7 +149270,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkVector4fBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkVector4fBinding.cpp"
     },
     {
       "binding": "hkVector4fComparisonBinding",
@@ -149518,7 +149518,7 @@
       "registered_from": [
         "src/Lua/RegisterBindings.cpp"
       ],
-      "source": "src/Bindings/Kenshi/hkVector4fComparisonBinding.cpp"
+      "source": "src/Bindings/Kenshi/Havok/hkVector4fComparisonBinding.cpp"
     },
     {
       "binding": "iVector2Binding",

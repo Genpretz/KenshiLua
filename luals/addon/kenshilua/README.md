@@ -26,19 +26,22 @@ Create a `.luarc.json` file in the mod's root folder, the folder you open in the
 }
 ```
 
-### Option 2: Global Setup via Addon Manager
+### Option 2: User Settings for All Mods
 
-Add the folder that contains `kenshilua` to your VS Code user settings (`settings.json`):
+Add the definitions to your VS Code user settings (`settings.json`, opened with **Preferences: Open User Settings (JSON)**):
 
 ```json
 {
-  "Lua.workspace.userThirdParty": [
-    "C:/KenshiModding/LuaLS"
+  "Lua.runtime.version": "LuaJIT",
+  "Lua.workspace.library": [
+    "C:/KenshiModding/LuaLS/kenshilua/library"
   ]
 }
 ```
 
-Open a mod folder, run **Lua: Open Addon Manager** from the command palette, and enable **kenshilua**. The Addon Manager stores the choice in that workspace's settings, so enable it once per mod.
+No file is needed in each mod, but these settings apply to every folder you open with LuaLS, including Lua projects that are not Kenshi mods. Use Option 1 to limit the definitions to your mods.
+
+The **Lua: Open Addon Manager** command does not list this addon. It installs only addons published in the LLS-Addons repository.
 
 ## Verification
 
