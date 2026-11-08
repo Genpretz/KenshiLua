@@ -1101,8 +1101,8 @@ int CharMovementBinding::combatMovementOffensive(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 390: void create(...) - unsupported arg type
-  line 391: void _NV_create(...) - unsupported arg type
+  line 390: void create(...) - movement setup step; replaces formation and enemyFormation without freeing them and resets movement and combat state
+  line 391: void _NV_create(...) - see above
   line 407: void formationUpdateCallback(...) - non-string reference arg
   line 448: void setPatrolInput(...) - unsupported arg type
   line 449: void _NV_setPatrolInput(...) - unsupported arg type

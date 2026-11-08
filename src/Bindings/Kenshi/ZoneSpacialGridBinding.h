@@ -27,5 +27,6 @@ public:
     static int getCellKey(lua_State* L);
     static int getFullKey(lua_State* L);
     static int initialiseGrid(lua_State* L);
+    static int getObjects(lua_State* L);
 };
 }

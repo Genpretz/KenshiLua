@@ -39,5 +39,9 @@ public:
     static int setDialogueDeliveryTag(lua_State* L);
     static int setPermaJob(lua_State* L);
     static int getPermaJobType(lua_State* L);
+    static int isResultsComplete(lua_State* L);
+    static int isResultsComplete_ignoreSubtasker(lua_State* L);
+    static int isRequirementComplete(lua_State* L);
+    static int _targetsRemaining(lua_State* L);
 };
 }

@@ -360,10 +360,7 @@ int TaskerBinding::_NV_taskSaysItsFinished(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 341: bool isSubTaskerTargetFinishedWith(...) - unsupported arg type
   line 358: float findTarget(...) - unsupported arg type
-  line 359: bool _targetsRemaining(...) - unsupported arg type
-  line 360: bool isSubTaskerComplete(...) - unsupported arg type
 */
 
 int TaskerBinding::gc(lua_State* L)
@@ -464,6 +461,37 @@ int TaskerBinding::score(lua_State* L)
     return 1;
 }
 
+int TaskerBinding::isSubTaskerTargetFinishedWith(lua_State* L)
+{
+    Tasker* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Tasker is nil");
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    bool res = instance->isSubTaskerTargetFinishedWith(ai, *target);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int TaskerBinding::_targetsRemaining(lua_State* L)
+{
+    Tasker* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Tasker is nil");
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    bool res = instance->_targetsRemaining(ai);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
+int TaskerBinding::isSubTaskerComplete(lua_State* L)
+{
+    Tasker* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Tasker is nil");
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    bool res = instance->isSubTaskerComplete(ai);
+    lua_pushboolean(L, res ? 1 : 0);
+    return 1;
+}
+
 
 void TaskerBinding::registerBinding(lua_State* L)
 {
@@ -501,6 +529,9 @@ void TaskerBinding::registerBinding(lua_State* L)
         { "isRequirementsComplete", TaskerBinding::isRequirementsComplete },
         { "getRequirementComplaint", TaskerBinding::getRequirementComplaint },
         { "getNextSubTarget", TaskerBinding::getNextSubTarget },
+        { "isSubTaskerTargetFinishedWith", TaskerBinding::isSubTaskerTargetFinishedWith },
+        { "_targetsRemaining", TaskerBinding::_targetsRemaining },
+        { "isSubTaskerComplete", TaskerBinding::isSubTaskerComplete },
         { 0, 0 }
     };
 

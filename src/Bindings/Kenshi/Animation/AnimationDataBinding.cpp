@@ -2,6 +2,7 @@
 #include "kenshi/Animation/AnimationClass.h"
 #include "AnimationDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/Animation/AnimationRequirementBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
 #include "Bindings/Kenshi/Util/YesNoMaybeBinding.h"
@@ -741,16 +742,71 @@ static int AnimationData_set_stumbleRarityMult(lua_State* L)
     return 0;
 }
 
+int AnimationDataBinding::checkWeaponArms(lua_State* L)
+{
+    AnimationData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationData is nil");
+    AnimationRequirement* requirements = checkObject<AnimationRequirement>(L, 2, AnimationRequirementBinding::getMetatableName());
+    bool result = instance->checkWeaponArms(*requirements);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int AnimationDataBinding::checkModes(lua_State* L)
+{
+    AnimationData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationData is nil");
+    AnimationRequirement* requirements = checkObject<AnimationRequirement>(L, 2, AnimationRequirementBinding::getMetatableName());
+    bool result = instance->checkModes(*requirements);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int AnimationDataBinding::scoreInjury(lua_State* L)
+{
+    AnimationData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationData is nil");
+    AnimationRequirement* requirements = checkObject<AnimationRequirement>(L, 2, AnimationRequirementBinding::getMetatableName());
+    float result = instance->scoreInjury(*requirements);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int AnimationDataBinding::scoreSpeed(lua_State* L)
+{
+    AnimationData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationData is nil");
+    AnimationRequirement* requirements = checkObject<AnimationRequirement>(L, 2, AnimationRequirementBinding::getMetatableName());
+    float speedAgeMultiplier = (float)luaL_checknumber(L, 3);
+    float result = instance->scoreSpeed(*requirements, speedAgeMultiplier);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int AnimationDataBinding::scoreCarryMode(lua_State* L)
+{
+    AnimationData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationData is nil");
+    AnimationRequirement* requirements = checkObject<AnimationRequirement>(L, 2, AnimationRequirementBinding::getMetatableName());
+    float result = instance->scoreCarryMode(*requirements);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
+int AnimationDataBinding::scoreWeaponType(lua_State* L)
+{
+    AnimationData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "AnimationData is nil");
+    AnimationRequirement* requirements = checkObject<AnimationRequirement>(L, 2, AnimationRequirementBinding::getMetatableName());
+    float result = instance->scoreWeaponType(*requirements);
+    lua_pushnumber(L, result);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 589: AnimationData(GameData*) - constructor; AnimsListsManager builds every AnimationData
   line 590: _CONSTRUCTOR(GameData*) - constructor; AnimsListsManager builds every AnimationData
-  line 637: bool checkWeaponArms(const AnimationRequirement&) - AnimationRequirement is unbound
-  line 638: bool checkModes(const AnimationRequirement&) - AnimationRequirement is unbound
-  line 639: float scoreInjury(const AnimationRequirement&) - AnimationRequirement is unbound
-  line 640: float scoreSpeed(const AnimationRequirement&, float) - AnimationRequirement is unbound
-  line 641: float scoreCarryMode(const AnimationRequirement&) - AnimationRequirement is unbound
-  line 642: float scoreWeaponType(const AnimationRequirement&) - AnimationRequirement is unbound
 */
 
 /*
@@ -779,6 +835,12 @@ void AnimationDataBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "checkWeaponArms", AnimationDataBinding::checkWeaponArms },
+        { "checkModes", AnimationDataBinding::checkModes },
+        { "scoreInjury", AnimationDataBinding::scoreInjury },
+        { "scoreSpeed", AnimationDataBinding::scoreSpeed },
+        { "scoreCarryMode", AnimationDataBinding::scoreCarryMode },
+        { "scoreWeaponType", AnimationDataBinding::scoreWeaponType },
         { 0, 0 }
     };
 

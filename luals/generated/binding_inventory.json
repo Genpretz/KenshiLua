@@ -18375,7 +18375,121 @@
       "kind": "class",
       "lua_type": "AnimationData",
       "metatable": "KenshiLua.AnimationData",
-      "methods": [],
+      "methods": [
+        {
+          "callback": "AnimationDataBinding::checkWeaponArms",
+          "name": "checkWeaponArms",
+          "signature": {
+            "params": [
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationDataBinding::checkModes",
+          "name": "checkModes",
+          "signature": {
+            "params": [
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationDataBinding::scoreInjury",
+          "name": "scoreInjury",
+          "signature": {
+            "params": [
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationDataBinding::scoreSpeed",
+          "name": "scoreSpeed",
+          "signature": {
+            "params": [
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              },
+              {
+                "name": "speedAgeMultiplier",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationDataBinding::scoreCarryMode",
+          "name": "scoreCarryMode",
+          "signature": {
+            "params": [
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "AnimationDataBinding::scoreWeaponType",
+          "name": "scoreWeaponType",
+          "signature": {
+            "params": [
+              {
+                "name": "requirements",
+                "optional": false,
+                "type": "AnimationRequirement"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        }
+      ],
       "parent_binding": null,
       "parent_metatable": "",
       "properties": [
@@ -29943,6 +30057,69 @@
             "type_source": "header"
           },
           "static": true
+        },
+        {
+          "callback": "BuildingBinding::restoreMaterialToPhysical",
+          "name": "restoreMaterialToPhysical",
+          "signature": {
+            "params": [
+              {
+                "name": "physical",
+                "optional": false,
+                "type": "PhysicsCollection"
+              },
+              {
+                "name": "inside",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BuildingBinding::setPartVisible",
+          "name": "setPartVisible",
+          "signature": {
+            "params": [
+              {
+                "name": "part",
+                "optional": false,
+                "type": "PhysicalEntity"
+              },
+              {
+                "name": "on",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "BuildingBinding::_NV_setPartVisible",
+          "name": "_NV_setPartVisible",
+          "signature": {
+            "params": [
+              {
+                "name": "part",
+                "optional": false,
+                "type": "PhysicalEntity"
+              },
+              {
+                "name": "on",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "RootObjectBinding",
@@ -98206,6 +98383,131 @@
             "type_source": "header"
           },
           "static": true
+        },
+        {
+          "callback": "NavMeshBinding::isLoaded",
+          "name": "isLoaded",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "ZoneMap|iVector2"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::getGateCode",
+          "name": "getGateCode",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "HavokCharacter|table"
+              }
+            ],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::getFaceKey",
+          "name": "getFaceKey",
+          "signature": {
+            "params": [
+              {
+                "name": "local",
+                "optional": false,
+                "type": "hkVector4f|table"
+              },
+              {
+                "name": "limit",
+                "optional": true,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::checkLineOfSight",
+          "name": "checkLineOfSight",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "HavokCharacter"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "HavokCharacter|table"
+              }
+            ],
+            "returns": [
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::pathExists",
+          "name": "pathExists",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "HavokCharacter|integer"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "integer|table"
+              }
+            ],
+            "returns": [
+              "boolean",
+              "integer"
+            ]
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::getInterior",
+          "name": "getInterior",
+          "signature": {
+            "params": [
+              {
+                "name": "building",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "create",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "NavInstance"
+            ],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "ThreadClassBinding",
@@ -125957,6 +126259,128 @@
             ]
           },
           "static": false
+        },
+        {
+          "callback": "TaskDataBinding::isResultsComplete",
+          "name": "isResultsComplete",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "subTarget",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskDataBinding::isResultsComplete_ignoreSubtasker",
+          "name": "isResultsComplete_ignoreSubtasker",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "subTarget",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskDataBinding::isRequirementComplete",
+          "name": "isRequirementComplete",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "obj",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "req",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskDataBinding::_targetsRemaining",
+          "name": "_targetsRemaining",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "_target",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -126865,6 +127289,65 @@
             ],
             "returns": [
               "hand"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskerBinding::isSubTaskerTargetFinishedWith",
+          "name": "isSubTaskerTargetFinishedWith",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskerBinding::_targetsRemaining",
+          "name": "_targetsRemaining",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskerBinding::isSubTaskerComplete",
+          "name": "isSubTaskerComplete",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              }
+            ],
+            "returns": [
+              "boolean"
             ],
             "type_source": "header"
           },
@@ -147903,6 +148386,44 @@
               }
             ],
             "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ZoneSpacialGridBinding::getObjects",
+          "name": "getObjects",
+          "signature": {
+            "params": [
+              {
+                "name": "point",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "radius",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "filter",
+                "optional": false,
+                "type": "Lektor<RootObject>|integer"
+              },
+              {
+                "name": "out",
+                "optional": false,
+                "type": "Lektor<RootObject>|integer"
+              },
+              {
+                "name": "maxnum",
+                "optional": true,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
             "type_source": "header"
           },
           "static": false

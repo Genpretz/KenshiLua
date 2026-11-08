@@ -1443,6 +1443,27 @@ class TypeAuditTests(unittest.TestCase):
         self.assertTrue(parsed[0]["params"][2]["optional"])
         self.assertEqual(["string"], parsed[0]["returns"])
 
+    def test_overload_union_arity_uses_the_longest_overload(self):
+        field_type = (
+            "(fun(self: Grid, point: table, radius: number, out: Lektor<RootObject>, max: integer): integer)|"
+            "(fun(self: Grid, point: table, radius: number, filter: integer, out: Lektor<RootObject>, "
+            "maxnum: integer): integer)"
+        )
+        body = (
+            "{ readVector3(L, 2, point); luaL_checknumber(L, 3);"
+            " if (lua_type(L, 4) == LUA_TNUMBER) { luaL_checkinteger(L, 4); getInstance(L, 5);"
+            " luaL_checkinteger(L, 6); lua_pushinteger(L, result); return 1; }"
+            " getInstance(L, 4); luaL_checkinteger(L, 5); lua_pushinteger(L, result); return 1; }"
+        )
+        shorter = generate_type_audit.parse_lua_functions(field_type)[0]
+        issues = generate_type_audit.classify_against_binding([], shorter, {}, body, field_type)
+        self.assertNotIn("params_missing", [issue["category"] for issue in issues])
+
+        single = "fun(self: Grid, point: table, radius: number, out: Lektor<RootObject>, max: integer): integer"
+        parsed = generate_type_audit.parse_lua_functions(single)[0]
+        issues = generate_type_audit.classify_against_binding([], parsed, {}, body, single)
+        self.assertIn("params_missing", [issue["category"] for issue in issues])
+
     def test_header_class_with_leading_declspec(self):
         headers = generate_type_audit.HeaderIndex()
         with tempfile.TemporaryDirectory() as temporary:

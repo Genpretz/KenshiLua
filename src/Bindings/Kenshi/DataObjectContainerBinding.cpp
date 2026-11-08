@@ -110,8 +110,8 @@ int DataObjectContainerBinding::destroyObjectDatas(lua_State* L)
 
 /*
 Skipped methods needing manual binding:
-  line 167: bool loadFromDisk(...) - unsupported arg type
-  line 168: bool _NV_loadFromDisk(...) - unsupported arg type
+  line 167: bool loadFromDisk(...) - load step; with force it reads the saved data file again into the live GameDataContainer and, for a squad, its character list
+  line 168: bool _NV_loadFromDisk(...) - see above
 */
 
 int DataObjectContainerBinding::gc(lua_State* L)

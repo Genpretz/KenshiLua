@@ -16,5 +16,12 @@ public:
 
     static int gc(lua_State* L);
     static int tostring(lua_State* L);
+
+    static int checkWeaponArms(lua_State* L);
+    static int checkModes(lua_State* L);
+    static int scoreInjury(lua_State* L);
+    static int scoreSpeed(lua_State* L);
+    static int scoreCarryMode(lua_State* L);
+    static int scoreWeaponType(lua_State* L);
 };
 }

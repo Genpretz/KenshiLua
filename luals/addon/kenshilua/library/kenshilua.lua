@@ -10865,6 +10865,8 @@ taskPriority = {
 ---@field getLayoutInstanceID fun(self: Building): string
 --- Static utility extracting the active material name string from an Ogre movable object.
 ---@field getEntityMaterialName fun(obj: lightuserdata): string
+---@field restoreMaterialToPhysical fun(self: Building, physical: PhysicsCollection, inside?: boolean)
+---@field setPartVisible fun(self: Building, part: PhysicalEntity, on?: boolean)
 --- Active construction progression, material delivery state, and dismantle tracking.
 ---@field _buildState ConstructionState
 --- Smart handle to owning settlement/town container.
@@ -13315,6 +13317,12 @@ taskPriority = {
 
 --- Animation clip record storing character animation data and mode requirements.
 ---@class AnimationData
+---@field checkWeaponArms fun(self: AnimationData, requirements: AnimationRequirement): boolean
+---@field checkModes fun(self: AnimationData, requirements: AnimationRequirement): boolean
+---@field scoreInjury fun(self: AnimationData, requirements: AnimationRequirement): number
+---@field scoreSpeed fun(self: AnimationData, requirements: AnimationRequirement, speedAgeMultiplier: number): number
+---@field scoreCarryMode fun(self: AnimationData, requirements: AnimationRequirement): number
+---@field scoreWeaponType fun(self: AnimationData, requirements: AnimationRequirement): number
 --- Raw GameData reference from game database.
 ---@field _rawData GameData
 --- Underlying OGRE skeleton animation clip name.
@@ -19161,6 +19169,8 @@ taskPriority = {
 
 --- Master navigation system integrating Havok AI (hkaiWorld). Manages asynchronous pathfinding queries, outdoor terrain sectors, interior building NavMesh instances, door traversal gates, and origin shifts. Interacts directly with `HavokCharacter` for character agent path following, `ZoneMap` for outdoor terrain tile streaming, `Building` for interior navigational cutouts and door states, and `ThreadClass` for dedicated background multi-threaded path calculation.
 ---@class NavMesh : ThreadClass
+---@field getInterior fun(self: NavMesh, building: hand, create?: boolean): NavInstance|nil
+---@field pathExists (fun(self: NavMesh, startKey: integer, goalKey: integer): boolean)|(fun(self: NavMesh, c: HavokCharacter, target: table): integer)
 --- Initializes the Havok AI world environment, query filters, and threading locks.
 ---@field initialise fun(self: NavMesh)
 --- Shuts down the navigation worker thread and terminates the Havok AI environment.
@@ -19223,6 +19233,10 @@ taskPriority = {
 ---@field hashZone fun(z: ZoneMap): integer
 --- Constructs the file path to the cached navigation mesh file for the given zone chunk.
 ---@field getFilename fun(zone: ZoneMap, source: integer, write?: boolean): string
+---@field isLoaded fun(self: NavMesh, arg1: ZoneMap|iVector2): boolean
+---@field getGateCode fun(self: NavMesh, arg1: HavokCharacter|table): integer
+---@field getFaceKey fun(self: NavMesh, local: hkVector4f|table, limit?: number): integer
+---@field checkLineOfSight fun(self: NavMesh, arg1: HavokCharacter, arg2: HavokCharacter|table): integer
 --- Navmesh grid voxelization cell resolution.
 ---@field cellSize number
 --- Secondary concurrency mutex protecting sector graph mutations.
@@ -21986,6 +22000,10 @@ taskPriority = {
 ---@field setPermaJob fun(self: TaskData, on: integer, fixedTarget?: boolean, t: integer, secondary: integer)
 --- Returns the canonical TaskType used when storing this task as a permanent job.
 ---@field getPermaJobType fun(self: TaskData): integer
+---@field isResultsComplete fun(self: TaskData, ai: AI, target: hand, subTarget: hand, location: table): boolean
+---@field isResultsComplete_ignoreSubtasker fun(self: TaskData, ai: AI, target: hand, subTarget: hand, location: table): boolean
+---@field isRequirementComplete fun(self: TaskData, ai: AI, obj: hand, req: integer, location: table): boolean
+---@field _targetsRemaining fun(self: TaskData, ai: AI, _target: hand): boolean
 --- Pointer to the C++ target-finder function object (exposed as read-only lightuserdata).
 ---@field _findTarget lightuserdata
 --- Whether unmet requirements are prevented from aborting the task once started.
@@ -22162,6 +22180,9 @@ taskPriority = {
 ---@field getRequirementComplaint fun(self: Tasker, ai: AI, autoTargetFinder?: boolean): string
 --- Retrieves the next target entity for a sub-task operation.
 ---@field getNextSubTarget fun(self: Tasker, ai: AI): hand
+---@field isSubTaskerTargetFinishedWith fun(self: Tasker, ai: AI, target: hand): boolean
+---@field _targetsRemaining fun(self: Tasker, ai: AI): boolean
+---@field isSubTaskerComplete fun(self: Tasker, ai: AI): boolean
 --- Active item/resource sub-target handle.
 ---@field currentSubTarget hand
 --- Time-of-day end hour window.
@@ -24219,6 +24240,7 @@ taskPriority = {
 
 --- Spatial partitioning grid used by the engine to efficiently query, track, and update world entities across zones and cells.
 ---@class ZoneSpacialGrid
+---@field getObjects (fun(self: ZoneSpacialGrid, point: table, radius: number, out: Lektor<RootObject>, max: integer): integer)|(fun(self: ZoneSpacialGrid, point: table, radius: number, filter: integer, out: Lektor<RootObject>, maxnum: integer): integer)
 --- Inserts a RootObject into the spatial grid, returning its resulting spatial cell key.
 ---@field add fun(self: ZoneSpacialGrid, o: RootObject): integer
 --- Removes a RootObject from the spatial grid, returning true if found and removed.

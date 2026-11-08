@@ -50,5 +50,11 @@ public:
     static int hashInterior(lua_State* L);
     static int hashZone(lua_State* L);
     static int getFilename(lua_State* L);
+    static int isLoaded(lua_State* L);
+    static int getGateCode(lua_State* L);
+    static int getFaceKey(lua_State* L);
+    static int checkLineOfSight(lua_State* L);
+    static int pathExists(lua_State* L);
+    static int getInterior(lua_State* L);
 };
 }

@@ -2,7 +2,9 @@
 #include "kenshi\Tasker.h"
 #include "TaskDataBinding.h"
 #include "Lua/BindingHelpers.h"
+#include "Bindings/Kenshi/AI/AIBinding.h"
 #include "Bindings/Kenshi/TaskStateDataBinding.h"
+#include "Bindings/Kenshi/Util/HandBinding.h"
 
 namespace KenshiLua
 {
@@ -770,16 +772,72 @@ int TaskDataBinding::getPermaJobType(lua_State* L)
     return 1;
 }
 
+int TaskDataBinding::isResultsComplete(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    hand* subTarget = checkObject<hand>(L, 4, HandBinding::getMetatableName());
+    Ogre::Vector3 location;
+    if (!readVector3(L, 5, location)) return luaL_argerror(L, 5, "Vector3 table expected");
+    bool result = instance->isResultsComplete(ai, *target, *subTarget, location);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int TaskDataBinding::isResultsComplete_ignoreSubtasker(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    hand* subTarget = checkObject<hand>(L, 4, HandBinding::getMetatableName());
+    Ogre::Vector3 location;
+    if (!readVector3(L, 5, location)) return luaL_argerror(L, 5, "Vector3 table expected");
+    bool result = instance->isResultsComplete_ignoreSubtasker(ai, *target, *subTarget, location);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+// req indexes requirements. The game treats req >= numRequirements as complete but reads
+// before the array for a negative index, so a negative index is rejected here.
+int TaskDataBinding::isRequirementComplete(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* obj = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    int req = (int)luaL_checkinteger(L, 4);
+    if (req < 0) return luaL_argerror(L, 4, "requirement index must not be negative");
+    Ogre::Vector3 location;
+    if (!readVector3(L, 5, location)) return luaL_argerror(L, 5, "Vector3 table expected");
+    bool result = instance->isRequirementComplete(ai, *obj, req, location);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int TaskDataBinding::_targetsRemaining(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    bool result = instance->_targetsRemaining(ai, *target);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 278: bool isResultsComplete(...) - unsupported arg type
-  line 279: bool isResultsComplete_ignoreSubtasker(...) - unsupported arg type
   line 280: void getRequirementComplaint(...) - non-string reference arg
   line 281: bool _isRequirementsComplete(...) - unsupported arg type
-  line 282: bool isRequirementComplete(...) - unsupported arg type
   line 283: void setTargetingFunction(...) - unsupported arg type
   line 292: float runTargetFind(...) - unsupported arg type
-  line 293: bool _targetsRemaining(...) - unsupported arg type
 */
 
 /*
@@ -866,6 +924,10 @@ void TaskDataBinding::registerBinding(lua_State* L)
         { "setDialogueDeliveryTag", TaskDataBinding::setDialogueDeliveryTag },
         { "setPermaJob", TaskDataBinding::setPermaJob },
         { "getPermaJobType", TaskDataBinding::getPermaJobType },
+        { "isResultsComplete", TaskDataBinding::isResultsComplete },
+        { "isResultsComplete_ignoreSubtasker", TaskDataBinding::isResultsComplete_ignoreSubtasker },
+        { "isRequirementComplete", TaskDataBinding::isRequirementComplete },
+        { "_targetsRemaining", TaskDataBinding::_targetsRemaining },
         { 0, 0 }
     };
 

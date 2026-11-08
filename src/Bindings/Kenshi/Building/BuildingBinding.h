@@ -284,5 +284,8 @@ public:
     static int getEntityMaterialName(lua_State* L);
     static int buildingContainsEntity(lua_State* L);
     static int selectParts(lua_State* L);
+    static int restoreMaterialToPhysical(lua_State* L);
+    static int setPartVisible(lua_State* L);
+    static int _NV_setPartVisible(lua_State* L);
 };
 }

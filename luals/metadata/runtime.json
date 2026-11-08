@@ -7018,6 +7018,19 @@
     {
       "fields": [
         {
+          "name": "getInterior",
+          "type": "fun(self: NavMesh, building: hand, create?: boolean): NavInstance|nil"
+        },
+        {
+          "name": "pathExists",
+          "type": "(fun(self: NavMesh, startKey: integer, goalKey: integer): boolean)|(fun(self: NavMesh, c: HavokCharacter, target: table): integer)"
+        }
+      ],
+      "inventory": "NavMesh"
+    },
+    {
+      "fields": [
+        {
           "name": "getGroundSound",
           "type": "(fun(self: ZoneManager, type: GroundType, barefoot?: boolean): string)|(fun(self: ZoneManager, pos: table): string)"
         }
@@ -7029,6 +7042,15 @@
           "type": "fun(type: GroundType, barefoot?: boolean): string"
         }
       ]
+    },
+    {
+      "fields": [
+        {
+          "name": "getObjects",
+          "type": "(fun(self: ZoneSpacialGrid, point: table, radius: number, out: Lektor<RootObject>, max: integer): integer)|(fun(self: ZoneSpacialGrid, point: table, radius: number, filter: integer, out: Lektor<RootObject>, maxnum: integer): integer)"
+        }
+      ],
+      "inventory": "ZoneSpacialGrid"
     }
   ],
   "schemaVersion": 1

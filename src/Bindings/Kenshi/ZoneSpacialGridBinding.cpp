@@ -3,6 +3,7 @@
 #include "ZoneSpacialGridBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/RootObjectBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
 #include <kenshi/ZoneManager.h>
 
@@ -168,11 +169,33 @@ int ZoneSpacialGridBinding::initialiseGrid(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 109: int getObjects(...) - overloaded method
-  line 110: int getObjects(...) - overloaded method
-*/
+// Overloads: getObjects(Vector3 point, float radius, lektor<RootObject*> out, int max) and
+// getObjects(Vector3 point, float radius, int filter, lektor<RootObject*> out, int maxnum).
+int ZoneSpacialGridBinding::getObjects(lua_State* L)
+{
+    ZoneSpacialGrid* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneSpacialGrid is nil");
+
+    Ogre::Vector3 point;
+    if (!readVector3(L, 2, point)) return luaL_argerror(L, 2, "Vector3 table expected");
+    float radius = (float)luaL_checknumber(L, 3);
+
+    if (lua_type(L, 4) == LUA_TNUMBER)
+    {
+        int filter = (int)luaL_checkinteger(L, 4);
+        lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 5);
+        int maxnum = (int)luaL_checkinteger(L, 6);
+        int result = instance->getObjects(point, radius, filter, *out, maxnum);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+
+    lektor<RootObject*>* out = LektorPtrBinding<RootObject*>::getInstance(L, 4);
+    int max = (int)luaL_checkinteger(L, 5);
+    int result = instance->getObjects(point, radius, *out, max);
+    lua_pushinteger(L, result);
+    return 1;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -210,6 +233,7 @@ void ZoneSpacialGridBinding::registerBinding(lua_State* L)
         { "getCellKey", ZoneSpacialGridBinding::getCellKey },
         { "getFullKey", ZoneSpacialGridBinding::getFullKey },
         { "initialiseGrid", ZoneSpacialGridBinding::initialiseGrid },
+        { "getObjects", ZoneSpacialGridBinding::getObjects },
         { 0, 0 }
     };
 

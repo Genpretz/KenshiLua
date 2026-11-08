@@ -238,10 +238,16 @@ def classify_against_binding(issues, parsed, method, body, field_type):
     evidence_params, evidence_returns = slot_types(signature)
     result = []
 
+    # Each overload in a union may read fewer slots than the binding's highest;
+    # a parameter is missing only when no overload accepts that many.
     arity = binding_arity(body, static)
-    if len(params) < arity:
+    longest = max(
+        len([param for param in arm["params"] if param["name"] != "self"])
+        for arm in (parse_lua_functions(field_type) or [parsed])
+    )
+    if longest < arity:
         result.append({"category": "params_missing", "position": None,
-                       "actual": len(params), "expected": arity})
+                       "actual": longest, "expected": arity})
     count = binding_return_count(body)
     if count is not None and count != len(returns) and not (count == 1 and parsed["returns"] == ["nil"]):
         if not re.match(r"^\s*return\s+luaL_error\b", body.strip()):

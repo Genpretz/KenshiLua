@@ -45,5 +45,8 @@ public:
     static int isResultsComplete(lua_State* L);
     static int isResultsComplete_ignoreSubtasker(lua_State* L);
     static int score(lua_State* L);
+    static int isSubTaskerTargetFinishedWith(lua_State* L);
+    static int _targetsRemaining(lua_State* L);
+    static int isSubTaskerComplete(lua_State* L);
 };
 }

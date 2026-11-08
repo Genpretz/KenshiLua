@@ -3,6 +3,9 @@
 #include "NavMeshBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
+#include "Bindings/Kenshi/Havok/HavokCharacterBinding.h"
+#include "Bindings/Kenshi/Havok/hkVector4fBinding.h"
+#include "Bindings/Kenshi/NavInstanceBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
 #include "Bindings/Kenshi/NavMeshGeneratorBinding.h"
 #include "Bindings/Kenshi/NavMeshSeedsBinding.h"
@@ -503,29 +506,142 @@ int NavMeshBinding::getFilename(lua_State* L)
     return 1;
 }
 
+// Overloads: isLoaded(iVector2 zone) and isLoaded(ZoneMap zone).
+int NavMeshBinding::isLoaded(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    iVector2* zoneKey = testObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    if (zoneKey)
+    {
+        bool result = instance->isLoaded(*zoneKey);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+
+    ZoneMap* zone = testObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    if (!zone) return luaL_argerror(L, 2, "KenshiLua.iVector2 or KenshiLua.ZoneMap expected");
+    bool result = instance->isLoaded(zone);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+// Overloads: getGateCode(HavokCharacter c) and getGateCode(Vector3 point).
+int NavMeshBinding::getGateCode(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    HavokCharacter* c = testObject<HavokCharacter>(L, 2, HavokCharacterBinding::getMetatableName());
+    if (c)
+    {
+        int result = instance->getGateCode(c);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+
+    Ogre::Vector3 point;
+    if (!readVector3(L, 2, point)) return luaL_argerror(L, 2, "KenshiLua.HavokCharacter or Vector3 table expected");
+    int result = instance->getGateCode(point);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+// Overloads: getFaceKey(hkVector4f local, float limit) and getFaceKey(Vector3 point).
+int NavMeshBinding::getFaceKey(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    hkVector4f* local = testObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    if (local)
+    {
+        float limit = (float)luaL_checknumber(L, 3);
+        unsigned int result = instance->getFaceKey(*local, limit);
+        lua_pushinteger(L, (lua_Integer)result);
+        return 1;
+    }
+
+    Ogre::Vector3 point;
+    if (!readVector3(L, 2, point)) return luaL_argerror(L, 2, "KenshiLua.hkVector4f or Vector3 table expected");
+    unsigned int result = instance->getFaceKey(point);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+// Overloads: checkLineOfSight(HavokCharacter a, Vector3 target) and
+// checkLineOfSight(HavokCharacter a, HavokCharacter b).
+int NavMeshBinding::checkLineOfSight(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    HavokCharacter* a = checkObject<HavokCharacter>(L, 2, HavokCharacterBinding::getMetatableName());
+    HavokCharacter* b = testObject<HavokCharacter>(L, 3, HavokCharacterBinding::getMetatableName());
+    if (b)
+    {
+        int result = instance->checkLineOfSight(a, b);
+        lua_pushinteger(L, result);
+        return 1;
+    }
+
+    Ogre::Vector3 target;
+    if (!readVector3(L, 3, target)) return luaL_argerror(L, 3, "KenshiLua.HavokCharacter or Vector3 table expected");
+    int result = instance->checkLineOfSight(a, target);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+// Overloads: pathExists(unsigned int startKey, unsigned int goalKey) returning boolean and
+// pathExists(HavokCharacter c, Vector3 target) returning integer.
+int NavMeshBinding::pathExists(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    if (lua_type(L, 2) == LUA_TNUMBER)
+    {
+        unsigned int startKey = (unsigned int)luaL_checkinteger(L, 2);
+        unsigned int goalKey = (unsigned int)luaL_checkinteger(L, 3);
+        bool result = instance->pathExists(startKey, goalKey);
+        lua_pushboolean(L, result ? 1 : 0);
+        return 1;
+    }
+
+    HavokCharacter* c = testObject<HavokCharacter>(L, 2, HavokCharacterBinding::getMetatableName());
+    if (!c) return luaL_argerror(L, 2, "face key number or KenshiLua.HavokCharacter expected");
+    Ogre::Vector3 target;
+    if (!readVector3(L, 3, target)) return luaL_argerror(L, 3, "Vector3 table expected");
+    int result = instance->pathExists(c, target);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::getInterior(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    hand* building = checkObject<hand>(L, 2, HandBinding::getMetatableName());
+    bool create = lua_toboolean(L, 3) != 0;
+    NavInstance* result = instance->getInterior(*building, create);
+    return pushObject<NavInstance>(L, result, NavInstanceBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
   line 75: void generate(...) - overloaded method
   line 76: void generate(...) - overloaded method
   line 77: void generate(...) - overloaded method
-  line 79: bool isLoaded(...) - overloaded method
-  line 80: bool isLoaded(...) - overloaded method
   line 82: int getClosestPoint(...) - overloaded method
   line 83: int getClosestPoint(...) - overloaded method
   line 84: int getClosestPoint(...) - overloaded method
-  line 87: int getGateCode(...) - overloaded method
-  line 88: int getGateCode(...) - overloaded method
-  line 91: unsigned int getFaceKey(...) - overloaded method
-  line 92: unsigned int getFaceKey(...) - overloaded method
   line 94: int getClosestBoundary(...) - unsupported arg type
   line 95: int projectToNavMesh(...) - unsupported arg type
   line 96: int getEdgesAroundPoint(...) - unsupported arg type
   line 97: int areEdgesConnected(...) - unsupported arg type
-  line 98: int checkLineOfSight(...) - overloaded method
-  line 99: int checkLineOfSight(...) - overloaded method
   line 100: int checkCollision(...) - unsupported arg type
-  line 101: bool pathExists(...) - overloaded method
-  line 102: int pathExists(...) - overloaded method
   line 104: int fillEdgeCache(...) - unsupported arg type
   line 105: int isWater(...) - unsupported arg type
   line 106: bool isCharacterStuck(...) - unsupported arg type
@@ -538,11 +654,10 @@ Skipped methods needing manual binding:
   line 184: int createZone(...) - unsupported arg type
   line 188: NavMeshSector* getSector(...) - overloaded method
   line 189: NavMeshSector* getSector(...) - overloaded method
-  line 190: NavInstance* getInterior(...) - non-string reference arg
   line 191: bool removeSector(...) - unsupported arg type
   line 192: int getSectors(...) - unsupported arg type
-  line 193: void createInstance(...) - unsupported arg type
-  line 194: void deleteInstance(...) - unsupported arg type
+  line 193: void createInstance(...) - NavMesh loading step; overwrites an existing Havok instance without freeing it or removing it from the world
+  line 194: void deleteInstance(...) - NavMesh unloading step; crashes on an instance never created or already deleted, leaves graphInstance dangling and the sector and interior tables unchanged
   line 201: void shiftWorld(...) - unsupported arg type
   line 203: void changeDoorState(...) - unsupported arg type
   line 204: bool validateStreamingData(...) - unsupported arg type
@@ -631,6 +746,12 @@ void NavMeshBinding::registerBinding(lua_State* L)
         { "hashInterior", NavMeshBinding::hashInterior },
         { "hashZone", NavMeshBinding::hashZone },
         { "getFilename", NavMeshBinding::getFilename },
+        { "isLoaded", NavMeshBinding::isLoaded },
+        { "getGateCode", NavMeshBinding::getGateCode },
+        { "getFaceKey", NavMeshBinding::getFaceKey },
+        { "checkLineOfSight", NavMeshBinding::checkLineOfSight },
+        { "pathExists", NavMeshBinding::pathExists },
+        { "getInterior", NavMeshBinding::getInterior },
         { 0, 0 }
     };
 

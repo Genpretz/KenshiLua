@@ -20,6 +20,7 @@
 #include "Bindings/Kenshi/InstanceIDBinding.h"
 #include "Bindings/Kenshi/InventoryBinding.h"
 #include "Bindings/Kenshi/PlatoonBinding.h"
+#include "Bindings/Kenshi/PhysicalEntityBinding.h"
 #include "Bindings/Kenshi/PhysicsCollectionBinding.h"
 #include "Bindings/Kenshi/TownBaseBinding.h"
 #include "Bindings/Kenshi/TownBinding.h"
@@ -3299,18 +3300,15 @@ Skipped methods needing manual binding:
   line 393: int getLights(...) - unsupported arg type
   line 457: Ogre::SharedPtr<Ogre::Material> getBuildingPartMaterial(...) - static method
   line 458: void setBuildingPartMaterial(...) - static method
-  line 459: void restoreMaterialToPhysical(...) - unsupported arg type
   line 463: void updateWorldAABB(...) - unsupported arg type
   line 469: Ogre::SharedPtr<Ogre::Material> getPartMaterial(...) - unsupported return type
-  line 471: void loadParts(...) - unsupported arg type
+  line 471: void loadParts(...) - createPhysical calls it after rebuilding the PhysicsCollection and seeding part selection; another call adds duplicate parts
   line 472: PhysicalEntity* loadPartEntity(...) - unsupported arg type
   line 473: Ogre::MovableObject* loadEntity(...) - unsupported arg type
   line 474: void loadEntityCallback(...) - unsupported arg type
   line 475: void loadInstances(...) - unsupported arg type
   line 477: PhysicalEntity* findPhysicalEntity(...) - unsupported arg type
   line 478: PhysicalEntity* findPhysicalEntityInCollection(...) - static method
-  line 483: void setPartVisible(...) - unsupported arg type
-  line 484: void _NV_setPartVisible(...) - unsupported arg type
 */
 
 /*
@@ -3410,6 +3408,39 @@ int BuildingBinding::selectParts(lua_State* L)
     {
         Building::selectParts(partList, *parts);
     }
+    return 0;
+}
+
+int BuildingBinding::restoreMaterialToPhysical(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    PhysicsCollection* physical = checkObject<PhysicsCollection>(L, 2, PhysicsCollectionBinding::getMetatableName());
+    bool inside = lua_toboolean(L, 3) != 0;
+    instance->restoreMaterialToPhysical(physical, inside);
+    return 0;
+}
+
+int BuildingBinding::setPartVisible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    PhysicalEntity* part = checkObject<PhysicalEntity>(L, 2, PhysicalEntityBinding::getMetatableName());
+    bool on = lua_toboolean(L, 3) != 0;
+    instance->setPartVisible(part, on);
+    return 0;
+}
+
+int BuildingBinding::_NV_setPartVisible(lua_State* L)
+{
+    Building* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Building is nil");
+
+    PhysicalEntity* part = checkObject<PhysicalEntity>(L, 2, PhysicalEntityBinding::getMetatableName());
+    bool on = lua_toboolean(L, 3) != 0;
+    instance->_NV_setPartVisible(part, on);
     return 0;
 }
 
@@ -3702,6 +3733,9 @@ void BuildingBinding::registerBinding(lua_State* L)
         { "getLayoutInstanceID", BuildingBinding::getLayoutInstanceID },
         { "_NV_getLayoutInstanceID", BuildingBinding::_NV_getLayoutInstanceID },
         { "getEntityMaterialName", BuildingBinding::getEntityMaterialName },
+        { "restoreMaterialToPhysical", BuildingBinding::restoreMaterialToPhysical },
+        { "setPartVisible", BuildingBinding::setPartVisible },
+        { "_NV_setPartVisible", BuildingBinding::_NV_setPartVisible },
         { 0, 0 }
     };
 
