@@ -234,8 +234,18 @@ def main():
                                                         reason = f"unsupported arg type ({', '.join(unsupported_args)})"
                                                         unsupported_for_method.extend(unsupported_args)
                                                     elif parsed_arg_types:
-                                                        reason = f"unsupported arg type ({', '.join(parsed_arg_types)})"
-                                                        unsupported_for_method.extend(parsed_arg_types)
+                                                        # Every named type is bound, so none of them is counted as
+                                                        # unbound; name the argument shapes that still need manual work.
+                                                        raw_pointers = [arg_t for arg_t in parsed_arg_types if re.match(r'^(const\s+)?void\s*\*', arg_t)]
+                                                        mutable_refs = [arg_t for arg_t in parsed_arg_types if arg_t.endswith('&') and not arg_t.startswith('const ')]
+                                                        details = []
+                                                        if raw_pointers:
+                                                            details.append(f"raw pointer arg ({', '.join(raw_pointers)})")
+                                                        if mutable_refs:
+                                                            details.append(f"non-const reference arg ({', '.join(mutable_refs)})")
+                                                        if not details:
+                                                            details.append(f"no unbound argument type found ({', '.join(parsed_arg_types)})")
+                                                        reason = "unsupported arg type; " + "; ".join(details)
                                                 elif reason.startswith("non-string reference arg"):
                                                     ref_args = [arg_t for arg_t in parsed_arg_types if '&' in arg_t]
                                                     if ref_args:
