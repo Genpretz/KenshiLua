@@ -143,7 +143,7 @@ python tools/testing/run_kenshi_tests.py --recover-journal scratch/kenshi-tests/
 ### Safety and isolation
 
 - **Transactional staging**: Every staged file (`mods.cfg`, `RE_Kenshi.json`, consumer mod scripts) is backed up before modification and tracked in a `journal.json` transaction. On run completion, timeout, or crash, files are verified against their pre-run SHA-256 hashes and restored.
-- **Preload plugin neutralization**: Third-party `PreloadPlugins` in `mods/**/RE_Kenshi.json` are temporarily neutralized during the test run to prevent modal dialog crashes, and restored on exit.
+- **Preload plugin neutralization**: Third-party `PreloadPlugins` in `mods/**/RE_Kenshi.json`, and on Steam in Kenshi's Workshop content folder, are temporarily neutralized during the test run to prevent modal dialog crashes and launcher hooks, and restored on exit.
 - **Save isolation**: User saves are never modified. Staged save fixtures are copied into isolated paths and cleaned up on teardown.
 - **Crash and stall detection**: The runner monitors `RE_Kenshi_log.txt` for crash signatures to terminate failed runs immediately without waiting for timeouts.
 

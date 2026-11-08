@@ -9,6 +9,7 @@ from kenshi_install import (
     PROVIDER_MOD_FILE,
     KenshiInstallation,
     sha256_file,
+    steam_workshop_root,
 )
 
 
@@ -240,9 +241,16 @@ class StagingTransaction:
         self._stage_text(re_json_path, json.dumps(re_cfg, indent=4) + "\n", encoding="ascii")
 
         # 3b. Neutralize third-party PreloadPlugins in other mods' RE_Kenshi.json
-        # RE_Kenshi loads PreloadPlugins from all mods before reading mods.cfg.
-        mods_root = self.install.game_root / "mods"
-        if mods_root.is_dir():
+        # RE_Kenshi loads PreloadPlugins from all mods, including Steam Workshop
+        # items, before reading mods.cfg.
+        mod_roots = [self.install.game_root / "mods"]
+        if self.install.platform == "steam":
+            workshop_root = steam_workshop_root(self.install.game_root)
+            if workshop_root is not None:
+                mod_roots.append(workshop_root)
+        for mods_root in mod_roots:
+            if not mods_root.is_dir():
+                continue
             for other_re_json in sorted(mods_root.rglob("RE_Kenshi.json")):
                 if self._norm(other_re_json) == self._norm(re_json_path):
                     continue

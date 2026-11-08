@@ -152,12 +152,15 @@ def steam_reports_app_running() -> bool:
         return False
 
 
+def steam_workshop_root(game_root: Path) -> Optional[Path]:
+    """Return Kenshi's Steam Workshop content folder for a game_root of <steamapps>/common/Kenshi."""
+    workshop_root = game_root.parent.parent / "workshop" / "content" / STEAM_APP_ID
+    return workshop_root if workshop_root.is_dir() else None
+
+
 def _discover_steam_workshop_provider(game_root: Path) -> Optional[Path]:
-    # game_root is <steamapps>/common/Kenshi
-    common_dir = game_root.parent
-    steamapps_dir = common_dir.parent
-    workshop_root = steamapps_dir / "workshop" / "content" / STEAM_APP_ID
-    if not workshop_root.is_dir():
+    workshop_root = steam_workshop_root(game_root)
+    if workshop_root is None:
         return None
     for child in sorted(workshop_root.iterdir()):
         if child.is_dir() and (child / PROVIDER_MOD_FILE).is_file():
