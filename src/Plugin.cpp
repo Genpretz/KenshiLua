@@ -7,6 +7,7 @@
 #include "Compatibility/LegacyCompat.h"
 #include "Logger.h"
 #include "Config.h"
+#include "Version.h"
 #include "Lua/LuaBindings.h"
 #include "Lua/LuaState.h"
 #include "ScriptLoader.h"
@@ -131,6 +132,7 @@ bool Plugin::initialize(void* hModule)
     Config::get().load(m_dllModule);
     initLogger();
     logToFile("Initializing KenshiLua...");
+    logToFile(std::string("KenshiLua version: ") + Version::String);
     logToFile("Kenshi version: " + KenshiLib::GetKenshiVersion().ToString());
     logExecutableHash();
     logToFilef("Config loaded");
