@@ -41,7 +41,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `Ogre::Renderable::Visitor*` | 1 |
 | `Ogre::Root*` | 1 |
 | `Ogre::SceneMemoryMgrTypes` | 1 |
-| `Ogre::SceneNode*` | 8 |
+| `Ogre::SceneNode*` | 9 |
 | `Ogre::SharedPtr<Ogre::Material>` | 4 |
 | `Ogre::SharedPtr<Ogre::Resource>` | 6 |
 | `Ogre::SharedPtr<Ogre::Texture>` | 5 |
@@ -328,12 +328,12 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | _NV_bufAlloc | `void*` | non-string reference arg (int&) |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | _NV_bufFree | `void` | unsupported arg type; raw pointer arg (void*) |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | _NV_bufRealloc | `void*` | unsupported arg type; raw pointer arg (void*); non-const reference arg (int&) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockAllocBatch | `void` | unsupported arg type; raw pointer arg (void**) |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockAllocBatch | `void` | unsupported arg type |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockFree | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockFreeBatch | `void` | unsupported arg type; raw pointer arg (void**) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufAlloc | `void*` | non-string reference arg (int&) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufFree | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufRealloc | `void*` | unsupported arg type; raw pointer arg (void*); non-const reference arg (int&) |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockFreeBatch | `void` | unsupported arg type |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufAlloc | `void*` | non-string reference arg |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufFree | `void` | unsupported arg type |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufRealloc | `void*` | unsupported arg type |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | delete | `void operator` | static method |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | getAllocatedSize | `int` | unsupported arg type; raw pointer arg (const void*) |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | getMemoryStatistics | `void` | non-string reference arg (hkMemoryAllocator::MemoryStatistics&) |
@@ -456,7 +456,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/NxUserControllerHitReportBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
 | Kenshi/NxUserTriggerReportBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/ObjectInstanceBinding.cpp | updateInstancedObjectAttachedDatas | `void` | unavailable (KenshiLib.lib contains only GameData_ObjectInstance_updateInstancedObjectAttachedDatas_PLACEHOLDER) |
-| Kenshi/ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type |
+| Kenshi/ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type (Ogre::SceneNode*) |
 | Kenshi/PhysicsActualBinding.cpp | convertXMLToBin | `void` | non-string reference arg (std::string&, const Ogre::Vector3&) |
 | Kenshi/PhysicsActualBinding.cpp | loadPhysXFile | `NxActor*` | unsupported arg type (PhysFileParams&, lektor<NxActor*>*) |
 | Kenshi/PhysicsActualBinding.cpp | loadPhysXFileAsATrigger | `NxActor*` | unsupported arg type (PhysFileParams&, lektor<NxActor*>*) |
@@ -535,7 +535,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/TriggerCallbackBinding.cpp | _NV_onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/TriggerCallbackBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/ZoneManagerBinding.cpp | getLoadedFeatureLists | `const lektor<MapFeatureList*>&` | reference return type |
-| Kenshi/ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg |
+| Kenshi/ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg (const iVector2&) |
 | Kenshi/ZoneMapBinding.cpp | _activate | `bool` | unsupported arg type; no unbound argument type found (int, ZoneActivationType, float) |
 | Kenshi/ZoneMapBinding.cpp | createTextureArray | `Ogre::SharedPtr<Ogre::Texture>` | static method |
 | Kenshi/ZoneMapBinding.cpp | destroyMaterialCallback | `void` | static method |
