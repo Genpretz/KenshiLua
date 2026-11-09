@@ -27,7 +27,7 @@ The Lua runtime is single-threaded. KenshiLua invokes event handlers synchronous
 
 For a notification callback, a worker-thread event is skipped. For an override callback, KenshiLua preserves the engine's original or default result. Which thread raises an engine function is determined by Kenshi and can vary by call site.
 
-## Notification Callbacks (664)
+## Notification Callbacks (701)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -695,8 +695,45 @@ For a notification callback, a worker-thread event is skipped. For an override c
 | `TitleScreen::continueGame` | `function(self: TitleScreen, sender: Widget)` |
 | `TitleScreen::hover` | `function(self: TitleScreen, sender: Widget, other: Widget)` |
 | `TitleScreen::setCreditsVisible` | `function(self: TitleScreen, value: boolean)` |
+| `CombatClass::_getHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject, stumble: boolean)` |
+| `CombatClass::_blockHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject)` |
+| `CombatClass::addAttackerH` | `function(self: CombatClass, attacker: Character, added: boolean)` |
+| `CombatClass::removeAttackerH` | `function(self: CombatClass, attacker: Character, removed: boolean)` |
+| `GunClass::shoot` | `function(self: GunClass, shooter: Character, target: RootObject, stat: integer, aimPosition: Vector3)` |
+| `MedicalSystem::HealthPartStatus::applyDamage` | `function(self: MedicalSystem::HealthPartStatus, damage: Damages)` |
+| `MedicalSystem::applyFirstAid` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, medic: Character, applied: boolean)` |
+| `MedicalSystem::applyDoctoring` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, medic: Character, applied: boolean)` |
+| `MedicalSystem::applyRigging` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, applied: boolean)` |
+| `Character::setPrisonMode` | `function(self: Character, enabled: boolean, cage: UseableStuff)` |
+| `Character::dropCarriedObject` | `function(self: Character, ragdollTarget: boolean, removeOnly: boolean)` |
+| `Character::getDropped` | `function(self: Character, ragdoll: boolean, hull: boolean)` |
+| `BountyManager::setCrime` | `function(self: BountyManager, crime: integer, againstFaction: Faction, againstHandle: hand, accepted: boolean)` |
+| `BountyManager::notifyStartPrisonSentence` | `function(self: BountyManager, lawFaction: Faction)` |
+| `BountyManager::notifyPlayerClaimBounty` | `function(self: BountyManager, faction: Faction)` |
+| `BountyManager::assignBountyForCrimes` | `function(self: BountyManager, enforcer: Faction)` |
+| `BountyManager::clearBounty` | `function(self: BountyManager, enforcer: Faction)` |
+| `BountyManager::unfairAddToBounty` | `function(self: BountyManager, enforcer: Faction, amount: integer)` |
+| `FactionRelations::_NV_setEnemy` | `function(self: FactionRelations, faction: Faction)` |
+| `FactionRelations::setRelation` | `function(self: FactionRelations, faction: Faction, relation: number)` |
+| `FactionRelations::_NV_affectTrust` | `function(self: FactionRelations, faction: Faction, amount: number, multiplier: number)` |
+| `FactionRelations::_NV_setNoLongerEnemies` | `function(self: FactionRelations, faction: Faction)` |
+| `FactionRelations::_NV_declareWar` | `function(self: FactionRelations, faction: Faction)` |
+| `FactionRelations::_NV_affectReputation` | `function(self: FactionRelations, faction: Faction, amount: number)` |
+| `Research::startResearch` | `function(self: Research, data: GameData, started: boolean)` |
+| `Research::stopResearch` | `function(self: Research, data: GameData)` |
+| `Research::completeResearch` | `function(self: Research, data: GameData)` |
+| `Research::progressResearch` | `function(self: Research, amount: number)` |
+| `CampaignInstance::changePhase` | `function(self: CampaignInstance, phase: integer)` |
+| `CampaignInstance::_NV_victoryEvent` | `function(self: CampaignInstance)` |
+| `CampaignInstance::_NV_lossEvent` | `function(self: CampaignInstance)` |
+| `CampaignInstance::_NV_addToCampaign` | `function(self: CampaignInstance, platoon: Platoon, forceLeader: boolean)` |
+| `CampaignInstance::_NV_removeFromCampaign` | `function(self: CampaignInstance, platoon: Platoon)` |
+| `Platoon::_NV_notifyMissionEnded` | `function(self: Platoon)` |
+| `Platoon::declareDead` | `function(self: Platoon)` |
+| `Platoon::undeclareDead` | `function(self: Platoon)` |
+| `ActivePlatoon::setSquadLeader` | `function(self: ActivePlatoon, leader: Character)` |
 
-## Override Callbacks (212)
+## Override Callbacks (213)
 
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
@@ -912,6 +949,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 | `ManagementScreen::researchValidateOrder` | `function(self: ManagementScreen, first: integer, second: integer, defaultVal: boolean) -> boolean` |
 | `TitleScreen::getSingleton` | `function(defaultVal: TitleScreen) -> TitleScreen` |
 | `TitleScreen::closeTheOtherBits` | `function(self: TitleScreen, defaultVal: boolean) -> boolean` |
+| `CombatClass::_NV_initCombatMode` | `function(self: CombatClass, subject: hand, endValue: integer, focusedTarget: boolean, defaultVal: boolean) -> boolean` |
 
 ## Detailed Callback Documentation
 
@@ -945,6 +983,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ActivePlatoon`
   - `character`: `RootObject`
+
+### `ActivePlatoon::setSquadLeader`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, leader)`
+- **Parameters**:
+  - `self`: `ActivePlatoon`
+  - `leader`: `Character`
 
 ### `AppearanceManager::_CONSTRUCTOR`
 
@@ -1003,6 +1049,22 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `BountyManager`
 - **Returns**: `BountyManager`
 
+### `BountyManager::assignBountyForCrimes`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, enforcer)`
+- **Parameters**:
+  - `self`: `BountyManager`
+  - `enforcer`: `Faction`
+
+### `BountyManager::clearBounty`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, enforcer)`
+- **Parameters**:
+  - `self`: `BountyManager`
+  - `enforcer`: `Faction`
+
 ### `BountyManager::notifyCrimeWitnessed`
 
 - **Category**: Notification / Observer
@@ -1013,6 +1075,42 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `againstWho`: `hand`
   - `expiryTime`: `integer`
   - `crimeType`: `integer`
+
+### `BountyManager::notifyPlayerClaimBounty`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction)`
+- **Parameters**:
+  - `self`: `BountyManager`
+  - `faction`: `Faction`
+
+### `BountyManager::notifyStartPrisonSentence`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, lawFaction)`
+- **Parameters**:
+  - `self`: `BountyManager`
+  - `lawFaction`: `Faction`
+
+### `BountyManager::setCrime`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, crime, againstFaction, againstHandle, accepted)`
+- **Parameters**:
+  - `self`: `BountyManager`
+  - `crime`: `integer`
+  - `againstFaction`: `Faction`
+  - `againstHandle`: `hand`
+  - `accepted`: `boolean`
+
+### `BountyManager::unfairAddToBounty`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, enforcer, amount)`
+- **Parameters**:
+  - `self`: `BountyManager`
+  - `enforcer`: `Faction`
+  - `amount`: `integer`
 
 ### `BuildModeWindow::confirm`
 
@@ -1231,6 +1329,45 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `Building`
   - `platoon`: `Platoon`
+
+### `CampaignInstance::_NV_addToCampaign`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon, forceLeader)`
+- **Parameters**:
+  - `self`: `CampaignInstance`
+  - `platoon`: `Platoon`
+  - `forceLeader`: `boolean`
+
+### `CampaignInstance::_NV_lossEvent`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CampaignInstance`
+
+### `CampaignInstance::_NV_removeFromCampaign`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon)`
+- **Parameters**:
+  - `self`: `CampaignInstance`
+  - `platoon`: `Platoon`
+
+### `CampaignInstance::_NV_victoryEvent`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CampaignInstance`
+
+### `CampaignInstance::changePhase`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, phase)`
+- **Parameters**:
+  - `self`: `CampaignInstance`
+  - `phase`: `integer`
 
 ### `CharBody::_CONSTRUCTOR`
 
@@ -1623,6 +1760,15 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `Character`
 
+### `Character::dropCarriedObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, ragdollTarget, removeOnly)`
+- **Parameters**:
+  - `self`: `Character`
+  - `ragdollTarget`: `boolean`
+  - `removeOnly`: `boolean`
+
 ### `Character::eatItem`
 
 - **Category**: Notification / Observer
@@ -1631,6 +1777,15 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `foodItem`: `Item`
   - `inventory`: `Inventory`
+
+### `Character::getDropped`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, ragdoll, hull)`
+- **Parameters**:
+  - `self`: `Character`
+  - `ragdoll`: `boolean`
+  - `hull`: `boolean`
 
 ### `Character::getFencingSuccessChance`
 
@@ -1675,6 +1830,15 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `on`: `boolean`
   - `ownerHandle`: `hand`
+
+### `Character::setPrisonMode`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, enabled, cage)`
+- **Parameters**:
+  - `self`: `Character`
+  - `enabled`: `boolean`
+  - `cage`: `UseableStuff`
 
 ### `CharacterAnimal::_CONSTRUCTOR`
 
@@ -2139,6 +2303,57 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `medical`: `MedicalSystem`
   - `defaultVal`: `CombatClass`
 - **Returns**: `CombatClass`
+
+### `CombatClass::_NV_initCombatMode`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, subject, endValue, focusedTarget, defaultVal)`
+- **Parameters**:
+  - `self`: `CombatClass`
+  - `subject`: `hand`
+  - `endValue`: `integer`
+  - `focusedTarget`: `boolean`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+### `CombatClass::_blockHit`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, direction, damage, attacker)`
+- **Parameters**:
+  - `self`: `CombatClass`
+  - `direction`: `integer`
+  - `damage`: `Damages`
+  - `attacker`: `RootObject`
+
+### `CombatClass::_getHit`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, direction, damage, attacker, stumble)`
+- **Parameters**:
+  - `self`: `CombatClass`
+  - `direction`: `integer`
+  - `damage`: `Damages`
+  - `attacker`: `RootObject`
+  - `stumble`: `boolean`
+
+### `CombatClass::addAttackerH`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, attacker, added)`
+- **Parameters**:
+  - `self`: `CombatClass`
+  - `attacker`: `Character`
+  - `added`: `boolean`
+
+### `CombatClass::removeAttackerH`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, attacker, removed)`
+- **Parameters**:
+  - `self`: `CombatClass`
+  - `attacker`: `Character`
+  - `removed`: `boolean`
 
 ### `CombatMovementController::_CONSTRUCTOR`
 
@@ -4007,6 +4222,49 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `FactionRelations`
 - **Returns**: `FactionRelations`
 
+### `FactionRelations::_NV_affectReputation`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction, amount)`
+- **Parameters**:
+  - `self`: `FactionRelations`
+  - `faction`: `Faction`
+  - `amount`: `number`
+
+### `FactionRelations::_NV_affectTrust`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction, amount, multiplier)`
+- **Parameters**:
+  - `self`: `FactionRelations`
+  - `faction`: `Faction`
+  - `amount`: `number`
+  - `multiplier`: `number`
+
+### `FactionRelations::_NV_declareWar`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction)`
+- **Parameters**:
+  - `self`: `FactionRelations`
+  - `faction`: `Faction`
+
+### `FactionRelations::_NV_setEnemy`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction)`
+- **Parameters**:
+  - `self`: `FactionRelations`
+  - `faction`: `Faction`
+
+### `FactionRelations::_NV_setNoLongerEnemies`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction)`
+- **Parameters**:
+  - `self`: `FactionRelations`
+  - `faction`: `Faction`
+
 ### `FactionRelations::affectRelations`
 
 - **Category**: Notification / Observer
@@ -4016,6 +4274,15 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `otherFaction`: `Faction`
   - `eventType`: `integer`
   - `multiplier`: `number`
+
+### `FactionRelations::setRelation`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction, relation)`
+- **Parameters**:
+  - `self`: `FactionRelations`
+  - `faction`: `Faction`
+  - `relation`: `number`
 
 ### `FactionUniqueSquadManager::_CONSTRUCTOR`
 
@@ -5457,6 +5724,17 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `GenericFixedInventoryLayout`
   - `slotsW`: `integer`
   - `slotsH`: `integer`
+
+### `GunClass::shoot`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, shooter, target, stat, aimPosition)`
+- **Parameters**:
+  - `self`: `GunClass`
+  - `shooter`: `Character`
+  - `target`: `RootObject`
+  - `stat`: `integer`
+  - `aimPosition`: `Vector3`
 
 ### `InputHandler::_CONSTRUCTOR`
 
@@ -7648,6 +7926,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `sender`: `Widget`
 
+### `MedicalSystem::HealthPartStatus::applyDamage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, damage)`
+- **Parameters**:
+  - `self`: `MedicalSystem::HealthPartStatus`
+  - `damage`: `Damages`
+
 ### `MedicalSystem::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
@@ -7666,6 +7952,41 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `limb`: `integer`
   - `createSeveredItem`: `boolean`
   - `forceVector`: `Vector3`
+
+### `MedicalSystem::applyDoctoring`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, skill, equipment, frameTime, medic, applied)`
+- **Parameters**:
+  - `self`: `MedicalSystem`
+  - `skill`: `number`
+  - `equipment`: `Item`
+  - `frameTime`: `number`
+  - `medic`: `Character`
+  - `applied`: `boolean`
+
+### `MedicalSystem::applyFirstAid`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, skill, equipment, frameTime, medic, applied)`
+- **Parameters**:
+  - `self`: `MedicalSystem`
+  - `skill`: `number`
+  - `equipment`: `Item`
+  - `frameTime`: `number`
+  - `medic`: `Character`
+  - `applied`: `boolean`
+
+### `MedicalSystem::applyRigging`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, skill, equipment, frameTime, applied)`
+- **Parameters**:
+  - `self`: `MedicalSystem`
+  - `skill`: `number`
+  - `equipment`: `Item`
+  - `frameTime`: `number`
+  - `applied`: `boolean`
 
 ### `MedicalSystem::canGetUpWakeUp`
 
@@ -8300,6 +8621,20 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Platoon`
   - `saveState`: `GameSaveState`
 
+### `Platoon::_NV_notifyMissionEnded`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `Platoon`
+
+### `Platoon::declareDead`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `Platoon`
+
 ### `Platoon::iBuyIllegalGoods`
 
 - **Category**: Override / Interceptor
@@ -8326,6 +8661,13 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `Platoon`
   - `completedTask`: `Tasker`
+
+### `Platoon::undeclareDead`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `Platoon`
 
 ### `PlayerInterface::_CONSTRUCTOR`
 
@@ -8519,6 +8861,39 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `indoors`: `Building`
   - `defaultVal`: `RainCollectorBuilding`
 - **Returns**: `RainCollectorBuilding`
+
+### `Research::completeResearch`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `Research`
+  - `data`: `GameData`
+
+### `Research::progressResearch`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, amount)`
+- **Parameters**:
+  - `self`: `Research`
+  - `amount`: `number`
+
+### `Research::startResearch`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data, started)`
+- **Parameters**:
+  - `self`: `Research`
+  - `data`: `GameData`
+  - `started`: `boolean`
+
+### `Research::stopResearch`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, data)`
+- **Parameters**:
+  - `self`: `Research`
+  - `data`: `GameData`
 
 ### `ResearchBuilding::_CONSTRUCTOR`
 

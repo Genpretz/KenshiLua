@@ -1652,6 +1652,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Gui\KenshiLua_ScriptEditor.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_ScriptManager.cpp" />
     <ClCompile Include="src\Gui\KenshiLua_Settings.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_Campaign.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Bounty.cpp" />
     <ClCompile Include="src\Hooks\Hooks_BountyManager.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Building.cpp" />
@@ -1668,6 +1669,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Hooks\Hooks_FactionRelations.cpp" />
     <ClCompile Include="src\Hooks\Hooks_GameData.cpp" />
     <ClCompile Include="src\Hooks\Hooks_GameWorld.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_GunClass.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Gui.cpp" />
     <ClCompile Include="src\Hooks\Hooks_CharacterStatsWindow.cpp" />
     <ClCompile Include="src\Hooks\Hooks_DataPanelLine.cpp" />
@@ -1691,6 +1693,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Hooks\Hooks_Item.cpp" />
     <ClCompile Include="src\Hooks\Hooks_MedicalSystem.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Platoon.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_Research.cpp" />
     <ClCompile Include="src\Hooks\Hooks_PlayerInterface.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Registry.cpp" />
     <ClCompile Include="src\Hooks\Hooks_RootObjectFactory.cpp" />

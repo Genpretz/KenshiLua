@@ -247,6 +247,39 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_setChainedMode,
     KenshiLib::GetRealAddress(&Character::setChainedMode),
     Character_setChainedMode_hook, Character_setChainedMode_orig)
 
+static void (*Character_setPrisonMode_orig)(Character*, bool, UseableStuff*) = NULL;
+static void Character_setPrisonMode_hook(Character* thisptr, bool enabled, UseableStuff* cage)
+{
+    Character_setPrisonMode_orig(thisptr, enabled, cage);
+    CallCharacterSetPrisonModeCallbacks(thisptr, enabled, cage);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Character_setPrisonMode,
+    "Character::setPrisonMode",
+    KenshiLib::GetRealAddress(&Character::setPrisonMode),
+    Character_setPrisonMode_hook, Character_setPrisonMode_orig)
+
+static void (*Character_dropCarriedObject_orig)(Character*, bool, bool) = NULL;
+static void Character_dropCarriedObject_hook(Character* thisptr, bool ragdollTarget, bool removeOnly)
+{
+    Character_dropCarriedObject_orig(thisptr, ragdollTarget, removeOnly);
+    CallCharacterDropCarriedObjectCallbacks(thisptr, ragdollTarget, removeOnly);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Character_dropCarriedObject,
+    "Character::dropCarriedObject",
+    KenshiLib::GetRealAddress(&Character::dropCarriedObject),
+    Character_dropCarriedObject_hook, Character_dropCarriedObject_orig)
+
+static void (*Character_getDropped_orig)(Character*, bool, bool) = NULL;
+static void Character_getDropped_hook(Character* thisptr, bool ragdoll, bool hull)
+{
+    Character_getDropped_orig(thisptr, ragdoll, hull);
+    CallCharacterGetDroppedCallbacks(thisptr, ragdoll, hull);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Character_getDropped,
+    "Character::getDropped",
+    KenshiLib::GetRealAddress(&Character::getDropped),
+    Character_getDropped_hook, Character_getDropped_orig)
+
 static void (*Character_addGoal_orig)(Character*, TaskType, RootObjectBase*) = NULL;
 static void Character_addGoal_hook(Character* thisptr, TaskType t, RootObjectBase* subject)
 {

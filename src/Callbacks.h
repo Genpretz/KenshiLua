@@ -133,6 +133,9 @@ class FactionsScreen;
 class MainBarGUI;
 class MainTabPortraitPlatoon;
 class RootObjectContainer;
+class GunClass;
+class Research;
+class CampaignInstance;
 class MedicalDatapanel;
 class InventoryIcon;
 class InventorySectionGUI;
@@ -4558,3 +4561,155 @@ void CallTitleScreenHoverCallbacks(TitleScreen* self, MyGUI::Widget* sender, MyG
 // Lua event name: "TitleScreen::setCreditsVisible"
 // Lua signature: function(self, value)
 void CallTitleScreenSetCreditsVisibleCallbacks(TitleScreen* self, bool value);
+
+// Lua event name: "CombatClass::_NV_initCombatMode"
+// Lua signature: function(self, subject, endValue, focusedTarget, defaultVal) -> boolean
+bool CallCombatClassInitCombatModeCallbacks(CombatClass* self, const hand& subject, int endValue, bool focusedTarget, bool defaultVal);
+
+// Lua event name: "CombatClass::_getHit"
+// Lua signature: function(self, direction, damage, attacker, stumble)
+void CallCombatClassGetHitCallbacks(CombatClass* self, int direction, Damages* damage, RootObject* attacker, bool stumble);
+
+// Lua event name: "CombatClass::_blockHit"
+// Lua signature: function(self, direction, damage, attacker)
+void CallCombatClassBlockHitCallbacks(CombatClass* self, int direction, Damages* damage, RootObject* attacker);
+
+// Lua event name: "CombatClass::addAttackerH"
+// Lua signature: function(self, attacker, added)
+void CallCombatClassAddAttackerCallbacks(CombatClass* self, Character* attacker, bool added);
+
+// Lua event name: "CombatClass::removeAttackerH"
+// Lua signature: function(self, attacker, removed)
+void CallCombatClassRemoveAttackerCallbacks(CombatClass* self, Character* attacker, bool removed);
+
+// Lua event name: "GunClass::shoot"
+// Lua signature: function(self, shooter, target, stat, aimPosition)
+void CallGunClassShootCallbacks(GunClass* self, Character* shooter, RootObject* target, int stat, const Ogre::Vector3& aimPosition);
+
+// Lua event name: "MedicalSystem::HealthPartStatus::applyDamage"
+// Lua signature: function(self, damage)
+void CallHealthPartStatusApplyDamageCallbacks(MedicalSystem::HealthPartStatus* self, Damages* damage);
+
+// Lua event name: "MedicalSystem::applyFirstAid"
+// Lua signature: function(self, skill, equipment, frameTime, medic, applied)
+void CallMedicalSystemApplyFirstAidCallbacks(MedicalSystem* self, float skill, Item* equipment, float frameTime, Character* medic, bool applied);
+
+// Lua event name: "MedicalSystem::applyDoctoring"
+// Lua signature: function(self, skill, equipment, frameTime, medic, applied)
+void CallMedicalSystemApplyDoctoringCallbacks(MedicalSystem* self, float skill, Item* equipment, float frameTime, Character* medic, bool applied);
+
+// Lua event name: "MedicalSystem::applyRigging"
+// Lua signature: function(self, skill, equipment, frameTime, applied)
+void CallMedicalSystemApplyRiggingCallbacks(MedicalSystem* self, float skill, Item* equipment, float frameTime, bool applied);
+
+// Lua event name: "Character::setPrisonMode"
+// Lua signature: function(self, enabled, cage)
+void CallCharacterSetPrisonModeCallbacks(Character* self, bool enabled, UseableStuff* cage);
+
+// Lua event name: "Character::dropCarriedObject"
+// Lua signature: function(self, ragdollTarget, removeOnly)
+void CallCharacterDropCarriedObjectCallbacks(Character* self, bool ragdollTarget, bool removeOnly);
+
+// Lua event name: "Character::getDropped"
+// Lua signature: function(self, ragdoll, hull)
+void CallCharacterGetDroppedCallbacks(Character* self, bool ragdoll, bool hull);
+
+// Lua event name: "BountyManager::setCrime"
+// Lua signature: function(self, crime, againstFaction, againstHandle, accepted)
+void CallBountyManagerSetCrimeCallbacks(BountyManager* self, int crime, Faction* againstFaction, const hand& againstHandle, bool accepted);
+
+// Lua event name: "BountyManager::notifyStartPrisonSentence"
+// Lua signature: function(self, lawFaction)
+void CallBountyManagerStartPrisonSentenceCallbacks(BountyManager* self, Faction* lawFaction);
+
+// Lua event name: "BountyManager::notifyPlayerClaimBounty"
+// Lua signature: function(self, faction)
+void CallBountyManagerPlayerClaimBountyCallbacks(BountyManager* self, Faction* faction);
+
+// Lua event name: "BountyManager::assignBountyForCrimes"
+// Lua signature: function(self, enforcer)
+void CallBountyManagerAssignBountyCallbacks(BountyManager* self, Faction* enforcer);
+
+// Lua event name: "BountyManager::clearBounty"
+// Lua signature: function(self, enforcer)
+void CallBountyManagerClearBountyCallbacks(BountyManager* self, Faction* enforcer);
+
+// Lua event name: "BountyManager::unfairAddToBounty"
+// Lua signature: function(self, enforcer, amount)
+void CallBountyManagerUnfairAddToBountyCallbacks(BountyManager* self, Faction* enforcer, int amount);
+
+// Lua event name: "FactionRelations::_NV_setEnemy"
+// Lua signature: function(self, faction)
+void CallFactionRelationsSetEnemyCallbacks(FactionRelations* self, Faction* faction);
+
+// Lua event name: "FactionRelations::setRelation"
+// Lua signature: function(self, faction, relation)
+void CallFactionRelationsSetRelationCallbacks(FactionRelations* self, Faction* faction, float relation);
+
+// Lua event name: "FactionRelations::_NV_affectTrust"
+// Lua signature: function(self, faction, amount, multiplier)
+void CallFactionRelationsAffectTrustCallbacks(FactionRelations* self, Faction* faction, float amount, float multiplier);
+
+// Lua event name: "FactionRelations::_NV_setNoLongerEnemies"
+// Lua signature: function(self, faction)
+void CallFactionRelationsSetNoLongerEnemiesCallbacks(FactionRelations* self, Faction* faction);
+
+// Lua event name: "FactionRelations::_NV_declareWar"
+// Lua signature: function(self, faction)
+void CallFactionRelationsDeclareWarCallbacks(FactionRelations* self, Faction* faction);
+
+// Lua event name: "FactionRelations::_NV_affectReputation"
+// Lua signature: function(self, faction, amount)
+void CallFactionRelationsAffectReputationCallbacks(FactionRelations* self, Faction* faction, float amount);
+
+// Lua event name: "Research::startResearch"
+// Lua signature: function(self, data, started)
+void CallResearchStartCallbacks(Research* self, GameData* data, bool started);
+
+// Lua event name: "Research::stopResearch"
+// Lua signature: function(self, data)
+void CallResearchStopCallbacks(Research* self, GameData* data);
+
+// Lua event name: "Research::completeResearch"
+// Lua signature: function(self, data)
+void CallResearchCompleteCallbacks(Research* self, GameData* data);
+
+// Lua event name: "Research::progressResearch"
+// Lua signature: function(self, amount)
+void CallResearchProgressCallbacks(Research* self, float amount);
+
+// Lua event name: "CampaignInstance::changePhase"
+// Lua signature: function(self, phase)
+void CallCampaignChangePhaseCallbacks(CampaignInstance* self, int phase);
+
+// Lua event name: "CampaignInstance::_NV_victoryEvent"
+// Lua signature: function(self)
+void CallCampaignVictoryCallbacks(CampaignInstance* self);
+
+// Lua event name: "CampaignInstance::_NV_lossEvent"
+// Lua signature: function(self)
+void CallCampaignLossCallbacks(CampaignInstance* self);
+
+// Lua event name: "CampaignInstance::_NV_addToCampaign"
+// Lua signature: function(self, platoon, forceLeader)
+void CallCampaignAddPlatoonCallbacks(CampaignInstance* self, Platoon* platoon, bool forceLeader);
+
+// Lua event name: "CampaignInstance::_NV_removeFromCampaign"
+// Lua signature: function(self, platoon)
+void CallCampaignRemovePlatoonCallbacks(CampaignInstance* self, Platoon* platoon);
+
+// Lua event name: "Platoon::_NV_notifyMissionEnded"
+// Lua signature: function(self)
+void CallPlatoonMissionEndedCallbacks(Platoon* self);
+
+// Lua event name: "Platoon::declareDead"
+// Lua signature: function(self)
+void CallPlatoonDeclareDeadCallbacks(Platoon* self);
+
+// Lua event name: "Platoon::undeclareDead"
+// Lua signature: function(self)
+void CallPlatoonUndeclareDeadCallbacks(Platoon* self);
+
+// Lua event name: "ActivePlatoon::setSquadLeader"
+// Lua signature: function(self, leader)
+void CallActivePlatoonSetSquadLeaderCallbacks(ActivePlatoon* self, Character* leader);

@@ -35,6 +35,7 @@
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/CharacterHumanBinding.h"
 #include "Bindings/Kenshi/Combat/CombatClassBinding.h"
+#include "Bindings/Kenshi/CampaignInstanceBinding.h"
 #include "Bindings/Kenshi/CombatMovementControllerBinding.h"
 #include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/CrossbowBinding.h"
@@ -53,6 +54,7 @@
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Kenshi/GameSaveStateBinding.h"
 #include "Bindings/Kenshi/GameWorldBinding.h"
+#include "Bindings/Kenshi/GunClassBinding.h"
 #include "Bindings/Kenshi/ContainerItemBinding.h"
 #include "Bindings/Kenshi/GameplayOptionsBinding.h"
 #include "Bindings/Kenshi/GearBinding.h"
@@ -118,11 +120,13 @@
 #include "Bindings/Kenshi/LimbsInventoryLayoutBinding.h"
 #include "Bindings/Kenshi/LockedArmourBinding.h"
 #include "Bindings/Kenshi/MedicalSystemBinding.h"
+#include "Bindings/Kenshi/MedicalSystem_HealthPartStatusBinding.h"
 #include "Bindings/Kenshi/OwnershipsBinding.h"
 #include "Bindings/Kenshi/PlatoonBinding.h"
 #include "Bindings/Kenshi/PlayerInterfaceBinding.h"
 #include "Bindings/Kenshi/ProsperityManagerBinding.h"
 #include "Bindings/Kenshi/RaceDataBinding.h"
+#include "Bindings/Kenshi/ResearchBinding.h"
 #include "Bindings/Kenshi/RobotLimbsBinding.h"
 #include "Bindings/Kenshi/RootObjectBaseBinding.h"
 #include "Bindings/Kenshi/RootObjectBinding.h"
@@ -175,6 +179,7 @@
 #include <kenshi/CharacterAnimal.h>
 #include <kenshi/CharacterHuman.h>
 #include <kenshi/combat/CombatClass.h>
+#include <kenshi/Campaign.h>
 #include <kenshi/Damages.h>
 #include <kenshi/Dialogue.h>
 #include <kenshi/Faction.h>
@@ -183,6 +188,7 @@
 #include <kenshi/FactionUniqueSquadManager.h>
 #include <kenshi/FactionWarMgr.h>
 #include <kenshi/GameWorld.h>
+#include <kenshi/GunClass.h>
 #include <kenshi/Gear.h>
 #include <kenshi/InputHandler.h>
 #include <kenshi/Item.h>
@@ -191,6 +197,7 @@
 #include <kenshi/PlayerInterface.h>
 #include <kenshi/RootObjectBase.h>
 #include <kenshi/RootObjectFactory.h>
+#include <kenshi/Research.h>
 #include <kenshi/ShopTrader.h>
 #include <kenshi/WorldEventStateQuery.h>
 #include <kenshi/ZoneManager.h>
@@ -235,6 +242,7 @@ namespace KenshiLua
     static inline const char* CharMovementMetatable()                               { return CharMovementBinding::getMetatableName(); }
     static inline const char* CharStatsMetatable()                                  { return CharStatsBinding::getMetatableName(); }
     static inline const char* CombatClassMetatable()                                { return CombatClassBinding::getMetatableName(); }
+    static inline const char* CampaignInstanceMetatable()                           { return CampaignInstanceBinding::getMetatableName(); }
     static inline const char* CombatMovementControllerMetatable()                   { return CombatMovementControllerBinding::getMetatableName(); }
     static inline const char* CombatTechniqueDataMetatable()                        { return CombatTechniqueDataBinding::getMetatableName(); }
     static inline const char* CraftingBuildingMetatable()                           { return CraftingBuildingBinding::getMetatableName(); }
@@ -261,6 +269,7 @@ namespace KenshiLua
     static inline const char* GameDataMetatable()                                   { return GameDataBinding::getMetatableName(); }
     static inline const char* GameSaveStateMetatable()                              { return GameSaveStateBinding::getMetatableName(); }
     static inline const char* GameWorldMetatable()                                  { return GameWorldBinding::getMetatableName(); }
+    static inline const char* GunClassMetatable()                                   { return GunClassBinding::getMetatableName(); }
     static inline const char* GameplayOptionsMetatable()                            { return GameplayOptionsBinding::getMetatableName(); }
     static inline const char* GatewayBuildingMetatable()                            { return GatewayBuildingBinding::getMetatableName(); }
     static inline const char* GearMetatable()                                       { return GearBinding::getMetatableName(); }
@@ -294,6 +303,7 @@ namespace KenshiLua
     static inline const char* MainBarGUIMetatable()                                 { return MainBarGUIBinding::getMetatableName(); }
     static inline const char* MainTabPortraitPlatoonMetatable()                     { return MainTabPortraitPlatoonBinding::getMetatableName(); }
     static inline const char* MedicalSystemMetatable()                              { return MedicalSystemBinding::getMetatableName(); }
+    static inline const char* HealthPartStatusMetatable()                           { return MedicalSystem_HealthPartStatusBinding::getMetatableName(); }
     static inline const char* MyGuiWidgetMetatable()                                { return MyGUIBinding::getMetatableName(); }
     static inline const char* NewGameOptionsWindowMetatable()                       { return NewGameOptionsWindowBinding::getMetatableName(); }
     static inline const char* OrdersPanelMetatable()                                { return OrdersPanelBinding::getMetatableName(); }
@@ -312,6 +322,7 @@ namespace KenshiLua
     static inline const char* RainCollectorBuildingMetatable()                      { return RainCollectorBuildingBinding::getMetatableName(); }
     static inline const char* RendHitMetatable()                                    { return rendHitBinding::getMetatableName(); }
     static inline const char* ResearchBuildingMetatable()                           { return ResearchBuildingBinding::getMetatableName(); }
+    static inline const char* ResearchMetatable()                                   { return ResearchBinding::getMetatableName(); }
     static inline const char* RobotLimbsMetatable()                                 { return RobotLimbsBinding::getMetatableName(); }
     static inline const char* RootObjectBaseMetatable()                             { return RootObjectBaseBinding::getMetatableName(); }
     static inline const char* RootObjectFactoryMetatable()                          { return RootObjectFactoryBinding::getMetatableName(); }
@@ -381,6 +392,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, CharBody* val)                         { pushObject<CharBody>(L, val, CharBodyMetatable()); }
     static inline void pushArg(lua_State* L, CharStats* val)                        { pushObject<CharStats>(L, val, CharStatsMetatable()); }
     static inline void pushArg(lua_State* L, CombatClass* val)                      { pushObject<CombatClass>(L, val, CombatClassMetatable()); }
+    static inline void pushArg(lua_State* L, CampaignInstance* val)                 { pushObject<CampaignInstance>(L, val, CampaignInstanceMetatable()); }
     static inline void pushArg(lua_State* L, CombatMovementController* val)         { pushObject<CombatMovementController>(L, val, CombatMovementControllerMetatable()); }
     static inline void pushArg(lua_State* L, CombatTechniqueData* val)              { pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
     static inline void pushArg(lua_State* L, ContextMenu* val)                      { pushObject<ContextMenu>(L, val, ContextMenuMetatable()); }
@@ -449,6 +461,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, MainBarGUI* val)                       { pushObject<MainBarGUI>(L, val, MainBarGUIMetatable()); }
     static inline void pushArg(lua_State* L, MainTabPortraitPlatoon* val)           { pushObject<MainTabPortraitPlatoon>(L, val, MainTabPortraitPlatoonMetatable()); }
     static inline void pushArg(lua_State* L, MedicalSystem* val)                    { pushObject<MedicalSystem>(L, val, MedicalSystemMetatable()); }
+    static inline void pushArg(lua_State* L, MedicalSystem::HealthPartStatus* val)  { pushObject<MedicalSystem::HealthPartStatus>(L, val, HealthPartStatusMetatable()); }
     static inline void pushArg(lua_State* L, NewGameOptionsWindow* val)             { pushObject<NewGameOptionsWindow>(L, val, NewGameOptionsWindowMetatable()); }
     static inline void pushArg(lua_State* L, OrdersPanel* val)                      { pushObject<OrdersPanel>(L, val, OrdersPanelMetatable()); }
     static inline void pushArg(lua_State* L, OrderCellView* val)                    { pushObject<OrderCellView>(L, val, OrderCellViewMetatable()); }
@@ -465,6 +478,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, RainCollectorBuilding* val)            { pushObject<RainCollectorBuilding>(L, val, RainCollectorBuildingMetatable()); }
     static inline void pushArg(lua_State* L, rendHit* val)                          { pushObject<rendHit>(L, val, RendHitMetatable()); }
     static inline void pushArg(lua_State* L, ResearchBuilding* val)                 { pushObject<ResearchBuilding>(L, val, ResearchBuildingMetatable()); }
+    static inline void pushArg(lua_State* L, Research* val)                         { pushObject<Research>(L, val, ResearchMetatable()); }
     static inline void pushArg(lua_State* L, RobotLimbs* val)                       { pushObject<RobotLimbs>(L, val, RobotLimbsMetatable()); }
     static inline void pushArg(lua_State* L, RootObject* val)                       { pushObject<RootObject>(L, val, RootObjectMetatable()); }
     static inline void pushArg(lua_State* L, RootObjectBase* val)                   { pushObject<RootObjectBase>(L, val, RootObjectBaseMetatable()); }
@@ -487,6 +501,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, Weapon* val)                           { pushObject<Weapon>(L, val, WeaponMetatable()); }
     static inline void pushArg(lua_State* L, WindGeneratorBuilding* val)            { pushObject<WindGeneratorBuilding>(L, val, WindGeneratorBuildingMetatable()); }
     static inline void pushArg(lua_State* L, WorldEventStateQuery* val)             { pushObject<WorldEventStateQuery>(L, val, WorldEventStateQueryMetatable()); }
+    static inline void pushArg(lua_State* L, GunClass* val)                         { pushObject<GunClass>(L, val, GunClassMetatable()); }
     static inline void pushArg(lua_State* L, YesNoMaybe val)                        { lua_pushinteger(L, static_cast<int>(val.key)); }
     static inline void pushArg(lua_State* L, ZoneManager* val)                      { pushObject<ZoneManager>(L, val, ZoneManagerMetatable()); }
     static inline void pushArg(lua_State* L, ZoneMap* val)                          { pushObject<ZoneMap>(L, val, ZoneMapMetatable()); }
@@ -6105,4 +6120,232 @@ void CallTitleScreenLoadGameCallbacks(TitleScreen* self, MyGUI::Widget* sender)
 {
     ArgPusher2<TitleScreen*, KenshiLua::WidgetArg> pusher(self, sender);
     KenshiLua::EventSystem::get().callHandlers("TitleScreen::loadGame", &pusher);
+}
+
+bool CallCombatClassInitCombatModeCallbacks(CombatClass* self, const hand& subject, int endValue, bool focusedTarget, bool defaultVal)
+{
+    ArgPusher5<CombatClass*, const hand&, int, bool, bool> pusher(self, subject, endValue, focusedTarget, defaultVal);
+    return KenshiLua::EventSystem::get().callHandlersBool("CombatClass::_NV_initCombatMode", &pusher, defaultVal);
+}
+
+void CallCombatClassGetHitCallbacks(CombatClass* self, int direction, Damages* damage, RootObject* attacker, bool stumble)
+{
+    ArgPusher5<CombatClass*, int, Damages*, RootObject*, bool> pusher(self, direction, damage, attacker, stumble);
+    KenshiLua::EventSystem::get().callHandlers("CombatClass::_getHit", &pusher);
+}
+
+void CallCombatClassBlockHitCallbacks(CombatClass* self, int direction, Damages* damage, RootObject* attacker)
+{
+    ArgPusher4<CombatClass*, int, Damages*, RootObject*> pusher(self, direction, damage, attacker);
+    KenshiLua::EventSystem::get().callHandlers("CombatClass::_blockHit", &pusher);
+}
+
+void CallCombatClassAddAttackerCallbacks(CombatClass* self, Character* attacker, bool added)
+{
+    ArgPusher3<CombatClass*, Character*, bool> pusher(self, attacker, added);
+    KenshiLua::EventSystem::get().callHandlers("CombatClass::addAttackerH", &pusher);
+}
+
+void CallCombatClassRemoveAttackerCallbacks(CombatClass* self, Character* attacker, bool removed)
+{
+    ArgPusher3<CombatClass*, Character*, bool> pusher(self, attacker, removed);
+    KenshiLua::EventSystem::get().callHandlers("CombatClass::removeAttackerH", &pusher);
+}
+
+void CallGunClassShootCallbacks(GunClass* self, Character* shooter, RootObject* target, int stat, const Ogre::Vector3& aimPosition)
+{
+    ArgPusher5<GunClass*, Character*, RootObject*, int, const Ogre::Vector3&> pusher(self, shooter, target, stat, aimPosition);
+    KenshiLua::EventSystem::get().callHandlers("GunClass::shoot", &pusher);
+}
+
+void CallHealthPartStatusApplyDamageCallbacks(MedicalSystem::HealthPartStatus* self, Damages* damage)
+{
+    ArgPusher2<MedicalSystem::HealthPartStatus*, Damages*> pusher(self, damage);
+    KenshiLua::EventSystem::get().callHandlers("MedicalSystem::HealthPartStatus::applyDamage", &pusher);
+}
+
+void CallMedicalSystemApplyFirstAidCallbacks(MedicalSystem* self, float skill, Item* equipment, float frameTime, Character* medic, bool applied)
+{
+    ArgPusher6<MedicalSystem*, float, Item*, float, Character*, bool> pusher(self, skill, equipment, frameTime, medic, applied);
+    KenshiLua::EventSystem::get().callHandlers("MedicalSystem::applyFirstAid", &pusher);
+}
+
+void CallMedicalSystemApplyDoctoringCallbacks(MedicalSystem* self, float skill, Item* equipment, float frameTime, Character* medic, bool applied)
+{
+    ArgPusher6<MedicalSystem*, float, Item*, float, Character*, bool> pusher(self, skill, equipment, frameTime, medic, applied);
+    KenshiLua::EventSystem::get().callHandlers("MedicalSystem::applyDoctoring", &pusher);
+}
+
+void CallMedicalSystemApplyRiggingCallbacks(MedicalSystem* self, float skill, Item* equipment, float frameTime, bool applied)
+{
+    ArgPusher5<MedicalSystem*, float, Item*, float, bool> pusher(self, skill, equipment, frameTime, applied);
+    KenshiLua::EventSystem::get().callHandlers("MedicalSystem::applyRigging", &pusher);
+}
+
+void CallCharacterSetPrisonModeCallbacks(Character* self, bool enabled, UseableStuff* cage)
+{
+    ArgPusher3<Character*, bool, UseableStuff*> pusher(self, enabled, cage);
+    KenshiLua::EventSystem::get().callHandlers("Character::setPrisonMode", &pusher);
+}
+
+void CallCharacterDropCarriedObjectCallbacks(Character* self, bool ragdollTarget, bool removeOnly)
+{
+    ArgPusher3<Character*, bool, bool> pusher(self, ragdollTarget, removeOnly);
+    KenshiLua::EventSystem::get().callHandlers("Character::dropCarriedObject", &pusher);
+}
+
+void CallCharacterGetDroppedCallbacks(Character* self, bool ragdoll, bool hull)
+{
+    ArgPusher3<Character*, bool, bool> pusher(self, ragdoll, hull);
+    KenshiLua::EventSystem::get().callHandlers("Character::getDropped", &pusher);
+}
+
+void CallBountyManagerSetCrimeCallbacks(BountyManager* self, int crime, Faction* againstFaction, const hand& againstHandle, bool accepted)
+{
+    ArgPusher5<BountyManager*, int, Faction*, const hand&, bool> pusher(self, crime, againstFaction, againstHandle, accepted);
+    KenshiLua::EventSystem::get().callHandlers("BountyManager::setCrime", &pusher);
+}
+
+void CallBountyManagerStartPrisonSentenceCallbacks(BountyManager* self, Faction* lawFaction)
+{
+    ArgPusher2<BountyManager*, Faction*> pusher(self, lawFaction);
+    KenshiLua::EventSystem::get().callHandlers("BountyManager::notifyStartPrisonSentence", &pusher);
+}
+
+void CallBountyManagerPlayerClaimBountyCallbacks(BountyManager* self, Faction* faction)
+{
+    ArgPusher2<BountyManager*, Faction*> pusher(self, faction);
+    KenshiLua::EventSystem::get().callHandlers("BountyManager::notifyPlayerClaimBounty", &pusher);
+}
+
+void CallBountyManagerAssignBountyCallbacks(BountyManager* self, Faction* enforcer)
+{
+    ArgPusher2<BountyManager*, Faction*> pusher(self, enforcer);
+    KenshiLua::EventSystem::get().callHandlers("BountyManager::assignBountyForCrimes", &pusher);
+}
+
+void CallBountyManagerClearBountyCallbacks(BountyManager* self, Faction* enforcer)
+{
+    ArgPusher2<BountyManager*, Faction*> pusher(self, enforcer);
+    KenshiLua::EventSystem::get().callHandlers("BountyManager::clearBounty", &pusher);
+}
+
+void CallBountyManagerUnfairAddToBountyCallbacks(BountyManager* self, Faction* enforcer, int amount)
+{
+    ArgPusher3<BountyManager*, Faction*, int> pusher(self, enforcer, amount);
+    KenshiLua::EventSystem::get().callHandlers("BountyManager::unfairAddToBounty", &pusher);
+}
+
+void CallFactionRelationsSetEnemyCallbacks(FactionRelations* self, Faction* faction)
+{
+    ArgPusher2<FactionRelations*, Faction*> pusher(self, faction);
+    KenshiLua::EventSystem::get().callHandlers("FactionRelations::_NV_setEnemy", &pusher);
+}
+
+void CallFactionRelationsSetRelationCallbacks(FactionRelations* self, Faction* faction, float relation)
+{
+    ArgPusher3<FactionRelations*, Faction*, float> pusher(self, faction, relation);
+    KenshiLua::EventSystem::get().callHandlers("FactionRelations::setRelation", &pusher);
+}
+
+void CallFactionRelationsAffectTrustCallbacks(FactionRelations* self, Faction* faction, float amount, float multiplier)
+{
+    ArgPusher4<FactionRelations*, Faction*, float, float> pusher(self, faction, amount, multiplier);
+    KenshiLua::EventSystem::get().callHandlers("FactionRelations::_NV_affectTrust", &pusher);
+}
+
+void CallFactionRelationsSetNoLongerEnemiesCallbacks(FactionRelations* self, Faction* faction)
+{
+    ArgPusher2<FactionRelations*, Faction*> pusher(self, faction);
+    KenshiLua::EventSystem::get().callHandlers("FactionRelations::_NV_setNoLongerEnemies", &pusher);
+}
+
+void CallFactionRelationsDeclareWarCallbacks(FactionRelations* self, Faction* faction)
+{
+    ArgPusher2<FactionRelations*, Faction*> pusher(self, faction);
+    KenshiLua::EventSystem::get().callHandlers("FactionRelations::_NV_declareWar", &pusher);
+}
+
+void CallFactionRelationsAffectReputationCallbacks(FactionRelations* self, Faction* faction, float amount)
+{
+    ArgPusher3<FactionRelations*, Faction*, float> pusher(self, faction, amount);
+    KenshiLua::EventSystem::get().callHandlers("FactionRelations::_NV_affectReputation", &pusher);
+}
+
+void CallResearchStartCallbacks(Research* self, GameData* data, bool started)
+{
+    ArgPusher3<Research*, GameData*, bool> pusher(self, data, started);
+    KenshiLua::EventSystem::get().callHandlers("Research::startResearch", &pusher);
+}
+
+void CallResearchStopCallbacks(Research* self, GameData* data)
+{
+    ArgPusher2<Research*, GameData*> pusher(self, data);
+    KenshiLua::EventSystem::get().callHandlers("Research::stopResearch", &pusher);
+}
+
+void CallResearchCompleteCallbacks(Research* self, GameData* data)
+{
+    ArgPusher2<Research*, GameData*> pusher(self, data);
+    KenshiLua::EventSystem::get().callHandlers("Research::completeResearch", &pusher);
+}
+
+void CallResearchProgressCallbacks(Research* self, float amount)
+{
+    ArgPusher2<Research*, float> pusher(self, amount);
+    KenshiLua::EventSystem::get().callHandlers("Research::progressResearch", &pusher);
+}
+
+void CallCampaignChangePhaseCallbacks(CampaignInstance* self, int phase)
+{
+    ArgPusher2<CampaignInstance*, int> pusher(self, phase);
+    KenshiLua::EventSystem::get().callHandlers("CampaignInstance::changePhase", &pusher);
+}
+
+void CallCampaignVictoryCallbacks(CampaignInstance* self)
+{
+    ArgPusher1<CampaignInstance*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("CampaignInstance::_NV_victoryEvent", &pusher);
+}
+
+void CallCampaignLossCallbacks(CampaignInstance* self)
+{
+    ArgPusher1<CampaignInstance*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("CampaignInstance::_NV_lossEvent", &pusher);
+}
+
+void CallCampaignAddPlatoonCallbacks(CampaignInstance* self, Platoon* platoon, bool forceLeader)
+{
+    ArgPusher3<CampaignInstance*, Platoon*, bool> pusher(self, platoon, forceLeader);
+    KenshiLua::EventSystem::get().callHandlers("CampaignInstance::_NV_addToCampaign", &pusher);
+}
+
+void CallCampaignRemovePlatoonCallbacks(CampaignInstance* self, Platoon* platoon)
+{
+    ArgPusher2<CampaignInstance*, Platoon*> pusher(self, platoon);
+    KenshiLua::EventSystem::get().callHandlers("CampaignInstance::_NV_removeFromCampaign", &pusher);
+}
+
+void CallPlatoonMissionEndedCallbacks(Platoon* self)
+{
+    ArgPusher1<Platoon*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("Platoon::_NV_notifyMissionEnded", &pusher);
+}
+
+void CallPlatoonDeclareDeadCallbacks(Platoon* self)
+{
+    ArgPusher1<Platoon*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("Platoon::declareDead", &pusher);
+}
+
+void CallPlatoonUndeclareDeadCallbacks(Platoon* self)
+{
+    ArgPusher1<Platoon*> pusher(self);
+    KenshiLua::EventSystem::get().callHandlers("Platoon::undeclareDead", &pusher);
+}
+
+void CallActivePlatoonSetSquadLeaderCallbacks(ActivePlatoon* self, Character* leader)
+{
+    ArgPusher2<ActivePlatoon*, Character*> pusher(self, leader);
+    KenshiLua::EventSystem::get().callHandlers("ActivePlatoon::setSquadLeader", &pusher);
 }

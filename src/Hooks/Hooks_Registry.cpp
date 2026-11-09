@@ -49,6 +49,9 @@ namespace KenshiLua
         { "Character::getFencingSuccessChance",                              InstallHook_Character_getFencingSuccessChance },
         { "Character::changeSlaveOwner",                                     InstallHook_Character_changeSlaveOwner },
         { "Character::setChainedMode",                                       InstallHook_Character_setChainedMode },
+        { "Character::setPrisonMode",                                             InstallHook_Character_setPrisonMode },
+        { "Character::dropCarriedObject",                                         InstallHook_Character_dropCarriedObject },
+        { "Character::getDropped",                                                InstallHook_Character_getDropped },
         { "Character::addGoal",                                              InstallHook_Character_addGoal },
         { "Character::addJob",                                               InstallHook_Character_addJob },
         { "Character::addOrder",                                             InstallHook_Character_addOrder },
@@ -92,6 +95,10 @@ namespace KenshiLua
         { "Platoon::iBuyStolenGoods",                                        InstallHook_Platoon_iBuyStolenGoods },
         { "Platoon::iBuyIllegalGoods",                                       InstallHook_Platoon_iBuyIllegalGoods },
         { "Platoon::_NV_loadFromSerialise",                                  InstallHook_Platoon_NV_loadFromSerialise },
+        { "Platoon::_NV_notifyMissionEnded",                                      InstallHook_Platoon_NV_notifyMissionEnded },
+        { "Platoon::declareDead",                                                 InstallHook_Platoon_declareDead },
+        { "Platoon::undeclareDead",                                               InstallHook_Platoon_undeclareDead },
+        { "ActivePlatoon::setSquadLeader",                                        InstallHook_ActivePlatoon_setSquadLeader },
         { "Ownerships::canIUseThisBuilding",                                 InstallHook_Ownerships_canIUseThisBuilding },
 
         // Item.h           
@@ -111,9 +118,21 @@ namespace KenshiLua
 
         // BountyManager.h          
         { "BountyManager::notifyCrimeWitnessed",                             InstallHook_BountyManager_NotifyCrimeWitnessed },
+        { "BountyManager::setCrime",                                              InstallHook_BountyManager_setCrime },
+        { "BountyManager::notifyStartPrisonSentence",                             InstallHook_BountyManager_notifyStartPrisonSentence },
+        { "BountyManager::notifyPlayerClaimBounty",                               InstallHook_BountyManager_notifyPlayerClaimBounty },
+        { "BountyManager::assignBountyForCrimes",                                 InstallHook_BountyManager_assignBountyForCrimes },
+        { "BountyManager::clearBounty",                                           InstallHook_BountyManager_clearBounty },
+        { "BountyManager::unfairAddToBounty",                                     InstallHook_BountyManager_unfairAddToBounty },
 
         // FactionRelations.h           
         { "FactionRelations::affectRelations",                               InstallHook_FactionRelations_AffectRelations },
+        { "FactionRelations::_NV_setEnemy",                                       InstallHook_FactionRelations_NV_setEnemy },
+        { "FactionRelations::setRelation",                                        InstallHook_FactionRelations_setRelation },
+        { "FactionRelations::_NV_affectTrust",                                    InstallHook_FactionRelations_NV_affectTrust },
+        { "FactionRelations::_NV_setNoLongerEnemies",                             InstallHook_FactionRelations_NV_setNoLongerEnemies },
+        { "FactionRelations::_NV_declareWar",                                     InstallHook_FactionRelations_NV_declareWar },
+        { "FactionRelations::_NV_affectReputation",                               InstallHook_FactionRelations_NV_affectReputation },
 
         // Faction.h            
         { "Faction::chooseARace",                                            InstallHook_Faction_chooseARace },
@@ -125,6 +144,10 @@ namespace KenshiLua
         { "MedicalSystem::amputate",                                         InstallHook_MedicalSystem_Amputate },
         { "MedicalSystem::knockout",                                         InstallHook_MedicalSystem_knockout },
         { "MedicalSystem::canGetUpWakeUp",                                   InstallHook_MedicalSystem_canGetUpWakeUp },
+        { "MedicalSystem::HealthPartStatus::applyDamage",                         InstallHook_HealthPartStatus_applyDamage },
+        { "MedicalSystem::applyFirstAid",                                         InstallHook_MedicalSystem_applyFirstAid },
+        { "MedicalSystem::applyDoctoring",                                        InstallHook_MedicalSystem_applyDoctoring },
+        { "MedicalSystem::applyRigging",                                          InstallHook_MedicalSystem_applyRigging },
 
         // gui/DialogueWindow.h         
         { "DialogueWindow::show",                                            InstallHook_DialogueWindow_Show },
@@ -241,6 +264,29 @@ namespace KenshiLua
         // ContextMenu.h
         { "ContextMenu::showContextMenu",                                    InstallHook_ContextMenu_showContextMenu },
         { "ContextMenuGUI::show",                                            InstallHook_ContextMenuGUI_show },
+
+        // combat/CombatClass.h
+        { "CombatClass::_NV_initCombatMode",                                      InstallHook_CombatClass_NV_initCombatMode },
+        { "CombatClass::_getHit",                                                 InstallHook_CombatClass_getHit },
+        { "CombatClass::_blockHit",                                               InstallHook_CombatClass_blockHit },
+        { "CombatClass::addAttackerH",                                            InstallHook_CombatClass_addAttackerH },
+        { "CombatClass::removeAttackerH",                                         InstallHook_CombatClass_removeAttackerH },
+
+        // GunClass.h
+        { "GunClass::shoot",                                                      InstallHook_GunClass_shoot },
+
+        // Research.h
+        { "Research::startResearch",                                              InstallHook_Research_startResearch },
+        { "Research::stopResearch",                                               InstallHook_Research_stopResearch },
+        { "Research::completeResearch",                                           InstallHook_Research_completeResearch },
+        { "Research::progressResearch",                                           InstallHook_Research_progressResearch },
+
+        // Campaign.h
+        { "CampaignInstance::changePhase",                                        InstallHook_CampaignInstance_changePhase },
+        { "CampaignInstance::_NV_victoryEvent",                                   InstallHook_CampaignInstance_NV_victoryEvent },
+        { "CampaignInstance::_NV_lossEvent",                                      InstallHook_CampaignInstance_NV_lossEvent },
+        { "CampaignInstance::_NV_addToCampaign",                                  InstallHook_CampaignInstance_NV_addToCampaign },
+        { "CampaignInstance::_NV_removeFromCampaign",                             InstallHook_CampaignInstance_NV_removeFromCampaign },
 
         // Misc
         { "BuildModeWindow::confirm",                                        InstallHook_BuildModeWindow_confirm },

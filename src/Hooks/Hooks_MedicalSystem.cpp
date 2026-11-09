@@ -74,3 +74,50 @@ DEFINE_HOOK_INSTALLER(InstallHook_RobotLimbs_CONSTRUCTOR,
     KenshiLib::GetRealAddress(&RobotLimbs::_CONSTRUCTOR),
     RobotLimbs_CONSTRUCTOR_hook, RobotLimbs_CONSTRUCTOR_orig)
 
+static void (*HealthPartStatus_applyDamage_orig)(MedicalSystem::HealthPartStatus*, const Damages&) = NULL;
+static void HealthPartStatus_applyDamage_hook(MedicalSystem::HealthPartStatus* thisptr, const Damages& damage)
+{
+    HealthPartStatus_applyDamage_orig(thisptr, damage);
+    CallHealthPartStatusApplyDamageCallbacks(thisptr, const_cast<Damages*>(&damage));
+}
+DEFINE_HOOK_INSTALLER(InstallHook_HealthPartStatus_applyDamage,
+    "MedicalSystem::HealthPartStatus::applyDamage",
+    KenshiLib::GetRealAddress(&MedicalSystem::HealthPartStatus::applyDamage),
+    HealthPartStatus_applyDamage_hook, HealthPartStatus_applyDamage_orig)
+
+static bool (*MedicalSystem_applyFirstAid_orig)(MedicalSystem*, float, Item*, float, Character*) = NULL;
+static bool MedicalSystem_applyFirstAid_hook(MedicalSystem* thisptr, float skill, Item* equipment, float frameTime, Character* medic)
+{
+    bool applied = MedicalSystem_applyFirstAid_orig(thisptr, skill, equipment, frameTime, medic);
+    CallMedicalSystemApplyFirstAidCallbacks(thisptr, skill, equipment, frameTime, medic, applied);
+    return applied;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_applyFirstAid,
+    "MedicalSystem::applyFirstAid",
+    KenshiLib::GetRealAddress(&MedicalSystem::applyFirstAid),
+    MedicalSystem_applyFirstAid_hook, MedicalSystem_applyFirstAid_orig)
+
+static bool (*MedicalSystem_applyDoctoring_orig)(MedicalSystem*, float, Item*, float, Character*) = NULL;
+static bool MedicalSystem_applyDoctoring_hook(MedicalSystem* thisptr, float skill, Item* equipment, float frameTime, Character* medic)
+{
+    bool applied = MedicalSystem_applyDoctoring_orig(thisptr, skill, equipment, frameTime, medic);
+    CallMedicalSystemApplyDoctoringCallbacks(thisptr, skill, equipment, frameTime, medic, applied);
+    return applied;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_applyDoctoring,
+    "MedicalSystem::applyDoctoring",
+    KenshiLib::GetRealAddress(&MedicalSystem::applyDoctoring),
+    MedicalSystem_applyDoctoring_hook, MedicalSystem_applyDoctoring_orig)
+
+static bool (*MedicalSystem_applyRigging_orig)(MedicalSystem*, float, Item*, float) = NULL;
+static bool MedicalSystem_applyRigging_hook(MedicalSystem* thisptr, float skill, Item* equipment, float frameTime)
+{
+    bool applied = MedicalSystem_applyRigging_orig(thisptr, skill, equipment, frameTime);
+    CallMedicalSystemApplyRiggingCallbacks(thisptr, skill, equipment, frameTime, applied);
+    return applied;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_MedicalSystem_applyRigging,
+    "MedicalSystem::applyRigging",
+    KenshiLib::GetRealAddress(&MedicalSystem::applyRigging),
+    MedicalSystem_applyRigging_hook, MedicalSystem_applyRigging_orig)
+

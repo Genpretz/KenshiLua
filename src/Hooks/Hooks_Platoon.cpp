@@ -96,3 +96,47 @@ DEFINE_HOOK_INSTALLER(InstallHook_ActivePlatoon_CONSTRUCTOR,
     "ActivePlatoon::_CONSTRUCTOR",
     KenshiLib::GetRealAddress(&ActivePlatoon::_CONSTRUCTOR),
     ActivePlatoon_CONSTRUCTOR_hook, ActivePlatoon_CONSTRUCTOR_orig)
+
+static void (*Platoon_NV_notifyMissionEnded_orig)(Platoon*) = NULL;
+static void Platoon_NV_notifyMissionEnded_hook(Platoon* thisptr)
+{
+    Platoon_NV_notifyMissionEnded_orig(thisptr);
+    CallPlatoonMissionEndedCallbacks(thisptr);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_NV_notifyMissionEnded,
+    "Platoon::_NV_notifyMissionEnded",
+    KenshiLib::GetRealAddress(&Platoon::_NV_notifyMissionEnded),
+    Platoon_NV_notifyMissionEnded_hook, Platoon_NV_notifyMissionEnded_orig)
+
+static void (*Platoon_declareDead_orig)(Platoon*) = NULL;
+static void Platoon_declareDead_hook(Platoon* thisptr)
+{
+    Platoon_declareDead_orig(thisptr);
+    CallPlatoonDeclareDeadCallbacks(thisptr);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_declareDead,
+    "Platoon::declareDead",
+    KenshiLib::GetRealAddress(&Platoon::declareDead),
+    Platoon_declareDead_hook, Platoon_declareDead_orig)
+
+static void (*Platoon_undeclareDead_orig)(Platoon*) = NULL;
+static void Platoon_undeclareDead_hook(Platoon* thisptr)
+{
+    Platoon_undeclareDead_orig(thisptr);
+    CallPlatoonUndeclareDeadCallbacks(thisptr);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_Platoon_undeclareDead,
+    "Platoon::undeclareDead",
+    KenshiLib::GetRealAddress(&Platoon::undeclareDead),
+    Platoon_undeclareDead_hook, Platoon_undeclareDead_orig)
+
+static void (*ActivePlatoon_setSquadLeader_orig)(ActivePlatoon*, Character*) = NULL;
+static void ActivePlatoon_setSquadLeader_hook(ActivePlatoon* thisptr, Character* who)
+{
+    ActivePlatoon_setSquadLeader_orig(thisptr, who);
+    CallActivePlatoonSetSquadLeaderCallbacks(thisptr, who);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_ActivePlatoon_setSquadLeader,
+    "ActivePlatoon::setSquadLeader",
+    KenshiLib::GetRealAddress(&ActivePlatoon::setSquadLeader),
+    ActivePlatoon_setSquadLeader_hook, ActivePlatoon_setSquadLeader_orig)
