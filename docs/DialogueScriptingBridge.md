@@ -124,6 +124,7 @@ KenshiLua resolves active Steam mods from both the game's `mods/` directory and 
   - Each script runs in its own sandbox environment. Reading a name falls through to the shared globals, but a plain assignment such as `MyMod = {}` creates the name only inside that script's sandbox. Other scripts, dialogue scripts, and the KenshiLua console cannot see it.
   - To share state, assign it to the global table explicitly: `_G.MyMod = _G.MyMod or {}`.
 - **`scripts/dialogue/*.lua`**: Recommended directory for scripts triggered via `run lua script` in dialogue. They run dynamically whenever the linked dialogue line is executed in-game.
+  - Dialogue scripts execute only when Kenshi raises `Dialogue::_doActions` on KenshiLua's Lua owner thread. A worker-thread call is skipped so it cannot enter the single-threaded Lua runtime concurrently.
 
 ### Loading Other Lua Files
 

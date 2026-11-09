@@ -2,6 +2,7 @@
 
 #include "EventSystem.h"
 #include "Logger.h"
+#include "Plugin.h"
 #include "Hooks/Hooks_Common.h"
 #include "Compatibility/LegacyCompat.h"
 
@@ -203,9 +204,18 @@ namespace KenshiLua
     // callHandlers
     // ---------------------------------------------------------------------------
 
+    bool EventSystem::canDispatch() const
+    {
+        Plugin& plugin = Plugin::get();
+        return m_L != NULL && plugin.isInitialized() && plugin.isLuaThread();
+    }
+
     int EventSystem::callHandlers(const char* eventName, IArgPusher* pusher,
         std::string* outError)
     {
+        if (!canDispatch())
+            return 0;
+
         // Snapshot the handler list so that handlers which call
         // unregisterHandler during their own execution don't corrupt iteration.
         HandlerReferenceSnapshot snapshot(m_L);
@@ -249,6 +259,9 @@ namespace KenshiLua
 
     std::string EventSystem::callHandlersString(const char* eventName, IArgPusher* pusher)
     {
+        if (!canDispatch())
+            return "";
+
         HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
@@ -290,6 +303,9 @@ namespace KenshiLua
 
     void* EventSystem::callHandlersObject(const char* eventName, const char* metatableName, IArgPusher* pusher)
     {
+        if (!canDispatch())
+            return NULL;
+
         HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
@@ -329,6 +345,9 @@ namespace KenshiLua
 
     bool EventSystem::callHandlersBool(const char* eventName, IArgPusher* pusher, bool defaultVal)
     {
+        if (!canDispatch())
+            return defaultVal;
+
         HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
@@ -372,6 +391,9 @@ namespace KenshiLua
 
     double EventSystem::callHandlersNumber(const char* eventName, IArgPusher* pusher, double defaultVal)
     {
+        if (!canDispatch())
+            return defaultVal;
+
         HandlerReferenceSnapshot snapshot(m_L);
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {

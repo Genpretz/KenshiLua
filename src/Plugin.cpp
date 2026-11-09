@@ -120,6 +120,11 @@ bool Plugin::isLuaThread() const
     return m_luaThreadId != 0 && m_luaThreadId == GetCurrentThreadId();
 }
 
+void Plugin::attach(void* hModule)
+{
+    m_dllModule = hModule;
+}
+
 bool Plugin::initialize(void* hModule)
 {
     if (m_initialized) return true;
@@ -166,6 +171,7 @@ bool Plugin::initialize(void* hModule)
 
     m_luaThreadId = GetCurrentThreadId();
     m_initialized = true;
+    logToFileDebugf("Lua owner thread: %lu", m_luaThreadId);
     logToFile("KenshiLua initialization complete");
     return true;
 }

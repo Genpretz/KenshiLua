@@ -21,6 +21,12 @@ Events.off(handlerId)
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
+### Threading
+
+The Lua runtime is single-threaded. KenshiLua invokes event handlers synchronously only when the engine raises the event on the Lua owner thread. Events raised on game worker threads are not queued and do not enter Lua.
+
+For a notification callback, a worker-thread event is skipped. For an override callback, KenshiLua preserves the engine's original or default result. Which thread raises an engine function is determined by Kenshi and can vary by call site.
+
 ## Notification Callbacks (664)
 
 | Event Name | Lua Signature |

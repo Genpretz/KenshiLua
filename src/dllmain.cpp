@@ -18,7 +18,7 @@ BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserv
     switch (ul_reason_for_call) {
     case DLL_PROCESS_ATTACH:
         // Cache the DLL module handle and defer main initialization to startPlugin
-        KenshiLua::Plugin::get().initialize((void*)hModule);
+        KenshiLua::Plugin::get().attach((void*)hModule);
         DisableThreadLibraryCalls(hModule);
         break;
     case DLL_THREAD_ATTACH:

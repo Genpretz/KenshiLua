@@ -5,6 +5,7 @@
 #include <kenshi/Globals.h>
 #include <kenshi/Dialogue.h>
 #include "Logger.h"
+#include "Plugin.h"
 #include "Lua/LuaState.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
@@ -26,6 +27,9 @@ namespace KenshiLua
 
     void DialogueScriptBridge(Dialogue* thisptr, DialogLineData* dialogLine)
     {
+        if (!Plugin::get().isInitialized() || !Plugin::get().isLuaThread())
+            return;
+
         KenshiLua::logToFileDebug("DialogueScriptBridge entered.");
         if (!dialogLine)
         {

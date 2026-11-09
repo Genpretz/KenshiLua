@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "Callbacks.h"
 #include "EventSystem.h"
-#include "Plugin.h"
 #include "Lua/BindingHelpers.h"
 
 //Bindings
@@ -5192,8 +5191,6 @@ void CallOrderDataSetCallbacks(OrderData* self, Tasker* task, int index, bool en
 
 void CallOrdersReceiverSerialiseCallbacks(OrdersReceiver* thisptr, GameData* data)
 {
-    if (!KenshiLua::Plugin::get().isInitialized() || !KenshiLua::Plugin::get().isLuaThread())
-        return;
     ArgPusher2<OrdersReceiver*, GameData*> pusher(thisptr, data);
     KenshiLua::EventSystem::get().callHandlers("OrdersReceiver::_NV_serialise", &pusher);
 }

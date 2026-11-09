@@ -8,6 +8,7 @@ class Plugin
 public:
     static Plugin& get();
 
+    void attach(void* hModule);
     bool initialize(void* hModule);
     void shutdown();
     void start();

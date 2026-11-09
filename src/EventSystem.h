@@ -63,6 +63,8 @@ namespace KenshiLua
         // Fire all handlers registered under eventName.
         // If pusher is non-NULL, pusher->push(L) is called before each pcall
         // to put event arguments on the stack.
+        // Calls from outside the Lua owner thread do not enter Lua and return
+        // the same result as an event with no applicable handler.
         // Returns 0 normally, or -1 if any handler returned false (consumed).
         int callHandlers(const char* eventName, IArgPusher* pusher = NULL,
             std::string* outError = NULL);
@@ -87,6 +89,7 @@ namespace KenshiLua
         EventSystem();
         ~EventSystem();
 
+        bool canDispatch() const;
         bool executeHandler(const char* eventName, int nargs, std::string* outError = NULL);
 
         // Non-copyable
