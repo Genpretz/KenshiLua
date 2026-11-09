@@ -4563,8 +4563,8 @@ void CallTitleScreenHoverCallbacks(TitleScreen* self, MyGUI::Widget* sender, MyG
 void CallTitleScreenSetCreditsVisibleCallbacks(TitleScreen* self, bool value);
 
 // Lua event name: "CombatClass::_NV_initCombatMode"
-// Lua signature: function(self, subject, endValue, focusedTarget, defaultVal) -> boolean
-bool CallCombatClassInitCombatModeCallbacks(CombatClass* self, const hand& subject, int endValue, bool focusedTarget, bool defaultVal);
+// Lua signature: function(self, subject, endValue, focusedTarget, result)
+void CallCombatClassInitCombatModeCallbacks(CombatClass* self, const hand& subject, int endValue, bool focusedTarget, bool result);
 
 // Lua event name: "CombatClass::_getHit"
 // Lua signature: function(self, direction, damage, attacker, stumble)

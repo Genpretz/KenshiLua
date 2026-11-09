@@ -38,8 +38,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_CombatClass_CONSTRUCTOR,
 static bool (*CombatClass_NV_initCombatMode_orig)(CombatClass*, const hand&, int, bool) = NULL;
 static bool CombatClass_NV_initCombatMode_hook(CombatClass* thisptr, const hand& subject, int endValue, bool focusedTarget)
 {
-    bool current = CombatClass_NV_initCombatMode_orig(thisptr, subject, endValue, focusedTarget);
-    return CallCombatClassInitCombatModeCallbacks(thisptr, subject, endValue, focusedTarget, current);
+    // CombatClassAI::initCombatMode calls this base body and discards its result,
+    // so a Lua return value could not reach the engine. Notification only.
+    bool result = CombatClass_NV_initCombatMode_orig(thisptr, subject, endValue, focusedTarget);
+    CallCombatClassInitCombatModeCallbacks(thisptr, subject, endValue, focusedTarget, result);
+    return result;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_CombatClass_NV_initCombatMode,
     "CombatClass::_NV_initCombatMode",

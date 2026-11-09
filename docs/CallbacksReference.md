@@ -27,7 +27,7 @@ The Lua runtime is single-threaded. KenshiLua invokes event handlers synchronous
 
 For a notification callback, a worker-thread event is skipped. For an override callback, KenshiLua preserves the engine's original or default result. Which thread raises an engine function is determined by Kenshi and can vary by call site.
 
-## Notification Callbacks (701)
+## Notification Callbacks (702)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
@@ -695,6 +695,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 | `TitleScreen::continueGame` | `function(self: TitleScreen, sender: Widget)` |
 | `TitleScreen::hover` | `function(self: TitleScreen, sender: Widget, other: Widget)` |
 | `TitleScreen::setCreditsVisible` | `function(self: TitleScreen, value: boolean)` |
+| `CombatClass::_NV_initCombatMode` | `function(self: CombatClass, subject: hand, endValue: integer, focusedTarget: boolean, result: boolean)` |
 | `CombatClass::_getHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject, stumble: boolean)` |
 | `CombatClass::_blockHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject)` |
 | `CombatClass::addAttackerH` | `function(self: CombatClass, attacker: Character, added: boolean)` |
@@ -733,7 +734,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 | `Platoon::undeclareDead` | `function(self: Platoon)` |
 | `ActivePlatoon::setSquadLeader` | `function(self: ActivePlatoon, leader: Character)` |
 
-## Override Callbacks (213)
+## Override Callbacks (212)
 
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
@@ -949,7 +950,6 @@ For a notification callback, a worker-thread event is skipped. For an override c
 | `ManagementScreen::researchValidateOrder` | `function(self: ManagementScreen, first: integer, second: integer, defaultVal: boolean) -> boolean` |
 | `TitleScreen::getSingleton` | `function(defaultVal: TitleScreen) -> TitleScreen` |
 | `TitleScreen::closeTheOtherBits` | `function(self: TitleScreen, defaultVal: boolean) -> boolean` |
-| `CombatClass::_NV_initCombatMode` | `function(self: CombatClass, subject: hand, endValue: integer, focusedTarget: boolean, defaultVal: boolean) -> boolean` |
 
 ## Detailed Callback Documentation
 
@@ -2306,15 +2306,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
 
 ### `CombatClass::_NV_initCombatMode`
 
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, subject, endValue, focusedTarget, defaultVal)`
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, subject, endValue, focusedTarget, result)`
 - **Parameters**:
   - `self`: `CombatClass`
   - `subject`: `hand`
   - `endValue`: `integer`
   - `focusedTarget`: `boolean`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
+  - `result`: `boolean`
 
 ### `CombatClass::_blockHit`
 

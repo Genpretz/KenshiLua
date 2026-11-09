@@ -6122,10 +6122,10 @@ void CallTitleScreenLoadGameCallbacks(TitleScreen* self, MyGUI::Widget* sender)
     KenshiLua::EventSystem::get().callHandlers("TitleScreen::loadGame", &pusher);
 }
 
-bool CallCombatClassInitCombatModeCallbacks(CombatClass* self, const hand& subject, int endValue, bool focusedTarget, bool defaultVal)
+void CallCombatClassInitCombatModeCallbacks(CombatClass* self, const hand& subject, int endValue, bool focusedTarget, bool result)
 {
-    ArgPusher5<CombatClass*, const hand&, int, bool, bool> pusher(self, subject, endValue, focusedTarget, defaultVal);
-    return KenshiLua::EventSystem::get().callHandlersBool("CombatClass::_NV_initCombatMode", &pusher, defaultVal);
+    ArgPusher5<CombatClass*, const hand&, int, bool, bool> pusher(self, subject, endValue, focusedTarget, result);
+    KenshiLua::EventSystem::get().callHandlers("CombatClass::_NV_initCombatMode", &pusher);
 }
 
 void CallCombatClassGetHitCallbacks(CombatClass* self, int direction, Damages* damage, RootObject* attacker, bool stumble)
