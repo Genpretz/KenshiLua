@@ -43,8 +43,8 @@ local function participants(dialogue)
     if not owner or not target then
         return nil, nil
     end
-    local ownerIsPlayer = owner:isPlayerCharacter() and true or false
-    local targetIsPlayer = target:isPlayerCharacter() and true or false
+    local ownerIsPlayer = AH.isPlayerCharacter(owner)
+    local targetIsPlayer = AH.isPlayerCharacter(target)
     if ownerIsPlayer and not targetIsPlayer then
         return target, owner
     elseif targetIsPlayer and not ownerIsPlayer then
@@ -277,7 +277,7 @@ local function confirmSale(st)
     local selected = selectedRows(st)
     for i = 1, #selected do
         local c = selected[i].handle:getCharacter()
-        if c and not c:isDead() and c:isPlayerCharacter() then
+        if c and not c:isDead() and AH.isPlayerCharacter(c) then
             sold[#sold + 1] = c
             total = total + selected[i].price
         end

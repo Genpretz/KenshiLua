@@ -17,14 +17,14 @@ local function loadNative()
 end
 
 local function workerReady(worker)
-    return worker and worker:isPlayerCharacter() and not worker:isAnimal()
+    return worker and AH.isPlayerCharacter(worker) and not worker:isAnimal()
         and not worker:isDead() and not worker:isUnconcious()
         and not worker:isInCombatMode(true, true)
 end
 
 local function playerOutpost(town, pos)
     return town and town:isOutpost() and town:getFaction()
-        and town:getFaction().isPlayer ~= nil and town:withinBordersRange(pos, 1)
+        and AH.isPlayerFaction(town:getFaction()) and town:withinBordersRange(pos, 1)
 end
 
 local function outpostAt(pos)
@@ -134,7 +134,7 @@ local function findStorage(worker, town, product, collecting)
     for i = 1, buildings:size() do
         local building = buildings[i]
         local storage = building and building:getFunctionStuff()
-        if storage and building:getFaction() and building:getFaction().isPlayer ~= nil
+        if storage and AH.isPlayerFaction(building:getFaction())
             and town:withinBordersRange(building:getPosition(), 1) and exactStorage(storage, product)
             and not worker:getAI():getTaskSystem():isPathImpossible(building.handle)
             and (not collecting or native.storageRoom(worker, building, product.data)) then
@@ -237,7 +237,7 @@ function AH.assignHusbandryJob(targetHandle, workerHandle)
     local animal = targetHandle and targetHandle:getCharacter()
     local worker = workerHandle and workerHandle:getCharacter()
     local entry = animal and AH.animalEntry(animal)
-    if not entry or not animal:isPlayerCharacter() then return false, "select a player-owned animal" end
+    if not entry or not AH.isPlayerCharacter(animal) then return false, "select a player-owned animal" end
     if not workerReady(worker) then return false, "select an available humanoid" end
     local town = outpostAt(animal:getPosition())
     if not town or not town:withinBordersRange(worker:getPosition(), 1) then
@@ -312,7 +312,7 @@ local function run(request, worker, subject)
     end
     local animal = plan.animal:getCharacter()
     local entry = animal and AH.animalEntry(animal)
-    if not entry or not animal:isPlayerCharacter() or not AH.canMate(assigned.seed, entry)
+    if not entry or not AH.isPlayerCharacter(animal) or not AH.canMate(assigned.seed, entry)
         or not assigned.town:withinBordersRange(animal:getPosition(), 1)
         or not harvest.canHarvest(entry, worker, plan.product, AH.currentDay(), true)
         or not native.storageRoom(worker, building, plan.product.data) then

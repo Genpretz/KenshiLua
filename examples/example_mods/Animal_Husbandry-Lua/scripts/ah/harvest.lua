@@ -188,7 +188,7 @@ end
 
 -- Animals cannot perform husbandry work. Skeletons and other non-animal player characters remain valid
 local function isEligibleHarvester(c)
-    return c and c:isPlayerCharacter() and not c:isAnimal()
+    return c and AH.isPlayerCharacter(c) and not c:isAnimal()
 end
 
 local function formatHarvestCooldown(days)
@@ -689,7 +689,7 @@ local function onSelectionChanged(guiObj)
         return
     end
     local animal = target:getCharacter()
-    if not animal or not animal:isPlayerCharacter() then
+    if not animal or not AH.isPlayerCharacter(animal) then
         return
     end
     local entry = AH.animalEntry(animal)
@@ -785,7 +785,7 @@ end
 local function onMenuShow(menuGUI, orders, name, offset)
     local ok, err = pcall(function()
         local target = menuGUI.contextMenuTarget:getCharacter()
-        if not target or not target:isAnimal() or not target:isPlayerCharacter() then
+        if not target or not target:isAnimal() or not AH.isPlayerCharacter(target) then
             return
         end
         if target:isInCombatMode(true, true) then

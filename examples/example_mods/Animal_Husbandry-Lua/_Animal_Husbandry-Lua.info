@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <ModData xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <id>0</id>
+  <id>3836611572</id>
   <mod>Animal_Husbandry-Lua</mod>
   <title>Animal Husbandry - KenshiLua</title>
   <tags>
@@ -8,5 +8,5 @@
     <string>RE_Kenshi</string>
   </tags>
   <visibility>0</visibility>
-  <lastUpdate xsi:nil="true" />
+  <lastUpdate>2026-11-09T00:52:59-08:00</lastUpdate>
 </ModData>

@@ -267,7 +267,7 @@ end
 
 function AH.forcePregnant(days)
     local c = AH.selectedCharacter()
-    if not c or not c:isAnimal() or not c:isPlayerCharacter() then
+    if not c or not c:isAnimal() or not AH.isPlayerCharacter(c) then
         AH.log("Select a female animal in the player faction first.")
         return
     end

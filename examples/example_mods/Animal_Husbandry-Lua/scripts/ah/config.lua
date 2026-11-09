@@ -32,7 +32,7 @@ return {
         -- Maximum distance for manual harvesting through the Husbandry window.
         maxDistance = 200,
         -- Maximum distance for automated Husbandry jobs.
-        jobMaxDistance = 50,
+        jobMaxDistance = 75,
     },
 
     sales = {

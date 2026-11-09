@@ -290,6 +290,17 @@ function AH.playerInterface()
     return getPlayerInterface() or player
 end
 
+-- Some AI mods temporarily clear Faction.isPlayer while scoring NPC-style packages.
+-- PlayerInterface.participant remains the authoritative player-faction identity.
+function AH.isPlayerFaction(faction)
+    local pi = AH.playerInterface()
+    return faction ~= nil and pi ~= nil and pi.participant ~= nil and faction == pi.participant
+end
+
+function AH.isPlayerCharacter(c)
+    return c ~= nil and AH.isPlayerFaction(c:getFaction())
+end
+
 function AH.playerCharacters()
     local out = {}
     local list = AH.playerInterface():getAllPlayerCharacters()
