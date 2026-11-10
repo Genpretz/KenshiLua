@@ -66,27 +66,27 @@ Using `fcs.def` with FCS Extended (with KenshiLua support enabled), a new item t
 3. You will find a new item category available in the GameWorld tree named **"Lua"**.
 4. Right-click and create a **New Item** under the "Lua" category (which creates a `LUA_SCRIPT` object).
 
-![FCS Lua Category](../assets/media/FCS_Dialogue_Scripting/example_fcs_lua_category.png)
+![FCS Lua Category](https://raw.githubusercontent.com/Genpretz/KenshiLua/main/assets/media/FCS_Dialogue_Scripting/example_fcs_lua_category.png)
 
 5. A `LUA_SCRIPT` object contains two fields:
    - **`description`**: A text field for notes explaining what the script does.
    - **`file`**: A file reference field. Clicking this opens a file open dialog allowing you to select the `.lua` script within your mod's `scripts/` directory.
 
-![FCS LUA_SCRIPT Object Fields](../assets/media/FCS_Dialogue_Scripting/example_fcs_lua_script_object.png)
+![FCS LUA_SCRIPT Object Fields](https://raw.githubusercontent.com/Genpretz/KenshiLua/main/assets/media/FCS_Dialogue_Scripting/example_fcs_lua_script_object.png)
 
 ### Attaching Script to a Dialogue Line
 1. Open the target **DIALOGUE** or **DIALOGUE_LINE** in FCS Extended.
 2. In the dialogue editor (upper right combo box / reference section), select the **`run lua script`** option.
 3. Click to add a reference and select one of the `LUA_SCRIPT` items you created.
 
-![FCS Dialogue Line with Run Lua Script Reference](../assets/media/FCS_Dialogue_Scripting/example_fcs_dialogue_with_lua_script.png)
+![FCS Dialogue Line with Run Lua Script Reference](https://raw.githubusercontent.com/Genpretz/KenshiLua/main/assets/media/FCS_Dialogue_Scripting/example_fcs_dialogue_with_lua_script.png)
 
 4. Save your `.mod` file.
 
 ### Complete FCS Workflow Diagram
 Below is an annotated overview of the entire FCS dialogue scripting setup process:
 
-![FCS Dialogue Scripting Overview](../assets/media/FCS_Dialogue_Scripting/example_fcs_dialogue_scripting.png)
+![FCS Dialogue Scripting Overview](https://raw.githubusercontent.com/Genpretz/KenshiLua/main/assets/media/FCS_Dialogue_Scripting/example_fcs_dialogue_scripting.png)
 
 ---
 

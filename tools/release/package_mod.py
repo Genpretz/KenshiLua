@@ -35,8 +35,13 @@ from sync_version import DEFAULT_VERSION_H, PROJECT_ROOT, parse_version_h  # noq
 DEFAULT_BIN_DIR = PROJECT_ROOT / "bin"
 MOD_FOLDER = "KenshiLua"
 REQUIRED_FILES = ("plugin/KenshiLua.dll", "KenshiLua.mod")
-EXCLUDED_CONTENT_DIRS = ("logs",)
-EXCLUDED_FILES = ("plugin/KenshiLua.pdb", "plugin/KenshiLua.lib", "plugin/KenshiLua.exp")
+EXCLUDED_CONTENT_DIRS = ("logs", "assets")
+EXCLUDED_FILES = (
+    "plugin/KenshiLua.pdb",
+    "plugin/KenshiLua.lib",
+    "plugin/KenshiLua.exp",
+    "gui/KenshiLua_Alternative_GUI.layout",
+)
 
 
 def zip_name(version: str) -> str:

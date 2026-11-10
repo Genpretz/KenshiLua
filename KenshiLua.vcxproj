@@ -114,6 +114,7 @@
     </Link>
     <PostBuildEvent>
       <Command>xcopy /Y /S "$(ProjectDir)assets\gui\*" "$(OutDir)..\gui\"
+if exist "$(OutDir)..\gui\KenshiLua_Alternative_GUI.layout" del /Q "$(OutDir)..\gui\KenshiLua_Alternative_GUI.layout"
 copy /Y "$(ProjectDir)assets\config\fcs.def" "$(OutDir)..\"
 copy /Y "$(ProjectDir)assets\config\config.ini" "$(OutDir)"
 copy /Y "$(ProjectDir)assets\config\RE_Kenshi.json" "$(OutDir)..\"
@@ -128,9 +129,9 @@ copy /Y "$(ProjectDir)docs\MyGUIReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\DialogueScriptingBridge.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\ContainersReference.md" "$(OutDir)..\docs\"
 copy /Y "$(ProjectDir)docs\CppExtensionAPI.md" "$(OutDir)..\docs\"
+copy /Y "$(ProjectDir)docs\InGameGUI.md" "$(OutDir)..\docs\"
 if not exist "$(OutDir)..\include" mkdir "$(OutDir)..\include"
 copy /Y "$(ProjectDir)include\KenshiLua.h" "$(OutDir)..\include\"
-xcopy /Y /S /I "$(ProjectDir)assets\media\*" "$(OutDir)..\assets\media\"
 copy /Y "$(ProjectDir)LICENSE" "$(OutDir)..\"
 copy /Y "$(ProjectDir)README.md" "$(OutDir)..\"
 xcopy /Y /S /I "$(ProjectDir)licenses\*" "$(OutDir)..\licenses\"
