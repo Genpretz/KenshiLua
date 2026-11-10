@@ -142,8 +142,8 @@ end
 local FCS_DEFAULTS = {
     sterile = true,
     offspring = 1,
-    pregnancyPeriod = 1.0,
-    pregnancyChance = 1.0,
+    pregnancyPeriod = 10.0,
+    pregnancyChance = 10.0,
     timeBetweenPregnancy = 1.0,
     matingGroup = "",
 }

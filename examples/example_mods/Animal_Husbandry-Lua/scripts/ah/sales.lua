@@ -300,6 +300,9 @@ local function confirmSale(st)
     end
     local faction, platoon = buyer:getFaction(), buyer:getPlatoon()
     for i = 1, #sold do
+        -- Permanent jobs survive a faction change, so a sold animal set to follow one
+        -- of the player's characters would keep following them.
+        sold[i]:clearPermajobs()
         sold[i]:setFaction(faction, platoon)
     end
     AH.notify(string.format("Sold %d animal%s to %s for %s.", #sold, #sold == 1 and "" or "s",
