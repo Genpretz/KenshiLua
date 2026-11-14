@@ -25150,6 +25150,14 @@ currentDialogue = nil
 ---@type DialogLineData|nil
 currentDialogueLine = nil
 
+--- WORLD_EVENT_STATE `GameData` injected only during synchronous world-state-script execution; the wrapped object is borrowed.
+---@type GameData|nil
+currentWorldEventState = nil
+
+--- Engine-cached `WorldEventStateQuery` injected only during synchronous world-state-script execution; the wrapped object is borrowed.
+---@type WorldEventStateQuery|nil
+currentWorldEventStateQuery = nil
+
 --- Conditional KingOfRenderThread alias registered at Lua startup. Prefer getKingOfRenderThread().
 ---@type KingOfRenderThread|nil
 au = nil

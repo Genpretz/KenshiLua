@@ -78,6 +78,6 @@ Open a script in your mod and hover over `getGameWorld`. The editor should show 
 
 Besides completion and hover text, the definitions encode some KenshiLua rules that LuaLS checks as you type:
 
-* `currentDialogue`, `currentDialogueLine`, and engine aliases such as `ou`, `gui`, and `con` are typed as possibly `nil`, so LuaLS warns when an open script uses them without a `nil` check. The [Dialogue Scripting Guide](DialogueScriptingBridge.md#runtime-environment) describes when the dialogue globals are set.
+* `currentDialogue`, `currentDialogueLine`, `currentWorldEventState`, `currentWorldEventStateQuery`, and engine aliases such as `ou`, `gui`, and `con` are typed as possibly `nil`, so LuaLS warns when an open script uses them without a `nil` check. The [Dialogue Scripting Guide](DialogueScriptingBridge.md#runtime-environment) and the [World State Scripting Guide](WorldStateScriptingBridge.md#runtime-environment) describe when those globals are set.
 * Container factories take the element type from the type name: `lektor.new("Character*")` is typed `Lektor<Character>`, and indexing it yields `Character|nil`. See [Explicit Factory Types](ContainersReference.md#explicit-factory-types).
 * `widget:on` completes MyGUI event names such as `eventMouseButtonClick`. See the [MyGUI event reference](MyGUIReference.md#event-callbacks-reference).

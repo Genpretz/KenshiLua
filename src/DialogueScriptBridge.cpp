@@ -132,6 +132,8 @@ namespace KenshiLua
                 for (auto refIt = refList->begin(); refIt != refList->end(); ++refIt)
                 {
                     ss << "    Reference ID: \"" << refIt->sid << "\"\n";
+                    if (gd->type == WORLD_EVENT_STATE)
+                        ss << "      World state run mode: " << refIt->values.value[0] << "\n";
                     GameData* scriptData = refIt->getPtr(gd->sourceContainer);
                     if (scriptData)
                     {

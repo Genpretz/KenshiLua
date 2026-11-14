@@ -6965,6 +6965,16 @@
     },
     {
       "initialValue": "nil",
+      "name": "currentWorldEventState",
+      "type": "GameData|nil"
+    },
+    {
+      "initialValue": "nil",
+      "name": "currentWorldEventStateQuery",
+      "type": "WorldEventStateQuery|nil"
+    },
+    {
+      "initialValue": "nil",
       "name": "au",
       "type": "KingOfRenderThread|nil"
     },

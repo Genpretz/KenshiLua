@@ -9,6 +9,7 @@
 #include "../Gui/GuiManager.h"
 #include "../Logger.h"
 #include "../DialogueScriptBridge.h"
+#include "../WorldStateScriptBridge.h"
 
 #include <core/Functions.h>
 #include <kenshi/Character.h>

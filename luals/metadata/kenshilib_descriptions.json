@@ -37,6 +37,8 @@
         "con": "Conditional constants alias registered at Lua startup. Prefer getGlobalConstants().",
         "currentDialogue": "Injected only during synchronous dialogue-script execution; the wrapped object is borrowed.",
         "currentDialogueLine": "Injected only during synchronous dialogue-script execution; the wrapped object is borrowed.",
+        "currentWorldEventState": "WORLD_EVENT_STATE `GameData` injected only during synchronous world-state-script execution; the wrapped object is borrowed.",
+        "currentWorldEventStateQuery": "Engine-cached `WorldEventStateQuery` injected only during synchronous world-state-script execution; the wrapped object is borrowed.",
         "gui": "Conditional ForgottenGUI alias registered at Lua startup. Prefer getForgottenGUI().",
         "hkVector4f": "Static utility table for Havok hkVector4f vectors.",
         "hkVector4fComparison": "Static utility table for Havok vector comparisons.",

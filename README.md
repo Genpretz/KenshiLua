@@ -35,6 +35,7 @@ A large amount of KenshiLib has been exposed for use from Lua. KenshiLua is buil
 * [MyGUIReference.md](docs/MyGUIReference.md) - View for a list of MyGUI methods and properties available from Lua.
 * [InGameGUI.md](docs/InGameGUI.md) - Guide for using the in-game GUI, script manager, editor, console, and log viewer.
 * [DialogueScriptingBridge.md](docs/DialogueScriptingBridge.md) - Guide for executing Lua scripts from dialogue lines using FCS Extended.
+* [WorldStateScriptingBridge.md](docs/WorldStateScriptingBridge.md) - Guide for executing Lua scripts when FCS world states change.
 * [LuaLS.md](docs/LuaLS.md) - Configure Lua Language Server editor support for KenshiLua scripts.
 * [UnboundReference.md](docs/UnboundReference.md) - View for a list of methods and properties that exist in KenshiLib 0.5.0 but are not currently exposed to Lua.
 
@@ -120,6 +121,10 @@ Events.on("InputHandler::keyDownEvent", on_key_down)
    - See [DialogueScriptingBridge.md](docs/DialogueScriptingBridge.md) for complete details on FCS setup, mod folder structure, injected Lua globals (`currentDialogue`, `currentDialogueLine`), and diagnostics.
 <img width="2558" height="1548" alt="Screenshot 2026-07-13 140858" src="https://github.com/user-attachments/assets/c899339c-05f3-4aa2-aa28-cb6bd3eca7c5" />
      *The example shown in this image, available in the repository, uses the players Dexterity and Thieving stats to give the player an advatage in a game of dice. The script runs whenever the given dialogue option is chosen by the player.
+
+#### World State Scripting Bridge
+   - WORLD_EVENT_STATE items in FCS Extended also have a `run lua script` option. Each reference's mode selects whether the script runs when the complete world state becomes true, is already true after load, or becomes false.
+   - See [WorldStateScriptingBridge.md](docs/WorldStateScriptingBridge.md) for the run modes, injected Lua globals (`currentWorldEventState`, `currentWorldEventStateQuery`), and diagnostics.
 
 #### In-Game GUI
    - Pressing `Ctrl` + `Shift` + `L` in-game will open KenshiLua's Main GUI. From here you can access the Script Editor and load, edit, save, and run scripts using the buttons on the Script Editor's toolbar as well as access other features.

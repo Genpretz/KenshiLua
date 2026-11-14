@@ -4,6 +4,7 @@
 #include "EventSystem.h"
 #include "Gui/GuiManager.h"
 #include "Hooks/Hooks_Common.h"
+#include "Hooks/Hooks_Internal.h"
 #include "Compatibility/LegacyCompat.h"
 #include "Logger.h"
 #include "Config.h"
@@ -214,6 +215,10 @@ void Plugin::start()
     // Install hook for running Lua scripts from dialogue lines
     InstallHookForEvent("Dialogue::_doActions");
     InstallHookForEvent("Dialogue::say");
+
+    // Install hooks for running Lua scripts when world states become true
+    InstallHookForEvent("GameWorld::charsUpdate");
+    InstallHook_GameWorld_resetGame();
 
     // initialize developer GUI (hidden by default, toggle with 'Ctrl+Shift+L' by default).
     if (GuiManager::get().isInitialized())
