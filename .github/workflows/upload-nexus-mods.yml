@@ -1,0 +1,66 @@
+name: Upload release to Nexus Mods
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nexus-mods-release-${{ github.event.release.id }}
+  cancel-in-progress: false
+
+jobs:
+  upload-to-nexus-mods:
+    name: Upload KenshiLua release
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Download KenshiLua release asset
+        id: release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG_NAME: ${{ github.event.release.tag_name }}
+        run: |
+          set -euo pipefail
+
+          version="${TAG_NAME#v}"
+          asset_name="KenshiLua ${TAG_NAME}.zip"
+          asset_path="release-assets/${asset_name}"
+
+          gh release download "${TAG_NAME}" \
+            --repo "${GITHUB_REPOSITORY}" \
+            --pattern "${asset_name}" \
+            --dir release-assets
+
+          if [[ ! -f "${asset_path}" ]]; then
+            echo "Expected release asset was not downloaded: ${asset_name}" >&2
+            exit 1
+          fi
+
+          echo "version=${version}" >> "${GITHUB_OUTPUT}"
+          echo "asset_path=${asset_path}" >> "${GITHUB_OUTPUT}"
+
+      - name: Upload release to Nexus Mods
+        id: upload
+        uses: Nexus-Mods/upload-action@v1.0.0-beta.11
+        with:
+          api_key: ${{ secrets.NEXUSMODS_API_KEY }}
+          file_id: ${{ vars.NEXUSMODS_FILE_ID }}
+          mod_id: ${{ vars.NEXUSMODS_MOD_ID }}
+          filename: ${{ steps.release.outputs.asset_path }}
+          version: ${{ steps.release.outputs.version }}
+          display_name: KenshiLua ${{ github.event.release.tag_name }}
+          description: |-
+            Regular Users: Install and enable in launcher.
+
+            Modders: Changes were made in the various parts of the API. Backwards compatibility is maintained so older scripts will still run. KenshiLua.log will log uses of the old API and remind you to update.
+          category: main
+          primary_mod_manager_download: true
+          allow_mod_manager_download: true
+          show_requirements_pop_up: true
+          update_mod_version: true
+          changelog: ${{ github.event.release.body }}
