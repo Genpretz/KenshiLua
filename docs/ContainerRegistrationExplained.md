@@ -18,6 +18,29 @@ Registering `lektor<Character*>` makes that type available. Creating one allocat
 
 A **metatable** is the Lua table that connects a container userdata to its operations and identifies its type. A **factory** is the function that creates a new container.
 
+```text
++----------------------------+   1. Describe in C++   +----------------------------------+
+| *Types.h & Register*.cpp   | ---------------------> | ContainerBindingDefinition       |
+| (KENSHILUA_DEFINE_...)     |                        | collected by collect*()          |
++----------------------------+                        +----------------------------------+
+                                                                       |
+                                                        2. Register at | startup
+                                                                       v
+                                                      +----------------------------------+
+                                                      | registerContainerBindings()      |
+                                                      | Validates RTTI & installs        |
+                                                      | metatable + factory lookup       |
+                                                      +----------------------------------+
+                                                                       |
+                                                        3. Create or   | wrap at runtime
+                                                                       v
+                                                      +----------------------------------+
+                                                      | Lua Container Userdata           |
+                                                      | lektor.new("Character*") or      |
+                                                      | borrowed engine container field  |
+                                                      +----------------------------------+
+```
+
 ## Where the code lives
 
 | File or group | Responsibility |

@@ -251,6 +251,8 @@ def parse_enums():
 
 def parse_event_names():
     text = HOOK_REGISTRY_PATH.read_text(encoding="utf-8")
+    # Commented-out registry entries are not subscribable.
+    text = re.sub(r"//[^\n]*", "", text)
     names = re.findall(r'\{\s*"([^"]+)"\s*,\s*InstallHook_', text)
     return sorted(set(names))
 

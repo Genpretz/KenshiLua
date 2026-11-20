@@ -18,6 +18,29 @@ versioned function table at runtime.
 
 ## Runtime contract
 
+```text
++-----------------------+    Includes single header     +-------------------------------+
+| Native Mod DLL        | ----------------------------> | KenshiLua.h                   |
++-----------------------+                               +-------------------------------+
+                                                                        |
+                                         GetModuleHandle("KenshiLua.dll") & negotiates
+                                         versioned C ABI function table (v1)
+                                                                        v
+                                                        +-------------------------------+
+                                                        | KenshiLua.dll C ABI           |
+                                                        +-------------------------------+
+                                                                        |
+                                           Verifies runtime ready,      | checks caller thread,
+                                           and acquires Lua lock        |
+                                                                        v
+                                                        +-------------------------------+
+                                                        | Shared LuaJIT State           |
+                                                        | RunScript / DoString          |
+                                                        | DispatchEvent / Register*     |
+                                                        | PushObject / Check / Test     |
+                                                        +-------------------------------+
+```
+
 ### Availability and lifetime
 
 `KenshiLua::IsAvailable()` is true only after `KenshiLua.dll` is loaded, the
@@ -28,10 +51,16 @@ DLL unloads.
 
 ### Threading
 
-The Lua runtime is single-threaded. Every function that reads or changes the
-Lua state must run on the thread that initialized KenshiLua. Calls from another
-thread fail with `STATUS_WRONG_THREAD`. Logging and ABI discovery are the only
-operations that do not require the Lua thread.
+A lock lets only one thread use the Lua state at a time, and every function
+that reads or changes the state takes it for the duration of the call. Call
+these functions on the thread that initialized KenshiLua. A game worker thread
+may call them only while it runs an event handler registered with
+`{ workerThread = true }`, including from a native function that handler calls;
+other calls from another thread fail with `STATUS_WRONG_THREAD`. Logging and
+ABI discovery work on any thread.
+
+Values pushed by separate calls stay in place between those calls. A
+worker-thread handler that runs in between leaves the stack as it found it.
 
 ### Lua states
 

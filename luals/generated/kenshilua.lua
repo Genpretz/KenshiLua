@@ -353,10 +353,19 @@
 ---| "DoorStuff::setDoorState"
 ---| "DoorStuff::unlockDoor"
 ---| "Faction::_CONSTRUCTOR"
+---| "Faction::_NV_addActiveObject"
+---| "Faction::_NV_destroyObject"
+---| "Faction::_NV_removeObject"
 ---| "Faction::chooseARace"
 ---| "Faction::createNewEmptyActivePlatoon"
+---| "Faction::createNewEmptyUnloadedPlatoon"
 ---| "Faction::destroyPlatoon"
 ---| "Faction::getBuildingReplacement"
+---| "Faction::loadState"
+---| "Faction::removePlatoon"
+---| "Faction::restorePlatoon"
+---| "Faction::setName"
+---| "Faction::setup3"
 ---| "FactionLeader::_CONSTRUCTOR"
 ---| "FactionManager::_CONSTRUCTOR"
 ---| "FactionRelations::_CONSTRUCTOR"
@@ -369,6 +378,8 @@
 ---| "FactionRelations::setRelation"
 ---| "FactionUniqueSquadManager::_CONSTRUCTOR"
 ---| "FactionWarMgr::_CONSTRUCTOR"
+---| "FactionWarMgr::endCampaign"
+---| "FactionWarMgr::triggerCampaign"
 ---| "FactionsScreen::FactionRelationsLine::LessSort::operator()"
 ---| "FactionsScreen::FactionRelationsLine::_CONSTRUCTOR"
 ---| "FactionsScreen::FactionRelationsLine::_DESTRUCTOR"
@@ -499,6 +510,12 @@
 ---| "GameData::_CONSTRUCTOR"
 ---| "GameWorld::_CONSTRUCTOR"
 ---| "GameWorld::charsUpdate"
+---| "GameWorld::dailyUpdates"
+---| "GameWorld::destroy"
+---| "GameWorld::initialiseNewGameWorld"
+---| "GameWorld::resetGame"
+---| "GameWorld::setGameSpeed"
+---| "GameWorld::userPause"
 ---| "GatewayBuilding::_CONSTRUCTOR"
 ---| "Gear::_CONSTRUCTOR"
 ---| "GeneratorBuilding::_CONSTRUCTOR"
@@ -856,9 +873,14 @@
 ---| "PlayerInterface::encounterFaction"
 ---| "PlayerInterface::loadFromSerialise"
 ---| "PlayerInterface::newPlayerTaskSelectedCharacters"
+---| "PlayerInterface::objectSelected"
 ---| "PlayerInterface::recruit"
+---| "PlayerInterface::removeJobSelectedCharacters"
+---| "PlayerInterface::removePermaJobSelectedCharacters"
 ---| "PlayerInterface::selectObject"
 ---| "PlayerInterface::serialise"
+---| "PlayerInterface::setCurrentPlatoon"
+---| "PlayerInterface::triggerAreaArrivalDialogue"
 ---| "PreviewBuilding::_CONSTRUCTOR"
 ---| "PreviewBuilding::_NV_placeFinalPreviewBuilding"
 ---| "PreviewBuilding::_NV_placePreview"
@@ -879,12 +901,9 @@
 ---| "RootObjectFactory::_CONSTRUCTOR"
 ---| "RootObjectFactory::chooseMyClothing"
 ---| "ShopTrader::_CONSTRUCTOR"
----| "SplashScreen::_CONSTRUCTOR"
 ---| "SplashScreen::_DESTRUCTOR"
----| "SplashScreen::addLogo"
 ---| "SplashScreen::getEnded"
 ---| "SplashScreen::getState"
----| "SplashScreen::skip"
 ---| "SplashScreen::update"
 ---| "SquadManagementScreen::removeSquad"
 ---| "StorageBuilding::_CONSTRUCTOR"
@@ -2777,10 +2796,15 @@ taskPriority = {
 
 --- Engine event handler registration and unregistration interface.
 ---@class KenshiLua.Events
---- Registers `handler` for an engine event and returns an ID for `Events.off`. The handler receives event-specific arguments, and what its return value does depends on the event. Errors in a handler are logged. Handlers are removed when the script that registered them is reloaded.
----@field on fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer
+--- Registers `handler` for an engine event and returns an ID for `Events.off`. The handler receives event-specific arguments, and what its return value does depends on the event. Errors in a handler are logged. Handlers are removed when the script that registered them is reloaded. With `options.workerThread` set, the handler also runs when Kenshi raises the event on a game worker thread, for events that support it; see the Threading section of the callbacks reference.
+---@field on fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler, options?: KenshiLua.EventOptions): integer
 --- Removes a handler by the ID `Events.on` returned. Unknown IDs are ignored.
 ---@field off fun(handlerId: integer)
+
+--- Options for `Events.on`.
+---@class KenshiLua.EventOptions
+--- When true, the handler also runs when Kenshi raises the event on a game worker thread, for events that support worker threads. On a worker thread it should read its arguments and record data, leaving game and interface changes to the Lua owner thread. Defaults to false.
+---@field workerThread boolean|nil
 
 --- KenshiLua runtime scripting API: script discovery, hot-reload, module loading, logging, and profiling.
 ---@class KenshiLua.Api

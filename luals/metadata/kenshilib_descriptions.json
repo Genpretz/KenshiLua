@@ -6943,9 +6943,16 @@
             "description": "Engine event handler registration and unregistration interface.",
             "methods": {
                 "off": "Removes a handler by the ID `Events.on` returned. Unknown IDs are ignored.",
-                "on": "Registers `handler` for an engine event and returns an ID for `Events.off`. The handler receives event-specific arguments, and what its return value does depends on the event. Errors in a handler are logged. Handlers are removed when the script that registered them is reloaded."
+                "on": "Registers `handler` for an engine event and returns an ID for `Events.off`. The handler receives event-specific arguments, and what its return value does depends on the event. Errors in a handler are logged. Handlers are removed when the script that registered them is reloaded. With `options.workerThread` set, the handler also runs when Kenshi raises the event on a game worker thread, for events that support it; see the Threading section of the callbacks reference."
             },
             "properties": {}
+        },
+        "KenshiLua.EventOptions": {
+            "description": "Options for `Events.on`.",
+            "methods": {},
+            "properties": {
+                "workerThread": "When true, the handler also runs when Kenshi raises the event on a game worker thread, for events that support worker threads. On a worker thread it should read its arguments and record data, leaving game and interface changes to the Lua owner thread. Defaults to false."
+            }
         },
         "KingOfRenderThread": {
             "description": "Render-loop coordinator exposing the renderer, camera, terrain, title screen, and cached mesh data.",

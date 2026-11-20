@@ -16,944 +16,1972 @@ end)
 Events.off(handlerId)
 ```
 
+### Handler Lifetime and Cleanup
+
+`Events.on` returns a handler ID. Keep that ID and pass it to `Events.off` as soon as the handler is no longer needed. A handler otherwise remains active and continues receiving events.
+
+Register handlers that should remain active for the game session once from a `scripts/init/` file. KenshiLua removes handlers recorded for a script before running that script through the startup loader, reload commands, or Script Manager. The dialogue and world-state bridges perform the same cleanup before repeating a triggered script.
+
+Automatic cleanup does not happen merely because Lua code runs again through `dofile`, a chunk returned by `loadfile`, or a module function. Code using those paths must keep its handler IDs and remove them explicitly with `Events.off`.
+
+Handler ownership follows the file that calls `Events.on`. If a dialogue or world-state script calls a module and that module registers the handler, the handler belongs to the module, not the triggering script. The triggering script's automatic cleanup will not remove it.
+
 ### Two Types of Callbacks
 
 1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.
 2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.
 
+```text
++------------------+      Engine function call      +-------------------------------+
+| Kenshi Engine    | -----------------------------> | KenshiLua Hook & Dispatcher   |
++------------------+                                +-------------------------------+
+                                                                    |
+                                                   Checks thread &  | acquires Lua lock
+                                                                    v
+                                                    +-------------------------------+
+                                                    | Selects matching handlers     |
+                                                    | (Main thread: all handlers;   |
+                                                    |  Worker: workerThread = true) |
+                                                    +-------------------------------+
+                                                          /                   \
+                                           (Notification)                      (Override)
+                                                        v                       v
+                                    +--------------------------+   +--------------------------+
+                                    | Lua Observer Handlers    |   | Lua Interceptor Handlers |
+                                    | (return false stops      |   | (non-nil return replaces |
+                                    |  later Lua handlers)     |   |  engine return value)    |
+                                    +--------------------------+   +--------------------------+
+```
+
 ### Threading
 
-The Lua runtime is single-threaded. KenshiLua invokes event handlers synchronously only when the engine raises the event on the Lua owner thread. Events raised on game worker threads are not queued and do not enter Lua.
+Kenshi does several jobs at once. The **main thread** draws the screen, runs the interface and moves the game forward. **Worker threads** run in the background at the same time; the busiest one makes AI decisions, such as what a character does next, whether it may use a building, or which attack it picks.
 
-For a notification callback, a worker-thread event is skipped. For an override callback, KenshiLua preserves the engine's original or default result. Which thread raises an engine function is determined by Kenshi and can vary by call site.
+Your scripts run on the main thread. Most events are raised there too, and for those there is nothing more to know. Some events are raised from a worker thread, and those behave differently. Other pages call the main thread the Lua owner thread.
 
-## Notification Callbacks (702)
+#### What happens by default
+
+A handler registered the usual way runs only when Kenshi raises the event from the main thread. When Kenshi raises it from a worker thread, the handler is skipped:
+
+- a notification handler is not called;
+- an override handler is not asked, and the game keeps its own result.
+
+For some events, nearly every call comes from a worker thread. `Ownerships::canIUseThisBuilding` is one: a handler registered the usual way almost never runs for it. The first time KenshiLua skips an event's handlers like this, it writes a warning naming the event to the log. If a handler seems to do nothing, look for that warning.
+
+#### Running a handler on a worker thread
+
+An event whose entry below says **Worker threads: supported** can also call your handler from the worker thread. Ask for that with a third argument to `Events.on`:
+
+```lua
+Events.on("Ownerships::canIUseThisBuilding", function(self, building, character, defaultVal)
+    -- Return true or false to override, or nothing to keep the game's answer.
+end, { workerThread = true })
+```
+
+A handler registered this way runs for calls from both threads.
+
+#### What a worker-thread handler may do
+
+While your handler runs on a worker thread, the main thread does not stop. It keeps drawing the screen and updating the game at that same moment. If your handler changes something the main thread is using right then, the game can crash or its data can be damaged. This happens at random, which makes it very hard to track down. So a worker-thread handler should only look and record:
+
+- **Fine:** reading the handler's arguments, doing calculations, storing values in your own Lua tables, `print` and logging, and returning an override value.
+- **Not safe:** changing the game (spawning, moving or removing characters and items; changing stats, inventories, factions or orders) and anything to do with the interface (creating, changing or removing windows and other widgets).
+
+To change the game in response to a worker-thread event, record what happened and act on it from a handler that runs on the main thread:
+
+```lua
+local deaths = {}
+
+-- May run on a worker thread: only record what happened.
+Events.on("Character::declareDead", function(self)
+    deaths[#deaths + 1] = self:getName()
+end, { workerThread = true })
+
+-- Runs on the main thread: a safe place to change the game or the interface.
+Events.on("GameWorld::charsUpdate", function()
+    for i = 1, #deaths do
+        -- Change the game or the interface here, for example show a message.
+        print(deaths[i] .. " died")
+    end
+    deaths = {}
+end)
+```
+
+Record plain values such as names and numbers, not the objects themselves. An object from the arguments may no longer exist by the time the main-thread handler runs.
+
+Your own Lua variables need no special care. KenshiLua never runs two handlers at the same moment, even on different threads, so the two handlers above cannot interfere with each other.
+
+Keep a worker-thread handler fast. The game waits for it to finish, and some of these events are raised hundreds or thousands of times a second, so a slow handler slows the AI down.
+
+#### Other details
+
+- When Kenshi raises an event from the main thread, all of its handlers run. From a worker thread, only the handlers registered with `workerThread` run. An override handler registered the usual way therefore changes only the main-thread calls.
+- The same event can come from either thread, and Kenshi decides call by call. Treat every `workerThread` handler as if it always runs on a worker thread.
+- `workerThread` on an event that does not support it logs a warning, and the handler then works like one registered the usual way.
+- If Lua is busy on the main thread for more than 2 seconds, a waiting worker-thread call gives up and skips its handlers that one time, and a warning is logged.
+
+## Notification Callbacks (721)
+
+### ActivePlatoon (3)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ActivePlatoon::_NV_addActiveObject` | `function(self: ActivePlatoon, character: RootObject)` |
+| `ActivePlatoon::_NV_removeObject` | `function(self: ActivePlatoon, character: RootObject)` |
+| `ActivePlatoon::setSquadLeader` | `function(self: ActivePlatoon, leader: Character)` |
+
+### BackpackInventoryLayout (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `BackpackInventoryLayout::_CONSTRUCTOR` | `function(self: BackpackInventoryLayout, standAlone: boolean)` |
+| `BackpackInventoryLayout::_DESTRUCTOR` | `function(self: BackpackInventoryLayout)` |
+
+### BountyManager (7)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `BountyManager::assignBountyForCrimes` | `function(self: BountyManager, enforcer: Faction)` |
+| `BountyManager::clearBounty` | `function(self: BountyManager, enforcer: Faction)` |
+| `BountyManager::notifyCrimeWitnessed` | `function(self: BountyManager, faction: Faction, againstWho: hand, expiryTime: integer, crimeType: integer)` |
+| `BountyManager::notifyPlayerClaimBounty` | `function(self: BountyManager, faction: Faction)` |
+| `BountyManager::notifyStartPrisonSentence` | `function(self: BountyManager, lawFaction: Faction)` |
+| `BountyManager::setCrime` | `function(self: BountyManager, crime: integer, againstFaction: Faction, againstHandle: hand, accepted: boolean)` |
+| `BountyManager::unfairAddToBounty` | `function(self: BountyManager, enforcer: Faction, amount: integer)` |
+
+### Building (18)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Building::_NV_addConstructionProgress` | `function(self: Building, amount: number)` |
+| `Building::_NV_buyMeCallback` | `function(self: Building, result: integer)` |
+| `Building::_NV_loadFromSerialise` | `function(self: Building, saveState: GameSaveState)` |
+| `Building::_NV_notifyConstructionComplete` | `function(self: Building)` |
+| `Building::_NV_notifyConstructionDismantling` | `function(self: Building)` |
+| `Building::_NV_notifyEffect` | `function(self: Building, effectType: integer, weatherType: integer, strength: number)` |
+| `Building::_NV_onBuildingLoaded` | `function(self: Building)` |
+| `Building::_NV_serialise` | `function(self: Building, container: GameDataContainer, refList: GameData)` |
+| `Building::_NV_setBroken` | `function(self: Building, broken: boolean)` |
+| `Building::_NV_setConstructionProgress` | `function(self: Building, amount: number)` |
+| `Building::_NV_setFaction` | `function(self: Building, faction: Faction, activePlatoon: ActivePlatoon)` |
+| `Building::_NV_switchEffects` | `function(self: Building, on: boolean)` |
+| `Building::_NV_switchLights` | `function(self: Building, on: boolean)` |
+| `Building::_NV_upgrade` | `function(self: Building, line: DataPanelLine)` |
+| `Building::addAnInternalBuilding` | `function(self: Building, internalBuilding: Building)` |
+| `Building::destroyDoors` | `function(self: Building)` |
+| `Building::setFloorVisibility` | `function(self: Building, floor: integer, isVisible: boolean)` |
+| `Building::setResidentSquad` | `function(self: Building, platoon: Platoon)` |
+
+### BuildModeWindow (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `BuildModeWindow::confirm` | `function(self: BuildModeWindow, widget: Widget)` |
+
+### CampaignInstance (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CampaignInstance::_NV_addToCampaign` | `function(self: CampaignInstance, platoon: Platoon, forceLeader: boolean)` |
+| `CampaignInstance::_NV_lossEvent` | `function(self: CampaignInstance)` |
+| `CampaignInstance::_NV_removeFromCampaign` | `function(self: CampaignInstance, platoon: Platoon)` |
+| `CampaignInstance::_NV_victoryEvent` | `function(self: CampaignInstance)` |
+| `CampaignInstance::changePhase` | `function(self: CampaignInstance, phase: integer)` |
+
+### Character (29)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Character::_NV_equipItem` | `function(self: Character, sectionName: string, item: Item)` |
+| `Character::_NV_gettingEaten` | `function(self: Character, amount: number, eater: Character)` |
+| `Character::_NV_hitByMeleeAttack` | `function(self: Character, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+| `Character::_NV_ImStealingDoYouNotice` | `function(self: Character, stealFrom: RootObject, item: Item)` |
+| `Character::_NV_init` | `function(self: Character)` |
+| `Character::_NV_loadFromSerialise` | `function(self: Character, saveState: GameSaveState)` |
+| `Character::_NV_loadFromSerialisePostCreationStage` | `function(self: Character, saveState: GameSaveState)` |
+| `Character::_NV_say` | `function(self: Character, message: string)` |
+| `Character::_NV_select` | `function(self: Character)` |
+| `Character::_NV_serialise` | `function(self: Character, container: GameDataContainer, refList: GameData)` |
+| `Character::_NV_setFaction` | `function(self: Character, faction: Faction, platoon: ActivePlatoon)` |
+| `Character::_NV_setStandingOrder` | `function(self: Character, orderID: integer, enabled: boolean)` |
+| `Character::_NV_smugglingTradeCheck` | `function(self: Character, item: Item, who: Character)` |
+| `Character::_NV_takeMoney` | `function(self: Character, amount: integer)` |
+| `Character::_NV_unequipItem` | `function(self: Character, sectionName: string, item: Item)` |
+| `Character::_NV_unselect` | `function(self: Character)` |
+| `Character::addGoal` | `function(self: Character, taskType: integer, subject: RootObject)` |
+| `Character::addJob` | `function(self: Character, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
+| `Character::addOrder` | `function(self: Character, destBuilding: Building, taskType: integer, subject: RootObject, shift: boolean, clear: boolean, location: Vector3)` |
+| `Character::changeSlaveOwner` | `function(self: Character, newOwnerHandle: hand)` |
+| `Character::declareDead` | `function(self: Character)` |
+| `Character::dropCarriedObject` | `function(self: Character, ragdollTarget: boolean, removeOnly: boolean)` |
+| `Character::eatItem` | `function(self: Character, foodItem: Item, inventory: Inventory)` |
+| `Character::getDropped` | `function(self: Character, ragdoll: boolean, hull: boolean)` |
+| `Character::getPickedUp` | `function(self: Character, byWhom: Character)` |
+| `Character::pickupObject` | `function(self: Character, who: Character)` |
+| `Character::removeJob` | `function(self: Character, taskType: integer)` |
+| `Character::setChainedMode` | `function(self: Character, on: boolean, ownerHandle: hand)` |
+| `Character::setPrisonMode` | `function(self: Character, enabled: boolean, cage: UseableStuff)` |
+
+### CharacterAnimal (13)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CharacterAnimal::_NV_createAnimationClass` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_createInventoryLayout` | `function(self: CharacterAnimal, layout: InventoryLayout)` |
+| `CharacterAnimal::_NV_drawWeapon` | `function(self: CharacterAnimal, item: Item, lastSlot: string, success: boolean)` |
+| `CharacterAnimal::_NV_dropItem` | `function(self: CharacterAnimal, item: RootObject)` |
+| `CharacterAnimal::_NV_foodUpdate` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_giveBirth` | `function(self: CharacterAnimal, appearance: GameDataCopyStandalone, position: Vector3, rotation: Quaternion, state: GameSaveState, tempPlatoon: ActivePlatoon, faction: Faction, success: boolean)` |
+| `CharacterAnimal::_NV_init` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_isAnimal` | `function(self: CharacterAnimal, result: CharacterAnimal)` |
+| `CharacterAnimal::_NV_periodicUpdate` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_setAge` | `function(self: CharacterAnimal, zeroToOne: number)` |
+| `CharacterAnimal::_NV_setupAudio` | `function(self: CharacterAnimal)` |
+| `CharacterAnimal::_NV_setupInventorySections` | `function(self: CharacterAnimal, state: GameSaveState, success: boolean)` |
+| `CharacterAnimal::_NV_sheatheWeapon` | `function(self: CharacterAnimal)` |
+
+### CharacterStatsWindow (15)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CharacterStatsWindow::_CONSTRUCTOR` | `function(self: CharacterStatsWindow, charHandle: hand)` |
+| `CharacterStatsWindow::_DESTRUCTOR` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::_NV_autoChangeSelectedObject` | `function(self: CharacterStatsWindow, obj: hand)` |
+| `CharacterStatsWindow::_NV_clear` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::_NV_create` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::_NV_show` | `function(self: CharacterStatsWindow, on: boolean)` |
+| `CharacterStatsWindow::_NV_update` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::addStat` | `function(type: integer, id: string, name: string, active: boolean, description: string)` |
+| `CharacterStatsWindow::BuildStats` | `function()` |
+| `CharacterStatsWindow::clearDesctiption` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::closeWindow` | `function(self: CharacterStatsWindow, sender: Widget, name: string)` |
+| `CharacterStatsWindow::setAutoUpdateMode` | `function(self: CharacterStatsWindow, on: boolean)` |
+| `CharacterStatsWindow::setupStats` | `function(self: CharacterStatsWindow)` |
+| `CharacterStatsWindow::statMouseOver` | `function(self: CharacterStatsWindow, sender: Widget, arg2: integer, arg3: integer)` |
+| `CharacterStatsWindow::updateStats` | `function(self: CharacterStatsWindow)` |
+
+### CharacterStatsWindow::Stat (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CharacterStatsWindow::Stat::_DESTRUCTOR` | `function(self: CharacterStatsWindow::Stat)` |
+| `CharacterStatsWindow::Stat::operator=` | `function(self: CharacterStatsWindow::Stat, that: CharacterStatsWindow::Stat)` |
+
+### CharacterStatsWindow::StatGroup (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CharacterStatsWindow::StatGroup::_DESTRUCTOR` | `function(self: CharacterStatsWindow::StatGroup)` |
+
+### CharStats (12)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CharStats::clearHoldLocation` | `function(self: CharStats)` |
+| `CharStats::setHoldLocation` | `function(self: CharStats, vector3Table: Vector3)` |
+| `CharStats::xpDodgeEvent` | `function(self: CharStats, enemySkill: number, successful: boolean)` |
+| `CharStats::xpEngineering` | `function(self: CharStats, time: number)` |
+| `CharStats::xpFirstAid` | `function(self: CharStats, patient: Character, time: number, medicStat: integer)` |
+| `CharStats::xpLockpicking` | `function(self: CharStats, lockLevel: integer, success: boolean)` |
+| `CharStats::xpRunning` | `function(self: CharStats, time: number, speed: number)` |
+| `CharStats::xpStat_eventBased` | `function(self: CharStats, statType: integer, amount: number)` |
+| `CharStats::xpStealth` | `function(self: CharStats, time: number, enemiesAbout: boolean, seen: YesNoMaybe, isMoving: boolean)` |
+| `CharStats::xpToughness_GetUpEvent` | `function(self: CharStats)` |
+| `CharStats::xpToughness_PunchSomething` | `function(self: CharStats, mat: integer)` |
+| `CharStats::xpToughness_RagdollEvent` | `function(self: CharStats)` |
+
+### CombatClass (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CombatClass::_blockHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject)` |
+| `CombatClass::_getHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject, stumble: boolean)` |
+| `CombatClass::_NV_initCombatMode` | `function(self: CombatClass, subject: hand, endValue: integer, focusedTarget: boolean, result: boolean)` |
+| `CombatClass::addAttackerH` | `function(self: CombatClass, attacker: Character, added: boolean)` |
+| `CombatClass::removeAttackerH` | `function(self: CombatClass, attacker: Character, removed: boolean)` |
+
+### ContextMenu (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ContextMenu::showContextMenu` | `function(self: ContextMenu, on: boolean, what: RootObject)` |
+
+### ContextMenuGUI (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ContextMenuGUI::show` | `function(self: ContextMenuGUI, ordersList: lektor<integer>, name: string, offset: boolean)` |
+
+### CraftingBuilding (6)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `CraftingBuilding::_NV_newCraftingButton` | `function(self: CraftingBuilding, sender: Widget)` |
+| `CraftingBuilding::_NV_operate` | `function(self: CraftingBuilding, worker: Character, amount: number)` |
+| `CraftingBuilding::_removeCraft` | `function(self: CraftingBuilding, index: integer)` |
+| `CraftingBuilding::addFinishedCraftItem` | `function(self: CraftingBuilding, item: Item)` |
+| `CraftingBuilding::destroyProductionItem` | `function(self: CraftingBuilding)` |
+| `CraftingBuilding::notifyCraftFailiure` | `function(self: CraftingBuilding)` |
+
+### DatapanelGUI (49)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DatapanelGUI::_DESTRUCTOR` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::_NV__zeroLines` | `function(self: DatapanelGUI, cat: integer, result: DataPanelLine)` |
+| `DatapanelGUI::_NV_addTab` | `function(self: DatapanelGUI, id: integer, name: string, icon: string)` |
+| `DatapanelGUI::_NV_autoChangeSelectedObject` | `function(self: DatapanelGUI, obj: hand)` |
+| `DatapanelGUI::_NV_changeCategory` | `function(self: DatapanelGUI, cat: integer)` |
+| `DatapanelGUI::_NV_clear` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::_NV_clearPage` | `function(self: DatapanelGUI, cat: integer)` |
+| `DatapanelGUI::_NV_create` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::_NV_hideAllWidgets` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::_NV_resize` | `function(self: DatapanelGUI, w: integer, h: integer)` |
+| `DatapanelGUI::_NV_setAutomaticRefresh` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV_setAutomaticTargeting` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV_setCategoryIcon` | `function(self: DatapanelGUI, cat: integer, image: string)` |
+| `DatapanelGUI::_NV_setLineSpacing` | `function(self: DatapanelGUI, numLinesPerScreen: number)` |
+| `DatapanelGUI::_NV_setObject` | `function(self: DatapanelGUI, obj: hand)` |
+| `DatapanelGUI::_NV_setPosition` | `function(self: DatapanelGUI, x: integer, y: integer)` |
+| `DatapanelGUI::_NV_setPositionReal` | `function(self: DatapanelGUI, x: number, y: number)` |
+| `DatapanelGUI::_NV_setTabEnabled` | `function(self: DatapanelGUI, id: integer, enabled: boolean)` |
+| `DatapanelGUI::_NV_setTabName` | `function(self: DatapanelGUI, id: integer, name: string)` |
+| `DatapanelGUI::_NV_show` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV_showTabs` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::_NV_update` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::addCustomLine` | `function(self: DatapanelGUI, line: DataPanelLine)` |
+| `DatapanelGUI::addSpace` | `function(self: DatapanelGUI, category: integer, h: number)` |
+| `DatapanelGUI::clearCategoryTabs` | `function(self: DatapanelGUI)` |
+| `DatapanelGUI::closeButtonCallback` | `function(self: DatapanelGUI, arg1: Widget, arg2: string)` |
+| `DatapanelGUI::createLine` | `function(self: DatapanelGUI, line: DataPanelLine, category: integer, lastLine: boolean, result: DataPanelLine)` |
+| `DatapanelGUI::getCoords` | `function(self: DatapanelGUI, left: number, top: number, width: number, height: number, result: IntCoord)` |
+| `DatapanelGUI::mouseOverCallback` | `function(self: DatapanelGUI, sender: Widget)` |
+| `DatapanelGUI::notifyMouseWheel` | `function(self: DatapanelGUI, sender: Widget, rel: integer)` |
+| `DatapanelGUI::removeLine` | `function(self: DatapanelGUI, s1: string, category: integer)` |
+| `DatapanelGUI::setCaption` | `function(self: DatapanelGUI, s: string)` |
+| `DatapanelGUI::setCloseCallback` | `function(self: DatapanelGUI, close: lightuserdata)` |
+| `DatapanelGUI::setLineButton` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, result: DataPanelLine_Button)` |
+| `DatapanelGUI::setLineCheckbox` | `function(self: DatapanelGUI, s1: string, val: lightuserdata, category: integer, result: DataPanelLine_CheckBox)` |
+| `DatapanelGUI::setLineDropBox` | `function(self: DatapanelGUI, key: string, category: integer, valPtr: lightuserdata, goBox: boolean, width: number, result: DataPanelLine_DropBox)` |
+| `DatapanelGUI::setLineFaction` | `function(self: DatapanelGUI, s1: string, s2: string, category: integer, v1: number, v2: number, result: DataPanelLine_Faction)` |
+| `DatapanelGUI::setLineProgress` | `function(self: DatapanelGUI, key: string, category: integer, progressValue: number, progressText: string, showKey: boolean, result: DataPanelLine_Progress)` |
+| `DatapanelGUI::setLines` | `function(self: DatapanelGUI, data: lektor<StringPair>, category: integer)` |
+| `DatapanelGUI::setLineSlider` | `function(self: DatapanelGUI, key: string, caption: string, min: number, max: number, category: integer, value: lightuserdata, scale: number, result: DataPanelLine_Slider)` |
+| `DatapanelGUI::setLineSliderEditable` | `function(self: DatapanelGUI, key: string, category: integer, showName: boolean, min: number, max: number, value: lightuserdata, result: DataPanelLine_SliderEditable)` |
+| `DatapanelGUI::setLineStatInfo` | `function(self: DatapanelGUI, s1: string, s2: string, category: integer, result: DataPanelLine)` |
+| `DatapanelGUI::setLineText` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, wordWrap: boolean, textAlign: integer, result: DataPanelLine_Text)` |
+| `DatapanelGUI::setLineTextButton` | `function(self: DatapanelGUI, text: string, caption: string, category: integer, buttonWidth: number, skin: string, result: DataPanelLine_Button)` |
+| `DatapanelGUI::setLineTextEditable` | `function(self: DatapanelGUI, key: string, text: string, category: integer, showKey: boolean, multiLine: boolean, textAlign: integer, width: number, result: DataPanelLine_TextEditable)` |
+| `DatapanelGUI::setLineToggleButton` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, result: DataPanelLine_Button)` |
+| `DatapanelGUI::setPanelName` | `function(self: DatapanelGUI, name: string)` |
+| `DatapanelGUI::show_NonSmooth` | `function(self: DatapanelGUI, on: boolean)` |
+| `DatapanelGUI::tabButton` | `function(self: DatapanelGUI, sender: Widget, arg2: integer, arg3: integer, arg4: integer)` |
+
+### DataPanelLine (6)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine::_DESTRUCTOR` | `function(self: DataPanelLine)` |
+| `DataPanelLine::_NV_createMe` | `function(self: DataPanelLine, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine::_NV_refresh` | `function(self: DataPanelLine)` |
+| `DataPanelLine::_NV_resize` | `function(self: DataPanelLine, width: integer, height: integer)` |
+| `DataPanelLine::_NV_setEnabled` | `function(self: DataPanelLine, on: boolean)` |
+| `DataPanelLine::_NV_setVisible` | `function(self: DataPanelLine, on: boolean)` |
+
+### DataPanelLine_Button (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_Button::_CONSTRUCTOR` | `function(self: DataPanelLine_Button, a: string, b: string, cat: integer, w: number, skin: string)` |
+| `DataPanelLine_Button::_DESTRUCTOR` | `function(self: DataPanelLine_Button)` |
+| `DataPanelLine_Button::_NV_createMe` | `function(self: DataPanelLine_Button, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Button::_NV_getUserData` | `function(self: DataPanelLine_Button, result: hand)` |
+| `DataPanelLine_Button::pressCallback` | `function(self: DataPanelLine_Button, sender: Widget)` |
+
+### DataPanelLine_CheckBox (8)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_CheckBox::_CONSTRUCTOR` | `function(self: DataPanelLine_CheckBox, key: string, cat: integer, val: lightuserdata)` |
+| `DataPanelLine_CheckBox::_DESTRUCTOR` | `function(self: DataPanelLine_CheckBox)` |
+| `DataPanelLine_CheckBox::_NV_createMe` | `function(self: DataPanelLine_CheckBox, parent: DatapanelGUI, topReal: number, lastLine: boolean)` |
+| `DataPanelLine_CheckBox::_NV_refresh` | `function(self: DataPanelLine_CheckBox)` |
+| `DataPanelLine_CheckBox::_NV_updateValuePtr` | `function(self: DataPanelLine_CheckBox, ptr: lightuserdata)` |
+| `DataPanelLine_CheckBox::notifyToggleCheck` | `function(self: DataPanelLine_CheckBox, sender: Widget)` |
+| `DataPanelLine_CheckBox::setValue` | `function(self: DataPanelLine_CheckBox, checked: boolean)` |
+| `DataPanelLine_CheckBox::setValuePtr` | `function(self: DataPanelLine_CheckBox, valPtr: lightuserdata)` |
+
+### DataPanelLine_DropBox (11)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_DropBox::_CONSTRUCTOR` | `function(self: DataPanelLine_DropBox, text: string, category: integer, valuePtr: lightuserdata, width: number, hasGobox: boolean)` |
+| `DataPanelLine_DropBox::_DESTRUCTOR` | `function(self: DataPanelLine_DropBox)` |
+| `DataPanelLine_DropBox::_NV_createMe` | `function(self: DataPanelLine_DropBox, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_DropBox::_NV_refresh` | `function(self: DataPanelLine_DropBox)` |
+| `DataPanelLine_DropBox::_NV_updateValuePtr` | `function(self: DataPanelLine_DropBox, ptr: lightuserdata)` |
+| `DataPanelLine_DropBox::addAValue` | `function(self: DataPanelLine_DropBox, key: string, val: integer)` |
+| `DataPanelLine_DropBox::clearValues` | `function(self: DataPanelLine_DropBox)` |
+| `DataPanelLine_DropBox::getSelectedText` | `function(self: DataPanelLine_DropBox, result: string)` |
+| `DataPanelLine_DropBox::goPressed` | `function(self: DataPanelLine_DropBox, sender: Widget)` |
+| `DataPanelLine_DropBox::selectionChange` | `function(self: DataPanelLine_DropBox, sender: Widget, i: integer)` |
+| `DataPanelLine_DropBox::setSelectedValue` | `function(self: DataPanelLine_DropBox, val: integer)` |
+
+### DataPanelLine_Faction (3)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_Faction::_CONSTRUCTOR` | `function(self: DataPanelLine_Faction, a: string, b: string, cat: integer, vv1: number, vv2: number)` |
+| `DataPanelLine_Faction::_DESTRUCTOR` | `function(self: DataPanelLine_Faction)` |
+| `DataPanelLine_Faction::_NV_createMe` | `function(self: DataPanelLine_Faction, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+
+### DataPanelLine_KeyConfig (9)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_KeyConfig::_CONSTRUCTOR` | `function(self: DataPanelLine_KeyConfig, cmd: string, text: string, cat: integer)` |
+| `DataPanelLine_KeyConfig::_DESTRUCTOR` | `function(self: DataPanelLine_KeyConfig)` |
+| `DataPanelLine_KeyConfig::_NV_createMe` | `function(self: DataPanelLine_KeyConfig, p: DatapanelGUI, vpos: number, lastLine: boolean)` |
+| `DataPanelLine_KeyConfig::_NV_refresh` | `function(self: DataPanelLine_KeyConfig)` |
+| `DataPanelLine_KeyConfig::cancel` | `function(self: DataPanelLine_KeyConfig)` |
+| `DataPanelLine_KeyConfig::clickButton` | `function(self: DataPanelLine_KeyConfig, sender: Widget)` |
+| `DataPanelLine_KeyConfig::eraseKey` | `function(self: DataPanelLine_KeyConfig, key: string)` |
+| `DataPanelLine_KeyConfig::getCommand` | `function(self: DataPanelLine_KeyConfig, result: string)` |
+| `DataPanelLine_KeyConfig::setKey` | `function(self: DataPanelLine_KeyConfig, s: string)` |
+
+### DataPanelLine_Progress (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_Progress::_CONSTRUCTOR` | `function(self: DataPanelLine_Progress, key: string, category: integer, showKey: boolean)` |
+| `DataPanelLine_Progress::_DESTRUCTOR` | `function(self: DataPanelLine_Progress)` |
+| `DataPanelLine_Progress::_NV_createMe` | `function(self: DataPanelLine_Progress, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Progress::setProgress` | `function(self: DataPanelLine_Progress, value: number, text: string)` |
+
+### DataPanelLine_Research (3)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_Research::_CONSTRUCTOR` | `function(self: DataPanelLine_Research, a: string, b: string, cat: integer, vv1: number, barColor: string, Xbut: boolean)` |
+| `DataPanelLine_Research::_DESTRUCTOR` | `function(self: DataPanelLine_Research)` |
+| `DataPanelLine_Research::_NV_createMe` | `function(self: DataPanelLine_Research, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+
+### DataPanelLine_Slider (7)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_Slider::_CONSTRUCTOR` | `function(self: DataPanelLine_Slider, key: string, text: string, min: number, max: number, category: integer, scale: number)` |
+| `DataPanelLine_Slider::_DESTRUCTOR` | `function(self: DataPanelLine_Slider)` |
+| `DataPanelLine_Slider::_NV_createMe` | `function(self: DataPanelLine_Slider, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_Slider::_NV_refresh` | `function(self: DataPanelLine_Slider)` |
+| `DataPanelLine_Slider::_NV_updateValuePtr` | `function(self: DataPanelLine_Slider, ptr: lightuserdata)` |
+| `DataPanelLine_Slider::setValue` | `function(self: DataPanelLine_Slider, value: number)` |
+| `DataPanelLine_Slider::sliderValueChanged` | `function(self: DataPanelLine_Slider, sender: Widget, value: integer)` |
+
+### DataPanelLine_SliderEditable (10)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_SliderEditable::_CONSTRUCTOR` | `function(self: DataPanelLine_SliderEditable, text: string, category: integer, showName: boolean, min: number, max: number, value: lightuserdata)` |
+| `DataPanelLine_SliderEditable::_DESTRUCTOR` | `function(self: DataPanelLine_SliderEditable)` |
+| `DataPanelLine_SliderEditable::_NV_createMe` | `function(self: DataPanelLine_SliderEditable, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_SliderEditable::_NV_refresh` | `function(self: DataPanelLine_SliderEditable)` |
+| `DataPanelLine_SliderEditable::_NV_updateValuePtr` | `function(self: DataPanelLine_SliderEditable, ptr: lightuserdata)` |
+| `DataPanelLine_SliderEditable::editCallback` | `function(self: DataPanelLine_SliderEditable, sender: Widget)` |
+| `DataPanelLine_SliderEditable::setEditableValuePtr` | `function(self: DataPanelLine_SliderEditable, val: lightuserdata, lo: number, hi: number)` |
+| `DataPanelLine_SliderEditable::setPrecision` | `function(self: DataPanelLine_SliderEditable, dp: integer)` |
+| `DataPanelLine_SliderEditable::setValue` | `function(self: DataPanelLine_SliderEditable, v: number)` |
+| `DataPanelLine_SliderEditable::sliderCallback` | `function(self: DataPanelLine_SliderEditable, sender: Widget, position: integer)` |
+
+### DataPanelLine_Text (3)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_Text::_CONSTRUCTOR` | `function(self: DataPanelLine_Text, key: string, text: string, category: integer, wordWrap: boolean, textAlign: integer)` |
+| `DataPanelLine_Text::_DESTRUCTOR` | `function(self: DataPanelLine_Text)` |
+| `DataPanelLine_Text::_NV_createMe` | `function(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+
+### DataPanelLine_TextEditable (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DataPanelLine_TextEditable::_CONSTRUCTOR` | `function(self: DataPanelLine_TextEditable, key: string, text: string, category: integer, showKey: boolean, multiLine: boolean, textAlign: integer, width: number)` |
+| `DataPanelLine_TextEditable::_DESTRUCTOR` | `function(self: DataPanelLine_TextEditable)` |
+| `DataPanelLine_TextEditable::_NV_createMe` | `function(self: DataPanelLine_TextEditable, parent: DatapanelGUI, top: number, lastLine: boolean)` |
+| `DataPanelLine_TextEditable::textChanged` | `function(self: DataPanelLine_TextEditable, sender: Widget)` |
+
+### Dialogue (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Dialogue::_doActions` | `function(self: Dialogue, dialogLine: DialogLineData)` |
+| `Dialogue::_endPlayerConversation` | `function(self: Dialogue, finished: boolean)` |
+| `Dialogue::endDialogue` | `function(self: Dialogue, definitelyTheEnd: boolean)` |
+| `Dialogue::say` | `function(self: Dialogue, dialogLine: DialogLineData)` |
+| `Dialogue::stopEvent` | `function(self: Dialogue, what: EventTriggerEnum)` |
+
+### DialogueWindow (12)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DialogueWindow::_DESTRUCTOR` | `function(self: DialogueWindow)` |
+| `DialogueWindow::_NV_show` | `function(self: DialogueWindow, on: boolean)` |
+| `DialogueWindow::_NV_update` | `function(self: DialogueWindow)` |
+| `DialogueWindow::activateResponse` | `function(self: DialogueWindow, index: integer)` |
+| `DialogueWindow::changePortrait` | `function(self: DialogueWindow, character: Character, player: boolean)` |
+| `DialogueWindow::clearResponses` | `function(self: DialogueWindow)` |
+| `DialogueWindow::hide` | `function(self: DialogueWindow, dialogue: Dialogue)` |
+| `DialogueWindow::setNPCText` | `function(self: DialogueWindow, text: string)` |
+| `DialogueWindow::setResponses` | `function(self: DialogueWindow, responses: void)` |
+| `DialogueWindow::setVisible` | `function(self: DialogueWindow, visible: boolean)` |
+| `DialogueWindow::show` | `function(self: DialogueWindow, dialogue: Dialogue)` |
+| `DialogueWindow::updatePanelsPosition` | `function(self: DialogueWindow)` |
+
+### DoorStuff (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `DoorStuff::_NV_hitByMeleeAttack` | `function(self: DoorStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+| `DoorStuff::lockDoor` | `function(self: DoorStuff)` |
+| `DoorStuff::setDoorState` | `function(self: DoorStuff, doorState: integer)` |
+| `DoorStuff::unlockDoor` | `function(self: DoorStuff)` |
+
+### Faction (11)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Faction::_NV_addActiveObject` | `function(self: Faction, object: RootObject, platoon: ActivePlatoon, success: boolean)` |
+| `Faction::_NV_destroyObject` | `function(self: Faction, object: RootObject)` |
+| `Faction::_NV_removeObject` | `function(self: Faction, object: RootObject)` |
+| `Faction::createNewEmptyActivePlatoon` | `function(self: Faction, platoon: Platoon)` |
+| `Faction::createNewEmptyUnloadedPlatoon` | `function(self: Faction, squadTemplate: GameData, position: Vector3, forceCharacterDatas: GameDataContainer, persistent: boolean, platoon: Platoon)` |
+| `Faction::destroyPlatoon` | `function(self: Faction, platoon: Platoon)` |
+| `Faction::loadState` | `function(self: Faction, saveSource: GameDataContainer, factionState: GameData)` |
+| `Faction::removePlatoon` | `function(self: Faction, platoon: Platoon)` |
+| `Faction::restorePlatoon` | `function(self: Faction, platoon: Platoon)` |
+| `Faction::setName` | `function(self: Faction, name: string)` |
+| `Faction::setup3` | `function(self: Faction)` |
+
+### FactionRelations (7)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `FactionRelations::_NV_affectReputation` | `function(self: FactionRelations, faction: Faction, amount: number)` |
+| `FactionRelations::_NV_affectTrust` | `function(self: FactionRelations, faction: Faction, amount: number, multiplier: number)` |
+| `FactionRelations::_NV_declareWar` | `function(self: FactionRelations, faction: Faction)` |
+| `FactionRelations::_NV_setEnemy` | `function(self: FactionRelations, faction: Faction)` |
+| `FactionRelations::_NV_setNoLongerEnemies` | `function(self: FactionRelations, faction: Faction)` |
+| `FactionRelations::affectRelations` | `function(self: FactionRelations, otherFaction: Faction, value: number, multiplier: number)` |
+| `FactionRelations::setRelation` | `function(self: FactionRelations, faction: Faction, relation: number)` |
+
+### FactionsScreen (11)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `FactionsScreen::_CONSTRUCTOR` | `function(self: FactionsScreen, screen: ManagementScreen)` |
+| `FactionsScreen::_DESTRUCTOR` | `function(self: FactionsScreen)` |
+| `FactionsScreen::clear` | `function(self: FactionsScreen)` |
+| `FactionsScreen::factionLineSelected` | `function(self: FactionsScreen, sender: Widget)` |
+| `FactionsScreen::loseFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
+| `FactionsScreen::notifyEditTextChange` | `function(self: FactionsScreen, sender: Widget)` |
+| `FactionsScreen::notifyMouseWheel` | `function(self: FactionsScreen, sender: Widget, rel: integer)` |
+| `FactionsScreen::refresh` | `function(self: FactionsScreen)` |
+| `FactionsScreen::setFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
+| `FactionsScreen::update` | `function(self: FactionsScreen)` |
+| `FactionsScreen::updateInfo` | `function(self: FactionsScreen)` |
+
+### FactionsScreen::FactionRelationsLine (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine, faction: Faction)` |
+| `FactionsScreen::FactionRelationsLine::_DESTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine)` |
+| `FactionsScreen::FactionRelationsLine::attachToWidget` | `function(self: FactionsScreen::FactionRelationsLine, widget: Widget)` |
+| `FactionsScreen::FactionRelationsLine::update` | `function(self: FactionsScreen::FactionRelationsLine)` |
+
+### FactionWarMgr (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `FactionWarMgr::endCampaign` | `function(self: FactionWarMgr, campaign: CampaignInstance)` |
+| `FactionWarMgr::triggerCampaign` | `function(self: FactionWarMgr, targetTown: RootObjectBase, data: CampaignData, home: TownBase, campaign: CampaignInstance)` |
+
+### FarmBuilding (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `FarmBuilding::_NV_operate` | `function(self: FarmBuilding, worker: Character, amount: number)` |
+| `FarmBuilding::eat` | `function(self: FarmBuilding, rate: number)` |
+
+### ForgottenGUI (78)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ForgottenGUI::_CONSTRUCTOR` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::_DESTRUCTOR` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::_showTradeWindow` | `function(self: ForgottenGUI, a: RootObject, b: RootObject, tradeType: integer)` |
+| `ForgottenGUI::addDatapanelToUpdateList` | `function(self: ForgottenGUI, datapanel: DatapanelGUI)` |
+| `ForgottenGUI::addScreenLabel` | `function(self: ForgottenGUI, label: ScreenLabelInterface)` |
+| `ForgottenGUI::addWindowToUpdateList` | `function(self: ForgottenGUI, win: GUIWindow)` |
+| `ForgottenGUI::changeFontSize` | `function()` |
+| `ForgottenGUI::clearGUI` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeAllCharacterStatsWindows` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeAllInventories` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeAllWindows` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeCharacterEditor` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeCharacterStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::closeInventory` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::closeInventoryBuilding` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::closeTradeWindow` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::createButton` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, text: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createButtonAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, name: string, text: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createCheckbox` | `function(self: ForgottenGUI, parent: Widget, left: integer, top: integer, width: integer, height: integer, caption: string, result: Widget)` |
+| `ForgottenGUI::createDropBox` | `function(self: ForgottenGUI, parent: Widget, name: string, top: number, left: number, width: number, height: number, result: Widget)` |
+| `ForgottenGUI::createDropBoxAbs` | `function(self: ForgottenGUI, parent: Widget, name: string, top: integer, left: integer, width: integer, height: integer, result: Widget)` |
+| `ForgottenGUI::createFloatingImage` | `function(self: ForgottenGUI, image: string, top: number, left: number, width: number, height: number, layer: string, result: Widget)` |
+| `ForgottenGUI::createFloatingImageAbs` | `function(self: ForgottenGUI, image: string, top: number, left: number, width: number, height: number, layer: string, result: Widget)` |
+| `ForgottenGUI::createFloatingLabel` | `function(self: ForgottenGUI, top: number, left: number, width: number, height: number, text: string, a: integer, layer: string, result: Widget)` |
+| `ForgottenGUI::createFloatingProgressBar` | `function(self: ForgottenGUI, result: FloatingProgressBar)` |
+| `ForgottenGUI::createImage` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, image: string, result: Widget)` |
+| `ForgottenGUI::createImageAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, image: string, result: Widget)` |
+| `ForgottenGUI::createListbox` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, result: Widget)` |
+| `ForgottenGUI::createPanel` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createPanelAbs` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createProgressBar` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, type: string, result: Widget)` |
+| `ForgottenGUI::createProgressBarAbs` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, type: string, result: Widget)` |
+| `ForgottenGUI::createRotatableImageAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, image: string, result: Widget)` |
+| `ForgottenGUI::createScreenLabel` | `function(self: ForgottenGUI, text: string, textColour: Colour, textSize: integer, risingSpeed: integer, result: ScreenLabel)` |
+| `ForgottenGUI::createScreenLabelD` | `function(self: ForgottenGUI, text: string, time: number, result: ScreenLabelDebug)` |
+| `ForgottenGUI::createScrollBarAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, range: integer, value: integer, result: Widget)` |
+| `ForgottenGUI::createTabPanel` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
+| `ForgottenGUI::createValueEdit` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, result: Widget)` |
+| `ForgottenGUI::createValueEditTransparent` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, result: Widget)` |
+| `ForgottenGUI::destroyWidget` | `function(self: ForgottenGUI, widget: Widget)` |
+| `ForgottenGUI::getDataLineColor` | `function(self: ForgottenGUI, actualVal: integer, normalVal: integer, result: string)` |
+| `ForgottenGUI::hideMessageBox` | `function(self: ForgottenGUI, enter: boolean, result: boolean)` |
+| `ForgottenGUI::init` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::inventoriesSelectedObjectUpdate` | `function(self: ForgottenGUI, selectedObject: hand)` |
+| `ForgottenGUI::keepWindownOnScreen` | `function(self: ForgottenGUI, win: Widget)` |
+| `ForgottenGUI::messageBox` | `function(self: ForgottenGUI, title: string, message: string, btn: integer, modal: boolean, callback: lightuserdata, result: Widget)` |
+| `ForgottenGUI::notifyTownDeleted` | `function(self: ForgottenGUI, t: Town)` |
+| `ForgottenGUI::removeDatapanelFromUpdateList` | `function(self: ForgottenGUI, datapanel: DatapanelGUI)` |
+| `ForgottenGUI::removeWindowFromUpdateList` | `function(self: ForgottenGUI, win: GUIWindow)` |
+| `ForgottenGUI::restart` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::selectedObjectsChanged` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::setInventoryPosition` | `function(self: ForgottenGUI, owner: hand, inventory: InventoryGUI)` |
+| `ForgottenGUI::setLoading` | `function(self: ForgottenGUI, value: boolean)` |
+| `ForgottenGUI::setMouseCursorVisible` | `function(self: ForgottenGUI, visible: boolean)` |
+| `ForgottenGUI::setup` | `function(self: ForgottenGUI, mRoot: lightuserdata, window: lightuserdata)` |
+| `ForgottenGUI::setupGuiScaling` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::showCharacterEditor` | `function(self: ForgottenGUI, characters: lektor<Character>, mode: integer, races: vector<GameDataReference>::type)` |
+| `ForgottenGUI::showCharacterStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::showInventory` | `function(self: ForgottenGUI, owner: hand, autoPosition: boolean, x: number, y: number, result: InventoryGUI)` |
+| `ForgottenGUI::showInventoryBuilding` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
+| `ForgottenGUI::showInventoryNPC` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
+| `ForgottenGUI::showLoadingMessage` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::showMainbar` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::showNames` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::showPauseMessage` | `function(self: ForgottenGUI, on: boolean)` |
+| `ForgottenGUI::showPrintOutput` | `function(self: ForgottenGUI, v: boolean)` |
+| `ForgottenGUI::showTraderInventory` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
+| `ForgottenGUI::showTradeWindow` | `function(self: ForgottenGUI, a: hand, b: hand, type: integer)` |
+| `ForgottenGUI::shutDown` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::toggle` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::toggleCharacterStatsWindowPermanent` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::toggleHelpWindow` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::toggleInventory` | `function(self: ForgottenGUI, owner: hand, parentInv: InventoryGUI, attached: boolean, result: InventoryGUI)` |
+| `ForgottenGUI::toggleInventoryWindowPermanent` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::toggleStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
+| `ForgottenGUI::update` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::updateBountyPanelVisibility` | `function(self: ForgottenGUI)` |
+| `ForgottenGUI::updateToOrdersPanel` | `function(self: ForgottenGUI)` |
+
+### FurnaceBuilding (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `FurnaceBuilding::_NV_operate` | `function(self: FurnaceBuilding, worker: Character, amount: number)` |
+
+### GameWorld (7)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `GameWorld::charsUpdate` | `function(self: GameWorld)` |
+| `GameWorld::dailyUpdates` | `function(self: GameWorld)` |
+| `GameWorld::destroy` | `function(self: GameWorld, obj: RootObject, justUnloaded: boolean, debugInfo: string)` |
+| `GameWorld::initialiseNewGameWorld` | `function(self: GameWorld, datasrc: GameDataManager)` |
+| `GameWorld::resetGame` | `function(self: GameWorld)` |
+| `GameWorld::setGameSpeed` | `function(self: GameWorld, speed: number, click: boolean)` |
+| `GameWorld::userPause` | `function(self: GameWorld, p: boolean)` |
+
+### GenericFixedInventoryLayout (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `GenericFixedInventoryLayout::_DESTRUCTOR` | `function(self: GenericFixedInventoryLayout)` |
+| `GenericFixedInventoryLayout::_NV_setSize` | `function(self: GenericFixedInventoryLayout, slotsW: integer, slotsH: integer)` |
+
+### GUIWindow (6)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `GUIWindow::_NV_autoChangeSelectedObject` | `function(self: GUIWindow, obj: hand)` |
+| `GUIWindow::_NV_resize` | `function(self: GUIWindow, w: integer, h: integer)` |
+| `GUIWindow::_NV_setPosition` | `function(self: GUIWindow, x: integer, y: integer)` |
+| `GUIWindow::_NV_setPositionReal` | `function(self: GUIWindow, x: number, y: number)` |
+| `GUIWindow::_NV_update` | `function(self: GUIWindow)` |
+| `GUIWindow::getWidget` | `function(self: GUIWindow, result: Widget)` |
+
+### GunClass (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `GunClass::shoot` | `function(self: GunClass, shooter: Character, target: RootObject, stat: integer, aimPosition: Vector3)` |
+
+### InputHandler (1)
 
 | Event Name | Lua Signature |
 | :--- | :--- |
 | `InputHandler::keyDownEvent` | `function(self: InputHandler, keyCode: integer)` |
-| `GameWorld::charsUpdate` | `function(self: GameWorld)` |
-| `Character::declareDead` | `function(self: Character)` |
-| `Character::_NV_select` | `function(self: Character)` |
-| `Character::_NV_unselect` | `function(self: Character)` |
-| `Character::_NV_say` | `function(self: Character, message: string)` |
-| `Character::pickupObject` | `function(self: Character, who: Character)` |
-| `Character::getPickedUp` | `function(self: Character, byWhom: Character)` |
-| `Character::_NV_takeMoney` | `function(self: Character, amount: integer)` |
-| `Character::eatItem` | `function(self: Character, foodItem: Item, inventory: Inventory)` |
-| `Character::_NV_hitByMeleeAttack` | `function(self: Character, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `Character::_NV_gettingEaten` | `function(self: Character, amount: number, eater: Character)` |
-| `Character::_NV_setStandingOrder` | `function(self: Character, orderID: integer, enabled: boolean)` |
-| `Character::_NV_setFaction` | `function(self: Character, faction: Faction, platoon: ActivePlatoon)` |
-| `Character::_NV_equipItem` | `function(self: Character, sectionName: string, item: Item)` |
-| `Character::_NV_unequipItem` | `function(self: Character, sectionName: string, item: Item)` |
-| `Character::_NV_ImStealingDoYouNotice` | `function(self: Character, stealFrom: RootObject, item: Item)` |
-| `Character::_NV_smugglingTradeCheck` | `function(self: Character, item: Item, who: Character)` |
-| `Character::_NV_init` | `function(self: Character)` |
-| `CharStats::setHoldLocation` | `function(self: CharStats, vector3Table: Vector3)` |
-| `CharStats::clearHoldLocation` | `function(self: CharStats)` |
-| `CharStats::xpRunning` | `function(self: CharStats, time: number, speed: number)` |
-| `CharStats::xpFirstAid` | `function(self: CharStats, patient: Character, time: number, medicStat: integer)` |
-| `CharStats::xpStealth` | `function(self: CharStats, time: number, enemiesAbout: boolean, seen: YesNoMaybe, isMoving: boolean)` |
-| `CharStats::xpToughness_GetUpEvent` | `function(self: CharStats)` |
-| `CharStats::xpToughness_RagdollEvent` | `function(self: CharStats)` |
-| `CharStats::xpToughness_PunchSomething` | `function(self: CharStats, mat: integer)` |
-| `CharStats::xpEngineering` | `function(self: CharStats, time: number)` |
-| `CharStats::xpLockpicking` | `function(self: CharStats, lockLevel: integer, success: boolean)` |
-| `PlayerInterface::recruit` | `function(self: PlayerInterface, character: Character, isEditor: boolean)` |
-| `PlayerInterface::selectObject` | `function(self: PlayerInterface, obj: RootObject, modifier: boolean)` |
-| `PlayerInterface::newPlayerTaskSelectedCharacters` | `function(self: PlayerInterface, taskType: integer, targetHandle: hand, destinationBuilding: Building, clickPos: Vector3, queueOrder: boolean)` |
-| `ActivePlatoon::_NV_addActiveObject` | `function(self: ActivePlatoon, character: RootObject)` |
-| `ActivePlatoon::_NV_removeObject` | `function(self: ActivePlatoon, character: RootObject)` |
-| `Platoon::taskIsComplete` | `function(self: Platoon, completedTask: Tasker)` |
-| `Item::_NV_notifyTheftFrom` | `function(self: Item, victim: RootObject)` |
-| `BountyManager::notifyCrimeWitnessed` | `function(self: BountyManager, faction: Faction, againstWho: hand, expiryTime: integer, crimeType: integer)` |
-| `FactionRelations::affectRelations` | `function(self: FactionRelations, otherFaction: Faction, eventType: integer, multiplier: number)` |
-| `MedicalSystem::amputate` | `function(self: MedicalSystem, limb: integer, createSeveredItem: boolean, forceVector: Vector3)` |
-| `DialogueWindow::show` | `function(self: DialogueWindow, dialogue: Dialogue)` |
-| `Dialogue::_doActions` | `function(self: Dialogue, dialogLine: DialogLineData)` |
-| `Dialogue::say` | `function(self: Dialogue, dialogLine: DialogLineData)` |
-| `Dialogue::endDialogue` | `function(self: Dialogue, definitelyTheEnd: boolean)` |
-| `Dialogue::_endPlayerConversation` | `function(self: Dialogue, finished: boolean)` |
-| `Dialogue::stopEvent` | `function(self: Dialogue, what: EventTriggerEnum)` |
-| `RootObjectFactory::chooseMyClothing` | `function(gearLektor: lektor<GameData>, dataList: GameData, listName: string, race: RaceData, noShoes: boolean)` |
-| `wraps::BaseLayout::initialise` | `function(self: BaseLayout, layoutName: string)` |
-| `MyGUI::Gui::eventFrameStart` | `function(time: number)` |
-| `CharStats::xpStat_eventBased` | `function(self: CharStats, statType: integer, amount: number)` |
-| `CharStats::xpDodgeEvent` | `function(self: CharStats, enemySkill: number, successful: boolean)` |
-| `PlayerInterface::activateCharacterEditMode` | `function(self: PlayerInterface, character: Character)` |
-| `PlayerInterface::createSquad` | `function(self: PlayerInterface, newSquad: ActivePlatoon)` |
-| `Building::setResidentSquad` | `function(self: Building, platoon: Platoon)` |
-| `Building::addAnInternalBuilding` | `function(self: Building, internalBuilding: Building)` |
-| `InventoryGUI::addTradePartner` | `function(self: InventoryGUI, payment: boolean, canDrop: boolean, isPlayer: boolean, whoHand: hand)` |
-| `BuildModeWindow::confirm` | `function(self: BuildModeWindow, widget: Widget)` |
-| `SquadManagementScreen::removeSquad` | `function(self: SquadManagementScreen, squadData: lightuserdata)` |
-| `Character::addGoal` | `function(self: Character, taskType: integer, subject: RootObject)` |
-| `Character::addJob` | `function(self: Character, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
-| `Character::addOrder` | `function(self: Character, destBuilding: Building, taskType: integer, subject: RootObject, shift: boolean, clear: boolean, location: Vector3)` |
-| `Character::removeJob` | `function(self: Character, taskType: integer)` |
-| `PlayerInterface::addJobSelectedCharacters` | `function(self: PlayerInterface, taskType: integer, subject: RootObject, shift: boolean, add: boolean, location: Vector3)` |
-| `PlayerInterface::addOrderSelectedCharacters` | `function(self: PlayerInterface, destinationIndoors: Building, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
-| `MedicalSystem::knockout` | `function(self: MedicalSystem, skill: number)` |
-| `Faction::createNewEmptyActivePlatoon` | `function(self: Faction, platoon: Platoon)` |
-| `Faction::destroyPlatoon` | `function(self: Faction, platoon: Platoon)` |
-| `PlayerInterface::encounterFaction` | `function(self: PlayerInterface, faction: Faction)` |
-| `Character::changeSlaveOwner` | `function(self: Character, newOwnerHandle: hand)` |
-| `Character::setChainedMode` | `function(self: Character, on: boolean, ownerHandle: hand)` |
-| `Building::_NV_onBuildingLoaded` | `function(self: Building)` |
-| `Building::_NV_setBroken` | `function(self: Building, broken: boolean)` |
-| `PlayerInterface::serialise` | `function(self: PlayerInterface, gameData: GameData)` |
-| `PlayerInterface::loadFromSerialise` | `function(self: PlayerInterface, gameData: GameData)` |
-| `Character::_NV_serialise` | `function(self: Character, container: GameDataContainer, refList: GameData)` |
-| `Character::_NV_loadFromSerialise` | `function(self: Character, saveState: GameSaveState)` |
-| `Character::_NV_loadFromSerialisePostCreationStage` | `function(self: Character, saveState: GameSaveState)` |
-| `Building::_NV_serialise` | `function(self: Building, container: GameDataContainer, refList: GameData)` |
-| `Building::_NV_loadFromSerialise` | `function(self: Building, saveState: GameSaveState)` |
-| `Platoon::_NV_loadFromSerialise` | `function(self: Platoon, saveState: GameSaveState)` |
-| `Town::_NV_loadFromSerialise` | `function(self: Town, saveState: GameSaveState)` |
-| `Building::_NV_buyMeCallback` | `function(self: Building, result: integer)` |
-| `DataPanelLine_Button::pressCallback` | `function(self: DataPanelLine_Button, sender: Widget)` |
-| `InventoryGUI::fencingConfirmationCallback` | `function(self: InventoryGUI, b: integer)` |
-| `ContextMenu::showContextMenu` | `function(self: ContextMenu, on: boolean, what: RootObject)` |
-| `ContextMenuGUI::show` | `function(self: ContextMenuGUI, ordersList: lektor<integer>, name: string, offset: boolean)` |
+
+### Inventory (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `Inventory::_NV__sectionAddItemCallback` | `function(self: Inventory, item: Item)` |
 | `Inventory::_NV__sectionRemoveItemCallback` | `function(self: Inventory, item: Item)` |
 | `Inventory::_NV__sectionUpdateItemCallback` | `function(self: Inventory, item: Item, prevQuantity: integer)` |
 | `Inventory::_NV_dropItem` | `function(self: Inventory, item: Item)` |
-| `OrdersReceiver::_NV_serialise` | `function(self: OrdersReceiver, data: GameData)` |
-| `UseableStuff::_NV_tryOperate` | `function(self: UseableStuff, userHandle: hand, success: boolean)` |
-| `UseableStuff::stopOperating` | `function(self: UseableStuff, userHandle: hand)` |
-| `UseableStuff::occupantHandleChangedEvent` | `function(self: UseableStuff, newOccupantHandle: hand)` |
-| `UseableStuff::_NV_switchPowerOn` | `function(self: UseableStuff, on: boolean)` |
-| `UseableStuff::_NV_givePower` | `function(self: UseableStuff, amount: number)` |
-| `Building::_NV_notifyConstructionComplete` | `function(self: Building)` |
-| `Building::_NV_addConstructionProgress` | `function(self: Building, amount: number)` |
-| `Building::_NV_setConstructionProgress` | `function(self: Building, amount: number)` |
-| `Building::_NV_notifyConstructionDismantling` | `function(self: Building)` |
-| `Building::_NV_upgrade` | `function(self: Building, line: DataPanelLine)` |
-| `Building::destroyDoors` | `function(self: Building)` |
-| `Building::_NV_setFaction` | `function(self: Building, faction: Faction, activePlatoon: ActivePlatoon)` |
-| `Building::setFloorVisibility` | `function(self: Building, floor: integer, isVisible: boolean)` |
-| `Building::_NV_switchLights` | `function(self: Building, on: boolean)` |
-| `Building::_NV_switchEffects` | `function(self: Building, on: boolean)` |
-| `Building::_NV_notifyEffect` | `function(self: Building, effectType: integer, weatherType: integer, strength: number)` |
-| `WallBuilding::_NV_hitByMeleeAttack` | `function(self: WallBuilding, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `DoorStuff::lockDoor` | `function(self: DoorStuff)` |
-| `DoorStuff::unlockDoor` | `function(self: DoorStuff)` |
-| `DoorStuff::setDoorState` | `function(self: DoorStuff, doorState: integer)` |
-| `DoorStuff::_NV_hitByMeleeAttack` | `function(self: DoorStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `ProductionBuilding::_NV_operate` | `function(self: ProductionBuilding, worker: Character, amount: number)` |
-| `CraftingBuilding::_NV_operate` | `function(self: CraftingBuilding, worker: Character, amount: number)` |
-| `CraftingBuilding::_NV_newCraftingButton` | `function(self: CraftingBuilding, sender: Widget)` |
-| `CraftingBuilding::addFinishedCraftItem` | `function(self: CraftingBuilding, item: Item)` |
-| `CraftingBuilding::notifyCraftFailiure` | `function(self: CraftingBuilding)` |
-| `CraftingBuilding::destroyProductionItem` | `function(self: CraftingBuilding)` |
-| `CraftingBuilding::_removeCraft` | `function(self: CraftingBuilding, index: integer)` |
-| `FurnaceBuilding::_NV_operate` | `function(self: FurnaceBuilding, worker: Character, amount: number)` |
-| `ResearchBuilding::_NV_operate` | `function(self: ResearchBuilding, worker: Character, amount: number)` |
-| `FarmBuilding::_NV_operate` | `function(self: FarmBuilding, worker: Character, amount: number)` |
-| `FarmBuilding::eat` | `function(self: FarmBuilding, rate: number)` |
-| `TurretBuilding::_NV_operate` | `function(self: TurretBuilding, gunner: Character, amount: number)` |
-| `TurretBuilding::aimAt` | `function(self: TurretBuilding, targetPos: Vector3)` |
-| `UseableStuff::_NV_hitByMeleeAttack` | `function(self: UseableStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
-| `UseableStuff::_NV_togglePowerButton` | `function(self: UseableStuff, line: DataPanelLine)` |
-| `UseableStuff::_NV_toggleBattButton` | `function(self: UseableStuff, line: DataPanelLine)` |
-| `PreviewBuilding::_NV_placeFinalPreviewBuilding` | `function(self: PreviewBuilding)` |
-| `PreviewBuilding::_NV_placePreview` | `function(self: PreviewBuilding, position: Vector3, rotation: Quaternion, floorNumber: integer)` |
-| `CharacterAnimal::_NV_isAnimal` | `function(self: CharacterAnimal, result: CharacterAnimal)` |
-| `CharacterAnimal::_NV_createAnimationClass` | `function(self: CharacterAnimal)` |
-| `CharacterAnimal::_NV_drawWeapon` | `function(self: CharacterAnimal, item: Item, lastSlot: string, success: boolean)` |
-| `CharacterAnimal::_NV_sheatheWeapon` | `function(self: CharacterAnimal)` |
-| `CharacterAnimal::_NV_createInventoryLayout` | `function(self: CharacterAnimal, layout: InventoryLayout)` |
-| `CharacterAnimal::_NV_giveBirth` | `function(self: CharacterAnimal, appearance: GameDataCopyStandalone, position: Vector3, rotation: Quaternion, state: GameSaveState, tempPlatoon: ActivePlatoon, faction: Faction, success: boolean)` |
-| `CharacterAnimal::_NV_setupInventorySections` | `function(self: CharacterAnimal, state: GameSaveState, success: boolean)` |
-| `CharacterAnimal::_NV_setupAudio` | `function(self: CharacterAnimal)` |
-| `CharacterAnimal::_NV_periodicUpdate` | `function(self: CharacterAnimal)` |
-| `CharacterAnimal::_NV_setAge` | `function(self: CharacterAnimal, zeroToOne: number)` |
-| `CharacterAnimal::_NV_foodUpdate` | `function(self: CharacterAnimal)` |
-| `CharacterAnimal::_NV_init` | `function(self: CharacterAnimal)` |
-| `CharacterAnimal::_NV_dropItem` | `function(self: CharacterAnimal, item: RootObject)` |
-| `GUIWindow::_NV_setPositionReal` | `function(self: GUIWindow, x: number, y: number)` |
-| `GUIWindow::_NV_setPosition` | `function(self: GUIWindow, x: integer, y: integer)` |
-| `GUIWindow::_NV_update` | `function(self: GUIWindow)` |
-| `GUIWindow::_NV_autoChangeSelectedObject` | `function(self: GUIWindow, obj: hand)` |
-| `GUIWindow::getWidget` | `function(self: GUIWindow, result: Widget)` |
-| `GUIWindow::_NV_resize` | `function(self: GUIWindow, w: integer, h: integer)` |
-| `CharacterStatsWindow::Stat::_DESTRUCTOR` | `function(self: CharacterStatsWindow::Stat)` |
-| `CharacterStatsWindow::Stat::operator=` | `function(self: CharacterStatsWindow::Stat, that: CharacterStatsWindow::Stat)` |
-| `CharacterStatsWindow::StatGroup::_DESTRUCTOR` | `function(self: CharacterStatsWindow::StatGroup)` |
-| `CharacterStatsWindow::_CONSTRUCTOR` | `function(self: CharacterStatsWindow, charHandle: hand)` |
-| `CharacterStatsWindow::_DESTRUCTOR` | `function(self: CharacterStatsWindow)` |
-| `CharacterStatsWindow::_NV_clear` | `function(self: CharacterStatsWindow)` |
-| `CharacterStatsWindow::_NV_create` | `function(self: CharacterStatsWindow)` |
-| `CharacterStatsWindow::_NV_update` | `function(self: CharacterStatsWindow)` |
-| `CharacterStatsWindow::_NV_show` | `function(self: CharacterStatsWindow, on: boolean)` |
-| `CharacterStatsWindow::_NV_autoChangeSelectedObject` | `function(self: CharacterStatsWindow, obj: hand)` |
-| `CharacterStatsWindow::setAutoUpdateMode` | `function(self: CharacterStatsWindow, on: boolean)` |
-| `CharacterStatsWindow::setupStats` | `function(self: CharacterStatsWindow)` |
-| `CharacterStatsWindow::updateStats` | `function(self: CharacterStatsWindow)` |
-| `CharacterStatsWindow::clearDesctiption` | `function(self: CharacterStatsWindow)` |
-| `CharacterStatsWindow::closeWindow` | `function(self: CharacterStatsWindow, sender: Widget, name: string)` |
-| `CharacterStatsWindow::statMouseOver` | `function(self: CharacterStatsWindow, sender: Widget, arg2: integer, arg3: integer)` |
-| `CharacterStatsWindow::addStat` | `function(type: integer, id: string, name: string, active: boolean, description: string)` |
-| `CharacterStatsWindow::BuildStats` | `function()` |
-| `DatapanelGUI::_NV_setPositionReal` | `function(self: DatapanelGUI, x: number, y: number)` |
-| `DatapanelGUI::_NV_setPosition` | `function(self: DatapanelGUI, x: integer, y: integer)` |
-| `DatapanelGUI::_NV_resize` | `function(self: DatapanelGUI, w: integer, h: integer)` |
-| `DatapanelGUI::_NV_clear` | `function(self: DatapanelGUI)` |
-| `DatapanelGUI::_NV_clearPage` | `function(self: DatapanelGUI, cat: integer)` |
-| `DatapanelGUI::_NV_hideAllWidgets` | `function(self: DatapanelGUI)` |
-| `DatapanelGUI::_NV_create` | `function(self: DatapanelGUI)` |
-| `DatapanelGUI::_NV_show` | `function(self: DatapanelGUI, on: boolean)` |
-| `DatapanelGUI::show_NonSmooth` | `function(self: DatapanelGUI, on: boolean)` |
-| `DatapanelGUI::_NV_update` | `function(self: DatapanelGUI)` |
-| `DatapanelGUI::setPanelName` | `function(self: DatapanelGUI, name: string)` |
-| `DatapanelGUI::_NV_showTabs` | `function(self: DatapanelGUI, on: boolean)` |
-| `DatapanelGUI::_NV_addTab` | `function(self: DatapanelGUI, id: integer, name: string, icon: string)` |
-| `DatapanelGUI::_NV_setTabEnabled` | `function(self: DatapanelGUI, id: integer, enabled: boolean)` |
-| `DatapanelGUI::_NV_setTabName` | `function(self: DatapanelGUI, id: integer, name: string)` |
-| `DatapanelGUI::setCaption` | `function(self: DatapanelGUI, s: string)` |
-| `DatapanelGUI::setCloseCallback` | `function(self: DatapanelGUI, close: lightuserdata)` |
-| `DatapanelGUI::_NV_setAutomaticRefresh` | `function(self: DatapanelGUI, on: boolean)` |
-| `DatapanelGUI::_NV_setAutomaticTargeting` | `function(self: DatapanelGUI, on: boolean)` |
-| `DatapanelGUI::_NV__zeroLines` | `function(self: DatapanelGUI, cat: integer, result: DataPanelLine)` |
-| `DatapanelGUI::setLineStatInfo` | `function(self: DatapanelGUI, s1: string, s2: string, category: integer, result: DataPanelLine)` |
-| `DatapanelGUI::setLineFaction` | `function(self: DatapanelGUI, s1: string, s2: string, category: integer, v1: number, v2: number, result: DataPanelLine_Faction)` |
-| `DatapanelGUI::setLineTextButton` | `function(self: DatapanelGUI, text: string, caption: string, category: integer, buttonWidth: number, skin: string, result: DataPanelLine_Button)` |
-| `DatapanelGUI::setLineButton` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, result: DataPanelLine_Button)` |
-| `DatapanelGUI::setLineToggleButton` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, result: DataPanelLine_Button)` |
-| `DatapanelGUI::setLineSliderEditable` | `function(self: DatapanelGUI, key: string, category: integer, showName: boolean, min: number, max: number, value: lightuserdata, result: DataPanelLine_SliderEditable)` |
-| `DatapanelGUI::setLineText` | `function(self: DatapanelGUI, key: string, caption: string, category: integer, wordWrap: boolean, textAlign: integer, result: DataPanelLine_Text)` |
-| `DatapanelGUI::setLineTextEditable` | `function(self: DatapanelGUI, key: string, text: string, category: integer, showKey: boolean, multiLine: boolean, textAlign: integer, width: number, result: DataPanelLine_TextEditable)` |
-| `DatapanelGUI::setLineSlider` | `function(self: DatapanelGUI, key: string, caption: string, min: number, max: number, category: integer, value: lightuserdata, scale: number, result: DataPanelLine_Slider)` |
-| `DatapanelGUI::setLineProgress` | `function(self: DatapanelGUI, key: string, category: integer, progressValue: number, progressText: string, showKey: boolean, result: DataPanelLine_Progress)` |
-| `DatapanelGUI::removeLine` | `function(self: DatapanelGUI, s1: string, category: integer)` |
-| `DatapanelGUI::setLineCheckbox` | `function(self: DatapanelGUI, s1: string, val: lightuserdata, category: integer, result: DataPanelLine_CheckBox)` |
-| `DatapanelGUI::setLineDropBox` | `function(self: DatapanelGUI, key: string, category: integer, valPtr: lightuserdata, goBox: boolean, width: number, result: DataPanelLine_DropBox)` |
-| `DatapanelGUI::addSpace` | `function(self: DatapanelGUI, category: integer, h: number)` |
-| `DatapanelGUI::setLines` | `function(self: DatapanelGUI, data: lektor<StringPair>, category: integer)` |
-| `DatapanelGUI::_NV_setCategoryIcon` | `function(self: DatapanelGUI, cat: integer, image: string)` |
-| `DatapanelGUI::_NV_changeCategory` | `function(self: DatapanelGUI, cat: integer)` |
-| `DatapanelGUI::addCustomLine` | `function(self: DatapanelGUI, line: DataPanelLine)` |
-| `DatapanelGUI::_NV_autoChangeSelectedObject` | `function(self: DatapanelGUI, obj: hand)` |
-| `DatapanelGUI::_NV_setObject` | `function(self: DatapanelGUI, obj: hand)` |
-| `DatapanelGUI::_NV_setLineSpacing` | `function(self: DatapanelGUI, numLinesPerScreen: number)` |
-| `DatapanelGUI::tabButton` | `function(self: DatapanelGUI, sender: Widget, arg2: integer, arg3: integer, arg4: integer)` |
-| `DatapanelGUI::_DESTRUCTOR` | `function(self: DatapanelGUI)` |
-| `DatapanelGUI::createLine` | `function(self: DatapanelGUI, line: DataPanelLine, category: integer, lastLine: boolean, result: DataPanelLine)` |
-| `DatapanelGUI::closeButtonCallback` | `function(self: DatapanelGUI, arg1: Widget, arg2: string)` |
-| `DatapanelGUI::mouseOverCallback` | `function(self: DatapanelGUI, sender: Widget)` |
-| `DatapanelGUI::notifyMouseWheel` | `function(self: DatapanelGUI, sender: Widget, rel: integer)` |
-| `DatapanelGUI::getCoords` | `function(self: DatapanelGUI, left: number, top: number, width: number, height: number, result: IntCoord)` |
-| `DatapanelGUI::clearCategoryTabs` | `function(self: DatapanelGUI)` |
-| `DataPanelLine::_DESTRUCTOR` | `function(self: DataPanelLine)` |
-| `DataPanelLine::_NV_setVisible` | `function(self: DataPanelLine, on: boolean)` |
-| `DataPanelLine::_NV_setEnabled` | `function(self: DataPanelLine, on: boolean)` |
-| `DataPanelLine::_NV_refresh` | `function(self: DataPanelLine)` |
-| `DataPanelLine::_NV_createMe` | `function(self: DataPanelLine, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine::_NV_resize` | `function(self: DataPanelLine, width: integer, height: integer)` |
-| `DataPanelLine_Faction::_CONSTRUCTOR` | `function(self: DataPanelLine_Faction, a: string, b: string, cat: integer, vv1: number, vv2: number)` |
-| `DataPanelLine_Faction::_NV_createMe` | `function(self: DataPanelLine_Faction, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_Faction::_DESTRUCTOR` | `function(self: DataPanelLine_Faction)` |
-| `DataPanelLine_Research::_CONSTRUCTOR` | `function(self: DataPanelLine_Research, a: string, b: string, cat: integer, vv1: number, barColor: string, Xbut: boolean)` |
-| `DataPanelLine_Research::_NV_createMe` | `function(self: DataPanelLine_Research, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_Research::_DESTRUCTOR` | `function(self: DataPanelLine_Research)` |
-| `DataPanelLine_Button::_CONSTRUCTOR` | `function(self: DataPanelLine_Button, a: string, b: string, cat: integer, w: number, skin: string)` |
-| `DataPanelLine_Button::_NV_getUserData` | `function(self: DataPanelLine_Button, result: hand)` |
-| `DataPanelLine_Button::_NV_createMe` | `function(self: DataPanelLine_Button, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_Button::_DESTRUCTOR` | `function(self: DataPanelLine_Button)` |
-| `DataPanelLine_SliderEditable::setEditableValuePtr` | `function(self: DataPanelLine_SliderEditable, val: lightuserdata, lo: number, hi: number)` |
-| `DataPanelLine_SliderEditable::_NV_updateValuePtr` | `function(self: DataPanelLine_SliderEditable, ptr: lightuserdata)` |
-| `DataPanelLine_SliderEditable::setValue` | `function(self: DataPanelLine_SliderEditable, v: number)` |
-| `DataPanelLine_SliderEditable::_NV_refresh` | `function(self: DataPanelLine_SliderEditable)` |
-| `DataPanelLine_SliderEditable::setPrecision` | `function(self: DataPanelLine_SliderEditable, dp: integer)` |
-| `DataPanelLine_SliderEditable::_CONSTRUCTOR` | `function(self: DataPanelLine_SliderEditable, text: string, category: integer, showName: boolean, min: number, max: number, value: lightuserdata)` |
-| `DataPanelLine_SliderEditable::_NV_createMe` | `function(self: DataPanelLine_SliderEditable, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_SliderEditable::editCallback` | `function(self: DataPanelLine_SliderEditable, sender: Widget)` |
-| `DataPanelLine_SliderEditable::sliderCallback` | `function(self: DataPanelLine_SliderEditable, sender: Widget, position: integer)` |
-| `DataPanelLine_SliderEditable::_DESTRUCTOR` | `function(self: DataPanelLine_SliderEditable)` |
-| `DataPanelLine_Text::_CONSTRUCTOR` | `function(self: DataPanelLine_Text, key: string, text: string, category: integer, wordWrap: boolean, textAlign: integer)` |
-| `DataPanelLine_Text::_NV_createMe` | `function(self: DataPanelLine_Text, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_Text::_DESTRUCTOR` | `function(self: DataPanelLine_Text)` |
-| `DataPanelLine_TextEditable::_CONSTRUCTOR` | `function(self: DataPanelLine_TextEditable, key: string, text: string, category: integer, showKey: boolean, multiLine: boolean, textAlign: integer, width: number)` |
-| `DataPanelLine_TextEditable::_NV_createMe` | `function(self: DataPanelLine_TextEditable, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_TextEditable::textChanged` | `function(self: DataPanelLine_TextEditable, sender: Widget)` |
-| `DataPanelLine_TextEditable::_DESTRUCTOR` | `function(self: DataPanelLine_TextEditable)` |
-| `DataPanelLine_Slider::_CONSTRUCTOR` | `function(self: DataPanelLine_Slider, key: string, text: string, min: number, max: number, category: integer, scale: number)` |
-| `DataPanelLine_Slider::sliderValueChanged` | `function(self: DataPanelLine_Slider, sender: Widget, value: integer)` |
-| `DataPanelLine_Slider::_NV_updateValuePtr` | `function(self: DataPanelLine_Slider, ptr: lightuserdata)` |
-| `DataPanelLine_Slider::setValue` | `function(self: DataPanelLine_Slider, value: number)` |
-| `DataPanelLine_Slider::_NV_refresh` | `function(self: DataPanelLine_Slider)` |
-| `DataPanelLine_Slider::_NV_createMe` | `function(self: DataPanelLine_Slider, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_Slider::_DESTRUCTOR` | `function(self: DataPanelLine_Slider)` |
-| `DataPanelLine_Progress::setProgress` | `function(self: DataPanelLine_Progress, value: number, text: string)` |
-| `DataPanelLine_Progress::_CONSTRUCTOR` | `function(self: DataPanelLine_Progress, key: string, category: integer, showKey: boolean)` |
-| `DataPanelLine_Progress::_NV_createMe` | `function(self: DataPanelLine_Progress, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_Progress::_DESTRUCTOR` | `function(self: DataPanelLine_Progress)` |
-| `DataPanelLine_CheckBox::_NV_updateValuePtr` | `function(self: DataPanelLine_CheckBox, ptr: lightuserdata)` |
-| `DataPanelLine_CheckBox::_NV_refresh` | `function(self: DataPanelLine_CheckBox)` |
-| `DataPanelLine_CheckBox::setValue` | `function(self: DataPanelLine_CheckBox, checked: boolean)` |
-| `DataPanelLine_CheckBox::setValuePtr` | `function(self: DataPanelLine_CheckBox, valPtr: lightuserdata)` |
-| `DataPanelLine_CheckBox::_CONSTRUCTOR` | `function(self: DataPanelLine_CheckBox, key: string, cat: integer, val: lightuserdata)` |
-| `DataPanelLine_CheckBox::notifyToggleCheck` | `function(self: DataPanelLine_CheckBox, sender: Widget)` |
-| `DataPanelLine_CheckBox::_NV_createMe` | `function(self: DataPanelLine_CheckBox, parent: DatapanelGUI, topReal: number, lastLine: boolean)` |
-| `DataPanelLine_CheckBox::_DESTRUCTOR` | `function(self: DataPanelLine_CheckBox)` |
-| `DataPanelLine_DropBox::addAValue` | `function(self: DataPanelLine_DropBox, key: string, val: integer)` |
-| `DataPanelLine_DropBox::setSelectedValue` | `function(self: DataPanelLine_DropBox, val: integer)` |
-| `DataPanelLine_DropBox::getSelectedText` | `function(self: DataPanelLine_DropBox, result: string)` |
-| `DataPanelLine_DropBox::clearValues` | `function(self: DataPanelLine_DropBox)` |
-| `DataPanelLine_DropBox::_NV_createMe` | `function(self: DataPanelLine_DropBox, parent: DatapanelGUI, top: number, lastLine: boolean)` |
-| `DataPanelLine_DropBox::_NV_updateValuePtr` | `function(self: DataPanelLine_DropBox, ptr: lightuserdata)` |
-| `DataPanelLine_DropBox::_NV_refresh` | `function(self: DataPanelLine_DropBox)` |
-| `DataPanelLine_DropBox::_CONSTRUCTOR` | `function(self: DataPanelLine_DropBox, text: string, category: integer, valuePtr: lightuserdata, width: number, hasGobox: boolean)` |
-| `DataPanelLine_DropBox::selectionChange` | `function(self: DataPanelLine_DropBox, sender: Widget, i: integer)` |
-| `DataPanelLine_DropBox::goPressed` | `function(self: DataPanelLine_DropBox, sender: Widget)` |
-| `DataPanelLine_DropBox::_DESTRUCTOR` | `function(self: DataPanelLine_DropBox)` |
-| `DataPanelLine_KeyConfig::_CONSTRUCTOR` | `function(self: DataPanelLine_KeyConfig, cmd: string, text: string, cat: integer)` |
-| `DataPanelLine_KeyConfig::getCommand` | `function(self: DataPanelLine_KeyConfig, result: string)` |
-| `DataPanelLine_KeyConfig::setKey` | `function(self: DataPanelLine_KeyConfig, s: string)` |
-| `DataPanelLine_KeyConfig::eraseKey` | `function(self: DataPanelLine_KeyConfig, key: string)` |
-| `DataPanelLine_KeyConfig::_NV_refresh` | `function(self: DataPanelLine_KeyConfig)` |
-| `DataPanelLine_KeyConfig::cancel` | `function(self: DataPanelLine_KeyConfig)` |
-| `DataPanelLine_KeyConfig::_NV_createMe` | `function(self: DataPanelLine_KeyConfig, p: DatapanelGUI, vpos: number, lastLine: boolean)` |
-| `DataPanelLine_KeyConfig::clickButton` | `function(self: DataPanelLine_KeyConfig, sender: Widget)` |
-| `DataPanelLine_KeyConfig::_DESTRUCTOR` | `function(self: DataPanelLine_KeyConfig)` |
-| `ForgottenGUI::_CONSTRUCTOR` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::_DESTRUCTOR` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::clearGUI` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::shutDown` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::restart` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::changeFontSize` | `function()` |
-| `ForgottenGUI::setupGuiScaling` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::init` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::showLoadingMessage` | `function(self: ForgottenGUI, on: boolean)` |
-| `ForgottenGUI::showPauseMessage` | `function(self: ForgottenGUI, on: boolean)` |
-| `ForgottenGUI::setLoading` | `function(self: ForgottenGUI, value: boolean)` |
-| `ForgottenGUI::messageBox` | `function(self: ForgottenGUI, title: string, message: string, btn: integer, modal: boolean, callback: lightuserdata, result: Widget)` |
-| `ForgottenGUI::hideMessageBox` | `function(self: ForgottenGUI, enter: boolean, result: boolean)` |
-| `ForgottenGUI::showMainbar` | `function(self: ForgottenGUI, on: boolean)` |
-| `ForgottenGUI::updateBountyPanelVisibility` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::toggle` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::showNames` | `function(self: ForgottenGUI, on: boolean)` |
-| `ForgottenGUI::showPrintOutput` | `function(self: ForgottenGUI, v: boolean)` |
-| `ForgottenGUI::showCharacterEditor` | `function(self: ForgottenGUI, characters: lektor<Character>, mode: integer, races: vector<GameDataReference>::type)` |
-| `ForgottenGUI::closeCharacterEditor` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::showCharacterStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
-| `ForgottenGUI::closeCharacterStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
-| `ForgottenGUI::closeAllCharacterStatsWindows` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::toggleStatsWindow` | `function(self: ForgottenGUI, owner: hand)` |
-| `ForgottenGUI::toggleCharacterStatsWindowPermanent` | `function(self: ForgottenGUI, owner: hand)` |
-| `ForgottenGUI::selectedObjectsChanged` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::updateToOrdersPanel` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::notifyTownDeleted` | `function(self: ForgottenGUI, t: Town)` |
-| `ForgottenGUI::update` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::showTradeWindow` | `function(self: ForgottenGUI, a: hand, b: hand, type: integer)` |
-| `ForgottenGUI::closeTradeWindow` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::showInventory` | `function(self: ForgottenGUI, owner: hand, autoPosition: boolean, x: number, y: number, result: InventoryGUI)` |
-| `ForgottenGUI::showTraderInventory` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
-| `ForgottenGUI::showInventoryBuilding` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
-| `ForgottenGUI::showInventoryNPC` | `function(self: ForgottenGUI, owner: hand, result: InventoryGUI)` |
-| `ForgottenGUI::closeInventory` | `function(self: ForgottenGUI, owner: hand)` |
-| `ForgottenGUI::closeInventoryBuilding` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::closeAllInventories` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::closeAllWindows` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::toggleInventory` | `function(self: ForgottenGUI, owner: hand, parentInv: InventoryGUI, attached: boolean, result: InventoryGUI)` |
-| `ForgottenGUI::toggleInventoryWindowPermanent` | `function(self: ForgottenGUI, owner: hand)` |
-| `ForgottenGUI::toggleHelpWindow` | `function(self: ForgottenGUI)` |
-| `ForgottenGUI::addWindowToUpdateList` | `function(self: ForgottenGUI, win: GUIWindow)` |
-| `ForgottenGUI::removeWindowFromUpdateList` | `function(self: ForgottenGUI, win: GUIWindow)` |
-| `ForgottenGUI::addScreenLabel` | `function(self: ForgottenGUI, label: ScreenLabelInterface)` |
-| `ForgottenGUI::addDatapanelToUpdateList` | `function(self: ForgottenGUI, datapanel: DatapanelGUI)` |
-| `ForgottenGUI::removeDatapanelFromUpdateList` | `function(self: ForgottenGUI, datapanel: DatapanelGUI)` |
-| `ForgottenGUI::destroyWidget` | `function(self: ForgottenGUI, widget: Widget)` |
-| `ForgottenGUI::setup` | `function(self: ForgottenGUI, mRoot: lightuserdata, window: lightuserdata)` |
-| `ForgottenGUI::setMouseCursorVisible` | `function(self: ForgottenGUI, visible: boolean)` |
-| `ForgottenGUI::_showTradeWindow` | `function(self: ForgottenGUI, a: RootObject, b: RootObject, tradeType: integer)` |
-| `ForgottenGUI::setInventoryPosition` | `function(self: ForgottenGUI, owner: hand, inventory: InventoryGUI)` |
-| `ForgottenGUI::inventoriesSelectedObjectUpdate` | `function(self: ForgottenGUI, selectedObject: hand)` |
-| `ForgottenGUI::keepWindownOnScreen` | `function(self: ForgottenGUI, win: Widget)` |
-| `ForgottenGUI::getDataLineColor` | `function(self: ForgottenGUI, actualVal: integer, normalVal: integer, result: string)` |
-| `ForgottenGUI::createPanel` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
-| `ForgottenGUI::createPanelAbs` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
-| `ForgottenGUI::createImage` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, image: string, result: Widget)` |
-| `ForgottenGUI::createImageAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, image: string, result: Widget)` |
-| `ForgottenGUI::createRotatableImageAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, image: string, result: Widget)` |
-| `ForgottenGUI::createTabPanel` | `function(self: ForgottenGUI, name: string, top: number, left: number, width: number, height: number, layer: string, skin: string, result: Widget)` |
-| `ForgottenGUI::createButtonAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, name: string, text: string, skin: string, result: Widget)` |
-| `ForgottenGUI::createButton` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, text: string, skin: string, result: Widget)` |
-| `ForgottenGUI::createDropBox` | `function(self: ForgottenGUI, parent: Widget, name: string, top: number, left: number, width: number, height: number, result: Widget)` |
-| `ForgottenGUI::createDropBoxAbs` | `function(self: ForgottenGUI, parent: Widget, name: string, top: integer, left: integer, width: integer, height: integer, result: Widget)` |
-| `ForgottenGUI::createProgressBar` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, type: string, result: Widget)` |
-| `ForgottenGUI::createProgressBarAbs` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, type: string, result: Widget)` |
-| `ForgottenGUI::createFloatingLabel` | `function(self: ForgottenGUI, top: number, left: number, width: number, height: number, text: string, a: integer, layer: string, result: Widget)` |
-| `ForgottenGUI::createValueEdit` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, result: Widget)` |
-| `ForgottenGUI::createScrollBarAbs` | `function(self: ForgottenGUI, parent: Widget, top: integer, left: integer, width: integer, height: integer, range: integer, value: integer, result: Widget)` |
-| `ForgottenGUI::createCheckbox` | `function(self: ForgottenGUI, parent: Widget, left: integer, top: integer, width: integer, height: integer, caption: string, result: Widget)` |
-| `ForgottenGUI::createValueEditTransparent` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, name: string, result: Widget)` |
-| `ForgottenGUI::createListbox` | `function(self: ForgottenGUI, parent: Widget, top: number, left: number, width: number, height: number, result: Widget)` |
-| `ForgottenGUI::createFloatingImage` | `function(self: ForgottenGUI, image: string, top: number, left: number, width: number, height: number, layer: string, result: Widget)` |
-| `ForgottenGUI::createFloatingImageAbs` | `function(self: ForgottenGUI, image: string, top: number, left: number, width: number, height: number, layer: string, result: Widget)` |
-| `ForgottenGUI::createFloatingProgressBar` | `function(self: ForgottenGUI, result: FloatingProgressBar)` |
-| `ForgottenGUI::createScreenLabel` | `function(self: ForgottenGUI, text: string, textColour: Colour, textSize: integer, risingSpeed: integer, result: ScreenLabel)` |
-| `ForgottenGUI::createScreenLabelD` | `function(self: ForgottenGUI, text: string, time: number, result: ScreenLabelDebug)` |
-| `NewGameOptionsWindow::_CONSTRUCTOR` | `function(self: NewGameOptionsWindow)` |
-| `NewGameOptionsWindow::_DESTRUCTOR` | `function(self: NewGameOptionsWindow)` |
-| `NewGameOptionsWindow::setVisible` | `function(self: NewGameOptionsWindow, visible: boolean)` |
-| `NewGameOptionsWindow::setPosition` | `function(self: NewGameOptionsWindow, x: integer, y: integer)` |
-| `NewGameOptionsWindow::update` | `function(self: NewGameOptionsWindow)` |
-| `NewGameOptionsWindow::setOptions` | `function(self: NewGameOptionsWindow, options: GameplayOptions)` |
-| `InventoryIcon::_CONSTRUCTOR` | `function(self: InventoryIcon, item: Item, position: types::TPoint<int>, parent: Widget)` |
-| `InventoryIcon::setPosition` | `function(self: InventoryIcon, position: types::TPoint<int>)` |
-| `InventoryIcon::getSize` | `function(self: InventoryIcon, result: types::TSize<int>)` |
-| `InventoryIcon::update` | `function(self: InventoryIcon)` |
-| `InventoryIcon::getWidget` | `function(self: InventoryIcon, result: Widget)` |
-| `InventoryIcon::createIconImage` | `function(item: Item, name: string, size: iVector2)` |
-| `InventoryIcon::getItemSize` | `function(itemData: GameData, result: types::TSize<int>)` |
-| `InventoryIcon::getItemPosition` | `function(x: integer, y: integer, result: types::TPoint<int>)` |
-| `InventoryIcon::_DESTRUCTOR` | `function(self: InventoryIcon)` |
-| `InventorySectionGUI::_CONSTRUCTOR` | `function(self: InventorySectionGUI, widget: Widget, sectionName: string)` |
-| `InventorySectionGUI::_DESTRUCTOR` | `function(self: InventorySectionGUI)` |
-| `InventorySectionGUI::getItemAbsolutePosition` | `function(self: InventorySectionGUI, x: integer, y: integer, result: types::TPoint<int>)` |
-| `InventorySectionGUI::getWidget` | `function(self: InventorySectionGUI, result: Widget)` |
-| `InventorySectionGUI::getPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, round: boolean, result: types::TPoint<int>)` |
-| `InventorySectionGUI::setEnabled` | `function(self: InventorySectionGUI, value: boolean)` |
-| `InventorySectionGUI::refreshIcons` | `function(self: InventorySectionGUI, section: InventorySection)` |
-| `InventorySectionGUI::update` | `function(self: InventorySectionGUI)` |
+
+### InventoryGUI (33)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `InventoryGUI::_DESTRUCTOR` | `function(self: InventoryGUI)` |
+| `InventoryGUI::_NV_autoChangeSelectedObject` | `function(self: InventoryGUI, obj: hand)` |
+| `InventoryGUI::_NV_refreshSection` | `function(self: InventoryGUI, section: InventorySection)` |
+| `InventoryGUI::_NV_setPositionReal` | `function(self: InventoryGUI, x: number, y: number)` |
+| `InventoryGUI::_NV_show` | `function(self: InventoryGUI, on: boolean)` |
+| `InventoryGUI::_NV_update` | `function(self: InventoryGUI)` |
+| `InventoryGUI::addTradePartner` | `function(self: InventoryGUI, payment: boolean, canDrop: boolean, isPlayer: boolean, whoHand: hand)` |
+| `InventoryGUI::autoArrangeButton` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::clearTradePartners` | `function()` |
+| `InventoryGUI::fencingConfirmationCallback` | `function(self: InventoryGUI, b: integer)` |
+| `InventoryGUI::getSectionWithMouseLocal` | `function(self: InventoryGUI, result: string)` |
+| `InventoryGUI::getSlotWithMouse` | `function(self: InventoryGUI, result: iVector2)` |
+| `InventoryGUI::getTrader1Trader2` | `function(self: InventoryGUI, trader1: InventoryGUI, trader2: InventoryGUI)` |
+| `InventoryGUI::getWindowCoord` | `function(self: InventoryGUI, result: types::TCoord<int>)` |
+| `InventoryGUI::onWindowFocus` | `function(self: InventoryGUI, sender: Widget, focus: boolean)` |
+| `InventoryGUI::openBackpackButton` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::openLimbsInterface` | `function(self: InventoryGUI, sender: Widget)` |
+| `InventoryGUI::playSound` | `function(self: InventoryGUI, eventId: string, item: Item)` |
+| `InventoryGUI::RClickAutoTrade` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
+| `InventoryGUI::RClickAutoTradeAll` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
+| `InventoryGUI::refreshAllSections` | `function(self: InventoryGUI)` |
+| `InventoryGUI::refreshSection` | `function(self: InventoryGUI)` |
+| `InventoryGUI::removeTradePartner` | `function(tradeWith: InventoryGUI)` |
+| `InventoryGUI::returnItem` | `function(self: InventoryGUI, item: Item, sectionName: string)` |
+| `InventoryGUI::rightClickAutoEquipping` | `function(self: InventoryGUI)` |
+| `InventoryGUI::sectionMouseButtonPressed` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `InventoryGUI::sectionMouseButtonReleased` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `InventoryGUI::setTradingTown` | `function(town: hand)` |
+| `InventoryGUI::showBackpack` | `function(self: InventoryGUI, on: boolean)` |
+| `InventoryGUI::stealingGUIInfoUpdate` | `function(self: InventoryGUI)` |
+| `InventoryGUI::updateDatapanel` | `function(self: InventoryGUI)` |
+| `InventoryGUI::windowButtonPressed` | `function(self: InventoryGUI, widget: Widget, name: string)` |
+| `InventoryGUI::windowMoved` | `function(self: InventoryGUI, sender: Widget)` |
+
+### InventoryGUI::FenceCallbackData (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `InventoryGUI::FenceCallbackData::_DESTRUCTOR` | `function(self: InventoryGUI::FenceCallbackData)` |
+
+### InventoryGUI::InventoryTradeData (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `InventoryGUI::InventoryTradeData::operator=` | `function(self: InventoryGUI::InventoryTradeData, other: InventoryGUI::InventoryTradeData)` |
+
+### InventoryGUI::TradeResult (3)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `InventoryGUI::TradeResult::_CONSTRUCTOR` | `function(self: InventoryGUI::TradeResult, value: integer)` |
 | `InventoryGUI::TradeResult::showMessage` | `function(self: InventoryGUI::TradeResult)` |
 | `InventoryGUI::TradeResult::ShowMessage` | `function(value: integer)` |
-| `InventoryGUI::InventoryTradeData::operator=` | `function(self: InventoryGUI::InventoryTradeData, other: InventoryGUI::InventoryTradeData)` |
-| `InventoryGUI::setTradingTown` | `function(town: hand)` |
-| `InventoryGUI::removeTradePartner` | `function(tradeWith: InventoryGUI)` |
-| `InventoryGUI::clearTradePartners` | `function()` |
-| `InventoryGUI::_NV_autoChangeSelectedObject` | `function(self: InventoryGUI, obj: hand)` |
-| `InventoryGUI::_NV_update` | `function(self: InventoryGUI)` |
-| `InventoryGUI::_NV_show` | `function(self: InventoryGUI, on: boolean)` |
-| `InventoryGUI::_NV_setPositionReal` | `function(self: InventoryGUI, x: number, y: number)` |
-| `InventoryGUI::_NV_refreshSection` | `function(self: InventoryGUI, section: InventorySection)` |
-| `InventoryGUI::refreshSection` | `function(self: InventoryGUI)` |
-| `InventoryGUI::autoArrangeButton` | `function(self: InventoryGUI, sender: Widget)` |
-| `InventoryGUI::openBackpackButton` | `function(self: InventoryGUI, sender: Widget)` |
-| `InventoryGUI::openLimbsInterface` | `function(self: InventoryGUI, sender: Widget)` |
-| `InventoryGUI::showBackpack` | `function(self: InventoryGUI, on: boolean)` |
-| `InventoryGUI::windowButtonPressed` | `function(self: InventoryGUI, widget: Widget, name: string)` |
-| `InventoryGUI::stealingGUIInfoUpdate` | `function(self: InventoryGUI)` |
-| `InventoryGUI::getTrader1Trader2` | `function(self: InventoryGUI, trader1: InventoryGUI, trader2: InventoryGUI)` |
-| `InventoryGUI::playSound` | `function(self: InventoryGUI, eventId: string, item: Item)` |
-| `InventoryGUI::refreshAllSections` | `function(self: InventoryGUI)` |
-| `InventoryGUI::updateDatapanel` | `function(self: InventoryGUI)` |
-| `InventoryGUI::rightClickAutoEquipping` | `function(self: InventoryGUI)` |
-| `InventoryGUI::returnItem` | `function(self: InventoryGUI, item: Item, sectionName: string)` |
-| `InventoryGUI::sectionMouseButtonPressed` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
-| `InventoryGUI::sectionMouseButtonReleased` | `function(self: InventoryGUI, sender: Widget, left: integer, top: integer, id: integer)` |
-| `InventoryGUI::onWindowFocus` | `function(self: InventoryGUI, sender: Widget, focus: boolean)` |
-| `InventoryGUI::windowMoved` | `function(self: InventoryGUI, sender: Widget)` |
-| `InventoryGUI::getWindowCoord` | `function(self: InventoryGUI, result: types::TCoord<int>)` |
-| `InventoryGUI::_DESTRUCTOR` | `function(self: InventoryGUI)` |
-| `InventoryGUI::RClickAutoTrade` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
-| `InventoryGUI::RClickAutoTradeAll` | `function(self: InventoryGUI, invSectionName: string, x: integer, y: integer, sendingTo: InventoryGUI, thieveryChecks: boolean, first: boolean, result: InventoryGUI::TradeResult)` |
-| `InventoryGUI::FenceCallbackData::_DESTRUCTOR` | `function(self: InventoryGUI::FenceCallbackData)` |
-| `InventoryGUI::getSectionWithMouseLocal` | `function(self: InventoryGUI, result: string)` |
-| `InventoryGUI::getSlotWithMouse` | `function(self: InventoryGUI, result: iVector2)` |
+
+### InventoryIcon (9)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `InventoryIcon::_CONSTRUCTOR` | `function(self: InventoryIcon, item: Item, position: types::TPoint<int>, parent: Widget)` |
+| `InventoryIcon::_DESTRUCTOR` | `function(self: InventoryIcon)` |
+| `InventoryIcon::createIconImage` | `function(item: Item, name: string, size: iVector2)` |
+| `InventoryIcon::getItemPosition` | `function(x: integer, y: integer, result: types::TPoint<int>)` |
+| `InventoryIcon::getItemSize` | `function(itemData: GameData, result: types::TSize<int>)` |
+| `InventoryIcon::getSize` | `function(self: InventoryIcon, result: types::TSize<int>)` |
+| `InventoryIcon::getWidget` | `function(self: InventoryIcon, result: Widget)` |
+| `InventoryIcon::setPosition` | `function(self: InventoryIcon, position: types::TPoint<int>)` |
+| `InventoryIcon::update` | `function(self: InventoryIcon)` |
+
+### InventoryLayout (9)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `InventoryLayout::_CONSTRUCTOR` | `function(self: InventoryLayout, file: string)` |
 | `InventoryLayout::_DESTRUCTOR` | `function(self: InventoryLayout)` |
-| `InventoryLayout::getWindow` | `function(self: InventoryLayout, result: Widget)` |
 | `InventoryLayout::getWidget` | `function(self: InventoryLayout, name: string, result: Widget)` |
-| `InventoryLayout::setupDataPanelInfos` | `function(self: InventoryLayout, name: string)` |
+| `InventoryLayout::getWindow` | `function(self: InventoryLayout, result: Widget)` |
 | `InventoryLayout::notifyCellSizeChanged` | `function()` |
-| `InventoryLayout::setSectionGUIDisabled` | `function(self: InventoryLayout, sectionName: string, width: integer, height: integer)` |
 | `InventoryLayout::resizeSection` | `function(self: InventoryLayout, section: InventorySection, sectionGUI: InventorySectionGUI, result: types::TSize<int>)` |
 | `InventoryLayout::resizeSectionWidget` | `function(self: InventoryLayout, width: integer, height: integer, widget: Widget, result: types::TSize<int>)` |
-| `GenericFixedInventoryLayout::_NV_setSize` | `function(self: GenericFixedInventoryLayout, slotsW: integer, slotsH: integer)` |
-| `GenericFixedInventoryLayout::_DESTRUCTOR` | `function(self: GenericFixedInventoryLayout)` |
-| `BackpackInventoryLayout::_CONSTRUCTOR` | `function(self: BackpackInventoryLayout, standAlone: boolean)` |
-| `BackpackInventoryLayout::_DESTRUCTOR` | `function(self: BackpackInventoryLayout)` |
+| `InventoryLayout::setSectionGUIDisabled` | `function(self: InventoryLayout, sectionName: string, width: integer, height: integer)` |
+| `InventoryLayout::setupDataPanelInfos` | `function(self: InventoryLayout, name: string)` |
+
+### InventorySectionGUI (8)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `InventorySectionGUI::_CONSTRUCTOR` | `function(self: InventorySectionGUI, widget: Widget, sectionName: string)` |
+| `InventorySectionGUI::_DESTRUCTOR` | `function(self: InventorySectionGUI)` |
+| `InventorySectionGUI::getItemAbsolutePosition` | `function(self: InventorySectionGUI, x: integer, y: integer, result: types::TPoint<int>)` |
+| `InventorySectionGUI::getPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, round: boolean, result: types::TPoint<int>)` |
+| `InventorySectionGUI::getWidget` | `function(self: InventorySectionGUI, result: Widget)` |
+| `InventorySectionGUI::refreshIcons` | `function(self: InventorySectionGUI, section: InventorySection)` |
+| `InventorySectionGUI::setEnabled` | `function(self: InventorySectionGUI, value: boolean)` |
+| `InventorySectionGUI::update` | `function(self: InventorySectionGUI)` |
+
+### Item (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Item::_NV_notifyTheftFrom` | `function(self: Item, victim: RootObject)` |
+
+### MainBarGUI (46)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MainBarGUI::_CONSTRUCTOR` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_DESTRUCTOR` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_getWidget` | `function(self: MainBarGUI, name: string, result: Widget)` |
+| `MainBarGUI::_NV_autoChangeSelectedObject` | `function(self: MainBarGUI, obj: hand)` |
+| `MainBarGUI::_NV_clear` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_show` | `function(self: MainBarGUI, on: boolean)` |
+| `MainBarGUI::_NV_update` | `function(self: MainBarGUI)` |
+| `MainBarGUI::_NV_updateBountyPanelVisibility` | `function(self: MainBarGUI)` |
+| `MainBarGUI::buildButton` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeFloorButtonDown` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeFloorButtonUp` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::changeSpeed` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::closeMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::extendInfoPanel` | `function(self: MainBarGUI, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MainBarGUI::getBuildingInventoryPosition` | `function(self: MainBarGUI, result: types::TPoint<int>)` |
+| `MainBarGUI::getLoadingPanel` | `function(self: MainBarGUI, result: Widget)` |
+| `MainBarGUI::getMedicalPanel` | `function(self: MainBarGUI, result: lightuserdata)` |
+| `MainBarGUI::getPausePanel` | `function(self: MainBarGUI, result: Widget)` |
+| `MainBarGUI::loadFromSerialise` | `function(self: MainBarGUI, data: GameData)` |
+| `MainBarGUI::ordersPanelClear` | `function(self: MainBarGUI)` |
+| `MainBarGUI::ordersPanelFill` | `function(self: MainBarGUI, character: hand)` |
+| `MainBarGUI::platoonUpdated` | `function(self: MainBarGUI, platoon: RootObjectContainer, charAdded: boolean)` |
+| `MainBarGUI::portraitChangeSelection` | `function(self: MainBarGUI, sender: Widget, index: number, follow: boolean)` |
+| `MainBarGUI::portraitNotifyItem` | `function(self: MainBarGUI, sender: Widget, info: lightuserdata)` |
+| `MainBarGUI::portraitSelectItemAccept` | `function(self: MainBarGUI, sender: Widget, index: number)` |
+| `MainBarGUI::pressedKey` | `function(self: MainBarGUI, keycode: integer)` |
+| `MainBarGUI::refreshPortraitTabs` | `function(self: MainBarGUI)` |
+| `MainBarGUI::serialise` | `function(self: MainBarGUI, data: GameData)` |
+| `MainBarGUI::setExtendInfoPanelEnabled` | `function(self: MainBarGUI, enabled: boolean)` |
+| `MainBarGUI::setLevelEditInteriorMode` | `function(self: MainBarGUI, interiorMode: boolean)` |
+| `MainBarGUI::setLevelEditMode` | `function(self: MainBarGUI, on: boolean)` |
+| `MainBarGUI::setMessagePosition` | `function(self: MainBarGUI)` |
+| `MainBarGUI::speedChanged` | `function(self: MainBarGUI)` |
+| `MainBarGUI::tabPlatoonChange` | `function(self: MainBarGUI, sender: Widget, index: number)` |
+| `MainBarGUI::toggleCraftWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleFactionWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleHelpWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleInventory` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleSquadWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleStatsWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::toggleTechWindow` | `function(self: MainBarGUI, sender: Widget)` |
+| `MainBarGUI::updatePortrait` | `function(self: MainBarGUI, character: hand)` |
+| `MainBarGUI::updatePortraits` | `function(self: MainBarGUI)` |
+| `MainBarGUI::updatePortraitSize` | `function(self: MainBarGUI, platoon: ActivePlatoon)` |
+| `MainBarGUI::updatePotraitsPlatoon` | `function(self: MainBarGUI)` |
+
+### MainTabPortraitPlatoon (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MainTabPortraitPlatoon::_DESTRUCTOR` | `function(self: MainTabPortraitPlatoon)` |
 | `MainTabPortraitPlatoon::addTab` | `function(self: MainTabPortraitPlatoon, tabControl: Widget, visible: boolean)` |
 | `MainTabPortraitPlatoon::detach` | `function(self: MainTabPortraitPlatoon)` |
 | `MainTabPortraitPlatoon::setFlash` | `function(self: MainTabPortraitPlatoon, flash: boolean)` |
 | `MainTabPortraitPlatoon::update` | `function(self: MainTabPortraitPlatoon)` |
-| `MainTabPortraitPlatoon::_DESTRUCTOR` | `function(self: MainTabPortraitPlatoon)` |
-| `MainBarGUI::_CONSTRUCTOR` | `function(self: MainBarGUI)` |
-| `MainBarGUI::_DESTRUCTOR` | `function(self: MainBarGUI)` |
-| `MainBarGUI::_NV_clear` | `function(self: MainBarGUI)` |
-| `MainBarGUI::_NV_update` | `function(self: MainBarGUI)` |
-| `MainBarGUI::speedChanged` | `function(self: MainBarGUI)` |
-| `MainBarGUI::_NV_updateBountyPanelVisibility` | `function(self: MainBarGUI)` |
-| `MainBarGUI::updatePotraitsPlatoon` | `function(self: MainBarGUI)` |
-| `MainBarGUI::updatePortraits` | `function(self: MainBarGUI)` |
-| `MainBarGUI::refreshPortraitTabs` | `function(self: MainBarGUI)` |
-| `MainBarGUI::ordersPanelClear` | `function(self: MainBarGUI)` |
-| `MainBarGUI::setMessagePosition` | `function(self: MainBarGUI)` |
-| `MainBarGUI::_NV_show` | `function(self: MainBarGUI, on: boolean)` |
-| `MainBarGUI::setLevelEditMode` | `function(self: MainBarGUI, on: boolean)` |
-| `MainBarGUI::setLevelEditInteriorMode` | `function(self: MainBarGUI, interiorMode: boolean)` |
-| `MainBarGUI::setExtendInfoPanelEnabled` | `function(self: MainBarGUI, enabled: boolean)` |
-| `MainBarGUI::_NV_autoChangeSelectedObject` | `function(self: MainBarGUI, obj: hand)` |
-| `MainBarGUI::pressedKey` | `function(self: MainBarGUI, keycode: integer)` |
-| `MainBarGUI::updatePortrait` | `function(self: MainBarGUI, character: hand)` |
-| `MainBarGUI::platoonUpdated` | `function(self: MainBarGUI, platoon: RootObjectContainer, charAdded: boolean)` |
-| `MainBarGUI::updatePortraitSize` | `function(self: MainBarGUI, platoon: ActivePlatoon)` |
-| `MainBarGUI::closeMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleMapWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleFactionWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleTechWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleCraftWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleSquadWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::changeFloorButtonUp` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::changeFloorButtonDown` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleInventory` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleStatsWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::toggleHelpWindow` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::changeSpeed` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::buildButton` | `function(self: MainBarGUI, sender: Widget)` |
-| `MainBarGUI::ordersPanelFill` | `function(self: MainBarGUI, character: hand)` |
-| `MainBarGUI::serialise` | `function(self: MainBarGUI, data: GameData)` |
-| `MainBarGUI::loadFromSerialise` | `function(self: MainBarGUI, data: GameData)` |
-| `MainBarGUI::portraitChangeSelection` | `function(self: MainBarGUI, sender: Widget, index: number, follow: boolean)` |
-| `MainBarGUI::portraitSelectItemAccept` | `function(self: MainBarGUI, sender: Widget, index: number)` |
-| `MainBarGUI::portraitNotifyItem` | `function(self: MainBarGUI, sender: Widget, info: lightuserdata)` |
-| `MainBarGUI::tabPlatoonChange` | `function(self: MainBarGUI, sender: Widget, index: number)` |
-| `MainBarGUI::extendInfoPanel` | `function(self: MainBarGUI, sender: Widget, left: integer, top: integer, id: integer)` |
-| `MainBarGUI::getPausePanel` | `function(self: MainBarGUI, result: Widget)` |
-| `MainBarGUI::getLoadingPanel` | `function(self: MainBarGUI, result: Widget)` |
-| `MainBarGUI::getMedicalPanel` | `function(self: MainBarGUI, result: lightuserdata)` |
-| `MainBarGUI::getBuildingInventoryPosition` | `function(self: MainBarGUI, result: types::TPoint<int>)` |
-| `MainBarGUI::_getWidget` | `function(self: MainBarGUI, name: string, result: Widget)` |
-| `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine, faction: Faction)` |
-| `FactionsScreen::FactionRelationsLine::attachToWidget` | `function(self: FactionsScreen::FactionRelationsLine, widget: Widget)` |
-| `FactionsScreen::FactionRelationsLine::update` | `function(self: FactionsScreen::FactionRelationsLine)` |
-| `FactionsScreen::FactionRelationsLine::_DESTRUCTOR` | `function(self: FactionsScreen::FactionRelationsLine)` |
-| `FactionsScreen::_CONSTRUCTOR` | `function(self: FactionsScreen, screen: ManagementScreen)` |
-| `FactionsScreen::_DESTRUCTOR` | `function(self: FactionsScreen)` |
-| `FactionsScreen::clear` | `function(self: FactionsScreen)` |
-| `FactionsScreen::update` | `function(self: FactionsScreen)` |
-| `FactionsScreen::refresh` | `function(self: FactionsScreen)` |
-| `FactionsScreen::updateInfo` | `function(self: FactionsScreen)` |
-| `FactionsScreen::notifyEditTextChange` | `function(self: FactionsScreen, sender: Widget)` |
-| `FactionsScreen::setFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
-| `FactionsScreen::loseFocus` | `function(self: FactionsScreen, first: Widget, second: Widget)` |
-| `FactionsScreen::factionLineSelected` | `function(self: FactionsScreen, sender: Widget)` |
-| `FactionsScreen::notifyMouseWheel` | `function(self: FactionsScreen, sender: Widget, rel: integer)` |
-| `DialogueWindow::setVisible` | `function(self: DialogueWindow, visible: boolean)` |
-| `DialogueWindow::_NV_show` | `function(self: DialogueWindow, on: boolean)` |
-| `DialogueWindow::hide` | `function(self: DialogueWindow, dialogue: Dialogue)` |
-| `DialogueWindow::_NV_update` | `function(self: DialogueWindow)` |
-| `DialogueWindow::activateResponse` | `function(self: DialogueWindow, index: integer)` |
-| `DialogueWindow::setNPCText` | `function(self: DialogueWindow, text: string)` |
-| `DialogueWindow::setResponses` | `function(self: DialogueWindow, responses: void)` |
-| `DialogueWindow::clearResponses` | `function(self: DialogueWindow)` |
-| `DialogueWindow::changePortrait` | `function(self: DialogueWindow, character: Character, player: boolean)` |
-| `DialogueWindow::_DESTRUCTOR` | `function(self: DialogueWindow)` |
-| `DialogueWindow::updatePanelsPosition` | `function(self: DialogueWindow)` |
-| `SplashScreen::_CONSTRUCTOR` | `function(self: SplashScreen)` |
-| `SplashScreen::_DESTRUCTOR` | `function(self: SplashScreen)` |
-| `SplashScreen::update` | `function(self: SplashScreen)` |
-| `SplashScreen::skip` | `function(self: SplashScreen)` |
-| `SplashScreen::addLogo` | `function(self: SplashScreen, file: string, scale: number)` |
+
+### ManagementScreen (33)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ManagementScreen::_CONSTRUCTOR` | `function(self: ManagementScreen)` |
+| `ManagementScreen::_DESTRUCTOR` | `function(self: ManagementScreen)` |
+| `ManagementScreen::addButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `ManagementScreen::addMessage` | `function(self: ManagementScreen, owner: string, message: string, logColor: integer)` |
+| `ManagementScreen::addSquadToMap` | `function(self: ManagementScreen, squad: Platoon)` |
+| `ManagementScreen::clear` | `function(self: ManagementScreen)` |
+| `ManagementScreen::closeEverythingButton` | `function(self: ManagementScreen, widget: Widget, name: string)` |
+| `ManagementScreen::getTab` | `function(self: ManagementScreen, index: integer, result: Widget)` |
+| `ManagementScreen::getWidget` | `function(self: ManagementScreen, name: string, result: Widget)` |
+| `ManagementScreen::mouseOverCallback` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer)` |
+| `ManagementScreen::printResearch` | `function(panel: DatapanelGUI, data: GameData, listName: string, displayName: string, category: integer)` |
+| `ManagementScreen::refresh` | `function(self: ManagementScreen, current: GameData, progress: number)` |
+| `ManagementScreen::refreshAI` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshDiplomacy` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshMap` | `function(self: ManagementScreen, centerCamera: boolean)` |
+| `ManagementScreen::refreshMessages` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshResearchList` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshResearchListDescription` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshResearchRate` | `function(self: ManagementScreen)` |
+| `ManagementScreen::refreshSquads` | `function(self: ManagementScreen)` |
+| `ManagementScreen::removeButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `ManagementScreen::removeSquadFromMap` | `function(self: ManagementScreen, squad: Platoon)` |
+| `ManagementScreen::researchQueueTooltip` | `function(self: ManagementScreen, layout: BaseLayout, info: lightuserdata, data: ManagementScreen::TechItemViewData)` |
+| `ManagementScreen::researchRemoved` | `function(self: ManagementScreen, index: integer, item: ManagementScreen::TechItemViewData)` |
+| `ManagementScreen::researchTypeSelect` | `function(self: ManagementScreen, sender: Widget, index: number)` |
+| `ManagementScreen::resetSquads` | `function(self: ManagementScreen)` |
+| `ManagementScreen::setCraftingBench` | `function(self: ManagementScreen, buildingHandle: hand)` |
+| `ManagementScreen::setVisible` | `function(self: ManagementScreen, on: boolean, tab: integer)` |
+| `ManagementScreen::showDebugMarker` | `function(self: ManagementScreen, position: Vector3)` |
+| `ManagementScreen::showRoads` | `function(self: ManagementScreen, value: boolean)` |
+| `ManagementScreen::tabCallback` | `function(self: ManagementScreen, sender: Widget, index: number)` |
+| `ManagementScreen::update` | `function(self: ManagementScreen)` |
+| `ManagementScreen::updateResearchListRate` | `function(self: ManagementScreen)` |
+
+### ManagementScreen::TechItemViewData (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ManagementScreen::TechItemViewData::_DESTRUCTOR` | `function(self: ManagementScreen::TechItemViewData)` |
+| `ManagementScreen::TechItemViewData::getName` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
+| `ManagementScreen::TechItemViewData::getValue` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
+| `ManagementScreen::TechItemViewData::setItem` | `function(self: ManagementScreen::TechItemViewData, item: lightuserdata)` |
+
+### MapScreen (29)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MapScreen::_CONSTRUCTOR` | `function(self: MapScreen, screen: ManagementScreen)` |
+| `MapScreen::_DESTRUCTOR` | `function(self: MapScreen)` |
+| `MapScreen::addSquad` | `function(self: MapScreen, squad: Platoon)` |
+| `MapScreen::centerButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::centerCamera` | `function(self: MapScreen)` |
+| `MapScreen::clear` | `function(self: MapScreen)` |
+| `MapScreen::clearTempMarkers` | `function(self: MapScreen)` |
+| `MapScreen::getMarkerColor` | `function(who: RootObjectBase, result: Colour)` |
+| `MapScreen::hide` | `function(self: MapScreen)` |
+| `MapScreen::mapCoordsToWorld` | `function(self: MapScreen, point: IntPoint, result: Vector3)` |
+| `MapScreen::mapMousePressed` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MapScreen::mapMouseReleased` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
+| `MapScreen::mapMouseWheel` | `function(self: MapScreen, sender: Widget, rel: integer)` |
+| `MapScreen::refresh` | `function(self: MapScreen)` |
+| `MapScreen::refreshSquads` | `function(self: MapScreen)` |
+| `MapScreen::refreshTowns` | `function(self: MapScreen)` |
+| `MapScreen::removeSquad` | `function(self: MapScreen, squad: Platoon)` |
+| `MapScreen::setMovementMarker` | `function(self: MapScreen, position: Vector3, time: number)` |
+| `MapScreen::setupRoads` | `function(self: MapScreen)` |
+| `MapScreen::showRoads` | `function(self: MapScreen, on: boolean)` |
+| `MapScreen::update` | `function(self: MapScreen)` |
+| `MapScreen::updateCameraMarker` | `function(self: MapScreen)` |
+| `MapScreen::updateCharacterMarker` | `function(self: MapScreen, object: RootObjectBase)` |
+| `MapScreen::updatePlayerTownMapMarker` | `function(self: MapScreen, town: hand)` |
+| `MapScreen::updateRoads` | `function(self: MapScreen)` |
+| `MapScreen::updateZoom` | `function(self: MapScreen)` |
+| `MapScreen::worldToMapCoords` | `function(self: MapScreen, position: Vector3, result: IntPoint)` |
+| `MapScreen::zoomInButton` | `function(self: MapScreen, sender: Widget)` |
+| `MapScreen::zoomOutButton` | `function(self: MapScreen, sender: Widget)` |
+
+### MapScreen::MapMarkerCharacter (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MapScreen::MapMarkerCharacter::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter, character: RootObjectBase, mapScreen: MapScreen)` |
+| `MapScreen::MapMarkerCharacter::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter)` |
+| `MapScreen::MapMarkerCharacter::setVisible` | `function(self: MapScreen::MapMarkerCharacter, value: boolean)` |
+| `MapScreen::MapMarkerCharacter::update` | `function(self: MapScreen::MapMarkerCharacter, mapPosition: IntPoint)` |
+
+### MapScreen::MapMarkerTown (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MapScreen::MapMarkerTown::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerTown, town: TownBase, mapScreen: MapScreen)` |
+| `MapScreen::MapMarkerTown::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerTown)` |
+| `MapScreen::MapMarkerTown::setVisible` | `function(self: MapScreen::MapMarkerTown, value: boolean)` |
+| `MapScreen::MapMarkerTown::update` | `function(self: MapScreen::MapMarkerTown, mapPosition: IntPoint, zoom: integer)` |
+
+### MedicalSystem (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MedicalSystem::amputate` | `function(self: MedicalSystem, limb: integer, createSeveredItem: boolean, forceVector: Vector3)` |
+| `MedicalSystem::applyDoctoring` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, medic: Character, applied: boolean)` |
+| `MedicalSystem::applyFirstAid` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, medic: Character, applied: boolean)` |
+| `MedicalSystem::applyRigging` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, applied: boolean)` |
+| `MedicalSystem::knockout` | `function(self: MedicalSystem, skill: number)` |
+
+### MedicalSystem::HealthPartStatus (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MedicalSystem::HealthPartStatus::applyDamage` | `function(self: MedicalSystem::HealthPartStatus, damage: Damages)` |
+
+### MyGUI::Gui (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `MyGUI::Gui::eventFrameStart` | `function(time: number)` |
+
+### NewGameOptionsWindow (6)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `NewGameOptionsWindow::_CONSTRUCTOR` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::_DESTRUCTOR` | `function(self: NewGameOptionsWindow)` |
+| `NewGameOptionsWindow::setOptions` | `function(self: NewGameOptionsWindow, options: GameplayOptions)` |
+| `NewGameOptionsWindow::setPosition` | `function(self: NewGameOptionsWindow, x: integer, y: integer)` |
+| `NewGameOptionsWindow::setVisible` | `function(self: NewGameOptionsWindow, visible: boolean)` |
+| `NewGameOptionsWindow::update` | `function(self: NewGameOptionsWindow)` |
+
+### OptionsWindow (21)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `OptionsWindow::_CONSTRUCTOR` | `function(self: OptionsWindow)` |
+| `OptionsWindow::_DESTRUCTOR` | `function(self: OptionsWindow)` |
+| `OptionsWindow::_NV_show` | `function(self: OptionsWindow, value: boolean)` |
+| `OptionsWindow::_NV_update` | `function(self: OptionsWindow)` |
+| `OptionsWindow::changeDistances` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeFontSize` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::changeVolume` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::closeButton` | `function(self: OptionsWindow, sender: Widget)` |
+| `OptionsWindow::create` | `function(self: OptionsWindow)` |
+| `OptionsWindow::hide` | `function(self: OptionsWindow)` |
+| `OptionsWindow::resetAllKeys` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::resetTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::saveLocationChanged` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::saveOptions` | `function(self: OptionsWindow)` |
+| `OptionsWindow::setKey` | `function(self: OptionsWindow, code: integer)` |
+| `OptionsWindow::show` | `function(self: OptionsWindow)` |
+| `OptionsWindow::toggle` | `function(self: OptionsWindow)` |
+| `OptionsWindow::toggleCompositor` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleNames` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::toggleTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
+| `OptionsWindow::updateResolutions` | `function(self: OptionsWindow)` |
+
+### OrderCellView (7)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `OrderCellView::_CONSTRUCTOR` | `function(self: OrderCellView, parent: Widget)` |
 | `OrderCellView::_DESTRUCTOR` | `function(self: OrderCellView)` |
-| `OrderCellView::update` | `function(self: OrderCellView, info: lightuserdata, data: OrderData)` |
 | `OrderCellView::getCellDimension` | `function(sender: Widget, coord: IntCoord, drop: boolean)` |
 | `OrderCellView::getWidget` | `function(self: OrderCellView, result: Widget)` |
 | `OrderCellView::onRemove` | `function(self: OrderCellView, sender: Widget)` |
 | `OrderCellView::resize` | `function(self: OrderCellView)` |
+| `OrderCellView::update` | `function(self: OrderCellView, info: lightuserdata, data: OrderData)` |
+
+### OrderData (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `OrderData::_CONSTRUCTOR` | `function(self: OrderData)` |
-| `OrderData::set` | `function(self: OrderData, task: Tasker, index: integer, enabled: boolean)` |
-| `OrderData::updateText` | `function(self: OrderData)` |
 | `OrderData::_DESTRUCTOR` | `function(self: OrderData)` |
 | `OrderData::operator=` | `function(self: OrderData, other: OrderData, result: OrderData)` |
+| `OrderData::set` | `function(self: OrderData, task: Tasker, index: integer, enabled: boolean)` |
+| `OrderData::updateText` | `function(self: OrderData)` |
+
+### OrdersItemBox (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `OrdersItemBox::_CONSTRUCTOR` | `function(self: OrdersItemBox, parent: Widget)` |
 | `OrdersItemBox::_DESTRUCTOR` | `function(self: OrdersItemBox)` |
+
+### OrdersPanel (23)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `OrdersPanel::_CONSTRUCTOR` | `function(self: OrdersPanel, mainbar: MainBarGUI, panel: Widget)` |
 | `OrdersPanel::_DESTRUCTOR` | `function(self: OrdersPanel)` |
-| `OrdersPanel::update` | `function(self: OrdersPanel, character: Character)` |
+| `OrdersPanel::blockmodeButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::chaseButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
 | `OrdersPanel::clear` | `function(self: OrdersPanel)` |
 | `OrdersPanel::command` | `function(self: OrdersPanel, command: integer)` |
-| `OrdersPanel::refreshOrders` | `function(self: OrdersPanel)` |
+| `OrdersPanel::holdButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
 | `OrdersPanel::moveJob` | `function(self: OrdersPanel, orderIndex: integer, targetIndex: integer)` |
-| `OrdersPanel::removeJob` | `function(self: OrdersPanel, data: OrderData)` |
 | `OrdersPanel::notifyEndDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, result: boolean)` |
-| `OrdersPanel::toggleStealth` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::toggleRanged` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::passiveButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::refreshOrders` | `function(self: OrdersPanel)` |
+| `OrdersPanel::removeJob` | `function(self: OrdersPanel, data: OrderData)` |
 | `OrdersPanel::setSpeed` | `function(self: OrdersPanel, speed: integer)` |
 | `OrdersPanel::setSpeedImage` | `function(self: OrdersPanel, speed: integer)` |
-| `OrdersPanel::speedPrevious` | `function(self: OrdersPanel, sender: Widget)` |
 | `OrdersPanel::speedNext` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::blockmodeButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::holdButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::passiveButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::chaseButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::speedPrevious` | `function(self: OrdersPanel, sender: Widget)` |
 | `OrdersPanel::tauntButtonCallback` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::medicButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::liftButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OrdersPanel::prospectingButton` | `function(self: OrdersPanel, sender: Widget)` |
-| `OptionsWindow::_NV_show` | `function(self: OptionsWindow, value: boolean)` |
-| `OptionsWindow::show` | `function(self: OptionsWindow)` |
-| `OptionsWindow::hide` | `function(self: OptionsWindow)` |
-| `OptionsWindow::toggle` | `function(self: OptionsWindow)` |
-| `OptionsWindow::setKey` | `function(self: OptionsWindow, code: integer)` |
-| `OptionsWindow::_NV_update` | `function(self: OptionsWindow)` |
-| `OptionsWindow::_CONSTRUCTOR` | `function(self: OptionsWindow)` |
-| `OptionsWindow::_DESTRUCTOR` | `function(self: OptionsWindow)` |
-| `OptionsWindow::saveLocationChanged` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::changeFontSize` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::changeVolume` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::toggleNames` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::resetTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::toggleTutorials` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::changeDistances` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::toggleCompositor` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::resetAllKeys` | `function(self: OptionsWindow, line: DataPanelLine)` |
-| `OptionsWindow::saveOptions` | `function(self: OptionsWindow)` |
-| `OptionsWindow::create` | `function(self: OptionsWindow)` |
-| `OptionsWindow::updateResolutions` | `function(self: OptionsWindow)` |
-| `OptionsWindow::closeButton` | `function(self: OptionsWindow, sender: Widget)` |
-| `MapScreen::MapMarkerTown::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerTown, town: TownBase, mapScreen: MapScreen)` |
-| `MapScreen::MapMarkerTown::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerTown)` |
-| `MapScreen::MapMarkerTown::update` | `function(self: MapScreen::MapMarkerTown, mapPosition: IntPoint, zoom: integer)` |
-| `MapScreen::MapMarkerTown::setVisible` | `function(self: MapScreen::MapMarkerTown, value: boolean)` |
-| `MapScreen::MapMarkerCharacter::_CONSTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter, character: RootObjectBase, mapScreen: MapScreen)` |
-| `MapScreen::MapMarkerCharacter::_DESTRUCTOR` | `function(self: MapScreen::MapMarkerCharacter)` |
-| `MapScreen::MapMarkerCharacter::update` | `function(self: MapScreen::MapMarkerCharacter, mapPosition: IntPoint)` |
-| `MapScreen::MapMarkerCharacter::setVisible` | `function(self: MapScreen::MapMarkerCharacter, value: boolean)` |
-| `MapScreen::_CONSTRUCTOR` | `function(self: MapScreen, screen: ManagementScreen)` |
-| `MapScreen::_DESTRUCTOR` | `function(self: MapScreen)` |
-| `MapScreen::clear` | `function(self: MapScreen)` |
-| `MapScreen::centerCamera` | `function(self: MapScreen)` |
-| `MapScreen::clearTempMarkers` | `function(self: MapScreen)` |
-| `MapScreen::refresh` | `function(self: MapScreen)` |
-| `MapScreen::update` | `function(self: MapScreen)` |
-| `MapScreen::addSquad` | `function(self: MapScreen, squad: Platoon)` |
-| `MapScreen::removeSquad` | `function(self: MapScreen, squad: Platoon)` |
-| `MapScreen::hide` | `function(self: MapScreen)` |
-| `MapScreen::setMovementMarker` | `function(self: MapScreen, position: Vector3, time: number)` |
-| `MapScreen::showRoads` | `function(self: MapScreen, on: boolean)` |
-| `MapScreen::updatePlayerTownMapMarker` | `function(self: MapScreen, town: hand)` |
-| `MapScreen::updateZoom` | `function(self: MapScreen)` |
-| `MapScreen::updateCameraMarker` | `function(self: MapScreen)` |
-| `MapScreen::refreshTowns` | `function(self: MapScreen)` |
-| `MapScreen::refreshSquads` | `function(self: MapScreen)` |
-| `MapScreen::updateCharacterMarker` | `function(self: MapScreen, object: RootObjectBase)` |
-| `MapScreen::worldToMapCoords` | `function(self: MapScreen, position: Vector3, result: IntPoint)` |
-| `MapScreen::mapCoordsToWorld` | `function(self: MapScreen, point: IntPoint, result: Vector3)` |
-| `MapScreen::mapMouseWheel` | `function(self: MapScreen, sender: Widget, rel: integer)` |
-| `MapScreen::mapMousePressed` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
-| `MapScreen::mapMouseReleased` | `function(self: MapScreen, sender: Widget, left: integer, top: integer, id: integer)` |
-| `MapScreen::setupRoads` | `function(self: MapScreen)` |
-| `MapScreen::updateRoads` | `function(self: MapScreen)` |
-| `MapScreen::centerButton` | `function(self: MapScreen, sender: Widget)` |
-| `MapScreen::zoomInButton` | `function(self: MapScreen, sender: Widget)` |
-| `MapScreen::zoomOutButton` | `function(self: MapScreen, sender: Widget)` |
-| `MapScreen::getMarkerColor` | `function(who: RootObjectBase, result: Colour)` |
-| `ManagementScreen::_DESTRUCTOR` | `function(self: ManagementScreen)` |
-| `ManagementScreen::update` | `function(self: ManagementScreen)` |
-| `ManagementScreen::clear` | `function(self: ManagementScreen)` |
-| `ManagementScreen::setVisible` | `function(self: ManagementScreen, on: boolean, tab: integer)` |
-| `ManagementScreen::closeEverythingButton` | `function(self: ManagementScreen, widget: Widget, name: string)` |
-| `ManagementScreen::tabCallback` | `function(self: ManagementScreen, sender: Widget, index: number)` |
-| `ManagementScreen::getTab` | `function(self: ManagementScreen, index: integer, result: Widget)` |
-| `ManagementScreen::getWidget` | `function(self: ManagementScreen, name: string, result: Widget)` |
-| `ManagementScreen::refresh` | `function(self: ManagementScreen, current: GameData, progress: number)` |
-| `ManagementScreen::refreshResearchList` | `function(self: ManagementScreen)` |
-| `ManagementScreen::refreshResearchRate` | `function(self: ManagementScreen)` |
-| `ManagementScreen::refreshDiplomacy` | `function(self: ManagementScreen)` |
-| `ManagementScreen::refreshSquads` | `function(self: ManagementScreen)` |
-| `ManagementScreen::refreshMap` | `function(self: ManagementScreen, centerCamera: boolean)` |
-| `ManagementScreen::showRoads` | `function(self: ManagementScreen, value: boolean)` |
-| `ManagementScreen::addSquadToMap` | `function(self: ManagementScreen, squad: Platoon)` |
-| `ManagementScreen::removeSquadFromMap` | `function(self: ManagementScreen, squad: Platoon)` |
-| `ManagementScreen::addMessage` | `function(self: ManagementScreen, owner: string, message: string, logColor: integer)` |
-| `ManagementScreen::resetSquads` | `function(self: ManagementScreen)` |
-| `ManagementScreen::refreshMessages` | `function(self: ManagementScreen)` |
-| `ManagementScreen::refreshAI` | `function(self: ManagementScreen)` |
-| `ManagementScreen::setCraftingBench` | `function(self: ManagementScreen, buildingHandle: hand)` |
-| `ManagementScreen::printResearch` | `function(panel: DatapanelGUI, data: GameData, listName: string, displayName: string, category: integer)` |
-| `ManagementScreen::showDebugMarker` | `function(self: ManagementScreen, position: Vector3)` |
-| `ManagementScreen::_CONSTRUCTOR` | `function(self: ManagementScreen)` |
-| `ManagementScreen::updateResearchListRate` | `function(self: ManagementScreen)` |
-| `ManagementScreen::refreshResearchListDescription` | `function(self: ManagementScreen)` |
-| `ManagementScreen::researchTypeSelect` | `function(self: ManagementScreen, sender: Widget, index: number)` |
-| `ManagementScreen::addButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
-| `ManagementScreen::removeButtonPress` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer, id: integer)` |
-| `ManagementScreen::mouseOverCallback` | `function(self: ManagementScreen, sender: Widget, left: integer, top: integer)` |
-| `ManagementScreen::TechItemViewData::getName` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
-| `ManagementScreen::TechItemViewData::getValue` | `function(self: ManagementScreen::TechItemViewData, result: string)` |
-| `ManagementScreen::TechItemViewData::setItem` | `function(self: ManagementScreen::TechItemViewData, item: lightuserdata)` |
-| `ManagementScreen::TechItemViewData::_DESTRUCTOR` | `function(self: ManagementScreen::TechItemViewData)` |
-| `ManagementScreen::researchQueueTooltip` | `function(self: ManagementScreen, layout: BaseLayout, info: lightuserdata, data: ManagementScreen::TechItemViewData)` |
-| `ManagementScreen::researchRemoved` | `function(self: ManagementScreen, index: integer, item: ManagementScreen::TechItemViewData)` |
+| `OrdersPanel::toggleRanged` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::toggleStealth` | `function(self: OrdersPanel, sender: Widget)` |
+| `OrdersPanel::update` | `function(self: OrdersPanel, character: Character)` |
+
+### OrdersReceiver (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `OrdersReceiver::_NV_serialise` | `function(self: OrdersReceiver, data: GameData)` |
+
+### Platoon (5)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Platoon::_NV_loadFromSerialise` | `function(self: Platoon, saveState: GameSaveState)` |
+| `Platoon::_NV_notifyMissionEnded` | `function(self: Platoon)` |
+| `Platoon::declareDead` | `function(self: Platoon)` |
+| `Platoon::taskIsComplete` | `function(self: Platoon, completedTask: Tasker)` |
+| `Platoon::undeclareDead` | `function(self: Platoon)` |
+
+### PlayerInterface (15)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `PlayerInterface::activateCharacterEditMode` | `function(self: PlayerInterface, character: Character)` |
+| `PlayerInterface::addJobSelectedCharacters` | `function(self: PlayerInterface, taskType: integer, subject: RootObject, shift: boolean, add: boolean, location: Vector3)` |
+| `PlayerInterface::addOrderSelectedCharacters` | `function(self: PlayerInterface, destinationIndoors: Building, taskType: integer, subject: RootObject, shift: boolean, addDontClear: boolean, location: Vector3)` |
+| `PlayerInterface::createSquad` | `function(self: PlayerInterface, newSquad: ActivePlatoon)` |
+| `PlayerInterface::encounterFaction` | `function(self: PlayerInterface, faction: Faction)` |
+| `PlayerInterface::loadFromSerialise` | `function(self: PlayerInterface, gameData: GameData)` |
+| `PlayerInterface::newPlayerTaskSelectedCharacters` | `function(self: PlayerInterface, taskType: integer, targetHandle: hand, destinationBuilding: Building, clickPos: Vector3, queueOrder: boolean)` |
+| `PlayerInterface::objectSelected` | `function(self: PlayerInterface, obj: RootObject, select: boolean)` |
+| `PlayerInterface::recruit` | `function(self: PlayerInterface, character: Character, isEditor: boolean)` |
+| `PlayerInterface::removeJobSelectedCharacters` | `function(self: PlayerInterface, t: integer)` |
+| `PlayerInterface::removePermaJobSelectedCharacters` | `function(self: PlayerInterface, id: integer)` |
+| `PlayerInterface::selectObject` | `function(self: PlayerInterface, obj: RootObject, modifier: boolean)` |
+| `PlayerInterface::serialise` | `function(self: PlayerInterface, gameData: GameData)` |
+| `PlayerInterface::setCurrentPlatoon` | `function(self: PlayerInterface, platoon: Platoon, result: boolean)` |
+| `PlayerInterface::triggerAreaArrivalDialogue` | `function(self: PlayerInterface, area: GameData, result: boolean)` |
+
+### PreviewBuilding (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `PreviewBuilding::_NV_placeFinalPreviewBuilding` | `function(self: PreviewBuilding)` |
+| `PreviewBuilding::_NV_placePreview` | `function(self: PreviewBuilding, position: Vector3, rotation: Quaternion, floorNumber: integer)` |
+
+### ProductionBuilding (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ProductionBuilding::_NV_operate` | `function(self: ProductionBuilding, worker: Character, amount: number)` |
+
+### Research (4)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Research::completeResearch` | `function(self: Research, data: GameData)` |
+| `Research::progressResearch` | `function(self: Research, amount: number)` |
+| `Research::startResearch` | `function(self: Research, data: GameData, started: boolean)` |
+| `Research::stopResearch` | `function(self: Research, data: GameData)` |
+
+### ResearchBuilding (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `ResearchBuilding::_NV_operate` | `function(self: ResearchBuilding, worker: Character, amount: number)` |
+
+### RootObjectFactory (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `RootObjectFactory::chooseMyClothing` | `function(gearLektor: lektor<GameData>, dataList: GameData, listName: string, race: RaceData, noShoes: boolean)` |
+
+### SplashScreen (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `SplashScreen::_DESTRUCTOR` | `function(self: SplashScreen)` |
+| `SplashScreen::update` | `function(self: SplashScreen)` |
+
+### SquadManagementScreen (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `SquadManagementScreen::removeSquad` | `function(self: SquadManagementScreen, squadData: lightuserdata)` |
+
+### TitleScreen (13)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
 | `TitleScreen::_CONSTRUCTOR` | `function(self: TitleScreen)` |
 | `TitleScreen::_DESTRUCTOR` | `function(self: TitleScreen)` |
 | `TitleScreen::_NV_clear` | `function(self: TitleScreen)` |
 | `TitleScreen::_NV_show` | `function(self: TitleScreen, on: boolean)` |
 | `TitleScreen::_NV_update` | `function(self: TitleScreen)` |
-| `TitleScreen::loadGame` | `function(self: TitleScreen, sender: Widget)` |
-| `TitleScreen::importGame` | `function(self: TitleScreen, sender: Widget)` |
-| `TitleScreen::showOptions` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::continueGame` | `function(self: TitleScreen, sender: Widget)` |
 | `TitleScreen::credits` | `function(self: TitleScreen, sender: Widget)` |
 | `TitleScreen::exitGame` | `function(self: TitleScreen, sender: Widget)` |
-| `TitleScreen::continueGame` | `function(self: TitleScreen, sender: Widget)` |
 | `TitleScreen::hover` | `function(self: TitleScreen, sender: Widget, other: Widget)` |
+| `TitleScreen::importGame` | `function(self: TitleScreen, sender: Widget)` |
+| `TitleScreen::loadGame` | `function(self: TitleScreen, sender: Widget)` |
 | `TitleScreen::setCreditsVisible` | `function(self: TitleScreen, value: boolean)` |
-| `CombatClass::_NV_initCombatMode` | `function(self: CombatClass, subject: hand, endValue: integer, focusedTarget: boolean, result: boolean)` |
-| `CombatClass::_getHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject, stumble: boolean)` |
-| `CombatClass::_blockHit` | `function(self: CombatClass, direction: integer, damage: Damages, attacker: RootObject)` |
-| `CombatClass::addAttackerH` | `function(self: CombatClass, attacker: Character, added: boolean)` |
-| `CombatClass::removeAttackerH` | `function(self: CombatClass, attacker: Character, removed: boolean)` |
-| `GunClass::shoot` | `function(self: GunClass, shooter: Character, target: RootObject, stat: integer, aimPosition: Vector3)` |
-| `MedicalSystem::HealthPartStatus::applyDamage` | `function(self: MedicalSystem::HealthPartStatus, damage: Damages)` |
-| `MedicalSystem::applyFirstAid` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, medic: Character, applied: boolean)` |
-| `MedicalSystem::applyDoctoring` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, medic: Character, applied: boolean)` |
-| `MedicalSystem::applyRigging` | `function(self: MedicalSystem, skill: number, equipment: Item, frameTime: number, applied: boolean)` |
-| `Character::setPrisonMode` | `function(self: Character, enabled: boolean, cage: UseableStuff)` |
-| `Character::dropCarriedObject` | `function(self: Character, ragdollTarget: boolean, removeOnly: boolean)` |
-| `Character::getDropped` | `function(self: Character, ragdoll: boolean, hull: boolean)` |
-| `BountyManager::setCrime` | `function(self: BountyManager, crime: integer, againstFaction: Faction, againstHandle: hand, accepted: boolean)` |
-| `BountyManager::notifyStartPrisonSentence` | `function(self: BountyManager, lawFaction: Faction)` |
-| `BountyManager::notifyPlayerClaimBounty` | `function(self: BountyManager, faction: Faction)` |
-| `BountyManager::assignBountyForCrimes` | `function(self: BountyManager, enforcer: Faction)` |
-| `BountyManager::clearBounty` | `function(self: BountyManager, enforcer: Faction)` |
-| `BountyManager::unfairAddToBounty` | `function(self: BountyManager, enforcer: Faction, amount: integer)` |
-| `FactionRelations::_NV_setEnemy` | `function(self: FactionRelations, faction: Faction)` |
-| `FactionRelations::setRelation` | `function(self: FactionRelations, faction: Faction, relation: number)` |
-| `FactionRelations::_NV_affectTrust` | `function(self: FactionRelations, faction: Faction, amount: number, multiplier: number)` |
-| `FactionRelations::_NV_setNoLongerEnemies` | `function(self: FactionRelations, faction: Faction)` |
-| `FactionRelations::_NV_declareWar` | `function(self: FactionRelations, faction: Faction)` |
-| `FactionRelations::_NV_affectReputation` | `function(self: FactionRelations, faction: Faction, amount: number)` |
-| `Research::startResearch` | `function(self: Research, data: GameData, started: boolean)` |
-| `Research::stopResearch` | `function(self: Research, data: GameData)` |
-| `Research::completeResearch` | `function(self: Research, data: GameData)` |
-| `Research::progressResearch` | `function(self: Research, amount: number)` |
-| `CampaignInstance::changePhase` | `function(self: CampaignInstance, phase: integer)` |
-| `CampaignInstance::_NV_victoryEvent` | `function(self: CampaignInstance)` |
-| `CampaignInstance::_NV_lossEvent` | `function(self: CampaignInstance)` |
-| `CampaignInstance::_NV_addToCampaign` | `function(self: CampaignInstance, platoon: Platoon, forceLeader: boolean)` |
-| `CampaignInstance::_NV_removeFromCampaign` | `function(self: CampaignInstance, platoon: Platoon)` |
-| `Platoon::_NV_notifyMissionEnded` | `function(self: Platoon)` |
-| `Platoon::declareDead` | `function(self: Platoon)` |
-| `Platoon::undeclareDead` | `function(self: Platoon)` |
-| `ActivePlatoon::setSquadLeader` | `function(self: ActivePlatoon, leader: Character)` |
+| `TitleScreen::showOptions` | `function(self: TitleScreen, sender: Widget)` |
+
+### Town (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `Town::_NV_loadFromSerialise` | `function(self: Town, saveState: GameSaveState)` |
+
+### TurretBuilding (2)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `TurretBuilding::_NV_operate` | `function(self: TurretBuilding, gunner: Character, amount: number)` |
+| `TurretBuilding::aimAt` | `function(self: TurretBuilding, targetPos: Vector3)` |
+
+### UseableStuff (8)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `UseableStuff::_NV_givePower` | `function(self: UseableStuff, amount: number)` |
+| `UseableStuff::_NV_hitByMeleeAttack` | `function(self: UseableStuff, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+| `UseableStuff::_NV_switchPowerOn` | `function(self: UseableStuff, on: boolean)` |
+| `UseableStuff::_NV_toggleBattButton` | `function(self: UseableStuff, line: DataPanelLine)` |
+| `UseableStuff::_NV_togglePowerButton` | `function(self: UseableStuff, line: DataPanelLine)` |
+| `UseableStuff::_NV_tryOperate` | `function(self: UseableStuff, userHandle: hand, success: boolean)` |
+| `UseableStuff::occupantHandleChangedEvent` | `function(self: UseableStuff, newOccupantHandle: hand)` |
+| `UseableStuff::stopOperating` | `function(self: UseableStuff, userHandle: hand)` |
+
+### WallBuilding (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `WallBuilding::_NV_hitByMeleeAttack` | `function(self: WallBuilding, cutDir: integer, damage: Damages, attacker: Character, attack: CombatTechniqueData, comboID: integer)` |
+
+### wraps::BaseLayout (1)
+
+| Event Name | Lua Signature |
+| :--- | :--- |
+| `wraps::BaseLayout::initialise` | `function(self: BaseLayout, layoutName: string)` |
 
 ## Override Callbacks (212)
 
+### ActivePlatoon (1)
+
 | Event Name | Lua Signature & Expected Return |
 | :--- | :--- |
+| `ActivePlatoon::_CONSTRUCTOR` | `function(self: ActivePlatoon, platoon: Platoon, doc: DataObjectContainer, faction: Faction, gameData: GameData, currentGoal: Tasker, posOffset: Vector3, defaultVal: ActivePlatoon) -> ActivePlatoon` |
+
+### AppearanceManager (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `AppearanceManager::_CONSTRUCTOR` | `function(self: AppearanceManager, defaultVal: AppearanceManager) -> AppearanceManager` |
+
+### Armour (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Armour::_CONSTRUCTOR` | `function(self: Armour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: Armour) -> Armour` |
+
+### Bounty (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Bounty::_CONSTRUCTOR` | `function(self: Bounty, defaultVal: Bounty) -> Bounty` |
+
+### BountyManager (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `BountyManager::_CONSTRUCTOR` | `function(self: BountyManager, character: Character, defaultVal: BountyManager) -> BountyManager` |
+
+### Building (6)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Building::_CONSTRUCTOR` | `function(self: Building, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: Building) -> Building` |
+| `Building::_NV_addDismantleProgress` | `function(self: Building, amount: number, defaultVal: boolean) -> boolean` |
+| `Building::_NV_canUpgrade` | `function(self: Building, defaultVal: GameData) -> GameData` |
+| `Building::_NV_isForSale` | `function(self: Building, defaultVal: boolean) -> boolean` |
+| `Building::_NV_isPublic` | `function(self: Building, defaultVal: boolean) -> boolean` |
+| `Building::calculateSaleValue` | `function(self: Building, defaultVal: integer) -> integer` |
+
+### Character (3)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Character::_CONSTRUCTOR` | `function(self: Character, dat: GameData, own: Faction, handle: hand, defaultVal: Character) -> Character` |
 | `Character::_NV_isItOkForMeToLoot` | `function(self: Character, victim: RootObject, item: Item, defaultVal: boolean) -> boolean` |
 | `Character::getFencingSuccessChance` | `function(self: Character, item: Item, thief: RootObject, defaultVal: number) -> number` |
-| `CharStats::chooseAttack` | `function(self: CharStats, range: number, weaponReach: number, lastAttack: CombatTechniqueData, opponentIsStationary: boolean, defaultAttack: CombatTechniqueData) -> CombatTechniqueData` |
-| `CharStats::getStat` | `function(self: CharStats, statType: integer, unmodified: boolean, defaultVal: number) -> number` |
-| `Platoon::iBuyStolenGoods` | `function(self: Platoon, item: Item, defaultVal: boolean) -> boolean` |
-| `Platoon::iBuyIllegalGoods` | `function(self: Platoon, defaultVal: boolean) -> boolean` |
-| `Ownerships::canIUseThisBuilding` | `function(self: Ownerships, building: Building, character: Character, defaultVal: boolean) -> boolean` |
-| `Inventory::getSectionOfType` | `function(self: Inventory, type: integer, defaultVal: InventorySection) -> InventorySection` |
-| `Inventory::getBestFoodItem` | `function(self: Inventory, race: Character, defaultVal: Item) -> Item` |
-| `InventoryItemBase::getValueSingle` | `function(self: InventoryItemBase, isPlayer: boolean, defaultVal: integer) -> integer` |
-| `Faction::chooseARace` | `function(self: Faction, character: GameData, squadTemplate: GameData, defaultVal: GameData) -> GameData` |
-| `Faction::getBuildingReplacement` | `function(self: Faction, building: GameData, defaultVal: GameData) -> GameData` |
-| `Dialogue::_checkCondition` | `function(self: Dialogue, conditionName: DialogConditionEnum, compareBy: ComparisonEnum, val: integer, target: Character, actualConversationTarget: Character, defaultVal: boolean) -> boolean` |
-| `Dialogue::startConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, ev: EventTriggerEnum, force: boolean, defaultVal: boolean) -> boolean` |
-| `Dialogue::startPlayerConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, defaultVal: boolean) -> boolean` |
-| `Dialogue::sendEvent` | `function(self: Dialogue, who: Character, what: EventTriggerEnum, defaultVal: boolean) -> boolean` |
-| `Building::_NV_isPublic` | `function(self: Building, defaultVal: boolean) -> boolean` |
-| `Building::_NV_isForSale` | `function(self: Building, defaultVal: boolean) -> boolean` |
-| `Building::calculateSaleValue` | `function(self: Building, defaultVal: integer) -> integer` |
+
+### Character::AttachedArrowManager (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Character::AttachedArrowManager::_CONSTRUCTOR` | `function(self: Character::AttachedArrowManager, defaultVal: Character::AttachedArrowManager) -> Character::AttachedArrowManager` |
+
+### CharacterAnimal (11)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CharacterAnimal::_CONSTRUCTOR` | `function(self: CharacterAnimal, data: GameData, faction: Faction, handle: hand, age: number, defaultVal: CharacterAnimal) -> CharacterAnimal` |
+| `CharacterAnimal::_NV_canGoIndoors` | `function(self: CharacterAnimal, building: Building, defaultVal: boolean) -> boolean` |
+| `CharacterAnimal::_NV_getAge` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getAge0to1` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getAgeInverse` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getCurrentWeapon` | `function(self: CharacterAnimal, defaultVal: Weapon) -> Weapon` |
+| `CharacterAnimal::_NV_getDefaultTaskRepertoireEnum` | `function(self: CharacterAnimal, defaultVal: integer) -> integer` |
+| `CharacterAnimal::_NV_getHPMultiplier` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getSmellHuntingThresholdBlood` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getSmellHuntingThresholdEggs` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
+| `CharacterAnimal::_NV_getThePreferredWeapon` | `function(self: CharacterAnimal, defaultVal: Weapon) -> Weapon` |
+
+### CharacterHuman (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CharacterHuman::_CONSTRUCTOR` | `function(self: CharacterHuman, data: GameData, faction: Faction, handle: hand, defaultVal: CharacterHuman) -> CharacterHuman` |
+
+### CharacterStatsWindow (5)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CharacterStatsWindow::_NV_isVisible` | `function(self: CharacterStatsWindow, defaultVal: boolean) -> boolean` |
+| `CharacterStatsWindow::getStat` | `function(type: integer, defaultVal: CharacterStatsWindow::Stat) -> CharacterStatsWindow::Stat` |
+| `CharacterStatsWindow::getStatById` | `function(id: string, defaultVal: CharacterStatsWindow::Stat) -> CharacterStatsWindow::Stat` |
+| `CharacterStatsWindow::getStatsPanel` | `function(self: CharacterStatsWindow, group: integer, defaultVal: DatapanelGUI) -> DatapanelGUI` |
+| `CharacterStatsWindow::sumStats` | `function(self: CharacterStatsWindow, defaultVal: integer) -> integer` |
+
+### CharBody (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CharBody::_CONSTRUCTOR` | `function(self: CharBody, defaultVal: CharBody) -> CharBody` |
+
+### CharMovement (3)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CharMovement::_CONSTRUCTOR` | `function(self: CharMovement, defaultVal: CharMovement) -> CharMovement` |
 | `CharMovement::isRunning` | `function(self: CharMovement, defaultVal: boolean) -> boolean` |
 | `CharMovement::isRunningAway` | `function(self: CharMovement, from: Vector3, defaultVal: boolean) -> boolean` |
-| `MedicalSystem::canGetUpWakeUp` | `function(self: MedicalSystem, defaultVal: boolean) -> boolean` |
+
+### CharStats (3)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CharStats::_CONSTRUCTOR` | `function(self: CharStats, defaultVal: CharStats) -> CharStats` |
+| `CharStats::chooseAttack` | `function(self: CharStats, range: number, weaponReach: number, lastAttack: CombatTechniqueData, opponentIsStationary: boolean, defaultAttack: CombatTechniqueData) -> CombatTechniqueData` |
+| `CharStats::getStat` | `function(self: CharStats, statType: integer, unmodified: boolean, defaultVal: number) -> number` |
+
+### CombatClass (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CombatClass::_CONSTRUCTOR` | `function(self: CombatClass, movement: CharMovement, ai: lightuserdata, anim: lightuserdata, character: Character, stats: CharStats, medical: MedicalSystem, defaultVal: CombatClass) -> CombatClass` |
+
+### CombatMovementController (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CombatMovementController::_CONSTRUCTOR` | `function(self: CombatMovementController, defaultVal: CombatMovementController) -> CombatMovementController` |
+
+### CombatTechniqueData (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CombatTechniqueData::_CONSTRUCTOR` | `function(self: CombatTechniqueData, data: GameData, defaultVal: CombatTechniqueData) -> CombatTechniqueData` |
+
+### CraftingBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `CraftingBuilding::_CONSTRUCTOR` | `function(self: CraftingBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: CraftingBuilding) -> CraftingBuilding` |
+
+### Crossbow (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Crossbow::_CONSTRUCTOR` | `function(self: Crossbow, baseData: GameData, handle: hand, overallLevel: integer, defaultVal: Crossbow) -> Crossbow` |
+
+### Damages (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Damages::_CONSTRUCTOR` | `function(self: Damages, cut: number, blunt: number, pierce: number, bleed: number, armour: number, defaultVal: Damages) -> Damages` |
+
+### DatapanelGUI (6)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DatapanelGUI::_NV_getLine` | `function(self: DatapanelGUI, key: string, cat: integer, defaultVal: DataPanelLine) -> DataPanelLine` |
+| `DatapanelGUI::dataExists` | `function(self: DatapanelGUI, cat: integer, name: string, defaultVal: boolean) -> boolean` |
+| `DatapanelGUI::getLineByNum` | `function(self: DatapanelGUI, cat: integer, i: integer, defaultVal: DataPanelLine) -> DataPanelLine` |
+| `DatapanelGUI::getNextVerticalPos` | `function(self: DatapanelGUI, category: integer, defaultVal: number) -> number` |
+| `DatapanelGUI::getNumLines` | `function(self: DatapanelGUI, cat: integer, defaultVal: integer) -> integer` |
+| `DatapanelGUI::lineExists` | `function(self: DatapanelGUI, key: string, cat: integer, defaultVal: boolean) -> boolean` |
+
+### DataPanelLine (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DataPanelLine::_NV_getBottom` | `function(self: DataPanelLine, defaultVal: integer) -> integer` |
+
+### DataPanelLine_DropBox (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DataPanelLine_DropBox::getSelectedValue` | `function(self: DataPanelLine_DropBox, defaultVal: integer) -> integer` |
+
+### DataPanelLine_KeyConfig (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DataPanelLine_KeyConfig::oldKey` | `function(self: DataPanelLine_KeyConfig, defaultVal: integer) -> integer` |
+
+### DataPanelLine_Slider (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DataPanelLine_Slider::getValue` | `function(self: DataPanelLine_Slider, defaultVal: number) -> number` |
+
+### DialogLineData (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DialogLineData::_CONSTRUCTOR` | `function(self: DialogLineData, data: GameData, defaultVal: DialogLineData) -> DialogLineData` |
+
+### Dialogue (5)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Dialogue::_checkCondition` | `function(self: Dialogue, conditionName: DialogConditionEnum, compareBy: ComparisonEnum, val: integer, target: Character, actualConversationTarget: Character, defaultVal: boolean) -> boolean` |
+| `Dialogue::_CONSTRUCTOR` | `function(self: Dialogue, defaultVal: Dialogue) -> Dialogue` |
+| `Dialogue::sendEvent` | `function(self: Dialogue, who: Character, what: EventTriggerEnum, defaultVal: boolean) -> boolean` |
+| `Dialogue::startConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, ev: EventTriggerEnum, force: boolean, defaultVal: boolean) -> boolean` |
+| `Dialogue::startPlayerConversation` | `function(self: Dialogue, target: Character, talk: DialogLineData, defaultVal: boolean) -> boolean` |
+
+### DialogueWindow (4)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DialogueWindow::_CONSTRUCTOR` | `function(self: DialogueWindow, defaultVal: DialogueWindow) -> DialogueWindow` |
+| `DialogueWindow::_NV_isVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
+| `DialogueWindow::getTop` | `function(self: DialogueWindow, defaultVal: integer) -> integer` |
+| `DialogueWindow::getVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
+
+### DoorStuff (3)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `DoorStuff::_CONSTRUCTOR` | `function(self: DoorStuff, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, parent: Building, defaultVal: DoorStuff) -> DoorStuff` |
+| `DoorStuff::closeDoor` | `function(self: DoorStuff, defaultVal: boolean) -> boolean` |
+| `DoorStuff::openDoor` | `function(self: DoorStuff, defaultVal: boolean) -> boolean` |
+
+### Faction (3)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Faction::_CONSTRUCTOR` | `function(self: Faction, name: string, defaultVal: Faction) -> Faction` |
+| `Faction::chooseARace` | `function(self: Faction, character: GameData, squadTemplate: GameData, defaultVal: GameData) -> GameData` |
+| `Faction::getBuildingReplacement` | `function(self: Faction, building: GameData, defaultVal: GameData) -> GameData` |
+
+### FactionLeader (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FactionLeader::_CONSTRUCTOR` | `function(self: FactionLeader, faction: Faction, defaultVal: FactionLeader) -> FactionLeader` |
+
+### FactionManager (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FactionManager::_CONSTRUCTOR` | `function(self: FactionManager, defaultVal: FactionManager) -> FactionManager` |
+
+### FactionRelations (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FactionRelations::_CONSTRUCTOR` | `function(self: FactionRelations, defaultVal: FactionRelations) -> FactionRelations` |
+
+### FactionsScreen (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FactionsScreen::getVisible` | `function(self: FactionsScreen, defaultVal: boolean) -> boolean` |
+
+### FactionsScreen::FactionRelationsLine::LessSort (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FactionsScreen::FactionRelationsLine::LessSort::operator()` | `function(comparator: lightuserdata, left: FactionsScreen::FactionRelationsLine, right: FactionsScreen::FactionRelationsLine, defaultVal: boolean) -> boolean` |
+
+### FactionUniqueSquadManager (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FactionUniqueSquadManager::_CONSTRUCTOR` | `function(self: FactionUniqueSquadManager, defaultVal: FactionUniqueSquadManager) -> FactionUniqueSquadManager` |
+
+### FactionWarMgr (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FactionWarMgr::_CONSTRUCTOR` | `function(self: FactionWarMgr, faction: Faction, defaultVal: FactionWarMgr) -> FactionWarMgr` |
+
+### FarmBuilding (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FarmBuilding::_CONSTRUCTOR` | `function(self: FarmBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FarmBuilding) -> FarmBuilding` |
+| `FarmBuilding::destroyAPlant` | `function(self: FarmBuilding, defaultVal: boolean) -> boolean` |
+
+### ForgottenGUI (15)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ForgottenGUI::getInDialogue` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::getInventoryWindow` | `function(self: ForgottenGUI, who: hand, defaultVal: InventoryGUI) -> InventoryGUI` |
+| `ForgottenGUI::getInventoryWindowWithMouse` | `function(self: ForgottenGUI, defaultVal: InventoryGUI) -> InventoryGUI` |
+| `ForgottenGUI::getNumOpenInventoryWindows` | `function(self: ForgottenGUI, defaultVal: integer) -> integer` |
+| `ForgottenGUI::getToolTip` | `function(self: ForgottenGUI, defaultVal: ToolTip) -> ToolTip` |
+| `ForgottenGUI::getTopOfScreenMessagePosition` | `function(self: ForgottenGUI, defaultVal: number) -> number` |
+| `ForgottenGUI::hasInventoryWindowOpen` | `function(self: ForgottenGUI, obj: hand, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::hasModalMessage` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::inDialogue` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isAnyInventoryWindowOpen` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isLoading` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isLoadingMessageVisible` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isPaused` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::isStatsWindowOpen` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
+| `ForgottenGUI::widgetHasMouse` | `function(self: ForgottenGUI, w: Widget, defaultVal: boolean) -> boolean` |
+
+### FurnaceBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `FurnaceBuilding::_CONSTRUCTOR` | `function(self: FurnaceBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FurnaceBuilding) -> FurnaceBuilding` |
+
+### GameData (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `GameData::_CONSTRUCTOR` | `function(self: GameData, defaultVal: GameData) -> GameData` |
+
+### GameWorld (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `GameWorld::_CONSTRUCTOR` | `function(self: GameWorld, defaultVal: GameWorld) -> GameWorld` |
+
+### GatewayBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `GatewayBuilding::_CONSTRUCTOR` | `function(self: GatewayBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, defaultVal: GatewayBuilding) -> GatewayBuilding` |
+
+### Gear (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Gear::_CONSTRUCTOR` | `function(self: Gear, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, uniform: Faction, defaultVal: Gear) -> Gear` |
+
+### GeneratorBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `GeneratorBuilding::_CONSTRUCTOR` | `function(self: GeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: GeneratorBuilding) -> GeneratorBuilding` |
+
+### GenericFixedInventoryLayout (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `GenericFixedInventoryLayout::_CONSTRUCTOR` | `function(self: GenericFixedInventoryLayout, defaultVal: GenericFixedInventoryLayout) -> GenericFixedInventoryLayout` |
+
+### GUIWindow (5)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `GUIWindow::_NV_getHeight` | `function(self: GUIWindow, defaultVal: integer) -> integer` |
+| `GUIWindow::_NV_getHeightReal` | `function(self: GUIWindow, defaultVal: number) -> number` |
+| `GUIWindow::_NV_getWidth` | `function(self: GUIWindow, defaultVal: integer) -> integer` |
+| `GUIWindow::_NV_getWidthReal` | `function(self: GUIWindow, defaultVal: number) -> number` |
+| `GUIWindow::_NV_isVisible` | `function(self: GUIWindow, defaultVal: boolean) -> boolean` |
+
+### InputHandler (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `InputHandler::_CONSTRUCTOR` | `function(self: InputHandler, defaultVal: InputHandler) -> InputHandler` |
+
+### Inventory (6)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Inventory::_CONSTRUCTOR` | `function(self: Inventory, owner: RootObject, defaultVal: Inventory) -> Inventory` |
 | `Inventory::_NV_addItem` | `function(self: Inventory, item: Item, quantity: integer, dropOnFail: boolean, destroyOnFail: boolean, defaultVal: boolean) -> boolean` |
 | `Inventory::_NV_removeItemDontDestroy_returnsItem` | `function(self: Inventory, item: Item, howmany: integer, returnCopyIfSomeLeft: boolean, defaultVal: Item) -> Item` |
 | `Inventory::buyItem` | `function(self: Inventory, item: Item, sendingTo: RootObject, defaultVal: Item) -> Item` |
-| `Character::_CONSTRUCTOR` | `function(self: Character, dat: GameData, own: Faction, handle: hand, defaultVal: Character) -> Character` |
-| `Item::_CONSTRUCTOR` | `function(self: Item, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: Item) -> Item` |
-| `Gear::_CONSTRUCTOR` | `function(self: Gear, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, uniform: Faction, defaultVal: Gear) -> Gear` |
-| `Sword::_CONSTRUCTOR` | `function(self: Sword, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Sword) -> Sword` |
-| `Crossbow::_CONSTRUCTOR` | `function(self: Crossbow, baseData: GameData, handle: hand, overallLevel: integer, defaultVal: Crossbow) -> Crossbow` |
-| `Armour::_CONSTRUCTOR` | `function(self: Armour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: Armour) -> Armour` |
-| `LockedArmour::_CONSTRUCTOR` | `function(self: LockedArmour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: LockedArmour) -> LockedArmour` |
-| `Weapon::_CONSTRUCTOR` | `function(self: Weapon, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Weapon) -> Weapon` |
-| `Building::_CONSTRUCTOR` | `function(self: Building, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: Building) -> Building` |
-| `Platoon::_CONSTRUCTOR` | `function(self: Platoon, faction: Faction, squadTemplate: GameData, platoonState: GameData, position: Vector3, persistent: boolean, defaultVal: Platoon) -> Platoon` |
-| `ActivePlatoon::_CONSTRUCTOR` | `function(self: ActivePlatoon, platoon: Platoon, doc: DataObjectContainer, faction: Faction, gameData: GameData, currentGoal: Tasker, posOffset: Vector3, defaultVal: ActivePlatoon) -> ActivePlatoon` |
-| `Faction::_CONSTRUCTOR` | `function(self: Faction, name: string, defaultVal: Faction) -> Faction` |
-| `Bounty::_CONSTRUCTOR` | `function(self: Bounty, defaultVal: Bounty) -> Bounty` |
-| `Damages::_CONSTRUCTOR` | `function(self: Damages, cut: number, blunt: number, pierce: number, bleed: number, armour: number, defaultVal: Damages) -> Damages` |
-| `Inventory::_CONSTRUCTOR` | `function(self: Inventory, owner: RootObject, defaultVal: Inventory) -> Inventory` |
-| `DoorStuff::_CONSTRUCTOR` | `function(self: DoorStuff, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, parent: Building, defaultVal: DoorStuff) -> DoorStuff` |
-| `ProductionBuilding::_CONSTRUCTOR` | `function(self: ProductionBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ProductionBuilding) -> ProductionBuilding` |
-| `CraftingBuilding::_CONSTRUCTOR` | `function(self: CraftingBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: CraftingBuilding) -> CraftingBuilding` |
-| `FarmBuilding::_CONSTRUCTOR` | `function(self: FarmBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FarmBuilding) -> FarmBuilding` |
-| `TurretBuilding::_CONSTRUCTOR` | `function(self: TurretBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TurretBuilding) -> TurretBuilding` |
-| `FurnaceBuilding::_CONSTRUCTOR` | `function(self: FurnaceBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: FurnaceBuilding) -> FurnaceBuilding` |
-| `ResearchBuilding::_CONSTRUCTOR` | `function(self: ResearchBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ResearchBuilding) -> ResearchBuilding` |
-| `WallBuilding::_CONSTRUCTOR` | `function(self: WallBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, furnitureOf: Layout, town: hand, handle: hand, defaultVal: WallBuilding) -> WallBuilding` |
-| `PreviewBuilding::_CONSTRUCTOR` | `function(self: PreviewBuilding, data: GameData, furnitureParent: Building, defaultVal: PreviewBuilding) -> PreviewBuilding` |
-| `UseableStuff::_CONSTRUCTOR` | `function(self: UseableStuff, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: UseableStuff) -> UseableStuff` |
-| `StorageBuilding::_CONSTRUCTOR` | `function(self: StorageBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: StorageBuilding) -> StorageBuilding` |
-| `LightBuilding::_CONSTRUCTOR` | `function(self: LightBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: LightBuilding) -> LightBuilding` |
-| `GeneratorBuilding::_CONSTRUCTOR` | `function(self: GeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: GeneratorBuilding) -> GeneratorBuilding` |
-| `WindGeneratorBuilding::_CONSTRUCTOR` | `function(self: WindGeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: WindGeneratorBuilding) -> WindGeneratorBuilding` |
-| `GatewayBuilding::_CONSTRUCTOR` | `function(self: GatewayBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, defaultVal: GatewayBuilding) -> GatewayBuilding` |
-| `TortureBuilding::_CONSTRUCTOR` | `function(self: TortureBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TortureBuilding) -> TortureBuilding` |
-| `RainCollectorBuilding::_CONSTRUCTOR` | `function(self: RainCollectorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: RainCollectorBuilding) -> RainCollectorBuilding` |
-| `CharacterHuman::_CONSTRUCTOR` | `function(self: CharacterHuman, data: GameData, faction: Faction, handle: hand, defaultVal: CharacterHuman) -> CharacterHuman` |
-| `CharacterAnimal::_CONSTRUCTOR` | `function(self: CharacterAnimal, data: GameData, faction: Faction, handle: hand, age: number, defaultVal: CharacterAnimal) -> CharacterAnimal` |
-| `CharStats::_CONSTRUCTOR` | `function(self: CharStats, defaultVal: CharStats) -> CharStats` |
-| `CharBody::_CONSTRUCTOR` | `function(self: CharBody, defaultVal: CharBody) -> CharBody` |
-| `CharMovement::_CONSTRUCTOR` | `function(self: CharMovement, defaultVal: CharMovement) -> CharMovement` |
-| `CombatClass::_CONSTRUCTOR` | `function(self: CombatClass, movement: CharMovement, ai: lightuserdata, anim: lightuserdata, character: Character, stats: CharStats, medical: MedicalSystem, defaultVal: CombatClass) -> CombatClass` |
-| `Town::_CONSTRUCTOR` | `function(self: Town, data: GameData, defaultVal: Town) -> Town` |
-| `TownBase::_CONSTRUCTOR` | `function(self: TownBase, data: GameData, defaultVal: TownBase) -> TownBase` |
-| `FactionLeader::_CONSTRUCTOR` | `function(self: FactionLeader, faction: Faction, defaultVal: FactionLeader) -> FactionLeader` |
-| `FactionRelations::_CONSTRUCTOR` | `function(self: FactionRelations, defaultVal: FactionRelations) -> FactionRelations` |
-| `FactionUniqueSquadManager::_CONSTRUCTOR` | `function(self: FactionUniqueSquadManager, defaultVal: FactionUniqueSquadManager) -> FactionUniqueSquadManager` |
-| `ProsperityManager::_CONSTRUCTOR` | `function(self: ProsperityManager, defaultVal: ProsperityManager) -> ProsperityManager` |
-| `InventoryItemBase::_CONSTRUCTOR` | `function(self: InventoryItemBase, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: InventoryItemBase) -> InventoryItemBase` |
-| `MedicalSystem::_CONSTRUCTOR` | `function(self: MedicalSystem, defaultVal: MedicalSystem) -> MedicalSystem` |
-| `CombatTechniqueData::_CONSTRUCTOR` | `function(self: CombatTechniqueData, data: GameData, defaultVal: CombatTechniqueData) -> CombatTechniqueData` |
-| `Dialogue::_CONSTRUCTOR` | `function(self: Dialogue, defaultVal: Dialogue) -> Dialogue` |
-| `DialogLineData::_CONSTRUCTOR` | `function(self: DialogLineData, data: GameData, defaultVal: DialogLineData) -> DialogLineData` |
-| `GameData::_CONSTRUCTOR` | `function(self: GameData, defaultVal: GameData) -> GameData` |
-| `Tasker::_CONSTRUCTOR` | `function(self: Tasker, defaultVal: Tasker) -> Tasker` |
-| `AppearanceManager::_CONSTRUCTOR` | `function(self: AppearanceManager, defaultVal: AppearanceManager) -> AppearanceManager` |
-| `CombatMovementController::_CONSTRUCTOR` | `function(self: CombatMovementController, defaultVal: CombatMovementController) -> CombatMovementController` |
-| `WorldEventStateQuery::_CONSTRUCTOR` | `function(self: WorldEventStateQuery, defaultVal: WorldEventStateQuery) -> WorldEventStateQuery` |
-| `DialogueWindow::_CONSTRUCTOR` | `function(self: DialogueWindow, defaultVal: DialogueWindow) -> DialogueWindow` |
+| `Inventory::getBestFoodItem` | `function(self: Inventory, race: Character, defaultVal: Item) -> Item` |
+| `Inventory::getSectionOfType` | `function(self: Inventory, type: integer, defaultVal: InventorySection) -> InventorySection` |
+
+### InventoryGUI (28)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
 | `InventoryGUI::_CONSTRUCTOR` | `function(self: InventoryGUI, inventory: Inventory, layout: InventoryLayout, callback: RootObject, defaultVal: InventoryGUI) -> InventoryGUI` |
-| `GenericFixedInventoryLayout::_CONSTRUCTOR` | `function(self: GenericFixedInventoryLayout, defaultVal: GenericFixedInventoryLayout) -> GenericFixedInventoryLayout` |
-| `GameWorld::_CONSTRUCTOR` | `function(self: GameWorld, defaultVal: GameWorld) -> GameWorld` |
-| `PlayerInterface::_CONSTRUCTOR` | `function(self: PlayerInterface, defaultVal: PlayerInterface) -> PlayerInterface` |
-| `InputHandler::_CONSTRUCTOR` | `function(self: InputHandler, defaultVal: InputHandler) -> InputHandler` |
-| `RootObjectFactory::_CONSTRUCTOR` | `function(self: RootObjectFactory, defaultVal: RootObjectFactory) -> RootObjectFactory` |
-| `FactionManager::_CONSTRUCTOR` | `function(self: FactionManager, defaultVal: FactionManager) -> FactionManager` |
-| `FactionWarMgr::_CONSTRUCTOR` | `function(self: FactionWarMgr, faction: Faction, defaultVal: FactionWarMgr) -> FactionWarMgr` |
-| `BountyManager::_CONSTRUCTOR` | `function(self: BountyManager, character: Character, defaultVal: BountyManager) -> BountyManager` |
-| `ZoneMap::_CONSTRUCTOR` | `function(self: ZoneMap, defaultVal: ZoneMap) -> ZoneMap` |
-| `ZoneManager::_CONSTRUCTOR` | `function(self: ZoneManager, defaultVal: ZoneManager) -> ZoneManager` |
-| `Character::AttachedArrowManager::_CONSTRUCTOR` | `function(self: Character::AttachedArrowManager, defaultVal: Character::AttachedArrowManager) -> Character::AttachedArrowManager` |
-| `LimbsInventoryLayout::_CONSTRUCTOR` | `function(self: LimbsInventoryLayout, character: Character, defaultVal: LimbsInventoryLayout) -> LimbsInventoryLayout` |
-| `RobotLimbs::_CONSTRUCTOR` | `function(self: RobotLimbs, character: Character, defaultVal: RobotLimbs) -> RobotLimbs` |
-| `ShopTrader::_CONSTRUCTOR` | `function(self: ShopTrader, character: Character, defaultVal: ShopTrader) -> ShopTrader` |
-| `RootObjectBase::_CONSTRUCTOR` | `function(self: RootObjectBase, data: GameData, faction: Faction, handle: hand, defaultVal: RootObjectBase) -> RootObjectBase` |
-| `RootObject::_CONSTRUCTOR` | `function(self: RootObject, data: GameData, faction: Faction, handle: hand, defaultVal: RootObject) -> RootObject` |
-| `UseableStuff::_NV_getCostToUse` | `function(self: UseableStuff, who: Character, defaultVal: integer) -> integer` |
-| `UseableStuff::_NV_couldIOperate` | `function(self: UseableStuff, userHandle: hand, defaultVal: boolean) -> boolean` |
-| `UseableStuff::_NV_dontNeedWorkRightNow` | `function(self: UseableStuff, defaultVal: boolean) -> boolean` |
-| `Building::_NV_addDismantleProgress` | `function(self: Building, amount: number, defaultVal: boolean) -> boolean` |
-| `Building::_NV_canUpgrade` | `function(self: Building, defaultVal: GameData) -> GameData` |
-| `DoorStuff::openDoor` | `function(self: DoorStuff, defaultVal: boolean) -> boolean` |
-| `DoorStuff::closeDoor` | `function(self: DoorStuff, defaultVal: boolean) -> boolean` |
-| `FarmBuilding::destroyAPlant` | `function(self: FarmBuilding, defaultVal: boolean) -> boolean` |
-| `UseableStuff::takePowerFrom` | `function(self: UseableStuff, amount: number, frameTime: number, defaultVal: number) -> number` |
-| `PreviewBuilding::_NV_placementVerification` | `function(self: PreviewBuilding, defaultVal: boolean) -> boolean` |
-| `CharacterAnimal::_NV_getCurrentWeapon` | `function(self: CharacterAnimal, defaultVal: Weapon) -> Weapon` |
-| `CharacterAnimal::_NV_getThePreferredWeapon` | `function(self: CharacterAnimal, defaultVal: Weapon) -> Weapon` |
-| `CharacterAnimal::_NV_getAge` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
-| `CharacterAnimal::_NV_getAgeInverse` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
-| `CharacterAnimal::_NV_getAge0to1` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
-| `CharacterAnimal::_NV_getDefaultTaskRepertoireEnum` | `function(self: CharacterAnimal, defaultVal: integer) -> integer` |
-| `CharacterAnimal::_NV_canGoIndoors` | `function(self: CharacterAnimal, building: Building, defaultVal: boolean) -> boolean` |
-| `CharacterAnimal::_NV_getSmellHuntingThresholdBlood` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
-| `CharacterAnimal::_NV_getSmellHuntingThresholdEggs` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
-| `CharacterAnimal::_NV_getHPMultiplier` | `function(self: CharacterAnimal, defaultVal: number) -> number` |
-| `GUIWindow::_NV_getWidth` | `function(self: GUIWindow, defaultVal: integer) -> integer` |
-| `GUIWindow::_NV_getHeight` | `function(self: GUIWindow, defaultVal: integer) -> integer` |
-| `GUIWindow::_NV_getWidthReal` | `function(self: GUIWindow, defaultVal: number) -> number` |
-| `GUIWindow::_NV_getHeightReal` | `function(self: GUIWindow, defaultVal: number) -> number` |
-| `GUIWindow::_NV_isVisible` | `function(self: GUIWindow, defaultVal: boolean) -> boolean` |
-| `CharacterStatsWindow::_NV_isVisible` | `function(self: CharacterStatsWindow, defaultVal: boolean) -> boolean` |
-| `CharacterStatsWindow::sumStats` | `function(self: CharacterStatsWindow, defaultVal: integer) -> integer` |
-| `CharacterStatsWindow::getStatsPanel` | `function(self: CharacterStatsWindow, group: integer, defaultVal: DatapanelGUI) -> DatapanelGUI` |
-| `CharacterStatsWindow::getStat` | `function(type: integer, defaultVal: CharacterStatsWindow::Stat) -> CharacterStatsWindow::Stat` |
-| `CharacterStatsWindow::getStatById` | `function(id: string, defaultVal: CharacterStatsWindow::Stat) -> CharacterStatsWindow::Stat` |
-| `DatapanelGUI::_NV_getLine` | `function(self: DatapanelGUI, key: string, cat: integer, defaultVal: DataPanelLine) -> DataPanelLine` |
-| `DatapanelGUI::lineExists` | `function(self: DatapanelGUI, key: string, cat: integer, defaultVal: boolean) -> boolean` |
-| `DatapanelGUI::getNumLines` | `function(self: DatapanelGUI, cat: integer, defaultVal: integer) -> integer` |
-| `DatapanelGUI::getLineByNum` | `function(self: DatapanelGUI, cat: integer, i: integer, defaultVal: DataPanelLine) -> DataPanelLine` |
-| `DatapanelGUI::getNextVerticalPos` | `function(self: DatapanelGUI, category: integer, defaultVal: number) -> number` |
-| `DatapanelGUI::dataExists` | `function(self: DatapanelGUI, cat: integer, name: string, defaultVal: boolean) -> boolean` |
-| `DataPanelLine::_NV_getBottom` | `function(self: DataPanelLine, defaultVal: integer) -> integer` |
-| `DataPanelLine_Slider::getValue` | `function(self: DataPanelLine_Slider, defaultVal: number) -> number` |
-| `DataPanelLine_DropBox::getSelectedValue` | `function(self: DataPanelLine_DropBox, defaultVal: integer) -> integer` |
-| `DataPanelLine_KeyConfig::oldKey` | `function(self: DataPanelLine_KeyConfig, defaultVal: integer) -> integer` |
-| `ForgottenGUI::getTopOfScreenMessagePosition` | `function(self: ForgottenGUI, defaultVal: number) -> number` |
-| `ForgottenGUI::isLoadingMessageVisible` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::isLoading` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::isPaused` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::inDialogue` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::hasModalMessage` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::getInDialogue` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::getToolTip` | `function(self: ForgottenGUI, defaultVal: ToolTip) -> ToolTip` |
-| `ForgottenGUI::isStatsWindowOpen` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::getInventoryWindow` | `function(self: ForgottenGUI, who: hand, defaultVal: InventoryGUI) -> InventoryGUI` |
-| `ForgottenGUI::getNumOpenInventoryWindows` | `function(self: ForgottenGUI, defaultVal: integer) -> integer` |
-| `ForgottenGUI::getInventoryWindowWithMouse` | `function(self: ForgottenGUI, defaultVal: InventoryGUI) -> InventoryGUI` |
-| `ForgottenGUI::hasInventoryWindowOpen` | `function(self: ForgottenGUI, obj: hand, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::isAnyInventoryWindowOpen` | `function(self: ForgottenGUI, defaultVal: boolean) -> boolean` |
-| `ForgottenGUI::widgetHasMouse` | `function(self: ForgottenGUI, w: Widget, defaultVal: boolean) -> boolean` |
-| `NewGameOptionsWindow::getVisible` | `function(self: NewGameOptionsWindow, defaultVal: boolean) -> boolean` |
-| `InventorySectionGUI::hasMouse` | `function(self: InventorySectionGUI, defaultVal: boolean) -> boolean` |
-| `InventorySectionGUI::getBestPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, item: Item, slot: types::TPoint<int>, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::TradeResult::operator==` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::TradeResult::operator!=` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::InventoryTradeData::isValid` | `function(self: InventoryGUI::InventoryTradeData, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::lockedItemCheck` | `function(item: LockedArmour, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::getTradingTown` | `function(defaultVal: Town) -> Town` |
-| `InventoryGUI::canDropMouseItemWithoutPaying` | `function(cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::_NV_isVisible` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::getBackpack` | `function(self: InventoryGUI, defaultVal: ContainerItem) -> ContainerItem` |
-| `InventoryGUI::_NV_getInventory` | `function(self: InventoryGUI, defaultVal: Inventory) -> Inventory` |
-| `InventoryGUI::hasSameOwner` | `function(self: InventoryGUI, other: InventoryGUI, defaultVal: boolean) -> boolean` |
 | `InventoryGUI::_NV_getCallbackCharacter` | `function(self: InventoryGUI, defaultVal: Character) -> Character` |
 | `InventoryGUI::_NV_getCallbackObject` | `function(self: InventoryGUI, defaultVal: RootObject) -> RootObject` |
-| `InventoryGUI::getSelectedItem` | `function(self: InventoryGUI, sectionName: string, defaultVal: Item) -> Item` |
+| `InventoryGUI::_NV_getInventory` | `function(self: InventoryGUI, defaultVal: Inventory) -> Inventory` |
+| `InventoryGUI::_NV_isVisible` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::canDropMouseItemWithoutPaying` | `function(cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::fencingConfirmation` | `function(self: InventoryGUI, item: Item, thief: RootObject, fence: Character, sectionName: string, mouse: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::getBackpack` | `function(self: InventoryGUI, defaultVal: ContainerItem) -> ContainerItem` |
 | `InventoryGUI::getMouseItem` | `function(self: InventoryGUI, defaultVal: Item) -> Item` |
-| `InventoryGUI::takeCertainAmountFrom` | `function(self: InventoryGUI, baseItem: Item, amount: integer, defaultVal: Item) -> Item` |
+| `InventoryGUI::getNPCTrader` | `function(defaultVal: Character) -> Character` |
+| `InventoryGUI::getPlayerTradeCharacter` | `function(self: InventoryGUI, defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::getSelectedItem` | `function(self: InventoryGUI, sectionName: string, defaultVal: Item) -> Item` |
+| `InventoryGUI::getTraderPriceMultiplier` | `function(defaultVal: number) -> number` |
+| `InventoryGUI::getTradingTown` | `function(defaultVal: Town) -> Town` |
+| `InventoryGUI::hasMouse` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::hasSameOwner` | `function(self: InventoryGUI, other: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isStealing` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isTradingAndStealing_static` | `function(defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::isTradingForMoney` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::isTradingForMoney_static` | `function(defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::isWithinRangeToTrade` | `function(self: InventoryGUI, otherOwner: RootObject, stealing: boolean, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::lockedItemCheck` | `function(item: LockedArmour, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::makeIconForItem` | `function(item: Item, x: integer, y: integer, defaultVal: InventoryIcon) -> InventoryIcon` |
 | `InventoryGUI::pickupItemToMouse` | `function(self: InventoryGUI, sectionName: string, defaultVal: boolean) -> boolean` |
 | `InventoryGUI::placeItemFromMouse` | `function(self: InventoryGUI, sectionName: string, mousePos: types::TPoint<int>, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::isTradingForMoney` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::isStealing` | `function(self: InventoryGUI, cameFrom: InventoryGUI, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::isWithinRangeToTrade` | `function(self: InventoryGUI, otherOwner: RootObject, stealing: boolean, defaultVal: boolean) -> boolean` |
 | `InventoryGUI::setItemToPlayerPortrait` | `function(self: InventoryGUI, item: Item, character: Character, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::fencingConfirmation` | `function(self: InventoryGUI, item: Item, thief: RootObject, fence: Character, sectionName: string, mouse: types::TPoint<int>, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::getPlayerTradeCharacter` | `function(self: InventoryGUI, defaultVal: RootObject) -> RootObject` |
+| `InventoryGUI::takeCertainAmountFrom` | `function(self: InventoryGUI, baseItem: Item, amount: integer, defaultVal: Item) -> Item` |
 | `InventoryGUI::tryToEquip` | `function(self: InventoryGUI, item: Item, replace: boolean, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::hasMouse` | `function(self: InventoryGUI, defaultVal: boolean) -> boolean` |
-| `InventoryGUI::getNPCTrader` | `function(defaultVal: Character) -> Character` |
-| `InventoryGUI::isTradingForMoney_static` | `function(defaultVal: RootObject) -> RootObject` |
-| `InventoryGUI::isTradingAndStealing_static` | `function(defaultVal: RootObject) -> RootObject` |
-| `InventoryGUI::getTraderPriceMultiplier` | `function(defaultVal: number) -> number` |
-| `InventoryGUI::makeIconForItem` | `function(item: Item, x: integer, y: integer, defaultVal: InventoryIcon) -> InventoryIcon` |
+
+### InventoryGUI::InventoryTradeData (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `InventoryGUI::InventoryTradeData::isValid` | `function(self: InventoryGUI::InventoryTradeData, defaultVal: boolean) -> boolean` |
+
+### InventoryGUI::TradeResult (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `InventoryGUI::TradeResult::operator!=` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
+| `InventoryGUI::TradeResult::operator==` | `function(self: InventoryGUI::TradeResult, other: InventoryGUI::TradeResult, defaultVal: boolean) -> boolean` |
+
+### InventoryItemBase (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `InventoryItemBase::_CONSTRUCTOR` | `function(self: InventoryItemBase, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: InventoryItemBase) -> InventoryItemBase` |
+| `InventoryItemBase::getValueSingle` | `function(self: InventoryItemBase, isPlayer: boolean, defaultVal: integer) -> integer` |
+
+### InventoryLayout (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
 | `InventoryLayout::_NV_getDatapanel` | `function(self: InventoryLayout, defaultVal: DatapanelGUI) -> DatapanelGUI` |
 | `InventoryLayout::createSectionGUI` | `function(self: InventoryLayout, section: InventorySection, defaultVal: InventorySectionGUI) -> InventorySectionGUI` |
+
+### InventorySectionGUI (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `InventorySectionGUI::getBestPositionSlot` | `function(self: InventorySectionGUI, position: types::TPoint<int>, section: InventorySection, item: Item, slot: types::TPoint<int>, defaultVal: boolean) -> boolean` |
+| `InventorySectionGUI::hasMouse` | `function(self: InventorySectionGUI, defaultVal: boolean) -> boolean` |
+
+### Item (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Item::_CONSTRUCTOR` | `function(self: Item, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, defaultVal: Item) -> Item` |
+
+### LightBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `LightBuilding::_CONSTRUCTOR` | `function(self: LightBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: LightBuilding) -> LightBuilding` |
+
+### LimbsInventoryLayout (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `LimbsInventoryLayout::_CONSTRUCTOR` | `function(self: LimbsInventoryLayout, character: Character, defaultVal: LimbsInventoryLayout) -> LimbsInventoryLayout` |
+
+### LockedArmour (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `LockedArmour::_CONSTRUCTOR` | `function(self: LockedArmour, baseData: GameData, materialData: GameData, handle: hand, uniformFlag: Faction, level: integer, defaultVal: LockedArmour) -> LockedArmour` |
+
+### MainBarGUI (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
 | `MainBarGUI::_NV_getToolTip` | `function(self: MainBarGUI, defaultVal: ToolTip) -> ToolTip` |
 | `MainBarGUI::getDatapanel` | `function(self: MainBarGUI, id: string, defaultVal: DatapanelGUI) -> DatapanelGUI` |
-| `FactionsScreen::FactionRelationsLine::LessSort::operator()` | `function(comparator: lightuserdata, left: FactionsScreen::FactionRelationsLine, right: FactionsScreen::FactionRelationsLine, defaultVal: boolean) -> boolean` |
-| `FactionsScreen::getVisible` | `function(self: FactionsScreen, defaultVal: boolean) -> boolean` |
-| `DialogueWindow::getVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
-| `DialogueWindow::_NV_isVisible` | `function(self: DialogueWindow, defaultVal: boolean) -> boolean` |
-| `DialogueWindow::getTop` | `function(self: DialogueWindow, defaultVal: integer) -> integer` |
-| `SplashScreen::getState` | `function(self: SplashScreen, defaultVal: integer) -> integer` |
-| `SplashScreen::getEnded` | `function(self: SplashScreen, defaultVal: boolean) -> boolean` |
-| `OrdersPanel::notifyStartDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
-| `OrdersPanel::notifyRequestDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
+
+### ManagementScreen (4)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ManagementScreen::getCurrentTab` | `function(self: ManagementScreen, defaultVal: number) -> number` |
+| `ManagementScreen::getSingleton` | `function(defaultVal: ManagementScreen) -> ManagementScreen` |
+| `ManagementScreen::getVisible` | `function(self: ManagementScreen, defaultVal: boolean) -> boolean` |
+| `ManagementScreen::researchValidateOrder` | `function(self: ManagementScreen, first: integer, second: integer, defaultVal: boolean) -> boolean` |
+
+### ManagementScreen::TechItemViewData (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ManagementScreen::TechItemViewData::getProgress` | `function(self: ManagementScreen::TechItemViewData, defaultVal: number) -> number` |
+
+### MapScreen (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `MapScreen::getMouseWorldPosition` | `function(self: MapScreen, position: Vector3, defaultVal: boolean) -> boolean` |
+| `MapScreen::getVisible` | `function(self: MapScreen, defaultVal: boolean) -> boolean` |
+
+### MapScreen::MapMarkerCharacter (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `MapScreen::MapMarkerCharacter::getVisible` | `function(self: MapScreen::MapMarkerCharacter, defaultVal: boolean) -> boolean` |
+
+### MapScreen::MapMarkerTown (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `MapScreen::MapMarkerTown::getVisible` | `function(self: MapScreen::MapMarkerTown, defaultVal: boolean) -> boolean` |
+
+### MedicalSystem (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `MedicalSystem::_CONSTRUCTOR` | `function(self: MedicalSystem, defaultVal: MedicalSystem) -> MedicalSystem` |
+| `MedicalSystem::canGetUpWakeUp` | `function(self: MedicalSystem, defaultVal: boolean) -> boolean` |
+
+### NewGameOptionsWindow (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `NewGameOptionsWindow::getVisible` | `function(self: NewGameOptionsWindow, defaultVal: boolean) -> boolean` |
+
+### OptionsWindow (3)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
 | `OptionsWindow::getSingleton` | `function(defaultVal: OptionsWindow) -> OptionsWindow` |
 | `OptionsWindow::isVisible` | `function(self: OptionsWindow, defaultVal: boolean) -> boolean` |
 | `OptionsWindow::waitingForKey` | `function(self: OptionsWindow, defaultVal: boolean) -> boolean` |
-| `MapScreen::MapMarkerTown::getVisible` | `function(self: MapScreen::MapMarkerTown, defaultVal: boolean) -> boolean` |
-| `MapScreen::MapMarkerCharacter::getVisible` | `function(self: MapScreen::MapMarkerCharacter, defaultVal: boolean) -> boolean` |
-| `MapScreen::getVisible` | `function(self: MapScreen, defaultVal: boolean) -> boolean` |
-| `MapScreen::getMouseWorldPosition` | `function(self: MapScreen, position: Vector3, defaultVal: boolean) -> boolean` |
-| `ManagementScreen::getSingleton` | `function(defaultVal: ManagementScreen) -> ManagementScreen` |
-| `ManagementScreen::getVisible` | `function(self: ManagementScreen, defaultVal: boolean) -> boolean` |
-| `ManagementScreen::getCurrentTab` | `function(self: ManagementScreen, defaultVal: number) -> number` |
-| `ManagementScreen::TechItemViewData::getProgress` | `function(self: ManagementScreen::TechItemViewData, defaultVal: number) -> number` |
-| `ManagementScreen::researchValidateOrder` | `function(self: ManagementScreen, first: integer, second: integer, defaultVal: boolean) -> boolean` |
-| `TitleScreen::getSingleton` | `function(defaultVal: TitleScreen) -> TitleScreen` |
+
+### OrdersPanel (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `OrdersPanel::notifyRequestDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
+| `OrdersPanel::notifyStartDropOrder` | `function(self: OrdersPanel, sender: BaseLayout, info: lightuserdata, defaultVal: boolean) -> boolean` |
+
+### Ownerships (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Ownerships::canIUseThisBuilding` | `function(self: Ownerships, building: Building, character: Character, defaultVal: boolean) -> boolean` |
+
+### Platoon (3)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Platoon::_CONSTRUCTOR` | `function(self: Platoon, faction: Faction, squadTemplate: GameData, platoonState: GameData, position: Vector3, persistent: boolean, defaultVal: Platoon) -> Platoon` |
+| `Platoon::iBuyIllegalGoods` | `function(self: Platoon, defaultVal: boolean) -> boolean` |
+| `Platoon::iBuyStolenGoods` | `function(self: Platoon, item: Item, defaultVal: boolean) -> boolean` |
+
+### PlayerInterface (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `PlayerInterface::_CONSTRUCTOR` | `function(self: PlayerInterface, defaultVal: PlayerInterface) -> PlayerInterface` |
+
+### PreviewBuilding (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `PreviewBuilding::_CONSTRUCTOR` | `function(self: PreviewBuilding, data: GameData, furnitureParent: Building, defaultVal: PreviewBuilding) -> PreviewBuilding` |
+| `PreviewBuilding::_NV_placementVerification` | `function(self: PreviewBuilding, defaultVal: boolean) -> boolean` |
+
+### ProductionBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ProductionBuilding::_CONSTRUCTOR` | `function(self: ProductionBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ProductionBuilding) -> ProductionBuilding` |
+
+### ProsperityManager (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ProsperityManager::_CONSTRUCTOR` | `function(self: ProsperityManager, defaultVal: ProsperityManager) -> ProsperityManager` |
+
+### RainCollectorBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `RainCollectorBuilding::_CONSTRUCTOR` | `function(self: RainCollectorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: RainCollectorBuilding) -> RainCollectorBuilding` |
+
+### ResearchBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ResearchBuilding::_CONSTRUCTOR` | `function(self: ResearchBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: ResearchBuilding) -> ResearchBuilding` |
+
+### RobotLimbs (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `RobotLimbs::_CONSTRUCTOR` | `function(self: RobotLimbs, character: Character, defaultVal: RobotLimbs) -> RobotLimbs` |
+
+### RootObject (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `RootObject::_CONSTRUCTOR` | `function(self: RootObject, data: GameData, faction: Faction, handle: hand, defaultVal: RootObject) -> RootObject` |
+
+### RootObjectBase (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `RootObjectBase::_CONSTRUCTOR` | `function(self: RootObjectBase, data: GameData, faction: Faction, handle: hand, defaultVal: RootObjectBase) -> RootObjectBase` |
+
+### RootObjectFactory (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `RootObjectFactory::_CONSTRUCTOR` | `function(self: RootObjectFactory, defaultVal: RootObjectFactory) -> RootObjectFactory` |
+
+### ShopTrader (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ShopTrader::_CONSTRUCTOR` | `function(self: ShopTrader, character: Character, defaultVal: ShopTrader) -> ShopTrader` |
+
+### SplashScreen (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `SplashScreen::getEnded` | `function(self: SplashScreen, defaultVal: boolean) -> boolean` |
+| `SplashScreen::getState` | `function(self: SplashScreen, defaultVal: integer) -> integer` |
+
+### StorageBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `StorageBuilding::_CONSTRUCTOR` | `function(self: StorageBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: StorageBuilding) -> StorageBuilding` |
+
+### Sword (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Sword::_CONSTRUCTOR` | `function(self: Sword, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Sword) -> Sword` |
+
+### Tasker (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Tasker::_CONSTRUCTOR` | `function(self: Tasker, defaultVal: Tasker) -> Tasker` |
+
+### TitleScreen (2)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
 | `TitleScreen::closeTheOtherBits` | `function(self: TitleScreen, defaultVal: boolean) -> boolean` |
+| `TitleScreen::getSingleton` | `function(defaultVal: TitleScreen) -> TitleScreen` |
+
+### TortureBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `TortureBuilding::_CONSTRUCTOR` | `function(self: TortureBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TortureBuilding) -> TortureBuilding` |
+
+### Town (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Town::_CONSTRUCTOR` | `function(self: Town, data: GameData, defaultVal: Town) -> Town` |
+
+### TownBase (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `TownBase::_CONSTRUCTOR` | `function(self: TownBase, data: GameData, defaultVal: TownBase) -> TownBase` |
+
+### TurretBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `TurretBuilding::_CONSTRUCTOR` | `function(self: TurretBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: TurretBuilding) -> TurretBuilding` |
+
+### UseableStuff (5)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `UseableStuff::_CONSTRUCTOR` | `function(self: UseableStuff, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: UseableStuff) -> UseableStuff` |
+| `UseableStuff::_NV_couldIOperate` | `function(self: UseableStuff, userHandle: hand, defaultVal: boolean) -> boolean` |
+| `UseableStuff::_NV_dontNeedWorkRightNow` | `function(self: UseableStuff, defaultVal: boolean) -> boolean` |
+| `UseableStuff::_NV_getCostToUse` | `function(self: UseableStuff, who: Character, defaultVal: integer) -> integer` |
+| `UseableStuff::takePowerFrom` | `function(self: UseableStuff, amount: number, frameTime: number, defaultVal: number) -> number` |
+
+### WallBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `WallBuilding::_CONSTRUCTOR` | `function(self: WallBuilding, dat: GameData, position: Vector3, orientation: Quaternion, participant: Faction, furnitureOf: Layout, town: hand, handle: hand, defaultVal: WallBuilding) -> WallBuilding` |
+
+### Weapon (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `Weapon::_CONSTRUCTOR` | `function(self: Weapon, baseData: GameData, companyData: GameData, materialData: GameData, handle: hand, level: integer, defaultVal: Weapon) -> Weapon` |
+
+### WindGeneratorBuilding (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `WindGeneratorBuilding::_CONSTRUCTOR` | `function(self: WindGeneratorBuilding, data: GameData, position: Vector3, orientation: Quaternion, participant: Faction, town: hand, handle: hand, isFurnitureOf: Layout, indoors: Building, defaultVal: WindGeneratorBuilding) -> WindGeneratorBuilding` |
+
+### WorldEventStateQuery (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `WorldEventStateQuery::_CONSTRUCTOR` | `function(self: WorldEventStateQuery, defaultVal: WorldEventStateQuery) -> WorldEventStateQuery` |
+
+### ZoneManager (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ZoneManager::_CONSTRUCTOR` | `function(self: ZoneManager, defaultVal: ZoneManager) -> ZoneManager` |
+
+### ZoneMap (1)
+
+| Event Name | Lua Signature & Expected Return |
+| :--- | :--- |
+| `ZoneMap::_CONSTRUCTOR` | `function(self: ZoneMap, defaultVal: ZoneMap) -> ZoneMap` |
 
 ## Detailed Callback Documentation
 
-### `ActivePlatoon::_CONSTRUCTOR`
+### ActivePlatoon
+
+#### `ActivePlatoon::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, platoon, doc, faction, gameData, currentGoal, posOffset, defaultVal)`
@@ -968,7 +1996,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ActivePlatoon`
 - **Returns**: `ActivePlatoon`
 
-### `ActivePlatoon::_NV_addActiveObject`
+#### `ActivePlatoon::_NV_addActiveObject`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character)`
@@ -976,7 +2004,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ActivePlatoon`
   - `character`: `RootObject`
 
-### `ActivePlatoon::_NV_removeObject`
+#### `ActivePlatoon::_NV_removeObject`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character)`
@@ -984,7 +2012,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ActivePlatoon`
   - `character`: `RootObject`
 
-### `ActivePlatoon::setSquadLeader`
+#### `ActivePlatoon::setSquadLeader`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, leader)`
@@ -992,7 +2020,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ActivePlatoon`
   - `leader`: `Character`
 
-### `AppearanceManager::_CONSTRUCTOR`
+### AppearanceManager
+
+#### `AppearanceManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1001,7 +2031,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `AppearanceManager`
 - **Returns**: `AppearanceManager`
 
-### `Armour::_CONSTRUCTOR`
+### Armour
+
+#### `Armour::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, materialData, handle, uniformFlag, level, defaultVal)`
@@ -1015,7 +2047,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Armour`
 - **Returns**: `Armour`
 
-### `BackpackInventoryLayout::_CONSTRUCTOR`
+### BackpackInventoryLayout
+
+#### `BackpackInventoryLayout::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, standAlone)`
@@ -1023,14 +2057,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `BackpackInventoryLayout`
   - `standAlone`: `boolean`
 
-### `BackpackInventoryLayout::_DESTRUCTOR`
+#### `BackpackInventoryLayout::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `BackpackInventoryLayout`
 
-### `Bounty::_CONSTRUCTOR`
+### Bounty
+
+#### `Bounty::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1039,7 +2075,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Bounty`
 - **Returns**: `Bounty`
 
-### `BountyManager::_CONSTRUCTOR`
+### BountyManager
+
+#### `BountyManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, character, defaultVal)`
@@ -1049,23 +2087,25 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `BountyManager`
 - **Returns**: `BountyManager`
 
-### `BountyManager::assignBountyForCrimes`
+#### `BountyManager::assignBountyForCrimes`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, enforcer)`
 - **Parameters**:
   - `self`: `BountyManager`
   - `enforcer`: `Faction`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `BountyManager::clearBounty`
+#### `BountyManager::clearBounty`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, enforcer)`
 - **Parameters**:
   - `self`: `BountyManager`
   - `enforcer`: `Faction`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `BountyManager::notifyCrimeWitnessed`
+#### `BountyManager::notifyCrimeWitnessed`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction, againstWho, expiryTime, crimeType)`
@@ -1075,8 +2115,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `againstWho`: `hand`
   - `expiryTime`: `integer`
   - `crimeType`: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `BountyManager::notifyPlayerClaimBounty`
+#### `BountyManager::notifyPlayerClaimBounty`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction)`
@@ -1084,15 +2125,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `BountyManager`
   - `faction`: `Faction`
 
-### `BountyManager::notifyStartPrisonSentence`
+#### `BountyManager::notifyStartPrisonSentence`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, lawFaction)`
 - **Parameters**:
   - `self`: `BountyManager`
   - `lawFaction`: `Faction`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `BountyManager::setCrime`
+#### `BountyManager::setCrime`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, crime, againstFaction, againstHandle, accepted)`
@@ -1102,8 +2144,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `againstFaction`: `Faction`
   - `againstHandle`: `hand`
   - `accepted`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `BountyManager::unfairAddToBounty`
+#### `BountyManager::unfairAddToBounty`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, enforcer, amount)`
@@ -1112,15 +2155,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `enforcer`: `Faction`
   - `amount`: `integer`
 
-### `BuildModeWindow::confirm`
+### Building
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, widget)`
-- **Parameters**:
-  - `self`: `BuildModeWindow`
-  - `widget`: `Widget`
-
-### `Building::_CONSTRUCTOR`
+#### `Building::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -1137,7 +2174,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Building`
 - **Returns**: `Building`
 
-### `Building::_NV_addConstructionProgress`
+#### `Building::_NV_addConstructionProgress`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, amount)`
@@ -1145,7 +2182,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `amount`: `number`
 
-### `Building::_NV_addDismantleProgress`
+#### `Building::_NV_addDismantleProgress`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, amount, defaultVal)`
@@ -1155,7 +2192,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `Building::_NV_buyMeCallback`
+#### `Building::_NV_buyMeCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -1163,7 +2200,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `result`: `integer`
 
-### `Building::_NV_canUpgrade`
+#### `Building::_NV_canUpgrade`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1172,7 +2209,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `GameData`
 - **Returns**: `GameData`
 
-### `Building::_NV_isForSale`
+#### `Building::_NV_isForSale`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1181,7 +2218,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `Building::_NV_isPublic`
+#### `Building::_NV_isPublic`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1189,8 +2226,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Building::_NV_loadFromSerialise`
+#### `Building::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, saveState)`
@@ -1198,21 +2236,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `saveState`: `GameSaveState`
 
-### `Building::_NV_notifyConstructionComplete`
+#### `Building::_NV_notifyConstructionComplete`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Building`
 
-### `Building::_NV_notifyConstructionDismantling`
+#### `Building::_NV_notifyConstructionDismantling`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Building`
 
-### `Building::_NV_notifyEffect`
+#### `Building::_NV_notifyEffect`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, effectType, weatherType, strength)`
@@ -1222,7 +2260,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `weatherType`: `integer`
   - `strength`: `number`
 
-### `Building::_NV_onBuildingLoaded`
+#### `Building::_NV_onBuildingLoaded`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `Building::onBuildingLoaded`
@@ -1230,7 +2268,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `Building`
 
-### `Building::_NV_serialise`
+#### `Building::_NV_serialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, container, refList)`
@@ -1239,7 +2277,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `container`: `GameDataContainer`
   - `refList`: `GameData`
 
-### `Building::_NV_setBroken`
+#### `Building::_NV_setBroken`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `Building::setBroken`
@@ -1248,7 +2286,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `broken`: `boolean`
 
-### `Building::_NV_setConstructionProgress`
+#### `Building::_NV_setConstructionProgress`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, amount)`
@@ -1256,7 +2294,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `amount`: `number`
 
-### `Building::_NV_setFaction`
+#### `Building::_NV_setFaction`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction, activePlatoon)`
@@ -1265,7 +2303,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `faction`: `Faction`
   - `activePlatoon`: `ActivePlatoon`
 
-### `Building::_NV_switchEffects`
+#### `Building::_NV_switchEffects`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -1273,7 +2311,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `on`: `boolean`
 
-### `Building::_NV_switchLights`
+#### `Building::_NV_switchLights`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -1281,7 +2319,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `on`: `boolean`
 
-### `Building::_NV_upgrade`
+#### `Building::_NV_upgrade`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -1289,7 +2327,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `line`: `DataPanelLine`
 
-### `Building::addAnInternalBuilding`
+#### `Building::addAnInternalBuilding`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, internalBuilding)`
@@ -1297,7 +2335,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `internalBuilding`: `Building`
 
-### `Building::calculateSaleValue`
+#### `Building::calculateSaleValue`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1306,14 +2344,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
-### `Building::destroyDoors`
+#### `Building::destroyDoors`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Building`
 
-### `Building::setFloorVisibility`
+#### `Building::setFloorVisibility`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, floor, isVisible)`
@@ -1322,7 +2360,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `floor`: `integer`
   - `isVisible`: `boolean`
 
-### `Building::setResidentSquad`
+#### `Building::setResidentSquad`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, platoon)`
@@ -1330,7 +2368,19 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Building`
   - `platoon`: `Platoon`
 
-### `CampaignInstance::_NV_addToCampaign`
+### BuildModeWindow
+
+#### `BuildModeWindow::confirm`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget)`
+- **Parameters**:
+  - `self`: `BuildModeWindow`
+  - `widget`: `Widget`
+
+### CampaignInstance
+
+#### `CampaignInstance::_NV_addToCampaign`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, platoon, forceLeader)`
@@ -1339,14 +2389,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `platoon`: `Platoon`
   - `forceLeader`: `boolean`
 
-### `CampaignInstance::_NV_lossEvent`
+#### `CampaignInstance::_NV_lossEvent`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `CampaignInstance`
 
-### `CampaignInstance::_NV_removeFromCampaign`
+#### `CampaignInstance::_NV_removeFromCampaign`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, platoon)`
@@ -1354,14 +2404,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CampaignInstance`
   - `platoon`: `Platoon`
 
-### `CampaignInstance::_NV_victoryEvent`
+#### `CampaignInstance::_NV_victoryEvent`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `CampaignInstance`
 
-### `CampaignInstance::changePhase`
+#### `CampaignInstance::changePhase`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, phase)`
@@ -1369,188 +2419,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CampaignInstance`
   - `phase`: `integer`
 
-### `CharBody::_CONSTRUCTOR`
+### Character
 
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharBody`
-  - `defaultVal`: `CharBody`
-- **Returns**: `CharBody`
-
-### `CharMovement::_CONSTRUCTOR`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharMovement`
-  - `defaultVal`: `CharMovement`
-- **Returns**: `CharMovement`
-
-### `CharMovement::isRunning`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharMovement`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `CharMovement::isRunningAway`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, from, defaultVal)`
-- **Parameters**:
-  - `self`: `CharMovement`
-  - `from`: `Vector3`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `CharStats::_CONSTRUCTOR`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `defaultVal`: `CharStats`
-- **Returns**: `CharStats`
-
-### `CharStats::chooseAttack`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, range, weaponReach, lastAttack, opponentIsStationary, defaultAttack)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `range`: `number`
-  - `weaponReach`: `number`
-  - `lastAttack`: `CombatTechniqueData`
-  - `opponentIsStationary`: `boolean`
-  - `defaultAttack`: `CombatTechniqueData`
-- **Returns**: `CombatTechniqueData`
-
-### `CharStats::clearHoldLocation`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `CharStats`
-
-### `CharStats::getStat`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, statType, unmodified, defaultVal)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `statType`: `integer`
-  - `unmodified`: `boolean`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `CharStats::setHoldLocation`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, vector3Table)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `vector3Table`: `Vector3`
-
-### `CharStats::xpDodgeEvent`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, enemySkill, successful)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `enemySkill`: `number`
-  - `successful`: `boolean`
-
-### `CharStats::xpEngineering`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, time)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `time`: `number`
-
-### `CharStats::xpFirstAid`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, patient, time, medicStat)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `patient`: `Character`
-  - `time`: `number`
-  - `medicStat`: `integer`
-
-### `CharStats::xpLockpicking`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, lockLevel, success)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `lockLevel`: `integer`
-  - `success`: `boolean`
-
-### `CharStats::xpRunning`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, time, speed)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `time`: `number`
-  - `speed`: `number`
-
-### `CharStats::xpStat_eventBased`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, statType, amount)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `statType`: `integer`
-  - `amount`: `number`
-
-### `CharStats::xpStealth`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, time, enemiesAbout, seen, isMoving)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `time`: `number`
-  - `enemiesAbout`: `boolean`
-  - `seen`: `YesNoMaybe`
-  - `isMoving`: `boolean`
-
-### `CharStats::xpToughness_GetUpEvent`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `CharStats`
-
-### `CharStats::xpToughness_PunchSomething`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, mat)`
-- **Parameters**:
-  - `self`: `CharStats`
-  - `mat`: `integer`
-
-### `CharStats::xpToughness_RagdollEvent`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `CharStats`
-
-### `Character::AttachedArrowManager::_CONSTRUCTOR`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `Character::AttachedArrowManager`
-  - `defaultVal`: `Character::AttachedArrowManager`
-- **Returns**: `Character::AttachedArrowManager`
-
-### `Character::_CONSTRUCTOR`
+#### `Character::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, dat, own, handle, defaultVal)`
@@ -1562,16 +2433,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Character`
 - **Returns**: `Character`
 
-### `Character::_NV_ImStealingDoYouNotice`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, stealFrom, item)`
-- **Parameters**:
-  - `self`: `Character`
-  - `stealFrom`: `RootObject`
-  - `item`: `Item`
-
-### `Character::_NV_equipItem`
+#### `Character::_NV_equipItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sectionName, item)`
@@ -1579,8 +2441,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `sectionName`: `string`
   - `item`: `Item`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::_NV_gettingEaten`
+#### `Character::_NV_gettingEaten`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, amount, eater)`
@@ -1589,7 +2452,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `amount`: `number`
   - `eater`: `Character`
 
-### `Character::_NV_hitByMeleeAttack`
+#### `Character::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
@@ -1600,15 +2463,25 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `attacker`: `Character`
   - `attack`: `CombatTechniqueData`
   - `comboID`: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::_NV_init`
+#### `Character::_NV_ImStealingDoYouNotice`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, stealFrom, item)`
+- **Parameters**:
+  - `self`: `Character`
+  - `stealFrom`: `RootObject`
+  - `item`: `Item`
+
+#### `Character::_NV_init`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Character`
 
-### `Character::_NV_isItOkForMeToLoot`
+#### `Character::_NV_isItOkForMeToLoot`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, victim, item, defaultVal)`
@@ -1618,16 +2491,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `item`: `Item`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::_NV_loadFromSerialise`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, saveState)`
-- **Parameters**:
-  - `self`: `Character`
-  - `saveState`: `GameSaveState`
-
-### `Character::_NV_loadFromSerialisePostCreationStage`
+#### `Character::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, saveState)`
@@ -1635,23 +2501,32 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `saveState`: `GameSaveState`
 
-### `Character::_NV_say`
+#### `Character::_NV_loadFromSerialisePostCreationStage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, saveState)`
+- **Parameters**:
+  - `self`: `Character`
+  - `saveState`: `GameSaveState`
+
+#### `Character::_NV_say`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, message)`
 - **Parameters**:
   - `self`: `Character`
   - `message`: `string`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 - **Notes**: Returning false from the handler suppresses remaining handlers.
 
-### `Character::_NV_select`
+#### `Character::_NV_select`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Character`
 
-### `Character::_NV_serialise`
+#### `Character::_NV_serialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, container, refList)`
@@ -1660,7 +2535,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `container`: `GameDataContainer`
   - `refList`: `GameData`
 
-### `Character::_NV_setFaction`
+#### `Character::_NV_setFaction`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction, platoon)`
@@ -1669,7 +2544,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `faction`: `Faction`
   - `platoon`: `ActivePlatoon`
 
-### `Character::_NV_setStandingOrder`
+#### `Character::_NV_setStandingOrder`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, orderID, enabled)`
@@ -1678,7 +2553,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `orderID`: `integer`
   - `enabled`: `boolean`
 
-### `Character::_NV_smugglingTradeCheck`
+#### `Character::_NV_smugglingTradeCheck`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item, who)`
@@ -1687,15 +2562,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `item`: `Item`
   - `who`: `Character`
 
-### `Character::_NV_takeMoney`
+#### `Character::_NV_takeMoney`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, amount)`
 - **Parameters**:
   - `self`: `Character`
   - `amount`: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::_NV_unequipItem`
+#### `Character::_NV_unequipItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sectionName, item)`
@@ -1704,14 +2580,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sectionName`: `string`
   - `item`: `Item`
 
-### `Character::_NV_unselect`
+#### `Character::_NV_unselect`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Character`
 
-### `Character::addGoal`
+#### `Character::addGoal`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, taskType, subject)`
@@ -1720,7 +2596,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `taskType`: `integer`
   - `subject`: `RootObject`
 
-### `Character::addJob`
+#### `Character::addJob`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, taskType, subject, shift, addDontClear, location)`
@@ -1732,7 +2608,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `addDontClear`: `boolean`
   - `location`: `Vector3`
 
-### `Character::addOrder`
+#### `Character::addOrder`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, destBuilding, taskType, subject, shift, clear, location)`
@@ -1744,23 +2620,26 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `shift`: `boolean`
   - `clear`: `boolean`
   - `location`: `Vector3`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::changeSlaveOwner`
+#### `Character::changeSlaveOwner`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, newOwnerHandle)`
 - **Parameters**:
   - `self`: `Character`
   - `newOwnerHandle`: `hand`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::declareDead`
+#### `Character::declareDead`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Character`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::dropCarriedObject`
+#### `Character::dropCarriedObject`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, ragdollTarget, removeOnly)`
@@ -1769,7 +2648,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `ragdollTarget`: `boolean`
   - `removeOnly`: `boolean`
 
-### `Character::eatItem`
+#### `Character::eatItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, foodItem, inventory)`
@@ -1777,8 +2656,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `foodItem`: `Item`
   - `inventory`: `Inventory`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::getDropped`
+#### `Character::getDropped`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, ragdoll, hull)`
@@ -1786,8 +2666,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `ragdoll`: `boolean`
   - `hull`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::getFencingSuccessChance`
+#### `Character::getFencingSuccessChance`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, item, thief, defaultVal)`
@@ -1798,23 +2679,25 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `Character::getPickedUp`
+#### `Character::getPickedUp`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, byWhom)`
 - **Parameters**:
   - `self`: `Character`
   - `byWhom`: `Character`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::pickupObject`
+#### `Character::pickupObject`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, who)`
 - **Parameters**:
   - `self`: `Character`
   - `who`: `Character`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Character::removeJob`
+#### `Character::removeJob`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, taskType)`
@@ -1822,7 +2705,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `taskType`: `integer`
 
-### `Character::setChainedMode`
+#### `Character::setChainedMode`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on, ownerHandle)`
@@ -1831,7 +2714,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `on`: `boolean`
   - `ownerHandle`: `hand`
 
-### `Character::setPrisonMode`
+#### `Character::setPrisonMode`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, enabled, cage)`
@@ -1839,8 +2722,22 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Character`
   - `enabled`: `boolean`
   - `cage`: `UseableStuff`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CharacterAnimal::_CONSTRUCTOR`
+### Character::AttachedArrowManager
+
+#### `Character::AttachedArrowManager::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `Character::AttachedArrowManager`
+  - `defaultVal`: `Character::AttachedArrowManager`
+- **Returns**: `Character::AttachedArrowManager`
+
+### CharacterAnimal
+
+#### `CharacterAnimal::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, faction, handle, age, defaultVal)`
@@ -1853,7 +2750,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `CharacterAnimal`
 - **Returns**: `CharacterAnimal`
 
-### `CharacterAnimal::_NV_canGoIndoors`
+#### `CharacterAnimal::_NV_canGoIndoors`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, building, defaultVal)`
@@ -1862,8 +2759,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `building`: `Building`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CharacterAnimal::_NV_createAnimationClass`
+#### `CharacterAnimal::_NV_createAnimationClass`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_createAnimationClass hook after the original call`
@@ -1871,7 +2769,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterAnimal`
 
-### `CharacterAnimal::_NV_createInventoryLayout`
+#### `CharacterAnimal::_NV_createInventoryLayout`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_createInventoryLayout hook after the original call`
@@ -1880,7 +2778,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterAnimal`
   - `layout`: `InventoryLayout`
 
-### `CharacterAnimal::_NV_drawWeapon`
+#### `CharacterAnimal::_NV_drawWeapon`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_drawWeapon hook after the original call`
@@ -1890,8 +2788,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `item`: `Item`
   - `lastSlot`: `string`
   - `success`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CharacterAnimal::_NV_dropItem`
+#### `CharacterAnimal::_NV_dropItem`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_dropItem hook after the original call`
@@ -1900,15 +2799,36 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterAnimal`
   - `item`: `RootObject`
 
-### `CharacterAnimal::_NV_foodUpdate`
+#### `CharacterAnimal::_NV_foodUpdate`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_foodUpdate hook after the original call`
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `CharacterAnimal`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CharacterAnimal::_NV_getAge`
+#### `CharacterAnimal::_NV_getAge`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharacterAnimal::_NV_getAge0to1`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharacterAnimal::_NV_getAgeInverse`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1917,25 +2837,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `CharacterAnimal::_NV_getAge0to1`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharacterAnimal`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `CharacterAnimal::_NV_getAgeInverse`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharacterAnimal`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `CharacterAnimal::_NV_getCurrentWeapon`
+#### `CharacterAnimal::_NV_getCurrentWeapon`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1943,9 +2845,10 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterAnimal`
   - `defaultVal`: `Weapon`
 - **Returns**: `Weapon`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 - **Notes**: Returning nil or a non-Weapon value keeps defaultVal.
 
-### `CharacterAnimal::_NV_getDefaultTaskRepertoireEnum`
+#### `CharacterAnimal::_NV_getDefaultTaskRepertoireEnum`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1954,7 +2857,27 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
-### `CharacterAnimal::_NV_getHPMultiplier`
+#### `CharacterAnimal::_NV_getHPMultiplier`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharacterAnimal::_NV_getSmellHuntingThresholdBlood`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharacterAnimal`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharacterAnimal::_NV_getSmellHuntingThresholdEggs`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1963,25 +2886,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `CharacterAnimal::_NV_getSmellHuntingThresholdBlood`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharacterAnimal`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `CharacterAnimal::_NV_getSmellHuntingThresholdEggs`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `CharacterAnimal`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `CharacterAnimal::_NV_getThePreferredWeapon`
+#### `CharacterAnimal::_NV_getThePreferredWeapon`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -1991,7 +2896,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `Weapon`
 - **Notes**: Returning nil or a non-Weapon value keeps defaultVal.
 
-### `CharacterAnimal::_NV_giveBirth`
+#### `CharacterAnimal::_NV_giveBirth`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_giveBirth hook after the original call`
@@ -2006,7 +2911,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `faction`: `Faction`
   - `success`: `boolean`
 
-### `CharacterAnimal::_NV_init`
+#### `CharacterAnimal::_NV_init`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_init hook after the original call`
@@ -2014,7 +2919,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterAnimal`
 
-### `CharacterAnimal::_NV_isAnimal`
+#### `CharacterAnimal::_NV_isAnimal`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_isAnimal hook after the original call`
@@ -2022,8 +2927,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterAnimal`
   - `result`: `CharacterAnimal`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CharacterAnimal::_NV_periodicUpdate`
+#### `CharacterAnimal::_NV_periodicUpdate`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_periodicUpdate hook after the original call`
@@ -2031,7 +2937,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterAnimal`
 
-### `CharacterAnimal::_NV_setAge`
+#### `CharacterAnimal::_NV_setAge`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_setAge hook after the original call`
@@ -2040,7 +2946,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterAnimal`
   - `zeroToOne`: `number`
 
-### `CharacterAnimal::_NV_setupAudio`
+#### `CharacterAnimal::_NV_setupAudio`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_setupAudio hook after the original call`
@@ -2048,7 +2954,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterAnimal`
 
-### `CharacterAnimal::_NV_setupInventorySections`
+#### `CharacterAnimal::_NV_setupInventorySections`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_setupInventorySections hook after the original call`
@@ -2058,15 +2964,18 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `state`: `GameSaveState`
   - `success`: `boolean`
 
-### `CharacterAnimal::_NV_sheatheWeapon`
+#### `CharacterAnimal::_NV_sheatheWeapon`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterAnimal::_NV_sheatheWeapon hook after the original call`
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `CharacterAnimal`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CharacterHuman::_CONSTRUCTOR`
+### CharacterHuman
+
+#### `CharacterHuman::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, faction, handle, defaultVal)`
@@ -2078,39 +2987,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `CharacterHuman`
 - **Returns**: `CharacterHuman`
 
-### `CharacterStatsWindow::BuildStats`
+### CharacterStatsWindow
 
-- **Category**: Notification / Observer
-- **Engine Hook**: `CharacterStatsWindow::BuildStats hook after the original call`
-- **Lua Signature**: `function()`
-- **Parameters**: None
-
-### `CharacterStatsWindow::Stat::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `CharacterStatsWindow::Stat::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `CharacterStatsWindow::Stat`
-
-### `CharacterStatsWindow::Stat::operator=`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `CharacterStatsWindow::Stat::operator= hook after the original call`
-- **Lua Signature**: `function(self, that)`
-- **Parameters**:
-  - `self`: `CharacterStatsWindow::Stat`
-  - `that`: `CharacterStatsWindow::Stat`
-
-### `CharacterStatsWindow::StatGroup::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `CharacterStatsWindow::StatGroup::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `CharacterStatsWindow::StatGroup`
-
-### `CharacterStatsWindow::_CONSTRUCTOR`
+#### `CharacterStatsWindow::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::_CONSTRUCTOR hook after the original call`
@@ -2119,7 +2998,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterStatsWindow`
   - `charHandle`: `hand`
 
-### `CharacterStatsWindow::_DESTRUCTOR`
+#### `CharacterStatsWindow::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::_DESTRUCTOR hook before the original call`
@@ -2127,7 +3006,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterStatsWindow`
 
-### `CharacterStatsWindow::_NV_autoChangeSelectedObject`
+#### `CharacterStatsWindow::_NV_autoChangeSelectedObject`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::_NV_autoChangeSelectedObject hook after the original call`
@@ -2136,7 +3015,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterStatsWindow`
   - `obj`: `hand`
 
-### `CharacterStatsWindow::_NV_clear`
+#### `CharacterStatsWindow::_NV_clear`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::_NV_clear hook after the original call`
@@ -2144,7 +3023,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterStatsWindow`
 
-### `CharacterStatsWindow::_NV_create`
+#### `CharacterStatsWindow::_NV_create`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::_NV_create hook after the original call`
@@ -2152,7 +3031,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterStatsWindow`
 
-### `CharacterStatsWindow::_NV_isVisible`
+#### `CharacterStatsWindow::_NV_isVisible`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `CharacterStatsWindow::_NV_isVisible hook after the original call`
@@ -2162,7 +3041,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `CharacterStatsWindow::_NV_show`
+#### `CharacterStatsWindow::_NV_show`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::_NV_show hook after the original call`
@@ -2171,7 +3050,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterStatsWindow`
   - `on`: `boolean`
 
-### `CharacterStatsWindow::_NV_update`
+#### `CharacterStatsWindow::_NV_update`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::_NV_update hook after the original call`
@@ -2179,7 +3058,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterStatsWindow`
 
-### `CharacterStatsWindow::addStat`
+#### `CharacterStatsWindow::addStat`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::addStat hook after the original call`
@@ -2191,7 +3070,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `active`: `boolean`
   - `description`: `string`
 
-### `CharacterStatsWindow::clearDesctiption`
+#### `CharacterStatsWindow::BuildStats`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::BuildStats hook after the original call`
+- **Lua Signature**: `function()`
+- **Parameters**: None
+
+#### `CharacterStatsWindow::clearDesctiption`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::clearDesctiption hook after the original call`
@@ -2199,7 +3085,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterStatsWindow`
 
-### `CharacterStatsWindow::closeWindow`
+#### `CharacterStatsWindow::closeWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::closeWindow hook before the original call`
@@ -2209,7 +3095,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `name`: `string`
 
-### `CharacterStatsWindow::getStat`
+#### `CharacterStatsWindow::getStat`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `CharacterStatsWindow::getStat hook after the original call`
@@ -2220,7 +3106,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `CharacterStatsWindow::Stat`
 - **Notes**: Returning nil or a non-Stat value keeps defaultVal.
 
-### `CharacterStatsWindow::getStatById`
+#### `CharacterStatsWindow::getStatById`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `CharacterStatsWindow::getStatById hook after the original call`
@@ -2231,7 +3117,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `CharacterStatsWindow::Stat`
 - **Notes**: Returning nil or a non-Stat value keeps defaultVal.
 
-### `CharacterStatsWindow::getStatsPanel`
+#### `CharacterStatsWindow::getStatsPanel`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `CharacterStatsWindow::getStatsPanel hook after the original call`
@@ -2243,7 +3129,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `DatapanelGUI`
 - **Notes**: Returning nil or a non-DatapanelGUI value keeps defaultVal.
 
-### `CharacterStatsWindow::setAutoUpdateMode`
+#### `CharacterStatsWindow::setAutoUpdateMode`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::setAutoUpdateMode hook after the original call`
@@ -2252,7 +3138,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CharacterStatsWindow`
   - `on`: `boolean`
 
-### `CharacterStatsWindow::setupStats`
+#### `CharacterStatsWindow::setupStats`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::setupStats hook after the original call`
@@ -2260,7 +3146,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterStatsWindow`
 
-### `CharacterStatsWindow::statMouseOver`
+#### `CharacterStatsWindow::statMouseOver`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::statMouseOver hook after the original call`
@@ -2271,7 +3157,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `arg2`: `integer`
   - `arg3`: `integer`
 
-### `CharacterStatsWindow::sumStats`
+#### `CharacterStatsWindow::sumStats`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `CharacterStatsWindow::sumStats hook after the original call`
@@ -2281,7 +3167,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
-### `CharacterStatsWindow::updateStats`
+#### `CharacterStatsWindow::updateStats`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `CharacterStatsWindow::updateStats hook after the original call`
@@ -2289,7 +3175,238 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `CharacterStatsWindow`
 
-### `CombatClass::_CONSTRUCTOR`
+### CharacterStatsWindow::Stat
+
+#### `CharacterStatsWindow::Stat::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::Stat::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow::Stat`
+
+#### `CharacterStatsWindow::Stat::operator=`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::Stat::operator= hook after the original call`
+- **Lua Signature**: `function(self, that)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow::Stat`
+  - `that`: `CharacterStatsWindow::Stat`
+
+### CharacterStatsWindow::StatGroup
+
+#### `CharacterStatsWindow::StatGroup::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `CharacterStatsWindow::StatGroup::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharacterStatsWindow::StatGroup`
+
+### CharBody
+
+#### `CharBody::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharBody`
+  - `defaultVal`: `CharBody`
+- **Returns**: `CharBody`
+
+### CharMovement
+
+#### `CharMovement::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharMovement`
+  - `defaultVal`: `CharMovement`
+- **Returns**: `CharMovement`
+
+#### `CharMovement::isRunning`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharMovement`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `CharMovement::isRunningAway`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, from, defaultVal)`
+- **Parameters**:
+  - `self`: `CharMovement`
+  - `from`: `Vector3`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+### CharStats
+
+#### `CharStats::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `defaultVal`: `CharStats`
+- **Returns**: `CharStats`
+
+#### `CharStats::chooseAttack`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, range, weaponReach, lastAttack, opponentIsStationary, defaultAttack)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `range`: `number`
+  - `weaponReach`: `number`
+  - `lastAttack`: `CombatTechniqueData`
+  - `opponentIsStationary`: `boolean`
+  - `defaultAttack`: `CombatTechniqueData`
+- **Returns**: `CombatTechniqueData`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::clearHoldLocation`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharStats`
+
+#### `CharStats::getStat`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, statType, unmodified, defaultVal)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `statType`: `integer`
+  - `unmodified`: `boolean`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::setHoldLocation`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, vector3Table)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `vector3Table`: `Vector3`
+
+#### `CharStats::xpDodgeEvent`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, enemySkill, successful)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `enemySkill`: `number`
+  - `successful`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::xpEngineering`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, time)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `time`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::xpFirstAid`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, patient, time, medicStat)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `patient`: `Character`
+  - `time`: `number`
+  - `medicStat`: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::xpLockpicking`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, lockLevel, success)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `lockLevel`: `integer`
+  - `success`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::xpRunning`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, time, speed)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `time`: `number`
+  - `speed`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::xpStat_eventBased`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, statType, amount)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `statType`: `integer`
+  - `amount`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::xpStealth`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, time, enemiesAbout, seen, isMoving)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `time`: `number`
+  - `enemiesAbout`: `boolean`
+  - `seen`: `YesNoMaybe`
+  - `isMoving`: `boolean`
+
+#### `CharStats::xpToughness_GetUpEvent`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharStats`
+
+#### `CharStats::xpToughness_PunchSomething`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mat)`
+- **Parameters**:
+  - `self`: `CharStats`
+  - `mat`: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CharStats::xpToughness_RagdollEvent`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CharStats`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+### CombatClass
+
+#### `CombatClass::_blockHit`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, direction, damage, attacker)`
+- **Parameters**:
+  - `self`: `CombatClass`
+  - `direction`: `integer`
+  - `damage`: `Damages`
+  - `attacker`: `RootObject`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CombatClass::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, movement, ai, anim, character, stats, medical, defaultVal)`
@@ -2304,28 +3421,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `CombatClass`
 - **Returns**: `CombatClass`
 
-### `CombatClass::_NV_initCombatMode`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, subject, endValue, focusedTarget, result)`
-- **Parameters**:
-  - `self`: `CombatClass`
-  - `subject`: `hand`
-  - `endValue`: `integer`
-  - `focusedTarget`: `boolean`
-  - `result`: `boolean`
-
-### `CombatClass::_blockHit`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, direction, damage, attacker)`
-- **Parameters**:
-  - `self`: `CombatClass`
-  - `direction`: `integer`
-  - `damage`: `Damages`
-  - `attacker`: `RootObject`
-
-### `CombatClass::_getHit`
+#### `CombatClass::_getHit`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, direction, damage, attacker, stumble)`
@@ -2335,8 +3431,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `damage`: `Damages`
   - `attacker`: `RootObject`
   - `stumble`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CombatClass::addAttackerH`
+#### `CombatClass::_NV_initCombatMode`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, subject, endValue, focusedTarget, result)`
+- **Parameters**:
+  - `self`: `CombatClass`
+  - `subject`: `hand`
+  - `endValue`: `integer`
+  - `focusedTarget`: `boolean`
+  - `result`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `CombatClass::addAttackerH`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, attacker, added)`
@@ -2344,8 +3453,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CombatClass`
   - `attacker`: `Character`
   - `added`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CombatClass::removeAttackerH`
+#### `CombatClass::removeAttackerH`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, attacker, removed)`
@@ -2353,8 +3463,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CombatClass`
   - `attacker`: `Character`
   - `removed`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CombatMovementController::_CONSTRUCTOR`
+### CombatMovementController
+
+#### `CombatMovementController::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -2363,7 +3476,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `CombatMovementController`
 - **Returns**: `CombatMovementController`
 
-### `CombatTechniqueData::_CONSTRUCTOR`
+### CombatTechniqueData
+
+#### `CombatTechniqueData::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, defaultVal)`
@@ -2373,7 +3488,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `CombatTechniqueData`
 - **Returns**: `CombatTechniqueData`
 
-### `ContextMenu::showContextMenu`
+### ContextMenu
+
+#### `ContextMenu::showContextMenu`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ContextMenu::showContextMenu hook, after the original call returns`
@@ -2384,7 +3501,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `what`: `RootObject`
 - **Notes**: `on` and `what` are the original arguments: the requested visibility and the target, which can be nil.
 
-### `ContextMenuGUI::show`
+### ContextMenuGUI
+
+#### `ContextMenuGUI::show`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ContextMenuGUI::show hook, after the original call returns`
@@ -2396,7 +3515,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `offset`: `boolean`
 - **Notes**: ordersList is borrowed from the engine and valid only during the callback; do not modify it.
 
-### `CraftingBuilding::_CONSTRUCTOR`
+### CraftingBuilding
+
+#### `CraftingBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -2413,7 +3534,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `CraftingBuilding`
 - **Returns**: `CraftingBuilding`
 
-### `CraftingBuilding::_NV_newCraftingButton`
+#### `CraftingBuilding::_NV_newCraftingButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -2421,7 +3542,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CraftingBuilding`
   - `sender`: `Widget`
 
-### `CraftingBuilding::_NV_operate`
+#### `CraftingBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, worker, amount)`
@@ -2429,8 +3550,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CraftingBuilding`
   - `worker`: `Character`
   - `amount`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CraftingBuilding::_removeCraft`
+#### `CraftingBuilding::_removeCraft`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, index)`
@@ -2438,29 +3560,32 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `CraftingBuilding`
   - `index`: `integer`
 
-### `CraftingBuilding::addFinishedCraftItem`
+#### `CraftingBuilding::addFinishedCraftItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item)`
 - **Parameters**:
   - `self`: `CraftingBuilding`
   - `item`: `Item`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `CraftingBuilding::destroyProductionItem`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `CraftingBuilding`
-
-### `CraftingBuilding::notifyCraftFailiure`
+#### `CraftingBuilding::destroyProductionItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `CraftingBuilding`
 
-### `Crossbow::_CONSTRUCTOR`
+#### `CraftingBuilding::notifyCraftFailiure`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `CraftingBuilding`
+
+### Crossbow
+
+#### `Crossbow::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, handle, overallLevel, defaultVal)`
@@ -2472,7 +3597,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Crossbow`
 - **Returns**: `Crossbow`
 
-### `Damages::_CONSTRUCTOR`
+### Damages
+
+#### `Damages::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, cut, blunt, pierce, bleed, armour, defaultVal)`
@@ -2485,759 +3612,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `armour`: `number`
   - `defaultVal`: `Damages`
 - **Returns**: `Damages`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `DataPanelLine::_DESTRUCTOR`
+### DatapanelGUI
 
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine`
-
-### `DataPanelLine::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine::_NV_getBottom`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `DataPanelLine::_NV_getBottom hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `DataPanelLine`
-  - `defaultVal`: `integer`
-- **Returns**: `integer`
-
-### `DataPanelLine::_NV_refresh`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine::_NV_refresh hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine`
-
-### `DataPanelLine::_NV_resize`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine::_NV_resize hook after the original call`
-- **Lua Signature**: `function(self, width, height)`
-- **Parameters**:
-  - `self`: `DataPanelLine`
-  - `width`: `integer`
-  - `height`: `integer`
-
-### `DataPanelLine::_NV_setEnabled`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine::_NV_setEnabled hook after the original call`
-- **Lua Signature**: `function(self, on)`
-- **Parameters**:
-  - `self`: `DataPanelLine`
-  - `on`: `boolean`
-
-### `DataPanelLine::_NV_setVisible`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine::_NV_setVisible hook after the original call`
-- **Lua Signature**: `function(self, on)`
-- **Parameters**:
-  - `self`: `DataPanelLine`
-  - `on`: `boolean`
-
-### `DataPanelLine_Button::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Button::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, a, b, cat, w, skin)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Button`
-  - `a`: `string`
-  - `b`: `string`
-  - `cat`: `integer`
-  - `w`: `number`
-  - `skin`: `string`
-
-### `DataPanelLine_Button::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Button::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Button`
-
-### `DataPanelLine_Button::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Button::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Button`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_Button::_NV_getUserData`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Button::_NV_getUserData hook after the original call`
-- **Lua Signature**: `function(self, result)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Button`
-  - `result`: `hand`
-
-### `DataPanelLine_Button::pressCallback`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, sender)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Button`
-  - `sender`: `Widget`
-
-### `DataPanelLine_CheckBox::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, key, cat, val)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-  - `key`: `string`
-  - `cat`: `integer`
-  - `val`: `lightuserdata`
-
-### `DataPanelLine_CheckBox::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-
-### `DataPanelLine_CheckBox::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, topReal, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-  - `parent`: `DatapanelGUI`
-  - `topReal`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_CheckBox::_NV_refresh`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::_NV_refresh hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-
-### `DataPanelLine_CheckBox::_NV_updateValuePtr`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::_NV_updateValuePtr hook after the original call`
-- **Lua Signature**: `function(self, ptr)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-  - `ptr`: `lightuserdata`
-
-### `DataPanelLine_CheckBox::notifyToggleCheck`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::notifyToggleCheck hook after the original call`
-- **Lua Signature**: `function(self, sender)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-  - `sender`: `Widget`
-
-### `DataPanelLine_CheckBox::setValue`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::setValue hook after the original call`
-- **Lua Signature**: `function(self, checked)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-  - `checked`: `boolean`
-
-### `DataPanelLine_CheckBox::setValuePtr`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_CheckBox::setValuePtr hook after the original call`
-- **Lua Signature**: `function(self, valPtr)`
-- **Parameters**:
-  - `self`: `DataPanelLine_CheckBox`
-  - `valPtr`: `lightuserdata`
-
-### `DataPanelLine_DropBox::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, text, category, valuePtr, width, hasGobox)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `text`: `string`
-  - `category`: `integer`
-  - `valuePtr`: `lightuserdata`
-  - `width`: `number`
-  - `hasGobox`: `boolean`
-
-### `DataPanelLine_DropBox::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-
-### `DataPanelLine_DropBox::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_DropBox::_NV_refresh`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::_NV_refresh hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-
-### `DataPanelLine_DropBox::_NV_updateValuePtr`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::_NV_updateValuePtr hook after the original call`
-- **Lua Signature**: `function(self, ptr)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `ptr`: `lightuserdata`
-
-### `DataPanelLine_DropBox::addAValue`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::addAValue hook after the original call`
-- **Lua Signature**: `function(self, key, val)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `key`: `string`
-  - `val`: `integer`
-
-### `DataPanelLine_DropBox::clearValues`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::clearValues hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-
-### `DataPanelLine_DropBox::getSelectedText`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::getSelectedText hook after the original call`
-- **Lua Signature**: `function(self, result)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `result`: `string`
-
-### `DataPanelLine_DropBox::getSelectedValue`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `DataPanelLine_DropBox::getSelectedValue hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `defaultVal`: `integer`
-- **Returns**: `integer`
-
-### `DataPanelLine_DropBox::goPressed`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::goPressed hook after the original call`
-- **Lua Signature**: `function(self, sender)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `sender`: `Widget`
-
-### `DataPanelLine_DropBox::selectionChange`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::selectionChange hook after the original call`
-- **Lua Signature**: `function(self, sender, i)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `sender`: `Widget`
-  - `i`: `integer`
-
-### `DataPanelLine_DropBox::setSelectedValue`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_DropBox::setSelectedValue hook after the original call`
-- **Lua Signature**: `function(self, val)`
-- **Parameters**:
-  - `self`: `DataPanelLine_DropBox`
-  - `val`: `integer`
-
-### `DataPanelLine_Faction::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Faction::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, a, b, cat, vv1, vv2)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Faction`
-  - `a`: `string`
-  - `b`: `string`
-  - `cat`: `integer`
-  - `vv1`: `number`
-  - `vv2`: `number`
-
-### `DataPanelLine_Faction::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Faction::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Faction`
-
-### `DataPanelLine_Faction::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Faction::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Faction`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_KeyConfig::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, cmd, text, cat)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-  - `cmd`: `string`
-  - `text`: `string`
-  - `cat`: `integer`
-
-### `DataPanelLine_KeyConfig::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-
-### `DataPanelLine_KeyConfig::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, p, vpos, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-  - `p`: `DatapanelGUI`
-  - `vpos`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_KeyConfig::_NV_refresh`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::_NV_refresh hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-
-### `DataPanelLine_KeyConfig::cancel`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::cancel hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-
-### `DataPanelLine_KeyConfig::clickButton`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::clickButton hook after the original call`
-- **Lua Signature**: `function(self, sender)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-  - `sender`: `Widget`
-
-### `DataPanelLine_KeyConfig::eraseKey`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::eraseKey hook after the original call`
-- **Lua Signature**: `function(self, key)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-  - `key`: `string`
-
-### `DataPanelLine_KeyConfig::getCommand`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::getCommand hook after the original call`
-- **Lua Signature**: `function(self, result)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-  - `result`: `string`
-
-### `DataPanelLine_KeyConfig::oldKey`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `DataPanelLine_KeyConfig::oldKey hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-  - `defaultVal`: `integer`
-- **Returns**: `integer`
-
-### `DataPanelLine_KeyConfig::setKey`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_KeyConfig::setKey hook after the original call`
-- **Lua Signature**: `function(self, s)`
-- **Parameters**:
-  - `self`: `DataPanelLine_KeyConfig`
-  - `s`: `string`
-
-### `DataPanelLine_Progress::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Progress::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, key, category, showKey)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Progress`
-  - `key`: `string`
-  - `category`: `integer`
-  - `showKey`: `boolean`
-
-### `DataPanelLine_Progress::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Progress::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Progress`
-
-### `DataPanelLine_Progress::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Progress::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Progress`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_Progress::setProgress`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Progress::setProgress hook after the original call`
-- **Lua Signature**: `function(self, value, text)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Progress`
-  - `value`: `number`
-  - `text`: `string`
-
-### `DataPanelLine_Research::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Research::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, a, b, cat, vv1, barColor, Xbut)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Research`
-  - `a`: `string`
-  - `b`: `string`
-  - `cat`: `integer`
-  - `vv1`: `number`
-  - `barColor`: `string`
-  - `Xbut`: `boolean`
-
-### `DataPanelLine_Research::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Research::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Research`
-
-### `DataPanelLine_Research::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Research::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Research`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_Slider::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Slider::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, key, text, min, max, category, scale)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-  - `key`: `string`
-  - `text`: `string`
-  - `min`: `number`
-  - `max`: `number`
-  - `category`: `integer`
-  - `scale`: `number`
-
-### `DataPanelLine_Slider::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Slider::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-
-### `DataPanelLine_Slider::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Slider::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_Slider::_NV_refresh`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Slider::_NV_refresh hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-
-### `DataPanelLine_Slider::_NV_updateValuePtr`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Slider::_NV_updateValuePtr hook after the original call`
-- **Lua Signature**: `function(self, ptr)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-  - `ptr`: `lightuserdata`
-
-### `DataPanelLine_Slider::getValue`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `DataPanelLine_Slider::getValue hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `DataPanelLine_Slider::setValue`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Slider::setValue hook after the original call`
-- **Lua Signature**: `function(self, value)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-  - `value`: `number`
-
-### `DataPanelLine_Slider::sliderValueChanged`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Slider::sliderValueChanged hook after the original call`
-- **Lua Signature**: `function(self, sender, value)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Slider`
-  - `sender`: `Widget`
-  - `value`: `integer`
-
-### `DataPanelLine_SliderEditable::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, text, category, showName, min, max, value)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `text`: `string`
-  - `category`: `integer`
-  - `showName`: `boolean`
-  - `min`: `number`
-  - `max`: `number`
-  - `value`: `lightuserdata`
-
-### `DataPanelLine_SliderEditable::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-
-### `DataPanelLine_SliderEditable::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_SliderEditable::_NV_refresh`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_refresh hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-
-### `DataPanelLine_SliderEditable::_NV_updateValuePtr`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_updateValuePtr hook after the original call`
-- **Lua Signature**: `function(self, ptr)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `ptr`: `lightuserdata`
-
-### `DataPanelLine_SliderEditable::editCallback`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::editCallback hook after the original call`
-- **Lua Signature**: `function(self, sender)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `sender`: `Widget`
-
-### `DataPanelLine_SliderEditable::setEditableValuePtr`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::setEditableValuePtr hook after the original call`
-- **Lua Signature**: `function(self, val, lo, hi)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `val`: `lightuserdata`
-  - `lo`: `number`
-  - `hi`: `number`
-
-### `DataPanelLine_SliderEditable::setPrecision`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::setPrecision hook after the original call`
-- **Lua Signature**: `function(self, dp)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `dp`: `integer`
-
-### `DataPanelLine_SliderEditable::setValue`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::setValue hook after the original call`
-- **Lua Signature**: `function(self, v)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `v`: `number`
-
-### `DataPanelLine_SliderEditable::sliderCallback`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_SliderEditable::sliderCallback hook after the original call`
-- **Lua Signature**: `function(self, sender, position)`
-- **Parameters**:
-  - `self`: `DataPanelLine_SliderEditable`
-  - `sender`: `Widget`
-  - `position`: `integer`
-
-### `DataPanelLine_Text::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Text::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, key, text, category, wordWrap, textAlign)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Text`
-  - `key`: `string`
-  - `text`: `string`
-  - `category`: `integer`
-  - `wordWrap`: `boolean`
-  - `textAlign`: `integer`
-
-### `DataPanelLine_Text::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Text::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Text`
-
-### `DataPanelLine_Text::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_Text::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_Text`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_TextEditable::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_TextEditable::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self, key, text, category, showKey, multiLine, textAlign, width)`
-- **Parameters**:
-  - `self`: `DataPanelLine_TextEditable`
-  - `key`: `string`
-  - `text`: `string`
-  - `category`: `integer`
-  - `showKey`: `boolean`
-  - `multiLine`: `boolean`
-  - `textAlign`: `integer`
-  - `width`: `number`
-
-### `DataPanelLine_TextEditable::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_TextEditable::_DESTRUCTOR hook before the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `DataPanelLine_TextEditable`
-
-### `DataPanelLine_TextEditable::_NV_createMe`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_TextEditable::_NV_createMe hook after the original call`
-- **Lua Signature**: `function(self, parent, top, lastLine)`
-- **Parameters**:
-  - `self`: `DataPanelLine_TextEditable`
-  - `parent`: `DatapanelGUI`
-  - `top`: `number`
-  - `lastLine`: `boolean`
-
-### `DataPanelLine_TextEditable::textChanged`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DataPanelLine_TextEditable::textChanged hook after the original call`
-- **Lua Signature**: `function(self, sender)`
-- **Parameters**:
-  - `self`: `DataPanelLine_TextEditable`
-  - `sender`: `Widget`
-
-### `DatapanelGUI::_DESTRUCTOR`
+#### `DatapanelGUI::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_DESTRUCTOR hook before the original call`
@@ -3245,7 +3624,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `DatapanelGUI`
 
-### `DatapanelGUI::_NV__zeroLines`
+#### `DatapanelGUI::_NV__zeroLines`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV__zeroLines hook after the original call`
@@ -3255,7 +3634,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `cat`: `integer`
   - `result`: `DataPanelLine`
 
-### `DatapanelGUI::_NV_addTab`
+#### `DatapanelGUI::_NV_addTab`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_addTab hook after the original call`
@@ -3266,7 +3645,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `name`: `string`
   - `icon`: `string`
 
-### `DatapanelGUI::_NV_autoChangeSelectedObject`
+#### `DatapanelGUI::_NV_autoChangeSelectedObject`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_autoChangeSelectedObject hook after the original call`
@@ -3275,7 +3654,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `obj`: `hand`
 
-### `DatapanelGUI::_NV_changeCategory`
+#### `DatapanelGUI::_NV_changeCategory`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_changeCategory hook after the original call`
@@ -3284,7 +3663,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `cat`: `integer`
 
-### `DatapanelGUI::_NV_clear`
+#### `DatapanelGUI::_NV_clear`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_clear hook after the original call`
@@ -3292,7 +3671,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `DatapanelGUI`
 
-### `DatapanelGUI::_NV_clearPage`
+#### `DatapanelGUI::_NV_clearPage`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_clearPage hook after the original call`
@@ -3301,7 +3680,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `cat`: `integer`
 
-### `DatapanelGUI::_NV_create`
+#### `DatapanelGUI::_NV_create`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_create hook after the original call`
@@ -3309,7 +3688,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `DatapanelGUI`
 
-### `DatapanelGUI::_NV_getLine`
+#### `DatapanelGUI::_NV_getLine`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `DatapanelGUI::_NV_getLine hook after the original call`
@@ -3322,7 +3701,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `DataPanelLine`
 - **Notes**: Returning nil or a non-DataPanelLine value keeps defaultVal.
 
-### `DatapanelGUI::_NV_hideAllWidgets`
+#### `DatapanelGUI::_NV_hideAllWidgets`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_hideAllWidgets hook after the original call`
@@ -3330,7 +3709,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `DatapanelGUI`
 
-### `DatapanelGUI::_NV_resize`
+#### `DatapanelGUI::_NV_resize`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_resize hook after the original call`
@@ -3340,7 +3719,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `w`: `integer`
   - `h`: `integer`
 
-### `DatapanelGUI::_NV_setAutomaticRefresh`
+#### `DatapanelGUI::_NV_setAutomaticRefresh`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setAutomaticRefresh hook after the original call`
@@ -3349,7 +3728,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `on`: `boolean`
 
-### `DatapanelGUI::_NV_setAutomaticTargeting`
+#### `DatapanelGUI::_NV_setAutomaticTargeting`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setAutomaticTargeting hook after the original call`
@@ -3358,7 +3737,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `on`: `boolean`
 
-### `DatapanelGUI::_NV_setCategoryIcon`
+#### `DatapanelGUI::_NV_setCategoryIcon`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setCategoryIcon hook after the original call`
@@ -3368,7 +3747,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `cat`: `integer`
   - `image`: `string`
 
-### `DatapanelGUI::_NV_setLineSpacing`
+#### `DatapanelGUI::_NV_setLineSpacing`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setLineSpacing hook after the original call`
@@ -3377,7 +3756,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `numLinesPerScreen`: `number`
 
-### `DatapanelGUI::_NV_setObject`
+#### `DatapanelGUI::_NV_setObject`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setObject hook after the original call`
@@ -3386,7 +3765,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `obj`: `hand`
 
-### `DatapanelGUI::_NV_setPosition`
+#### `DatapanelGUI::_NV_setPosition`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setPosition hook after the original call`
@@ -3396,7 +3775,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `x`: `integer`
   - `y`: `integer`
 
-### `DatapanelGUI::_NV_setPositionReal`
+#### `DatapanelGUI::_NV_setPositionReal`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setPositionReal hook after the original call`
@@ -3406,7 +3785,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `x`: `number`
   - `y`: `number`
 
-### `DatapanelGUI::_NV_setTabEnabled`
+#### `DatapanelGUI::_NV_setTabEnabled`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setTabEnabled hook after the original call`
@@ -3416,7 +3795,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `id`: `integer`
   - `enabled`: `boolean`
 
-### `DatapanelGUI::_NV_setTabName`
+#### `DatapanelGUI::_NV_setTabName`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_setTabName hook after the original call`
@@ -3426,7 +3805,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `id`: `integer`
   - `name`: `string`
 
-### `DatapanelGUI::_NV_show`
+#### `DatapanelGUI::_NV_show`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_show hook after the original call`
@@ -3435,7 +3814,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `on`: `boolean`
 
-### `DatapanelGUI::_NV_showTabs`
+#### `DatapanelGUI::_NV_showTabs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_showTabs hook after the original call`
@@ -3444,7 +3823,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `on`: `boolean`
 
-### `DatapanelGUI::_NV_update`
+#### `DatapanelGUI::_NV_update`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::_NV_update hook after the original call`
@@ -3452,7 +3831,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `DatapanelGUI`
 
-### `DatapanelGUI::addCustomLine`
+#### `DatapanelGUI::addCustomLine`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::addCustomLine hook after the original call`
@@ -3461,7 +3840,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `line`: `DataPanelLine`
 
-### `DatapanelGUI::addSpace`
+#### `DatapanelGUI::addSpace`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::addSpace hook after the original call`
@@ -3471,7 +3850,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `category`: `integer`
   - `h`: `number`
 
-### `DatapanelGUI::clearCategoryTabs`
+#### `DatapanelGUI::clearCategoryTabs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::clearCategoryTabs hook after the original call`
@@ -3479,7 +3858,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `DatapanelGUI`
 
-### `DatapanelGUI::closeButtonCallback`
+#### `DatapanelGUI::closeButtonCallback`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::closeButtonCallback hook before the original call`
@@ -3489,7 +3868,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `arg1`: `Widget`
   - `arg2`: `string`
 
-### `DatapanelGUI::createLine`
+#### `DatapanelGUI::createLine`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::createLine hook after the original call`
@@ -3501,7 +3880,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `lastLine`: `boolean`
   - `result`: `DataPanelLine`
 
-### `DatapanelGUI::dataExists`
+#### `DatapanelGUI::dataExists`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `DatapanelGUI::dataExists hook after the original call`
@@ -3513,7 +3892,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `DatapanelGUI::getCoords`
+#### `DatapanelGUI::getCoords`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::getCoords hook after the original call`
@@ -3526,7 +3905,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `height`: `number`
   - `result`: `IntCoord`
 
-### `DatapanelGUI::getLineByNum`
+#### `DatapanelGUI::getLineByNum`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `DatapanelGUI::getLineByNum hook after the original call`
@@ -3539,7 +3918,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `DataPanelLine`
 - **Notes**: Returning nil or a non-DataPanelLine value keeps defaultVal.
 
-### `DatapanelGUI::getNextVerticalPos`
+#### `DatapanelGUI::getNextVerticalPos`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `DatapanelGUI::getNextVerticalPos hook after the original call`
@@ -3550,7 +3929,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `DatapanelGUI::getNumLines`
+#### `DatapanelGUI::getNumLines`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `DatapanelGUI::getNumLines hook after the original call`
@@ -3561,7 +3940,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
-### `DatapanelGUI::lineExists`
+#### `DatapanelGUI::lineExists`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `DatapanelGUI::lineExists hook after the original call`
@@ -3573,7 +3952,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `DatapanelGUI::mouseOverCallback`
+#### `DatapanelGUI::mouseOverCallback`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::mouseOverCallback hook after the original call`
@@ -3582,7 +3961,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `sender`: `Widget`
 
-### `DatapanelGUI::notifyMouseWheel`
+#### `DatapanelGUI::notifyMouseWheel`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::notifyMouseWheel hook after the original call`
@@ -3592,7 +3971,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `rel`: `integer`
 
-### `DatapanelGUI::removeLine`
+#### `DatapanelGUI::removeLine`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::removeLine hook after the original call`
@@ -3602,7 +3981,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `s1`: `string`
   - `category`: `integer`
 
-### `DatapanelGUI::setCaption`
+#### `DatapanelGUI::setCaption`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setCaption hook after the original call`
@@ -3611,7 +3990,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `s`: `string`
 
-### `DatapanelGUI::setCloseCallback`
+#### `DatapanelGUI::setCloseCallback`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setCloseCallback hook after the original call`
@@ -3620,7 +3999,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `close`: `lightuserdata`
 
-### `DatapanelGUI::setLineButton`
+#### `DatapanelGUI::setLineButton`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineButton hook after the original call`
@@ -3632,7 +4011,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `category`: `integer`
   - `result`: `DataPanelLine_Button`
 
-### `DatapanelGUI::setLineCheckbox`
+#### `DatapanelGUI::setLineCheckbox`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineCheckbox hook after the original call`
@@ -3644,7 +4023,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `category`: `integer`
   - `result`: `DataPanelLine_CheckBox`
 
-### `DatapanelGUI::setLineDropBox`
+#### `DatapanelGUI::setLineDropBox`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineDropBox hook after the original call`
@@ -3658,7 +4037,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `width`: `number`
   - `result`: `DataPanelLine_DropBox`
 
-### `DatapanelGUI::setLineFaction`
+#### `DatapanelGUI::setLineFaction`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineFaction hook after the original call`
@@ -3672,7 +4051,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `v2`: `number`
   - `result`: `DataPanelLine_Faction`
 
-### `DatapanelGUI::setLineProgress`
+#### `DatapanelGUI::setLineProgress`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineProgress hook after the original call`
@@ -3686,7 +4065,17 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `showKey`: `boolean`
   - `result`: `DataPanelLine_Progress`
 
-### `DatapanelGUI::setLineSlider`
+#### `DatapanelGUI::setLines`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DatapanelGUI::setLines hook after the original call`
+- **Lua Signature**: `function(self, data, category)`
+- **Parameters**:
+  - `self`: `DatapanelGUI`
+  - `data`: `lektor<StringPair>`
+  - `category`: `integer`
+
+#### `DatapanelGUI::setLineSlider`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineSlider hook after the original call`
@@ -3702,7 +4091,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `scale`: `number`
   - `result`: `DataPanelLine_Slider`
 
-### `DatapanelGUI::setLineSliderEditable`
+#### `DatapanelGUI::setLineSliderEditable`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineSliderEditable hook after the original call`
@@ -3717,7 +4106,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `value`: `lightuserdata`
   - `result`: `DataPanelLine_SliderEditable`
 
-### `DatapanelGUI::setLineStatInfo`
+#### `DatapanelGUI::setLineStatInfo`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineStatInfo hook after the original call`
@@ -3729,7 +4118,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `category`: `integer`
   - `result`: `DataPanelLine`
 
-### `DatapanelGUI::setLineText`
+#### `DatapanelGUI::setLineText`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineText hook after the original call`
@@ -3743,7 +4132,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `textAlign`: `integer`
   - `result`: `DataPanelLine_Text`
 
-### `DatapanelGUI::setLineTextButton`
+#### `DatapanelGUI::setLineTextButton`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineTextButton hook after the original call`
@@ -3757,7 +4146,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `skin`: `string`
   - `result`: `DataPanelLine_Button`
 
-### `DatapanelGUI::setLineTextEditable`
+#### `DatapanelGUI::setLineTextEditable`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineTextEditable hook after the original call`
@@ -3773,7 +4162,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `width`: `number`
   - `result`: `DataPanelLine_TextEditable`
 
-### `DatapanelGUI::setLineToggleButton`
+#### `DatapanelGUI::setLineToggleButton`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setLineToggleButton hook after the original call`
@@ -3785,17 +4174,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `category`: `integer`
   - `result`: `DataPanelLine_Button`
 
-### `DatapanelGUI::setLines`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `DatapanelGUI::setLines hook after the original call`
-- **Lua Signature**: `function(self, data, category)`
-- **Parameters**:
-  - `self`: `DatapanelGUI`
-  - `data`: `lektor<StringPair>`
-  - `category`: `integer`
-
-### `DatapanelGUI::setPanelName`
+#### `DatapanelGUI::setPanelName`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::setPanelName hook after the original call`
@@ -3804,7 +4183,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `name`: `string`
 
-### `DatapanelGUI::show_NonSmooth`
+#### `DatapanelGUI::show_NonSmooth`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::show_NonSmooth hook after the original call`
@@ -3813,7 +4192,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DatapanelGUI`
   - `on`: `boolean`
 
-### `DatapanelGUI::tabButton`
+#### `DatapanelGUI::tabButton`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `DatapanelGUI::tabButton hook after the original call`
@@ -3825,7 +4204,784 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `arg3`: `integer`
   - `arg4`: `integer`
 
-### `DialogLineData::_CONSTRUCTOR`
+### DataPanelLine
+
+#### `DataPanelLine::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+
+#### `DataPanelLine::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine::_NV_getBottom`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine::_NV_getBottom hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+#### `DataPanelLine::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+
+#### `DataPanelLine::_NV_resize`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_resize hook after the original call`
+- **Lua Signature**: `function(self, width, height)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `width`: `integer`
+  - `height`: `integer`
+
+#### `DataPanelLine::_NV_setEnabled`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_setEnabled hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `on`: `boolean`
+
+#### `DataPanelLine::_NV_setVisible`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine::_NV_setVisible hook after the original call`
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `DataPanelLine`
+  - `on`: `boolean`
+
+### DataPanelLine_Button
+
+#### `DataPanelLine_Button::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, a, b, cat, w, skin)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+  - `a`: `string`
+  - `b`: `string`
+  - `cat`: `integer`
+  - `w`: `number`
+  - `skin`: `string`
+
+#### `DataPanelLine_Button::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+
+#### `DataPanelLine_Button::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_Button::_NV_getUserData`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Button::_NV_getUserData hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+  - `result`: `hand`
+
+#### `DataPanelLine_Button::pressCallback`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Button`
+  - `sender`: `Widget`
+
+### DataPanelLine_CheckBox
+
+#### `DataPanelLine_CheckBox::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, cat, val)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `key`: `string`
+  - `cat`: `integer`
+  - `val`: `lightuserdata`
+
+#### `DataPanelLine_CheckBox::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+
+#### `DataPanelLine_CheckBox::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, topReal, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `parent`: `DatapanelGUI`
+  - `topReal`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_CheckBox::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+
+#### `DataPanelLine_CheckBox::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `ptr`: `lightuserdata`
+
+#### `DataPanelLine_CheckBox::notifyToggleCheck`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::notifyToggleCheck hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `sender`: `Widget`
+
+#### `DataPanelLine_CheckBox::setValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::setValue hook after the original call`
+- **Lua Signature**: `function(self, checked)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `checked`: `boolean`
+
+#### `DataPanelLine_CheckBox::setValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_CheckBox::setValuePtr hook after the original call`
+- **Lua Signature**: `function(self, valPtr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_CheckBox`
+  - `valPtr`: `lightuserdata`
+
+### DataPanelLine_DropBox
+
+#### `DataPanelLine_DropBox::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, text, category, valuePtr, width, hasGobox)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `text`: `string`
+  - `category`: `integer`
+  - `valuePtr`: `lightuserdata`
+  - `width`: `number`
+  - `hasGobox`: `boolean`
+
+#### `DataPanelLine_DropBox::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+
+#### `DataPanelLine_DropBox::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_DropBox::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+
+#### `DataPanelLine_DropBox::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `ptr`: `lightuserdata`
+
+#### `DataPanelLine_DropBox::addAValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::addAValue hook after the original call`
+- **Lua Signature**: `function(self, key, val)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `key`: `string`
+  - `val`: `integer`
+
+#### `DataPanelLine_DropBox::clearValues`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::clearValues hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+
+#### `DataPanelLine_DropBox::getSelectedText`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::getSelectedText hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `result`: `string`
+
+#### `DataPanelLine_DropBox::getSelectedValue`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine_DropBox::getSelectedValue hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+#### `DataPanelLine_DropBox::goPressed`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::goPressed hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `sender`: `Widget`
+
+#### `DataPanelLine_DropBox::selectionChange`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::selectionChange hook after the original call`
+- **Lua Signature**: `function(self, sender, i)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `sender`: `Widget`
+  - `i`: `integer`
+
+#### `DataPanelLine_DropBox::setSelectedValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_DropBox::setSelectedValue hook after the original call`
+- **Lua Signature**: `function(self, val)`
+- **Parameters**:
+  - `self`: `DataPanelLine_DropBox`
+  - `val`: `integer`
+
+### DataPanelLine_Faction
+
+#### `DataPanelLine_Faction::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Faction::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, a, b, cat, vv1, vv2)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Faction`
+  - `a`: `string`
+  - `b`: `string`
+  - `cat`: `integer`
+  - `vv1`: `number`
+  - `vv2`: `number`
+
+#### `DataPanelLine_Faction::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Faction::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Faction`
+
+#### `DataPanelLine_Faction::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Faction::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Faction`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### DataPanelLine_KeyConfig
+
+#### `DataPanelLine_KeyConfig::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, cmd, text, cat)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `cmd`: `string`
+  - `text`: `string`
+  - `cat`: `integer`
+
+#### `DataPanelLine_KeyConfig::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+
+#### `DataPanelLine_KeyConfig::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, p, vpos, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `p`: `DatapanelGUI`
+  - `vpos`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_KeyConfig::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+
+#### `DataPanelLine_KeyConfig::cancel`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::cancel hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+
+#### `DataPanelLine_KeyConfig::clickButton`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::clickButton hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `sender`: `Widget`
+
+#### `DataPanelLine_KeyConfig::eraseKey`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::eraseKey hook after the original call`
+- **Lua Signature**: `function(self, key)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `key`: `string`
+
+#### `DataPanelLine_KeyConfig::getCommand`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::getCommand hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `result`: `string`
+
+#### `DataPanelLine_KeyConfig::oldKey`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine_KeyConfig::oldKey hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+#### `DataPanelLine_KeyConfig::setKey`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_KeyConfig::setKey hook after the original call`
+- **Lua Signature**: `function(self, s)`
+- **Parameters**:
+  - `self`: `DataPanelLine_KeyConfig`
+  - `s`: `string`
+
+### DataPanelLine_Progress
+
+#### `DataPanelLine_Progress::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, category, showKey)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+  - `key`: `string`
+  - `category`: `integer`
+  - `showKey`: `boolean`
+
+#### `DataPanelLine_Progress::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+
+#### `DataPanelLine_Progress::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_Progress::setProgress`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Progress::setProgress hook after the original call`
+- **Lua Signature**: `function(self, value, text)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Progress`
+  - `value`: `number`
+  - `text`: `string`
+
+### DataPanelLine_Research
+
+#### `DataPanelLine_Research::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Research::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, a, b, cat, vv1, barColor, Xbut)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Research`
+  - `a`: `string`
+  - `b`: `string`
+  - `cat`: `integer`
+  - `vv1`: `number`
+  - `barColor`: `string`
+  - `Xbut`: `boolean`
+
+#### `DataPanelLine_Research::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Research::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Research`
+
+#### `DataPanelLine_Research::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Research::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Research`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### DataPanelLine_Slider
+
+#### `DataPanelLine_Slider::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, text, min, max, category, scale)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `key`: `string`
+  - `text`: `string`
+  - `min`: `number`
+  - `max`: `number`
+  - `category`: `integer`
+  - `scale`: `number`
+
+#### `DataPanelLine_Slider::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+
+#### `DataPanelLine_Slider::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_Slider::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+
+#### `DataPanelLine_Slider::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `ptr`: `lightuserdata`
+
+#### `DataPanelLine_Slider::getValue`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `DataPanelLine_Slider::getValue hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+#### `DataPanelLine_Slider::setValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::setValue hook after the original call`
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `value`: `number`
+
+#### `DataPanelLine_Slider::sliderValueChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Slider::sliderValueChanged hook after the original call`
+- **Lua Signature**: `function(self, sender, value)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Slider`
+  - `sender`: `Widget`
+  - `value`: `integer`
+
+### DataPanelLine_SliderEditable
+
+#### `DataPanelLine_SliderEditable::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, text, category, showName, min, max, value)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `text`: `string`
+  - `category`: `integer`
+  - `showName`: `boolean`
+  - `min`: `number`
+  - `max`: `number`
+  - `value`: `lightuserdata`
+
+#### `DataPanelLine_SliderEditable::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+
+#### `DataPanelLine_SliderEditable::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_SliderEditable::_NV_refresh`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_refresh hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+
+#### `DataPanelLine_SliderEditable::_NV_updateValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::_NV_updateValuePtr hook after the original call`
+- **Lua Signature**: `function(self, ptr)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `ptr`: `lightuserdata`
+
+#### `DataPanelLine_SliderEditable::editCallback`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::editCallback hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `sender`: `Widget`
+
+#### `DataPanelLine_SliderEditable::setEditableValuePtr`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::setEditableValuePtr hook after the original call`
+- **Lua Signature**: `function(self, val, lo, hi)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `val`: `lightuserdata`
+  - `lo`: `number`
+  - `hi`: `number`
+
+#### `DataPanelLine_SliderEditable::setPrecision`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::setPrecision hook after the original call`
+- **Lua Signature**: `function(self, dp)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `dp`: `integer`
+
+#### `DataPanelLine_SliderEditable::setValue`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::setValue hook after the original call`
+- **Lua Signature**: `function(self, v)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `v`: `number`
+
+#### `DataPanelLine_SliderEditable::sliderCallback`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_SliderEditable::sliderCallback hook after the original call`
+- **Lua Signature**: `function(self, sender, position)`
+- **Parameters**:
+  - `self`: `DataPanelLine_SliderEditable`
+  - `sender`: `Widget`
+  - `position`: `integer`
+
+### DataPanelLine_Text
+
+#### `DataPanelLine_Text::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Text::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, text, category, wordWrap, textAlign)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Text`
+  - `key`: `string`
+  - `text`: `string`
+  - `category`: `integer`
+  - `wordWrap`: `boolean`
+  - `textAlign`: `integer`
+
+#### `DataPanelLine_Text::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Text::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Text`
+
+#### `DataPanelLine_Text::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_Text::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_Text`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+### DataPanelLine_TextEditable
+
+#### `DataPanelLine_TextEditable::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::_CONSTRUCTOR hook after the original call`
+- **Lua Signature**: `function(self, key, text, category, showKey, multiLine, textAlign, width)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+  - `key`: `string`
+  - `text`: `string`
+  - `category`: `integer`
+  - `showKey`: `boolean`
+  - `multiLine`: `boolean`
+  - `textAlign`: `integer`
+  - `width`: `number`
+
+#### `DataPanelLine_TextEditable::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::_DESTRUCTOR hook before the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+
+#### `DataPanelLine_TextEditable::_NV_createMe`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::_NV_createMe hook after the original call`
+- **Lua Signature**: `function(self, parent, top, lastLine)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+  - `parent`: `DatapanelGUI`
+  - `top`: `number`
+  - `lastLine`: `boolean`
+
+#### `DataPanelLine_TextEditable::textChanged`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `DataPanelLine_TextEditable::textChanged hook after the original call`
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `DataPanelLine_TextEditable`
+  - `sender`: `Widget`
+
+### DialogLineData
+
+#### `DialogLineData::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, defaultVal)`
@@ -3835,16 +4991,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `DialogLineData`
 - **Returns**: `DialogLineData`
 
-### `Dialogue::_CONSTRUCTOR`
+### Dialogue
 
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `Dialogue`
-  - `defaultVal`: `Dialogue`
-- **Returns**: `Dialogue`
-
-### `Dialogue::_checkCondition`
+#### `Dialogue::_checkCondition`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, conditionName, compareBy, val, target, actualConversationTarget, defaultVal)`
@@ -3857,16 +5006,27 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `actualConversationTarget`: `Character`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Dialogue::_doActions`
+#### `Dialogue::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `Dialogue`
+  - `defaultVal`: `Dialogue`
+- **Returns**: `Dialogue`
+
+#### `Dialogue::_doActions`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, dialogLine)`
 - **Parameters**:
   - `self`: `Dialogue`
   - `dialogLine`: `DialogLineData`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Dialogue::_endPlayerConversation`
+#### `Dialogue::_endPlayerConversation`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, finished)`
@@ -3874,7 +5034,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Dialogue`
   - `finished`: `boolean`
 
-### `Dialogue::endDialogue`
+#### `Dialogue::endDialogue`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, definitelyTheEnd)`
@@ -3882,15 +5042,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Dialogue`
   - `definitelyTheEnd`: `boolean`
 
-### `Dialogue::say`
+#### `Dialogue::say`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, dialogLine)`
 - **Parameters**:
   - `self`: `Dialogue`
   - `dialogLine`: `DialogLineData`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Dialogue::sendEvent`
+#### `Dialogue::sendEvent`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, who, what, defaultVal)`
@@ -3900,8 +5061,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `what`: `EventTriggerEnum`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Dialogue::startConversation`
+#### `Dialogue::startConversation`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, target, talk, ev, force, defaultVal)`
@@ -3913,8 +5075,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `force`: `boolean`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Dialogue::startPlayerConversation`
+#### `Dialogue::startPlayerConversation`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, target, talk, defaultVal)`
@@ -3924,8 +5087,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `talk`: `DialogLineData`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Dialogue::stopEvent`
+#### `Dialogue::stopEvent`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, what)`
@@ -3933,7 +5097,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Dialogue`
   - `what`: `EventTriggerEnum`
 
-### `DialogueWindow::_CONSTRUCTOR`
+### DialogueWindow
+
+#### `DialogueWindow::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -3942,7 +5108,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `DialogueWindow`
 - **Returns**: `DialogueWindow`
 
-### `DialogueWindow::_DESTRUCTOR`
+#### `DialogueWindow::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
@@ -3950,7 +5116,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DialogueWindow`
 - **Notes**: Fired before DialogueWindow::_DESTRUCTOR.
 
-### `DialogueWindow::_NV_isVisible`
+#### `DialogueWindow::_NV_isVisible`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -3960,7 +5126,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `boolean`
 - **Notes**: Fired after DialogueWindow::_NV_isVisible.
 
-### `DialogueWindow::_NV_show`
+#### `DialogueWindow::_NV_show`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -3969,7 +5135,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `on`: `boolean`
 - **Notes**: Fired after DialogueWindow::_NV_show.
 
-### `DialogueWindow::_NV_update`
+#### `DialogueWindow::_NV_update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
@@ -3977,7 +5143,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DialogueWindow`
 - **Notes**: Fired after DialogueWindow::_NV_update.
 
-### `DialogueWindow::activateResponse`
+#### `DialogueWindow::activateResponse`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, index)`
@@ -3986,7 +5152,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `index`: `integer`
 - **Notes**: Fired after DialogueWindow::activateResponse.
 
-### `DialogueWindow::changePortrait`
+#### `DialogueWindow::changePortrait`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character, player)`
@@ -3996,7 +5162,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `player`: `boolean`
 - **Notes**: Fired after DialogueWindow::changePortrait.
 
-### `DialogueWindow::clearResponses`
+#### `DialogueWindow::clearResponses`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
@@ -4004,7 +5170,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DialogueWindow`
 - **Notes**: Fired after DialogueWindow::clearResponses.
 
-### `DialogueWindow::getTop`
+#### `DialogueWindow::getTop`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -4014,7 +5180,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `integer`
 - **Notes**: Fired after DialogueWindow::getTop.
 
-### `DialogueWindow::getVisible`
+#### `DialogueWindow::getVisible`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -4024,7 +5190,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `boolean`
 - **Notes**: Fired after DialogueWindow::getVisible.
 
-### `DialogueWindow::hide`
+#### `DialogueWindow::hide`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, dialogue)`
@@ -4033,7 +5199,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `dialogue`: `Dialogue`
 - **Notes**: Fired after DialogueWindow::hide.
 
-### `DialogueWindow::setNPCText`
+#### `DialogueWindow::setNPCText`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, text)`
@@ -4042,7 +5208,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `text`: `string`
 - **Notes**: Fired after DialogueWindow::setNPCText.
 
-### `DialogueWindow::setResponses`
+#### `DialogueWindow::setResponses`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, responses)`
@@ -4051,7 +5217,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `responses`: `void`
 - **Notes**: Fired after DialogueWindow::setResponses. responses is borrowed lightuserdata.
 
-### `DialogueWindow::setVisible`
+#### `DialogueWindow::setVisible`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, visible)`
@@ -4060,7 +5226,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `visible`: `boolean`
 - **Notes**: Fired after DialogueWindow::setVisible.
 
-### `DialogueWindow::show`
+#### `DialogueWindow::show`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, dialogue)`
@@ -4068,7 +5234,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DialogueWindow`
   - `dialogue`: `Dialogue`
 
-### `DialogueWindow::updatePanelsPosition`
+#### `DialogueWindow::updatePanelsPosition`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
@@ -4076,7 +5242,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DialogueWindow`
 - **Notes**: Fired after DialogueWindow::updatePanelsPosition.
 
-### `DoorStuff::_CONSTRUCTOR`
+### DoorStuff
+
+#### `DoorStuff::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, dat, position, orientation, participant, town, handle, isFurnitureOf, indoors, parent, defaultVal)`
@@ -4094,7 +5262,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `DoorStuff`
 - **Returns**: `DoorStuff`
 
-### `DoorStuff::_NV_hitByMeleeAttack`
+#### `DoorStuff::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
@@ -4105,8 +5273,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `attacker`: `Character`
   - `attack`: `CombatTechniqueData`
   - `comboID`: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `DoorStuff::closeDoor`
+#### `DoorStuff::closeDoor`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -4114,15 +5283,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DoorStuff`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `DoorStuff::lockDoor`
+#### `DoorStuff::lockDoor`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `DoorStuff`
 
-### `DoorStuff::openDoor`
+#### `DoorStuff::openDoor`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -4130,8 +5300,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DoorStuff`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `DoorStuff::setDoorState`
+#### `DoorStuff::setDoorState`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, doorState)`
@@ -4139,14 +5310,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `DoorStuff`
   - `doorState`: `integer`
 
-### `DoorStuff::unlockDoor`
+#### `DoorStuff::unlockDoor`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `DoorStuff`
 
-### `Faction::_CONSTRUCTOR`
+### Faction
+
+#### `Faction::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, name, defaultVal)`
@@ -4156,7 +5329,36 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Faction`
 - **Returns**: `Faction`
 
-### `Faction::chooseARace`
+#### `Faction::_NV_addActiveObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, object, platoon, success)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `object`: `RootObject`
+  - `platoon`: `ActivePlatoon`
+  - `success`: `boolean`
+- **Notes**: Fired after Faction::_NV_addActiveObject returns.
+
+#### `Faction::_NV_destroyObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, object)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `object`: `RootObject`
+- **Notes**: Fired after Faction::_NV_destroyObject returns.
+
+#### `Faction::_NV_removeObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, object)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `object`: `RootObject`
+- **Notes**: Fired after Faction::_NV_removeObject returns.
+
+#### `Faction::chooseARace`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, character, squadTemplate, defaultVal)`
@@ -4167,7 +5369,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `GameData`
 - **Returns**: `GameData`
 
-### `Faction::createNewEmptyActivePlatoon`
+#### `Faction::createNewEmptyActivePlatoon`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, platoon)`
@@ -4175,7 +5377,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Faction`
   - `platoon`: `Platoon`
 
-### `Faction::destroyPlatoon`
+#### `Faction::createNewEmptyUnloadedPlatoon`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, squadTemplate, position, forceCharacterDatas, persistent, platoon)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `squadTemplate`: `GameData`
+  - `position`: `Vector3`
+  - `forceCharacterDatas`: `GameDataContainer`
+  - `persistent`: `boolean`
+  - `platoon`: `Platoon`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+- **Notes**: Fired after Faction::createNewEmptyUnloadedPlatoon returns.
+
+#### `Faction::destroyPlatoon`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, platoon)`
@@ -4183,7 +5399,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Faction`
   - `platoon`: `Platoon`
 
-### `Faction::getBuildingReplacement`
+#### `Faction::getBuildingReplacement`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, building, defaultVal)`
@@ -4193,7 +5409,54 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `GameData`
 - **Returns**: `GameData`
 
-### `FactionLeader::_CONSTRUCTOR`
+#### `Faction::loadState`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, saveSource, factionState)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `saveSource`: `GameDataContainer`
+  - `factionState`: `GameData`
+- **Notes**: Fired after Faction::loadState returns.
+
+#### `Faction::removePlatoon`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `platoon`: `Platoon`
+- **Notes**: Fired after Faction::removePlatoon returns.
+
+#### `Faction::restorePlatoon`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `platoon`: `Platoon`
+- **Notes**: Fired after Faction::restorePlatoon returns.
+
+#### `Faction::setName`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, name)`
+- **Parameters**:
+  - `self`: `Faction`
+  - `name`: `string`
+- **Notes**: Fired after Faction::setName returns.
+
+#### `Faction::setup3`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `Faction`
+- **Notes**: Fired after Faction::setup3 completes the final faction setup phase.
+
+### FactionLeader
+
+#### `FactionLeader::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, faction, defaultVal)`
@@ -4203,7 +5466,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `FactionLeader`
 - **Returns**: `FactionLeader`
 
-### `FactionManager::_CONSTRUCTOR`
+### FactionManager
+
+#### `FactionManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -4212,7 +5477,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `FactionManager`
 - **Returns**: `FactionManager`
 
-### `FactionRelations::_CONSTRUCTOR`
+### FactionRelations
+
+#### `FactionRelations::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -4221,7 +5488,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `FactionRelations`
 - **Returns**: `FactionRelations`
 
-### `FactionRelations::_NV_affectReputation`
+#### `FactionRelations::_NV_affectReputation`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction, amount)`
@@ -4230,7 +5497,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `faction`: `Faction`
   - `amount`: `number`
 
-### `FactionRelations::_NV_affectTrust`
+#### `FactionRelations::_NV_affectTrust`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction, amount, multiplier)`
@@ -4240,7 +5507,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `amount`: `number`
   - `multiplier`: `number`
 
-### `FactionRelations::_NV_declareWar`
+#### `FactionRelations::_NV_declareWar`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction)`
@@ -4248,7 +5515,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `FactionRelations`
   - `faction`: `Faction`
 
-### `FactionRelations::_NV_setEnemy`
+#### `FactionRelations::_NV_setEnemy`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction)`
@@ -4256,7 +5523,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `FactionRelations`
   - `faction`: `Faction`
 
-### `FactionRelations::_NV_setNoLongerEnemies`
+#### `FactionRelations::_NV_setNoLongerEnemies`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction)`
@@ -4264,17 +5531,19 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `FactionRelations`
   - `faction`: `Faction`
 
-### `FactionRelations::affectRelations`
+#### `FactionRelations::affectRelations`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, otherFaction, eventType, multiplier)`
+- **Lua Signature**: `function(self, otherFaction, value, multiplier)`
 - **Parameters**:
   - `self`: `FactionRelations`
   - `otherFaction`: `Faction`
-  - `eventType`: `integer`
+  - `value`: `number`
   - `multiplier`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+- **Notes**: Fired after either FactionRelations::affectRelations overload. value is the FactionEvent integer for the event overload, or the numeric amount for the amount overload.
 
-### `FactionRelations::setRelation`
+#### `FactionRelations::setRelation`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction, relation)`
@@ -4283,26 +5552,154 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `faction`: `Faction`
   - `relation`: `number`
 
-### `FactionUniqueSquadManager::_CONSTRUCTOR`
+### FactionsScreen
+
+#### `FactionsScreen::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, screen)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `screen`: `ManagementScreen`
+- **Notes**: Fired after FactionsScreen::_CONSTRUCTOR.
+
+#### `FactionsScreen::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired before FactionsScreen::_DESTRUCTOR.
+
+#### `FactionsScreen::clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::clear.
+
+#### `FactionsScreen::factionLineSelected`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+- **Notes**: Fired after FactionsScreen::factionLineSelected.
+
+#### `FactionsScreen::getVisible`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `self`: `FactionUniqueSquadManager`
-  - `defaultVal`: `FactionUniqueSquadManager`
-- **Returns**: `FactionUniqueSquadManager`
+  - `self`: `FactionsScreen`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+- **Notes**: Fired after FactionsScreen::getVisible.
 
-### `FactionWarMgr::_CONSTRUCTOR`
+#### `FactionsScreen::loseFocus`
 
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, faction, defaultVal)`
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, first, second)`
 - **Parameters**:
-  - `self`: `FactionWarMgr`
-  - `faction`: `Faction`
-  - `defaultVal`: `FactionWarMgr`
-- **Returns**: `FactionWarMgr`
+  - `self`: `FactionsScreen`
+  - `first`: `Widget`
+  - `second`: `Widget`
+- **Notes**: Fired after FactionsScreen::loseFocus.
 
-### `FactionsScreen::FactionRelationsLine::LessSort::operator()`
+#### `FactionsScreen::notifyEditTextChange`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+- **Notes**: Fired after FactionsScreen::notifyEditTextChange.
+
+#### `FactionsScreen::notifyMouseWheel`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, sender, rel)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `sender`: `Widget`
+  - `rel`: `integer`
+- **Notes**: Fired after FactionsScreen::notifyMouseWheel.
+
+#### `FactionsScreen::refresh`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::refresh.
+
+#### `FactionsScreen::setFocus`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, first, second)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+  - `first`: `Widget`
+  - `second`: `Widget`
+- **Notes**: Fired after FactionsScreen::setFocus.
+
+#### `FactionsScreen::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::update.
+
+#### `FactionsScreen::updateInfo`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen`
+- **Notes**: Fired after FactionsScreen::updateInfo.
+
+### FactionsScreen::FactionRelationsLine
+
+#### `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, faction)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+  - `faction`: `Faction`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::_CONSTRUCTOR.
+
+#### `FactionsScreen::FactionRelationsLine::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+- **Notes**: Fired before FactionsScreen::FactionRelationsLine::_DESTRUCTOR.
+
+#### `FactionsScreen::FactionRelationsLine::attachToWidget`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, widget)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+  - `widget`: `Widget`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::attachToWidget.
+
+#### `FactionsScreen::FactionRelationsLine::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `FactionsScreen::FactionRelationsLine`
+- **Notes**: Fired after FactionsScreen::FactionRelationsLine::update.
+
+### FactionsScreen::FactionRelationsLine::LessSort
+
+#### `FactionsScreen::FactionRelationsLine::LessSort::operator()`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(comparator, left, right, defaultVal)`
@@ -4314,148 +5711,53 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `boolean`
 - **Notes**: Fired after FactionsScreen::FactionRelationsLine::LessSort::operator().
 
-### `FactionsScreen::FactionRelationsLine::_CONSTRUCTOR`
+### FactionUniqueSquadManager
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, faction)`
-- **Parameters**:
-  - `self`: `FactionsScreen::FactionRelationsLine`
-  - `faction`: `Faction`
-- **Notes**: Fired after FactionsScreen::FactionRelationsLine::_CONSTRUCTOR.
-
-### `FactionsScreen::FactionRelationsLine::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `FactionsScreen::FactionRelationsLine`
-- **Notes**: Fired before FactionsScreen::FactionRelationsLine::_DESTRUCTOR.
-
-### `FactionsScreen::FactionRelationsLine::attachToWidget`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, widget)`
-- **Parameters**:
-  - `self`: `FactionsScreen::FactionRelationsLine`
-  - `widget`: `Widget`
-- **Notes**: Fired after FactionsScreen::FactionRelationsLine::attachToWidget.
-
-### `FactionsScreen::FactionRelationsLine::update`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `FactionsScreen::FactionRelationsLine`
-- **Notes**: Fired after FactionsScreen::FactionRelationsLine::update.
-
-### `FactionsScreen::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, screen)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-  - `screen`: `ManagementScreen`
-- **Notes**: Fired after FactionsScreen::_CONSTRUCTOR.
-
-### `FactionsScreen::_DESTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-- **Notes**: Fired before FactionsScreen::_DESTRUCTOR.
-
-### `FactionsScreen::clear`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-- **Notes**: Fired after FactionsScreen::clear.
-
-### `FactionsScreen::factionLineSelected`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, sender)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-  - `sender`: `Widget`
-- **Notes**: Fired after FactionsScreen::factionLineSelected.
-
-### `FactionsScreen::getVisible`
+#### `FactionUniqueSquadManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `self`: `FactionsScreen`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-- **Notes**: Fired after FactionsScreen::getVisible.
+  - `self`: `FactionUniqueSquadManager`
+  - `defaultVal`: `FactionUniqueSquadManager`
+- **Returns**: `FactionUniqueSquadManager`
 
-### `FactionsScreen::loseFocus`
+### FactionWarMgr
+
+#### `FactionWarMgr::_CONSTRUCTOR`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, faction, defaultVal)`
+- **Parameters**:
+  - `self`: `FactionWarMgr`
+  - `faction`: `Faction`
+  - `defaultVal`: `FactionWarMgr`
+- **Returns**: `FactionWarMgr`
+
+#### `FactionWarMgr::endCampaign`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, first, second)`
+- **Lua Signature**: `function(self, campaign)`
 - **Parameters**:
-  - `self`: `FactionsScreen`
-  - `first`: `Widget`
-  - `second`: `Widget`
-- **Notes**: Fired after FactionsScreen::loseFocus.
+  - `self`: `FactionWarMgr`
+  - `campaign`: `CampaignInstance`
+- **Notes**: Fired before FactionWarMgr::endCampaign deletes the campaign instance.
 
-### `FactionsScreen::notifyEditTextChange`
+#### `FactionWarMgr::triggerCampaign`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, sender)`
+- **Lua Signature**: `function(self, targetTown, data, home, campaign)`
 - **Parameters**:
-  - `self`: `FactionsScreen`
-  - `sender`: `Widget`
-- **Notes**: Fired after FactionsScreen::notifyEditTextChange.
+  - `self`: `FactionWarMgr`
+  - `targetTown`: `RootObjectBase`
+  - `data`: `CampaignData`
+  - `home`: `TownBase`
+  - `campaign`: `CampaignInstance`
+- **Notes**: Fired after the FactionWarMgr::triggerCampaign overload that returns a new campaign.
 
-### `FactionsScreen::notifyMouseWheel`
+### FarmBuilding
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, sender, rel)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-  - `sender`: `Widget`
-  - `rel`: `integer`
-- **Notes**: Fired after FactionsScreen::notifyMouseWheel.
-
-### `FactionsScreen::refresh`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-- **Notes**: Fired after FactionsScreen::refresh.
-
-### `FactionsScreen::setFocus`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, first, second)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-  - `first`: `Widget`
-  - `second`: `Widget`
-- **Notes**: Fired after FactionsScreen::setFocus.
-
-### `FactionsScreen::update`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-- **Notes**: Fired after FactionsScreen::update.
-
-### `FactionsScreen::updateInfo`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `FactionsScreen`
-- **Notes**: Fired after FactionsScreen::updateInfo.
-
-### `FarmBuilding::_CONSTRUCTOR`
+#### `FarmBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -4472,7 +5774,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `FarmBuilding`
 - **Returns**: `FarmBuilding`
 
-### `FarmBuilding::_NV_operate`
+#### `FarmBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, worker, amount)`
@@ -4480,8 +5782,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `FarmBuilding`
   - `worker`: `Character`
   - `amount`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `FarmBuilding::destroyAPlant`
+#### `FarmBuilding::destroyAPlant`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -4489,8 +5792,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `FarmBuilding`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `FarmBuilding::eat`
+#### `FarmBuilding::eat`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, rate)`
@@ -4498,7 +5802,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `FarmBuilding`
   - `rate`: `number`
 
-### `ForgottenGUI::_CONSTRUCTOR`
+### ForgottenGUI
+
+#### `ForgottenGUI::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::_CONSTRUCTOR hook after the original call`
@@ -4506,7 +5812,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::_DESTRUCTOR`
+#### `ForgottenGUI::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::_DESTRUCTOR hook before the original call`
@@ -4514,7 +5820,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::_showTradeWindow`
+#### `ForgottenGUI::_showTradeWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::_showTradeWindow hook after the original call`
@@ -4525,7 +5831,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `b`: `RootObject`
   - `tradeType`: `integer`
 
-### `ForgottenGUI::addDatapanelToUpdateList`
+#### `ForgottenGUI::addDatapanelToUpdateList`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::addDatapanelToUpdateList hook after the original call`
@@ -4534,7 +5840,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `datapanel`: `DatapanelGUI`
 
-### `ForgottenGUI::addScreenLabel`
+#### `ForgottenGUI::addScreenLabel`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::addScreenLabel hook after the original call`
@@ -4543,7 +5849,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `label`: `ScreenLabelInterface`
 
-### `ForgottenGUI::addWindowToUpdateList`
+#### `ForgottenGUI::addWindowToUpdateList`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::addWindowToUpdateList hook after the original call`
@@ -4552,14 +5858,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `win`: `GUIWindow`
 
-### `ForgottenGUI::changeFontSize`
+#### `ForgottenGUI::changeFontSize`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::changeFontSize hook after the original call`
 - **Lua Signature**: `function()`
 - **Parameters**: None
 
-### `ForgottenGUI::clearGUI`
+#### `ForgottenGUI::clearGUI`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::clearGUI hook after the original call`
@@ -4567,7 +5873,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::closeAllCharacterStatsWindows`
+#### `ForgottenGUI::closeAllCharacterStatsWindows`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeAllCharacterStatsWindows hook after the original call`
@@ -4575,7 +5881,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::closeAllInventories`
+#### `ForgottenGUI::closeAllInventories`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeAllInventories hook after the original call`
@@ -4583,7 +5889,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::closeAllWindows`
+#### `ForgottenGUI::closeAllWindows`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeAllWindows hook after the original call`
@@ -4591,7 +5897,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::closeCharacterEditor`
+#### `ForgottenGUI::closeCharacterEditor`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeCharacterEditor hook after the original call`
@@ -4599,7 +5905,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::closeCharacterStatsWindow`
+#### `ForgottenGUI::closeCharacterStatsWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeCharacterStatsWindow hook after the original call`
@@ -4608,7 +5914,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `owner`: `hand`
 
-### `ForgottenGUI::closeInventory`
+#### `ForgottenGUI::closeInventory`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeInventory hook after the original call`
@@ -4617,7 +5923,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `owner`: `hand`
 
-### `ForgottenGUI::closeInventoryBuilding`
+#### `ForgottenGUI::closeInventoryBuilding`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeInventoryBuilding hook after the original call`
@@ -4625,7 +5931,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::closeTradeWindow`
+#### `ForgottenGUI::closeTradeWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::closeTradeWindow hook after the original call`
@@ -4633,7 +5939,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::createButton`
+#### `ForgottenGUI::createButton`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createButton hook after the original call`
@@ -4650,7 +5956,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `skin`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createButtonAbs`
+#### `ForgottenGUI::createButtonAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createButtonAbs hook after the original call`
@@ -4667,7 +5973,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `skin`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createCheckbox`
+#### `ForgottenGUI::createCheckbox`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createCheckbox hook after the original call`
@@ -4682,7 +5988,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `caption`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createDropBox`
+#### `ForgottenGUI::createDropBox`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createDropBox hook after the original call`
@@ -4697,7 +6003,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `height`: `number`
   - `result`: `Widget`
 
-### `ForgottenGUI::createDropBoxAbs`
+#### `ForgottenGUI::createDropBoxAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createDropBoxAbs hook after the original call`
@@ -4712,7 +6018,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `height`: `integer`
   - `result`: `Widget`
 
-### `ForgottenGUI::createFloatingImage`
+#### `ForgottenGUI::createFloatingImage`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createFloatingImage hook after the original call`
@@ -4727,7 +6033,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `layer`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createFloatingImageAbs`
+#### `ForgottenGUI::createFloatingImageAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createFloatingImageAbs hook after the original call`
@@ -4742,7 +6048,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `layer`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createFloatingLabel`
+#### `ForgottenGUI::createFloatingLabel`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createFloatingLabel hook after the original call`
@@ -4758,7 +6064,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `layer`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createFloatingProgressBar`
+#### `ForgottenGUI::createFloatingProgressBar`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createFloatingProgressBar hook after the original call`
@@ -4767,7 +6073,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `result`: `FloatingProgressBar`
 
-### `ForgottenGUI::createImage`
+#### `ForgottenGUI::createImage`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createImage hook after the original call`
@@ -4782,7 +6088,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `image`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createImageAbs`
+#### `ForgottenGUI::createImageAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createImageAbs hook after the original call`
@@ -4797,7 +6103,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `image`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createListbox`
+#### `ForgottenGUI::createListbox`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createListbox hook after the original call`
@@ -4811,7 +6117,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `height`: `number`
   - `result`: `Widget`
 
-### `ForgottenGUI::createPanel`
+#### `ForgottenGUI::createPanel`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createPanel hook after the original call`
@@ -4827,7 +6133,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `skin`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createPanelAbs`
+#### `ForgottenGUI::createPanelAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createPanelAbs hook after the original call`
@@ -4843,7 +6149,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `skin`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createProgressBar`
+#### `ForgottenGUI::createProgressBar`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createProgressBar hook after the original call`
@@ -4858,7 +6164,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `type`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createProgressBarAbs`
+#### `ForgottenGUI::createProgressBarAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createProgressBarAbs hook after the original call`
@@ -4873,7 +6179,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `type`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createRotatableImageAbs`
+#### `ForgottenGUI::createRotatableImageAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createRotatableImageAbs hook after the original call`
@@ -4888,7 +6194,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `image`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createScreenLabel`
+#### `ForgottenGUI::createScreenLabel`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createScreenLabel hook after the original call`
@@ -4901,7 +6207,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `risingSpeed`: `integer`
   - `result`: `ScreenLabel`
 
-### `ForgottenGUI::createScreenLabelD`
+#### `ForgottenGUI::createScreenLabelD`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createScreenLabelD hook after the original call`
@@ -4912,7 +6218,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `time`: `number`
   - `result`: `ScreenLabelDebug`
 
-### `ForgottenGUI::createScrollBarAbs`
+#### `ForgottenGUI::createScrollBarAbs`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createScrollBarAbs hook after the original call`
@@ -4928,7 +6234,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `value`: `integer`
   - `result`: `Widget`
 
-### `ForgottenGUI::createTabPanel`
+#### `ForgottenGUI::createTabPanel`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createTabPanel hook after the original call`
@@ -4944,7 +6250,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `skin`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createValueEdit`
+#### `ForgottenGUI::createValueEdit`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createValueEdit hook after the original call`
@@ -4959,7 +6265,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `name`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::createValueEditTransparent`
+#### `ForgottenGUI::createValueEditTransparent`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::createValueEditTransparent hook after the original call`
@@ -4974,7 +6280,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `name`: `string`
   - `result`: `Widget`
 
-### `ForgottenGUI::destroyWidget`
+#### `ForgottenGUI::destroyWidget`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::destroyWidget hook before the original call`
@@ -4983,7 +6289,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `widget`: `Widget`
 
-### `ForgottenGUI::getDataLineColor`
+#### `ForgottenGUI::getDataLineColor`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::getDataLineColor hook after the original call`
@@ -4994,7 +6300,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `normalVal`: `integer`
   - `result`: `string`
 
-### `ForgottenGUI::getInDialogue`
+#### `ForgottenGUI::getInDialogue`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::getInDialogue hook after the original call`
@@ -5004,7 +6310,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::getInventoryWindow`
+#### `ForgottenGUI::getInventoryWindow`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::getInventoryWindow hook after the original call`
@@ -5016,7 +6322,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `InventoryGUI`
 - **Notes**: Returning nil or a non-InventoryGUI value keeps defaultVal.
 
-### `ForgottenGUI::getInventoryWindowWithMouse`
+#### `ForgottenGUI::getInventoryWindowWithMouse`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::getInventoryWindowWithMouse hook after the original call`
@@ -5027,7 +6333,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `InventoryGUI`
 - **Notes**: Returning nil or a non-InventoryGUI value keeps defaultVal.
 
-### `ForgottenGUI::getNumOpenInventoryWindows`
+#### `ForgottenGUI::getNumOpenInventoryWindows`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::getNumOpenInventoryWindows hook after the original call`
@@ -5037,7 +6343,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
-### `ForgottenGUI::getToolTip`
+#### `ForgottenGUI::getToolTip`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::getToolTip hook after the original call`
@@ -5048,7 +6354,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `ToolTip`
 - **Notes**: Returning nil or a non-ToolTip value keeps defaultVal.
 
-### `ForgottenGUI::getTopOfScreenMessagePosition`
+#### `ForgottenGUI::getTopOfScreenMessagePosition`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::getTopOfScreenMessagePosition hook after the original call`
@@ -5058,7 +6364,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `ForgottenGUI::hasInventoryWindowOpen`
+#### `ForgottenGUI::hasInventoryWindowOpen`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::hasInventoryWindowOpen hook after the original call`
@@ -5069,7 +6375,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::hasModalMessage`
+#### `ForgottenGUI::hasModalMessage`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::hasModalMessage hook after the original call`
@@ -5079,7 +6385,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::hideMessageBox`
+#### `ForgottenGUI::hideMessageBox`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::hideMessageBox hook after the original call`
@@ -5089,7 +6395,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `enter`: `boolean`
   - `result`: `boolean`
 
-### `ForgottenGUI::inDialogue`
+#### `ForgottenGUI::inDialogue`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::inDialogue hook after the original call`
@@ -5099,7 +6405,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::init`
+#### `ForgottenGUI::init`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::init hook after the original call`
@@ -5107,7 +6413,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::inventoriesSelectedObjectUpdate`
+#### `ForgottenGUI::inventoriesSelectedObjectUpdate`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::inventoriesSelectedObjectUpdate hook after the original call`
@@ -5116,7 +6422,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `selectedObject`: `hand`
 
-### `ForgottenGUI::isAnyInventoryWindowOpen`
+#### `ForgottenGUI::isAnyInventoryWindowOpen`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::isAnyInventoryWindowOpen hook after the original call`
@@ -5126,7 +6432,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::isLoading`
+#### `ForgottenGUI::isLoading`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::isLoading hook after the original call`
@@ -5136,7 +6442,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::isLoadingMessageVisible`
+#### `ForgottenGUI::isLoadingMessageVisible`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::isLoadingMessageVisible hook after the original call`
@@ -5146,7 +6452,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::isPaused`
+#### `ForgottenGUI::isPaused`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::isPaused hook after the original call`
@@ -5156,7 +6462,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::isStatsWindowOpen`
+#### `ForgottenGUI::isStatsWindowOpen`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::isStatsWindowOpen hook after the original call`
@@ -5166,7 +6472,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ForgottenGUI::keepWindownOnScreen`
+#### `ForgottenGUI::keepWindownOnScreen`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::keepWindownOnScreen hook after the original call`
@@ -5175,7 +6481,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `win`: `Widget`
 
-### `ForgottenGUI::messageBox`
+#### `ForgottenGUI::messageBox`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::messageBox hook after the original call`
@@ -5189,7 +6495,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `callback`: `lightuserdata`
   - `result`: `Widget`
 
-### `ForgottenGUI::notifyTownDeleted`
+#### `ForgottenGUI::notifyTownDeleted`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::notifyTownDeleted hook after the original call`
@@ -5198,7 +6504,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `t`: `Town`
 
-### `ForgottenGUI::removeDatapanelFromUpdateList`
+#### `ForgottenGUI::removeDatapanelFromUpdateList`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::removeDatapanelFromUpdateList hook after the original call`
@@ -5207,7 +6513,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `datapanel`: `DatapanelGUI`
 
-### `ForgottenGUI::removeWindowFromUpdateList`
+#### `ForgottenGUI::removeWindowFromUpdateList`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::removeWindowFromUpdateList hook after the original call`
@@ -5216,7 +6522,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `win`: `GUIWindow`
 
-### `ForgottenGUI::restart`
+#### `ForgottenGUI::restart`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::restart hook after the original call`
@@ -5224,7 +6530,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::selectedObjectsChanged`
+#### `ForgottenGUI::selectedObjectsChanged`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::selectedObjectsChanged hook after the original call`
@@ -5232,7 +6538,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::setInventoryPosition`
+#### `ForgottenGUI::setInventoryPosition`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::setInventoryPosition hook after the original call`
@@ -5242,7 +6548,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `owner`: `hand`
   - `inventory`: `InventoryGUI`
 
-### `ForgottenGUI::setLoading`
+#### `ForgottenGUI::setLoading`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::setLoading hook after the original call`
@@ -5251,7 +6557,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `value`: `boolean`
 
-### `ForgottenGUI::setMouseCursorVisible`
+#### `ForgottenGUI::setMouseCursorVisible`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::setMouseCursorVisible hook after the original call`
@@ -5260,7 +6566,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `visible`: `boolean`
 
-### `ForgottenGUI::setup`
+#### `ForgottenGUI::setup`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::setup hook after the original call`
@@ -5270,7 +6576,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `mRoot`: `lightuserdata`
   - `window`: `lightuserdata`
 
-### `ForgottenGUI::setupGuiScaling`
+#### `ForgottenGUI::setupGuiScaling`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::setupGuiScaling hook after the original call`
@@ -5278,7 +6584,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::showCharacterEditor`
+#### `ForgottenGUI::showCharacterEditor`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showCharacterEditor hook before the original call`
@@ -5289,7 +6595,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `mode`: `integer`
   - `races`: `vector<GameDataReference>::type`
 
-### `ForgottenGUI::showCharacterStatsWindow`
+#### `ForgottenGUI::showCharacterStatsWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showCharacterStatsWindow hook after the original call`
@@ -5298,7 +6604,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `owner`: `hand`
 
-### `ForgottenGUI::showInventory`
+#### `ForgottenGUI::showInventory`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showInventory hook after the original call`
@@ -5311,7 +6617,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `y`: `number`
   - `result`: `InventoryGUI`
 
-### `ForgottenGUI::showInventoryBuilding`
+#### `ForgottenGUI::showInventoryBuilding`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showInventoryBuilding hook after the original call`
@@ -5321,7 +6627,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `owner`: `hand`
   - `result`: `InventoryGUI`
 
-### `ForgottenGUI::showInventoryNPC`
+#### `ForgottenGUI::showInventoryNPC`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showInventoryNPC hook after the original call`
@@ -5331,7 +6637,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `owner`: `hand`
   - `result`: `InventoryGUI`
 
-### `ForgottenGUI::showLoadingMessage`
+#### `ForgottenGUI::showLoadingMessage`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showLoadingMessage hook after the original call`
@@ -5340,7 +6646,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `on`: `boolean`
 
-### `ForgottenGUI::showMainbar`
+#### `ForgottenGUI::showMainbar`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showMainbar hook after the original call`
@@ -5349,7 +6655,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `on`: `boolean`
 
-### `ForgottenGUI::showNames`
+#### `ForgottenGUI::showNames`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showNames hook after the original call`
@@ -5358,7 +6664,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `on`: `boolean`
 
-### `ForgottenGUI::showPauseMessage`
+#### `ForgottenGUI::showPauseMessage`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showPauseMessage hook after the original call`
@@ -5367,7 +6673,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `on`: `boolean`
 
-### `ForgottenGUI::showPrintOutput`
+#### `ForgottenGUI::showPrintOutput`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showPrintOutput hook after the original call`
@@ -5376,7 +6682,17 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `v`: `boolean`
 
-### `ForgottenGUI::showTradeWindow`
+#### `ForgottenGUI::showTraderInventory`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `ForgottenGUI::showTraderInventory hook after the original call`
+- **Lua Signature**: `function(self, owner, result)`
+- **Parameters**:
+  - `self`: `ForgottenGUI`
+  - `owner`: `hand`
+  - `result`: `InventoryGUI`
+
+#### `ForgottenGUI::showTradeWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::showTradeWindow hook after the original call`
@@ -5387,17 +6703,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `b`: `hand`
   - `type`: `integer`
 
-### `ForgottenGUI::showTraderInventory`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `ForgottenGUI::showTraderInventory hook after the original call`
-- **Lua Signature**: `function(self, owner, result)`
-- **Parameters**:
-  - `self`: `ForgottenGUI`
-  - `owner`: `hand`
-  - `result`: `InventoryGUI`
-
-### `ForgottenGUI::shutDown`
+#### `ForgottenGUI::shutDown`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::shutDown hook before the original call`
@@ -5405,7 +6711,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::toggle`
+#### `ForgottenGUI::toggle`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::toggle hook after the original call`
@@ -5413,7 +6719,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::toggleCharacterStatsWindowPermanent`
+#### `ForgottenGUI::toggleCharacterStatsWindowPermanent`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::toggleCharacterStatsWindowPermanent hook after the original call`
@@ -5422,7 +6728,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `owner`: `hand`
 
-### `ForgottenGUI::toggleHelpWindow`
+#### `ForgottenGUI::toggleHelpWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::toggleHelpWindow hook after the original call`
@@ -5430,7 +6736,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::toggleInventory`
+#### `ForgottenGUI::toggleInventory`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::toggleInventory hook after the original call`
@@ -5442,7 +6748,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `attached`: `boolean`
   - `result`: `InventoryGUI`
 
-### `ForgottenGUI::toggleInventoryWindowPermanent`
+#### `ForgottenGUI::toggleInventoryWindowPermanent`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::toggleInventoryWindowPermanent hook after the original call`
@@ -5451,7 +6757,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `owner`: `hand`
 
-### `ForgottenGUI::toggleStatsWindow`
+#### `ForgottenGUI::toggleStatsWindow`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::toggleStatsWindow hook after the original call`
@@ -5460,7 +6766,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ForgottenGUI`
   - `owner`: `hand`
 
-### `ForgottenGUI::update`
+#### `ForgottenGUI::update`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::update hook after the original call`
@@ -5468,7 +6774,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::updateBountyPanelVisibility`
+#### `ForgottenGUI::updateBountyPanelVisibility`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::updateBountyPanelVisibility hook after the original call`
@@ -5476,7 +6782,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::updateToOrdersPanel`
+#### `ForgottenGUI::updateToOrdersPanel`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `ForgottenGUI::updateToOrdersPanel hook after the original call`
@@ -5484,7 +6790,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `ForgottenGUI`
 
-### `ForgottenGUI::widgetHasMouse`
+#### `ForgottenGUI::widgetHasMouse`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `ForgottenGUI::widgetHasMouse hook after the original call`
@@ -5495,7 +6801,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `FurnaceBuilding::_CONSTRUCTOR`
+### FurnaceBuilding
+
+#### `FurnaceBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -5512,7 +6820,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `FurnaceBuilding`
 - **Returns**: `FurnaceBuilding`
 
-### `FurnaceBuilding::_NV_operate`
+#### `FurnaceBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, worker, amount)`
@@ -5521,113 +6829,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `worker`: `Character`
   - `amount`: `number`
 
-### `GUIWindow::_NV_autoChangeSelectedObject`
+### GameData
 
-- **Category**: Notification / Observer
-- **Engine Hook**: `GUIWindow::_NV_autoChangeSelectedObject hook after the original call`
-- **Lua Signature**: `function(self, obj)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `obj`: `hand`
-
-### `GUIWindow::_NV_getHeight`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `GUIWindow::_NV_getHeight hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `defaultVal`: `integer`
-- **Returns**: `integer`
-
-### `GUIWindow::_NV_getHeightReal`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `GUIWindow::_NV_getHeightReal hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `GUIWindow::_NV_getWidth`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `GUIWindow::_NV_getWidth hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `defaultVal`: `integer`
-- **Returns**: `integer`
-
-### `GUIWindow::_NV_getWidthReal`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `GUIWindow::_NV_getWidthReal hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `GUIWindow::_NV_isVisible`
-
-- **Category**: Override / Interceptor
-- **Engine Hook**: `GUIWindow::_NV_isVisible hook after the original call`
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `GUIWindow::_NV_resize`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `GUIWindow::_NV_resize hook after the original call`
-- **Lua Signature**: `function(self, w, h)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `w`: `integer`
-  - `h`: `integer`
-
-### `GUIWindow::_NV_setPosition`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `GUIWindow::_NV_setPosition hook after the original call`
-- **Lua Signature**: `function(self, x, y)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `x`: `integer`
-  - `y`: `integer`
-
-### `GUIWindow::_NV_setPositionReal`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `GUIWindow::_NV_setPositionReal hook after the original call`
-- **Lua Signature**: `function(self, x, y)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `x`: `number`
-  - `y`: `number`
-
-### `GUIWindow::_NV_update`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `GUIWindow::_NV_update hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-
-### `GUIWindow::getWidget`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `GUIWindow::getWidget hook after the original call`
-- **Lua Signature**: `function(self, result)`
-- **Parameters**:
-  - `self`: `GUIWindow`
-  - `result`: `Widget`
-
-### `GameData::_CONSTRUCTOR`
+#### `GameData::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -5635,8 +6839,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `GameData`
   - `defaultVal`: `GameData`
 - **Returns**: `GameData`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `GameWorld::_CONSTRUCTOR`
+### GameWorld
+
+#### `GameWorld::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -5645,14 +6852,69 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `GameWorld`
 - **Returns**: `GameWorld`
 
-### `GameWorld::charsUpdate`
+#### `GameWorld::charsUpdate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `GameWorld`
 
-### `GatewayBuilding::_CONSTRUCTOR`
+#### `GameWorld::dailyUpdates`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `GameWorld`
+- **Notes**: Kenshi calls it once per in-game day.
+
+#### `GameWorld::destroy`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, obj, justUnloaded, debugInfo)`
+- **Parameters**:
+  - `self`: `GameWorld`
+  - `obj`: `RootObject`
+  - `justUnloaded`: `boolean`
+  - `debugInfo`: `string`
+- **Notes**: Hooks the destroy(RootObject*, bool, const char*) overload. Runs before the original call, so obj is still valid inside the handler. debugInfo is nil when the engine passes a null pointer.
+
+#### `GameWorld::initialiseNewGameWorld`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, datasrc)`
+- **Parameters**:
+  - `self`: `GameWorld`
+  - `datasrc`: `GameDataManager`
+- **Notes**: Also raised while a save loads.
+
+#### `GameWorld::resetGame`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `GameWorld`
+- **Notes**: Runs after the world state script bridge reset.
+
+#### `GameWorld::setGameSpeed`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, speed, click)`
+- **Parameters**:
+  - `self`: `GameWorld`
+  - `speed`: `number`
+  - `click`: `boolean`
+
+#### `GameWorld::userPause`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, p)`
+- **Parameters**:
+  - `self`: `GameWorld`
+  - `p`: `boolean`
+
+### GatewayBuilding
+
+#### `GatewayBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, dat, position, orientation, participant, town, handle, defaultVal)`
@@ -5667,7 +6929,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `GatewayBuilding`
 - **Returns**: `GatewayBuilding`
 
-### `Gear::_CONSTRUCTOR`
+### Gear
+
+#### `Gear::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, companyData, materialData, handle, level, uniform, defaultVal)`
@@ -5682,7 +6946,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Gear`
 - **Returns**: `Gear`
 
-### `GeneratorBuilding::_CONSTRUCTOR`
+### GeneratorBuilding
+
+#### `GeneratorBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -5699,7 +6965,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `GeneratorBuilding`
 - **Returns**: `GeneratorBuilding`
 
-### `GenericFixedInventoryLayout::_CONSTRUCTOR`
+### GenericFixedInventoryLayout
+
+#### `GenericFixedInventoryLayout::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -5708,14 +6976,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `GenericFixedInventoryLayout`
 - **Returns**: `GenericFixedInventoryLayout`
 
-### `GenericFixedInventoryLayout::_DESTRUCTOR`
+#### `GenericFixedInventoryLayout::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `GenericFixedInventoryLayout`
 
-### `GenericFixedInventoryLayout::_NV_setSize`
+#### `GenericFixedInventoryLayout::_NV_setSize`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, slotsW, slotsH)`
@@ -5724,7 +6992,117 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `slotsW`: `integer`
   - `slotsH`: `integer`
 
-### `GunClass::shoot`
+### GUIWindow
+
+#### `GUIWindow::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_autoChangeSelectedObject hook after the original call`
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `obj`: `hand`
+
+#### `GUIWindow::_NV_getHeight`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getHeight hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+#### `GUIWindow::_NV_getHeightReal`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getHeightReal hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+#### `GUIWindow::_NV_getWidth`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getWidth hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `integer`
+- **Returns**: `integer`
+
+#### `GUIWindow::_NV_getWidthReal`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_getWidthReal hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `number`
+- **Returns**: `number`
+
+#### `GUIWindow::_NV_isVisible`
+
+- **Category**: Override / Interceptor
+- **Engine Hook**: `GUIWindow::_NV_isVisible hook after the original call`
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `GUIWindow::_NV_resize`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_resize hook after the original call`
+- **Lua Signature**: `function(self, w, h)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `w`: `integer`
+  - `h`: `integer`
+
+#### `GUIWindow::_NV_setPosition`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_setPosition hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `x`: `integer`
+  - `y`: `integer`
+
+#### `GUIWindow::_NV_setPositionReal`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_setPositionReal hook after the original call`
+- **Lua Signature**: `function(self, x, y)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `x`: `number`
+  - `y`: `number`
+
+#### `GUIWindow::_NV_update`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::_NV_update hook after the original call`
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+
+#### `GUIWindow::getWidget`
+
+- **Category**: Notification / Observer
+- **Engine Hook**: `GUIWindow::getWidget hook after the original call`
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `GUIWindow`
+  - `result`: `Widget`
+
+### GunClass
+
+#### `GunClass::shoot`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, shooter, target, stat, aimPosition)`
@@ -5735,7 +7113,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `stat`: `integer`
   - `aimPosition`: `Vector3`
 
-### `InputHandler::_CONSTRUCTOR`
+### InputHandler
+
+#### `InputHandler::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -5744,7 +7124,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `InputHandler`
 - **Returns**: `InputHandler`
 
-### `InputHandler::keyDownEvent`
+#### `InputHandler::keyDownEvent`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, keyCode)`
@@ -5753,7 +7133,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `keyCode`: `integer`
 - **Notes**: keyCode is the raw OIS::KeyCode cast to int.
 
-### `Inventory::_CONSTRUCTOR`
+### Inventory
+
+#### `Inventory::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, owner, defaultVal)`
@@ -5763,7 +7145,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Inventory`
 - **Returns**: `Inventory`
 
-### `Inventory::_NV__sectionAddItemCallback`
+#### `Inventory::_NV__sectionAddItemCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item)`
@@ -5771,7 +7153,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Inventory`
   - `item`: `Item`
 
-### `Inventory::_NV__sectionRemoveItemCallback`
+#### `Inventory::_NV__sectionRemoveItemCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item)`
@@ -5779,7 +7161,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Inventory`
   - `item`: `Item`
 
-### `Inventory::_NV__sectionUpdateItemCallback`
+#### `Inventory::_NV__sectionUpdateItemCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item, prevQuantity)`
@@ -5787,8 +7169,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Inventory`
   - `item`: `Item`
   - `prevQuantity`: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Inventory::_NV_addItem`
+#### `Inventory::_NV_addItem`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `Inventory::addItem`
@@ -5803,7 +7186,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Returns**: `boolean`
 - **Notes**: item may already be queued for destruction when it merged into an existing stack or failed with destroyOnFail.
 
-### `Inventory::_NV_dropItem`
+#### `Inventory::_NV_dropItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item)`
@@ -5811,7 +7194,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Inventory`
   - `item`: `Item`
 
-### `Inventory::_NV_removeItemDontDestroy_returnsItem`
+#### `Inventory::_NV_removeItemDontDestroy_returnsItem`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `Inventory::removeItemDontDestroy_returnsItem`
@@ -5823,8 +7206,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `returnCopyIfSomeLeft`: `boolean`
   - `defaultVal`: `Item`
 - **Returns**: `Item`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Inventory::buyItem`
+#### `Inventory::buyItem`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, item, sendingTo, defaultVal)`
@@ -5834,8 +7218,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sendingTo`: `RootObject`
   - `defaultVal`: `Item`
 - **Returns**: `Item`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Inventory::getBestFoodItem`
+#### `Inventory::getBestFoodItem`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, race, defaultVal)`
@@ -5844,8 +7229,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `race`: `Character`
   - `defaultVal`: `Item`
 - **Returns**: `Item`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Inventory::getSectionOfType`
+#### `Inventory::getSectionOfType`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, type, defaultVal)`
@@ -5854,102 +7240,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `type`: `integer`
   - `defaultVal`: `InventorySection`
 - **Returns**: `InventorySection`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `InventoryGUI::FenceCallbackData::_DESTRUCTOR`
+### InventoryGUI
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `InventoryGUI::FenceCallbackData`
-
-### `InventoryGUI::InventoryTradeData::isValid`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `InventoryGUI::InventoryTradeData`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `InventoryGUI::InventoryTradeData::operator=`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, other)`
-- **Parameters**:
-  - `self`: `InventoryGUI::InventoryTradeData`
-  - `other`: `InventoryGUI::InventoryTradeData`
-
-### `InventoryGUI::RClickAutoTrade`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
-- **Parameters**:
-  - `self`: `InventoryGUI`
-  - `invSectionName`: `string`
-  - `x`: `integer`
-  - `y`: `integer`
-  - `sendingTo`: `InventoryGUI`
-  - `thieveryChecks`: `boolean`
-  - `first`: `boolean`
-  - `result`: `InventoryGUI::TradeResult`
-
-### `InventoryGUI::RClickAutoTradeAll`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
-- **Parameters**:
-  - `self`: `InventoryGUI`
-  - `invSectionName`: `string`
-  - `x`: `integer`
-  - `y`: `integer`
-  - `sendingTo`: `InventoryGUI`
-  - `thieveryChecks`: `boolean`
-  - `first`: `boolean`
-  - `result`: `InventoryGUI::TradeResult`
-
-### `InventoryGUI::TradeResult::ShowMessage`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(value)`
-- **Parameters**:
-  - `value`: `integer`
-
-### `InventoryGUI::TradeResult::_CONSTRUCTOR`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, value)`
-- **Parameters**:
-  - `self`: `InventoryGUI::TradeResult`
-  - `value`: `integer`
-
-### `InventoryGUI::TradeResult::operator!=`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, other, defaultVal)`
-- **Parameters**:
-  - `self`: `InventoryGUI::TradeResult`
-  - `other`: `InventoryGUI::TradeResult`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `InventoryGUI::TradeResult::operator==`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, other, defaultVal)`
-- **Parameters**:
-  - `self`: `InventoryGUI::TradeResult`
-  - `other`: `InventoryGUI::TradeResult`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `InventoryGUI::TradeResult::showMessage`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `InventoryGUI::TradeResult`
-
-### `InventoryGUI::_CONSTRUCTOR`
+#### `InventoryGUI::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, inventory, layout, callback, defaultVal)`
@@ -5961,14 +7256,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `InventoryGUI`
 - **Returns**: `InventoryGUI`
 
-### `InventoryGUI::_DESTRUCTOR`
+#### `InventoryGUI::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryGUI`
 
-### `InventoryGUI::_NV_autoChangeSelectedObject`
+#### `InventoryGUI::_NV_autoChangeSelectedObject`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, obj)`
@@ -5976,7 +7271,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `obj`: `hand`
 
-### `InventoryGUI::_NV_getCallbackCharacter`
+#### `InventoryGUI::_NV_getCallbackCharacter`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -5985,7 +7280,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Character`
 - **Returns**: `Character`
 
-### `InventoryGUI::_NV_getCallbackObject`
+#### `InventoryGUI::_NV_getCallbackObject`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -5994,7 +7289,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `RootObject`
 - **Returns**: `RootObject`
 
-### `InventoryGUI::_NV_getInventory`
+#### `InventoryGUI::_NV_getInventory`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6003,7 +7298,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Inventory`
 - **Returns**: `Inventory`
 
-### `InventoryGUI::_NV_isVisible`
+#### `InventoryGUI::_NV_isVisible`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6012,7 +7307,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::_NV_refreshSection`
+#### `InventoryGUI::_NV_refreshSection`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, section)`
@@ -6020,7 +7315,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `section`: `InventorySection`
 
-### `InventoryGUI::_NV_setPositionReal`
+#### `InventoryGUI::_NV_setPositionReal`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, x, y)`
@@ -6029,7 +7324,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `x`: `number`
   - `y`: `number`
 
-### `InventoryGUI::_NV_show`
+#### `InventoryGUI::_NV_show`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -6037,14 +7332,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `on`: `boolean`
 
-### `InventoryGUI::_NV_update`
+#### `InventoryGUI::_NV_update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryGUI`
 
-### `InventoryGUI::addTradePartner`
+#### `InventoryGUI::addTradePartner`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, payment, canDrop, isPlayer, whoHand)`
@@ -6055,7 +7350,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `isPlayer`: `boolean`
   - `whoHand`: `hand`
 
-### `InventoryGUI::autoArrangeButton`
+#### `InventoryGUI::autoArrangeButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6063,7 +7358,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `sender`: `Widget`
 
-### `InventoryGUI::canDropMouseItemWithoutPaying`
+#### `InventoryGUI::canDropMouseItemWithoutPaying`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(cameFrom, defaultVal)`
@@ -6072,13 +7367,13 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::clearTradePartners`
+#### `InventoryGUI::clearTradePartners`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function()`
 - **Parameters**: None
 
-### `InventoryGUI::fencingConfirmation`
+#### `InventoryGUI::fencingConfirmation`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, item, thief, fence, sectionName, mouse, defaultVal)`
@@ -6092,7 +7387,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::fencingConfirmationCallback`
+#### `InventoryGUI::fencingConfirmationCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, b)`
@@ -6100,7 +7395,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `b`: `integer`
 
-### `InventoryGUI::getBackpack`
+#### `InventoryGUI::getBackpack`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6109,7 +7404,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ContainerItem`
 - **Returns**: `ContainerItem`
 
-### `InventoryGUI::getMouseItem`
+#### `InventoryGUI::getMouseItem`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6118,7 +7413,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Item`
 - **Returns**: `Item`
 
-### `InventoryGUI::getNPCTrader`
+#### `InventoryGUI::getNPCTrader`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -6126,7 +7421,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Character`
 - **Returns**: `Character`
 
-### `InventoryGUI::getPlayerTradeCharacter`
+#### `InventoryGUI::getPlayerTradeCharacter`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6135,7 +7430,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `RootObject`
 - **Returns**: `RootObject`
 
-### `InventoryGUI::getSectionWithMouseLocal`
+#### `InventoryGUI::getSectionWithMouseLocal`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6143,7 +7438,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `result`: `string`
 
-### `InventoryGUI::getSelectedItem`
+#### `InventoryGUI::getSelectedItem`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, sectionName, defaultVal)`
@@ -6153,7 +7448,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Item`
 - **Returns**: `Item`
 
-### `InventoryGUI::getSlotWithMouse`
+#### `InventoryGUI::getSlotWithMouse`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6161,7 +7456,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `result`: `iVector2`
 
-### `InventoryGUI::getTrader1Trader2`
+#### `InventoryGUI::getTrader1Trader2`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, trader1, trader2)`
@@ -6170,7 +7465,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `trader1`: `InventoryGUI`
   - `trader2`: `InventoryGUI`
 
-### `InventoryGUI::getTraderPriceMultiplier`
+#### `InventoryGUI::getTraderPriceMultiplier`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -6178,7 +7473,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `InventoryGUI::getTradingTown`
+#### `InventoryGUI::getTradingTown`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -6186,7 +7481,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Town`
 - **Returns**: `Town`
 
-### `InventoryGUI::getWindowCoord`
+#### `InventoryGUI::getWindowCoord`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6194,7 +7489,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `result`: `types::TCoord<int>`
 
-### `InventoryGUI::hasMouse`
+#### `InventoryGUI::hasMouse`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6203,7 +7498,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::hasSameOwner`
+#### `InventoryGUI::hasSameOwner`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, other, defaultVal)`
@@ -6213,7 +7508,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::isStealing`
+#### `InventoryGUI::isStealing`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, cameFrom, defaultVal)`
@@ -6223,7 +7518,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::isTradingAndStealing_static`
+#### `InventoryGUI::isTradingAndStealing_static`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -6231,7 +7526,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `RootObject`
 - **Returns**: `RootObject`
 
-### `InventoryGUI::isTradingForMoney`
+#### `InventoryGUI::isTradingForMoney`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, cameFrom, defaultVal)`
@@ -6241,7 +7536,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::isTradingForMoney_static`
+#### `InventoryGUI::isTradingForMoney_static`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -6249,7 +7544,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `RootObject`
 - **Returns**: `RootObject`
 
-### `InventoryGUI::isWithinRangeToTrade`
+#### `InventoryGUI::isWithinRangeToTrade`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, otherOwner, stealing, defaultVal)`
@@ -6260,7 +7555,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::lockedItemCheck`
+#### `InventoryGUI::lockedItemCheck`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(item, defaultVal)`
@@ -6269,7 +7564,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::makeIconForItem`
+#### `InventoryGUI::makeIconForItem`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(item, x, y, defaultVal)`
@@ -6280,7 +7575,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `InventoryIcon`
 - **Returns**: `InventoryIcon`
 
-### `InventoryGUI::onWindowFocus`
+#### `InventoryGUI::onWindowFocus`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, focus)`
@@ -6289,7 +7584,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `focus`: `boolean`
 
-### `InventoryGUI::openBackpackButton`
+#### `InventoryGUI::openBackpackButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6297,7 +7592,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `sender`: `Widget`
 
-### `InventoryGUI::openLimbsInterface`
+#### `InventoryGUI::openLimbsInterface`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6305,7 +7600,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `sender`: `Widget`
 
-### `InventoryGUI::pickupItemToMouse`
+#### `InventoryGUI::pickupItemToMouse`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, sectionName, defaultVal)`
@@ -6315,7 +7610,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::placeItemFromMouse`
+#### `InventoryGUI::placeItemFromMouse`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, sectionName, mousePos, defaultVal)`
@@ -6326,7 +7621,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::playSound`
+#### `InventoryGUI::playSound`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, eventId, item)`
@@ -6335,28 +7630,56 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `eventId`: `string`
   - `item`: `Item`
 
-### `InventoryGUI::refreshAllSections`
+#### `InventoryGUI::RClickAutoTrade`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `invSectionName`: `string`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `sendingTo`: `InventoryGUI`
+  - `thieveryChecks`: `boolean`
+  - `first`: `boolean`
+  - `result`: `InventoryGUI::TradeResult`
+
+#### `InventoryGUI::RClickAutoTradeAll`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, invSectionName, x, y, sendingTo, thieveryChecks, first, result)`
+- **Parameters**:
+  - `self`: `InventoryGUI`
+  - `invSectionName`: `string`
+  - `x`: `integer`
+  - `y`: `integer`
+  - `sendingTo`: `InventoryGUI`
+  - `thieveryChecks`: `boolean`
+  - `first`: `boolean`
+  - `result`: `InventoryGUI::TradeResult`
+
+#### `InventoryGUI::refreshAllSections`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryGUI`
 
-### `InventoryGUI::refreshSection`
+#### `InventoryGUI::refreshSection`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryGUI`
 
-### `InventoryGUI::removeTradePartner`
+#### `InventoryGUI::removeTradePartner`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(tradeWith)`
 - **Parameters**:
   - `tradeWith`: `InventoryGUI`
 
-### `InventoryGUI::returnItem`
+#### `InventoryGUI::returnItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item, sectionName)`
@@ -6365,14 +7688,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `item`: `Item`
   - `sectionName`: `string`
 
-### `InventoryGUI::rightClickAutoEquipping`
+#### `InventoryGUI::rightClickAutoEquipping`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryGUI`
 
-### `InventoryGUI::sectionMouseButtonPressed`
+#### `InventoryGUI::sectionMouseButtonPressed`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top, id)`
@@ -6383,7 +7706,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `top`: `integer`
   - `id`: `integer`
 
-### `InventoryGUI::sectionMouseButtonReleased`
+#### `InventoryGUI::sectionMouseButtonReleased`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top, id)`
@@ -6394,7 +7717,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `top`: `integer`
   - `id`: `integer`
 
-### `InventoryGUI::setItemToPlayerPortrait`
+#### `InventoryGUI::setItemToPlayerPortrait`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, item, character, defaultVal)`
@@ -6405,14 +7728,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::setTradingTown`
+#### `InventoryGUI::setTradingTown`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(town)`
 - **Parameters**:
   - `town`: `hand`
 
-### `InventoryGUI::showBackpack`
+#### `InventoryGUI::showBackpack`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -6420,14 +7743,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `on`: `boolean`
 
-### `InventoryGUI::stealingGUIInfoUpdate`
+#### `InventoryGUI::stealingGUIInfoUpdate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryGUI`
 
-### `InventoryGUI::takeCertainAmountFrom`
+#### `InventoryGUI::takeCertainAmountFrom`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseItem, amount, defaultVal)`
@@ -6438,7 +7761,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Item`
 - **Returns**: `Item`
 
-### `InventoryGUI::tryToEquip`
+#### `InventoryGUI::tryToEquip`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, item, replace, defaultVal)`
@@ -6449,14 +7772,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventoryGUI::updateDatapanel`
+#### `InventoryGUI::updateDatapanel`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryGUI`
 
-### `InventoryGUI::windowButtonPressed`
+#### `InventoryGUI::windowButtonPressed`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, widget, name)`
@@ -6465,7 +7788,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `widget`: `Widget`
   - `name`: `string`
 
-### `InventoryGUI::windowMoved`
+#### `InventoryGUI::windowMoved`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6473,7 +7796,81 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryGUI`
   - `sender`: `Widget`
 
-### `InventoryIcon::_CONSTRUCTOR`
+### InventoryGUI::FenceCallbackData
+
+#### `InventoryGUI::FenceCallbackData::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI::FenceCallbackData`
+
+### InventoryGUI::InventoryTradeData
+
+#### `InventoryGUI::InventoryTradeData::isValid`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::InventoryTradeData`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `InventoryGUI::InventoryTradeData::operator=`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, other)`
+- **Parameters**:
+  - `self`: `InventoryGUI::InventoryTradeData`
+  - `other`: `InventoryGUI::InventoryTradeData`
+
+### InventoryGUI::TradeResult
+
+#### `InventoryGUI::TradeResult::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `value`: `integer`
+
+#### `InventoryGUI::TradeResult::operator!=`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `other`: `InventoryGUI::TradeResult`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `InventoryGUI::TradeResult::operator==`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, other, defaultVal)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+  - `other`: `InventoryGUI::TradeResult`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `InventoryGUI::TradeResult::showMessage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `InventoryGUI::TradeResult`
+
+#### `InventoryGUI::TradeResult::ShowMessage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(value)`
+- **Parameters**:
+  - `value`: `integer`
+
+### InventoryIcon
+
+#### `InventoryIcon::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, item, position, parent)`
@@ -6483,14 +7880,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `position`: `types::TPoint<int>`
   - `parent`: `Widget`
 
-### `InventoryIcon::_DESTRUCTOR`
+#### `InventoryIcon::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryIcon`
 
-### `InventoryIcon::createIconImage`
+#### `InventoryIcon::createIconImage`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(item, name, size)`
@@ -6499,7 +7896,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `name`: `string`
   - `size`: `iVector2`
 
-### `InventoryIcon::getItemPosition`
+#### `InventoryIcon::getItemPosition`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(x, y, result)`
@@ -6508,7 +7905,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `y`: `integer`
   - `result`: `types::TPoint<int>`
 
-### `InventoryIcon::getItemSize`
+#### `InventoryIcon::getItemSize`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(itemData, result)`
@@ -6516,7 +7913,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `itemData`: `GameData`
   - `result`: `types::TSize<int>`
 
-### `InventoryIcon::getSize`
+#### `InventoryIcon::getSize`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6524,7 +7921,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryIcon`
   - `result`: `types::TSize<int>`
 
-### `InventoryIcon::getWidget`
+#### `InventoryIcon::getWidget`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6532,7 +7929,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryIcon`
   - `result`: `Widget`
 
-### `InventoryIcon::setPosition`
+#### `InventoryIcon::setPosition`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, position)`
@@ -6540,14 +7937,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryIcon`
   - `position`: `types::TPoint<int>`
 
-### `InventoryIcon::update`
+#### `InventoryIcon::update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryIcon`
 
-### `InventoryItemBase::_CONSTRUCTOR`
+### InventoryItemBase
+
+#### `InventoryItemBase::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, companyData, materialData, handle, defaultVal)`
@@ -6560,7 +7959,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `InventoryItemBase`
 - **Returns**: `InventoryItemBase`
 
-### `InventoryItemBase::getValueSingle`
+#### `InventoryItemBase::getValueSingle`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `Inventory::getBaseValueSingle`
@@ -6571,7 +7970,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
-### `InventoryLayout::_CONSTRUCTOR`
+### InventoryLayout
+
+#### `InventoryLayout::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, file)`
@@ -6579,14 +7980,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryLayout`
   - `file`: `string`
 
-### `InventoryLayout::_DESTRUCTOR`
+#### `InventoryLayout::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventoryLayout`
 
-### `InventoryLayout::_NV_getDatapanel`
+#### `InventoryLayout::_NV_getDatapanel`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6595,7 +7996,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `DatapanelGUI`
 - **Returns**: `DatapanelGUI`
 
-### `InventoryLayout::createSectionGUI`
+#### `InventoryLayout::createSectionGUI`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, section, defaultVal)`
@@ -6605,7 +8006,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `InventorySectionGUI`
 - **Returns**: `InventorySectionGUI`
 
-### `InventoryLayout::getWidget`
+#### `InventoryLayout::getWidget`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, name, result)`
@@ -6614,7 +8015,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `name`: `string`
   - `result`: `Widget`
 
-### `InventoryLayout::getWindow`
+#### `InventoryLayout::getWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6622,13 +8023,13 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryLayout`
   - `result`: `Widget`
 
-### `InventoryLayout::notifyCellSizeChanged`
+#### `InventoryLayout::notifyCellSizeChanged`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function()`
 - **Parameters**: None
 
-### `InventoryLayout::resizeSection`
+#### `InventoryLayout::resizeSection`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, section, sectionGUI, result)`
@@ -6638,7 +8039,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sectionGUI`: `InventorySectionGUI`
   - `result`: `types::TSize<int>`
 
-### `InventoryLayout::resizeSectionWidget`
+#### `InventoryLayout::resizeSectionWidget`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, width, height, widget, result)`
@@ -6649,7 +8050,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `widget`: `Widget`
   - `result`: `types::TSize<int>`
 
-### `InventoryLayout::setSectionGUIDisabled`
+#### `InventoryLayout::setSectionGUIDisabled`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sectionName, width, height)`
@@ -6659,7 +8060,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `width`: `integer`
   - `height`: `integer`
 
-### `InventoryLayout::setupDataPanelInfos`
+#### `InventoryLayout::setupDataPanelInfos`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, name)`
@@ -6667,7 +8068,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventoryLayout`
   - `name`: `string`
 
-### `InventorySectionGUI::_CONSTRUCTOR`
+### InventorySectionGUI
+
+#### `InventorySectionGUI::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, widget, sectionName)`
@@ -6676,14 +8079,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `widget`: `Widget`
   - `sectionName`: `string`
 
-### `InventorySectionGUI::_DESTRUCTOR`
+#### `InventorySectionGUI::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventorySectionGUI`
 
-### `InventorySectionGUI::getBestPositionSlot`
+#### `InventorySectionGUI::getBestPositionSlot`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, position, section, item, slot, defaultVal)`
@@ -6696,7 +8099,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventorySectionGUI::getItemAbsolutePosition`
+#### `InventorySectionGUI::getItemAbsolutePosition`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, x, y, result)`
@@ -6706,7 +8109,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `y`: `integer`
   - `result`: `types::TPoint<int>`
 
-### `InventorySectionGUI::getPositionSlot`
+#### `InventorySectionGUI::getPositionSlot`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, position, section, round, result)`
@@ -6717,7 +8120,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `round`: `boolean`
   - `result`: `types::TPoint<int>`
 
-### `InventorySectionGUI::getWidget`
+#### `InventorySectionGUI::getWidget`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6725,7 +8128,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventorySectionGUI`
   - `result`: `Widget`
 
-### `InventorySectionGUI::hasMouse`
+#### `InventorySectionGUI::hasMouse`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -6734,7 +8137,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `InventorySectionGUI::refreshIcons`
+#### `InventorySectionGUI::refreshIcons`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, section)`
@@ -6742,7 +8145,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventorySectionGUI`
   - `section`: `InventorySection`
 
-### `InventorySectionGUI::setEnabled`
+#### `InventorySectionGUI::setEnabled`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, value)`
@@ -6750,14 +8153,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `InventorySectionGUI`
   - `value`: `boolean`
 
-### `InventorySectionGUI::update`
+#### `InventorySectionGUI::update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `InventorySectionGUI`
 
-### `Item::_CONSTRUCTOR`
+### Item
+
+#### `Item::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, companyData, materialData, handle, defaultVal)`
@@ -6770,7 +8175,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Item`
 - **Returns**: `Item`
 
-### `Item::_NV_notifyTheftFrom`
+#### `Item::_NV_notifyTheftFrom`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, victim)`
@@ -6778,7 +8183,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Item`
   - `victim`: `RootObject`
 
-### `LightBuilding::_CONSTRUCTOR`
+### LightBuilding
+
+#### `LightBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -6795,7 +8202,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `LightBuilding`
 - **Returns**: `LightBuilding`
 
-### `LimbsInventoryLayout::_CONSTRUCTOR`
+### LimbsInventoryLayout
+
+#### `LimbsInventoryLayout::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, character, defaultVal)`
@@ -6805,7 +8214,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `LimbsInventoryLayout`
 - **Returns**: `LimbsInventoryLayout`
 
-### `LockedArmour::_CONSTRUCTOR`
+### LockedArmour
+
+#### `LockedArmour::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, materialData, handle, uniformFlag, level, defaultVal)`
@@ -6819,67 +8230,23 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `LockedArmour`
 - **Returns**: `LockedArmour`
 
-### `MainBarGUI::_CONSTRUCTOR`
+### MainBarGUI
+
+#### `MainBarGUI::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainBarGUI`
 
-### `MainBarGUI::_DESTRUCTOR`
+#### `MainBarGUI::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainBarGUI`
 
-### `MainBarGUI::_NV_autoChangeSelectedObject`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, obj)`
-- **Parameters**:
-  - `self`: `MainBarGUI`
-  - `obj`: `hand`
-
-### `MainBarGUI::_NV_clear`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `MainBarGUI`
-
-### `MainBarGUI::_NV_getToolTip`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `MainBarGUI`
-  - `defaultVal`: `ToolTip`
-- **Returns**: `ToolTip`
-
-### `MainBarGUI::_NV_show`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, on)`
-- **Parameters**:
-  - `self`: `MainBarGUI`
-  - `on`: `boolean`
-
-### `MainBarGUI::_NV_update`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `MainBarGUI`
-
-### `MainBarGUI::_NV_updateBountyPanelVisibility`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `MainBarGUI`
-
-### `MainBarGUI::_getWidget`
+#### `MainBarGUI::_getWidget`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, name, result)`
@@ -6888,7 +8255,53 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `name`: `string`
   - `result`: `Widget`
 
-### `MainBarGUI::buildButton`
+#### `MainBarGUI::_NV_autoChangeSelectedObject`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, obj)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `obj`: `hand`
+
+#### `MainBarGUI::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+#### `MainBarGUI::_NV_getToolTip`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `defaultVal`: `ToolTip`
+- **Returns**: `ToolTip`
+
+#### `MainBarGUI::_NV_show`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, on)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+  - `on`: `boolean`
+
+#### `MainBarGUI::_NV_update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+#### `MainBarGUI::_NV_updateBountyPanelVisibility`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+#### `MainBarGUI::buildButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6896,7 +8309,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::changeFloorButtonDown`
+#### `MainBarGUI::changeFloorButtonDown`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6904,7 +8317,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::changeFloorButtonUp`
+#### `MainBarGUI::changeFloorButtonUp`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6912,7 +8325,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::changeSpeed`
+#### `MainBarGUI::changeSpeed`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6920,7 +8333,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::closeMapWindow`
+#### `MainBarGUI::closeMapWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -6928,7 +8341,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::extendInfoPanel`
+#### `MainBarGUI::extendInfoPanel`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top, id)`
@@ -6939,7 +8352,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `top`: `integer`
   - `id`: `integer`
 
-### `MainBarGUI::getBuildingInventoryPosition`
+#### `MainBarGUI::getBuildingInventoryPosition`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6947,7 +8360,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `result`: `types::TPoint<int>`
 
-### `MainBarGUI::getDatapanel`
+#### `MainBarGUI::getDatapanel`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, id, defaultVal)`
@@ -6957,7 +8370,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `DatapanelGUI`
 - **Returns**: `DatapanelGUI`
 
-### `MainBarGUI::getLoadingPanel`
+#### `MainBarGUI::getLoadingPanel`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6965,7 +8378,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `result`: `Widget`
 
-### `MainBarGUI::getMedicalPanel`
+#### `MainBarGUI::getMedicalPanel`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6973,7 +8386,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `result`: `lightuserdata`
 
-### `MainBarGUI::getPausePanel`
+#### `MainBarGUI::getPausePanel`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -6981,7 +8394,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `result`: `Widget`
 
-### `MainBarGUI::loadFromSerialise`
+#### `MainBarGUI::loadFromSerialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, data)`
@@ -6989,14 +8402,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `data`: `GameData`
 
-### `MainBarGUI::ordersPanelClear`
+#### `MainBarGUI::ordersPanelClear`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainBarGUI`
 
-### `MainBarGUI::ordersPanelFill`
+#### `MainBarGUI::ordersPanelFill`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character)`
@@ -7004,7 +8417,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `character`: `hand`
 
-### `MainBarGUI::platoonUpdated`
+#### `MainBarGUI::platoonUpdated`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, platoon, charAdded)`
@@ -7013,7 +8426,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `platoon`: `RootObjectContainer`
   - `charAdded`: `boolean`
 
-### `MainBarGUI::portraitChangeSelection`
+#### `MainBarGUI::portraitChangeSelection`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, index, follow)`
@@ -7023,7 +8436,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `index`: `number`
   - `follow`: `boolean`
 
-### `MainBarGUI::portraitNotifyItem`
+#### `MainBarGUI::portraitNotifyItem`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, info)`
@@ -7032,7 +8445,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `info`: `lightuserdata`
 
-### `MainBarGUI::portraitSelectItemAccept`
+#### `MainBarGUI::portraitSelectItemAccept`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, index)`
@@ -7041,7 +8454,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `index`: `number`
 
-### `MainBarGUI::pressedKey`
+#### `MainBarGUI::pressedKey`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, keycode)`
@@ -7049,14 +8462,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `keycode`: `integer`
 
-### `MainBarGUI::refreshPortraitTabs`
+#### `MainBarGUI::refreshPortraitTabs`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainBarGUI`
 
-### `MainBarGUI::serialise`
+#### `MainBarGUI::serialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, data)`
@@ -7064,7 +8477,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `data`: `GameData`
 
-### `MainBarGUI::setExtendInfoPanelEnabled`
+#### `MainBarGUI::setExtendInfoPanelEnabled`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, enabled)`
@@ -7072,7 +8485,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `enabled`: `boolean`
 
-### `MainBarGUI::setLevelEditInteriorMode`
+#### `MainBarGUI::setLevelEditInteriorMode`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, interiorMode)`
@@ -7080,7 +8493,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `interiorMode`: `boolean`
 
-### `MainBarGUI::setLevelEditMode`
+#### `MainBarGUI::setLevelEditMode`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -7088,21 +8501,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `on`: `boolean`
 
-### `MainBarGUI::setMessagePosition`
+#### `MainBarGUI::setMessagePosition`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainBarGUI`
 
-### `MainBarGUI::speedChanged`
+#### `MainBarGUI::speedChanged`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainBarGUI`
 
-### `MainBarGUI::tabPlatoonChange`
+#### `MainBarGUI::tabPlatoonChange`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, index)`
@@ -7111,7 +8524,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `index`: `number`
 
-### `MainBarGUI::toggleCraftWindow`
+#### `MainBarGUI::toggleCraftWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7119,7 +8532,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::toggleFactionWindow`
+#### `MainBarGUI::toggleFactionWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7127,7 +8540,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::toggleHelpWindow`
+#### `MainBarGUI::toggleHelpWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7135,7 +8548,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::toggleInventory`
+#### `MainBarGUI::toggleInventory`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7143,7 +8556,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::toggleMapWindow`
+#### `MainBarGUI::toggleMapWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7151,7 +8564,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::toggleSquadWindow`
+#### `MainBarGUI::toggleSquadWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7159,7 +8572,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::toggleStatsWindow`
+#### `MainBarGUI::toggleStatsWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7167,7 +8580,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::toggleTechWindow`
+#### `MainBarGUI::toggleTechWindow`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7175,7 +8588,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `sender`: `Widget`
 
-### `MainBarGUI::updatePortrait`
+#### `MainBarGUI::updatePortrait`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character)`
@@ -7183,7 +8596,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `character`: `hand`
 
-### `MainBarGUI::updatePortraitSize`
+#### `MainBarGUI::updatePortraits`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MainBarGUI`
+
+#### `MainBarGUI::updatePortraitSize`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, platoon)`
@@ -7191,28 +8611,23 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainBarGUI`
   - `platoon`: `ActivePlatoon`
 
-### `MainBarGUI::updatePortraits`
+#### `MainBarGUI::updatePotraitsPlatoon`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainBarGUI`
 
-### `MainBarGUI::updatePotraitsPlatoon`
+### MainTabPortraitPlatoon
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `MainBarGUI`
-
-### `MainTabPortraitPlatoon::_DESTRUCTOR`
+#### `MainTabPortraitPlatoon::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainTabPortraitPlatoon`
 
-### `MainTabPortraitPlatoon::addTab`
+#### `MainTabPortraitPlatoon::addTab`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, tabControl, visible)`
@@ -7221,14 +8636,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `tabControl`: `Widget`
   - `visible`: `boolean`
 
-### `MainTabPortraitPlatoon::detach`
+#### `MainTabPortraitPlatoon::detach`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainTabPortraitPlatoon`
 
-### `MainTabPortraitPlatoon::setFlash`
+#### `MainTabPortraitPlatoon::setFlash`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, flash)`
@@ -7236,68 +8651,30 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MainTabPortraitPlatoon`
   - `flash`: `boolean`
 
-### `MainTabPortraitPlatoon::update`
+#### `MainTabPortraitPlatoon::update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MainTabPortraitPlatoon`
 
-### `ManagementScreen::TechItemViewData::_DESTRUCTOR`
+### ManagementScreen
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `ManagementScreen::TechItemViewData`
-
-### `ManagementScreen::TechItemViewData::getName`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, result)`
-- **Parameters**:
-  - `self`: `ManagementScreen::TechItemViewData`
-  - `result`: `string`
-
-### `ManagementScreen::TechItemViewData::getProgress`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `ManagementScreen::TechItemViewData`
-  - `defaultVal`: `number`
-- **Returns**: `number`
-
-### `ManagementScreen::TechItemViewData::getValue`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, result)`
-- **Parameters**:
-  - `self`: `ManagementScreen::TechItemViewData`
-  - `result`: `string`
-
-### `ManagementScreen::TechItemViewData::setItem`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, item)`
-- **Parameters**:
-  - `self`: `ManagementScreen::TechItemViewData`
-  - `item`: `lightuserdata`
-
-### `ManagementScreen::_CONSTRUCTOR`
+#### `ManagementScreen::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::_DESTRUCTOR`
+#### `ManagementScreen::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::addButtonPress`
+#### `ManagementScreen::addButtonPress`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top, id)`
@@ -7308,7 +8685,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `top`: `integer`
   - `id`: `integer`
 
-### `ManagementScreen::addMessage`
+#### `ManagementScreen::addMessage`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, owner, message, logColor)`
@@ -7318,7 +8695,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `message`: `string`
   - `logColor`: `integer`
 
-### `ManagementScreen::addSquadToMap`
+#### `ManagementScreen::addSquadToMap`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, squad)`
@@ -7326,14 +8703,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ManagementScreen`
   - `squad`: `Platoon`
 
-### `ManagementScreen::clear`
+#### `ManagementScreen::clear`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::closeEverythingButton`
+#### `ManagementScreen::closeEverythingButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, widget, name)`
@@ -7342,7 +8719,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `widget`: `Widget`
   - `name`: `string`
 
-### `ManagementScreen::getCurrentTab`
+#### `ManagementScreen::getCurrentTab`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -7351,7 +8728,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `ManagementScreen::getSingleton`
+#### `ManagementScreen::getSingleton`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -7359,7 +8736,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ManagementScreen`
 - **Returns**: `ManagementScreen`
 
-### `ManagementScreen::getTab`
+#### `ManagementScreen::getTab`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, index, result)`
@@ -7368,7 +8745,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `index`: `integer`
   - `result`: `Widget`
 
-### `ManagementScreen::getVisible`
+#### `ManagementScreen::getVisible`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -7377,7 +8754,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ManagementScreen::getWidget`
+#### `ManagementScreen::getWidget`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, name, result)`
@@ -7386,7 +8763,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `name`: `string`
   - `result`: `Widget`
 
-### `ManagementScreen::mouseOverCallback`
+#### `ManagementScreen::mouseOverCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top)`
@@ -7396,7 +8773,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `left`: `integer`
   - `top`: `integer`
 
-### `ManagementScreen::printResearch`
+#### `ManagementScreen::printResearch`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(panel, data, listName, displayName, category)`
@@ -7407,7 +8784,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `displayName`: `string`
   - `category`: `integer`
 
-### `ManagementScreen::refresh`
+#### `ManagementScreen::refresh`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, current, progress)`
@@ -7416,21 +8793,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `current`: `GameData`
   - `progress`: `number`
 
-### `ManagementScreen::refreshAI`
+#### `ManagementScreen::refreshAI`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::refreshDiplomacy`
+#### `ManagementScreen::refreshDiplomacy`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::refreshMap`
+#### `ManagementScreen::refreshMap`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, centerCamera)`
@@ -7438,42 +8815,42 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ManagementScreen`
   - `centerCamera`: `boolean`
 
-### `ManagementScreen::refreshMessages`
+#### `ManagementScreen::refreshMessages`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::refreshResearchList`
+#### `ManagementScreen::refreshResearchList`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::refreshResearchListDescription`
+#### `ManagementScreen::refreshResearchListDescription`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::refreshResearchRate`
+#### `ManagementScreen::refreshResearchRate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::refreshSquads`
+#### `ManagementScreen::refreshSquads`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::removeButtonPress`
+#### `ManagementScreen::removeButtonPress`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top, id)`
@@ -7484,7 +8861,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `top`: `integer`
   - `id`: `integer`
 
-### `ManagementScreen::removeSquadFromMap`
+#### `ManagementScreen::removeSquadFromMap`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, squad)`
@@ -7492,7 +8869,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ManagementScreen`
   - `squad`: `Platoon`
 
-### `ManagementScreen::researchQueueTooltip`
+#### `ManagementScreen::researchQueueTooltip`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, layout, info, data)`
@@ -7502,7 +8879,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `info`: `lightuserdata`
   - `data`: `ManagementScreen::TechItemViewData`
 
-### `ManagementScreen::researchRemoved`
+#### `ManagementScreen::researchRemoved`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, index, item)`
@@ -7511,7 +8888,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `index`: `integer`
   - `item`: `ManagementScreen::TechItemViewData`
 
-### `ManagementScreen::researchTypeSelect`
+#### `ManagementScreen::researchTypeSelect`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, index)`
@@ -7520,7 +8897,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `index`: `number`
 
-### `ManagementScreen::researchValidateOrder`
+#### `ManagementScreen::researchValidateOrder`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, first, second, defaultVal)`
@@ -7531,14 +8908,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `ManagementScreen::resetSquads`
+#### `ManagementScreen::resetSquads`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::setCraftingBench`
+#### `ManagementScreen::setCraftingBench`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, buildingHandle)`
@@ -7546,7 +8923,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ManagementScreen`
   - `buildingHandle`: `hand`
 
-### `ManagementScreen::setVisible`
+#### `ManagementScreen::setVisible`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on, tab)`
@@ -7555,7 +8932,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `on`: `boolean`
   - `tab`: `integer`
 
-### `ManagementScreen::showDebugMarker`
+#### `ManagementScreen::showDebugMarker`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, position)`
@@ -7563,7 +8940,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ManagementScreen`
   - `position`: `Vector3`
 
-### `ManagementScreen::showRoads`
+#### `ManagementScreen::showRoads`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, value)`
@@ -7571,7 +8948,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ManagementScreen`
   - `value`: `boolean`
 
-### `ManagementScreen::tabCallback`
+#### `ManagementScreen::tabCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, index)`
@@ -7580,104 +8957,65 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `index`: `number`
 
-### `ManagementScreen::update`
+#### `ManagementScreen::update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `ManagementScreen::updateResearchListRate`
+#### `ManagementScreen::updateResearchListRate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `ManagementScreen`
 
-### `MapScreen::MapMarkerCharacter::_CONSTRUCTOR`
+### ManagementScreen::TechItemViewData
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, character, mapScreen)`
-- **Parameters**:
-  - `self`: `MapScreen::MapMarkerCharacter`
-  - `character`: `RootObjectBase`
-  - `mapScreen`: `MapScreen`
-
-### `MapScreen::MapMarkerCharacter::_DESTRUCTOR`
+#### `ManagementScreen::TechItemViewData::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
-  - `self`: `MapScreen::MapMarkerCharacter`
+  - `self`: `ManagementScreen::TechItemViewData`
 
-### `MapScreen::MapMarkerCharacter::getVisible`
+#### `ManagementScreen::TechItemViewData::getName`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, result)`
+- **Parameters**:
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `result`: `string`
+
+#### `ManagementScreen::TechItemViewData::getProgress`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
 - **Parameters**:
-  - `self`: `MapScreen::MapMarkerCharacter`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `defaultVal`: `number`
+- **Returns**: `number`
 
-### `MapScreen::MapMarkerCharacter::setVisible`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, value)`
-- **Parameters**:
-  - `self`: `MapScreen::MapMarkerCharacter`
-  - `value`: `boolean`
-
-### `MapScreen::MapMarkerCharacter::update`
+#### `ManagementScreen::TechItemViewData::getValue`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, mapPosition)`
+- **Lua Signature**: `function(self, result)`
 - **Parameters**:
-  - `self`: `MapScreen::MapMarkerCharacter`
-  - `mapPosition`: `IntPoint`
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `result`: `string`
 
-### `MapScreen::MapMarkerTown::_CONSTRUCTOR`
+#### `ManagementScreen::TechItemViewData::setItem`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, town, mapScreen)`
+- **Lua Signature**: `function(self, item)`
 - **Parameters**:
-  - `self`: `MapScreen::MapMarkerTown`
-  - `town`: `TownBase`
-  - `mapScreen`: `MapScreen`
+  - `self`: `ManagementScreen::TechItemViewData`
+  - `item`: `lightuserdata`
 
-### `MapScreen::MapMarkerTown::_DESTRUCTOR`
+### MapScreen
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `MapScreen::MapMarkerTown`
-
-### `MapScreen::MapMarkerTown::getVisible`
-
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `MapScreen::MapMarkerTown`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `MapScreen::MapMarkerTown::setVisible`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, value)`
-- **Parameters**:
-  - `self`: `MapScreen::MapMarkerTown`
-  - `value`: `boolean`
-
-### `MapScreen::MapMarkerTown::update`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, mapPosition, zoom)`
-- **Parameters**:
-  - `self`: `MapScreen::MapMarkerTown`
-  - `mapPosition`: `IntPoint`
-  - `zoom`: `integer`
-
-### `MapScreen::_CONSTRUCTOR`
+#### `MapScreen::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, screen)`
@@ -7685,14 +9023,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `screen`: `ManagementScreen`
 
-### `MapScreen::_DESTRUCTOR`
+#### `MapScreen::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::addSquad`
+#### `MapScreen::addSquad`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, squad)`
@@ -7700,7 +9038,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `squad`: `Platoon`
 
-### `MapScreen::centerButton`
+#### `MapScreen::centerButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7708,28 +9046,28 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `sender`: `Widget`
 
-### `MapScreen::centerCamera`
+#### `MapScreen::centerCamera`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::clear`
+#### `MapScreen::clear`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::clearTempMarkers`
+#### `MapScreen::clearTempMarkers`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::getMarkerColor`
+#### `MapScreen::getMarkerColor`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(who, result)`
@@ -7737,7 +9075,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `who`: `RootObjectBase`
   - `result`: `Colour`
 
-### `MapScreen::getMouseWorldPosition`
+#### `MapScreen::getMouseWorldPosition`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, position, defaultVal)`
@@ -7747,7 +9085,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `MapScreen::getVisible`
+#### `MapScreen::getVisible`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -7756,14 +9094,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `MapScreen::hide`
+#### `MapScreen::hide`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::mapCoordsToWorld`
+#### `MapScreen::mapCoordsToWorld`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, point, result)`
@@ -7772,7 +9110,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `point`: `IntPoint`
   - `result`: `Vector3`
 
-### `MapScreen::mapMousePressed`
+#### `MapScreen::mapMousePressed`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top, id)`
@@ -7783,7 +9121,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `top`: `integer`
   - `id`: `integer`
 
-### `MapScreen::mapMouseReleased`
+#### `MapScreen::mapMouseReleased`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, left, top, id)`
@@ -7794,7 +9132,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `top`: `integer`
   - `id`: `integer`
 
-### `MapScreen::mapMouseWheel`
+#### `MapScreen::mapMouseWheel`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, rel)`
@@ -7803,28 +9141,28 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `rel`: `integer`
 
-### `MapScreen::refresh`
+#### `MapScreen::refresh`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::refreshSquads`
+#### `MapScreen::refreshSquads`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::refreshTowns`
+#### `MapScreen::refreshTowns`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::removeSquad`
+#### `MapScreen::removeSquad`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, squad)`
@@ -7832,7 +9170,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `squad`: `Platoon`
 
-### `MapScreen::setMovementMarker`
+#### `MapScreen::setMovementMarker`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, position, time)`
@@ -7841,14 +9179,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `position`: `Vector3`
   - `time`: `number`
 
-### `MapScreen::setupRoads`
+#### `MapScreen::setupRoads`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::showRoads`
+#### `MapScreen::showRoads`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -7856,21 +9194,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `on`: `boolean`
 
-### `MapScreen::update`
+#### `MapScreen::update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::updateCameraMarker`
+#### `MapScreen::updateCameraMarker`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::updateCharacterMarker`
+#### `MapScreen::updateCharacterMarker`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, object)`
@@ -7878,7 +9216,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `object`: `RootObjectBase`
 
-### `MapScreen::updatePlayerTownMapMarker`
+#### `MapScreen::updatePlayerTownMapMarker`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, town)`
@@ -7886,21 +9224,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `town`: `hand`
 
-### `MapScreen::updateRoads`
+#### `MapScreen::updateRoads`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::updateZoom`
+#### `MapScreen::updateZoom`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `MapScreen`
 
-### `MapScreen::worldToMapCoords`
+#### `MapScreen::worldToMapCoords`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, position, result)`
@@ -7909,7 +9247,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `position`: `Vector3`
   - `result`: `IntPoint`
 
-### `MapScreen::zoomInButton`
+#### `MapScreen::zoomInButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7917,7 +9255,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `sender`: `Widget`
 
-### `MapScreen::zoomOutButton`
+#### `MapScreen::zoomOutButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -7925,15 +9263,96 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `MapScreen`
   - `sender`: `Widget`
 
-### `MedicalSystem::HealthPartStatus::applyDamage`
+### MapScreen::MapMarkerCharacter
+
+#### `MapScreen::MapMarkerCharacter::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
-- **Lua Signature**: `function(self, damage)`
+- **Lua Signature**: `function(self, character, mapScreen)`
 - **Parameters**:
-  - `self`: `MedicalSystem::HealthPartStatus`
-  - `damage`: `Damages`
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `character`: `RootObjectBase`
+  - `mapScreen`: `MapScreen`
 
-### `MedicalSystem::_CONSTRUCTOR`
+#### `MapScreen::MapMarkerCharacter::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+
+#### `MapScreen::MapMarkerCharacter::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `MapScreen::MapMarkerCharacter::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `value`: `boolean`
+
+#### `MapScreen::MapMarkerCharacter::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mapPosition)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerCharacter`
+  - `mapPosition`: `IntPoint`
+
+### MapScreen::MapMarkerTown
+
+#### `MapScreen::MapMarkerTown::_CONSTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, town, mapScreen)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `town`: `TownBase`
+  - `mapScreen`: `MapScreen`
+
+#### `MapScreen::MapMarkerTown::_DESTRUCTOR`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+
+#### `MapScreen::MapMarkerTown::getVisible`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `MapScreen::MapMarkerTown::setVisible`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, value)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `value`: `boolean`
+
+#### `MapScreen::MapMarkerTown::update`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, mapPosition, zoom)`
+- **Parameters**:
+  - `self`: `MapScreen::MapMarkerTown`
+  - `mapPosition`: `IntPoint`
+  - `zoom`: `integer`
+
+### MedicalSystem
+
+#### `MedicalSystem::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -7942,7 +9361,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `MedicalSystem`
 - **Returns**: `MedicalSystem`
 
-### `MedicalSystem::amputate`
+#### `MedicalSystem::amputate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, limb, createSeveredItem, forceVector)`
@@ -7951,20 +9370,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `limb`: `integer`
   - `createSeveredItem`: `boolean`
   - `forceVector`: `Vector3`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `MedicalSystem::applyDoctoring`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, skill, equipment, frameTime, medic, applied)`
-- **Parameters**:
-  - `self`: `MedicalSystem`
-  - `skill`: `number`
-  - `equipment`: `Item`
-  - `frameTime`: `number`
-  - `medic`: `Character`
-  - `applied`: `boolean`
-
-### `MedicalSystem::applyFirstAid`
+#### `MedicalSystem::applyDoctoring`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, skill, equipment, frameTime, medic, applied)`
@@ -7975,8 +9383,22 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `frameTime`: `number`
   - `medic`: `Character`
   - `applied`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `MedicalSystem::applyRigging`
+#### `MedicalSystem::applyFirstAid`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, skill, equipment, frameTime, medic, applied)`
+- **Parameters**:
+  - `self`: `MedicalSystem`
+  - `skill`: `number`
+  - `equipment`: `Item`
+  - `frameTime`: `number`
+  - `medic`: `Character`
+  - `applied`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+#### `MedicalSystem::applyRigging`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, skill, equipment, frameTime, applied)`
@@ -7986,8 +9408,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `equipment`: `Item`
   - `frameTime`: `number`
   - `applied`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `MedicalSystem::canGetUpWakeUp`
+#### `MedicalSystem::canGetUpWakeUp`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -7996,15 +9419,29 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `MedicalSystem::knockout`
+#### `MedicalSystem::knockout`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, skill)`
 - **Parameters**:
   - `self`: `MedicalSystem`
   - `skill`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `MyGUI::Gui::eventFrameStart`
+### MedicalSystem::HealthPartStatus
+
+#### `MedicalSystem::HealthPartStatus::applyDamage`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, damage)`
+- **Parameters**:
+  - `self`: `MedicalSystem::HealthPartStatus`
+  - `damage`: `Damages`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+
+### MyGUI::Gui
+
+#### `MyGUI::Gui::eventFrameStart`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `the MyGUI::Gui::eventFrameStart delegate`
@@ -8013,7 +9450,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `time`: `number`
 - **Notes**: Raised by the renderer at the start of every frame, including while the game is paused. The argument is the time since the previous frame, in seconds.
 
-### `NewGameOptionsWindow::_CONSTRUCTOR`
+### NewGameOptionsWindow
+
+#### `NewGameOptionsWindow::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `NewGameOptionsWindow::_CONSTRUCTOR hook after the original call`
@@ -8021,7 +9460,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `NewGameOptionsWindow`
 
-### `NewGameOptionsWindow::_DESTRUCTOR`
+#### `NewGameOptionsWindow::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `NewGameOptionsWindow::_DESTRUCTOR hook before the original call`
@@ -8029,7 +9468,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `NewGameOptionsWindow`
 
-### `NewGameOptionsWindow::getVisible`
+#### `NewGameOptionsWindow::getVisible`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `NewGameOptionsWindow::getVisible hook after the original call`
@@ -8039,7 +9478,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `NewGameOptionsWindow::setOptions`
+#### `NewGameOptionsWindow::setOptions`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `NewGameOptionsWindow::setOptions hook after the original call`
@@ -8048,7 +9487,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `NewGameOptionsWindow`
   - `options`: `GameplayOptions`
 
-### `NewGameOptionsWindow::setPosition`
+#### `NewGameOptionsWindow::setPosition`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `NewGameOptionsWindow::setPosition hook after the original call`
@@ -8058,7 +9497,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `x`: `integer`
   - `y`: `integer`
 
-### `NewGameOptionsWindow::setVisible`
+#### `NewGameOptionsWindow::setVisible`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `NewGameOptionsWindow::setVisible hook after the original call`
@@ -8067,7 +9506,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `NewGameOptionsWindow`
   - `visible`: `boolean`
 
-### `NewGameOptionsWindow::update`
+#### `NewGameOptionsWindow::update`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `NewGameOptionsWindow::update hook after the original call`
@@ -8075,21 +9514,23 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `NewGameOptionsWindow`
 
-### `OptionsWindow::_CONSTRUCTOR`
+### OptionsWindow
+
+#### `OptionsWindow::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::_DESTRUCTOR`
+#### `OptionsWindow::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::_NV_show`
+#### `OptionsWindow::_NV_show`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, value)`
@@ -8097,14 +9538,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `value`: `boolean`
 
-### `OptionsWindow::_NV_update`
+#### `OptionsWindow::_NV_update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::changeDistances`
+#### `OptionsWindow::changeDistances`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8112,7 +9553,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::changeFontSize`
+#### `OptionsWindow::changeFontSize`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8120,7 +9561,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::changeVolume`
+#### `OptionsWindow::changeVolume`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8128,7 +9569,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::closeButton`
+#### `OptionsWindow::closeButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8136,14 +9577,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `sender`: `Widget`
 
-### `OptionsWindow::create`
+#### `OptionsWindow::create`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::getSingleton`
+#### `OptionsWindow::getSingleton`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -8151,14 +9592,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `OptionsWindow`
 - **Returns**: `OptionsWindow`
 
-### `OptionsWindow::hide`
+#### `OptionsWindow::hide`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::isVisible`
+#### `OptionsWindow::isVisible`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -8167,7 +9608,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `OptionsWindow::resetAllKeys`
+#### `OptionsWindow::resetAllKeys`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8175,7 +9616,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::resetTutorials`
+#### `OptionsWindow::resetTutorials`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8183,7 +9624,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::saveLocationChanged`
+#### `OptionsWindow::saveLocationChanged`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8191,14 +9632,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::saveOptions`
+#### `OptionsWindow::saveOptions`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::setKey`
+#### `OptionsWindow::setKey`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, code)`
@@ -8206,21 +9647,21 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `code`: `integer`
 
-### `OptionsWindow::show`
+#### `OptionsWindow::show`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::toggle`
+#### `OptionsWindow::toggle`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::toggleCompositor`
+#### `OptionsWindow::toggleCompositor`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8228,7 +9669,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::toggleNames`
+#### `OptionsWindow::toggleNames`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8236,7 +9677,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::toggleTutorials`
+#### `OptionsWindow::toggleTutorials`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -8244,14 +9685,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OptionsWindow`
   - `line`: `DataPanelLine`
 
-### `OptionsWindow::updateResolutions`
+#### `OptionsWindow::updateResolutions`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OptionsWindow`
 
-### `OptionsWindow::waitingForKey`
+#### `OptionsWindow::waitingForKey`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -8260,7 +9701,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `OrderCellView::_CONSTRUCTOR`
+### OrderCellView
+
+#### `OrderCellView::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, parent)`
@@ -8268,14 +9711,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrderCellView`
   - `parent`: `Widget`
 
-### `OrderCellView::_DESTRUCTOR`
+#### `OrderCellView::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrderCellView`
 
-### `OrderCellView::getCellDimension`
+#### `OrderCellView::getCellDimension`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(sender, coord, drop)`
@@ -8284,7 +9727,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `coord`: `IntCoord`
   - `drop`: `boolean`
 
-### `OrderCellView::getWidget`
+#### `OrderCellView::getWidget`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, result)`
@@ -8292,7 +9735,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrderCellView`
   - `result`: `Widget`
 
-### `OrderCellView::onRemove`
+#### `OrderCellView::onRemove`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8300,14 +9743,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrderCellView`
   - `sender`: `Widget`
 
-### `OrderCellView::resize`
+#### `OrderCellView::resize`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrderCellView`
 
-### `OrderCellView::update`
+#### `OrderCellView::update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, info, data)`
@@ -8316,21 +9759,23 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `info`: `lightuserdata`
   - `data`: `OrderData`
 
-### `OrderData::_CONSTRUCTOR`
+### OrderData
+
+#### `OrderData::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrderData`
 
-### `OrderData::_DESTRUCTOR`
+#### `OrderData::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrderData`
 
-### `OrderData::operator=`
+#### `OrderData::operator=`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, other, result)`
@@ -8339,7 +9784,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `other`: `OrderData`
   - `result`: `OrderData`
 
-### `OrderData::set`
+#### `OrderData::set`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, task, index, enabled)`
@@ -8349,14 +9794,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `index`: `integer`
   - `enabled`: `boolean`
 
-### `OrderData::updateText`
+#### `OrderData::updateText`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrderData`
 
-### `OrdersItemBox::_CONSTRUCTOR`
+### OrdersItemBox
+
+#### `OrdersItemBox::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, parent)`
@@ -8364,14 +9811,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersItemBox`
   - `parent`: `Widget`
 
-### `OrdersItemBox::_DESTRUCTOR`
+#### `OrdersItemBox::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrdersItemBox`
 
-### `OrdersPanel::_CONSTRUCTOR`
+### OrdersPanel
+
+#### `OrdersPanel::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, mainbar, panel)`
@@ -8380,14 +9829,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `mainbar`: `MainBarGUI`
   - `panel`: `Widget`
 
-### `OrdersPanel::_DESTRUCTOR`
+#### `OrdersPanel::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrdersPanel`
 
-### `OrdersPanel::blockmodeButton`
+#### `OrdersPanel::blockmodeButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8395,7 +9844,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::chaseButtonCallback`
+#### `OrdersPanel::chaseButtonCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8403,14 +9852,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::clear`
+#### `OrdersPanel::clear`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrdersPanel`
 
-### `OrdersPanel::command`
+#### `OrdersPanel::command`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, command)`
@@ -8418,7 +9867,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `command`: `integer`
 
-### `OrdersPanel::holdButtonCallback`
+#### `OrdersPanel::holdButtonCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8426,7 +9875,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::liftButton`
+#### `OrdersPanel::liftButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8434,7 +9883,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::medicButton`
+#### `OrdersPanel::medicButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8442,7 +9891,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::moveJob`
+#### `OrdersPanel::moveJob`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, orderIndex, targetIndex)`
@@ -8451,7 +9900,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `orderIndex`: `integer`
   - `targetIndex`: `integer`
 
-### `OrdersPanel::notifyEndDropOrder`
+#### `OrdersPanel::notifyEndDropOrder`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, info, result)`
@@ -8461,7 +9910,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `info`: `lightuserdata`
   - `result`: `boolean`
 
-### `OrdersPanel::notifyRequestDropOrder`
+#### `OrdersPanel::notifyRequestDropOrder`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, sender, info, defaultVal)`
@@ -8472,7 +9921,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `OrdersPanel::notifyStartDropOrder`
+#### `OrdersPanel::notifyStartDropOrder`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, sender, info, defaultVal)`
@@ -8483,7 +9932,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `OrdersPanel::passiveButtonCallback`
+#### `OrdersPanel::passiveButtonCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8491,7 +9940,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::prospectingButton`
+#### `OrdersPanel::prospectingButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8499,14 +9948,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::refreshOrders`
+#### `OrdersPanel::refreshOrders`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `OrdersPanel`
 
-### `OrdersPanel::removeJob`
+#### `OrdersPanel::removeJob`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, data)`
@@ -8514,7 +9963,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `data`: `OrderData`
 
-### `OrdersPanel::setSpeed`
+#### `OrdersPanel::setSpeed`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, speed)`
@@ -8522,7 +9971,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `speed`: `integer`
 
-### `OrdersPanel::setSpeedImage`
+#### `OrdersPanel::setSpeedImage`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, speed)`
@@ -8530,7 +9979,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `speed`: `integer`
 
-### `OrdersPanel::speedNext`
+#### `OrdersPanel::speedNext`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8538,7 +9987,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::speedPrevious`
+#### `OrdersPanel::speedPrevious`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8546,7 +9995,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::tauntButtonCallback`
+#### `OrdersPanel::tauntButtonCallback`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8554,7 +10003,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::toggleRanged`
+#### `OrdersPanel::toggleRanged`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8562,7 +10011,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::toggleStealth`
+#### `OrdersPanel::toggleStealth`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -8570,7 +10019,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `sender`: `Widget`
 
-### `OrdersPanel::update`
+#### `OrdersPanel::update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character)`
@@ -8578,7 +10027,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `OrdersPanel`
   - `character`: `Character`
 
-### `OrdersReceiver::_NV_serialise`
+### OrdersReceiver
+
+#### `OrdersReceiver::_NV_serialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, data)`
@@ -8587,7 +10038,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `data`: `GameData`
 - **Notes**: Fires after the engine writes its job data. Notification only; self and data are borrowed. Runs synchronously on the Lua thread; calls from other threads do not dispatch Lua handlers.
 
-### `Ownerships::canIUseThisBuilding`
+### Ownerships
+
+#### `Ownerships::canIUseThisBuilding`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, building, character, defaultVal)`
@@ -8597,8 +10050,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `character`: `Character`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Platoon::_CONSTRUCTOR`
+### Platoon
+
+#### `Platoon::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, faction, squadTemplate, platoonState, position, persistent, defaultVal)`
@@ -8611,8 +10067,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `persistent`: `boolean`
   - `defaultVal`: `Platoon`
 - **Returns**: `Platoon`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Platoon::_NV_loadFromSerialise`
+#### `Platoon::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, saveState)`
@@ -8620,21 +10077,23 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Platoon`
   - `saveState`: `GameSaveState`
 
-### `Platoon::_NV_notifyMissionEnded`
+#### `Platoon::_NV_notifyMissionEnded`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Platoon`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Platoon::declareDead`
+#### `Platoon::declareDead`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Platoon`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `Platoon::iBuyIllegalGoods`
+#### `Platoon::iBuyIllegalGoods`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -8643,7 +10102,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `Platoon::iBuyStolenGoods`
+#### `Platoon::iBuyStolenGoods`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, item, defaultVal)`
@@ -8653,7 +10112,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `Platoon::taskIsComplete`
+#### `Platoon::taskIsComplete`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, completedTask)`
@@ -8661,14 +10120,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Platoon`
   - `completedTask`: `Tasker`
 
-### `Platoon::undeclareDead`
+#### `Platoon::undeclareDead`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `Platoon`
 
-### `PlayerInterface::_CONSTRUCTOR`
+### PlayerInterface
+
+#### `PlayerInterface::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -8677,7 +10138,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `PlayerInterface`
 - **Returns**: `PlayerInterface`
 
-### `PlayerInterface::activateCharacterEditMode`
+#### `PlayerInterface::activateCharacterEditMode`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character)`
@@ -8685,7 +10146,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `PlayerInterface`
   - `character`: `Character`
 
-### `PlayerInterface::addJobSelectedCharacters`
+#### `PlayerInterface::addJobSelectedCharacters`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, taskType, subject, shift, add, location)`
@@ -8697,7 +10158,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `add`: `boolean`
   - `location`: `Vector3`
 
-### `PlayerInterface::addOrderSelectedCharacters`
+#### `PlayerInterface::addOrderSelectedCharacters`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, destinationIndoors, taskType, subject, shift, addDontClear, location)`
@@ -8710,7 +10171,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `addDontClear`: `boolean`
   - `location`: `Vector3`
 
-### `PlayerInterface::createSquad`
+#### `PlayerInterface::createSquad`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, newSquad)`
@@ -8718,15 +10179,16 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `PlayerInterface`
   - `newSquad`: `ActivePlatoon`
 
-### `PlayerInterface::encounterFaction`
+#### `PlayerInterface::encounterFaction`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, faction)`
 - **Parameters**:
   - `self`: `PlayerInterface`
   - `faction`: `Faction`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `PlayerInterface::loadFromSerialise`
+#### `PlayerInterface::loadFromSerialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, gameData)`
@@ -8734,7 +10196,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `PlayerInterface`
   - `gameData`: `GameData`
 
-### `PlayerInterface::newPlayerTaskSelectedCharacters`
+#### `PlayerInterface::newPlayerTaskSelectedCharacters`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, taskType, targetHandle, destinationBuilding, clickPos, queueOrder)`
@@ -8746,7 +10208,17 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `clickPos`: `Vector3`
   - `queueOrder`: `boolean`
 
-### `PlayerInterface::recruit`
+#### `PlayerInterface::objectSelected`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, obj, select)`
+- **Parameters**:
+  - `self`: `PlayerInterface`
+  - `obj`: `RootObject`
+  - `select`: `boolean`
+- **Notes**: PlayerInterface::selectObject calls it, so a selectObject call raises both events.
+
+#### `PlayerInterface::recruit`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, character, isEditor)`
@@ -8755,7 +10227,24 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `character`: `Character`
   - `isEditor`: `boolean`
 
-### `PlayerInterface::selectObject`
+#### `PlayerInterface::removeJobSelectedCharacters`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, t)`
+- **Parameters**:
+  - `self`: `PlayerInterface`
+  - `t`: `integer`
+- **Notes**: t is the TaskType value as an integer.
+
+#### `PlayerInterface::removePermaJobSelectedCharacters`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, id)`
+- **Parameters**:
+  - `self`: `PlayerInterface`
+  - `id`: `integer`
+
+#### `PlayerInterface::selectObject`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, obj, modifier)`
@@ -8764,7 +10253,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `obj`: `RootObject`
   - `modifier`: `boolean`
 
-### `PlayerInterface::serialise`
+#### `PlayerInterface::serialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, gameData)`
@@ -8772,7 +10261,30 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `PlayerInterface`
   - `gameData`: `GameData`
 
-### `PreviewBuilding::_CONSTRUCTOR`
+#### `PlayerInterface::setCurrentPlatoon`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, platoon, result)`
+- **Parameters**:
+  - `self`: `PlayerInterface`
+  - `platoon`: `Platoon`
+  - `result`: `boolean`
+- **Notes**: Runs after the original call; result is the original return value, true only when the platoon changed.
+
+#### `PlayerInterface::triggerAreaArrivalDialogue`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, area, result)`
+- **Parameters**:
+  - `self`: `PlayerInterface`
+  - `area`: `GameData`
+  - `result`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
+- **Notes**: Runs after the original call; result is the original return value.
+
+### PreviewBuilding
+
+#### `PreviewBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, furnitureParent, defaultVal)`
@@ -8783,14 +10295,23 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `PreviewBuilding`
 - **Returns**: `PreviewBuilding`
 
-### `PreviewBuilding::_NV_placeFinalPreviewBuilding`
+#### `PreviewBuilding::_NV_placeFinalPreviewBuilding`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `PreviewBuilding`
 
-### `PreviewBuilding::_NV_placePreview`
+#### `PreviewBuilding::_NV_placementVerification`
+
+- **Category**: Override / Interceptor
+- **Lua Signature**: `function(self, defaultVal)`
+- **Parameters**:
+  - `self`: `PreviewBuilding`
+  - `defaultVal`: `boolean`
+- **Returns**: `boolean`
+
+#### `PreviewBuilding::_NV_placePreview`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, position, rotation, floorNumber)`
@@ -8800,16 +10321,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `rotation`: `Quaternion`
   - `floorNumber`: `integer`
 
-### `PreviewBuilding::_NV_placementVerification`
+### ProductionBuilding
 
-- **Category**: Override / Interceptor
-- **Lua Signature**: `function(self, defaultVal)`
-- **Parameters**:
-  - `self`: `PreviewBuilding`
-  - `defaultVal`: `boolean`
-- **Returns**: `boolean`
-
-### `ProductionBuilding::_CONSTRUCTOR`
+#### `ProductionBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -8826,7 +10340,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ProductionBuilding`
 - **Returns**: `ProductionBuilding`
 
-### `ProductionBuilding::_NV_operate`
+#### `ProductionBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, worker, amount)`
@@ -8835,7 +10349,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `worker`: `Character`
   - `amount`: `number`
 
-### `ProsperityManager::_CONSTRUCTOR`
+### ProsperityManager
+
+#### `ProsperityManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -8844,7 +10360,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ProsperityManager`
 - **Returns**: `ProsperityManager`
 
-### `RainCollectorBuilding::_CONSTRUCTOR`
+### RainCollectorBuilding
+
+#### `RainCollectorBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -8861,7 +10379,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `RainCollectorBuilding`
 - **Returns**: `RainCollectorBuilding`
 
-### `Research::completeResearch`
+### Research
+
+#### `Research::completeResearch`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, data)`
@@ -8869,7 +10389,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Research`
   - `data`: `GameData`
 
-### `Research::progressResearch`
+#### `Research::progressResearch`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, amount)`
@@ -8877,7 +10397,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Research`
   - `amount`: `number`
 
-### `Research::startResearch`
+#### `Research::startResearch`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, data, started)`
@@ -8886,7 +10406,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `data`: `GameData`
   - `started`: `boolean`
 
-### `Research::stopResearch`
+#### `Research::stopResearch`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, data)`
@@ -8894,7 +10414,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Research`
   - `data`: `GameData`
 
-### `ResearchBuilding::_CONSTRUCTOR`
+### ResearchBuilding
+
+#### `ResearchBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -8911,7 +10433,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ResearchBuilding`
 - **Returns**: `ResearchBuilding`
 
-### `ResearchBuilding::_NV_operate`
+#### `ResearchBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, worker, amount)`
@@ -8920,7 +10442,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `worker`: `Character`
   - `amount`: `number`
 
-### `RobotLimbs::_CONSTRUCTOR`
+### RobotLimbs
+
+#### `RobotLimbs::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, character, defaultVal)`
@@ -8929,8 +10453,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `character`: `Character`
   - `defaultVal`: `RobotLimbs`
 - **Returns**: `RobotLimbs`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `RootObject::_CONSTRUCTOR`
+### RootObject
+
+#### `RootObject::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, faction, handle, defaultVal)`
@@ -8941,8 +10468,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `handle`: `hand`
   - `defaultVal`: `RootObject`
 - **Returns**: `RootObject`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `RootObjectBase::_CONSTRUCTOR`
+### RootObjectBase
+
+#### `RootObjectBase::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, faction, handle, defaultVal)`
@@ -8953,8 +10483,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `handle`: `hand`
   - `defaultVal`: `RootObjectBase`
 - **Returns**: `RootObjectBase`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `RootObjectFactory::_CONSTRUCTOR`
+### RootObjectFactory
+
+#### `RootObjectFactory::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -8963,7 +10496,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `RootObjectFactory`
 - **Returns**: `RootObjectFactory`
 
-### `RootObjectFactory::chooseMyClothing`
+#### `RootObjectFactory::chooseMyClothing`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(gearLektor, dataList, listName, race, noShoes)`
@@ -8974,7 +10507,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `race`: `RaceData`
   - `noShoes`: `boolean`
 
-### `ShopTrader::_CONSTRUCTOR`
+### ShopTrader
+
+#### `ShopTrader::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, character, defaultVal)`
@@ -8984,15 +10519,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ShopTrader`
 - **Returns**: `ShopTrader`
 
-### `SplashScreen::_CONSTRUCTOR`
+### SplashScreen
 
-- **Category**: Notification / Observer
-- **Engine Hook**: `SplashScreen::_CONSTRUCTOR hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `SplashScreen`
-
-### `SplashScreen::_DESTRUCTOR`
+#### `SplashScreen::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `SplashScreen::_DESTRUCTOR hook before the original call`
@@ -9000,17 +10529,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `SplashScreen`
 
-### `SplashScreen::addLogo`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `SplashScreen::addLogo hook after the original call`
-- **Lua Signature**: `function(self, file, scale)`
-- **Parameters**:
-  - `self`: `SplashScreen`
-  - `file`: `string`
-  - `scale`: `number`
-
-### `SplashScreen::getEnded`
+#### `SplashScreen::getEnded`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `SplashScreen::getEnded hook after the original call`
@@ -9020,7 +10539,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `SplashScreen::getState`
+#### `SplashScreen::getState`
 
 - **Category**: Override / Interceptor
 - **Engine Hook**: `SplashScreen::getState hook after the original call`
@@ -9030,15 +10549,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `integer`
 - **Returns**: `integer`
 
-### `SplashScreen::skip`
-
-- **Category**: Notification / Observer
-- **Engine Hook**: `SplashScreen::skip hook after the original call`
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `SplashScreen`
-
-### `SplashScreen::update`
+#### `SplashScreen::update`
 
 - **Category**: Notification / Observer
 - **Engine Hook**: `SplashScreen::update hook after the original call`
@@ -9046,7 +10557,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
 - **Parameters**:
   - `self`: `SplashScreen`
 
-### `SquadManagementScreen::removeSquad`
+### SquadManagementScreen
+
+#### `SquadManagementScreen::removeSquad`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, squadData)`
@@ -9054,7 +10567,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `SquadManagementScreen`
   - `squadData`: `lightuserdata`
 
-### `StorageBuilding::_CONSTRUCTOR`
+### StorageBuilding
+
+#### `StorageBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -9071,7 +10586,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `StorageBuilding`
 - **Returns**: `StorageBuilding`
 
-### `Sword::_CONSTRUCTOR`
+### Sword
+
+#### `Sword::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, companyData, materialData, handle, level, defaultVal)`
@@ -9085,7 +10602,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Sword`
 - **Returns**: `Sword`
 
-### `Tasker::_CONSTRUCTOR`
+### Tasker
+
+#### `Tasker::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -9093,29 +10612,32 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Tasker`
   - `defaultVal`: `Tasker`
 - **Returns**: `Tasker`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `TitleScreen::_CONSTRUCTOR`
+### TitleScreen
 
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self)`
-- **Parameters**:
-  - `self`: `TitleScreen`
-
-### `TitleScreen::_DESTRUCTOR`
+#### `TitleScreen::_CONSTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `TitleScreen`
 
-### `TitleScreen::_NV_clear`
+#### `TitleScreen::_DESTRUCTOR`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `TitleScreen`
 
-### `TitleScreen::_NV_show`
+#### `TitleScreen::_NV_clear`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self)`
+- **Parameters**:
+  - `self`: `TitleScreen`
+
+#### `TitleScreen::_NV_show`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -9123,14 +10645,14 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `on`: `boolean`
 
-### `TitleScreen::_NV_update`
+#### `TitleScreen::_NV_update`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self)`
 - **Parameters**:
   - `self`: `TitleScreen`
 
-### `TitleScreen::closeTheOtherBits`
+#### `TitleScreen::closeTheOtherBits`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -9139,7 +10661,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
 
-### `TitleScreen::continueGame`
+#### `TitleScreen::continueGame`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -9147,7 +10669,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `sender`: `Widget`
 
-### `TitleScreen::credits`
+#### `TitleScreen::credits`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -9155,7 +10677,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `sender`: `Widget`
 
-### `TitleScreen::exitGame`
+#### `TitleScreen::exitGame`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -9163,7 +10685,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `sender`: `Widget`
 
-### `TitleScreen::getSingleton`
+#### `TitleScreen::getSingleton`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(defaultVal)`
@@ -9171,7 +10693,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `TitleScreen`
 - **Returns**: `TitleScreen`
 
-### `TitleScreen::hover`
+#### `TitleScreen::hover`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender, other)`
@@ -9180,7 +10702,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `sender`: `Widget`
   - `other`: `Widget`
 
-### `TitleScreen::importGame`
+#### `TitleScreen::importGame`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -9188,7 +10710,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `sender`: `Widget`
 
-### `TitleScreen::loadGame`
+#### `TitleScreen::loadGame`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -9196,7 +10718,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `sender`: `Widget`
 
-### `TitleScreen::setCreditsVisible`
+#### `TitleScreen::setCreditsVisible`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, value)`
@@ -9204,7 +10726,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `value`: `boolean`
 
-### `TitleScreen::showOptions`
+#### `TitleScreen::showOptions`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, sender)`
@@ -9212,7 +10734,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TitleScreen`
   - `sender`: `Widget`
 
-### `TortureBuilding::_CONSTRUCTOR`
+### TortureBuilding
+
+#### `TortureBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -9229,7 +10753,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `TortureBuilding`
 - **Returns**: `TortureBuilding`
 
-### `Town::_CONSTRUCTOR`
+### Town
+
+#### `Town::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, defaultVal)`
@@ -9239,7 +10765,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Town`
 - **Returns**: `Town`
 
-### `Town::_NV_loadFromSerialise`
+#### `Town::_NV_loadFromSerialise`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, saveState)`
@@ -9247,7 +10773,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `Town`
   - `saveState`: `GameSaveState`
 
-### `TownBase::_CONSTRUCTOR`
+### TownBase
+
+#### `TownBase::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, defaultVal)`
@@ -9256,8 +10784,11 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `data`: `GameData`
   - `defaultVal`: `TownBase`
 - **Returns**: `TownBase`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `TurretBuilding::_CONSTRUCTOR`
+### TurretBuilding
+
+#### `TurretBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -9274,7 +10805,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `TurretBuilding`
 - **Returns**: `TurretBuilding`
 
-### `TurretBuilding::_NV_operate`
+#### `TurretBuilding::_NV_operate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, gunner, amount)`
@@ -9282,8 +10813,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TurretBuilding`
   - `gunner`: `Character`
   - `amount`: `number`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `TurretBuilding::aimAt`
+#### `TurretBuilding::aimAt`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, targetPos)`
@@ -9291,7 +10823,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `TurretBuilding`
   - `targetPos`: `Vector3`
 
-### `UseableStuff::_CONSTRUCTOR`
+### UseableStuff
+
+#### `UseableStuff::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -9308,7 +10842,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `UseableStuff`
 - **Returns**: `UseableStuff`
 
-### `UseableStuff::_NV_couldIOperate`
+#### `UseableStuff::_NV_couldIOperate`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, userHandle, defaultVal)`
@@ -9317,8 +10851,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `userHandle`: `hand`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `UseableStuff::_NV_dontNeedWorkRightNow`
+#### `UseableStuff::_NV_dontNeedWorkRightNow`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -9326,8 +10861,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `defaultVal`: `boolean`
 - **Returns**: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `UseableStuff::_NV_getCostToUse`
+#### `UseableStuff::_NV_getCostToUse`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, who, defaultVal)`
@@ -9336,8 +10872,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `who`: `Character`
   - `defaultVal`: `integer`
 - **Returns**: `integer`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `UseableStuff::_NV_givePower`
+#### `UseableStuff::_NV_givePower`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, amount)`
@@ -9345,7 +10882,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `amount`: `number`
 
-### `UseableStuff::_NV_hitByMeleeAttack`
+#### `UseableStuff::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
@@ -9357,7 +10894,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `attack`: `CombatTechniqueData`
   - `comboID`: `integer`
 
-### `UseableStuff::_NV_switchPowerOn`
+#### `UseableStuff::_NV_switchPowerOn`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, on)`
@@ -9365,7 +10902,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `on`: `boolean`
 
-### `UseableStuff::_NV_toggleBattButton`
+#### `UseableStuff::_NV_toggleBattButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -9373,7 +10910,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `line`: `DataPanelLine`
 
-### `UseableStuff::_NV_togglePowerButton`
+#### `UseableStuff::_NV_togglePowerButton`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, line)`
@@ -9381,7 +10918,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `line`: `DataPanelLine`
 
-### `UseableStuff::_NV_tryOperate`
+#### `UseableStuff::_NV_tryOperate`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, userHandle, success)`
@@ -9389,8 +10926,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `userHandle`: `hand`
   - `success`: `boolean`
+- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).
 
-### `UseableStuff::occupantHandleChangedEvent`
+#### `UseableStuff::occupantHandleChangedEvent`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, newOccupantHandle)`
@@ -9398,7 +10936,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `newOccupantHandle`: `hand`
 
-### `UseableStuff::stopOperating`
+#### `UseableStuff::stopOperating`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, userHandle)`
@@ -9406,7 +10944,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `UseableStuff`
   - `userHandle`: `hand`
 
-### `UseableStuff::takePowerFrom`
+#### `UseableStuff::takePowerFrom`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, amount, frameTime, defaultVal)`
@@ -9417,7 +10955,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `number`
 - **Returns**: `number`
 
-### `WallBuilding::_CONSTRUCTOR`
+### WallBuilding
+
+#### `WallBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, dat, position, orientation, participant, furnitureOf, town, handle, defaultVal)`
@@ -9433,7 +10973,7 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `WallBuilding`
 - **Returns**: `WallBuilding`
 
-### `WallBuilding::_NV_hitByMeleeAttack`
+#### `WallBuilding::_NV_hitByMeleeAttack`
 
 - **Category**: Notification / Observer
 - **Lua Signature**: `function(self, cutDir, damage, attacker, attack, comboID)`
@@ -9445,7 +10985,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `attack`: `CombatTechniqueData`
   - `comboID`: `integer`
 
-### `Weapon::_CONSTRUCTOR`
+### Weapon
+
+#### `Weapon::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, baseData, companyData, materialData, handle, level, defaultVal)`
@@ -9459,7 +11001,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `Weapon`
 - **Returns**: `Weapon`
 
-### `WindGeneratorBuilding::_CONSTRUCTOR`
+### WindGeneratorBuilding
+
+#### `WindGeneratorBuilding::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, data, position, orientation, participant, town, handle, isFurnitureOf, indoors, defaultVal)`
@@ -9476,7 +11020,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `WindGeneratorBuilding`
 - **Returns**: `WindGeneratorBuilding`
 
-### `WorldEventStateQuery::_CONSTRUCTOR`
+### WorldEventStateQuery
+
+#### `WorldEventStateQuery::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -9485,7 +11031,19 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `WorldEventStateQuery`
 - **Returns**: `WorldEventStateQuery`
 
-### `ZoneManager::_CONSTRUCTOR`
+### wraps::BaseLayout
+
+#### `wraps::BaseLayout::initialise`
+
+- **Category**: Notification / Observer
+- **Lua Signature**: `function(self, layoutName)`
+- **Parameters**:
+  - `self`: `BaseLayout`
+  - `layoutName`: `string`
+
+### ZoneManager
+
+#### `ZoneManager::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -9494,7 +11052,9 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `defaultVal`: `ZoneManager`
 - **Returns**: `ZoneManager`
 
-### `ZoneMap::_CONSTRUCTOR`
+### ZoneMap
+
+#### `ZoneMap::_CONSTRUCTOR`
 
 - **Category**: Override / Interceptor
 - **Lua Signature**: `function(self, defaultVal)`
@@ -9502,11 +11062,3 @@ For a notification callback, a worker-thread event is skipped. For an override c
   - `self`: `ZoneMap`
   - `defaultVal`: `ZoneMap`
 - **Returns**: `ZoneMap`
-
-### `wraps::BaseLayout::initialise`
-
-- **Category**: Notification / Observer
-- **Lua Signature**: `function(self, layoutName)`
-- **Parameters**:
-  - `self`: `BaseLayout`
-  - `layoutName`: `string`

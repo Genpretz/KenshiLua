@@ -101,7 +101,7 @@
       "fields": [
         {
           "name": "on",
-          "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler): integer"
+          "type": "fun(eventName: KenshiLua.EventName|string, handler: KenshiLua.EventHandler, options?: KenshiLua.EventOptions): integer"
         },
         {
           "name": "off",
@@ -109,6 +109,15 @@
         }
       ],
       "name": "KenshiLua.Events"
+    },
+    {
+      "fields": [
+        {
+          "name": "workerThread",
+          "type": "boolean|nil"
+        }
+      ],
+      "name": "KenshiLua.EventOptions"
     },
     {
       "fields": [

@@ -12,6 +12,24 @@ The **MyGUI** subsystem in KenshiLua provides a comprehensive set of UI bindings
 - **Lifecycle Safety**: All widgets instantiated from Lua are tracked automatically and cleaned up upon script reload or shutdown.
 - **Event Callbacks**: Unified event registration via `widget:on(eventType, handler)` and `widget:off(idOrEvent)` supporting clicks, text edits, drag/scroll, keys, and focus changes.
 
+```text
++-----------------------+   MyGUI.create* / loadLayout   +-------------------------------+
+| Lua Script            | -----------------------------> | MyGUI Engine & Script Tracker |
++-----------------------+                                | (Records owning script)       |
+           |                                             +-------------------------------+
+           | widget:on(eventType, handler)                               |
+           v                                              Script reload  | or stop
++-----------------------+                                                v
+| MyGUI Event Delegate  |                                +-------------------------------+
++-----------------------+                                | Automatic Cleanup             |
+           |                                             | Destroys owned widgets &      |
+           | User input / UI event                       | detaches registered callbacks |
+           v                                             +-------------------------------+
++-----------------------+
+| Lua Callback Handler  |
++-----------------------+
+```
+
 For KenshiLib game engine class bindings, see the [Bindings Reference](BindingsReference.md).
 
 ---

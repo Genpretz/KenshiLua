@@ -28,6 +28,8 @@ TYPE_MAP = {
     'std::string': 'string',
     'const std::string&': 'string',
     'const std::string &': 'string',
+    'const char*': 'string',
+    'const char *': 'string',
     'const Ogre::Vector3&': 'Vector3',
     'const Ogre::Vector3 &': 'Vector3',
     'Ogre::Vector3': 'Vector3',
@@ -119,18 +121,22 @@ def get_typed_lua_sig(lua_sig, params_list, ret_type_clean):
     return sig_str
 
 def parse_hooks_registry():
-    """Extract eventName -> installer map from g_eventHookRegistry in Hooks_Registry.cpp."""
+    """Extract eventName -> {installer, worker_dispatch} from g_eventHookRegistry in Hooks_Registry.cpp."""
     event_map = {}
     if not HOOKS_REGISTRY_CPP.exists():
         return event_map
 
     content = HOOKS_REGISTRY_CPP.read_text(encoding="utf-8", errors="ignore")
-    match = re.search(r"g_eventHookRegistry\[\]\s*=\s*\{([^\}]+)\};", content, re.DOTALL)
+    match = re.search(r"g_eventHookRegistry\[\]\s*=\s*\{(.*?)\n\s*\};", content, re.DOTALL)
     if match:
-        body = match.group(1)
-        entries = re.findall(r'\{\s*"([^"]+)"\s*,\s*([^\s,\}]+)\s*\}', body)
-        for event_name, installer in entries:
-            event_map[event_name] = installer
+        # Commented-out registry entries are not subscribable.
+        body = re.sub(r"//[^\n]*", "", match.group(1))
+        entries = re.findall(r'\{\s*"([^"]+)"\s*,\s*([^\s,\}]+)\s*(?:,\s*(\w+)\s*)?\}', body)
+        for event_name, installer, threading in entries:
+            event_map[event_name] = {
+                "installer": installer,
+                "worker_dispatch": threading == "WorkerDispatch",
+            }
     return event_map
 
 def parse_callbacks_header():
@@ -217,6 +223,39 @@ def parse_callbacks_header():
 
     return callbacks
 
+def callback_class(callback):
+    event_name = callback['lua_event']
+    if not event_name:
+        return "Unmapped"
+    if '::' not in event_name:
+        return "Global Events"
+    return event_name.rsplit('::', 1)[0]
+
+def group_callbacks_by_class(callbacks):
+    groups = {}
+    for callback in callbacks:
+        class_name = callback_class(callback)
+        groups.setdefault(class_name, []).append(callback)
+
+    grouped = []
+    for class_name in sorted(groups, key=str.casefold):
+        class_callbacks = groups[class_name]
+        class_callbacks.sort(key=lambda cb: (cb['lua_event'] or cb['func_name']).casefold())
+        grouped.append((class_name, class_callbacks))
+    return grouped
+
+def append_callback_tables(output, callbacks, signature_heading):
+    for class_name, class_callbacks in group_callbacks_by_class(callbacks):
+        output.append(f"### {class_name} ({len(class_callbacks)})")
+        output.append("")
+        output.append(f"| Event Name | {signature_heading} |")
+        output.append("| :--- | :--- |")
+        for callback in class_callbacks:
+            event_name = f"`{callback['lua_event']}`" if callback['lua_event'] else "*(Unmapped)*"
+            signature = f"`{callback['typed_sig']}`"
+            output.append(f"| {event_name} | {signature} |")
+        output.append("")
+
 def generate_markdown(callbacks, registry_map):
     output = []
     output.append("# Callbacks Reference")
@@ -237,16 +276,109 @@ def generate_markdown(callbacks, registry_map):
     output.append("Events.off(handlerId)")
     output.append("```")
     output.append("")
+    output.append("### Handler Lifetime and Cleanup")
+    output.append("")
+    output.append("`Events.on` returns a handler ID. Keep that ID and pass it to `Events.off` as soon as the handler is no longer needed. A handler otherwise remains active and continues receiving events.")
+    output.append("")
+    output.append("Register handlers that should remain active for the game session once from a `scripts/init/` file. KenshiLua removes handlers recorded for a script before running that script through the startup loader, reload commands, or Script Manager. The dialogue and world-state bridges perform the same cleanup before repeating a triggered script.")
+    output.append("")
+    output.append("Automatic cleanup does not happen merely because Lua code runs again through `dofile`, a chunk returned by `loadfile`, or a module function. Code using those paths must keep its handler IDs and remove them explicitly with `Events.off`.")
+    output.append("")
+    output.append("Handler ownership follows the file that calls `Events.on`. If a dialogue or world-state script calls a module and that module registers the handler, the handler belongs to the module, not the triggering script. The triggering script's automatic cleanup will not remove it.")
+    output.append("")
     output.append("### Two Types of Callbacks")
     output.append("")
     output.append("1. **Notification Callbacks (Observer Pattern)**: Fired when an event occurs in the game. Handlers observe the event with typed arguments. Returning `false` from a handler suppresses execution of subsequent Lua handlers for that event, but does not interrupt C++ engine logic.")
     output.append("2. **Override Callbacks (Interceptor Pattern)**: Fired when the engine queries a value or object pointer (e.g. food selection, stat calculation, building availability). Handlers receive arguments (and default values). If a handler returns a non-nil value matching the expected return type, the C++ hook uses the returned value to override the engine's original calculation.")
     output.append("")
+    output.append("```text")
+    output.append("+------------------+      Engine function call      +-------------------------------+")
+    output.append("| Kenshi Engine    | -----------------------------> | KenshiLua Hook & Dispatcher   |")
+    output.append("+------------------+                                +-------------------------------+")
+    output.append("                                                                    |")
+    output.append("                                                   Checks thread &  | acquires Lua lock")
+    output.append("                                                                    v")
+    output.append("                                                    +-------------------------------+")
+    output.append("                                                    | Selects matching handlers     |")
+    output.append("                                                    | (Main thread: all handlers;   |")
+    output.append("                                                    |  Worker: workerThread = true) |")
+    output.append("                                                    +-------------------------------+")
+    output.append("                                                          /                   \\")
+    output.append("                                           (Notification)                      (Override)")
+    output.append("                                                        v                       v")
+    output.append("                                    +--------------------------+   +--------------------------+")
+    output.append("                                    | Lua Observer Handlers    |   | Lua Interceptor Handlers |")
+    output.append("                                    | (return false stops      |   | (non-nil return replaces |")
+    output.append("                                    |  later Lua handlers)     |   |  engine return value)    |")
+    output.append("                                    +--------------------------+   +--------------------------+")
+    output.append("```")
+    output.append("")
     output.append("### Threading")
     output.append("")
-    output.append("The Lua runtime is single-threaded. KenshiLua invokes event handlers synchronously only when the engine raises the event on the Lua owner thread. Events raised on game worker threads are not queued and do not enter Lua.")
+    output.append("Kenshi does several jobs at once. The **main thread** draws the screen, runs the interface and moves the game forward. **Worker threads** run in the background at the same time; the busiest one makes AI decisions, such as what a character does next, whether it may use a building, or which attack it picks.")
     output.append("")
-    output.append("For a notification callback, a worker-thread event is skipped. For an override callback, KenshiLua preserves the engine's original or default result. Which thread raises an engine function is determined by Kenshi and can vary by call site.")
+    output.append("Your scripts run on the main thread. Most events are raised there too, and for those there is nothing more to know. Some events are raised from a worker thread, and those behave differently. Other pages call the main thread the Lua owner thread.")
+    output.append("")
+    output.append("#### What happens by default")
+    output.append("")
+    output.append("A handler registered the usual way runs only when Kenshi raises the event from the main thread. When Kenshi raises it from a worker thread, the handler is skipped:")
+    output.append("")
+    output.append("- a notification handler is not called;")
+    output.append("- an override handler is not asked, and the game keeps its own result.")
+    output.append("")
+    output.append("For some events, nearly every call comes from a worker thread. `Ownerships::canIUseThisBuilding` is one: a handler registered the usual way almost never runs for it. The first time KenshiLua skips an event's handlers like this, it writes a warning naming the event to the log. If a handler seems to do nothing, look for that warning.")
+    output.append("")
+    output.append("#### Running a handler on a worker thread")
+    output.append("")
+    output.append("An event whose entry below says **Worker threads: supported** can also call your handler from the worker thread. Ask for that with a third argument to `Events.on`:")
+    output.append("")
+    output.append("```lua")
+    output.append("Events.on(\"Ownerships::canIUseThisBuilding\", function(self, building, character, defaultVal)")
+    output.append("    -- Return true or false to override, or nothing to keep the game's answer.")
+    output.append("end, { workerThread = true })")
+    output.append("```")
+    output.append("")
+    output.append("A handler registered this way runs for calls from both threads.")
+    output.append("")
+    output.append("#### What a worker-thread handler may do")
+    output.append("")
+    output.append("While your handler runs on a worker thread, the main thread does not stop. It keeps drawing the screen and updating the game at that same moment. If your handler changes something the main thread is using right then, the game can crash or its data can be damaged. This happens at random, which makes it very hard to track down. So a worker-thread handler should only look and record:")
+    output.append("")
+    output.append("- **Fine:** reading the handler's arguments, doing calculations, storing values in your own Lua tables, `print` and logging, and returning an override value.")
+    output.append("- **Not safe:** changing the game (spawning, moving or removing characters and items; changing stats, inventories, factions or orders) and anything to do with the interface (creating, changing or removing windows and other widgets).")
+    output.append("")
+    output.append("To change the game in response to a worker-thread event, record what happened and act on it from a handler that runs on the main thread:")
+    output.append("")
+    output.append("```lua")
+    output.append("local deaths = {}")
+    output.append("")
+    output.append("-- May run on a worker thread: only record what happened.")
+    output.append("Events.on(\"Character::declareDead\", function(self)")
+    output.append("    deaths[#deaths + 1] = self:getName()")
+    output.append("end, { workerThread = true })")
+    output.append("")
+    output.append("-- Runs on the main thread: a safe place to change the game or the interface.")
+    output.append("Events.on(\"GameWorld::charsUpdate\", function()")
+    output.append("    for i = 1, #deaths do")
+    output.append("        -- Change the game or the interface here, for example show a message.")
+    output.append("        print(deaths[i] .. \" died\")")
+    output.append("    end")
+    output.append("    deaths = {}")
+    output.append("end)")
+    output.append("```")
+    output.append("")
+    output.append("Record plain values such as names and numbers, not the objects themselves. An object from the arguments may no longer exist by the time the main-thread handler runs.")
+    output.append("")
+    output.append("Your own Lua variables need no special care. KenshiLua never runs two handlers at the same moment, even on different threads, so the two handlers above cannot interfere with each other.")
+    output.append("")
+    output.append("Keep a worker-thread handler fast. The game waits for it to finish, and some of these events are raised hundreds or thousands of times a second, so a slow handler slows the AI down.")
+    output.append("")
+    output.append("#### Other details")
+    output.append("")
+    output.append("- When Kenshi raises an event from the main thread, all of its handlers run. From a worker thread, only the handlers registered with `workerThread` run. An override handler registered the usual way therefore changes only the main-thread calls.")
+    output.append("- The same event can come from either thread, and Kenshi decides call by call. Treat every `workerThread` handler as if it always runs on a worker thread.")
+    output.append("- `workerThread` on an event that does not support it logs a warning, and the handler then works like one registered the usual way.")
+    output.append("- If Lua is busy on the main thread for more than 2 seconds, a waiting worker-thread call gives up and skips its handlers that one time, and a warning is logged.")
     output.append("")
 
     # Split into Notifications and Overrides
@@ -262,54 +394,48 @@ def generate_markdown(callbacks, registry_map):
 
     output.append(f"## Notification Callbacks ({len(notifications)})")
     output.append("")
-    output.append("| Event Name | Lua Signature |")
-    output.append("| :--- | :--- |")
-    for cb in notifications:
-        ev_name = f"`{cb['lua_event']}`" if cb['lua_event'] else "*(Unmapped)*"
-        sig = f"`{cb['typed_sig']}`"
-        output.append(f"| {ev_name} | {sig} |")
-    output.append("")
+    append_callback_tables(output, notifications, "Lua Signature")
 
     output.append(f"## Override Callbacks ({len(overrides)})")
     output.append("")
-    output.append("| Event Name | Lua Signature & Expected Return |")
-    output.append("| :--- | :--- |")
-    for cb in overrides:
-        ev_name = f"`{cb['lua_event']}`" if cb['lua_event'] else "*(Unmapped)*"
-        sig = f"`{cb['typed_sig']}`"
-        output.append(f"| {ev_name} | {sig} |")
-    output.append("")
+    append_callback_tables(output, overrides, "Lua Signature & Expected Return")
 
     output.append("## Detailed Callback Documentation")
     output.append("")
 
     all_cbs = notifications + overrides
-    all_cbs.sort(key=lambda x: x['lua_event'] or x['func_name'])
+    for class_name, class_callbacks in group_callbacks_by_class(all_cbs):
+        output.append(f"### {class_name}")
+        output.append("")
 
-    for cb in all_cbs:
-        ev_title = cb['lua_event'] if cb['lua_event'] else cb['func_name']
-        plain_sig = f"function({', '.join([pname for pname, _ in cb['parsed_params']])})"
-        output.append(f"### `{ev_title}`")
-        output.append("")
-        output.append(f"- **Category**: {'Override / Interceptor' if cb['ret_type'] != 'void' else 'Notification / Observer'}")
-        fired_clean = cb['fired_by'].removesuffix(' hook').strip() if cb['fired_by'] else ""
-        if fired_clean and fired_clean != ev_title:
-            output.append(f"- **Engine Hook**: `{fired_clean}`")
-        output.append(f"- **Lua Signature**: `{plain_sig}`")
-        
-        if cb['parsed_params']:
-            output.append("- **Parameters**:")
-            for pname, ptype in cb['parsed_params']:
-                output.append(f"  - `{pname}`: `{ptype}`")
-        else:
-            output.append("- **Parameters**: None")
-            
-        if cb['ret_type_clean'] != 'void':
-            output.append(f"- **Returns**: `{cb['ret_type_clean']}`")
-            
-        if cb['notes']:
-            output.append(f"- **Notes**: {cb['notes']}")
-        output.append("")
+        for cb in class_callbacks:
+            ev_title = cb['lua_event'] if cb['lua_event'] else cb['func_name']
+            plain_sig = f"function({', '.join([pname for pname, _ in cb['parsed_params']])})"
+            output.append(f"#### `{ev_title}`")
+            output.append("")
+            output.append(f"- **Category**: {'Override / Interceptor' if cb['ret_type'] != 'void' else 'Notification / Observer'}")
+            fired_clean = cb['fired_by'].removesuffix(' hook').strip() if cb['fired_by'] else ""
+            if fired_clean and fired_clean != ev_title:
+                output.append(f"- **Engine Hook**: `{fired_clean}`")
+            output.append(f"- **Lua Signature**: `{plain_sig}`")
+
+            if cb['parsed_params']:
+                output.append("- **Parameters**:")
+                for pname, ptype in cb['parsed_params']:
+                    output.append(f"  - `{pname}`: `{ptype}`")
+            else:
+                output.append("- **Parameters**: None")
+
+            if cb['ret_type_clean'] != 'void':
+                output.append(f"- **Returns**: `{cb['ret_type_clean']}`")
+
+            registry_entry = registry_map.get(cb['lua_event'])
+            if registry_entry and registry_entry["worker_dispatch"]:
+                output.append("- **Worker threads**: supported. Handlers registered with `{ workerThread = true }` also run when Kenshi calls this function on a game worker thread; see [Threading](#threading).")
+
+            if cb['notes']:
+                output.append(f"- **Notes**: {cb['notes']}")
+            output.append("")
 
     OUTPUT_MD.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_MD.write_text("\n".join(output), encoding="utf-8")

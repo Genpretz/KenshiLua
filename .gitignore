@@ -423,11 +423,8 @@ docs/in_progress/**
 scratch/
 /scratch
 tests/scratch/
-/docs/ideas
 AGENTS.md
 .agents/skills/code-review/SKILL.md
 .agents/skills/cpp-hooks-callbacks/SKILL.md
 .agents/skills/cpp-lua-bindings/SKILL.md
 .agents/skills/cpp-lua-bindings/references/container_bindings_guide.md
-tests/in_game/constructor_events_smoke.lua
-tests/in_game/operator_bindings_smoke.lua

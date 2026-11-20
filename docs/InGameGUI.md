@@ -69,6 +69,21 @@ The Console is designed for executing short, single Lua statements or quick debu
 
 The Console and the Script Editor both run code directly in the global Lua environment, `_G`. Scripts loaded from a mod's `scripts/` folder, which are the scripts listed in the Script Manager, each run in their own sandbox environment instead.
 
+```text
++----------------------------+                        +----------------------------+
+| Script Manager / Startup   |                        | Console & Script Editor    |
+| (mod scripts/ files)       |                        | (interactive execution)    |
++----------------------------+                        +----------------------------+
+              |                                                     |
+       Runs in isolated                                      Runs directly in
+              v                                                     v
++----------------------------+   Reads fall through   +----------------------------+
+| Per-Script Sandbox Env     | ---------------------> | Shared Global Table (_G)   |
+| Plain x = 1 stays local    |                        | Plain x = 1 writes to _G   |
+| _G.x = 1 writes to _G      | ---------------------> | Visible to all scripts     |
++----------------------------+     Explicit _G.x      +----------------------------+
+```
+
 * A sandboxed script can read globals, because names it does not define fall through to `_G`. A plain assignment such as `MyMod = {}` creates the name only inside that script's sandbox.
 * The Console and Script Editor cannot see a sandboxed script's plain assignments. Commands such as `MyMod.status()` fail with "attempt to index global" even though the script loaded.
 * To make a script's table reachable from the Console, the Script Editor, and other scripts, assign it to the global table explicitly: `_G.MyMod = _G.MyMod or {}`.
