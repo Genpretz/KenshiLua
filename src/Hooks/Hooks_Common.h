@@ -2,7 +2,7 @@
 
 // ---------------------------------------------------------------------------
 // Shared engine includes and the generic hook-installer helper used by every
-// Hooks_*.cpp translation unit. Split out of the old monolithic Hooks.cpp.
+// Hooks_*.cpp translation unit.
 // ---------------------------------------------------------------------------
 
 #include "../Callbacks.h"
@@ -62,6 +62,23 @@ namespace KenshiLua
 {
     bool IsKnownEvent(const char* eventName);
     bool InstallHookForEvent(const std::string& eventName); //definition in Hooks_Registry.cpp
+
+    // Per-event dispatch state kept beside the hook registry. EventSystem changes
+    // the counters on the Lua owner thread while holding the Lua lock; worker
+    // threads read them without the lock to skip events with nothing to run.
+    struct EventDispatchState
+    {
+        // The registry marks the event as eligible to run handlers registered
+        // with { workerThread = true } on game worker threads.
+        bool workerDispatch;
+        volatile long handlerCount;
+        volatile long workerHandlerCount;
+        volatile long workerSkipLogged;
+    };
+
+    // Dispatch state of a canonical event name, or NULL for a name that is not in
+    // the registry. Safe to call on any thread.
+    EventDispatchState* FindEventDispatchState(const char* eventName);
 }
 
 // ---------------------------------------------------------------------------

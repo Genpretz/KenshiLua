@@ -4,6 +4,8 @@
 #include "EventSystem.h"
 #include <string>
 #include <cstring>
+#include <algorithm>
+#include <vector>
 
 // ---------------------------------------------------------------------------
 // Hook registry mapping Lua event names to domain-specific hook installer functions.
@@ -11,10 +13,21 @@
 
 namespace KenshiLua
 {
+    // Whether an event runs handlers registered with { workerThread = true } when
+    // the engine raises it on a game worker thread. Mark an event WorkerDispatch
+    // only after confirming in game which threads raise it and that its handlers
+    // receive the expected arguments there.
+    enum EventThreading
+    {
+        OwnerThreadOnly = 0,
+        WorkerDispatch = 1
+    };
+
     struct EventHookRegistryEntry
     {
         const char* eventName;
         bool (*install)();
+        EventThreading threading;
     };
 
     static const EventHookRegistryEntry g_eventHookRegistry[] = {
@@ -28,33 +41,33 @@ namespace KenshiLua
         { "OrdersReceiver::_NV_serialise",                                   InstallHook_OrdersReceiver_NV_serialise },
 
         // Character.h          
-        { "Character::_NV_say",                                              InstallHook_Character_Say },
+        { "Character::_NV_say",                                              InstallHook_Character_Say, WorkerDispatch },
         { "Character::_NV_select",                                           InstallHook_Character_Select },
         { "Character::_NV_unselect",                                         InstallHook_Character_Unselect },
-        { "Character::declareDead",                                          InstallHook_Character_DeclareDead },
-        { "Character::pickupObject",                                         InstallHook_Character_PickupObject },
-        { "Character::getPickedUp",                                          InstallHook_Character_GetPickedUp },
-        { "Character::_NV_takeMoney",                                        InstallHook_Character_TakeMoney },
-        { "Character::eatItem",                                              InstallHook_Character_EatItem },
-        { "Character::_NV_hitByMeleeAttack",                                 InstallHook_Character_HitByMeleeAttack },
+        { "Character::declareDead",                                          InstallHook_Character_DeclareDead, WorkerDispatch },
+        { "Character::pickupObject",                                         InstallHook_Character_PickupObject, WorkerDispatch },
+        { "Character::getPickedUp",                                          InstallHook_Character_GetPickedUp, WorkerDispatch },
+        { "Character::_NV_takeMoney",                                        InstallHook_Character_TakeMoney, WorkerDispatch },
+        { "Character::eatItem",                                              InstallHook_Character_EatItem, WorkerDispatch },
+        { "Character::_NV_hitByMeleeAttack",                                 InstallHook_Character_HitByMeleeAttack, WorkerDispatch },
         { "Character::_NV_gettingEaten",                                     InstallHook_Character_GettingEaten },
         { "Character::_NV_setStandingOrder",                                 InstallHook_Character_SetStandingOrder },
         { "Character::_NV_setFaction",                                       InstallHook_Character_SetFaction },
-        { "Character::_NV_equipItem",                                        InstallHook_Character_EquipItem },
+        { "Character::_NV_equipItem",                                        InstallHook_Character_EquipItem, WorkerDispatch },
         { "Character::_NV_unequipItem",                                      InstallHook_Character_UnequipItem },
         { "Character::_NV_ImStealingDoYouNotice",                            InstallHook_Character_ImStealingDoYouNotice },
         { "Character::_NV_smugglingTradeCheck",                              InstallHook_Character_SmugglingTradeCheck },
         { "Character::_NV_init",                                             InstallHook_Character_NV_init },
-        { "Character::_NV_isItOkForMeToLoot",                                InstallHook_Character_NV_isItOkForMeToLoot },
+        { "Character::_NV_isItOkForMeToLoot",                                InstallHook_Character_NV_isItOkForMeToLoot, WorkerDispatch },
         { "Character::getFencingSuccessChance",                              InstallHook_Character_getFencingSuccessChance },
-        { "Character::changeSlaveOwner",                                     InstallHook_Character_changeSlaveOwner },
+        { "Character::changeSlaveOwner",                                     InstallHook_Character_changeSlaveOwner, WorkerDispatch },
         { "Character::setChainedMode",                                       InstallHook_Character_setChainedMode },
-        { "Character::setPrisonMode",                                             InstallHook_Character_setPrisonMode },
+        { "Character::setPrisonMode",                                             InstallHook_Character_setPrisonMode, WorkerDispatch },
         { "Character::dropCarriedObject",                                         InstallHook_Character_dropCarriedObject },
-        { "Character::getDropped",                                                InstallHook_Character_getDropped },
+        { "Character::getDropped",                                                InstallHook_Character_getDropped, WorkerDispatch },
         { "Character::addGoal",                                              InstallHook_Character_addGoal },
         { "Character::addJob",                                               InstallHook_Character_addJob },
-        { "Character::addOrder",                                             InstallHook_Character_addOrder },
+        { "Character::addOrder",                                             InstallHook_Character_addOrder, WorkerDispatch },
         { "Character::removeJob",                                            InstallHook_Character_removeJob },
         { "Character::_NV_serialise",                                        InstallHook_Character_NV_serialise },
         { "Character::_NV_loadFromSerialise",                                InstallHook_Character_NV_loadFromSerialise },
@@ -63,18 +76,18 @@ namespace KenshiLua
         // CharStats.h
         { "CharStats::setHoldLocation",                                      InstallHook_CharStats_SetHoldLocation },
         { "CharStats::clearHoldLocation",                                    InstallHook_CharStats_ClearHoldLocation },
-        { "CharStats::chooseAttack",                                         InstallHook_CharStats_ChooseAttack },
-        { "CharStats::xpRunning",                                            InstallHook_CharStats_XpRunning },
-        { "CharStats::xpFirstAid",                                           InstallHook_CharStats_XpFirstAid },
+        { "CharStats::chooseAttack",                                         InstallHook_CharStats_ChooseAttack, WorkerDispatch },
+        { "CharStats::xpRunning",                                            InstallHook_CharStats_XpRunning, WorkerDispatch },
+        { "CharStats::xpFirstAid",                                           InstallHook_CharStats_XpFirstAid, WorkerDispatch },
         { "CharStats::xpStealth",                                            InstallHook_CharStats_XpStealth },
         { "CharStats::xpToughness_GetUpEvent",                               InstallHook_CharStats_XpToughness_GetUpEvent },
-        { "CharStats::xpToughness_RagdollEvent",                             InstallHook_CharStats_XpToughness_RagdollEvent },
-        { "CharStats::xpToughness_PunchSomething",                           InstallHook_CharStats_XpToughness_PunchSomething },
-        { "CharStats::xpEngineering",                                        InstallHook_CharStats_XpEngineering },
-        { "CharStats::xpLockpicking",                                        InstallHook_CharStats_XpLockpicking },
-        { "CharStats::getStat",                                              InstallHook_CharStats_getStat },
-        { "CharStats::xpStat_eventBased",                                    InstallHook_CharStats_xpStat_eventBased },
-        { "CharStats::xpDodgeEvent",                                         InstallHook_CharStats_xpDodgeEvent },
+        { "CharStats::xpToughness_RagdollEvent",                             InstallHook_CharStats_XpToughness_RagdollEvent, WorkerDispatch },
+        { "CharStats::xpToughness_PunchSomething",                           InstallHook_CharStats_XpToughness_PunchSomething, WorkerDispatch },
+        { "CharStats::xpEngineering",                                        InstallHook_CharStats_XpEngineering, WorkerDispatch },
+        { "CharStats::xpLockpicking",                                        InstallHook_CharStats_XpLockpicking, WorkerDispatch },
+        { "CharStats::getStat",                                              InstallHook_CharStats_getStat, WorkerDispatch },
+        { "CharStats::xpStat_eventBased",                                    InstallHook_CharStats_xpStat_eventBased, WorkerDispatch },
+        { "CharStats::xpDodgeEvent",                                         InstallHook_CharStats_xpDodgeEvent, WorkerDispatch },
 
         // PlayerInterface.h            
         { "PlayerInterface::recruit",                                        InstallHook_PlayerInterface_Recruit },
@@ -84,7 +97,7 @@ namespace KenshiLua
         { "PlayerInterface::createSquad",                                    InstallHook_PlayerInterface_createSquad },
         { "PlayerInterface::addJobSelectedCharacters",                       InstallHook_PlayerInterface_addJobSelectedCharacters },
         { "PlayerInterface::addOrderSelectedCharacters",                     InstallHook_PlayerInterface_addOrderSelectedCharacters },
-        { "PlayerInterface::encounterFaction",                               InstallHook_PlayerInterface_encounterFaction },
+        { "PlayerInterface::encounterFaction",                               InstallHook_PlayerInterface_encounterFaction, WorkerDispatch },
         { "PlayerInterface::serialise",                                      InstallHook_PlayerInterface_serialise },
         { "PlayerInterface::loadFromSerialise",                              InstallHook_PlayerInterface_loadFromSerialise },
 
@@ -95,38 +108,38 @@ namespace KenshiLua
         { "Platoon::iBuyStolenGoods",                                        InstallHook_Platoon_iBuyStolenGoods },
         { "Platoon::iBuyIllegalGoods",                                       InstallHook_Platoon_iBuyIllegalGoods },
         { "Platoon::_NV_loadFromSerialise",                                  InstallHook_Platoon_NV_loadFromSerialise },
-        { "Platoon::_NV_notifyMissionEnded",                                      InstallHook_Platoon_NV_notifyMissionEnded },
-        { "Platoon::declareDead",                                                 InstallHook_Platoon_declareDead },
+        { "Platoon::_NV_notifyMissionEnded",                                      InstallHook_Platoon_NV_notifyMissionEnded, WorkerDispatch },
+        { "Platoon::declareDead",                                                 InstallHook_Platoon_declareDead, WorkerDispatch },
         { "Platoon::undeclareDead",                                               InstallHook_Platoon_undeclareDead },
         { "ActivePlatoon::setSquadLeader",                                        InstallHook_ActivePlatoon_setSquadLeader },
-        { "Ownerships::canIUseThisBuilding",                                 InstallHook_Ownerships_canIUseThisBuilding },
+        { "Ownerships::canIUseThisBuilding",                                 InstallHook_Ownerships_canIUseThisBuilding, WorkerDispatch },
 
         // Item.h           
         { "Item::_NV_notifyTheftFrom",                                       InstallHook_Item_NotifyTheftFrom },
 
         // Inventory.h / InventoryItemBase.h            
-        { "Inventory::getSectionOfType",                                     InstallHook_Inventory_getSectionOfType },
-        { "Inventory::getBestFoodItem",                                      InstallHook_Inventory_getBestFoodItem },
+        { "Inventory::getSectionOfType",                                     InstallHook_Inventory_getSectionOfType, WorkerDispatch },
+        { "Inventory::getBestFoodItem",                                      InstallHook_Inventory_getBestFoodItem, WorkerDispatch },
         { "InventoryItemBase::getValueSingle",                               InstallHook_InventoryItemBase_getValueSingle },
         { "Inventory::_NV_addItem",                                          InstallHook_Inventory_NV_addItem },
-        { "Inventory::_NV_removeItemDontDestroy_returnsItem",                InstallHook_Inventory_NV_removeItemDontDestroy_returnsItem },
-        { "Inventory::buyItem",                                              InstallHook_Inventory_buyItem },
+        { "Inventory::_NV_removeItemDontDestroy_returnsItem",                InstallHook_Inventory_NV_removeItemDontDestroy_returnsItem, WorkerDispatch },
+        { "Inventory::buyItem",                                              InstallHook_Inventory_buyItem, WorkerDispatch },
         { "Inventory::_NV__sectionAddItemCallback",                          InstallHook_Inventory_NV_sectionAddItemCallback },
         { "Inventory::_NV__sectionRemoveItemCallback",                       InstallHook_Inventory_NV_sectionRemoveItemCallback },
-        { "Inventory::_NV__sectionUpdateItemCallback",                       InstallHook_Inventory_NV_sectionUpdateItemCallback },
+        { "Inventory::_NV__sectionUpdateItemCallback",                       InstallHook_Inventory_NV_sectionUpdateItemCallback, WorkerDispatch },
         { "Inventory::_NV_dropItem",                                         InstallHook_Inventory_NV_dropItem },
 
         // BountyManager.h          
-        { "BountyManager::notifyCrimeWitnessed",                             InstallHook_BountyManager_NotifyCrimeWitnessed },
-        { "BountyManager::setCrime",                                              InstallHook_BountyManager_setCrime },
-        { "BountyManager::notifyStartPrisonSentence",                             InstallHook_BountyManager_notifyStartPrisonSentence },
+        { "BountyManager::notifyCrimeWitnessed",                             InstallHook_BountyManager_NotifyCrimeWitnessed, WorkerDispatch },
+        { "BountyManager::setCrime",                                              InstallHook_BountyManager_setCrime, WorkerDispatch },
+        { "BountyManager::notifyStartPrisonSentence",                             InstallHook_BountyManager_notifyStartPrisonSentence, WorkerDispatch },
         { "BountyManager::notifyPlayerClaimBounty",                               InstallHook_BountyManager_notifyPlayerClaimBounty },
-        { "BountyManager::assignBountyForCrimes",                                 InstallHook_BountyManager_assignBountyForCrimes },
-        { "BountyManager::clearBounty",                                           InstallHook_BountyManager_clearBounty },
+        { "BountyManager::assignBountyForCrimes",                                 InstallHook_BountyManager_assignBountyForCrimes, WorkerDispatch },
+        { "BountyManager::clearBounty",                                           InstallHook_BountyManager_clearBounty, WorkerDispatch },
         { "BountyManager::unfairAddToBounty",                                     InstallHook_BountyManager_unfairAddToBounty },
 
         // FactionRelations.h           
-        { "FactionRelations::affectRelations",                               InstallHook_FactionRelations_AffectRelations },
+        { "FactionRelations::affectRelations",                               InstallHook_FactionRelations_AffectRelations, WorkerDispatch },
         { "FactionRelations::_NV_setEnemy",                                       InstallHook_FactionRelations_NV_setEnemy },
         { "FactionRelations::setRelation",                                        InstallHook_FactionRelations_setRelation },
         { "FactionRelations::_NV_affectTrust",                                    InstallHook_FactionRelations_NV_affectTrust },
@@ -140,27 +153,29 @@ namespace KenshiLua
         { "Faction::createNewEmptyActivePlatoon",                            InstallHook_Faction_createNewEmptyActivePlatoon },
         { "Faction::destroyPlatoon",                                         InstallHook_Faction_destroyPlatoon },
 
+        // FactionWarMgr.h
+
         // MedicalSystem.h          
-        { "MedicalSystem::amputate",                                         InstallHook_MedicalSystem_Amputate },
-        { "MedicalSystem::knockout",                                         InstallHook_MedicalSystem_knockout },
+        { "MedicalSystem::amputate",                                         InstallHook_MedicalSystem_Amputate, WorkerDispatch },
+        { "MedicalSystem::knockout",                                         InstallHook_MedicalSystem_knockout, WorkerDispatch },
         { "MedicalSystem::canGetUpWakeUp",                                   InstallHook_MedicalSystem_canGetUpWakeUp },
-        { "MedicalSystem::HealthPartStatus::applyDamage",                         InstallHook_HealthPartStatus_applyDamage },
-        { "MedicalSystem::applyFirstAid",                                         InstallHook_MedicalSystem_applyFirstAid },
-        { "MedicalSystem::applyDoctoring",                                        InstallHook_MedicalSystem_applyDoctoring },
-        { "MedicalSystem::applyRigging",                                          InstallHook_MedicalSystem_applyRigging },
+        { "MedicalSystem::HealthPartStatus::applyDamage",                         InstallHook_HealthPartStatus_applyDamage, WorkerDispatch },
+        { "MedicalSystem::applyFirstAid",                                         InstallHook_MedicalSystem_applyFirstAid, WorkerDispatch },
+        { "MedicalSystem::applyDoctoring",                                        InstallHook_MedicalSystem_applyDoctoring, WorkerDispatch },
+        { "MedicalSystem::applyRigging",                                          InstallHook_MedicalSystem_applyRigging, WorkerDispatch },
 
         // gui/DialogueWindow.h         
         { "DialogueWindow::show",                                            InstallHook_DialogueWindow_Show },
 
         // Dialogue.h           
-        { "Dialogue::_doActions",                                            InstallHook_Dialogue_DoActions },
-        { "Dialogue::say",                                                   InstallHook_Dialogue_Say },
+        { "Dialogue::_doActions",                                            InstallHook_Dialogue_DoActions, WorkerDispatch },
+        { "Dialogue::say",                                                   InstallHook_Dialogue_Say, WorkerDispatch },
         { "Dialogue::endDialogue",                                           InstallHook_Dialogue_endDialogue },
-        { "Dialogue::_checkCondition",                                       InstallHook_Dialogue__checkCondition },
-        { "Dialogue::startConversation",                                     InstallHook_Dialogue_startConversation },
+        { "Dialogue::_checkCondition",                                       InstallHook_Dialogue__checkCondition, WorkerDispatch },
+        { "Dialogue::startConversation",                                     InstallHook_Dialogue_startConversation, WorkerDispatch },
         { "Dialogue::_endPlayerConversation",                                InstallHook_Dialogue__endPlayerConversation },
-        { "Dialogue::startPlayerConversation",                               InstallHook_Dialogue_startPlayerConversation },
-        { "Dialogue::sendEvent",                                             InstallHook_Dialogue_sendEvent },
+        { "Dialogue::startPlayerConversation",                               InstallHook_Dialogue_startPlayerConversation, WorkerDispatch },
+        { "Dialogue::sendEvent",                                             InstallHook_Dialogue_sendEvent, WorkerDispatch },
         { "Dialogue::stopEvent",                                             InstallHook_Dialogue_stopEvent },
 
         // RootObjectFactory.h          
@@ -173,7 +188,7 @@ namespace KenshiLua
         { "MyGUI::Gui::eventFrameStart",                                     InstallDelegate_MyGUI_Gui_eventFrameStart },
 
         // Building/Building.h          
-        { "Building::_NV_isPublic",                                          InstallHook_Building_NV_isPublic },
+        { "Building::_NV_isPublic",                                          InstallHook_Building_NV_isPublic, WorkerDispatch },
         { "Building::_NV_isForSale",                                         InstallHook_Building_NV_isForSale },
         { "Building::calculateSaleValue",                                    InstallHook_Building_calculateSaleValue },
         { "Building::_NV_onBuildingLoaded",                                  InstallHook_Building_NV_onBuildingLoaded },
@@ -201,20 +216,20 @@ namespace KenshiLua
         { "WallBuilding::_NV_hitByMeleeAttack",                              InstallHook_WallBuilding_NV_hitByMeleeAttack },
 
         // Building/DoorStuff.h
-        { "DoorStuff::openDoor",                                             InstallHook_DoorStuff_openDoor },
-        { "DoorStuff::closeDoor",                                            InstallHook_DoorStuff_closeDoor },
+        { "DoorStuff::openDoor",                                             InstallHook_DoorStuff_openDoor, WorkerDispatch },
+        { "DoorStuff::closeDoor",                                            InstallHook_DoorStuff_closeDoor, WorkerDispatch },
         { "DoorStuff::lockDoor",                                             InstallHook_DoorStuff_lockDoor },
         { "DoorStuff::unlockDoor",                                           InstallHook_DoorStuff_unlockDoor },
         { "DoorStuff::setDoorState",                                         InstallHook_DoorStuff_setDoorState },
-        { "DoorStuff::_NV_hitByMeleeAttack",                                 InstallHook_DoorStuff_NV_hitByMeleeAttack },
+        { "DoorStuff::_NV_hitByMeleeAttack",                                 InstallHook_DoorStuff_NV_hitByMeleeAttack, WorkerDispatch },
 
         // Building/ProductionBuilding.h
         { "ProductionBuilding::_NV_operate",                                 InstallHook_ProductionBuilding_NV_operate },
 
         // Building/CraftingBuilding.h
-        { "CraftingBuilding::_NV_operate",                                   InstallHook_CraftingBuilding_NV_operate },
+        { "CraftingBuilding::_NV_operate",                                   InstallHook_CraftingBuilding_NV_operate, WorkerDispatch },
         { "CraftingBuilding::_NV_newCraftingButton",                         InstallHook_CraftingBuilding_NV_newCraftingButton },
-        { "CraftingBuilding::addFinishedCraftItem",                          InstallHook_CraftingBuilding_addFinishedCraftItem },
+        { "CraftingBuilding::addFinishedCraftItem",                          InstallHook_CraftingBuilding_addFinishedCraftItem, WorkerDispatch },
         { "CraftingBuilding::notifyCraftFailiure",                           InstallHook_CraftingBuilding_notifyCraftFailiure },
         { "CraftingBuilding::destroyProductionItem",                         InstallHook_CraftingBuilding_destroyProductionItem },
         { "CraftingBuilding::_removeCraft",                                  InstallHook_CraftingBuilding_removeCraft },
@@ -226,24 +241,24 @@ namespace KenshiLua
         { "ResearchBuilding::_NV_operate",                                   InstallHook_ResearchBuilding_NV_operate },
 
         // Building/FarmBuilding.h
-        { "FarmBuilding::_NV_operate",                                       InstallHook_FarmBuilding_NV_operate },
-        { "FarmBuilding::destroyAPlant",                                     InstallHook_FarmBuilding_destroyAPlant },
+        { "FarmBuilding::_NV_operate",                                       InstallHook_FarmBuilding_NV_operate, WorkerDispatch },
+        { "FarmBuilding::destroyAPlant",                                     InstallHook_FarmBuilding_destroyAPlant, WorkerDispatch },
         { "FarmBuilding::eat",                                               InstallHook_FarmBuilding_eat },
 
         // Building/TurretBuilding.h
-        { "TurretBuilding::_NV_operate",                                     InstallHook_TurretBuilding_NV_operate },
+        { "TurretBuilding::_NV_operate",                                     InstallHook_TurretBuilding_NV_operate, WorkerDispatch },
         { "TurretBuilding::aimAt",                                           InstallHook_TurretBuilding_aimAt },
 
         // Building/UseableStuff.h
         { "UseableStuff::_NV_hitByMeleeAttack",                              InstallHook_UseableStuff_NV_hitByMeleeAttack },
-        { "UseableStuff::_NV_tryOperate",                                    InstallHook_UseableStuff_NV_tryOperate },
+        { "UseableStuff::_NV_tryOperate",                                    InstallHook_UseableStuff_NV_tryOperate, WorkerDispatch },
         { "UseableStuff::stopOperating",                                     InstallHook_UseableStuff_stopOperating },
         { "UseableStuff::occupantHandleChangedEvent",                        InstallHook_UseableStuff_occupantHandleChangedEvent },
         { "UseableStuff::_NV_switchPowerOn",                                 InstallHook_UseableStuff_NV_switchPowerOn },
         { "UseableStuff::_NV_givePower",                                     InstallHook_UseableStuff_NV_givePower },
-        { "UseableStuff::_NV_getCostToUse",                                  InstallHook_UseableStuff_NV_getCostToUse },
-        { "UseableStuff::_NV_couldIOperate",                                 InstallHook_UseableStuff_NV_couldIOperate },
-        { "UseableStuff::_NV_dontNeedWorkRightNow",                          InstallHook_UseableStuff_NV_dontNeedWorkRightNow },
+        { "UseableStuff::_NV_getCostToUse",                                  InstallHook_UseableStuff_NV_getCostToUse, WorkerDispatch },
+        { "UseableStuff::_NV_couldIOperate",                                 InstallHook_UseableStuff_NV_couldIOperate, WorkerDispatch },
+        { "UseableStuff::_NV_dontNeedWorkRightNow",                          InstallHook_UseableStuff_NV_dontNeedWorkRightNow, WorkerDispatch },
         { "UseableStuff::takePowerFrom",                                     InstallHook_UseableStuff_takePowerFrom },
         { "UseableStuff::_NV_togglePowerButton",                             InstallHook_UseableStuff_NV_togglePowerButton },
         { "UseableStuff::_NV_toggleBattButton",                              InstallHook_UseableStuff_NV_toggleBattButton },
@@ -255,7 +270,7 @@ namespace KenshiLua
 
         // CharMovement.h           
         { "CharMovement::isRunning",                                         InstallHook_CharMovement_isRunning },
-        { "CharMovement::isRunningAway",                                     InstallHook_CharMovement_isRunningAway },
+        { "CharMovement::isRunningAway",                                     InstallHook_CharMovement_isRunningAway, WorkerDispatch },
 
         // InventoryGUI.h
         { "InventoryGUI::addTradePartner",                                   InstallHook_InventoryGUI_addTradePartner },
@@ -266,11 +281,11 @@ namespace KenshiLua
         { "ContextMenuGUI::show",                                            InstallHook_ContextMenuGUI_show },
 
         // combat/CombatClass.h
-        { "CombatClass::_NV_initCombatMode",                                      InstallHook_CombatClass_NV_initCombatMode },
-        { "CombatClass::_getHit",                                                 InstallHook_CombatClass_getHit },
-        { "CombatClass::_blockHit",                                               InstallHook_CombatClass_blockHit },
-        { "CombatClass::addAttackerH",                                            InstallHook_CombatClass_addAttackerH },
-        { "CombatClass::removeAttackerH",                                         InstallHook_CombatClass_removeAttackerH },
+        { "CombatClass::_NV_initCombatMode",                                      InstallHook_CombatClass_NV_initCombatMode, WorkerDispatch },
+        { "CombatClass::_getHit",                                                 InstallHook_CombatClass_getHit, WorkerDispatch },
+        { "CombatClass::_blockHit",                                               InstallHook_CombatClass_blockHit, WorkerDispatch },
+        { "CombatClass::addAttackerH",                                            InstallHook_CombatClass_addAttackerH, WorkerDispatch },
+        { "CombatClass::removeAttackerH",                                         InstallHook_CombatClass_removeAttackerH, WorkerDispatch },
 
         // GunClass.h
         { "GunClass::shoot",                                                      InstallHook_GunClass_shoot },
@@ -295,11 +310,11 @@ namespace KenshiLua
         { "DataPanelLine_Button::pressCallback",                             InstallHook_DataPanelLine_Button_pressCallback },
 
         // CharacterAnimal
-        { "CharacterAnimal::_NV_isAnimal",                                   InstallHook_CharacterAnimal_NV_isAnimal },
+        { "CharacterAnimal::_NV_isAnimal",                                   InstallHook_CharacterAnimal_NV_isAnimal, WorkerDispatch },
         { "CharacterAnimal::_NV_createAnimationClass",                       InstallHook_CharacterAnimal_NV_createAnimationClass },
-        { "CharacterAnimal::_NV_drawWeapon",                                 InstallHook_CharacterAnimal_NV_drawWeapon },
-        { "CharacterAnimal::_NV_sheatheWeapon",                              InstallHook_CharacterAnimal_NV_sheatheWeapon },
-        { "CharacterAnimal::_NV_getCurrentWeapon",                           InstallHook_CharacterAnimal_NV_getCurrentWeapon },
+        { "CharacterAnimal::_NV_drawWeapon",                                 InstallHook_CharacterAnimal_NV_drawWeapon, WorkerDispatch },
+        { "CharacterAnimal::_NV_sheatheWeapon",                              InstallHook_CharacterAnimal_NV_sheatheWeapon, WorkerDispatch },
+        { "CharacterAnimal::_NV_getCurrentWeapon",                           InstallHook_CharacterAnimal_NV_getCurrentWeapon, WorkerDispatch },
         { "CharacterAnimal::_NV_getThePreferredWeapon",                      InstallHook_CharacterAnimal_NV_getThePreferredWeapon },
         { "CharacterAnimal::_NV_createInventoryLayout",                      InstallHook_CharacterAnimal_NV_createInventoryLayout },
         { "CharacterAnimal::_NV_giveBirth",                                  InstallHook_CharacterAnimal_NV_giveBirth },
@@ -307,15 +322,15 @@ namespace KenshiLua
         { "CharacterAnimal::_NV_setupAudio",                                 InstallHook_CharacterAnimal_NV_setupAudio },
         { "CharacterAnimal::_NV_periodicUpdate",                             InstallHook_CharacterAnimal_NV_periodicUpdate },
         { "CharacterAnimal::_NV_setAge",                                     InstallHook_CharacterAnimal_NV_setAge },
-        { "CharacterAnimal::_NV_getAge",                                     InstallHook_CharacterAnimal_NV_getAge },
+        { "CharacterAnimal::_NV_getAge",                                     InstallHook_CharacterAnimal_NV_getAge, WorkerDispatch },
         { "CharacterAnimal::_NV_getAgeInverse",                              InstallHook_CharacterAnimal_NV_getAgeInverse },
-        { "CharacterAnimal::_NV_getAge0to1",                                 InstallHook_CharacterAnimal_NV_getAge0to1 },
+        { "CharacterAnimal::_NV_getAge0to1",                                 InstallHook_CharacterAnimal_NV_getAge0to1, WorkerDispatch },
         { "CharacterAnimal::_NV_getDefaultTaskRepertoireEnum",               InstallHook_CharacterAnimal_NV_getDefaultTaskRepertoireEnum },
-        { "CharacterAnimal::_NV_canGoIndoors",                               InstallHook_CharacterAnimal_NV_canGoIndoors },
-        { "CharacterAnimal::_NV_getSmellHuntingThresholdBlood",              InstallHook_CharacterAnimal_NV_getSmellHuntingThresholdBlood },
+        { "CharacterAnimal::_NV_canGoIndoors",                               InstallHook_CharacterAnimal_NV_canGoIndoors, WorkerDispatch },
+        { "CharacterAnimal::_NV_getSmellHuntingThresholdBlood",              InstallHook_CharacterAnimal_NV_getSmellHuntingThresholdBlood, WorkerDispatch },
         { "CharacterAnimal::_NV_getSmellHuntingThresholdEggs",               InstallHook_CharacterAnimal_NV_getSmellHuntingThresholdEggs },
-        { "CharacterAnimal::_NV_getHPMultiplier",                            InstallHook_CharacterAnimal_NV_getHPMultiplier },
-        { "CharacterAnimal::_NV_foodUpdate",                                 InstallHook_CharacterAnimal_NV_foodUpdate },
+        { "CharacterAnimal::_NV_getHPMultiplier",                            InstallHook_CharacterAnimal_NV_getHPMultiplier, WorkerDispatch },
+        { "CharacterAnimal::_NV_foodUpdate",                                 InstallHook_CharacterAnimal_NV_foodUpdate, WorkerDispatch },
         { "CharacterAnimal::_NV_init",                                       InstallHook_CharacterAnimal_NV_init },
         { "CharacterAnimal::_NV_dropItem",                                   InstallHook_CharacterAnimal_NV_dropItem },
 
@@ -329,11 +344,11 @@ namespace KenshiLua
         { "LockedArmour::_CONSTRUCTOR",                                      InstallHook_LockedArmour_CONSTRUCTOR },
         { "Weapon::_CONSTRUCTOR",                                            InstallHook_Weapon_CONSTRUCTOR },
         { "Building::_CONSTRUCTOR",                                          InstallHook_Building_CONSTRUCTOR },
-        { "Platoon::_CONSTRUCTOR",                                           InstallHook_Platoon_CONSTRUCTOR },
+        { "Platoon::_CONSTRUCTOR",                                           InstallHook_Platoon_CONSTRUCTOR, WorkerDispatch },
         { "ActivePlatoon::_CONSTRUCTOR",                                     InstallHook_ActivePlatoon_CONSTRUCTOR },
         { "Faction::_CONSTRUCTOR",                                           InstallHook_Faction_CONSTRUCTOR },
         { "Bounty::_CONSTRUCTOR",                                            InstallHook_Bounty_CONSTRUCTOR },
-        { "Damages::_CONSTRUCTOR",                                           InstallHook_Damages_CONSTRUCTOR },
+        { "Damages::_CONSTRUCTOR",                                           InstallHook_Damages_CONSTRUCTOR, WorkerDispatch },
         { "Inventory::_CONSTRUCTOR",                                         InstallHook_Inventory_CONSTRUCTOR },
         { "DoorStuff::_CONSTRUCTOR",                                         InstallHook_DoorStuff_CONSTRUCTOR },
         { "ProductionBuilding::_CONSTRUCTOR",                                InstallHook_ProductionBuilding_CONSTRUCTOR },
@@ -359,7 +374,7 @@ namespace KenshiLua
         { "CharMovement::_CONSTRUCTOR",                                      InstallHook_CharMovement_CONSTRUCTOR },
         { "CombatClass::_CONSTRUCTOR",                                       InstallHook_CombatClass_CONSTRUCTOR },
         { "Town::_CONSTRUCTOR",                                              InstallHook_Town_CONSTRUCTOR },
-        { "TownBase::_CONSTRUCTOR",                                          InstallHook_TownBase_CONSTRUCTOR },
+        { "TownBase::_CONSTRUCTOR",                                          InstallHook_TownBase_CONSTRUCTOR, WorkerDispatch },
         { "FactionLeader::_CONSTRUCTOR",                                     InstallHook_FactionLeader_CONSTRUCTOR },
         { "FactionRelations::_CONSTRUCTOR",                                  InstallHook_FactionRelations_CONSTRUCTOR },
         { "FactionUniqueSquadManager::_CONSTRUCTOR",                         InstallHook_FactionUniqueSquadManager_CONSTRUCTOR },
@@ -369,8 +384,8 @@ namespace KenshiLua
         { "CombatTechniqueData::_CONSTRUCTOR",                               InstallHook_CombatTechniqueData_CONSTRUCTOR },
         { "Dialogue::_CONSTRUCTOR",                                          InstallHook_Dialogue_CONSTRUCTOR },
         { "DialogLineData::_CONSTRUCTOR",                                    InstallHook_DialogLineData_CONSTRUCTOR },
-        { "GameData::_CONSTRUCTOR",                                           InstallHook_GameData_CONSTRUCTOR },
-        { "Tasker::_CONSTRUCTOR",                                             InstallHook_Tasker_CONSTRUCTOR },
+        { "GameData::_CONSTRUCTOR",                                           InstallHook_GameData_CONSTRUCTOR, WorkerDispatch },
+        { "Tasker::_CONSTRUCTOR",                                             InstallHook_Tasker_CONSTRUCTOR, WorkerDispatch },
         { "AppearanceManager::_CONSTRUCTOR",                                  InstallHook_AppearanceManager_CONSTRUCTOR },
         { "CombatMovementController::_CONSTRUCTOR",                           InstallHook_CombatMovementController_CONSTRUCTOR },
         { "WorldEventStateQuery::_CONSTRUCTOR",                               InstallHook_WorldEventStateQuery_CONSTRUCTOR },
@@ -388,10 +403,10 @@ namespace KenshiLua
         { "ZoneManager::_CONSTRUCTOR",                                        InstallHook_ZoneManager_CONSTRUCTOR },
         { "Character::AttachedArrowManager::_CONSTRUCTOR",                    InstallHook_AttachedArrowManager_CONSTRUCTOR },
         { "LimbsInventoryLayout::_CONSTRUCTOR",                               InstallHook_LimbsInventoryLayout_CONSTRUCTOR },
-        { "RobotLimbs::_CONSTRUCTOR",                                         InstallHook_RobotLimbs_CONSTRUCTOR },
+        { "RobotLimbs::_CONSTRUCTOR",                                         InstallHook_RobotLimbs_CONSTRUCTOR, WorkerDispatch },
         { "ShopTrader::_CONSTRUCTOR",                                         InstallHook_ShopTrader_CONSTRUCTOR },
-        { "RootObjectBase::_CONSTRUCTOR",                                     InstallHook_RootObjectBase_CONSTRUCTOR },
-        { "RootObject::_CONSTRUCTOR",                                         InstallHook_RootObject_CONSTRUCTOR },
+        { "RootObjectBase::_CONSTRUCTOR",                                     InstallHook_RootObjectBase_CONSTRUCTOR, WorkerDispatch },
+        { "RootObject::_CONSTRUCTOR",                                         InstallHook_RootObject_CONSTRUCTOR, WorkerDispatch },
 
         // GUIWindow.h
         { "GUIWindow::_NV_setPositionReal",                                    InstallHook_GUIWindow_NV_setPositionReal },
@@ -1030,6 +1045,68 @@ namespace KenshiLua
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);
+
+    namespace
+    {
+        // Built once during DLL static initialization, before any hook can run,
+        // and never changed afterwards, so worker threads may read it freely.
+        class EventDispatchTable
+        {
+        public:
+            EventDispatchTable()
+            {
+                m_sorted.reserve(g_eventHookRegistryCount);
+                for (size_t i = 0; i < g_eventHookRegistryCount; ++i)
+                {
+                    m_state[i].workerDispatch = g_eventHookRegistry[i].threading == WorkerDispatch;
+                    m_state[i].handlerCount = 0;
+                    m_state[i].workerHandlerCount = 0;
+                    m_state[i].workerSkipLogged = 0;
+                    m_sorted.push_back(i);
+                }
+                std::sort(m_sorted.begin(), m_sorted.end(), NameLess());
+            }
+
+            EventDispatchState* find(const char* eventName)
+            {
+                size_t low = 0;
+                size_t high = m_sorted.size();
+                while (low < high)
+                {
+                    size_t mid = low + (high - low) / 2;
+                    int order = strcmp(g_eventHookRegistry[m_sorted[mid]].eventName, eventName);
+                    if (order == 0)
+                        return &m_state[m_sorted[mid]];
+                    if (order < 0)
+                        low = mid + 1;
+                    else
+                        high = mid;
+                }
+                return NULL;
+            }
+
+        private:
+            struct NameLess
+            {
+                bool operator()(size_t a, size_t b) const
+                {
+                    return strcmp(g_eventHookRegistry[a].eventName, g_eventHookRegistry[b].eventName) < 0;
+                }
+            };
+
+            EventDispatchState m_state[g_eventHookRegistryCount];
+            std::vector<size_t> m_sorted;
+        };
+
+        EventDispatchTable g_eventDispatchTable;
+    }
+
+    EventDispatchState* FindEventDispatchState(const char* eventName)
+    {
+        if (!eventName || !eventName[0])
+            return NULL;
+        return g_eventDispatchTable.find(eventName);
+    }
 
     bool IsKnownEvent(const char* eventName)
     {

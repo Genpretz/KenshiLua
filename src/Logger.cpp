@@ -110,11 +110,13 @@ void Logger::log(LogLevel level, const std::string& message)
             m_ringStart = (m_ringStart + 1) % m_ring.size();
         }
         ++m_sequenceNumber;
-    }
 
-    if (m_initialized && m_file.is_open()) {
-        m_file << formatted << std::endl;
-        m_file.flush();
+        // Event handlers can log from game worker threads; the stream is not
+        // thread-safe, so it is written under the same mutex.
+        if (m_initialized && m_file.is_open()) {
+            m_file << formatted << std::endl;
+            m_file.flush();
+        }
     }
 }
 
@@ -148,6 +150,7 @@ size_t Logger::getSequenceNumber() const
 
 void Logger::shutdown()
 {
+    boost::lock_guard<boost::mutex> lk(m_ringMutex);
     if (m_file.is_open()) {
         m_file.close();
     }
@@ -163,7 +166,7 @@ void setLoggerDllModule(void* hModule)
 
 std::string getLogsDirectory()
 {
-    // The DLL lives in <KenshiLua mod>\plugin; logs go beside it in <KenshiLua mod>\logs.
+    // The DLL lives in <KenshiLua mod>\plugin; logs go beside the plugin folder in <KenshiLua mod>\logs.
     fs::path dllDir(getDllDirectory(s_dllModule));
     fs::path modDir = dllDir.parent_path();
     if (modDir.empty()) {

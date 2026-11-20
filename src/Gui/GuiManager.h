@@ -56,6 +56,8 @@ namespace KenshiLua
 
         void initFrameHandler(float frameTime);
         void onFrameStart(float frameTime);
+        // Writes to the console or script editor window. Main thread only.
+        void showOutput(const std::string& text);
 
         LuaState*           m_luaState;
         LuaState*           m_pendingLuaState;

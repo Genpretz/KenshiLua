@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "Plugin.h"
 
 #include "EventSystem.h"
@@ -182,6 +183,8 @@ void Plugin::shutdown()
     if (!m_initialized) return;
 
     logToFile("Shutting down KenshiLua...");
+    // Wait for a worker-thread event handler to leave Lua before teardown.
+    KenshiLua::ScopedLuaLock luaLock;
     // Close the public API gate before any Lua-owned objects are torn down.
     m_initialized = false;
     m_luaThreadId = 0;
@@ -203,6 +206,7 @@ void Plugin::shutdown()
 void Plugin::start()
 {
     if (!m_initialized) return;
+    KenshiLua::ScopedLuaLock luaLock;
 
     if (isBenchmarkEnabled()) {
         runBenchmarkOnStartup(g_luaState->getState(), m_isInitialStartup);

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "KenshiLua_Console.h"
 #include "Gui/GuiManager.h"
 #include "Gui/GuiHelpers.h"
@@ -102,6 +103,7 @@ namespace KenshiLua
 		appendOutput("> " + code + "\n");
 		mConsole_InputBoxEditBox->setCaption("");
 
+		KenshiLua::ScopedLuaLock luaLock;
 		lua_State* L = LuaState::getActiveState();
 		if (L)
 		{

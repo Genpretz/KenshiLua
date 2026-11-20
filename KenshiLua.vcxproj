@@ -1111,6 +1111,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClInclude Include="src\Lua\LuaBindings.h" />
     <ClInclude Include="src\Lua\LuaCodec.h" />
     <ClInclude Include="src\Lua\LuaProfiler.h" />
+    <ClInclude Include="src\Lua\LuaLock.h" />
     <ClInclude Include="src\Lua\LuaState.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Plugin.h" />
@@ -1661,8 +1662,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Hooks\Hooks_BountyManager.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Building.cpp" />
     <ClCompile Include="src\Hooks\Hooks_AppearanceManager.cpp" />
-    <ClCompile Include="src\Hooks\Hooks_CharMovement.cpp" />
-    <ClCompile Include="src\Hooks\Hooks_CharStats.cpp" />
+    <ClCompile Include="src\Hooks\Hooks_CharMovement.cpp" />    <ClCompile Include="src\Hooks\Hooks_CharStats.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Character.cpp" />
     <ClCompile Include="src\Hooks\Hooks_CharacterAnimal.cpp" />
     <ClCompile Include="src\Hooks\Hooks_Combat.cpp" />
@@ -1710,6 +1710,7 @@ python "$(ProjectDir)tools\release\package_luals_addon.py" --bin-dir "$(OutDir).
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
     <ClCompile Include="src\Lua\LuaProfiler.cpp" />
+    <ClCompile Include="src\Lua\LuaLock.cpp" />
     <ClCompile Include="src\Lua\LuaState.cpp" />
     <ClCompile Include="src\Lua\RegisterBindings.cpp" />
     <ClCompile Include="src\Lua\RegisterContainers.cpp" />

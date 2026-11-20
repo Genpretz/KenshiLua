@@ -8,7 +8,10 @@
 
 #include <lua.hpp>
 #include "Lua/BindingHelpers.h"
+#include "Lua/LuaLock.h"
 #include "Lua/LuaState.h"
+
+#include <cstring>
 
 
 namespace KenshiLua
@@ -56,6 +59,107 @@ namespace KenshiLua
 
             lua_State* m_state;
             std::vector<int> m_references;
+        };
+
+        template <class HandlerBuckets>
+        void snapshotHandlers(const HandlerBuckets& buckets, const char* eventName,
+            bool workerThreadOnly, HandlerReferenceSnapshot& snapshot)
+        {
+            for (size_t i = 0; i < buckets.size(); ++i)
+            {
+                if (buckets[i].first == eventName)
+                {
+                    for (size_t j = 0; j < buckets[i].second.size(); ++j)
+                    {
+                        if (!workerThreadOnly || buckets[i].second[j].workerThread)
+                            snapshot.add(buckets[i].second[j].luaRef);
+                    }
+                    break;
+                }
+            }
+        }
+
+        void countHandler(const char* eventName, bool workerThread, long delta)
+        {
+            EventDispatchState* state = FindEventDispatchState(eventName);
+            if (!state)
+                return;
+            InterlockedExchangeAdd(&state->handlerCount, delta);
+            if (workerThread)
+                InterlockedExchangeAdd(&state->workerHandlerCount, delta);
+        }
+
+        // How long a worker thread waits for the Lua owner thread to leave Lua
+        // before it skips the event's handlers.
+        const unsigned long kWorkerLockTimeoutMs = 2000;
+
+        void logWorkerSkipOnce(EventDispatchState* state, const char* eventName)
+        {
+            if (InterlockedCompareExchange(&state->workerSkipLogged, 1, 0) != 0)
+                return;
+            if (state->workerDispatch)
+                logToFileWarnf("'%s' was raised on a game worker thread, where only handlers registered with "
+                    "{ workerThread = true } run; none is registered. Reported once per event.", eventName);
+            else
+                logToFileWarnf("'%s' was raised on a game worker thread, where this event does not run Lua handlers. "
+                    "Reported once per event.", eventName);
+        }
+
+        // Holds the Lua lock for one dispatch. On the Lua owner thread it always
+        // takes the lock. On a game worker thread it takes it only for an event
+        // the registry marks WorkerDispatch that has a handler registered with
+        // { workerThread = true }, and only if the lock frees up in time.
+        class DispatchScope
+        {
+        public:
+            DispatchScope(lua_State* L, const char* eventName)
+                : m_locked(false), m_workerThread(false)
+            {
+                Plugin& plugin = Plugin::get();
+                if (!L || !plugin.isInitialized())
+                    return;
+                if (plugin.isLuaThread())
+                {
+                    LuaLock::acquire();
+                    m_locked = true;
+                    return;
+                }
+
+                m_workerThread = true;
+                EventDispatchState* state = FindEventDispatchState(eventName);
+                if (!state)
+                    return;
+                if (!state->workerDispatch || state->workerHandlerCount == 0)
+                {
+                    if (state->handlerCount > 0)
+                        logWorkerSkipOnce(state, eventName);
+                    return;
+                }
+                if (!LuaLock::tryAcquireFor(kWorkerLockTimeoutMs, eventName))
+                    return;
+                if (!plugin.isInitialized())
+                {
+                    LuaLock::release();
+                    return;
+                }
+                m_locked = true;
+            }
+
+            ~DispatchScope()
+            {
+                if (m_locked)
+                    LuaLock::release();
+            }
+
+            bool locked() const { return m_locked; }
+            bool workerThread() const { return m_workerThread; }
+
+        private:
+            DispatchScope(const DispatchScope&);
+            DispatchScope& operator=(const DispatchScope&);
+
+            bool m_locked;
+            bool m_workerThread;
         };
     }
 
@@ -130,14 +234,28 @@ namespace KenshiLua
         return true;
     }
 
-    int EventSystem::registerHandler(const char* rawEventName, int luaRef, const char* source)
+    int EventSystem::registerHandler(const char* rawEventName, int luaRef, const char* source, bool workerThread)
     {
         const char* eventName = resolveCanonicalEventName(rawEventName, source);
+
+        if (workerThread)
+        {
+            EventDispatchState* state = FindEventDispatchState(eventName);
+            if (!state || !state->workerDispatch)
+            {
+                logToFileWarnf("Events.on in %s: '%s' does not run handlers on game worker threads; "
+                    "the handler is registered without { workerThread = true }.",
+                    source && source[0] ? source : "?", eventName);
+                workerThread = false;
+            }
+        }
 
         HandlerInfo info;
         info.id = m_nextHandlerId++;
         info.luaRef = luaRef;
         info.source = source ? source : "";
+        info.workerThread = workerThread;
+        countHandler(eventName, workerThread, 1);
 
         for (size_t i = 0; i < m_handlers.size(); ++i)
         {
@@ -167,6 +285,7 @@ namespace KenshiLua
             {
                 if (handlers[j].id == handlerId)
                 {
+                    countHandler(m_handlers[i].first.c_str(), handlers[j].workerThread, -1);
                     if (handlers[j].luaRef != LUA_REFNIL && m_L)
                         luaL_unref(m_L, LUA_REGISTRYINDEX, handlers[j].luaRef);
                     handlers.erase(handlers.begin() + j);
@@ -188,6 +307,7 @@ namespace KenshiLua
             {
                 if (sourceMatches(it->source, source))
                 {
+                    countHandler(m_handlers[i].first.c_str(), it->workerThread, -1);
                     if (it->luaRef != LUA_REFNIL && m_L)
                         luaL_unref(m_L, LUA_REGISTRYINDEX, it->luaRef);
                     it = handlers.erase(it);
@@ -204,30 +324,17 @@ namespace KenshiLua
     // callHandlers
     // ---------------------------------------------------------------------------
 
-    bool EventSystem::canDispatch() const
-    {
-        Plugin& plugin = Plugin::get();
-        return m_L != NULL && plugin.isInitialized() && plugin.isLuaThread();
-    }
-
     int EventSystem::callHandlers(const char* eventName, IArgPusher* pusher,
         std::string* outError)
     {
-        if (!canDispatch())
+        DispatchScope dispatch(m_L, eventName);
+        if (!dispatch.locked() || !m_L)
             return 0;
 
         // Snapshot the handler list so that handlers which call
         // unregisterHandler during their own execution don't corrupt iteration.
         HandlerReferenceSnapshot snapshot(m_L);
-        for (size_t i = 0; i < m_handlers.size(); ++i)
-        {
-            if (m_handlers[i].first == eventName)
-            {
-                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
-                    snapshot.add(m_handlers[i].second[j].luaRef);
-                break;
-            }
-        }
+        snapshotHandlers(m_handlers, eventName, dispatch.workerThread(), snapshot);
 
         if (snapshot.empty())
             return 0;
@@ -259,19 +366,12 @@ namespace KenshiLua
 
     std::string EventSystem::callHandlersString(const char* eventName, IArgPusher* pusher)
     {
-        if (!canDispatch())
+        DispatchScope dispatch(m_L, eventName);
+        if (!dispatch.locked() || !m_L)
             return "";
 
         HandlerReferenceSnapshot snapshot(m_L);
-        for (size_t i = 0; i < m_handlers.size(); ++i)
-        {
-            if (m_handlers[i].first == eventName)
-            {
-                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
-                    snapshot.add(m_handlers[i].second[j].luaRef);
-                break;
-            }
-        }
+        snapshotHandlers(m_handlers, eventName, dispatch.workerThread(), snapshot);
 
         if (snapshot.empty())
             return "";
@@ -303,19 +403,12 @@ namespace KenshiLua
 
     void* EventSystem::callHandlersObject(const char* eventName, const char* metatableName, IArgPusher* pusher)
     {
-        if (!canDispatch())
+        DispatchScope dispatch(m_L, eventName);
+        if (!dispatch.locked() || !m_L)
             return NULL;
 
         HandlerReferenceSnapshot snapshot(m_L);
-        for (size_t i = 0; i < m_handlers.size(); ++i)
-        {
-            if (m_handlers[i].first == eventName)
-            {
-                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
-                    snapshot.add(m_handlers[i].second[j].luaRef);
-                break;
-            }
-        }
+        snapshotHandlers(m_handlers, eventName, dispatch.workerThread(), snapshot);
 
         if (snapshot.empty())
             return NULL;
@@ -345,19 +438,12 @@ namespace KenshiLua
 
     bool EventSystem::callHandlersBool(const char* eventName, IArgPusher* pusher, bool defaultVal)
     {
-        if (!canDispatch())
+        DispatchScope dispatch(m_L, eventName);
+        if (!dispatch.locked() || !m_L)
             return defaultVal;
 
         HandlerReferenceSnapshot snapshot(m_L);
-        for (size_t i = 0; i < m_handlers.size(); ++i)
-        {
-            if (m_handlers[i].first == eventName)
-            {
-                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
-                    snapshot.add(m_handlers[i].second[j].luaRef);
-                break;
-            }
-        }
+        snapshotHandlers(m_handlers, eventName, dispatch.workerThread(), snapshot);
 
         if (snapshot.empty())
             return defaultVal;
@@ -391,19 +477,12 @@ namespace KenshiLua
 
     double EventSystem::callHandlersNumber(const char* eventName, IArgPusher* pusher, double defaultVal)
     {
-        if (!canDispatch())
+        DispatchScope dispatch(m_L, eventName);
+        if (!dispatch.locked() || !m_L)
             return defaultVal;
 
         HandlerReferenceSnapshot snapshot(m_L);
-        for (size_t i = 0; i < m_handlers.size(); ++i)
-        {
-            if (m_handlers[i].first == eventName)
-            {
-                for (size_t j = 0; j < m_handlers[i].second.size(); ++j)
-                    snapshot.add(m_handlers[i].second[j].luaRef);
-                break;
-            }
-        }
+        snapshotHandlers(m_handlers, eventName, dispatch.workerThread(), snapshot);
 
         if (snapshot.empty())
             return defaultVal;
@@ -460,6 +539,7 @@ namespace KenshiLua
             std::vector<HandlerInfo>& handlers = m_handlers[i].second;
             for (size_t j = 0; j < handlers.size(); ++j)
             {
+                countHandler(m_handlers[i].first.c_str(), handlers[j].workerThread, -1);
                 if (handlers[j].luaRef != LUA_REFNIL)
                     luaL_unref(m_L, LUA_REGISTRYINDEX, handlers[j].luaRef);
             }
@@ -487,12 +567,33 @@ namespace KenshiLua
         return result;
     }
 
-    int luaRegisterHandler(lua_State* L)
+    // Shared by Events.on and the deprecated registration names. Only Events.on
+    // reads the options table; the deprecated names keep ignoring extra arguments.
+    static int registerFromLua(lua_State* L, bool acceptOptions)
     {
         const char* eventName = luaL_checkstring(L, 1);
 
         if (!lua_isfunction(L, 2))
             return luaL_error(L, "registerHandler: second argument must be a function");
+
+        bool workerThread = false;
+        if (acceptOptions && !lua_isnoneornil(L, 3))
+        {
+            luaL_checktype(L, 3, LUA_TTABLE);
+            lua_pushnil(L);
+            while (lua_next(L, 3) != 0)
+            {
+                if (lua_type(L, -2) != LUA_TSTRING)
+                    return luaL_error(L, "Events.on: option names must be strings, got %s", luaL_typename(L, -2));
+                const char* option = lua_tostring(L, -2);
+                if (std::strcmp(option, "workerThread") != 0)
+                    return luaL_error(L, "Events.on: unknown option '%s'", option);
+                if (!lua_isboolean(L, -1))
+                    return luaL_error(L, "Events.on: option 'workerThread' must be a boolean, got %s", luaL_typename(L, -1));
+                workerThread = lua_toboolean(L, -1) != 0;
+                lua_pop(L, 1);
+            }
+        }
 
         // Determine the source of the caller
         std::string source = "";
@@ -511,9 +612,14 @@ namespace KenshiLua
         lua_pushvalue(L, 2);
         int ref = luaL_ref(L, LUA_REGISTRYINDEX);
 
-        int handlerId = EventSystem::get().registerHandler(eventName, ref, source.c_str());
+        int handlerId = EventSystem::get().registerHandler(eventName, ref, source.c_str(), workerThread);
         lua_pushinteger(L, handlerId);
         return 1;
+    }
+
+    int luaRegisterHandler(lua_State* L)
+    {
+        return registerFromLua(L, false);
     }
 
     int luaUnregisterHandler(lua_State* L)
@@ -525,7 +631,7 @@ namespace KenshiLua
 
     int luaEventsOn(lua_State* L)
     {
-        return luaRegisterHandler(L);
+        return registerFromLua(L, true);
     }
 
     int luaEventsOff(lua_State* L)

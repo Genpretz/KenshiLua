@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "DialogueScriptBridge.h"
 #include <kenshi/GameWorld.h>
 #include <kenshi/GameData.h>
@@ -29,6 +30,7 @@ namespace KenshiLua
     {
         if (!Plugin::get().isInitialized() || !Plugin::get().isLuaThread())
             return;
+        KenshiLua::ScopedLuaLock luaLock;
 
         KenshiLua::logToFileDebug("DialogueScriptBridge entered.");
         if (!dialogLine)

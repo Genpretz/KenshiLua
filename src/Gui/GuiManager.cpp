@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "Gui/GuiManager.h"
 #include "Gui/KenshiLua_Hub.h"
 #include "Gui/KenshiLua_ScriptEditor.h"
@@ -9,6 +10,7 @@
 #include "Lua/LuaState.h"
 #include "Config.h"
 #include "Logger.h"
+#include "Plugin.h"
 
 
 #include "Gui/GuiHelpers.h"
@@ -26,6 +28,23 @@ namespace KenshiLua
 	// ---------------------------------------------------------------------------
 
 	static GuiManager* s_instance = 0;
+
+	namespace
+	{
+		// print() output from an event handler running on a game worker thread.
+		// MyGUI widgets belong to the main thread, so the text waits here until
+		// the next frame start shows it.
+		struct PendingOutput
+		{
+			CRITICAL_SECTION lock;
+			std::vector<std::string> lines;
+			PendingOutput() { InitializeCriticalSection(&lock); }
+		};
+		PendingOutput g_pendingOutput;
+
+		// Lines beyond this are dropped from the window; they are still in the log file.
+		const size_t kMaxPendingOutputLines = 2000;
+	}
 
 	GuiManager& GuiManager::get()
 	{
@@ -145,8 +164,16 @@ namespace KenshiLua
 
 	void GuiManager::onFrameStart(float)
 	{
+		std::vector<std::string> pending;
+		EnterCriticalSection(&g_pendingOutput.lock);
+		pending.swap(g_pendingOutput.lines);
+		LeaveCriticalSection(&g_pendingOutput.lock);
+		for (size_t i = 0; i < pending.size(); ++i)
+			showOutput(pending[i]);
+
 		if (m_luaState && m_luaState->isValid())
 		{
+			KenshiLua::ScopedLuaLock luaLock;
 			FileWatcher::get().update(m_luaState->getState());
 		}
 	}
@@ -172,9 +199,8 @@ namespace KenshiLua
 	{
 		if (m_initialized && m_hub)
 		{
-			// Use the window's actual visibility rather than m_visible: the Hub's close
-			// button hides the window without updating m_visible, which made the next
-			// shortcut press hide an already hidden window.
+			// Query actual window visibility rather than m_visible, since the Hub's close
+			// button can hide the window without updating m_visible.
 			bool visible = m_hub->getVisible();
 
 			// An edge-hidden Hub is visible but tucked mostly off-screen. Bring it out
@@ -310,6 +336,20 @@ namespace KenshiLua
 	{
 		logToFile(text);
 
+		if (!Plugin::get().isLuaThread())
+		{
+			EnterCriticalSection(&g_pendingOutput.lock);
+			if (g_pendingOutput.lines.size() < kMaxPendingOutputLines)
+				g_pendingOutput.lines.push_back(text);
+			LeaveCriticalSection(&g_pendingOutput.lock);
+			return;
+		}
+
+		showOutput(text);
+	}
+
+	void GuiManager::showOutput(const std::string& text)
+	{
 		if (m_activeOutputTarget == m_editor)
 		{
 			if (m_editor && m_editor->getVisible())

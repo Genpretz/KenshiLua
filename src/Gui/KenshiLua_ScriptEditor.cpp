@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "KenshiLua_ScriptEditor.h"
 
 #include "Gui/GuiManager.h"
@@ -228,6 +229,7 @@ namespace KenshiLua
 
 		appendOutput("=== Running: " + label + " ===\n");
 		
+		KenshiLua::ScopedLuaLock luaLock;
 		lua_State* L = LuaState::getActiveState();
 		if (L)
 		{
@@ -327,7 +329,6 @@ namespace KenshiLua
 		std::ostringstream ss;
 		ss << f.rdbuf();
 
-		//mScriptEditor_InputBoxEditBox->setCaption(MyGUI::UString(ss.str()));
 		mScriptEditor_InputBoxEditBox->setCaption(MyGUI::UString(GuiHelpers::EscapeMyGuiColourTags(ss.str())));
 		m_currentFilePath = path;
 

@@ -8,6 +8,7 @@
 #include "Version.h"
 #include "Lua/LuaState.h"
 #include "Lua/BindingHelpers.h"
+#include "Lua/LuaLock.h"
 #include "ScriptLoader.h"
 #include "EventSystem.h"
 
@@ -44,7 +45,9 @@ namespace
             copyBuffer("KenshiLua is not initialized", error, errorSize);
             return KENSHILUA_STATUS_NOT_INITIALIZED;
         }
-        if (!KenshiLua::Plugin::get().isLuaThread())
+        // The Lua owner thread may always call in. A game worker thread may call
+        // in only while it holds the Lua lock, inside a workerThread event handler.
+        if (!KenshiLua::Plugin::get().isLuaThread() && !KenshiLua::LuaLock::heldByCurrentThread())
         {
             copyBuffer("KenshiLua Lua API called from the wrong thread", error, errorSize);
             return KENSHILUA_STATUS_WRONG_THREAD;
@@ -53,6 +56,32 @@ namespace
             *outState = KenshiLua::g_luaState->getState();
         return KENSHILUA_STATUS_OK;
     }
+
+    // Holds the Lua lock for one API call. A thread that already holds it, as
+    // inside a Lua callback, does not take it again, so a Lua error raised by the
+    // call cannot unwind past an unreleased acquisition.
+    class ApiLuaLock
+    {
+    public:
+        explicit ApiLuaLock(bool take = true)
+            : m_taken(take && !KenshiLua::LuaLock::heldByCurrentThread())
+        {
+            if (m_taken)
+                KenshiLua::LuaLock::acquire();
+        }
+
+        ~ApiLuaLock()
+        {
+            if (m_taken)
+                KenshiLua::LuaLock::release();
+        }
+
+    private:
+        ApiLuaLock(const ApiLuaLock&);
+        ApiLuaLock& operator=(const ApiLuaLock&);
+
+        bool m_taken;
+    };
 
     const void* registryOf(lua_State* state)
     {
@@ -150,6 +179,7 @@ namespace
             int validation = validateRuntime(&state, error, errorSize);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
+            ApiLuaLock luaLock;
             StackTopRestorer restoreStack(state);
             if (!scriptPath || !*scriptPath)
             {
@@ -206,6 +236,7 @@ namespace
             int validation = validateRuntime(&state, error, errorSize);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
+            ApiLuaLock luaLock;
             StackTopRestorer restoreStack(state);
             if (!code)
             {
@@ -271,6 +302,7 @@ namespace
             int validation = validateRuntime(&state, error, errorSize);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
+            ApiLuaLock luaLock;
             StackTopRestorer restoreStack(state);
             if (!eventName || !*eventName || argumentCount < 0)
             {
@@ -323,6 +355,7 @@ namespace
             int validation = validateRuntime(&state, error, errorSize);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
+            ApiLuaLock luaLock;
             StackTopRestorer restoreStack(state);
             if (!name || !*name || !function)
             {
@@ -354,6 +387,7 @@ namespace
             int validation = validateRuntime(&state, error, errorSize);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
+            ApiLuaLock luaLock;
             StackTopRestorer restoreStack(state);
             if (!name || !*name || !openFunction)
             {
@@ -397,6 +431,7 @@ namespace
             int validation = validateRuntime(&runtimeState, NULL, 0);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
+            ApiLuaLock luaLock;
             if (!belongsToRuntime(state, runtimeState) || !metatableName || !*metatableName)
                 return KENSHILUA_STATUS_INVALID_ARGUMENT;
             if (!pointer)
@@ -433,6 +468,7 @@ namespace
         if (validateRuntime(&runtimeState, NULL, 0) != KENSHILUA_STATUS_OK ||
             !belongsToRuntime(state, runtimeState) || !metatableName || !*metatableName)
             return NULL;
+        ApiLuaLock luaLock;
         return KenshiLua::checkObject<void>(state, index, metatableName);
     }
 
@@ -445,6 +481,7 @@ namespace
             if (validateRuntime(&runtimeState, NULL, 0) != KENSHILUA_STATUS_OK ||
                 !belongsToRuntime(state, runtimeState) || !metatableName || !*metatableName)
                 return NULL;
+            ApiLuaLock luaLock;
             return KenshiLua::testObject<void>(state, index, metatableName);
         }
         catch (...)
@@ -462,6 +499,7 @@ namespace
             int validation = validateRuntime(NULL, NULL, 0);
             if (validation != KENSHILUA_STATUS_OK)
                 return validation;
+            ApiLuaLock luaLock;
             if (!scriptPath || !*scriptPath || !output || outputSize == 0)
                 return KENSHILUA_STATUS_INVALID_ARGUMENT;
             std::string resolved = KenshiLua::ScriptLoader::get().resolveScriptPath(scriptPath);
@@ -507,31 +545,32 @@ namespace
             belongsToRuntime(state, runtimeState);
     }
 
-    void KENSHILUA_CALL apiPushNil(lua_State* state) { if (validLuaAccess(state)) lua_pushnil(state); }
-    void KENSHILUA_CALL apiPushNumber(lua_State* state, double value) { if (validLuaAccess(state)) lua_pushnumber(state, value); }
-    void KENSHILUA_CALL apiPushInteger(lua_State* state, ptrdiff_t value) { if (validLuaAccess(state)) lua_pushinteger(state, value); }
-    void KENSHILUA_CALL apiPushString(lua_State* state, const char* value) { if (validLuaAccess(state)) lua_pushstring(state, value); }
-    void KENSHILUA_CALL apiPushLString(lua_State* state, const char* value, size_t length) { if (validLuaAccess(state)) lua_pushlstring(state, value, length); }
-    void KENSHILUA_CALL apiPushBoolean(lua_State* state, int value) { if (validLuaAccess(state)) lua_pushboolean(state, value); }
-    double KENSHILUA_CALL apiToNumber(lua_State* state, int index) { return validLuaAccess(state) ? lua_tonumber(state, index) : 0.0; }
-    ptrdiff_t KENSHILUA_CALL apiToInteger(lua_State* state, int index) { return validLuaAccess(state) ? lua_tointeger(state, index) : 0; }
-    int KENSHILUA_CALL apiToBoolean(lua_State* state, int index) { return validLuaAccess(state) ? lua_toboolean(state, index) : 0; }
-    const char* KENSHILUA_CALL apiToLString(lua_State* state, int index, size_t* length) { return validLuaAccess(state) ? lua_tolstring(state, index, length) : NULL; }
-    int KENSHILUA_CALL apiType(lua_State* state, int index) { return validLuaAccess(state) ? lua_type(state, index) : LUA_TNONE; }
-    int KENSHILUA_CALL apiGetTop(lua_State* state) { return validLuaAccess(state) ? lua_gettop(state) : 0; }
-    void KENSHILUA_CALL apiSetTop(lua_State* state, int index) { if (validLuaAccess(state)) lua_settop(state, index); }
-    void KENSHILUA_CALL apiNewTable(lua_State* state) { if (validLuaAccess(state)) lua_newtable(state); }
-    void KENSHILUA_CALL apiPushCFunction(lua_State* state, lua_CFunction function) { if (validLuaAccess(state) && function) lua_pushcfunction(state, function); }
-    void KENSHILUA_CALL apiPushValue(lua_State* state, int index) { if (validLuaAccess(state)) lua_pushvalue(state, index); }
-    void KENSHILUA_CALL apiGetField(lua_State* state, int index, const char* name) { if (validLuaAccess(state) && name) lua_getfield(state, index, name); }
-    void KENSHILUA_CALL apiSetField(lua_State* state, int index, const char* name) { if (validLuaAccess(state) && name) lua_setfield(state, index, name); }
-    void KENSHILUA_CALL apiGetGlobal(lua_State* state, const char* name) { if (validLuaAccess(state) && name) lua_getglobal(state, name); }
-    void KENSHILUA_CALL apiSetGlobal(lua_State* state, const char* name) { if (validLuaAccess(state) && name) lua_setglobal(state, name); }
+    void KENSHILUA_CALL apiPushNil(lua_State* state) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_pushnil(state); }
+    void KENSHILUA_CALL apiPushNumber(lua_State* state, double value) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_pushnumber(state, value); }
+    void KENSHILUA_CALL apiPushInteger(lua_State* state, ptrdiff_t value) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_pushinteger(state, value); }
+    void KENSHILUA_CALL apiPushString(lua_State* state, const char* value) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_pushstring(state, value); }
+    void KENSHILUA_CALL apiPushLString(lua_State* state, const char* value, size_t length) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_pushlstring(state, value, length); }
+    void KENSHILUA_CALL apiPushBoolean(lua_State* state, int value) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_pushboolean(state, value); }
+    double KENSHILUA_CALL apiToNumber(lua_State* state, int index) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); return valid ? lua_tonumber(state, index) : 0.0; }
+    ptrdiff_t KENSHILUA_CALL apiToInteger(lua_State* state, int index) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); return valid ? lua_tointeger(state, index) : 0; }
+    int KENSHILUA_CALL apiToBoolean(lua_State* state, int index) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); return valid ? lua_toboolean(state, index) : 0; }
+    const char* KENSHILUA_CALL apiToLString(lua_State* state, int index, size_t* length) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); return valid ? lua_tolstring(state, index, length) : NULL; }
+    int KENSHILUA_CALL apiType(lua_State* state, int index) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); return valid ? lua_type(state, index) : LUA_TNONE; }
+    int KENSHILUA_CALL apiGetTop(lua_State* state) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); return valid ? lua_gettop(state) : 0; }
+    void KENSHILUA_CALL apiSetTop(lua_State* state, int index) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_settop(state, index); }
+    void KENSHILUA_CALL apiNewTable(lua_State* state) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_newtable(state); }
+    void KENSHILUA_CALL apiPushCFunction(lua_State* state, lua_CFunction function) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid && function) lua_pushcfunction(state, function); }
+    void KENSHILUA_CALL apiPushValue(lua_State* state, int index) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid) lua_pushvalue(state, index); }
+    void KENSHILUA_CALL apiGetField(lua_State* state, int index, const char* name) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid && name) lua_getfield(state, index, name); }
+    void KENSHILUA_CALL apiSetField(lua_State* state, int index, const char* name) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid && name) lua_setfield(state, index, name); }
+    void KENSHILUA_CALL apiGetGlobal(lua_State* state, const char* name) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid && name) lua_getglobal(state, name); }
+    void KENSHILUA_CALL apiSetGlobal(lua_State* state, const char* name) { bool valid = validLuaAccess(state); ApiLuaLock luaLock(valid); if (valid && name) lua_setglobal(state, name); }
 
     void KENSHILUA_CALL apiRegisterFunctions(lua_State* state, const KenshiLua_Reg* functions)
     {
         if (!validLuaAccess(state) || !functions)
             return;
+        ApiLuaLock luaLock;
         for (const KenshiLua_Reg* entry = functions; entry->name && entry->function; ++entry)
         {
             lua_pushcfunction(state, entry->function);

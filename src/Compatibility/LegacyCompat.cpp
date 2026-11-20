@@ -1722,7 +1722,7 @@ namespace KenshiLua
                     "KenshiLua.on", "Events.on");
                 // Direct C call keeps the script as stack level 1, which
                 // luaRegisterHandler records as the handler's source.
-                return luaEventsOn(L);
+                return luaRegisterHandler(L);
             }
 
             static int lua_compat_kenshiLuaOff(lua_State* L)

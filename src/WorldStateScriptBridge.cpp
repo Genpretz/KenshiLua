@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "WorldStateScriptBridge.h"
 #include <kenshi/GameWorld.h>
 #include <kenshi/GameData.h>
@@ -171,6 +172,7 @@ namespace KenshiLua
     {
         if (!Plugin::get().isInitialized() || !Plugin::get().isLuaThread() || !::ou)
             return;
+        KenshiLua::ScopedLuaLock luaLock;
 
         // World states can read as false while a save is still loading.
         if (::ou->isLoadingFromASaveGame())

@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "KenshiLua_ScriptManager.h"
 #include "Gui/GuiManager.h"
 #include "Gui/GuiHelpers.h"
@@ -210,6 +211,7 @@ namespace KenshiLua
 		}
 
 		ScriptInfo& script = m_scripts[m_selectedIndex];
+		KenshiLua::ScopedLuaLock luaLock;
 		lua_State* L = LuaState::getActiveState();
 		if (L)
 		{

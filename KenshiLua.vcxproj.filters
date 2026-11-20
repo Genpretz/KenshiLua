@@ -70,6 +70,7 @@
     <ClCompile Include="src\Logger.cpp" />
     <ClCompile Include="src\Lua\LuaBindings.cpp" />
     <ClCompile Include="src\Lua\LuaProfiler.cpp" />
+    <ClCompile Include="src\Lua\LuaLock.cpp" />
     <ClCompile Include="src\Lua\LuaState.cpp" />
     <ClCompile Include="src\Lua\RegisterBindings.cpp" />
     <ClCompile Include="src\pch.cpp" />
@@ -1069,6 +1070,7 @@
     <ClInclude Include="src\Lua\LuaBindings.h" />
     <ClInclude Include="src\Lua\LuaCodec.h" />
     <ClInclude Include="src\Lua\LuaProfiler.h" />
+    <ClInclude Include="src\Lua\LuaLock.h" />
     <ClInclude Include="src\Lua\LuaState.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Plugin.h" />

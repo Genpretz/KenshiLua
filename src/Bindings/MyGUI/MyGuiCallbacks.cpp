@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "Bindings/MyGUI/MyGuiCallbacks.h"
 #include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
@@ -45,6 +46,7 @@ int LuaWidgetCallbackManager::registerCallback(MyGUI::Widget* widget, EventType 
 
     if (it != m_callbacks.end())
     {
+        KenshiLua::ScopedLuaLock luaLock;
         lua_State* L = getLuaState();
         if (L && it->second.luaRef != LUA_NOREF)
         {
@@ -333,6 +335,7 @@ bool LuaWidgetCallbackManager::unregisterCallback(int callbackId)
     auto cbIt = m_callbacks.find(key);
     if (cbIt != m_callbacks.end())
     {
+        KenshiLua::ScopedLuaLock luaLock;
         lua_State* L = getLuaState();
         if (L && cbIt->second.luaRef != LUA_NOREF)
         {
@@ -351,6 +354,7 @@ bool LuaWidgetCallbackManager::unregisterCallback(MyGUI::Widget* widget, EventTy
     if (cbIt == m_callbacks.end()) return false;
 
     m_idToKey.erase(cbIt->second.id);
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (L && cbIt->second.luaRef != LUA_NOREF)
     {
@@ -363,6 +367,7 @@ bool LuaWidgetCallbackManager::unregisterCallback(MyGUI::Widget* widget, EventTy
 
 void LuaWidgetCallbackManager::unregisterAll(MyGUI::Widget* widget)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     for (int type = 0; type < EventType_Count; ++type)
     {
@@ -382,6 +387,7 @@ void LuaWidgetCallbackManager::unregisterAll(MyGUI::Widget* widget)
 
 void LuaWidgetCallbackManager::clear()
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     for (std::map<CallbackKey, CallbackValue>::iterator it = m_callbacks.begin(); it != m_callbacks.end(); ++it)
     {
@@ -397,6 +403,7 @@ void LuaWidgetCallbackManager::clear()
 
 void LuaWidgetCallbackManager::onMouseButtonClick(MyGUI::Widget* sender)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -422,6 +429,7 @@ void LuaWidgetCallbackManager::onMouseButtonClick(MyGUI::Widget* sender)
 
 void LuaWidgetCallbackManager::onEditTextChange(MyGUI::EditBox* sender)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -447,6 +455,7 @@ void LuaWidgetCallbackManager::onEditTextChange(MyGUI::EditBox* sender)
 
 void LuaWidgetCallbackManager::onWindowButtonPressed(MyGUI::Window* sender, const std::string& name)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -473,6 +482,7 @@ void LuaWidgetCallbackManager::onWindowButtonPressed(MyGUI::Window* sender, cons
 
 void LuaWidgetCallbackManager::onMouseButtonPressed(MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -501,6 +511,7 @@ void LuaWidgetCallbackManager::onMouseButtonPressed(MyGUI::Widget* sender, int l
 
 void LuaWidgetCallbackManager::onMouseButtonReleased(MyGUI::Widget* sender, int left, int top, MyGUI::MouseButton id)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -529,6 +540,7 @@ void LuaWidgetCallbackManager::onMouseButtonReleased(MyGUI::Widget* sender, int 
 
 void LuaWidgetCallbackManager::onMouseSetFocus(MyGUI::Widget* sender, MyGUI::Widget* oldWidget)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -562,6 +574,7 @@ void LuaWidgetCallbackManager::onMouseSetFocus(MyGUI::Widget* sender, MyGUI::Wid
 
 void LuaWidgetCallbackManager::onMouseLostFocus(MyGUI::Widget* sender, MyGUI::Widget* newWidget)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -595,6 +608,7 @@ void LuaWidgetCallbackManager::onMouseLostFocus(MyGUI::Widget* sender, MyGUI::Wi
 
 void LuaWidgetCallbackManager::onMouseMove(MyGUI::Widget* sender, int left, int top)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -622,6 +636,7 @@ void LuaWidgetCallbackManager::onMouseMove(MyGUI::Widget* sender, int left, int 
 
 void LuaWidgetCallbackManager::onMouseWheel(MyGUI::Widget* sender, int rel)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -648,6 +663,7 @@ void LuaWidgetCallbackManager::onMouseWheel(MyGUI::Widget* sender, int rel)
 
 void LuaWidgetCallbackManager::onKeyButtonPressed(MyGUI::Widget* sender, MyGUI::KeyCode key, MyGUI::Char ch)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -675,6 +691,7 @@ void LuaWidgetCallbackManager::onKeyButtonPressed(MyGUI::Widget* sender, MyGUI::
 
 void LuaWidgetCallbackManager::onKeyButtonReleased(MyGUI::Widget* sender, MyGUI::KeyCode key)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -701,6 +718,7 @@ void LuaWidgetCallbackManager::onKeyButtonReleased(MyGUI::Widget* sender, MyGUI:
 
 void LuaWidgetCallbackManager::onComboAccept(MyGUI::ComboBox* sender, size_t index)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -727,6 +745,7 @@ void LuaWidgetCallbackManager::onComboAccept(MyGUI::ComboBox* sender, size_t ind
 
 void LuaWidgetCallbackManager::onComboChangePosition(MyGUI::ComboBox* sender, size_t index)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -753,6 +772,7 @@ void LuaWidgetCallbackManager::onComboChangePosition(MyGUI::ComboBox* sender, si
 
 void LuaWidgetCallbackManager::onListSelectAccept(MyGUI::ListBox* sender, size_t index)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -779,6 +799,7 @@ void LuaWidgetCallbackManager::onListSelectAccept(MyGUI::ListBox* sender, size_t
 
 void LuaWidgetCallbackManager::onListChangePosition(MyGUI::ListBox* sender, size_t index)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -805,6 +826,7 @@ void LuaWidgetCallbackManager::onListChangePosition(MyGUI::ListBox* sender, size
 
 void LuaWidgetCallbackManager::onWindowChangeCoord(MyGUI::Window* sender)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -830,6 +852,7 @@ void LuaWidgetCallbackManager::onWindowChangeCoord(MyGUI::Window* sender)
 
 void LuaWidgetCallbackManager::onScrollChangePosition(MyGUI::ScrollBar* sender, size_t position)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -856,6 +879,7 @@ void LuaWidgetCallbackManager::onScrollChangePosition(MyGUI::ScrollBar* sender, 
 
 void LuaWidgetCallbackManager::onTabChangeSelect(MyGUI::TabControl* sender, size_t index)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 
@@ -882,6 +906,7 @@ void LuaWidgetCallbackManager::onTabChangeSelect(MyGUI::TabControl* sender, size
 
 void LuaWidgetCallbackManager::onMenuAccept(MyGUI::MenuControl* sender, MyGUI::MenuItem* item)
 {
+    KenshiLua::ScopedLuaLock luaLock;
     lua_State* L = getLuaState();
     if (!L) return;
 

@@ -52,7 +52,11 @@ namespace KenshiLua
         bool initialize(lua_State* L);
 
         // Pin a Lua function ref under eventName and return a handler ID.
-        int registerHandler(const char* eventName, int luaRef, const char* source = "");
+        // workerThread lets the handler also run when the engine raises the
+        // event on a game worker thread; it is ignored, with a warning, for an
+        // event the hook registry does not mark WorkerDispatch.
+        int registerHandler(const char* eventName, int luaRef, const char* source = "",
+            bool workerThread = false);
 
         // Remove a previously registered handler by its ID (no-op if not found).
         void unregisterHandler(int handlerId);
@@ -63,8 +67,10 @@ namespace KenshiLua
         // Fire all handlers registered under eventName.
         // If pusher is non-NULL, pusher->push(L) is called before each pcall
         // to put event arguments on the stack.
-        // Calls from outside the Lua owner thread do not enter Lua and return
-        // the same result as an event with no applicable handler.
+        // Every dispatch holds the Lua lock. A call from a game worker thread
+        // runs only the handlers registered with workerThread, and only for an
+        // event marked WorkerDispatch; otherwise it does not enter Lua and
+        // returns the same result as an event with no applicable handler.
         // Returns 0 normally, or -1 if any handler returned false (consumed).
         int callHandlers(const char* eventName, IArgPusher* pusher = NULL,
             std::string* outError = NULL);
@@ -89,7 +95,6 @@ namespace KenshiLua
         EventSystem();
         ~EventSystem();
 
-        bool canDispatch() const;
         bool executeHandler(const char* eventName, int nargs, std::string* outError = NULL);
 
         // Non-copyable
@@ -101,6 +106,7 @@ namespace KenshiLua
             int id;
             int luaRef;
             std::string source;
+            bool workerThread;
         };
 
         lua_State* m_L;

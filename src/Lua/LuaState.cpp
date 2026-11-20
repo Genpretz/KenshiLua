@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "Lua/LuaState.h"
 #include "Lua/BindingHelpers.h"
 #include "Util/PathUtils.h"
@@ -134,6 +135,7 @@ int LuaState::genericTraceback(lua_State* L)
 bool LuaState::pcallWithTraceback(lua_State* L, int nargs, int nresults,
     std::string* outError, int* outStatus)
 {
+    KenshiLua::LuaLock::checkHeld("pcallWithTraceback");
     // Insert traceback handler below the function + args already on the stack.
     int funcIndex = lua_gettop(L) - nargs;
     if (funcIndex < 1) {

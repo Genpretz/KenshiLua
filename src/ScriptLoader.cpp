@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Lua/LuaLock.h"
 #include "ScriptLoader.h"
 #include "Logger.h"
 #include "EventSystem.h"
@@ -847,6 +848,7 @@ void ScriptLoader::discover()
 bool ScriptLoader::runScriptSandboxed(lua_State* L, const std::string& absolutePath,
     const std::string& chunkName, std::string* outError, RunScriptStatus* outStatus)
 {
+    KenshiLua::LuaLock::checkHeld("runScriptSandboxed");
     if (outStatus) *outStatus = RUN_SCRIPT_OK;
     int top = lua_gettop(L);
 
