@@ -1,6 +1,8 @@
 #include "pch.h"
 #include "Lua/LuaLock.h"
 #include "WorldStateScriptBridge.h"
+#include "LuaScriptReference.h"
+#include "Lua/ScopedLuaGlobal.h"
 #include <kenshi/GameWorld.h>
 #include <kenshi/GameData.h>
 #include <kenshi/Globals.h>
@@ -21,8 +23,6 @@ namespace KenshiLua
 {
     namespace
     {
-        const int LUA_SCRIPT_ITEM_TYPE = 322; // enum itemType {LUA_SCRIPT = 322} in fcs.def
-
         enum WorldStateScriptMode
         {
             RUN_WHEN_TRUE = 0,
@@ -32,11 +32,13 @@ namespace KenshiLua
 
         struct WorldStateScript
         {
-            WorldStateScript(const std::string& scriptFilename, int scriptMode)
-                : filename(scriptFilename), mode(scriptMode)
+            WorldStateScript(const std::string& scriptReferenceID,
+                const std::string& scriptFilename, int scriptMode)
+                : referenceID(scriptReferenceID), filename(scriptFilename), mode(scriptMode)
             {
             }
 
+            std::string referenceID;
             std::string filename;
             int mode;
         };
@@ -59,29 +61,31 @@ namespace KenshiLua
         void collectScripts(GameData* gd, std::vector<WorldStateScript>& out)
         {
             const Ogre::vector<GameDataReference>::type* refList = gd->getReferenceListIfExists("run lua script");
-            if (!refList || !gd->sourceContainer)
+            if (!refList)
                 return;
 
             for (auto it = refList->begin(); it != refList->end(); ++it)
             {
-                GameData* scriptData = it->getPtr(gd->sourceContainer);
-                if (!scriptData || scriptData->type != LUA_SCRIPT_ITEM_TYPE)
+                const LuaScriptReferenceResult script = readLuaScriptReference(gd, *it);
+                if (!script.isValid())
+                {
+                    logToFileError("WorldStateScriptBridge: invalid 'run lua script' reference '"
+                        + it->sid + "' on world state '" + gd->stringID + "': "
+                        + describeLuaScriptReferenceError(script));
                     continue;
-
-                auto fileIt = scriptData->filesdata.find("file");
-                if (fileIt == scriptData->filesdata.end() || fileIt->second.empty())
-                    continue;
+                }
 
                 int mode = it->values.value[0];
                 if (mode < RUN_WHEN_TRUE || mode > RUN_WHEN_FALSE)
                 {
                     logToFileError("WorldStateScriptBridge: invalid run mode "
-                        + std::to_string((long long)mode) + " for Lua script '" + fileIt->second
-                        + "' on world state " + gd->stringID + "; expected 0, 1, or 2");
+                        + std::to_string((long long)mode) + " for reference '" + it->sid
+                        + "' (Lua script '" + script.filename + "') on world state '"
+                        + gd->stringID + "'; expected 0, 1, or 2");
                     continue;
                 }
 
-                out.push_back(WorldStateScript(fileIt->second, mode));
+                out.push_back(WorldStateScript(it->sid, script.filename, mode));
             }
         }
 
@@ -97,12 +101,16 @@ namespace KenshiLua
                 if (absolutePath.empty())
                 {
                     logToFileError("WorldStateScriptBridge: could not resolve Lua script '" + script.filename
-                        + "' for world state " + state.data->stringID);
+                        + "' for reference '" + script.referenceID + "' on world state '"
+                        + state.data->stringID + "'");
                     continue;
                 }
 
                 logToFile("WorldStateScriptBridge: world state " + state.data->stringID
                     + " " + reason + "; running Lua script: " + script.filename);
+
+                ScopedLuaGlobal stateGlobal(L, "currentWorldEventState");
+                ScopedLuaGlobal queryGlobal(L, "currentWorldEventStateQuery");
 
                 pushObject<GameData>(L, state.data, GameDataBinding::getMetatableName());
                 lua_setglobal(L, "currentWorldEventState");
@@ -110,13 +118,9 @@ namespace KenshiLua
                 pushObject<WorldEventStateQuery>(L, state.query, WorldEventStateQueryBinding::getMetatableName());
                 lua_setglobal(L, "currentWorldEventStateQuery");
 
-                ScriptLoader::get().runScriptSandboxed(L, absolutePath, "@" + script.filename);
-
-                lua_pushnil(L);
-                lua_setglobal(L, "currentWorldEventState");
-
-                lua_pushnil(L);
-                lua_setglobal(L, "currentWorldEventStateQuery");
+                const std::string chunkName = "@" + script.filename;
+                ScriptLoader::get().runScriptReplacingPrevious(
+                    L, absolutePath, chunkName);
 
                 if (s_needsBaseline)
                     return;

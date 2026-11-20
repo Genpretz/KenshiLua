@@ -410,7 +410,7 @@ namespace KenshiLua
                 const char* legacyPaths;
             };
 
-            // Covers the enum surface before commit 3adae25 and later path corrections.
+            // Maps legacy enum names and member aliases to their canonical C++ forms.
             // memberAliases uses "legacy=canonical;...". legacyPaths uses ";" separators.
             static const LegacyEnumDefinition s_legacyEnumDefinitions[] = {
                 { "AppearanceManager.DataCategory.Enum", "", "AppearanceManager.DataCategory;AppearanceManager_DataCategory" },

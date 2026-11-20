@@ -1,14 +1,15 @@
+enum itemType { }
 enum itemType { LUA_SCRIPT = 322 }
 
 [FCS_LAYOUT]
 Lua: LUA_SCRIPT
 
 [LUA_SCRIPT]
-file: 	"Lua script|*.lua" "The .lua file to run, relative to this mod's scripts folder. It runs when a dialogue line or world state that references this item through 'run lua script' triggers."
+file: 	"Lua script|*.lua" "The .lua file to run. It runs when a dialogue line or world state that references this item through 'run lua script' triggers."
 description: ""	multiline "description of the .lua script"
 
 [DIALOGUE,DIALOGUE_LINE,WORD_SWAPS]
-run lua script: LUA_SCRIPT "Attach a Lua script to this piece of dialogue."
+run lua script: LUA_SCRIPT "Attach Lua script(s) to this piece of dialogue.\n\nEach script runs after Kenshi processes the dialogue line's normal actions, every time that line executes. Multiple scripts run in reference-list order.\n\nWhile a script runs, it can read currentDialogue (the active dialogue) and currentDialogueLine (the line being processed). These globals are available only for the duration of the script."
 
 [WORLD_EVENT_STATE]
-run lua script: LUA_SCRIPT (0) "Attach Lua script(s) to this world state. The number selects when each script runs:\n\n0 = when the complete world state changes from false to true; not on load.\n1 = as 0, and also after loading, importing, or starting a new game when the complete world state is already true.\n2 = when the complete world state changes from true to false; not on load.\n\nA script runs once per matching change, not continuously. It can read currentWorldEventState (this item) and currentWorldEventStateQuery.\n\nNote: Kenshi ignores 'town okay' and 'player involvement' when evaluating a world state."
+run lua script: LUA_SCRIPT (0) "Attach Lua script(s) to this world state. \n\nThe number selects when each script runs:\n0 = when the complete world state changes from false to true; not on load.\n1 = Works the same as 0 and also after loading, importing, or starting a new game when the complete world state is already true.\n2 = When the complete world state changes from true to false; not on load.\n\nA script runs once per matching change, not continuously. It can read currentWorldEventState (this item) and currentWorldEventStateQuery.\n\nNote: Kenshi ignores 'town okay' and 'player involvement' when evaluating a world state."

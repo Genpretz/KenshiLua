@@ -41,8 +41,8 @@ public:
 
     static ScriptLoader& get();
 
-    // Walks ou->activeMods, discovers all *.lua files, executes each one in
-    // its own sandboxed _ENV table. Safe to call exactly once per game
+    // Discovers scripts across active mods and executes those in scripts/init/
+    // in their own sandboxed _ENV table. Safe to call exactly once per game
     // session; subsequent calls without reload() are no-ops.
     void loadAll(lua_State* L);
 
@@ -78,6 +78,12 @@ public:
 
     // Centralized sandboxed runner for Lua script files.
     bool runScriptSandboxed(lua_State* L, const std::string& absolutePath,
+        const std::string& chunkName, std::string* outError = NULL,
+        RunScriptStatus* outStatus = NULL);
+
+    // Removes resources left by an earlier execution of the same chunk, then
+    // runs the file. Use this for scripts that may be triggered more than once.
+    bool runScriptReplacingPrevious(lua_State* L, const std::string& absolutePath,
         const std::string& chunkName, std::string* outError = NULL,
         RunScriptStatus* outStatus = NULL);
 

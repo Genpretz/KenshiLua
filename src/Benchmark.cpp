@@ -208,9 +208,7 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
     ss << "Engine: " << engine << "\n";
     ss << "----------------------------------------\n";
 
-    // =====================================================================
     // 1. Startup Simulation (Avg of 5 runs)
-    // =====================================================================
     // Measures the cost of creating a fresh Lua state and registering all
     // KenshiLua bindings.  Does NOT touch the EventSystem singleton to avoid
     // corrupting the live state pointer.
@@ -252,9 +250,7 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
     ss << "  Total Startup    : " << results.total_startup_ms << " ms\n";
     ss << "----------------------------------------\n";
 
-    // =====================================================================
     // 2. Core Language Features
-    // =====================================================================
     const char* pure_lua_code =
         "local x = 0\n"
         "for i = 1, 10000000 do\n"
@@ -308,9 +304,7 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
     ss << "  pcall overhead (1M)      : " << results.pcall_overhead_ms << " ms\n";
     ss << "----------------------------------------\n";
 
-    // =====================================================================
     // 3. Garbage Collection Under Load
-    // =====================================================================
     // Creates a controlled working set that simulates mod data structures,
     // then measures GC costs against a known quantity of live objects.
     ss << "Garbage Collection:\n";
@@ -358,9 +352,7 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
     lua_gc(L, LUA_GCCOLLECT, 0);
     ss << "----------------------------------------\n";
 
-    // =====================================================================
     // 4. Real Binding Benchmarks (1M iterations)
-    // =====================================================================
     ss << "Real Binding Benchmarks (1M iterations):\n";
 
     // Enum table lookup - itemType is a real global enum table
@@ -414,9 +406,7 @@ int luaKenshiRunBenchmarkEx(lua_State* L, const std::string& csvFilename, const 
     }
     ss << "----------------------------------------\n";
 
-    // =====================================================================
     // 5. Event Dispatch Scaling
-    // =====================================================================
     // The core scalability test.  Measures how per-dispatch cost grows as
     // more Lua handlers are registered on a single event.  Uses real Lua
     // function closures (not C functions) to match actual mod workloads.

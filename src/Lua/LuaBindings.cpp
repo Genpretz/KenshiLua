@@ -4,7 +4,7 @@
 #include "Lua/LuaState.h"
 #include "Lua/BindingHelpers.h"
 #include "Benchmark.h"
-#include "DialogueScriptBridge.h"
+#include "LuaScriptDiagnostics.h"
 #include "EventSystem.h"
 #include "Gui/GuiManager.h"
 #include "Logger.h"

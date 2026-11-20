@@ -52,9 +52,8 @@ namespace KenshiLua
             return true;
 
         // Scripts are matched per file, never per mod. ScriptLoader removes the handlers
-        // and widgets of a script before loading or reloading it; matching every script
-        // in the same mod made loading one file remove what the mod's other files had
-        // registered.
+        // and widgets of a script before loading or reloading it, without affecting other
+        // scripts in the same mod.
 
         return false;
     }

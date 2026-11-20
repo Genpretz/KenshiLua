@@ -18,9 +18,9 @@ namespace KenshiLua
         // Logs an advisory deprecation warning when a legacy name is resolved.
         const char* ResolveWidgetEventName(const char* rawEventName, const char* source = "");
 
-        // Installs temporary enum compatibility for aliases and table paths removed by the
-        // literal C++ enum naming migration. Legacy lookups resolve to their canonical value
-        // and emit a one-time advisory warning naming the replacement syntax.
+        // Installs enum compatibility for legacy aliases and table paths. Legacy lookups
+        // resolve to their canonical value and emit a one-time advisory warning naming
+        // the replacement syntax.
         void InstallEnumCompatibility(lua_State* L);
 
         // Installs MyGUI backward compatibility:

@@ -40,7 +40,14 @@ EXIT_CRASH_OR_TIMEOUT = 3
 STEAM_READY_TIMEOUT_S = 120.0
 
 DEFAULT_SAVE_FIXTURE_NAME = "kltest_vanilla_1065"
-SAVE_DEPENDENT_SUITES = {"world-smoke", "binding-smoke", "kenshilib-050", "live-subsystems", "all"}
+SAVE_DEPENDENT_SUITES = {
+    "world-smoke",
+    "binding-smoke",
+    "kenshilib-050",
+    "live-subsystems",
+    "script-bridges",
+    "all",
+}
 
 
 def _stop_pids(pids: List[int], grace_seconds: float = 5.0) -> None:

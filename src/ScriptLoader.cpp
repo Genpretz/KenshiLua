@@ -924,12 +924,17 @@ void ScriptLoader::cleanupScriptResources(const std::string& chunkName)
     MyGUIBinding::destroyWidgetsBySource(chunkName);
 }
 
+bool ScriptLoader::runScriptReplacingPrevious(lua_State* L,
+    const std::string& absolutePath, const std::string& chunkName,
+    std::string* outError, RunScriptStatus* outStatus)
+{
+    cleanupScriptResources(chunkName);
+    return runScriptSandboxed(L, absolutePath, chunkName, outError, outStatus);
+}
+
 bool ScriptLoader::runScript(lua_State* L, LoadedScript& s)
 {
-    // Clean up any previously registered event handlers and MyGUI widgets from this script
-    cleanupScriptResources(s.chunkName);
-
-    bool res = runScriptSandboxed(L, s.absolutePath, s.chunkName, &s.lastError);
+    bool res = runScriptReplacingPrevious(L, s.absolutePath, s.chunkName, &s.lastError);
     s.loaded = res;
     if (res) {
         logToFile("ScriptLoader: loaded " + s.chunkName);

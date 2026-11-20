@@ -8,6 +8,8 @@
     <ClCompile Include="src\Compatibility\LegacyCompat.cpp" />
     <ClCompile Include="src\Config.cpp" />
     <ClCompile Include="src\DialogueScriptBridge.cpp" />
+    <ClCompile Include="src\LuaScriptDiagnostics.cpp" />
+    <ClCompile Include="src\LuaScriptReference.cpp" />
     <ClCompile Include="src\WorldStateScriptBridge.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\EventSystem.cpp" />
@@ -1048,6 +1050,9 @@
     <ClInclude Include="src\Compatibility\LegacyCompat.h" />
     <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DialogueScriptBridge.h" />
+    <ClInclude Include="src\Lua\ScopedLuaGlobal.h" />
+    <ClInclude Include="src\LuaScriptDiagnostics.h" />
+    <ClInclude Include="src\LuaScriptReference.h" />
     <ClInclude Include="src\WorldStateScriptBridge.h" />
     <ClInclude Include="src\EventSystem.h" />
     <ClInclude Include="include\KenshiLua.h" />
