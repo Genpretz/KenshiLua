@@ -5,16 +5,34 @@
 // Hooks for FactionRelations.h
 // ---------------------------------------------------------------------------
 
-static void (*FactionRelations_affectRelations_orig)(FactionRelations*, Faction*, FactionRelations::FactionEvent, float) = NULL;
-static void FactionRelations_affectRelations_hook(FactionRelations* thisptr, Faction* other, FactionRelations::FactionEvent eventType, float multiplier)
+static void (*FactionRelations_affectRelationsEvent_orig)(FactionRelations*, Faction*, FactionRelations::FactionEvent, float) = NULL;
+static void FactionRelations_affectRelationsEvent_hook(FactionRelations* thisptr, Faction* other, FactionRelations::FactionEvent eventType, float multiplier)
 {
-    FactionRelations_affectRelations_orig(thisptr, other, eventType, multiplier);
-    CallFactionRelationsAffectedCallbacks(thisptr, other, static_cast<int>(eventType), multiplier);
+    FactionRelations_affectRelationsEvent_orig(thisptr, other, eventType, multiplier);
+    CallFactionRelationsAffectedCallbacks(thisptr, other, static_cast<float>(eventType), multiplier);
 }
-DEFINE_HOOK_INSTALLER(InstallHook_FactionRelations_AffectRelations,
-    "FactionRelations::affectRelations",
-    KenshiLib::GetRealAddress(static_cast<void (FactionRelations::*)(Faction*, FactionRelations::FactionEvent, float)>(&FactionRelations::_NV_affectRelations)),
-    FactionRelations_affectRelations_hook, FactionRelations_affectRelations_orig)
+
+static void (*FactionRelations_affectRelationsAmount_orig)(FactionRelations*, Faction*, float, float) = NULL;
+static void FactionRelations_affectRelationsAmount_hook(FactionRelations* thisptr, Faction* other, float amount, float multiplier)
+{
+    FactionRelations_affectRelationsAmount_orig(thisptr, other, amount, multiplier);
+    CallFactionRelationsAffectedCallbacks(thisptr, other, amount, multiplier);
+}
+
+bool InstallHook_FactionRelations_AffectRelations()
+{
+    bool eventInstalled = InstallHookT(
+        "FactionRelations::affectRelations (event overload)",
+        KenshiLib::GetRealAddress(static_cast<void (FactionRelations::*)(Faction*, FactionRelations::FactionEvent, float)>(&FactionRelations::_NV_affectRelations)),
+        &FactionRelations_affectRelationsEvent_hook,
+        &FactionRelations_affectRelationsEvent_orig);
+    bool amountInstalled = InstallHookT(
+        "FactionRelations::affectRelations (amount overload)",
+        KenshiLib::GetRealAddress(static_cast<void (FactionRelations::*)(Faction*, float, float)>(&FactionRelations::_NV_affectRelations)),
+        &FactionRelations_affectRelationsAmount_hook,
+        &FactionRelations_affectRelationsAmount_orig);
+    return eventInstalled && amountInstalled;
+}
 
 static FactionRelations* (*FactionRelations_CONSTRUCTOR_orig)(FactionRelations*) = NULL;
 static FactionRelations* FactionRelations_CONSTRUCTOR_hook(FactionRelations* thisptr)

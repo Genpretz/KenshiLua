@@ -39,11 +39,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryIcon_setPosition,
     "InventoryIcon::setPosition", KenshiLib::GetRealAddress(&InventoryIcon::setPosition),
     InventoryIcon_setPosition_hook, InventoryIcon_setPosition_orig)
 
-static MyGUI::types::TSize<int> (*InventoryIcon_getSize_orig)(const InventoryIcon*) = NULL;
-static MyGUI::types::TSize<int> InventoryIcon_getSize_hook(const InventoryIcon* thisptr)
+static MyGUI::types::TSize<int>* (*InventoryIcon_getSize_orig)(const InventoryIcon*, MyGUI::types::TSize<int>*) = NULL;
+static MyGUI::types::TSize<int>* InventoryIcon_getSize_hook(const InventoryIcon* thisptr, MyGUI::types::TSize<int>* ret)
 {
-    MyGUI::types::TSize<int> res = InventoryIcon_getSize_orig(thisptr);
-    CallInventoryIconGetSizeCallbacks(const_cast<InventoryIcon*>(thisptr), res);
+    MyGUI::types::TSize<int>* res = InventoryIcon_getSize_orig(thisptr, ret);
+    CallInventoryIconGetSizeCallbacks(const_cast<InventoryIcon*>(thisptr), *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryIcon_getSize,
@@ -144,11 +144,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventorySectionGUI_hasMouse,
     "InventorySectionGUI::hasMouse", KenshiLib::GetRealAddress(&InventorySectionGUI::hasMouse),
     InventorySectionGUI_hasMouse_hook, InventorySectionGUI_hasMouse_orig)
 
-static MyGUI::types::TPoint<int> (*InventorySectionGUI_getItemAbsolutePosition_orig)(InventorySectionGUI*, int, int) = NULL;
-static MyGUI::types::TPoint<int> InventorySectionGUI_getItemAbsolutePosition_hook(InventorySectionGUI* thisptr, int x, int y)
+static MyGUI::types::TPoint<int>* (*InventorySectionGUI_getItemAbsolutePosition_orig)(InventorySectionGUI*, MyGUI::types::TPoint<int>*, int, int) = NULL;
+static MyGUI::types::TPoint<int>* InventorySectionGUI_getItemAbsolutePosition_hook(InventorySectionGUI* thisptr, MyGUI::types::TPoint<int>* ret, int x, int y)
 {
-    MyGUI::types::TPoint<int> res = InventorySectionGUI_getItemAbsolutePosition_orig(thisptr, x, y);
-    CallInventorySectionGUIGetItemAbsolutePositionCallbacks(thisptr, x, y, res);
+    MyGUI::types::TPoint<int>* res = InventorySectionGUI_getItemAbsolutePosition_orig(thisptr, ret, x, y);
+    CallInventorySectionGUIGetItemAbsolutePositionCallbacks(thisptr, x, y, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventorySectionGUI_getItemAbsolutePosition,
@@ -166,11 +166,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventorySectionGUI_getWidget,
     "InventorySectionGUI::getWidget", KenshiLib::GetRealAddress(&InventorySectionGUI::getWidget),
     InventorySectionGUI_getWidget_hook, InventorySectionGUI_getWidget_orig)
 
-static MyGUI::types::TPoint<int> (*InventorySectionGUI_getPositionSlot_orig)(InventorySectionGUI*, const MyGUI::types::TPoint<int>&, InventorySection*, bool) = NULL;
-static MyGUI::types::TPoint<int> InventorySectionGUI_getPositionSlot_hook(InventorySectionGUI* thisptr, const MyGUI::types::TPoint<int>& position, InventorySection* section, bool round)
+static MyGUI::types::TPoint<int>* (*InventorySectionGUI_getPositionSlot_orig)(InventorySectionGUI*, MyGUI::types::TPoint<int>*, const MyGUI::types::TPoint<int>&, InventorySection*, bool) = NULL;
+static MyGUI::types::TPoint<int>* InventorySectionGUI_getPositionSlot_hook(InventorySectionGUI* thisptr, MyGUI::types::TPoint<int>* ret, const MyGUI::types::TPoint<int>& position, InventorySection* section, bool round)
 {
-    MyGUI::types::TPoint<int> res = InventorySectionGUI_getPositionSlot_orig(thisptr, position, section, round);
-    CallInventorySectionGUIGetPositionSlotCallbacks(thisptr, position, section, round, res);
+    MyGUI::types::TPoint<int>* res = InventorySectionGUI_getPositionSlot_orig(thisptr, ret, position, section, round);
+    CallInventorySectionGUIGetPositionSlotCallbacks(thisptr, position, section, round, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventorySectionGUI_getPositionSlot,
@@ -545,11 +545,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_getSelectedItem,
     "InventoryGUI::getSelectedItem", KenshiLib::GetRealAddress(&InventoryGUI::getSelectedItem),
     InventoryGUI_getSelectedItem_hook, InventoryGUI_getSelectedItem_orig)
 
-static MyGUI::types::TCoord<int> (*InventoryGUI_getWindowCoord_orig)(InventoryGUI*) = NULL;
-static MyGUI::types::TCoord<int> InventoryGUI_getWindowCoord_hook(InventoryGUI* thisptr)
+static MyGUI::types::TCoord<int>* (*InventoryGUI_getWindowCoord_orig)(InventoryGUI*, MyGUI::types::TCoord<int>*) = NULL;
+static MyGUI::types::TCoord<int>* InventoryGUI_getWindowCoord_hook(InventoryGUI* thisptr, MyGUI::types::TCoord<int>* ret)
 {
-    MyGUI::types::TCoord<int> res = InventoryGUI_getWindowCoord_orig(thisptr);
-    CallInventoryGUIGetWindowCoordCallbacks(thisptr, res);
+    MyGUI::types::TCoord<int>* res = InventoryGUI_getWindowCoord_orig(thisptr, ret);
+    CallInventoryGUIGetWindowCoordCallbacks(thisptr, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_getWindowCoord,
@@ -682,22 +682,22 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_takeCertainAmountFrom,
     "InventoryGUI::takeCertainAmountFrom", KenshiLib::GetRealAddress(&InventoryGUI::takeCertainAmountFrom),
     InventoryGUI_takeCertainAmountFrom_hook, InventoryGUI_takeCertainAmountFrom_orig)
 
-static InventoryGUI::TradeResult (*InventoryGUI_RClickAutoTrade_orig)(InventoryGUI*, const std::string&, int, int, InventoryGUI*, bool, bool) = NULL;
-static InventoryGUI::TradeResult InventoryGUI_RClickAutoTrade_hook(InventoryGUI* thisptr, const std::string& invSectionName, int x, int y, InventoryGUI* sendingTo, bool thieveryChecks, bool first)
+static InventoryGUI::TradeResult* (*InventoryGUI_RClickAutoTrade_orig)(InventoryGUI*, InventoryGUI::TradeResult*, const std::string&, int, int, InventoryGUI*, bool, bool) = NULL;
+static InventoryGUI::TradeResult* InventoryGUI_RClickAutoTrade_hook(InventoryGUI* thisptr, InventoryGUI::TradeResult* ret, const std::string& invSectionName, int x, int y, InventoryGUI* sendingTo, bool thieveryChecks, bool first)
 {
-    InventoryGUI::TradeResult res = InventoryGUI_RClickAutoTrade_orig(thisptr, invSectionName, x, y, sendingTo, thieveryChecks, first);
-    CallInventoryGUIRClickAutoTradeCallbacks(thisptr, invSectionName, x, y, sendingTo, thieveryChecks, first, res);
+    InventoryGUI::TradeResult* res = InventoryGUI_RClickAutoTrade_orig(thisptr, ret, invSectionName, x, y, sendingTo, thieveryChecks, first);
+    CallInventoryGUIRClickAutoTradeCallbacks(thisptr, invSectionName, x, y, sendingTo, thieveryChecks, first, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_RClickAutoTrade,
     "InventoryGUI::RClickAutoTrade", KenshiLib::GetRealAddress(&InventoryGUI::RClickAutoTrade),
     InventoryGUI_RClickAutoTrade_hook, InventoryGUI_RClickAutoTrade_orig)
 
-static InventoryGUI::TradeResult (*InventoryGUI_RClickAutoTradeAll_orig)(InventoryGUI*, const std::string&, int, int, InventoryGUI*, bool, bool) = NULL;
-static InventoryGUI::TradeResult InventoryGUI_RClickAutoTradeAll_hook(InventoryGUI* thisptr, const std::string& invSectionName, int x, int y, InventoryGUI* sendingTo, bool thieveryChecks, bool first)
+static InventoryGUI::TradeResult* (*InventoryGUI_RClickAutoTradeAll_orig)(InventoryGUI*, InventoryGUI::TradeResult*, const std::string&, int, int, InventoryGUI*, bool, bool) = NULL;
+static InventoryGUI::TradeResult* InventoryGUI_RClickAutoTradeAll_hook(InventoryGUI* thisptr, InventoryGUI::TradeResult* ret, const std::string& invSectionName, int x, int y, InventoryGUI* sendingTo, bool thieveryChecks, bool first)
 {
-    InventoryGUI::TradeResult res = InventoryGUI_RClickAutoTradeAll_orig(thisptr, invSectionName, x, y, sendingTo, thieveryChecks, first);
-    CallInventoryGUIRClickAutoTradeAllCallbacks(thisptr, invSectionName, x, y, sendingTo, thieveryChecks, first, res);
+    InventoryGUI::TradeResult* res = InventoryGUI_RClickAutoTradeAll_orig(thisptr, ret, invSectionName, x, y, sendingTo, thieveryChecks, first);
+    CallInventoryGUIRClickAutoTradeAllCallbacks(thisptr, invSectionName, x, y, sendingTo, thieveryChecks, first, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_RClickAutoTradeAll,
@@ -855,22 +855,22 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_hasMouse,
     "InventoryGUI::hasMouse", KenshiLib::GetRealAddress(&InventoryGUI::hasMouse),
     InventoryGUI_hasMouse_hook, InventoryGUI_hasMouse_orig)
 
-static std::string (*InventoryGUI_getSectionWithMouseLocal_orig)(InventoryGUI*) = NULL;
-static std::string InventoryGUI_getSectionWithMouseLocal_hook(InventoryGUI* thisptr)
+static std::string* (*InventoryGUI_getSectionWithMouseLocal_orig)(InventoryGUI*, std::string*) = NULL;
+static std::string* InventoryGUI_getSectionWithMouseLocal_hook(InventoryGUI* thisptr, std::string* ret)
 {
-    std::string res = InventoryGUI_getSectionWithMouseLocal_orig(thisptr);
-    CallInventoryGUIGetSectionWithMouseLocalCallbacks(thisptr, res);
+    std::string* res = InventoryGUI_getSectionWithMouseLocal_orig(thisptr, ret);
+    CallInventoryGUIGetSectionWithMouseLocalCallbacks(thisptr, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_getSectionWithMouseLocal,
     "InventoryGUI::getSectionWithMouseLocal", KenshiLib::GetRealAddress(&InventoryGUI::getSectionWithMouseLocal),
     InventoryGUI_getSectionWithMouseLocal_hook, InventoryGUI_getSectionWithMouseLocal_orig)
 
-static iVector2 (*InventoryGUI_getSlotWithMouse_orig)(InventoryGUI*) = NULL;
-static iVector2 InventoryGUI_getSlotWithMouse_hook(InventoryGUI* thisptr)
+static iVector2* (*InventoryGUI_getSlotWithMouse_orig)(InventoryGUI*, iVector2*) = NULL;
+static iVector2* InventoryGUI_getSlotWithMouse_hook(InventoryGUI* thisptr, iVector2* ret)
 {
-    iVector2 res = InventoryGUI_getSlotWithMouse_orig(thisptr);
-    CallInventoryGUIGetSlotWithMouseCallbacks(thisptr, res);
+    iVector2* res = InventoryGUI_getSlotWithMouse_orig(thisptr, ret);
+    CallInventoryGUIGetSlotWithMouseCallbacks(thisptr, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryGUI_getSlotWithMouse,
@@ -1023,22 +1023,22 @@ DEFINE_HOOK_INSTALLER(InstallHook_InventoryLayout_setSectionGUIDisabled,
     "InventoryLayout::setSectionGUIDisabled", KenshiLib::GetRealAddress(&InventoryLayout::setSectionGUIDisabled),
     InventoryLayout_setSectionGUIDisabled_hook, InventoryLayout_setSectionGUIDisabled_orig)
 
-static MyGUI::types::TSize<int> (*InventoryLayout_resizeSection_orig)(InventoryLayout*, InventorySection*, InventorySectionGUI*) = NULL;
-static MyGUI::types::TSize<int> InventoryLayout_resizeSection_hook(InventoryLayout* thisptr, InventorySection* section, InventorySectionGUI* sectionGUI)
+static MyGUI::types::TSize<int>* (*InventoryLayout_resizeSection_orig)(InventoryLayout*, MyGUI::types::TSize<int>*, InventorySection*, InventorySectionGUI*) = NULL;
+static MyGUI::types::TSize<int>* InventoryLayout_resizeSection_hook(InventoryLayout* thisptr, MyGUI::types::TSize<int>* ret, InventorySection* section, InventorySectionGUI* sectionGUI)
 {
-    MyGUI::types::TSize<int> res = InventoryLayout_resizeSection_orig(thisptr, section, sectionGUI);
-    CallInventoryLayoutResizeSectionCallbacks(thisptr, section, sectionGUI, res);
+    MyGUI::types::TSize<int>* res = InventoryLayout_resizeSection_orig(thisptr, ret, section, sectionGUI);
+    CallInventoryLayoutResizeSectionCallbacks(thisptr, section, sectionGUI, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryLayout_resizeSection,
     "InventoryLayout::resizeSection", KenshiLib::GetRealAddress(&InventoryLayout::resizeSection),
     InventoryLayout_resizeSection_hook, InventoryLayout_resizeSection_orig)
 
-static MyGUI::types::TSize<int> (*InventoryLayout_resizeSectionWidget_orig)(InventoryLayout*, int, int, MyGUI::Widget*) = NULL;
-static MyGUI::types::TSize<int> InventoryLayout_resizeSectionWidget_hook(InventoryLayout* thisptr, int width, int height, MyGUI::Widget* widget)
+static MyGUI::types::TSize<int>* (*InventoryLayout_resizeSectionWidget_orig)(InventoryLayout*, MyGUI::types::TSize<int>*, int, int, MyGUI::Widget*) = NULL;
+static MyGUI::types::TSize<int>* InventoryLayout_resizeSectionWidget_hook(InventoryLayout* thisptr, MyGUI::types::TSize<int>* ret, int width, int height, MyGUI::Widget* widget)
 {
-    MyGUI::types::TSize<int> res = InventoryLayout_resizeSectionWidget_orig(thisptr, width, height, widget);
-    CallInventoryLayoutResizeSectionWidgetCallbacks(thisptr, width, height, widget, res);
+    MyGUI::types::TSize<int>* res = InventoryLayout_resizeSectionWidget_orig(thisptr, ret, width, height, widget);
+    CallInventoryLayoutResizeSectionWidgetCallbacks(thisptr, width, height, widget, *res);
     return res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryLayout_resizeSectionWidget,

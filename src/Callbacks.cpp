@@ -36,6 +36,7 @@
 #include "Bindings/Kenshi/CharacterHumanBinding.h"
 #include "Bindings/Kenshi/Combat/CombatClassBinding.h"
 #include "Bindings/Kenshi/CampaignInstanceBinding.h"
+#include "Bindings/Kenshi/CampaignDataBinding.h"
 #include "Bindings/Kenshi/CombatMovementControllerBinding.h"
 #include "Bindings/Kenshi/Combat/CombatTechniqueDataBinding.h"
 #include "Bindings/Kenshi/CrossbowBinding.h"
@@ -50,6 +51,7 @@
 #include "Bindings/Kenshi/FactionUniqueSquadManagerBinding.h"
 #include "Bindings/Kenshi/FactionWarMgrBinding.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/GameDataManagerBinding.h"
 #include "Bindings/Kenshi/GameDataContainerBinding.h"
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Kenshi/GameSaveStateBinding.h"
@@ -242,6 +244,7 @@ namespace KenshiLua
     static inline const char* CharMovementMetatable()                               { return CharMovementBinding::getMetatableName(); }
     static inline const char* CharStatsMetatable()                                  { return CharStatsBinding::getMetatableName(); }
     static inline const char* CombatClassMetatable()                                { return CombatClassBinding::getMetatableName(); }
+    static inline const char* CampaignDataMetatable()                               { return CampaignDataBinding::getMetatableName(); }
     static inline const char* CampaignInstanceMetatable()                           { return CampaignInstanceBinding::getMetatableName(); }
     static inline const char* CombatMovementControllerMetatable()                   { return CombatMovementControllerBinding::getMetatableName(); }
     static inline const char* CombatTechniqueDataMetatable()                        { return CombatTechniqueDataBinding::getMetatableName(); }
@@ -266,7 +269,9 @@ namespace KenshiLua
     static inline const char* FarmBuildingMetatable()                               { return FarmBuildingBinding::getMetatableName(); }
     static inline const char* FurnaceBuildingMetatable()                            { return FurnaceBuildingBinding::getMetatableName(); }
     static inline const char* GameDataCopyStandaloneMetatable()                     { return GameDataCopyStandaloneBinding::getMetatableName(); }
+    static inline const char* GameDataContainerMetatable()                          { return GameDataContainerBinding::getMetatableName(); }
     static inline const char* GameDataMetatable()                                   { return GameDataBinding::getMetatableName(); }
+    static inline const char* GameDataManagerMetatable()                            { return GameDataManagerBinding::getMetatableName(); }
     static inline const char* GameSaveStateMetatable()                              { return GameSaveStateBinding::getMetatableName(); }
     static inline const char* GameWorldMetatable()                                  { return GameWorldBinding::getMetatableName(); }
     static inline const char* GunClassMetatable()                                   { return GunClassBinding::getMetatableName(); }
@@ -373,6 +378,7 @@ namespace KenshiLua
     // pushArg overloads for primitive types
     static inline void pushArg(lua_State* L, bool val)                              { lua_pushboolean(L, val ? 1 : 0); }
     static inline void pushArg(lua_State* L, const std::string& val)                { lua_pushstring(L, val.c_str()); }
+    static inline void pushArg(lua_State* L, const char* val)                       { if (val) lua_pushstring(L, val); else lua_pushnil(L); }
     static inline void pushArg(lua_State* L, float val)                             { lua_pushnumber(L, val); }
     static inline void pushArg(lua_State* L, double val)                            { lua_pushnumber(L, val); }
     static inline void pushArg(lua_State* L, int val)                               { lua_pushinteger(L, val); }
@@ -392,6 +398,7 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, CharBody* val)                         { pushObject<CharBody>(L, val, CharBodyMetatable()); }
     static inline void pushArg(lua_State* L, CharStats* val)                        { pushObject<CharStats>(L, val, CharStatsMetatable()); }
     static inline void pushArg(lua_State* L, CombatClass* val)                      { pushObject<CombatClass>(L, val, CombatClassMetatable()); }
+    static inline void pushArg(lua_State* L, CampaignData* val)                     { pushObject<CampaignData>(L, val, CampaignDataMetatable()); }
     static inline void pushArg(lua_State* L, CampaignInstance* val)                 { pushObject<CampaignInstance>(L, val, CampaignInstanceMetatable()); }
     static inline void pushArg(lua_State* L, CombatMovementController* val)         { pushObject<CombatMovementController>(L, val, CombatMovementControllerMetatable()); }
     static inline void pushArg(lua_State* L, CombatTechniqueData* val)              { pushObject<CombatTechniqueData>(L, val, CombatTechniqueDataMetatable()); }
@@ -426,8 +433,10 @@ namespace KenshiLua
     static inline void pushArg(lua_State* L, FarmBuilding* val)                     { pushObject<FarmBuilding>(L, val, FarmBuildingMetatable()); }
     static inline void pushArg(lua_State* L, FurnaceBuilding* val)                  { pushObject<FurnaceBuilding>(L, val, FurnaceBuildingMetatable()); }
     static inline void pushArg(lua_State* L, GameDataCopyStandalone* val)           { pushObject<GameDataCopyStandalone>(L, val, GameDataCopyStandaloneMetatable()); }
+    static inline void pushArg(lua_State* L, GameDataContainer* val)                { pushObject<GameDataContainer>(L, val, GameDataContainerMetatable()); }
     static inline void pushArg(lua_State* L, GameSaveState* val)                    { pushObject<GameSaveState>(L, val, GameSaveStateMetatable()); }
     static inline void pushArg(lua_State* L, GameData* val)                     { pushObject<GameData>(L, val, GameDataMetatable()); }
+    static inline void pushArg(lua_State* L, GameDataManager* val)                  { pushObject<GameDataManager>(L, val, GameDataManagerMetatable()); }
     static inline void pushArg(lua_State* L, GameWorld* val)                        { pushObject<GameWorld>(L, val, GameWorldMetatable()); }
     static inline void pushArg(lua_State* L, const GameplayOptions* val)             { pushObject<GameplayOptions>(L, const_cast<GameplayOptions*>(val), GameplayOptionsMetatable()); }
     static inline void pushArg(lua_State* L, GatewayBuilding* val)                  { pushObject<GatewayBuilding>(L, val, GatewayBuildingMetatable()); }
@@ -786,6 +795,42 @@ void CallCharsUpdateCallbacks(GameWorld* thisptr)
     KenshiLua::EventSystem::get().callHandlers("GameWorld::charsUpdate", &pusher);
 }
 
+void CallGameWorldResetGameCallbacks(GameWorld* thisptr)
+{
+    ArgPusher1<GameWorld*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("GameWorld::resetGame", &pusher);
+}
+
+void CallGameWorldDailyUpdatesCallbacks(GameWorld* thisptr)
+{
+    ArgPusher1<GameWorld*> pusher(thisptr);
+    KenshiLua::EventSystem::get().callHandlers("GameWorld::dailyUpdates", &pusher);
+}
+
+void CallGameWorldInitialiseNewGameWorldCallbacks(GameWorld* thisptr, GameDataManager* datasrc)
+{
+    ArgPusher2<GameWorld*, GameDataManager*> pusher(thisptr, datasrc);
+    KenshiLua::EventSystem::get().callHandlers("GameWorld::initialiseNewGameWorld", &pusher);
+}
+
+void CallGameWorldDestroyCallbacks(GameWorld* thisptr, RootObject* obj, bool justUnloaded, const char* debugInfo)
+{
+    ArgPusher4<GameWorld*, RootObject*, bool, const char*> pusher(thisptr, obj, justUnloaded, debugInfo);
+    KenshiLua::EventSystem::get().callHandlers("GameWorld::destroy", &pusher);
+}
+
+void CallGameWorldUserPauseCallbacks(GameWorld* thisptr, bool p)
+{
+    ArgPusher2<GameWorld*, bool> pusher(thisptr, p);
+    KenshiLua::EventSystem::get().callHandlers("GameWorld::userPause", &pusher);
+}
+
+void CallGameWorldSetGameSpeedCallbacks(GameWorld* thisptr, float speed, bool click)
+{
+    ArgPusher3<GameWorld*, float, bool> pusher(thisptr, speed, click);
+    KenshiLua::EventSystem::get().callHandlers("GameWorld::setGameSpeed", &pusher);
+}
+
 void CallKeyDownCallbacks(InputHandler* thisptr, int keyCode)
 {
     ArgPusher2<InputHandler*, int> pusher(thisptr, keyCode);
@@ -938,6 +983,36 @@ void CallPlayerOrderGivenCallbacks(PlayerInterface* player, int taskType, const 
     KenshiLua::EventSystem::get().callHandlers("PlayerInterface::newPlayerTaskSelectedCharacters", &pusher);
 }
 
+void CallPlayerInterfaceTriggerAreaArrivalDialogueCallbacks(PlayerInterface* thisptr, GameData* area, bool result)
+{
+    ArgPusher3<PlayerInterface*, GameData*, bool> pusher(thisptr, area, result);
+    KenshiLua::EventSystem::get().callHandlers("PlayerInterface::triggerAreaArrivalDialogue", &pusher);
+}
+
+void CallPlayerInterfaceSetCurrentPlatoonCallbacks(PlayerInterface* thisptr, Platoon* platoon, bool result)
+{
+    ArgPusher3<PlayerInterface*, Platoon*, bool> pusher(thisptr, platoon, result);
+    KenshiLua::EventSystem::get().callHandlers("PlayerInterface::setCurrentPlatoon", &pusher);
+}
+
+void CallPlayerInterfaceObjectSelectedCallbacks(PlayerInterface* thisptr, RootObject* obj, bool select)
+{
+    ArgPusher3<PlayerInterface*, RootObject*, bool> pusher(thisptr, obj, select);
+    KenshiLua::EventSystem::get().callHandlers("PlayerInterface::objectSelected", &pusher);
+}
+
+void CallPlayerInterfaceRemoveJobSelectedCharactersCallbacks(PlayerInterface* thisptr, int t)
+{
+    ArgPusher2<PlayerInterface*, int> pusher(thisptr, t);
+    KenshiLua::EventSystem::get().callHandlers("PlayerInterface::removeJobSelectedCharacters", &pusher);
+}
+
+void CallPlayerInterfaceRemovePermaJobSelectedCharactersCallbacks(PlayerInterface* thisptr, int id)
+{
+    ArgPusher2<PlayerInterface*, int> pusher(thisptr, id);
+    KenshiLua::EventSystem::get().callHandlers("PlayerInterface::removePermaJobSelectedCharacters", &pusher);
+}
+
 void CallPlatoonMemberAddedCallbacks(ActivePlatoon* platoon, RootObject* c)
 {
     ArgPusher2<ActivePlatoon*, RootObject*> pusher(platoon, c);
@@ -968,9 +1043,9 @@ void CallCrimeWitnessedCallbacks(BountyManager* bountyMgr, Faction* against, con
     KenshiLua::EventSystem::get().callHandlers("BountyManager::notifyCrimeWitnessed", &pusher);
 }
 
-void CallFactionRelationsAffectedCallbacks(FactionRelations* factionRelations, Faction* other, int eventType, float multiplier)
+void CallFactionRelationsAffectedCallbacks(FactionRelations* factionRelations, Faction* other, float value, float multiplier)
 {
-    ArgPusher4<FactionRelations*, Faction*, int, float> pusher(factionRelations, other, eventType, multiplier);
+    ArgPusher4<FactionRelations*, Faction*, float, float> pusher(factionRelations, other, value, multiplier);
     KenshiLua::EventSystem::get().callHandlers("FactionRelations::affectRelations", &pusher);
 }
 
@@ -1108,6 +1183,60 @@ GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData*
     ArgPusher3<Faction*, GameData*, GameData*> pusher(faction, building, defaultVal);
     GameData* overrideVal = static_cast<GameData*>(KenshiLua::EventSystem::get().callHandlersObject("Faction::getBuildingReplacement", "KenshiLua.GameData", &pusher));
     return overrideVal ? overrideVal : defaultVal;
+}
+
+void CallFactionUnloadedPlatoonCreatedCallbacks(Faction* faction, GameData* squadTemplate, const Ogre::Vector3& position, GameDataContainer* forceCharacterDatas, bool persistent, Platoon* platoon)
+{
+    ArgPusher6<Faction*, GameData*, const Ogre::Vector3&, GameDataContainer*, bool, Platoon*> pusher(faction, squadTemplate, position, forceCharacterDatas, persistent, platoon);
+    KenshiLua::EventSystem::get().callHandlers("Faction::createNewEmptyUnloadedPlatoon", &pusher);
+}
+
+void CallFactionPlatoonRestoredCallbacks(Faction* faction, Platoon* platoon)
+{
+    ArgPusher2<Faction*, Platoon*> pusher(faction, platoon);
+    KenshiLua::EventSystem::get().callHandlers("Faction::restorePlatoon", &pusher);
+}
+
+void CallFactionPlatoonRemovedCallbacks(Faction* faction, Platoon* platoon)
+{
+    ArgPusher2<Faction*, Platoon*> pusher(faction, platoon);
+    KenshiLua::EventSystem::get().callHandlers("Faction::removePlatoon", &pusher);
+}
+
+void CallFactionActiveObjectAddedCallbacks(Faction* faction, RootObject* object, ActivePlatoon* platoon, bool success)
+{
+    ArgPusher4<Faction*, RootObject*, ActivePlatoon*, bool> pusher(faction, object, platoon, success);
+    KenshiLua::EventSystem::get().callHandlers("Faction::_NV_addActiveObject", &pusher);
+}
+
+void CallFactionObjectRemovedCallbacks(Faction* faction, RootObject* object)
+{
+    ArgPusher2<Faction*, RootObject*> pusher(faction, object);
+    KenshiLua::EventSystem::get().callHandlers("Faction::_NV_removeObject", &pusher);
+}
+
+void CallFactionObjectDestroyedCallbacks(Faction* faction, RootObject* object)
+{
+    ArgPusher2<Faction*, RootObject*> pusher(faction, object);
+    KenshiLua::EventSystem::get().callHandlers("Faction::_NV_destroyObject", &pusher);
+}
+
+void CallFactionNameChangedCallbacks(Faction* faction, const std::string& name)
+{
+    ArgPusher2<Faction*, const std::string&> pusher(faction, name);
+    KenshiLua::EventSystem::get().callHandlers("Faction::setName", &pusher);
+}
+
+void CallFactionSetupCompletedCallbacks(Faction* faction)
+{
+    ArgPusher1<Faction*> pusher(faction);
+    KenshiLua::EventSystem::get().callHandlers("Faction::setup3", &pusher);
+}
+
+void CallFactionStateLoadedCallbacks(Faction* faction, GameDataContainer* saveSource, GameData* factionState)
+{
+    ArgPusher3<Faction*, GameDataContainer*, GameData*> pusher(faction, saveSource, factionState);
+    KenshiLua::EventSystem::get().callHandlers("Faction::loadState", &pusher);
 }
 
 bool CallOwnershipsCanIUseThisBuildingCallbacks(Ownerships* ownerships, Building* b, Character* me, bool defaultVal)
@@ -5104,11 +5233,12 @@ void CallDialogueWindowUpdatePanelsPositionCallbacks(DialogueWindow* thisptr)
 // Callbacks for hooks in gui/SplashScreen.h
 // -----------------------------------------------------------
 
-void CallSplashScreenConstructedCallbacks(SplashScreen* thisptr)
-{
-    ArgPusher1<SplashScreen*> pusher(thisptr);
-    KenshiLua::EventSystem::get().callHandlers("SplashScreen::_CONSTRUCTOR", &pusher);
-}
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// void CallSplashScreenConstructedCallbacks(SplashScreen* thisptr)
+// {
+//     ArgPusher1<SplashScreen*> pusher(thisptr);
+//     KenshiLua::EventSystem::get().callHandlers("SplashScreen::_CONSTRUCTOR", &pusher);
+// }
 
 void CallSplashScreenDestructorCallbacks(SplashScreen* thisptr)
 {
@@ -5134,17 +5264,19 @@ bool CallSplashScreenGetEndedCallbacks(SplashScreen* thisptr, bool defaultVal)
     return KenshiLua::EventSystem::get().callHandlersBool("SplashScreen::getEnded", &pusher, defaultVal);
 }
 
-void CallSplashScreenSkipCallbacks(SplashScreen* thisptr)
-{
-    ArgPusher1<SplashScreen*> pusher(thisptr);
-    KenshiLua::EventSystem::get().callHandlers("SplashScreen::skip", &pusher);
-}
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// void CallSplashScreenSkipCallbacks(SplashScreen* thisptr)
+// {
+//     ArgPusher1<SplashScreen*> pusher(thisptr);
+//     KenshiLua::EventSystem::get().callHandlers("SplashScreen::skip", &pusher);
+// }
 
-void CallSplashScreenAddLogoCallbacks(SplashScreen* thisptr, const std::string& file, float scale)
-{
-    ArgPusher3<SplashScreen*, const std::string&, float> pusher(thisptr, file, scale);
-    KenshiLua::EventSystem::get().callHandlers("SplashScreen::addLogo", &pusher);
-}
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// void CallSplashScreenAddLogoCallbacks(SplashScreen* thisptr, const std::string& file, float scale)
+// {
+//     ArgPusher3<SplashScreen*, const std::string&, float> pusher(thisptr, file, scale);
+//     KenshiLua::EventSystem::get().callHandlers("SplashScreen::addLogo", &pusher);
+// }
 
 
 // GUI hook callbacks: OrdersPanel, OptionsWindow, MapScreen,
@@ -6324,6 +6456,18 @@ void CallCampaignRemovePlatoonCallbacks(CampaignInstance* self, Platoon* platoon
 {
     ArgPusher2<CampaignInstance*, Platoon*> pusher(self, platoon);
     KenshiLua::EventSystem::get().callHandlers("CampaignInstance::_NV_removeFromCampaign", &pusher);
+}
+
+void CallFactionWarMgrCampaignStartedCallbacks(FactionWarMgr* self, RootObjectBase* targetTown, CampaignData* data, TownBase* home, CampaignInstance* campaign)
+{
+    ArgPusher5<FactionWarMgr*, RootObjectBase*, CampaignData*, TownBase*, CampaignInstance*> pusher(self, targetTown, data, home, campaign);
+    KenshiLua::EventSystem::get().callHandlers("FactionWarMgr::triggerCampaign", &pusher);
+}
+
+void CallFactionWarMgrCampaignEndingCallbacks(FactionWarMgr* self, CampaignInstance* campaign)
+{
+    ArgPusher2<FactionWarMgr*, CampaignInstance*> pusher(self, campaign);
+    KenshiLua::EventSystem::get().callHandlers("FactionWarMgr::endCampaign", &pusher);
 }
 
 void CallPlatoonMissionEndedCallbacks(Platoon* self)

@@ -274,11 +274,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_TechItemViewData_getName,
     "ManagementScreen::TechItemViewData::getName", KenshiLib::GetRealAddress(&ManagementScreen::TechItemViewData::getName),
     TechItemViewData_getName_hook, TechItemViewData_getName_orig)
 
-static std::string (*TechItemViewData_getValue_orig)(const ManagementScreen::TechItemViewData*) = NULL;
-static std::string TechItemViewData_getValue_hook(const ManagementScreen::TechItemViewData* thisptr)
+static std::string* (*TechItemViewData_getValue_orig)(const ManagementScreen::TechItemViewData*, std::string*) = NULL;
+static std::string* TechItemViewData_getValue_hook(const ManagementScreen::TechItemViewData* thisptr, std::string* ret)
 {
-    std::string result = TechItemViewData_getValue_orig(thisptr);
-    CallTechItemViewDataGetValueCallbacks(const_cast<ManagementScreen::TechItemViewData*>(thisptr), result);
+    std::string* result = TechItemViewData_getValue_orig(thisptr, ret);
+    CallTechItemViewDataGetValueCallbacks(const_cast<ManagementScreen::TechItemViewData*>(thisptr), *result);
     return result;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_TechItemViewData_getValue,

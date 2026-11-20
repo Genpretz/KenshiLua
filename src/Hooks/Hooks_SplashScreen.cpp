@@ -5,22 +5,24 @@
 // ---------------------------------------------------------------------------
 // Hooks for SplashScreen.h
 //
-// All address-bearing non-virtual members. Events fire after the original call
-// except for the destructor. Scalar getters supply the engine result as the Lua
-// default and accept an override.
+// All address-bearing non-virtual members; three are commented out because they
+// never fire (see the registry). Events fire after the original call except for
+// the destructor. Scalar getters supply the engine result as the Lua default and
+// accept an override.
 // ---------------------------------------------------------------------------
 
-static SplashScreen* (*SplashScreen_CONSTRUCTOR_orig)(SplashScreen*) = NULL;
-static SplashScreen* SplashScreen_CONSTRUCTOR_hook(SplashScreen* thisptr)
-{
-    SplashScreen* res = SplashScreen_CONSTRUCTOR_orig(thisptr);
-    CallSplashScreenConstructedCallbacks(thisptr);
-    return res;
-}
-DEFINE_HOOK_INSTALLER(InstallHook_SplashScreen_CONSTRUCTOR,
-    "SplashScreen::_CONSTRUCTOR",
-    KenshiLib::GetRealAddress(&SplashScreen::_CONSTRUCTOR),
-    SplashScreen_CONSTRUCTOR_hook, SplashScreen_CONSTRUCTOR_orig)
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// static SplashScreen* (*SplashScreen_CONSTRUCTOR_orig)(SplashScreen*) = NULL;
+// static SplashScreen* SplashScreen_CONSTRUCTOR_hook(SplashScreen* thisptr)
+// {
+//     SplashScreen* res = SplashScreen_CONSTRUCTOR_orig(thisptr);
+//     CallSplashScreenConstructedCallbacks(thisptr);
+//     return res;
+// }
+// DEFINE_HOOK_INSTALLER(InstallHook_SplashScreen_CONSTRUCTOR,
+//     "SplashScreen::_CONSTRUCTOR",
+//     KenshiLib::GetRealAddress(&SplashScreen::_CONSTRUCTOR),
+//     SplashScreen_CONSTRUCTOR_hook, SplashScreen_CONSTRUCTOR_orig)
 
 static void (*SplashScreen_DESTRUCTOR_orig)(SplashScreen*) = NULL;
 static void SplashScreen_DESTRUCTOR_hook(SplashScreen* thisptr)
@@ -67,24 +69,26 @@ DEFINE_HOOK_INSTALLER(InstallHook_SplashScreen_getEnded,
     KenshiLib::GetRealAddress(&SplashScreen::getEnded),
     SplashScreen_getEnded_hook, SplashScreen_getEnded_orig)
 
-static void (*SplashScreen_skip_orig)(SplashScreen*) = NULL;
-static void SplashScreen_skip_hook(SplashScreen* thisptr)
-{
-    SplashScreen_skip_orig(thisptr);
-    CallSplashScreenSkipCallbacks(thisptr);
-}
-DEFINE_HOOK_INSTALLER(InstallHook_SplashScreen_skip,
-    "SplashScreen::skip",
-    KenshiLib::GetRealAddress(&SplashScreen::skip),
-    SplashScreen_skip_hook, SplashScreen_skip_orig)
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// static void (*SplashScreen_skip_orig)(SplashScreen*) = NULL;
+// static void SplashScreen_skip_hook(SplashScreen* thisptr)
+// {
+//     SplashScreen_skip_orig(thisptr);
+//     CallSplashScreenSkipCallbacks(thisptr);
+// }
+// DEFINE_HOOK_INSTALLER(InstallHook_SplashScreen_skip,
+//     "SplashScreen::skip",
+//     KenshiLib::GetRealAddress(&SplashScreen::skip),
+//     SplashScreen_skip_hook, SplashScreen_skip_orig)
 
-static void (*SplashScreen_addLogo_orig)(SplashScreen*, const std::string&, float) = NULL;
-static void SplashScreen_addLogo_hook(SplashScreen* thisptr, const std::string& file, float scale)
-{
-    SplashScreen_addLogo_orig(thisptr, file, scale);
-    CallSplashScreenAddLogoCallbacks(thisptr, file, scale);
-}
-DEFINE_HOOK_INSTALLER(InstallHook_SplashScreen_addLogo,
-    "SplashScreen::addLogo",
-    KenshiLib::GetRealAddress(&SplashScreen::addLogo),
-    SplashScreen_addLogo_hook, SplashScreen_addLogo_orig)
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// static void (*SplashScreen_addLogo_orig)(SplashScreen*, const std::string&, float) = NULL;
+// static void SplashScreen_addLogo_hook(SplashScreen* thisptr, const std::string& file, float scale)
+// {
+//     SplashScreen_addLogo_orig(thisptr, file, scale);
+//     CallSplashScreenAddLogoCallbacks(thisptr, file, scale);
+// }
+// DEFINE_HOOK_INSTALLER(InstallHook_SplashScreen_addLogo,
+//     "SplashScreen::addLogo",
+//     KenshiLib::GetRealAddress(&SplashScreen::addLogo),
+//     SplashScreen_addLogo_hook, SplashScreen_addLogo_orig)

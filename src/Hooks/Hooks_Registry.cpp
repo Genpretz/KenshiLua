@@ -36,6 +36,12 @@ namespace KenshiLua
 
         // GameWorld.h          
         { "GameWorld::charsUpdate",                                          InstallHook_GameWorld_CharsUpdate },
+        { "GameWorld::resetGame",                                            InstallHook_GameWorld_resetGame },
+        { "GameWorld::dailyUpdates",                                         InstallHook_GameWorld_dailyUpdates },
+        { "GameWorld::initialiseNewGameWorld",                               InstallHook_GameWorld_initialiseNewGameWorld },
+        { "GameWorld::destroy",                                              InstallHook_GameWorld_destroy },
+        { "GameWorld::userPause",                                            InstallHook_GameWorld_userPause },
+        { "GameWorld::setGameSpeed",                                         InstallHook_GameWorld_setGameSpeed },
 
         // AITaskSystem.h
         { "OrdersReceiver::_NV_serialise",                                   InstallHook_OrdersReceiver_NV_serialise },
@@ -100,6 +106,11 @@ namespace KenshiLua
         { "PlayerInterface::encounterFaction",                               InstallHook_PlayerInterface_encounterFaction, WorkerDispatch },
         { "PlayerInterface::serialise",                                      InstallHook_PlayerInterface_serialise },
         { "PlayerInterface::loadFromSerialise",                              InstallHook_PlayerInterface_loadFromSerialise },
+        { "PlayerInterface::triggerAreaArrivalDialogue",                     InstallHook_PlayerInterface_triggerAreaArrivalDialogue, WorkerDispatch },
+        { "PlayerInterface::setCurrentPlatoon",                              InstallHook_PlayerInterface_setCurrentPlatoon },
+        { "PlayerInterface::objectSelected",                                 InstallHook_PlayerInterface_objectSelected },
+        { "PlayerInterface::removeJobSelectedCharacters",                    InstallHook_PlayerInterface_removeJobSelectedCharacters },
+        { "PlayerInterface::removePermaJobSelectedCharacters",               InstallHook_PlayerInterface_removePermaJobSelectedCharacters },
 
         // Platoon.h            
         { "ActivePlatoon::_NV_addActiveObject",                              InstallHook_ActivePlatoon_AddActiveObject },
@@ -151,9 +162,20 @@ namespace KenshiLua
         { "Faction::chooseARace",                                            InstallHook_Faction_chooseARace },
         { "Faction::getBuildingReplacement",                                 InstallHook_Faction_getBuildingReplacement },
         { "Faction::createNewEmptyActivePlatoon",                            InstallHook_Faction_createNewEmptyActivePlatoon },
+        { "Faction::createNewEmptyUnloadedPlatoon",                          InstallHook_Faction_createNewEmptyUnloadedPlatoon, WorkerDispatch },
+        { "Faction::restorePlatoon",                                         InstallHook_Faction_restorePlatoon },
         { "Faction::destroyPlatoon",                                         InstallHook_Faction_destroyPlatoon },
+        { "Faction::removePlatoon",                                          InstallHook_Faction_removePlatoon },
+        { "Faction::_NV_addActiveObject",                                    InstallHook_Faction_NV_addActiveObject },
+        { "Faction::_NV_removeObject",                                       InstallHook_Faction_NV_removeObject },
+        { "Faction::_NV_destroyObject",                                      InstallHook_Faction_NV_destroyObject },
+        { "Faction::setName",                                                InstallHook_Faction_setName },
+        { "Faction::setup3",                                                 InstallHook_Faction_setup3 },
+        { "Faction::loadState",                                              InstallHook_Faction_loadState },
 
         // FactionWarMgr.h
+        { "FactionWarMgr::triggerCampaign",                                  InstallHook_FactionWarMgr_triggerCampaign },
+        { "FactionWarMgr::endCampaign",                                      InstallHook_FactionWarMgr_endCampaign },
 
         // MedicalSystem.h          
         { "MedicalSystem::amputate",                                         InstallHook_MedicalSystem_Amputate, WorkerDispatch },
@@ -1035,13 +1057,15 @@ namespace KenshiLua
         { "NewGameOptionsWindow::setOptions",                                  InstallHook_NewGameOptionsWindow_setOptions },
 
         // SplashScreen.h
-        { "SplashScreen::_CONSTRUCTOR",                                        InstallHook_SplashScreen_CONSTRUCTOR },
+        // _CONSTRUCTOR, skip and addLogo are commented out, with their hooks and dispatchers,
+        // because KenshiLua loads after the splash screen starts and they never fire.
+        // { "SplashScreen::_CONSTRUCTOR",                                        InstallHook_SplashScreen_CONSTRUCTOR },
         { "SplashScreen::_DESTRUCTOR",                                         InstallHook_SplashScreen_DESTRUCTOR },
         { "SplashScreen::update",                                              InstallHook_SplashScreen_update },
         { "SplashScreen::getState",                                            InstallHook_SplashScreen_getState },
         { "SplashScreen::getEnded",                                            InstallHook_SplashScreen_getEnded },
-        { "SplashScreen::skip",                                                InstallHook_SplashScreen_skip },
-        { "SplashScreen::addLogo",                                             InstallHook_SplashScreen_addLogo },
+        // { "SplashScreen::skip",                                                InstallHook_SplashScreen_skip },
+        // { "SplashScreen::addLogo",                                             InstallHook_SplashScreen_addLogo },
     };
 
     static const size_t g_eventHookRegistryCount = sizeof(g_eventHookRegistry) / sizeof(g_eventHookRegistry[0]);

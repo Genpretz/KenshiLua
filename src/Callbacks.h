@@ -32,6 +32,7 @@ class DialogueWindow;
 class Dialogue;
 class DialogLineData;
 class GameData;
+class GameDataManager;
 class RaceData;
 class InventorySection;
 class Ownerships;
@@ -136,6 +137,7 @@ class RootObjectContainer;
 class GunClass;
 class Research;
 class CampaignInstance;
+class CampaignData;
 class MedicalDatapanel;
 class InventoryIcon;
 class InventorySectionGUI;
@@ -179,6 +181,42 @@ void CallKeyDownCallbacks(InputHandler* thisptr, int keyCode);
 // Lua event name: "GameWorld::charsUpdate"
 // Lua signature:  function(self)
 void CallCharsUpdateCallbacks(GameWorld* thisptr);
+
+// Fired by GameWorld::resetGame hook.
+// Runs after the world state script bridge reset.
+// Lua event name: "GameWorld::resetGame"
+// Lua signature:  function(self)
+void CallGameWorldResetGameCallbacks(GameWorld* thisptr);
+
+// Fired by GameWorld::dailyUpdates hook.
+// Kenshi calls it once per in-game day.
+// Lua event name: "GameWorld::dailyUpdates"
+// Lua signature:  function(self)
+void CallGameWorldDailyUpdatesCallbacks(GameWorld* thisptr);
+
+// Fired by GameWorld::initialiseNewGameWorld hook.
+// Also raised while a save loads.
+// Lua event name: "GameWorld::initialiseNewGameWorld"
+// Lua signature:  function(self, datasrc)
+void CallGameWorldInitialiseNewGameWorldCallbacks(GameWorld* thisptr, GameDataManager* datasrc);
+
+// Fired by GameWorld::destroy hook.
+// Hooks the destroy(RootObject*, bool, const char*) overload.
+// Runs before the original call, so obj is still valid inside the handler.
+// debugInfo is nil when the engine passes a null pointer.
+// Lua event name: "GameWorld::destroy"
+// Lua signature:  function(self, obj, justUnloaded, debugInfo)
+void CallGameWorldDestroyCallbacks(GameWorld* thisptr, RootObject* obj, bool justUnloaded, const char* debugInfo);
+
+// Fired by GameWorld::userPause hook.
+// Lua event name: "GameWorld::userPause"
+// Lua signature:  function(self, p)
+void CallGameWorldUserPauseCallbacks(GameWorld* thisptr, bool p);
+
+// Fired by GameWorld::setGameSpeed hook.
+// Lua event name: "GameWorld::setGameSpeed"
+// Lua signature:  function(self, speed, click)
+void CallGameWorldSetGameSpeedCallbacks(GameWorld* thisptr, float speed, bool click);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in Character.h
@@ -363,6 +401,36 @@ void CallPlayerSelectCallbacks(PlayerInterface* player, RootObject* obj, bool mo
 // Lua signature:  function(self, taskType, targetHandle, destinationBuilding, clickPos, queueOrder)
 void CallPlayerOrderGivenCallbacks(PlayerInterface* player, int taskType, const hand& targetH, Building* destinationIndoors, const Ogre::Vector3& clickpos, bool addDontClear);
 
+// Fired by PlayerInterface::triggerAreaArrivalDialogue hook.
+// Runs after the original call; result is the original return value.
+// Lua event name: "PlayerInterface::triggerAreaArrivalDialogue"
+// Lua signature:  function(self, area, result)
+void CallPlayerInterfaceTriggerAreaArrivalDialogueCallbacks(PlayerInterface* thisptr, GameData* area, bool result);
+
+// Fired by PlayerInterface::setCurrentPlatoon hook.
+// Runs after the original call; result is the original return value, true only
+// when the platoon changed.
+// Lua event name: "PlayerInterface::setCurrentPlatoon"
+// Lua signature:  function(self, platoon, result)
+void CallPlayerInterfaceSetCurrentPlatoonCallbacks(PlayerInterface* thisptr, Platoon* platoon, bool result);
+
+// Fired by PlayerInterface::objectSelected hook.
+// PlayerInterface::selectObject calls it, so a selectObject call raises both events.
+// Lua event name: "PlayerInterface::objectSelected"
+// Lua signature:  function(self, obj, select)
+void CallPlayerInterfaceObjectSelectedCallbacks(PlayerInterface* thisptr, RootObject* obj, bool select);
+
+// Fired by PlayerInterface::removeJobSelectedCharacters hook.
+// t is the TaskType value as an integer.
+// Lua event name: "PlayerInterface::removeJobSelectedCharacters"
+// Lua signature:  function(self, t)
+void CallPlayerInterfaceRemoveJobSelectedCharactersCallbacks(PlayerInterface* thisptr, int t);
+
+// Fired by PlayerInterface::removePermaJobSelectedCharacters hook.
+// Lua event name: "PlayerInterface::removePermaJobSelectedCharacters"
+// Lua signature:  function(self, id)
+void CallPlayerInterfaceRemovePermaJobSelectedCharactersCallbacks(PlayerInterface* thisptr, int id);
+
 // -----------------------------------------------------------
 // Callbacks for hooks in Platoon.h
 // -----------------------------------------------------------
@@ -438,10 +506,11 @@ void CallCrimeWitnessedCallbacks(BountyManager* bountyMgr, Faction* against, con
 // Callbacks for hooks in FactionRelations.h
 // -----------------------------------------------------------
 
-// Fired by FactionRelations::affectRelations hook.
+// Fired after either FactionRelations::affectRelations overload.
 // Lua event name: "FactionRelations::affectRelations"
-// Lua signature:  function(self, otherFaction, eventType, multiplier)
-void CallFactionRelationsAffectedCallbacks(FactionRelations* factionRelations, Faction* other, int eventType, float multiplier);
+// Lua signature:  function(self, otherFaction, value, multiplier)
+// value is the FactionEvent integer for the event overload, or the numeric amount for the amount overload.
+void CallFactionRelationsAffectedCallbacks(FactionRelations* factionRelations, Faction* other, float value, float multiplier);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in Faction.h
@@ -456,6 +525,51 @@ GameData* CallFactionChooseARaceCallbacks(Faction* faction, GameData* character,
 // Lua event name: "Faction::getBuildingReplacement"
 // Lua signature:  function(self, building, defaultVal) -> GameData
 GameData* CallFactionGetBuildingReplacementCallbacks(Faction* faction, GameData* building, GameData* defaultVal);
+
+// Fired after Faction::createNewEmptyUnloadedPlatoon returns.
+// Lua event name: "Faction::createNewEmptyUnloadedPlatoon"
+// Lua signature:  function(self, squadTemplate, position, forceCharacterDatas, persistent, platoon)
+void CallFactionUnloadedPlatoonCreatedCallbacks(Faction* faction, GameData* squadTemplate, const Ogre::Vector3& position, GameDataContainer* forceCharacterDatas, bool persistent, Platoon* platoon);
+
+// Fired after Faction::restorePlatoon returns.
+// Lua event name: "Faction::restorePlatoon"
+// Lua signature:  function(self, platoon)
+void CallFactionPlatoonRestoredCallbacks(Faction* faction, Platoon* platoon);
+
+// Fired after Faction::removePlatoon returns.
+// Lua event name: "Faction::removePlatoon"
+// Lua signature:  function(self, platoon)
+void CallFactionPlatoonRemovedCallbacks(Faction* faction, Platoon* platoon);
+
+// Fired after Faction::_NV_addActiveObject returns.
+// Lua event name: "Faction::_NV_addActiveObject"
+// Lua signature:  function(self, object, platoon, success)
+void CallFactionActiveObjectAddedCallbacks(Faction* faction, RootObject* object, ActivePlatoon* platoon, bool success);
+
+// Fired after Faction::_NV_removeObject returns.
+// Lua event name: "Faction::_NV_removeObject"
+// Lua signature:  function(self, object)
+void CallFactionObjectRemovedCallbacks(Faction* faction, RootObject* object);
+
+// Fired after Faction::_NV_destroyObject returns.
+// Lua event name: "Faction::_NV_destroyObject"
+// Lua signature:  function(self, object)
+void CallFactionObjectDestroyedCallbacks(Faction* faction, RootObject* object);
+
+// Fired after Faction::setName returns.
+// Lua event name: "Faction::setName"
+// Lua signature:  function(self, name)
+void CallFactionNameChangedCallbacks(Faction* faction, const std::string& name);
+
+// Fired after Faction::setup3 completes the final faction setup phase.
+// Lua event name: "Faction::setup3"
+// Lua signature:  function(self)
+void CallFactionSetupCompletedCallbacks(Faction* faction);
+
+// Fired after Faction::loadState returns.
+// Lua event name: "Faction::loadState"
+// Lua signature:  function(self, saveSource, factionState)
+void CallFactionStateLoadedCallbacks(Faction* faction, GameDataContainer* saveSource, GameData* factionState);
 
 // -----------------------------------------------------------
 // Callbacks for hooks in MedicalSystem.h
@@ -3880,7 +3994,8 @@ void CallDialogueWindowUpdatePanelsPositionCallbacks(DialogueWindow* thisptr);
 // Fired by SplashScreen::_CONSTRUCTOR hook after the original call.
 // Lua event name: "SplashScreen::_CONSTRUCTOR"
 // Lua signature:  function(self)
-void CallSplashScreenConstructedCallbacks(SplashScreen* thisptr);
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// void CallSplashScreenConstructedCallbacks(SplashScreen* thisptr);
 
 // Fired by SplashScreen::_DESTRUCTOR hook before the original call.
 // Lua event name: "SplashScreen::_DESTRUCTOR"
@@ -3905,12 +4020,14 @@ bool CallSplashScreenGetEndedCallbacks(SplashScreen* thisptr, bool defaultVal);
 // Fired by SplashScreen::skip hook after the original call.
 // Lua event name: "SplashScreen::skip"
 // Lua signature:  function(self)
-void CallSplashScreenSkipCallbacks(SplashScreen* thisptr);
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// void CallSplashScreenSkipCallbacks(SplashScreen* thisptr);
 
 // Fired by SplashScreen::addLogo hook after the original call.
 // Lua event name: "SplashScreen::addLogo"
 // Lua signature:  function(self, file, scale)
-void CallSplashScreenAddLogoCallbacks(SplashScreen* thisptr, const std::string& file, float scale);
+// Disabled: KenshiLua loads after the splash screen starts, so this never fires.
+// void CallSplashScreenAddLogoCallbacks(SplashScreen* thisptr, const std::string& file, float scale);
 
 
 // -----------------------------------------------------------
@@ -4697,6 +4814,16 @@ void CallCampaignAddPlatoonCallbacks(CampaignInstance* self, Platoon* platoon, b
 // Lua event name: "CampaignInstance::_NV_removeFromCampaign"
 // Lua signature: function(self, platoon)
 void CallCampaignRemovePlatoonCallbacks(CampaignInstance* self, Platoon* platoon);
+
+// Fired after the FactionWarMgr::triggerCampaign overload that returns a new campaign.
+// Lua event name: "FactionWarMgr::triggerCampaign"
+// Lua signature: function(self, targetTown, data, home, campaign)
+void CallFactionWarMgrCampaignStartedCallbacks(FactionWarMgr* self, RootObjectBase* targetTown, CampaignData* data, TownBase* home, CampaignInstance* campaign);
+
+// Fired before FactionWarMgr::endCampaign deletes the campaign instance.
+// Lua event name: "FactionWarMgr::endCampaign"
+// Lua signature: function(self, campaign)
+void CallFactionWarMgrCampaignEndingCallbacks(FactionWarMgr* self, CampaignInstance* campaign);
 
 // Lua event name: "Platoon::_NV_notifyMissionEnded"
 // Lua signature: function(self)

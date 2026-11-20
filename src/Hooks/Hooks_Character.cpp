@@ -180,10 +180,10 @@ DEFINE_HOOK_INSTALLER(InstallHook_Character_ImStealingDoYouNotice,
     KenshiLib::GetRealAddress(&Character::_NV_ImStealingDoYouNotice),
     Character_ImStealingDoYouNotice_hook, Character_ImStealingDoYouNotice_orig)
 
-static YesNoMaybe (*Character_smugglingTradeCheck_orig)(Character*, Item*, Character*) = NULL;
-static YesNoMaybe Character_smugglingTradeCheck_hook(Character* thisptr, Item* item, Character* who)
+static YesNoMaybe* (*Character_smugglingTradeCheck_orig)(Character*, YesNoMaybe*, Item*, Character*) = NULL;
+static YesNoMaybe* Character_smugglingTradeCheck_hook(Character* thisptr, YesNoMaybe* ret, Item* item, Character* who)
 {
-    YesNoMaybe res = Character_smugglingTradeCheck_orig(thisptr, item, who);
+    YesNoMaybe* res = Character_smugglingTradeCheck_orig(thisptr, ret, item, who);
     CallCharacterSmugglingCheckCallbacks(thisptr, item, who);
     return res;
 }

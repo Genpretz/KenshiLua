@@ -9,6 +9,11 @@
 bool InstallHook_InputHandler_KeyDown();
 bool InstallHook_GameWorld_CharsUpdate();
 bool InstallHook_GameWorld_resetGame();
+bool InstallHook_GameWorld_dailyUpdates();
+bool InstallHook_GameWorld_initialiseNewGameWorld();
+bool InstallHook_GameWorld_destroy();
+bool InstallHook_GameWorld_userPause();
+bool InstallHook_GameWorld_setGameSpeed();
 bool InstallHook_OrdersReceiver_NV_serialise();
 bool InstallHook_Character_Say();
 bool InstallHook_Character_Select();
@@ -53,6 +58,11 @@ bool InstallHook_PlayerInterface_addOrderSelectedCharacters();
 bool InstallHook_PlayerInterface_activateCharacterEditMode();
 bool InstallHook_PlayerInterface_createSquad();
 bool InstallHook_PlayerInterface_encounterFaction();
+bool InstallHook_PlayerInterface_triggerAreaArrivalDialogue();
+bool InstallHook_PlayerInterface_setCurrentPlatoon();
+bool InstallHook_PlayerInterface_objectSelected();
+bool InstallHook_PlayerInterface_removeJobSelectedCharacters();
+bool InstallHook_PlayerInterface_removePermaJobSelectedCharacters();
 bool InstallHook_ActivePlatoon_AddActiveObject();
 bool InstallHook_ActivePlatoon_RemoveObject();
 bool InstallHook_Platoon_TaskIsComplete();
@@ -70,7 +80,18 @@ bool InstallHook_FactionRelations_AffectRelations();
 bool InstallHook_Faction_chooseARace();
 bool InstallHook_Faction_getBuildingReplacement();
 bool InstallHook_Faction_createNewEmptyActivePlatoon();
+bool InstallHook_Faction_createNewEmptyUnloadedPlatoon();
+bool InstallHook_Faction_restorePlatoon();
 bool InstallHook_Faction_destroyPlatoon();
+bool InstallHook_Faction_removePlatoon();
+bool InstallHook_Faction_NV_addActiveObject();
+bool InstallHook_Faction_NV_removeObject();
+bool InstallHook_Faction_NV_destroyObject();
+bool InstallHook_Faction_setName();
+bool InstallHook_Faction_setup3();
+bool InstallHook_Faction_loadState();
+bool InstallHook_FactionWarMgr_triggerCampaign();
+bool InstallHook_FactionWarMgr_endCampaign();
 bool InstallHook_MedicalSystem_Amputate();
 bool InstallHook_MedicalSystem_knockout();
 bool InstallHook_MedicalSystem_canGetUpWakeUp();
@@ -757,14 +778,14 @@ bool InstallHook_NewGameOptionsWindow_setPosition();
 bool InstallHook_NewGameOptionsWindow_update();
 bool InstallHook_NewGameOptionsWindow_setOptions();
 
-// SplashScreen.h
-bool InstallHook_SplashScreen_CONSTRUCTOR();
+// SplashScreen.h (three installers disabled; see the registry)
+// bool InstallHook_SplashScreen_CONSTRUCTOR();
 bool InstallHook_SplashScreen_DESTRUCTOR();
 bool InstallHook_SplashScreen_update();
 bool InstallHook_SplashScreen_getState();
 bool InstallHook_SplashScreen_getEnded();
-bool InstallHook_SplashScreen_skip();
-bool InstallHook_SplashScreen_addLogo();
+// bool InstallHook_SplashScreen_skip();
+// bool InstallHook_SplashScreen_addLogo();
 
 // OrdersPanel.h, OptionsWindow.h, MapScreen.h, ManagementScreen.h, TitleScreen.h
 bool InstallHook_OrderCellView_CONSTRUCTOR();

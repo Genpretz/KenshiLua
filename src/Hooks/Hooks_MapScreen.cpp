@@ -245,22 +245,22 @@ DEFINE_HOOK_INSTALLER(InstallHook_MapScreen_getMouseWorldPosition,
     "MapScreen::getMouseWorldPosition", KenshiLib::GetRealAddress(&MapScreen::getMouseWorldPosition),
     MapScreen_getMouseWorldPosition_hook, MapScreen_getMouseWorldPosition_orig)
 
-static MyGUI::IntPoint (*MapScreen_worldToMapCoords_orig)(MapScreen*, const Ogre::Vector3&) = NULL;
-static MyGUI::IntPoint MapScreen_worldToMapCoords_hook(MapScreen* thisptr, const Ogre::Vector3& position)
+static MyGUI::IntPoint* (*MapScreen_worldToMapCoords_orig)(MapScreen*, MyGUI::IntPoint*, const Ogre::Vector3&) = NULL;
+static MyGUI::IntPoint* MapScreen_worldToMapCoords_hook(MapScreen* thisptr, MyGUI::IntPoint* ret, const Ogre::Vector3& position)
 {
-    MyGUI::IntPoint result = MapScreen_worldToMapCoords_orig(thisptr, position);
-    CallMapScreenWorldToMapCoordsCallbacks(thisptr, position, result);
+    MyGUI::IntPoint* result = MapScreen_worldToMapCoords_orig(thisptr, ret, position);
+    CallMapScreenWorldToMapCoordsCallbacks(thisptr, position, *result);
     return result;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_MapScreen_worldToMapCoords,
     "MapScreen::worldToMapCoords", KenshiLib::GetRealAddress(&MapScreen::worldToMapCoords),
     MapScreen_worldToMapCoords_hook, MapScreen_worldToMapCoords_orig)
 
-static Ogre::Vector3 (*MapScreen_mapCoordsToWorld_orig)(MapScreen*, const MyGUI::IntPoint&) = NULL;
-static Ogre::Vector3 MapScreen_mapCoordsToWorld_hook(MapScreen* thisptr, const MyGUI::IntPoint& point)
+static Ogre::Vector3* (*MapScreen_mapCoordsToWorld_orig)(MapScreen*, Ogre::Vector3*, const MyGUI::IntPoint&) = NULL;
+static Ogre::Vector3* MapScreen_mapCoordsToWorld_hook(MapScreen* thisptr, Ogre::Vector3* ret, const MyGUI::IntPoint& point)
 {
-    Ogre::Vector3 result = MapScreen_mapCoordsToWorld_orig(thisptr, point);
-    CallMapScreenMapCoordsToWorldCallbacks(thisptr, point, result);
+    Ogre::Vector3* result = MapScreen_mapCoordsToWorld_orig(thisptr, ret, point);
+    CallMapScreenMapCoordsToWorldCallbacks(thisptr, point, *result);
     return result;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_MapScreen_mapCoordsToWorld,

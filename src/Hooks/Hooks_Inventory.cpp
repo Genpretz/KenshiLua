@@ -203,11 +203,11 @@ DEFINE_HOOK_INSTALLER(InstallHook_Inventory_CONSTRUCTOR,
     KenshiLib::GetRealAddress(&Inventory::_CONSTRUCTOR),
     Inventory_CONSTRUCTOR_hook, Inventory_CONSTRUCTOR_orig)
 
-static InventoryItemBase* (*InventoryItemBase_CONSTRUCTOR_orig)(InventoryItemBase*, GameData*, GameData*, GameData*, hand) = NULL;
-static InventoryItemBase* InventoryItemBase_CONSTRUCTOR_hook(InventoryItemBase* thisptr, GameData* baseData, GameData* companyData, GameData* materialData, hand _handle)
+static InventoryItemBase* (*InventoryItemBase_CONSTRUCTOR_orig)(InventoryItemBase*, GameData*, hand, GameData*, GameData*) = NULL;
+static InventoryItemBase* InventoryItemBase_CONSTRUCTOR_hook(InventoryItemBase* thisptr, GameData* dat, hand _handle, GameData* manufacturerData, GameData* materialData)
 {
-    InventoryItemBase* res = InventoryItemBase_CONSTRUCTOR_orig(thisptr, baseData, companyData, materialData, _handle);
-    InventoryItemBase* overrideRes = CallInventoryItemBaseConstructedCallbacks(thisptr, baseData, companyData, materialData, _handle, res);
+    InventoryItemBase* res = InventoryItemBase_CONSTRUCTOR_orig(thisptr, dat, _handle, manufacturerData, materialData);
+    InventoryItemBase* overrideRes = CallInventoryItemBaseConstructedCallbacks(thisptr, dat, manufacturerData, materialData, _handle, res);
     return overrideRes ? overrideRes : res;
 }
 DEFINE_HOOK_INSTALLER(InstallHook_InventoryItemBase_CONSTRUCTOR,

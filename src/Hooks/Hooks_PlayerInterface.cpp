@@ -117,6 +117,63 @@ DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_loadFromSerialise,
     KenshiLib::GetRealAddress(&PlayerInterface::loadFromSerialise),
     PlayerInterface_loadFromSerialise_hook, PlayerInterface_loadFromSerialise_orig)
 
+static bool (*PlayerInterface_triggerAreaArrivalDialogue_orig)(PlayerInterface*, GameData*) = NULL;
+static bool PlayerInterface_triggerAreaArrivalDialogue_hook(PlayerInterface* thisptr, GameData* area)
+{
+    bool res = PlayerInterface_triggerAreaArrivalDialogue_orig(thisptr, area);
+    CallPlayerInterfaceTriggerAreaArrivalDialogueCallbacks(thisptr, area, res);
+    return res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_triggerAreaArrivalDialogue,
+    "PlayerInterface::triggerAreaArrivalDialogue",
+    KenshiLib::GetRealAddress(&PlayerInterface::triggerAreaArrivalDialogue),
+    PlayerInterface_triggerAreaArrivalDialogue_hook, PlayerInterface_triggerAreaArrivalDialogue_orig)
+
+static bool (*PlayerInterface_setCurrentPlatoon_orig)(PlayerInterface*, Platoon*) = NULL;
+static bool PlayerInterface_setCurrentPlatoon_hook(PlayerInterface* thisptr, Platoon* platoon)
+{
+    bool res = PlayerInterface_setCurrentPlatoon_orig(thisptr, platoon);
+    CallPlayerInterfaceSetCurrentPlatoonCallbacks(thisptr, platoon, res);
+    return res;
+}
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_setCurrentPlatoon,
+    "PlayerInterface::setCurrentPlatoon",
+    KenshiLib::GetRealAddress(&PlayerInterface::setCurrentPlatoon),
+    PlayerInterface_setCurrentPlatoon_hook, PlayerInterface_setCurrentPlatoon_orig)
+
+static void (*PlayerInterface_objectSelected_orig)(PlayerInterface*, RootObject*, bool) = NULL;
+static void PlayerInterface_objectSelected_hook(PlayerInterface* thisptr, RootObject* obj, bool select)
+{
+    PlayerInterface_objectSelected_orig(thisptr, obj, select);
+    CallPlayerInterfaceObjectSelectedCallbacks(thisptr, obj, select);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_objectSelected,
+    "PlayerInterface::objectSelected",
+    KenshiLib::GetRealAddress(&PlayerInterface::objectSelected),
+    PlayerInterface_objectSelected_hook, PlayerInterface_objectSelected_orig)
+
+static void (*PlayerInterface_removeJobSelectedCharacters_orig)(PlayerInterface*, TaskType) = NULL;
+static void PlayerInterface_removeJobSelectedCharacters_hook(PlayerInterface* thisptr, TaskType t)
+{
+    PlayerInterface_removeJobSelectedCharacters_orig(thisptr, t);
+    CallPlayerInterfaceRemoveJobSelectedCharactersCallbacks(thisptr, static_cast<int>(t));
+}
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_removeJobSelectedCharacters,
+    "PlayerInterface::removeJobSelectedCharacters",
+    KenshiLib::GetRealAddress(&PlayerInterface::removeJobSelectedCharacters),
+    PlayerInterface_removeJobSelectedCharacters_hook, PlayerInterface_removeJobSelectedCharacters_orig)
+
+static void (*PlayerInterface_removePermaJobSelectedCharacters_orig)(PlayerInterface*, int) = NULL;
+static void PlayerInterface_removePermaJobSelectedCharacters_hook(PlayerInterface* thisptr, int id)
+{
+    PlayerInterface_removePermaJobSelectedCharacters_orig(thisptr, id);
+    CallPlayerInterfaceRemovePermaJobSelectedCharactersCallbacks(thisptr, id);
+}
+DEFINE_HOOK_INSTALLER(InstallHook_PlayerInterface_removePermaJobSelectedCharacters,
+    "PlayerInterface::removePermaJobSelectedCharacters",
+    KenshiLib::GetRealAddress(&PlayerInterface::removePermaJobSelectedCharacters),
+    PlayerInterface_removePermaJobSelectedCharacters_hook, PlayerInterface_removePermaJobSelectedCharacters_orig)
+
 static PlayerInterface* (*PlayerInterface_CONSTRUCTOR_orig)(PlayerInterface*) = NULL;
 static PlayerInterface* PlayerInterface_CONSTRUCTOR_hook(PlayerInterface* thisptr)
 {
