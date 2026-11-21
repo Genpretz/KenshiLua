@@ -47,6 +47,19 @@ def find_function_body(text, marker):
     return text[brace + 1:index - 1]
 
 
+def local_lua_argument_readers(text, body):
+    """Find file-local boolean helpers called with the callback's Lua state."""
+    calls = dict.fromkeys(re.findall(r"\b(\w+)\s*\(\s*L\s*,", body))
+    for name in calls:
+        definition = re.search(
+            r"\bstatic\s+bool\s+" + re.escape(name)
+            + r"\s*\(\s*lua_State\s*\*\s*L\s*,[^;{}]*?\)\s*\{",
+            text,
+        )
+        if definition:
+            yield find_function_body(text, definition.group(0))
+
+
 INTEGER_TYPES = {
     "int", "unsigned", "unsigned int", "signed", "signed int", "short", "unsigned short",
     "long", "unsigned long", "long long", "unsigned long long", "__int64", "unsigned __int64",

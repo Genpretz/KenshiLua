@@ -15,8 +15,12 @@ Output: `docs/BindingsReference.md`
 import os
 import re
 import pathlib
+import sys
 
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(PROJECT_ROOT / "tools" / "luals"))
+from kenshilib_headers import local_lua_argument_readers
+
 BINDINGS_DIR = PROJECT_ROOT / "src" / "Bindings"
 HEADERS_DIR = PROJECT_ROOT / "extern" / "KenshiLib" / "Include" / "kenshi"
 REGISTER_BINDINGS_PATH = PROJECT_ROOT / "src" / "Lua" / "RegisterBindings.cpp"
@@ -197,7 +201,7 @@ def find_function_body(content, marker):
         i += 1
     return content[brace_start:i]
 
-def extract_args_from_body(body: str):
+def extract_args_from_body(body: str, instance_type=None):
     """Extract argument names and types from a C++ function body by analyzing stack index checks.
     Returns list of dicts: [{'name': 'var', 'type': 'type', 'index': idx}]
     """
@@ -307,6 +311,10 @@ def extract_args_from_body(body: str):
         idx = int(m.group(1))
         record(idx, f"arg{idx - 1}", "hand", 1)
 
+    if instance_type:
+        for m in re.finditer(r"\b(\w+)\s*=\s*getInstance\s*\(\s*L\s*,\s*(\d+)\s*\)", body):
+            record(int(m.group(2)), m.group(1), instance_type, 1)
+
     sorted_args = []
     for idx in sorted(indices.keys()):
         sorted_args.append({
@@ -345,7 +353,7 @@ def find_member_type(header_rel: str, class_name: str, member: str) -> str:
     )
     return m.group(1).strip() if m else ""
 
-def extract_return_type_from_body(body: str) -> str:
+def extract_return_type_from_body(body: str, instance_type=None) -> str:
     """Extract returned type from a C++ function body by analyzing return/push statements."""
     if not body:
         return "void"
@@ -415,6 +423,12 @@ def extract_return_type_from_body(body: str) -> str:
         
     if pushes:
         return "|".join(sorted(list(pushes)))
+
+    if instance_type and re.search(
+        r"\blua_(?:pushvalue|settop)\s*\(\s*L\s*,\s*1\s*\)\s*;\s*return\s+1\s*;",
+        body,
+    ):
+        return instance_type
         
     if "return 0;" in body and not pushes:
         return "void"
@@ -1038,8 +1052,17 @@ def parse_binding_file(filepath: pathlib.Path):
                     else:
                         overloads = []
                     
+                    is_operator = lua_name.startswith("operator_")
+                    instance_type = None
+                    if is_operator and get_m and not is_static:
+                        instance_type = chk_type if display_name == class_name else display_name
                     args = extract_args_from_body(body)
-                    ret_type = extract_return_type_from_body(body)
+                    if not args and is_operator:
+                        readers = local_lua_argument_readers(content, body)
+                        args = extract_args_from_body(
+                            "\n".join((body, *readers)), instance_type
+                        )
+                    ret_type = extract_return_type_from_body(body, instance_type)
                     args, ret_type = apply_header_enum_types(args, ret_type, unique_hdr_ovs)
                     methods.append({
                         "lua_name": lua_name,

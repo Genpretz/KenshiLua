@@ -951,14 +951,21 @@ def infer_method_signature(method, implementation, binding):
     body = kenshilib_headers.normalize_dual_index(body, static or no_self)
     first_index = 1 if static or no_self else 2
 
+    argument_body = body
+    if method["name"].startswith("operator_") and not any(
+        index >= first_index for index in read_slots(body)
+    ):
+        readers = kenshilib_headers.local_lua_argument_readers(implementation["text"], body)
+        argument_body = "\n".join((body, *readers))
+
     args = {}
     checked = set()
-    for index, match, type_for in stack_reads(body):
+    for index, match, type_for in stack_reads(argument_body):
         if index < first_index:
             continue
         args.setdefault(index, set()).add(type_for(match))
         checked.add(index)
-    for index, ref in object_reads(body):
+    for index, ref in object_reads(argument_body):
         if index >= first_index:
             args.setdefault(index, set()).add(ref)
             checked.add(index)

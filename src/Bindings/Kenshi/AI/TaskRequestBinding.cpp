@@ -265,6 +265,7 @@ void TaskRequestBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       TaskRequestBinding::gc },
         { "__tostring", TaskRequestBinding::tostring },
+        { "__eq",       TaskRequestBinding::operator_eq },
         { 0, 0 }
     };
 

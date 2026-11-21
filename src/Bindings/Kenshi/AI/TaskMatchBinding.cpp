@@ -192,6 +192,8 @@ int TaskMatchBinding::operator_lt(lua_State* L)
 
 int TaskMatchBinding::operator_bool(lua_State* L)
 {
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "TaskMatch:operator_bool() expects only self (no arguments)");
     TaskMatch* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TaskMatch is nil");
 
@@ -222,6 +224,7 @@ void TaskMatchBinding::registerBinding(lua_State* L)
     static const luaL_Reg meta[] = {
         { "__gc",       TaskMatchBinding::gc },
         { "__tostring", TaskMatchBinding::tostring },
+        { "__lt",       TaskMatchBinding::operator_lt },
         { 0, 0 }
     };
 

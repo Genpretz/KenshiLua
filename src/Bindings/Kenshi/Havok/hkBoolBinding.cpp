@@ -29,6 +29,18 @@ static int hkBool_set_m_bool(lua_State* L)
     return 0;
 }
 
+static bool checkComparisonOperand(lua_State* L, const char* operation)
+{
+    if (lua_isboolean(L, 2))
+        return lua_toboolean(L, 2) != 0;
+
+    if (hkBool* other = testObject<hkBool>(L, 2, hkBoolBinding::getMetatableName()))
+        return other->operator bool();
+
+    luaL_error(L, "Argument 1 to hkBool:%s() must be a boolean or hkBool", operation);
+    return false;
+}
+
 int hkBoolBinding::eq(lua_State* L)
 {
     hkBool* a = getInstance(L, 1);
@@ -41,6 +53,7 @@ int hkBoolBinding::eq(lua_State* L)
     }
     hkBool* b = checkObject<hkBool>(L, 2, hkBoolBinding::getMetatableName());
     if (!b) return 0;
+    // Lua equality compares the stored bytes, including distinct nonzero values.
     lua_pushboolean(L, a->m_bool == b->m_bool ? 1 : 0);
     return 1;
 }
@@ -52,21 +65,8 @@ int hkBoolBinding::operator_eq(lua_State* L)
     hkBool* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hkBool is nil");
 
-    bool val = false;
-    if (lua_isboolean(L, 2))
-    {
-        val = lua_toboolean(L, 2) != 0;
-    }
-    else if (hkBool* other = testObject<hkBool>(L, 2, hkBoolBinding::getMetatableName()))
-    {
-        val = other->operator bool();
-    }
-    else
-    {
-        return luaL_error(L, "Argument 1 to hkBool:operator_eq() must be a boolean or hkBool");
-    }
-
-    hkBool result = instance->operator==(val);
+    bool value = checkComparisonOperand(L, "operator_eq");
+    hkBool result = instance->operator==(value);
     lua_pushboolean(L, result.operator bool() ? 1 : 0);
     return 1;
 }
@@ -78,21 +78,8 @@ int hkBoolBinding::operator_ne(lua_State* L)
     hkBool* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "hkBool is nil");
 
-    bool val = false;
-    if (lua_isboolean(L, 2))
-    {
-        val = lua_toboolean(L, 2) != 0;
-    }
-    else if (hkBool* other = testObject<hkBool>(L, 2, hkBoolBinding::getMetatableName()))
-    {
-        val = other->operator bool();
-    }
-    else
-    {
-        return luaL_error(L, "Argument 1 to hkBool:operator_ne() must be a boolean or hkBool");
-    }
-
-    hkBool result = instance->operator!=(val);
+    bool value = checkComparisonOperand(L, "operator_ne");
+    hkBool result = instance->operator!=(value);
     lua_pushboolean(L, result.operator bool() ? 1 : 0);
     return 1;
 }

@@ -4150,7 +4150,7 @@
         },
         {
           "name": "operator_assign",
-          "type": "fun(self: hkVector4f, other: hkVector4f): hkVector4f"
+          "type": "fun(self: hkVector4f, other: hkVector4f)"
         },
         {
           "name": "operator_call",

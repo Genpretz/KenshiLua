@@ -727,8 +727,7 @@ int hkVector4fBinding::operator_assign(lua_State* L)
     if (!v) return luaL_error(L, "Argument 2 to operator_assign must be hkVector4f");
 
     instance->operator=(*v);
-    lua_settop(L, 1);
-    return 1;
+    return 0;
 }
 
 int hkVector4fBinding::operator_call(lua_State* L)

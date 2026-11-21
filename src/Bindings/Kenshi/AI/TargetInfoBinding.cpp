@@ -129,6 +129,8 @@ int TargetInfoBinding::operator_assign(lua_State* L)
 
 int TargetInfoBinding::operator_bool(lua_State* L)
 {
+    if (lua_gettop(L) != 1)
+        return luaL_error(L, "TargetInfo:operator_bool() expects only self (no arguments)");
     TargetInfo* instance = getInstance(L, 1);
     if (!instance) return luaL_error(L, "TargetInfo is nil");
 

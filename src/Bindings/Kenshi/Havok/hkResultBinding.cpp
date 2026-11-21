@@ -10,6 +10,21 @@ static hkResult* getInstance(lua_State* L, int idx)
     return checkObject<hkResult>(L, idx, hkResultBinding::getMetatableName());
 }
 
+static bool readComparisonOperand(lua_State* L, hkResultEnum& value)
+{
+    if (hkResult* other = testObject<hkResult>(L, 2, hkResultBinding::getMetatableName()))
+    {
+        value = other->m_enum;
+        return true;
+    }
+    if (lua_isnumber(L, 2))
+    {
+        value = (hkResultEnum)lua_tointeger(L, 2);
+        return true;
+    }
+    return false;
+}
+
 static int hkResult_get_m_enum(lua_State* L)
 {
     auto* inst = getInstance(L, 1);
@@ -42,19 +57,9 @@ int hkResultBinding::operator_eq(lua_State* L)
     auto* a = getInstance(L, 1);
     if (!a) return luaL_error(L, "hkResult is nil");
 
-    auto* b = testObject<hkResult>(L, 2, hkResultBinding::getMetatableName());
-    if (b)
-    {
-        lua_pushboolean(L, (a->m_enum == b->m_enum) ? 1 : 0);
-        return 1;
-    }
-    if (lua_isnumber(L, 2))
-    {
-        hkResultEnum e = (hkResultEnum)lua_tointeger(L, 2);
-        lua_pushboolean(L, (a->m_enum == e) ? 1 : 0);
-        return 1;
-    }
-    lua_pushboolean(L, 0);
+    // The SDK declares the comparison operators without exporting them.
+    hkResultEnum value;
+    lua_pushboolean(L, readComparisonOperand(L, value) && a->m_enum == value);
     return 1;
 }
 
@@ -63,19 +68,8 @@ int hkResultBinding::operator_ne(lua_State* L)
     auto* a = getInstance(L, 1);
     if (!a) return luaL_error(L, "hkResult is nil");
 
-    auto* b = testObject<hkResult>(L, 2, hkResultBinding::getMetatableName());
-    if (b)
-    {
-        lua_pushboolean(L, (a->m_enum != b->m_enum) ? 1 : 0);
-        return 1;
-    }
-    if (lua_isnumber(L, 2))
-    {
-        hkResultEnum e = (hkResultEnum)lua_tointeger(L, 2);
-        lua_pushboolean(L, (a->m_enum != e) ? 1 : 0);
-        return 1;
-    }
-    lua_pushboolean(L, 1);
+    hkResultEnum value;
+    lua_pushboolean(L, !readComparisonOperand(L, value) || a->m_enum != value);
     return 1;
 }
 

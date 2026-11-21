@@ -149755,9 +149755,7 @@
                 "type": "hkVector4f"
               }
             ],
-            "returns": [
-              "hkVector4f"
-            ]
+            "returns": []
           },
           "static": false
         },

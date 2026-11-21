@@ -19603,23 +19603,6 @@
       "member": "operator_delete"
     },
     {
-      "category": "binding_shape_differs",
-      "class": "hkVector4f",
-      "expected": "fun(hkVector4f)",
-      "header": "void operator=(const hkVector4f& v)",
-      "issues": [
-        {
-          "actual": "hkVector4f",
-          "category": "binding_shape_differs",
-          "expected": "(none)",
-          "position": "return"
-        }
-      ],
-      "kind": "method",
-      "lua": "fun(self: hkVector4f, other: hkVector4f): hkVector4f",
-      "member": "operator_assign"
-    },
-    {
       "category": "no_header_declaration",
       "class": "hkVector4f",
       "cpp": "hkVector4f::operator()",
@@ -19723,12 +19706,12 @@
   "summary": {
     "binding_converts": 54,
     "binding_pushes_raw_pointer": 49,
-    "binding_shape_differs": 201,
+    "binding_shape_differs": 200,
     "blocking_issues": 0,
     "container_methods_typed": 1121,
     "enum_typed_as_integer": 472,
     "methods": 7417,
-    "methods_matching_header": 5412,
+    "methods_matching_header": 5413,
     "no_header_declaration": 228,
     "properties": 3716,
     "properties_matching_header": 3172,

@@ -10400,6 +10400,7 @@
             "methods": {
                 "getTaskData": "Returns the `TaskData` this match refers to, or nil.",
                 "key": "Returns the task type of this match as a `TaskType` integer.",
+                "operator_lt": "Compares this match with another `TaskMatch` using SDK ordering. The Lua `<` operator uses the same comparison.",
                 "reset": "Clears this match.",
                 "sameAs": "Returns true if this match refers to the same task as the given `Tasker`."
             },
@@ -10410,7 +10411,7 @@
             }
         },
         "TaskRequest": {
-            "description": "A job request held by value in the `Blackboard` job lists and request map. `TaskRequest()` and `TaskRequest(other)` create Lua-owned values.",
+            "description": "A job request held by value in the `Blackboard` job lists and request map. `TaskRequest()` and `TaskRequest(other)` create Lua-owned values. Between requests, `==` uses SDK equality, as does `operator_eq(other)`.",
             "methods": {
                 "operator_assign": "Copies another `TaskRequest` into this one and returns it.",
                 "operator_eq": "Returns the SDK `operator==` result for another `TaskRequest`.",
@@ -11230,7 +11231,7 @@
             "properties": {}
         },
         "TripleInt": {
-            "description": "A 3-element integer tuple used for discrete grid coordinates, date/time values, or 3D integer indices.",
+            "description": "A 3-element integer tuple used for discrete grid coordinates, date/time values, or 3D integer indices. Brackets use Lua indices 1–3. The explicit subscript method uses SDK indices 0–2.",
             "methods": {
                 "operator_assign": "Assigns values from another TripleInt or a table {x, y, z} into this instance.",
                 "operator_index": "Gets or sets the integer element at the specified zero-based index (0..2).",
@@ -12270,7 +12271,7 @@
                 "normalize3": "Normalizes the 3D xyz components of this vector to unit length in-place.",
                 "notEqual": "Compares this vector component-wise with vector a, returning an hkVector4fComparison mask where components are not equal.",
                 "notEqualZero": "Compares components of this vector with zero, returning an hkVector4fComparison mask where not equal to zero.",
-                "operator_assign": "Copies component values from another hkVector4f into this vector.",
+                "operator_assign": "Copies all four components from another hkVector4f into this vector and returns zero Lua values.",
                 "operator_call": "Gets or sets the component value at index 0..3 (0=x, 1=y, 2=z, 3=w); returns the number if getting, or sets the component if a value is provided.",
                 "operator_delete": "Deallocates raw memory for an hkVector4f via Havok's allocator.",
                 "operator_new": "Allocates aligned 16-byte memory for an hkVector4f via Havok's allocator, returning the raw pointer as lightuserdata.",

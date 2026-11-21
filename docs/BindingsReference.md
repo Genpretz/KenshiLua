@@ -2211,8 +2211,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `other: AppearanceManager::AppearanceData` | `void` | `obj:operator_assign(other)` |
+| operator_eq | `b: AppearanceManager::AppearanceData` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: AppearanceManager::AppearanceData` | `AppearanceManager::AppearanceData` | `obj:operator_assign(other)` |
 
 ## AppearanceManager::DataCategory
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -2224,8 +2224,8 @@
 |---|---|---|---|
 | setValue | `arg1: string` | `void` | `obj:setValue(arg1)` |
 | getValue | `` | `integer` | `obj:getValue()` |
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: AppearanceManager::DataCategory` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: AppearanceManager::DataCategory` | `AppearanceManager::DataCategory` | `obj:operator_assign(other)` |
 
 ## AppearanceManager::DataRange
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -2238,8 +2238,8 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | clamp | `data: GameData` | `void` | `obj:clamp(data)` |
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: AppearanceManager::DataRange` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: AppearanceManager::DataRange` | `AppearanceManager::DataRange` | `obj:operator_assign(other)` |
 
 ## AppearanceManager::DataRangePose
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -2252,8 +2252,8 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | clamp | `data: GameData` | `void` | `obj:clamp(data)` |
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: AppearanceManager::DataRangePose` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: AppearanceManager::DataRangePose` | `AppearanceManager::DataRangePose` | `obj:operator_assign(other)` |
 
 ## AppearanceManager::DataRangeVector
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -2270,8 +2270,8 @@
 | getValueIndex | `value: Vector3` | `integer` | `obj:getValueIndex(value)` |
 | size | `` | `integer` | `obj:size()` |
 | clamp | `data: GameData` | `void` | `obj:clamp(data)` |
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: AppearanceManager::DataRangeVector` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: AppearanceManager::DataRangeVector` | `AppearanceManager::DataRangeVector` | `obj:operator_assign(other)` |
 
 ## AppearanceManager::Gender
 **Header:** `extern/KenshiLib/Include/kenshi/AppearanceManager.h`
@@ -2548,7 +2548,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_assign | `other: Blackboard::TaskInfo` | `Blackboard::TaskInfo` | `obj:operator_assign(other)` |
 
 ### Constructors
 | Lua Name | Arguments | Return Type | Example |
@@ -3140,7 +3140,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | operator_lt | `b: BuildingCategory` | `boolean` | `obj:operator_lt(b)` |
-| operator_assign | `other: BuildingCategory` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: BuildingCategory` | `BuildModeWindow::BuildingCategory` | `obj:operator_assign(other)` |
 
 ## BuildModeWindow::BuildingGroup
 **Header:** `extern/KenshiLib/Include/kenshi/gui/BuildModeWindow.h`
@@ -3156,7 +3156,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | operator_lt | `b: BuildingGroup` | `boolean` | `obj:operator_lt(b)` |
-| operator_assign | `other: BuildingGroup` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: BuildingGroup` | `BuildModeWindow::BuildingGroup` | `obj:operator_assign(other)` |
 
 ## CameraClass
 **Header:** `extern/KenshiLib/Include/kenshi/CameraClass.h`
@@ -3808,7 +3808,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
+| operator_eq | `b: Character::RagdollMsg` | `boolean` | `obj:operator_eq(b)` |
 
 ## Character::WhoSeesMe
 **Header:** `extern/KenshiLib/Include/kenshi/Character.h`
@@ -4107,7 +4107,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: Stat` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: Stat` | `CharacterStatsWindow::Stat` | `obj:operator_assign(other)` |
 
 ## CharacterStatsWindow::StatGroup
 **Header:** `extern/KenshiLib/Include/kenshi/gui/CharacterStatsWindow.h`
@@ -4752,8 +4752,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: CombatClass::EffectData` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: CombatClass::EffectData` | `CombatClass::EffectData` | `obj:operator_assign(other)` |
 
 ## CombatMovementController
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -4887,7 +4887,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: ImpactPoint` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: ImpactPoint` | `CombatTechniqueData::ImpactPoint` | `obj:operator_assign(other)` |
 
 ## ContainerItem
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
@@ -5133,11 +5133,11 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `b: CPerfTimer` | `void` | `obj:operator_assign(b)` |
+| operator_assign | `b: CPerfTimer` | `CPerfTimer` | `obj:operator_assign(b)` |
 | operator_add | `b: CPerfTimer` | `CPerfTimer` | `obj:operator_add(b)` |
 | operator_sub | `b: CPerfTimer` | `CPerfTimer` | `obj:operator_sub(b)` |
-| operator_add_assign | `b: CPerfTimer` | `void` | `obj:operator_add_assign(b)` |
-| operator_sub_assign | `b: CPerfTimer` | `void` | `obj:operator_sub_assign(b)` |
+| operator_add_assign | `b: CPerfTimer` | `CPerfTimer` | `obj:operator_add_assign(b)` |
+| operator_sub_assign | `b: CPerfTimer` | `CPerfTimer` | `obj:operator_sub_assign(b)` |
 | operator_lt | `b: CPerfTimer` | `boolean` | `obj:operator_lt(b)` |
 | operator_le | `b: CPerfTimer` | `boolean` | `obj:operator_le(b)` |
 | operator_gt | `b: CPerfTimer` | `boolean` | `obj:operator_gt(b)` |
@@ -6360,8 +6360,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: EdgePathNode` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: EdgePathNode` | `EdgePathNode` | `obj:operator_assign(other)` |
 
 ## Faction
 **Header:** `extern/KenshiLib/Include/kenshi/Faction.h`
@@ -6484,7 +6484,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: BuildingSwaps` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: BuildingSwaps` | `Faction::BuildingSwaps` | `obj:operator_assign(other)` |
 | hasReplacement | `building: GameData` | `boolean` | `obj:hasReplacement(building)` |
 | getReplacement | `building: GameData` | `GameData` | `obj:getReplacement(building)` |
 
@@ -6611,7 +6611,7 @@
 |---|---|---|---|
 | save | `factionsList: GameData, ID: string, who: Faction` | `void` | `obj:save(factionsList, ID, who)` |
 | load | `gamestate_faction: GameData, ID: string, who: Faction` | `void` | `obj:load(gamestate_faction, ID, who)` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_assign | `other: FactionRelations::RelationData` | `FactionRelations::RelationData` | `obj:operator_assign(other)` |
 
 ## FactionsScreen
 **Header:** `extern/KenshiLib/Include/kenshi/gui/FactionsScreen.h`
@@ -6937,8 +6937,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: FarmBuilding::Plant` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: FarmBuilding::Plant` | `FarmBuilding::Plant` | `obj:operator_assign(other)` |
 
 ## FarmBuilding::PlantSource
 **Header:** `extern/KenshiLib/Include/kenshi/Building/FarmBuilding.h`
@@ -7164,7 +7164,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: TreeData` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: TreeData` | `FoliageSystem::TreeData` | `obj:operator_assign(other)` |
 
 ## ForgottenGUI
 **Header:** `extern/KenshiLib/Include/kenshi/gui/ForgottenGUI.h`
@@ -7561,7 +7561,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: GameData::ObjectInstance` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: GameData::ObjectInstance` | `GameData::ObjectInstance` | `obj:operator_assign(other)` |
 
 ## GameDataContainer
 **Header:** `extern/KenshiLib/Include/kenshi/GameData.h`
@@ -7671,7 +7671,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_assign | `other: GameDataHeader` | `GameDataHeader` | `obj:operator_assign(other)` |
 
 ## GameDataManager
 **Header:** `extern/KenshiLib/Include/kenshi/GameDataManager.h`
@@ -7709,7 +7709,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: GameDataReference` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: GameDataReference` | `GameDataReference` | `obj:operator_assign(other)` |
 | getPtr | `source: GameDataContainer` | `GameData` | `obj:getPtr(source)` |
 
 ## GameDataScoredList
@@ -8366,8 +8366,8 @@
 | operator_bool | `` | `boolean` | `obj:operator_bool()` |
 | operator_eq | `b: hand` | `boolean` | `obj:operator_eq(b)` |
 | operator_ne | `b: hand` | `boolean` | `obj:operator_ne(b)` |
-| operator_lt | `` | `boolean` | `obj:operator_lt()` |
-| operator_assign | `otherHand: hand` | `void` | `obj:operator_assign(otherHand)` |
+| operator_lt | `b: hand` | `boolean` | `obj:operator_lt(b)` |
+| operator_assign | `otherHand: hand` | `hand` | `obj:operator_assign(otherHand)` |
 | toString | `` | `string` | `obj:toString()` |
 | fromString | `str: string` | `void` | `obj:fromString(str)` |
 | getCharacter | `` | `Character` | `obj:getCharacter()` |
@@ -8634,8 +8634,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `b: hkResult` | `boolean` | `obj:operator_eq(b)` |
-| operator_ne | `b: hkResult` | `boolean` | `obj:operator_ne(b)` |
+| operator_eq | `other: hkResult` | `boolean` | `obj:operator_eq(other)` |
+| operator_ne | `other: hkResult` | `boolean` | `obj:operator_ne(other)` |
 
 ## hkTrait::TraitBool
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
@@ -8718,7 +8718,7 @@
 | notEqualZero | `` | `hkVector4fComparison` | `obj:notEqualZero()` |
 | isOk3 | `` | `boolean` | `obj:isOk3()` |
 | isOk4 | `` | `boolean` | `obj:isOk4()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_assign | `v: hkVector4f` | `void` | `obj:operator_assign(v)` |
 | operator_call [1] | `val: number` | `void` | `obj:operator_call(val)` |
 | operator_call [2] | `idx: integer, val: number` | `number` | `obj:operator_call(idx, val)` |
 
@@ -8883,8 +8883,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: InputHandler::Command` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: InputHandler::Command` | `InputHandler::Command` | `obj:operator_assign(other)` |
 
 ## InstanceID
 **Header:** `extern/KenshiLib/Include/kenshi/InstanceID.h`
@@ -8903,7 +8903,7 @@
 |---|---|---|---|
 | operator_eq [1] | `s: string` | `boolean` | `obj:operator_eq(s)` |
 | operator_eq [2] | `other: InstanceID` | `boolean` | `obj:operator_eq(other)` |
-| operator_assign | `other: InstanceID` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: InstanceID` | `InstanceID` | `obj:operator_assign(other)` |
 | assign | `id: string` | `void` | `obj:assign(id)` |
 | clear | `` | `void` | `obj:clear()` |
 | needsSaving | `mod: string` | `boolean` | `obj:needsSaving(mod)` |
@@ -9214,7 +9214,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: InventoryTradeData` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: InventoryTradeData` | `InventoryGUI::InventoryTradeData` | `obj:operator_assign(other)` |
 | isValid | `` | `boolean` | `obj:isValid()` |
 
 ## InventoryGUI::TradeResult
@@ -9665,9 +9665,9 @@
 | getLinearValue | `` | `integer` | `obj:getLinearValue()` |
 | getAsString | `` | `string` | `obj:getAsString()` |
 | operator_eq | `b: iVector2` | `boolean` | `obj:operator_eq(b)` |
-| operator_ne | `` | `boolean` | `obj:operator_ne()` |
-| operator_lt | `` | `boolean` | `obj:operator_lt()` |
-| operator_add | `` | `iVector2` | `obj:operator_add()` |
+| operator_ne | `b: iVector2` | `boolean` | `obj:operator_ne(b)` |
+| operator_lt | `b: iVector2` | `boolean` | `obj:operator_lt(b)` |
+| operator_add | `b: iVector2` | `iVector2` | `obj:operator_add(b)` |
 
 ## KenshiLib::BinaryVersion
 **Header:** `extern/KenshiLib/Include/kenshi/Kenshi.h`
@@ -9676,8 +9676,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_lt | `` | `boolean` | `obj:operator_lt()` |
+| operator_eq | `b: KenshiLib::BinaryVersion` | `boolean` | `obj:operator_eq(b)` |
+| operator_lt | `b: KenshiLib::BinaryVersion` | `boolean` | `obj:operator_lt(b)` |
 | GetPlatform | `` | `integer` | `obj:GetPlatform()` |
 | GetPlatformStr | `` | `void` | `obj:GetPlatformStr()` |
 | GetBinaryName | `` | `void` | `obj:GetBinaryName()` |
@@ -10877,7 +10877,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: ModInfo` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: ModInfo` | `ModInfo` | `obj:operator_assign(other)` |
 | getLocale | `` | `boolean\|string` | `obj:getLocale()` |
 
 ## MoneyItem
@@ -11055,8 +11055,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: NavMesh::BuildingInfo` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: NavMesh::BuildingInfo` | `NavMesh::BuildingInfo` | `obj:operator_assign(other)` |
 
 ## NavMesh::NavMeshMessage
 **Header:** `extern/KenshiLib/Include/kenshi/NavMesh.h`
@@ -11244,7 +11244,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: NxBox` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: NxBox` | `NxBox` | `obj:operator_assign(other)` |
 
 ## NxMat33
 **Header:** `extern/KenshiLib/Include/kenshi/PhysicsActual.h`
@@ -11271,8 +11271,8 @@
 | get | `row: integer, col: integer` | `number` | `obj:get(row, col)` |
 | set | `row: integer, col: integer, val: number` | `void` | `obj:set(row, col, val)` |
 | operator_mul | `v: NxVec3` | `NxVec3` | `obj:operator_mul(v)` |
-| operator_assign | `other: NxMat33` | `void` | `obj:operator_assign(other)` |
-| operator_mul_assign | `other: NxMat33` | `void` | `obj:operator_mul_assign(other)` |
+| operator_assign | `other: NxMat33` | `NxMat33` | `obj:operator_assign(other)` |
+| operator_mul_assign | `other: NxMat33` | `NxMat33` | `obj:operator_mul_assign(other)` |
 | operator_call [1] | `val: number` | `void` | `obj:operator_call(val)` |
 | operator_call [2] | `row: integer, col: integer, val: number` | `number` | `obj:operator_call(row, col, val)` |
 
@@ -11323,19 +11323,19 @@
 | cross | `` | `NxVec3` | `obj:cross()` |
 | set [1] | `_x: number, _y: number, _z: number` | `void` | `obj:set(_x, _y, _z)` |
 | set [2] | `v: number` | `void` | `obj:set(v)` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_assign | `v: NxVec3` | `NxVec3` | `obj:operator_assign(v)` |
 | operator_subscript [1] | `val: number` | `void` | `obj:operator_subscript(val)` |
 | operator_subscript [2] | `` | `number` | `obj:operator_subscript()` |
 | operator_eq | `b: NxVec3` | `boolean` | `obj:operator_eq(b)` |
-| operator_ne | `` | `boolean` | `obj:operator_ne()` |
-| operator_add | `` | `NxVec3` | `obj:operator_add()` |
-| operator_sub | `` | `NxVec3` | `obj:operator_sub()` |
+| operator_ne | `b: NxVec3` | `boolean` | `obj:operator_ne(b)` |
+| operator_add | `b: NxVec3` | `NxVec3` | `obj:operator_add(b)` |
+| operator_sub | `b: NxVec3` | `NxVec3` | `obj:operator_sub(b)` |
 | operator_unm | `` | `NxVec3` | `obj:operator_unm()` |
 | operator_mul | `s: number` | `NxVec3` | `obj:operator_mul(s)` |
-| operator_add_assign | `` | `void` | `obj:operator_add_assign()` |
-| operator_sub_assign | `` | `void` | `obj:operator_sub_assign()` |
-| operator_mul_assign | `f: number` | `void` | `obj:operator_mul_assign(f)` |
-| operator_xor | `` | `NxVec3` | `obj:operator_xor()` |
+| operator_add_assign | `v: NxVec3` | `NxVec3` | `obj:operator_add_assign(v)` |
+| operator_sub_assign | `v: NxVec3` | `NxVec3` | `obj:operator_sub_assign(v)` |
+| operator_mul_assign | `f: number` | `NxVec3` | `obj:operator_mul_assign(f)` |
+| operator_xor | `b: NxVec3` | `NxVec3` | `obj:operator_xor(b)` |
 
 ### Constructors
 | Lua Name | Arguments | Return Type | Example |
@@ -11557,7 +11557,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: OrderData` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: OrderData` | `OrderData` | `obj:operator_assign(other)` |
 | set | `_task: Tasker, _index: integer, _enabled: boolean` | `void` | `obj:set(_task, _index, _enabled)` |
 | updateText | `` | `void` | `obj:updateText()` |
 
@@ -11790,7 +11790,7 @@
 | getBuilding | `` | `Building` | `obj:getBuilding()` |
 | group | `` | `integer` | `obj:group()` |
 | operator_bool | `` | `boolean` | `obj:operator_bool()` |
-| operator_assign | `other: physHit` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: physHit` | `physHit` | `obj:operator_assign(other)` |
 
 ## PhysicalEntity
 **Header:** `extern/KenshiLib/Include/kenshi/physicscollection.h`
@@ -12560,7 +12560,7 @@
 | getWorldCorner | `corner: integer` | `Vector3` | `obj:getWorldCorner(corner)` |
 | updateBox | `` | `void` | `obj:updateBox()` |
 | getGroundHeight | `pos: Vector3` | `number` | `obj:getGroundHeight(pos)` |
-| operator_assign | `other: Footprint` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: Footprint` | `PreviewBuilding::Footprint` | `obj:operator_assign(other)` |
 
 ## PreviewBuilding::FootprintNode
 **Header:** `extern/KenshiLib/Include/kenshi/Building/Building.h`
@@ -12581,7 +12581,7 @@
 | updateBox | `` | `void` | `obj:updateBox()` |
 | setEnabled | `value: boolean` | `void` | `obj:setEnabled(value)` |
 | getNodeId | `` | `void` | `obj:getNodeId()` |
-| operator_assign | `other: FootprintNode` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: FootprintNode` | `PreviewBuilding::FootprintNode` | `obj:operator_assign(other)` |
 
 ### Inherited Members
 **From [`PreviewBuilding::Footprint`](#previewbuildingfootprint):**
@@ -13708,8 +13708,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: SaveFileSystem::FileMessage` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: SaveFileSystem::FileMessage` | `SaveFileSystem::FileMessage` | `obj:operator_assign(other)` |
 
 ## SaveInfo
 **Header:** `extern/KenshiLib/Include/kenshi/SaveInfo.h`
@@ -13732,8 +13732,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: SaveInfo` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: SaveInfo` | `SaveInfo` | `obj:operator_assign(other)` |
 
 ## SaveManager
 **Header:** `extern/KenshiLib/Include/kenshi/SaveManager.h`
@@ -13971,7 +13971,7 @@
 | getData | `` | `SeenSomeone` | `obj:getData()` |
 | ended | `` | `boolean` | `obj:ended()` |
 | increment | `` | `void` | `obj:increment()` |
-| operator_inc | `` | `void` | `obj:operator_inc()` |
+| operator_inc | `` | `SenseItr` | `obj:operator_inc()` |
 
 ## SensoryData
 **Header:** `extern/KenshiLib/Include/kenshi/SensoryData.h`
@@ -14625,7 +14625,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: StringPair` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: StringPair` | `StringPair` | `obj:operator_assign(other)` |
 
 ## Sword
 **Header:** `extern/KenshiLib/Include/kenshi/Gear.h`
@@ -14702,7 +14702,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | setupType | `` | `void` | `obj:setupType()` |
-| operator_assign | `p: hand` | `void` | `obj:operator_assign(p)` |
+| operator_assign | `p: hand` | `TargetInfo` | `obj:operator_assign(p)` |
 | operator_bool | `` | `boolean` | `obj:operator_bool()` |
 | isTown | `` | `boolean` | `obj:isTown()` |
 | isCharacter | `` | `boolean` | `obj:isCharacter()` |
@@ -14728,7 +14728,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_assign | `other: TargetWithScore` | `TargetWithScore` | `obj:operator_assign(other)` |
 
 ### Constructors
 | Lua Name | Arguments | Return Type | Example |
@@ -14872,12 +14872,12 @@
 |---|---|---|---|
 | getTaskData | `` | `TaskData` | `obj:getTaskData()` |
 | key | `` | `TaskType` | `obj:key()` |
-| operator_assign | `instance: integer` | `void` | `obj:operator_assign(instance)` |
+| operator_assign | `instance: integer` | `TaskMatch` | `obj:operator_assign(instance)` |
 | reset | `` | `void` | `obj:reset()` |
 | operator_eq | `` | `boolean` | `obj:operator_eq()` |
 | operator_ne | `` | `boolean` | `obj:operator_ne()` |
 | sameAs | `` | `boolean` | `obj:sameAs()` |
-| operator_lt | `` | `boolean` | `obj:operator_lt()` |
+| operator_lt | `t: TaskMatch` | `boolean` | `obj:operator_lt(t)` |
 | operator_bool | `` | `boolean` | `obj:operator_bool()` |
 
 ### Constructors
@@ -14908,8 +14908,8 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | sameAs | `t: Tasker` | `boolean` | `obj:sameAs(t)` |
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `t: TaskRequest` | `boolean` | `obj:operator_eq(t)` |
+| operator_assign | `other: TaskRequest` | `TaskRequest` | `obj:operator_assign(other)` |
 
 ### Constructors
 | Lua Name | Arguments | Return Type | Example |
@@ -15080,12 +15080,12 @@
 | getTimePassedString | `` | `string` | `obj:getTimePassedString()` |
 | getTimeRemainingString | `` | `string` | `obj:getTimeRemainingString()` |
 | getTotalTimeString | `` | `string` | `obj:getTotalTimeString()` |
-| operator_gt | `` | `boolean` | `obj:operator_gt()` |
-| operator_ge | `` | `boolean` | `obj:operator_ge()` |
-| operator_lt | `` | `boolean` | `obj:operator_lt()` |
-| operator_le | `` | `boolean` | `obj:operator_le()` |
+| operator_gt | `b: TimeOfDay` | `boolean` | `obj:operator_gt(b)` |
+| operator_ge | `b: TimeOfDay` | `boolean` | `obj:operator_ge(b)` |
+| operator_lt | `b: TimeOfDay` | `boolean` | `obj:operator_lt(b)` |
+| operator_le | `b: TimeOfDay` | `boolean` | `obj:operator_le(b)` |
 | operator_eq | `b: TimeOfDay` | `boolean` | `obj:operator_eq(b)` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_assign | `other: TimeOfDay` | `TimeOfDay` | `obj:operator_assign(other)` |
 
 ## TimerClass
 **Header:** `extern/KenshiLib/Include/kenshi/util/PerfTimer.h`
@@ -15472,8 +15472,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: Town::NestSpot` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: Town::NestSpot` | `Town::NestSpot` | `obj:operator_assign(other)` |
 
 ## TownBase
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
@@ -15640,8 +15640,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_eq | `` | `boolean` | `obj:operator_eq()` |
-| operator_assign | `` | `void` | `obj:operator_assign()` |
+| operator_eq | `b: TownBase::ResidentData` | `boolean` | `obj:operator_eq(b)` |
+| operator_assign | `other: TownBase::ResidentData` | `TownBase::ResidentData` | `obj:operator_assign(other)` |
 
 ## TownBase::TownPositionCacher
 **Header:** `extern/KenshiLib/Include/kenshi/Town.h`
@@ -15895,7 +15895,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: TripleInt` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: TripleInt` | `TripleInt` | `obj:operator_assign(other)` |
 | operator_subscript [1] | `val: integer` | `void` | `obj:operator_subscript(val)` |
 | operator_subscript [2] | `` | `integer` | `obj:operator_subscript()` |
 | operator_index [1] | `val: integer` | `void` | `obj:operator_index(val)` |
@@ -16358,7 +16358,7 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
-| operator_assign | `other: VisibleObjectInfo` | `void` | `obj:operator_assign(other)` |
+| operator_assign | `other: VisibleObjectInfo` | `VisibleObjectInfo` | `obj:operator_assign(other)` |
 
 ## WaitingStateAI
 **Header:** `extern/KenshiLib/Include/kenshi/combat/CombatState.h`

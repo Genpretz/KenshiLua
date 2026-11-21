@@ -517,6 +517,30 @@ class DefinitionGenerationTests(unittest.TestCase):
 
 
 class BindingInventoryTests(unittest.TestCase):
+    def test_operator_arguments_are_read_from_shared_operand_helper(self):
+        source = """
+            static bool readOperand(lua_State* L, int& value)
+            {
+                if (!lua_isnumber(L, 2)) return false;
+                value = (int)lua_tointeger(L, 2);
+                return true;
+            }
+
+            int ValueBinding::operator_eq(lua_State* L)
+            {
+                int value;
+                lua_pushboolean(L, readOperand(L, value) && value == 0);
+                return 1;
+            }
+        """
+        method = {"name": "operator_eq", "callback": "ValueBinding::operator_eq"}
+        signature = generate_binding_inventory.infer_method_signature(
+            method, {"text": source}, "ValueBinding"
+        )
+        self.assertEqual([{"name": "arg1", "optional": False, "type": "integer"}],
+                         signature["params"])
+        self.assertEqual(["boolean"], signature["returns"])
+
     def test_global_table_paths_are_classified_without_setglobal(self):
         for path in ("MyGUI", "MyGUI.Factory"):
             with self.subTest(path=path):
@@ -1564,6 +1588,25 @@ class BindingsReferenceTests(unittest.TestCase):
         import generate_bindings_reference
 
         cls.reference = generate_bindings_reference
+
+    def test_operator_argument_can_use_the_class_instance_reader(self):
+        body = """
+            Example* self = getInstance(L, 1);
+            Example* other = getInstance(L, 2);
+            *self = *other;
+            return 0;
+        """
+        self.assertEqual([{"name": "other", "type": "Example"}],
+                         self.reference.extract_args_from_body(body, "Example"))
+        self.assertEqual([], self.reference.extract_args_from_body(body))
+
+    def test_operator_return_distinguishes_void_from_returning_the_receiver(self):
+        self.assertEqual("void", self.reference.extract_return_type_from_body(
+            "*self = *other; return 0;", "Example"))
+        for stack_operation in ("lua_pushvalue", "lua_settop"):
+            with self.subTest(stack_operation=stack_operation):
+                self.assertEqual("Example", self.reference.extract_return_type_from_body(
+                    f"*self = *other; {stack_operation}(L, 1); return 1;", "Example"))
 
     def test_inheritance_links_follow_runtime_registration_order(self):
         metatables = {

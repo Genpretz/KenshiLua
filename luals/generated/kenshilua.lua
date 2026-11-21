@@ -7176,8 +7176,8 @@ taskPriority = {
 ---@field div fun(self: hkVector4f, a: hkVector4f)
 --- Unpacks and returns the 24-bit integer stored in the W component of this vector.
 ---@field getInt24W fun(self: hkVector4f): integer
---- Copies component values from another hkVector4f into this vector.
----@field operator_assign fun(self: hkVector4f, other: hkVector4f): hkVector4f
+--- Copies all four components from another hkVector4f into this vector and returns zero Lua values.
+---@field operator_assign fun(self: hkVector4f, other: hkVector4f)
 --- Gets or sets the component value at index 0..3 (0=x, 1=y, 2=z, 3=w); returns the number if getting, or sets the component if a value is provided.
 ---@field operator_call fun(self: hkVector4f, index: integer, val?: number): number|nil
 --- Allocates aligned 16-byte memory for an hkVector4f via Havok's allocator, returning the raw pointer as lightuserdata.
@@ -9342,7 +9342,7 @@ taskPriority = {
 --- Address of the unbound Ogre texture shared pointer; writes always raise an error.
 ---@field texture lightuserdata
 
---- A 3-element integer tuple used for discrete grid coordinates, date/time values, or 3D integer indices.
+--- A 3-element integer tuple used for discrete grid coordinates, date/time values, or 3D integer indices. Brackets use Lua indices 1–3. The explicit subscript method uses SDK indices 0–2.
 ---@class TripleInt
 --- Assigns values from another TripleInt or a table {x, y, z} into this instance.
 ---@field operator_assign fun(self: TripleInt, other: TripleInt|table): TripleInt
@@ -22152,6 +22152,7 @@ taskPriority = {
 ---@field operator_ne fun(self: TaskMatch): boolean
 --- Returns true if this match refers to the same task as the given `Tasker`.
 ---@field sameAs fun(self: TaskMatch, t: Tasker): boolean
+--- Compares this match with another `TaskMatch` using SDK ordering. The Lua `<` operator uses the same comparison.
 ---@field operator_lt fun(self: TaskMatch, arg1: TaskMatch): boolean
 ---@field operator_bool fun(self: TaskMatch): boolean
 --- Handle of the task subject.
@@ -22161,7 +22162,7 @@ taskPriority = {
 --- The `TaskData` this match refers to, or nil.
 ---@field taskData TaskData
 
---- A job request held by value in the `Blackboard` job lists and request map. `TaskRequest()` and `TaskRequest(other)` create Lua-owned values.
+--- A job request held by value in the `Blackboard` job lists and request map. `TaskRequest()` and `TaskRequest(other)` create Lua-owned values. Between requests, `==` uses SDK equality, as does `operator_eq(other)`.
 ---@class TaskRequest
 --- Returns whether the request matches the `Tasker`.
 ---@field sameAs fun(self: TaskRequest, t: Tasker): boolean
