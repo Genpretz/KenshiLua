@@ -1384,11 +1384,34 @@ int TownBinding::facilitesWeHaveHere(lua_State* L)
     return pushValue<TagsClass<BuildingDesignation>>(L, result, TownFacilitiesTagsBinding::getMetatableName());
 }
 
-/*
-Skipped methods needing manual binding:
-  line 455: bool powerBuilding(...) - non-string reference arg
-  line 456: bool drainBattery(...) - non-string reference arg
-*/
+int TownBinding::powerBuilding(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+
+    UseableStuff* what = checkObject<UseableStuff>(L, 2, UseableStuffBinding::getMetatableName());
+    int numUnPoweredBuildings = (int)luaL_checkinteger(L, 3);
+    float powerRemaining = (float)luaL_checknumber(L, 4);
+    bool addToStat = lua_toboolean(L, 5) != 0;
+    bool result = instance->powerBuilding(what, numUnPoweredBuildings, powerRemaining, addToStat);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushnumber(L, powerRemaining);
+    return 2;
+}
+
+int TownBinding::drainBattery(lua_State* L)
+{
+    Town* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Town is nil");
+
+    UseableStuff* what = checkObject<UseableStuff>(L, 2, UseableStuffBinding::getMetatableName());
+    int numUnPoweredBuildings = (int)luaL_checkinteger(L, 3);
+    float powerRemaining = (float)luaL_checknumber(L, 4);
+    bool result = instance->drainBattery(what, numUnPoweredBuildings, powerRemaining);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushnumber(L, powerRemaining);
+    return 2;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -1739,6 +1762,8 @@ void TownBinding::registerBinding(lua_State* L)
         { "getPlayerTownTypeEnum", TownBinding::getPlayerTownTypeEnum },
         { "serialise", TownBinding::serialise },
         { "_NV_serialise", TownBinding::_NV_serialise },
+        { "powerBuilding", TownBinding::powerBuilding },
+        { "drainBattery", TownBinding::drainBattery },
         { 0, 0 }
     };
 

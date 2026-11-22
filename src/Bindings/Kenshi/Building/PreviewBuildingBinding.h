@@ -104,5 +104,7 @@ public:
     static int getCentreOffset(lua_State* L);
     static int isNoCollideWithThisBuilding(lua_State* L);
     static int _NV_isNoCollideWithThisBuilding(lua_State* L);
+    static int buildingPlacementUpdate(lua_State* L);
+    static int _NV_buildingPlacementUpdate(lua_State* L);
 };
 }

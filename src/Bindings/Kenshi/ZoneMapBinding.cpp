@@ -1110,6 +1110,19 @@ int ZoneMapBinding::getCenterPos(lua_State* L)
 
 
 
+int ZoneMapBinding::_activate(lua_State* L)
+{
+    ZoneMap* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ZoneMap is nil");
+
+    int range = (int)luaL_checkinteger(L, 2);
+    ZoneActivationType type = (ZoneActivationType)luaL_checkinteger(L, 3);
+    float deactivationTimer = (float)luaL_checknumber(L, 4);
+    bool result = instance->_activate(range, type, deactivationTimer);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 
 Skipped methods needing manual binding:
@@ -1127,8 +1140,6 @@ Skipped methods needing manual binding:
   line 243: Ogre::SharedPtr<Ogre::Material> materialCallback(...) - static method
 
   line 244: void destroyMaterialCallback(...) - static method
-
-  line 262: bool _activate(...) - unsupported arg type
 
 */
 
@@ -1283,6 +1294,8 @@ void ZoneMapBinding::registerBinding(lua_State* L)
         { "init", ZoneMapBinding::init },
 
         { "getCenterPos", ZoneMapBinding::getCenterPos },
+
+        { "_activate", ZoneMapBinding::_activate },
 
         { 0, 0 }
 

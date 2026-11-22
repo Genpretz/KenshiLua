@@ -9,8 +9,12 @@
 #include "Bindings/Kenshi/ZoneMapBinding.h"
 #include "Bindings/Kenshi/NavMeshGeneratorBinding.h"
 #include "Bindings/Kenshi/NavMeshSeedsBinding.h"
+#include "Bindings/Kenshi/EdgePathNodeBinding.h"
+#include "Bindings/Kenshi/EdgeCacheBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/Kenshi/NavMesh_BuildingInfoBinding.h"
 
 namespace KenshiLua
 {
@@ -629,44 +633,231 @@ int NavMeshBinding::getInterior(lua_State* L)
     return pushObject<NavInstance>(L, result, NavInstanceBinding::getMetatableName());
 }
 
+// Overloads: generate(hand building) and generate(ZoneMap zone).
+// The Ogre::Aabb overload awaits Ogre bindings.
+int NavMeshBinding::generate(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    hand* building = testObject<hand>(L, 2, HandBinding::getMetatableName());
+    if (building)
+    {
+        instance->generate(*building);
+        return 0;
+    }
+
+    ZoneMap* zone = testObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    if (!zone) return luaL_argerror(L, 2, "KenshiLua.hand or KenshiLua.ZoneMap expected");
+    instance->generate(zone);
+    return 0;
+}
+
+// Binds the (point, radius, inset, water) overloads via the 6-arg overload, returning (result, out, key).
+// The hkaiSpatialQueryHitFilter* overload is unbound because hkaiSpatialQueryHitFilter is forward-declared only.
+int NavMeshBinding::getClosestPoint(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    Ogre::Vector3 point;
+    checkVector3(L, 2, point);
+    float radius = (float)luaL_checknumber(L, 3);
+    float inset = (float)luaL_checknumber(L, 4);
+    bool water = lua_toboolean(L, 5) != 0;
+    Ogre::Vector3 out(0.0f, 0.0f, 0.0f);
+    unsigned int key = 0;
+    int result = instance->getClosestPoint(point, radius, inset, water, out, key);
+    lua_pushinteger(L, result);
+    pushVector3(L, out);
+    lua_pushinteger(L, (lua_Integer)key);
+    return 3;
+}
+
+int NavMeshBinding::getClosestBoundary(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    unsigned int face = (unsigned int)luaL_checkinteger(L, 2);
+    hkVector4f* point = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    float radius = (float)luaL_checknumber(L, 4);
+    EdgePathNode* edge = checkObject<EdgePathNode>(L, 5, EdgePathNodeBinding::getMetatableName());
+    int result = instance->getClosestBoundary(face, *point, radius, *edge);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::projectToNavMesh(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    hkVector4f* point = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    unsigned int key = (unsigned int)luaL_checkinteger(L, 3);
+    float limit = (float)luaL_checknumber(L, 4);
+    int result = instance->projectToNavMesh(*point, key, limit);
+    lua_pushinteger(L, result);
+    lua_pushinteger(L, (lua_Integer)key);
+    return 2;
+}
+
+int NavMeshBinding::areEdgesConnected(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    EdgePathNode* a = checkObject<EdgePathNode>(L, 2, EdgePathNodeBinding::getMetatableName());
+    EdgePathNode* b = checkObject<EdgePathNode>(L, 3, EdgePathNodeBinding::getMetatableName());
+    int side = (int)luaL_checkinteger(L, 4);
+    int result = instance->areEdgesConnected(*a, *b, side);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::checkCollision(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    unsigned int face = (unsigned int)luaL_checkinteger(L, 2);
+    hkVector4f* pos = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    hkVector4f* move = checkObject<hkVector4f>(L, 4, hkVector4fBinding::getMetatableName());
+    float out = 0.0f;
+    unsigned int outKey = 0;
+    int result = instance->checkCollision(face, *pos, *move, out, outKey);
+    lua_pushinteger(L, result);
+    lua_pushnumber(L, out);
+    lua_pushinteger(L, (lua_Integer)outKey);
+    return 3;
+}
+
+int NavMeshBinding::fillEdgeCache(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    unsigned int faceKey = (unsigned int)luaL_checkinteger(L, 2);
+    hkVector4f* point = checkObject<hkVector4f>(L, 3, hkVector4fBinding::getMetatableName());
+    float radius = (float)luaL_checknumber(L, 4);
+    EdgeCache* cache = checkObject<EdgeCache>(L, 5, EdgeCacheBinding::getMetatableName());
+    int result = instance->fillEdgeCache(faceKey, *point, radius, *cache);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::isCharacterStuck(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    hkVector4f* position = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    unsigned int key = (unsigned int)luaL_checkinteger(L, 3);
+    float radius = (float)luaL_checknumber(L, 4);
+    float threshold = (float)luaL_checknumber(L, 5);
+    bool result = instance->isCharacterStuck(*position, key, radius, threshold);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+// Binds deleteMesh(NavInstance*). The NavMeshSector* overload is unbound because NavMeshSector is forward-declared only.
+int NavMeshBinding::deleteMesh(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    NavInstance* s = checkObject<NavInstance>(L, 2, NavInstanceBinding::getMetatableName());
+    instance->deleteMesh(s);
+    return 0;
+}
+
+int NavMeshBinding::createZone(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    ZoneMap* zone = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    unsigned int hash = (unsigned int)luaL_checkinteger(L, 3);
+    lektor<NavMesh::BuildingInfo>* interiors = LektorValueBinding<NavMesh::BuildingInfo>::getInstance(L, 4);
+    if (!interiors) return luaL_argerror(L, 4, "lektor<NavMesh::BuildingInfo> expected");
+    int result = instance->createZone(zone, hash, *interiors);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshBinding::shiftWorld(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    hkVector4f* pos = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    instance->shiftWorld(*pos);
+    return 0;
+}
+
+int NavMeshBinding::validateStreamingData(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    NavInstance* navInst = checkObject<NavInstance>(L, 2, NavInstanceBinding::getMetatableName());
+    bool result = instance->validateStreamingData(navInst);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int NavMeshBinding::resolvePoint(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    hkVector4f* point = checkObject<hkVector4f>(L, 2, hkVector4fBinding::getMetatableName());
+    hand* building = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    float radius = (float)luaL_checknumber(L, 4);
+    float search = (float)luaL_checknumber(L, 5);
+    hkVector4f* output = checkObject<hkVector4f>(L, 6, hkVector4fBinding::getMetatableName());
+    unsigned int result = instance->resolvePoint(*point, *building, radius, search, *output);
+    lua_pushinteger(L, (lua_Integer)result);
+    return 1;
+}
+
+int NavMeshBinding::getClearance(lua_State* L)
+{
+    NavMesh* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMesh is nil");
+
+    unsigned int faceKey = (unsigned int)luaL_checkinteger(L, 2);
+    unsigned int edgeKey = (unsigned int)luaL_checkinteger(L, 3);
+    float left = 0.0f;
+    float right = 0.0f;
+    float mcp = 0.0f;
+    int result = instance->getClearance(faceKey, edgeKey, left, right, mcp);
+    lua_pushinteger(L, result);
+    lua_pushnumber(L, left);
+    lua_pushnumber(L, right);
+    lua_pushnumber(L, mcp);
+    return 4;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 75: void generate(...) - overloaded method
-  line 76: void generate(...) - overloaded method
-  line 77: void generate(...) - overloaded method
-  line 82: int getClosestPoint(...) - overloaded method
-  line 83: int getClosestPoint(...) - overloaded method
-  line 84: int getClosestPoint(...) - overloaded method
-  line 94: int getClosestBoundary(...) - unsupported arg type
-  line 95: int projectToNavMesh(...) - unsupported arg type
   line 96: int getEdgesAroundPoint(...) - unsupported arg type
-  line 97: int areEdgesConnected(...) - unsupported arg type
-  line 100: int checkCollision(...) - unsupported arg type
-  line 104: int fillEdgeCache(...) - unsupported arg type
   line 105: int isWater(...) - unsupported arg type
-  line 106: bool isCharacterStuck(...) - unsupported arg type
   line 107: void postMessage(...) - unsupported arg type
   line 108: void cancelMessage(...) - unsupported arg type
   line 180: int saveZone(...) - unsupported arg type
   line 181: bool createZoneInstance(...) - unsupported arg type
-  line 182: void deleteMesh(...) - overloaded method
-  line 183: void deleteMesh(...) - overloaded method
-  line 184: int createZone(...) - unsupported arg type
   line 188: NavMeshSector* getSector(...) - overloaded method
   line 189: NavMeshSector* getSector(...) - overloaded method
   line 191: bool removeSector(...) - unsupported arg type
   line 192: int getSectors(...) - unsupported arg type
   line 193: void createInstance(...) - NavMesh loading step; overwrites an existing Havok instance without freeing it or removing it from the world
   line 194: void deleteInstance(...) - NavMesh unloading step; crashes on an instance never created or already deleted, leaves graphInstance dangling and the sector and interior tables unchanged
-  line 201: void shiftWorld(...) - unsupported arg type
   line 203: void changeDoorState(...) - unsupported arg type
-  line 204: bool validateStreamingData(...) - unsupported arg type
   line 205: void shiftEdgePath(...) - unsupported arg type
   line 206: bool directPath(...) - unsupported arg type
   line 207: bool findPath(...) - unsupported arg type
-  line 208: unsigned int resolvePoint(...) - unsupported arg type
   line 209: int createEdgePath(...) - unsupported arg type
-  line 210: int getClearance(...) - non-string reference arg
   line 212: int findEdges(...) - unsupported arg type
 */
 
@@ -752,6 +943,20 @@ void NavMeshBinding::registerBinding(lua_State* L)
         { "checkLineOfSight", NavMeshBinding::checkLineOfSight },
         { "pathExists", NavMeshBinding::pathExists },
         { "getInterior", NavMeshBinding::getInterior },
+        { "generate", NavMeshBinding::generate },
+        { "getClosestPoint", NavMeshBinding::getClosestPoint },
+        { "getClosestBoundary", NavMeshBinding::getClosestBoundary },
+        { "projectToNavMesh", NavMeshBinding::projectToNavMesh },
+        { "areEdgesConnected", NavMeshBinding::areEdgesConnected },
+        { "checkCollision", NavMeshBinding::checkCollision },
+        { "fillEdgeCache", NavMeshBinding::fillEdgeCache },
+        { "isCharacterStuck", NavMeshBinding::isCharacterStuck },
+        { "deleteMesh", NavMeshBinding::deleteMesh },
+        { "createZone", NavMeshBinding::createZone },
+        { "shiftWorld", NavMeshBinding::shiftWorld },
+        { "validateStreamingData", NavMeshBinding::validateStreamingData },
+        { "resolvePoint", NavMeshBinding::resolvePoint },
+        { "getClearance", NavMeshBinding::getClearance },
         { 0, 0 }
     };
 

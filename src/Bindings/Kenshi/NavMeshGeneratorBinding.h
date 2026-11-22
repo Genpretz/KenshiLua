@@ -32,5 +32,13 @@ public:
     static int unlockTask(lua_State* L);
     static int hasJob(lua_State* L);
     static int update(lua_State* L);
+    static int lockZone(lua_State* L);
+    static int unlockZone(lua_State* L);
+    static int stitch(lua_State* L);
+    static int stitchUnloadedZone(lua_State* L);
+    static int getSeedPointsFromAdjacentZone(lua_State* L);
+    static int getCompletedTask(lua_State* L);
+    static int addJob(lua_State* L);
+    static int addStitchJob(lua_State* L);
 };
 }

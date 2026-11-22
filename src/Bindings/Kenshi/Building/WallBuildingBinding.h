@@ -59,5 +59,6 @@ public:
     static int dismantleButton_all(lua_State* L);
     static int _NV_dismantleButton_all(lua_State* L);
     static int letsShare(lua_State* L);
+    static int runLinkingCheck(lua_State* L);
 };
 }

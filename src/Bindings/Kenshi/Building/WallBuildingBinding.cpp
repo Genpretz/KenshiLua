@@ -14,6 +14,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/Kenshi/ZoneMapContentBinding.h"
 
 namespace KenshiLua
 {
@@ -486,10 +487,14 @@ int WallBuildingBinding::letsShare(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 63: void runLinkingCheck(...) - unsupported arg type: ZoneMapContent*
-*/
+int WallBuildingBinding::runLinkingCheck(lua_State* L)
+{
+    WallBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "WallBuilding is nil");
+    ZoneMapContent* zone = checkObject<ZoneMapContent>(L, 2, ZoneMapContentBinding::getMetatableName());
+    instance->runLinkingCheck(zone);
+    return 0;
+}
 
 int WallBuildingBinding::gc(lua_State* L)
 {
@@ -553,6 +558,7 @@ void WallBuildingBinding::registerBinding(lua_State* L)
         { "dismantleButton_all", WallBuildingBinding::dismantleButton_all },
         { "_NV_dismantleButton_all", WallBuildingBinding::_NV_dismantleButton_all },
         { "letsShare", WallBuildingBinding::letsShare },
+        { "runLinkingCheck", WallBuildingBinding::runLinkingCheck },
         { 0, 0 }
     };
 

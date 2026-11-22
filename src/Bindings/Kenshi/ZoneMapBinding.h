@@ -53,5 +53,6 @@ public:
     static int isActivationType(lua_State* L);
     static int init(lua_State* L);
     static int getCenterPos(lua_State* L);
+    static int _activate(lua_State* L);
 };
 }

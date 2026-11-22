@@ -56,5 +56,19 @@ public:
     static int checkLineOfSight(lua_State* L);
     static int pathExists(lua_State* L);
     static int getInterior(lua_State* L);
+    static int generate(lua_State* L);
+    static int getClosestPoint(lua_State* L);
+    static int getClosestBoundary(lua_State* L);
+    static int projectToNavMesh(lua_State* L);
+    static int areEdgesConnected(lua_State* L);
+    static int checkCollision(lua_State* L);
+    static int fillEdgeCache(lua_State* L);
+    static int isCharacterStuck(lua_State* L);
+    static int deleteMesh(lua_State* L);
+    static int createZone(lua_State* L);
+    static int shiftWorld(lua_State* L);
+    static int validateStreamingData(lua_State* L);
+    static int resolvePoint(lua_State* L);
+    static int getClearance(lua_State* L);
 };
 }

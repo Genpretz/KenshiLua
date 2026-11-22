@@ -25,5 +25,7 @@ public:
     static int isRotatingEnt(lua_State* L);
     static int _NV_isRotatingEnt(lua_State* L);
     static int getRotationPower(lua_State* L);
+    static int weatherUpdated(lua_State* L);
+    static int _NV_weatherUpdated(lua_State* L);
 };
 }

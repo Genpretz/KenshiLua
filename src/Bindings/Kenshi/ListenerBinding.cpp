@@ -1,6 +1,8 @@
 #include "pch.h"
 #include <kenshi/PhysicsCollection.h>
+#include <kenshi/Weather.h>
 #include "ListenerBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherInstanceBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -15,10 +17,16 @@ static Listener* getInstance(lua_State* L, int idx)
 
 // --- Getters for Listener ---
 // --- Setters for Listener ---
-/*
-Skipped methods needing manual binding:
-  line 59: void weatherUpdated(...) - unsupported arg type
-*/
+int ListenerBinding::weatherUpdated(lua_State* L)
+{
+    Listener* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Listener is nil");
+
+    WeatherInstance* weather = lua_isnoneornil(L, 2) ? nullptr : checkObject<WeatherInstance>(L, 2, WeatherInstanceBinding::getMetatableName());
+    bool newWeather = lua_toboolean(L, 3) != 0;
+    instance->weatherUpdated(weather, newWeather);
+    return 0;
+}
 
 
 int ListenerBinding::gc(lua_State* L)
@@ -42,6 +50,7 @@ void ListenerBinding::registerBinding(lua_State* L)
     };
 
     static const luaL_Reg methods[] = {
+        { "weatherUpdated", ListenerBinding::weatherUpdated },
         { 0, 0 }
     };
 

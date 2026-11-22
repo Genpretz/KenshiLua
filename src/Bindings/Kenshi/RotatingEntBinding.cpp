@@ -1,8 +1,10 @@
 #include "pch.h"
 #include <kenshi/PhysicsCollection.h>
+#include <kenshi/Weather.h>
 #include "RotatingEntBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/GameDataBinding.h"
+#include "Bindings/Kenshi/Weather/WeatherInstanceBinding.h"
 
 namespace KenshiLua
 {
@@ -316,11 +318,27 @@ int RotatingEntBinding::getRotationPower(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 147: void weatherUpdated(...) - unsupported arg type
-  line 148: void _NV_weatherUpdated(...) - unsupported arg type
-*/
+int RotatingEntBinding::weatherUpdated(lua_State* L)
+{
+    RotatingEnt* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RotatingEnt is nil");
+
+    WeatherInstance* weather = lua_isnoneornil(L, 2) ? nullptr : checkObject<WeatherInstance>(L, 2, WeatherInstanceBinding::getMetatableName());
+    bool newWeather = lua_toboolean(L, 3) != 0;
+    instance->weatherUpdated(weather, newWeather);
+    return 0;
+}
+
+int RotatingEntBinding::_NV_weatherUpdated(lua_State* L)
+{
+    RotatingEnt* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "RotatingEnt is nil");
+
+    WeatherInstance* weather = lua_isnoneornil(L, 2) ? nullptr : checkObject<WeatherInstance>(L, 2, WeatherInstanceBinding::getMetatableName());
+    bool newWeather = lua_toboolean(L, 3) != 0;
+    instance->_NV_weatherUpdated(weather, newWeather);
+    return 0;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -356,6 +374,8 @@ void RotatingEntBinding::registerBinding(lua_State* L)
         { "isRotatingEnt", RotatingEntBinding::isRotatingEnt },
         { "_NV_isRotatingEnt", RotatingEntBinding::_NV_isRotatingEnt },
         { "getRotationPower", RotatingEntBinding::getRotationPower },
+        { "weatherUpdated", RotatingEntBinding::weatherUpdated },
+        { "_NV_weatherUpdated", RotatingEntBinding::_NV_weatherUpdated },
         { 0, 0 }
     };
 

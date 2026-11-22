@@ -3,8 +3,12 @@
 #include "NavMeshGeneratorBinding.h"
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Building/BuildingBinding.h"
+#include "Bindings/Kenshi/NavInstanceBinding.h"
+#include "Bindings/Kenshi/NavMeshGenerator_TaskBinding.h"
 #include "Bindings/Kenshi/ZoneMapBinding.h"
+#include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
 
 namespace KenshiLua
 {
@@ -279,25 +283,132 @@ int NavMeshGeneratorBinding::update(lua_State* L)
     return 0;
 }
 
+int NavMeshGeneratorBinding::lockZone(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    iVector2* zone = checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    bool wait = lua_toboolean(L, 3) != 0;
+    bool result = instance->lockZone(*zone, wait);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
+int NavMeshGeneratorBinding::unlockZone(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    iVector2* zone = checkObject<iVector2>(L, 2, iVector2Binding::getMetatableName());
+    instance->unlockZone(*zone);
+    return 0;
+}
+
+int NavMeshGeneratorBinding::stitch(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    NavInstance* a = checkObject<NavInstance>(L, 2, NavInstanceBinding::getMetatableName());
+    NavInstance* b = checkObject<NavInstance>(L, 3, NavInstanceBinding::getMetatableName());
+    int result = instance->stitch(a, b);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshGeneratorBinding::stitchUnloadedZone(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    NavInstance* a = checkObject<NavInstance>(L, 2, NavInstanceBinding::getMetatableName());
+    int bx = (int)luaL_checkinteger(L, 3);
+    int by = (int)luaL_checkinteger(L, 4);
+    bool interiors = lua_toboolean(L, 5) != 0;
+    int result = instance->stitchUnloadedZone(a, bx, by, interiors);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshGeneratorBinding::getSeedPointsFromAdjacentZone(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    ZoneMap* zone = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+    iVector2* dir = checkObject<iVector2>(L, 3, iVector2Binding::getMetatableName());
+    int result = instance->getSeedPointsFromAdjacentZone(zone, *dir);
+    lua_pushinteger(L, result);
+    return 1;
+}
+
+int NavMeshGeneratorBinding::getCompletedTask(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    unsigned int uid = (unsigned int)luaL_checkinteger(L, 2);
+    NavMeshGenerator::Task* task = nullptr;
+    NavInstance* result = instance->getCompletedTask(uid, task);
+    pushObject<NavInstance>(L, result, NavInstanceBinding::getMetatableName());
+    pushObject<NavMeshGenerator::Task>(L, task, NavMeshGenerator_TaskBinding::getMetatableName());
+    return 2;
+}
+
+// Overloads: addJob(ZoneMap*, lektor<Building*>, bool), addJob(ZoneMap*, hand, unsigned int),
+// and addJob(ZoneMap*, unsigned int). The Ogre::Aabb overload awaits Ogre bindings.
+int NavMeshGeneratorBinding::addJob(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    ZoneMap* zone = checkObject<ZoneMap>(L, 2, ZoneMapBinding::getMetatableName());
+
+    if (lua_type(L, 3) == LUA_TNUMBER)
+    {
+        unsigned int hash = (unsigned int)luaL_checkinteger(L, 3);
+        instance->addJob(zone, hash);
+        return 0;
+    }
+
+    hand* building = testObject<hand>(L, 3, HandBinding::getMetatableName());
+    if (building)
+    {
+        unsigned int hash = (unsigned int)luaL_checkinteger(L, 4);
+        instance->addJob(zone, *building, hash);
+        return 0;
+    }
+
+    lektor<Building*>* buildings = testObject<lektor<Building*> >(L, 3, LektorPtrBinding<Building*>::metaName);
+    if (buildings)
+    {
+        bool splice = lua_toboolean(L, 4) != 0;
+        instance->addJob(zone, *buildings, splice);
+        return 0;
+    }
+
+    return luaL_argerror(L, 3, "hash number, KenshiLua.hand, or lektor<Building*> expected");
+}
+
+int NavMeshGeneratorBinding::addStitchJob(lua_State* L)
+{
+    NavMeshGenerator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "NavMeshGenerator is nil");
+
+    NavInstance* s = checkObject<NavInstance>(L, 2, NavInstanceBinding::getMetatableName());
+    instance->addStitchJob(s);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 100: bool lockZone(...) - non-string reference arg
-  line 101: void unlockZone(...) - non-string reference arg
   line 103: void setup(...) - overloaded method
   line 104: void setup(...) - static method
   line 111: int shiftEdge(...) - unsupported arg type
   line 112: int shiftHole(...) - unsupported arg type
-  line 114: int stitch(...) - unsupported arg type
-  line 115: int stitchUnloadedZone(...) - unsupported arg type
   line 118: int stitchWithInteriors(...) - unsupported arg type
-  line 120: int getSeedPointsFromAdjacentZone(...) - non-string reference arg
-  line 121: NavInstance* getCompletedTask(...) - non-string reference arg
   line 123: NavMeshGenerator::Task* newTask(...) - unsupported arg type
-  line 137: void addJob(...) - overloaded method
-  line 138: void addJob(...) - overloaded method
-  line 139: void addJob(...) - overloaded method
-  line 140: void addJob(...) - overloaded method
-  line 141: void addStitchJob(...) - unsupported arg type
   line 144: int getCollisionShapes(...) - static method
   line 145: bool createHeightmapMesh(...) - static method
   line 146: bool addWaterPlane(...) - static method
@@ -361,6 +472,14 @@ void NavMeshGeneratorBinding::registerBinding(lua_State* L)
         { "unlockTask", NavMeshGeneratorBinding::unlockTask },
         { "hasJob", NavMeshGeneratorBinding::hasJob },
         { "update", NavMeshGeneratorBinding::update },
+        { "lockZone", NavMeshGeneratorBinding::lockZone },
+        { "unlockZone", NavMeshGeneratorBinding::unlockZone },
+        { "stitch", NavMeshGeneratorBinding::stitch },
+        { "stitchUnloadedZone", NavMeshGeneratorBinding::stitchUnloadedZone },
+        { "getSeedPointsFromAdjacentZone", NavMeshGeneratorBinding::getSeedPointsFromAdjacentZone },
+        { "getCompletedTask", NavMeshGeneratorBinding::getCompletedTask },
+        { "addJob", NavMeshGeneratorBinding::addJob },
+        { "addStitchJob", NavMeshGeneratorBinding::addStitchJob },
         { 0, 0 }
     };
 

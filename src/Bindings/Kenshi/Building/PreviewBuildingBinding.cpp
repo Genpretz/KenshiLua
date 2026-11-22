@@ -1400,10 +1400,36 @@ int PreviewBuildingBinding::_NV_isNoCollideWithThisBuilding(lua_State* L)
     return 1;
 }
 
+int PreviewBuildingBinding::buildingPlacementUpdate(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    physHit* hit = checkObject<physHit>(L, 2, physHitBinding::getMetatableName());
+    bool mRightUp = lua_toboolean(L, 3) != 0;
+    bool mLeftUp = lua_toboolean(L, 4) != 0;
+    instance->buildingPlacementUpdate(*hit, mRightUp, mLeftUp);
+    lua_pushboolean(L, mRightUp ? 1 : 0);
+    lua_pushboolean(L, mLeftUp ? 1 : 0);
+    return 2;
+}
+
+int PreviewBuildingBinding::_NV_buildingPlacementUpdate(lua_State* L)
+{
+    PreviewBuilding* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PreviewBuilding is nil");
+
+    physHit* hit = checkObject<physHit>(L, 2, physHitBinding::getMetatableName());
+    bool mRightUp = lua_toboolean(L, 3) != 0;
+    bool mLeftUp = lua_toboolean(L, 4) != 0;
+    instance->_NV_buildingPlacementUpdate(*hit, mRightUp, mLeftUp);
+    lua_pushboolean(L, mRightUp ? 1 : 0);
+    lua_pushboolean(L, mLeftUp ? 1 : 0);
+    return 2;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 626: void buildingPlacementUpdate(...) - non-string reference arg
-  line 627: void _NV_buildingPlacementUpdate(...) - non-string reference arg
   line 678: const Ogre::Aabb& getWorldAABB(...) - reference return type
 */
 
@@ -1523,6 +1549,8 @@ void PreviewBuildingBinding::registerBinding(lua_State* L)
         { "getCentreOffset", PreviewBuildingBinding::getCentreOffset },
         { "isNoCollideWithThisBuilding", PreviewBuildingBinding::isNoCollideWithThisBuilding },
         { "_NV_isNoCollideWithThisBuilding", PreviewBuildingBinding::_NV_isNoCollideWithThisBuilding },
+        { "buildingPlacementUpdate", PreviewBuildingBinding::buildingPlacementUpdate },
+        { "_NV_buildingPlacementUpdate", PreviewBuildingBinding::_NV_buildingPlacementUpdate },
         { 0, 0 }
     };
 
