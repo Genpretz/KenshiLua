@@ -162,7 +162,7 @@ end
 
 -- 4. Check player enemy condition
 local hasEnemy, enemyVal, enemyFaction = checkIsEnemy(query, "Holy Nation", true)
-if hasEnemy then
+if hasEnemy and enemyFaction then
     KenshiLua.log(string.format("[WorldState] checkIsEnemy: Found '%s' with value %s", enemyFaction.name, tostring(enemyVal)))
 else
     KenshiLua.log("[WorldState] checkIsEnemy: Target faction not matched in isEnemyOf.")
@@ -170,7 +170,7 @@ end
 
 -- 5. Check NPC state (e.g. unique NPC is DEAD)
 local npcFound, npcState, npcData = checkUniqueNpcState(query, "Holy Lord Phoenix", WorldStateEnum.DEAD)
-if npcFound then
+if npcFound and npcData then
     KenshiLua.log(string.format("[WorldState] checkUniqueNpcState: Found NPC '%s' requiring state %d", npcData.name, npcState))
 else
     KenshiLua.log("[WorldState] checkUniqueNpcState: NPC condition not found in uniqueNPCsAre.")
@@ -184,7 +184,7 @@ end
 
 -- 7. Check town condition
 local townFound, townState, townData = checkTownState(query, "Bad Teeth", WorldStateEnum.DEAD)
-if townFound then
+if townFound and townData then
     KenshiLua.log(string.format("[WorldState] checkTownState: Town '%s' requires state %d", townData.name, townState))
 end
 

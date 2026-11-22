@@ -5,6 +5,7 @@
   "workspace.checkThirdParty": false,
   "workspace.ignoreDir": [
     ".vscode",
+    ".claude",
     "extern",
     "bin",
     "obj",

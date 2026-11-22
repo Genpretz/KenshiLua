@@ -14914,12 +14914,12 @@ taskPriority = {
 ---@field toggleClothes fun(self: CharacterEditWindow, _sender: MyGUI.Widget)
 --- Handles the 'Confirm' / 'Done' button click. Validates character names, prompts for plastic surgeon fee confirmation in midgame mode, or commits changes and closes the editor.
 ---@field confirmButton fun(self: CharacterEditWindow, _sender: MyGUI.Widget)
----@field updateAppearanceSlider fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
----@field updateAppearanceSliderPose fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
----@field updateAppearanceSliderVector fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
----@field updateAppearanceList fun(self: CharacterEditWindow, _sender: ListScrollBar|MyGUI.ListScrollBar, _value: string, _index: integer)
----@field updateAppearanceMultiSlider fun(self: CharacterEditWindow, _sender: MultiSlider|MyGUI.MultiSlider, _target: MyGUI.Slider|Slider, _targetIndex: integer, _value: integer)
----@field updateAnimationIdle fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
+---@field updateAppearanceSlider fun(self: CharacterEditWindow, _sender: Slider, _value: integer)
+---@field updateAppearanceSliderPose fun(self: CharacterEditWindow, _sender: Slider, _value: integer)
+---@field updateAppearanceSliderVector fun(self: CharacterEditWindow, _sender: Slider, _value: integer)
+---@field updateAppearanceList fun(self: CharacterEditWindow, _sender: ListScrollBar, _value: string, _index: integer)
+---@field updateAppearanceMultiSlider fun(self: CharacterEditWindow, _sender: MultiSlider, _target: Slider, _targetIndex: integer, _value: integer)
+---@field updateAnimationIdle fun(self: CharacterEditWindow, _sender: Slider, _value: integer)
 --- Active working copy of character appearance parameters.
 ---@field appearanceData GameDataCopyStandalone
 --- Cycle gender forward button.
@@ -16191,7 +16191,7 @@ taskPriority = {
 ---@field refresh fun(self: DataPanelLine_Slider)
 --- Creates and attaches the slider line widget inside the parent DatapanelGUI.
 ---@field createMe fun(self: DataPanelLine_Slider, parent: DatapanelGUI, top: number, lastLine?: boolean)
----@field sliderValueChanged fun(self: DataPanelLine_Slider, _sender: MyGUI.Slider|Slider, _value: integer)
+---@field sliderValueChanged fun(self: DataPanelLine_Slider, _sender: Slider, _value: integer)
 --- Maximum value reachable on the slider scale.
 ---@field max number
 --- Minimum value reachable on the slider scale.

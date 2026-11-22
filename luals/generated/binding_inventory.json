@@ -45499,7 +45499,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "MyGUI.Slider|Slider"
+                "type": "Slider"
               },
               {
                 "name": "_value",
@@ -45520,7 +45520,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "MyGUI.Slider|Slider"
+                "type": "Slider"
               },
               {
                 "name": "_value",
@@ -45541,7 +45541,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "MyGUI.Slider|Slider"
+                "type": "Slider"
               },
               {
                 "name": "_value",
@@ -45562,7 +45562,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "ListScrollBar|MyGUI.ListScrollBar"
+                "type": "ListScrollBar"
               },
               {
                 "name": "_value",
@@ -45588,12 +45588,12 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "MultiSlider|MyGUI.MultiSlider"
+                "type": "MultiSlider"
               },
               {
                 "name": "_target",
                 "optional": false,
-                "type": "MyGUI.Slider|Slider"
+                "type": "Slider"
               },
               {
                 "name": "_targetIndex",
@@ -45619,7 +45619,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "MyGUI.Slider|Slider"
+                "type": "Slider"
               },
               {
                 "name": "_value",
@@ -55307,7 +55307,7 @@
               {
                 "name": "_sender",
                 "optional": false,
-                "type": "MyGUI.Slider|Slider"
+                "type": "Slider"
               },
               {
                 "name": "_value",

@@ -9,8 +9,8 @@ probe.saw_line = currentDialogueLine ~= nil
 probe.line_id = currentDialogueLine and currentDialogueLine:getStringID() or nil
 
 if probe.mode == "nested" and not probe.inside_nested_call then
-    local outer_dialogue = currentDialogue
-    local outer_line = currentDialogueLine
+    local outer_dialogue = assert(currentDialogue, "nested mode needs currentDialogue")
+    local outer_line = assert(currentDialogueLine, "nested mode needs currentDialogueLine")
     local outer_line_id = probe.line_id
 
     probe.inside_nested_call = true

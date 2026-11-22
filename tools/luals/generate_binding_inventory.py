@@ -834,7 +834,11 @@ def is_static_style(body, binding):
 
 
 STACK_READ_PATTERNS = (
-    (r"checkObject\s*<\s*([^>]+?)\s*>\s*\(\s*L\s*,\s*(\d+)", lambda m: lua_object_type(m.group(1))),
+    # The C++ type only names the Lua type when the call does not pass a binding's
+    # metatable. With one, the binding decides (see object_reads): Kenshi's
+    # MyGUI::Slider is the Lua class Slider, not MyGUI.Slider.
+    (r"checkObject\s*<\s*([^>]+?)\s*>\s*\(\s*L\s*,\s*(\d+)(?!\s*,\s*[A-Za-z_]\w*Binding::getMetatableName)",
+     lambda m: lua_object_type(m.group(1))),
     # A second object of the binding's own class (operator_assign, compare).
     (r"(?<![:\w])getInstance\s*\(\s*L\s*,\s*(\d+)", lambda m: SELF_TYPE),
     (r"\b([A-Za-z_]\w*Binding)::getInstance\s*\(\s*L\s*,\s*(\d+)", lambda m: "ref:binding:" + m.group(1)),

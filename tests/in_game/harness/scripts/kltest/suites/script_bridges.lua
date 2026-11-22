@@ -202,6 +202,7 @@ runner.register_game_suite("script-bridges", function(ctx)
     ctx.test("diagnostics do not label a non-LUA_SCRIPT target as a Lua script", function(t)
         local world = getGameWorld()
         t.assert_not_nil(world, "getGameWorld()")
+        ---@cast world -nil
         local manager = world.gamedata
 
         local target_id = "#KLTEST-DIAGNOSTIC-TARGET" .. ID_SUFFIX
