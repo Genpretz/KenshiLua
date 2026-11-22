@@ -11,6 +11,10 @@ root, the layout players extract into Kenshi's mods directory. Left out:
   loads only KenshiLua.dll; keep each release's .pdb locally to read crash dumps.
 The version comes from src/Version.h.
 
+Every run first checks that bin/KenshiLua/plugin/KenshiLua.dll reports that
+same version, and fails without writing a zip if it does not. A DLL left over
+from another version therefore cannot end up in a release zip.
+
 The Release post-build step runs this script. A zip that already exists for
 the current version is kept, so the zip is created once per version bump; pass
 --force to rebuild it after further changes to that version.
@@ -26,6 +30,7 @@ Usage:
 import argparse
 import os
 import pathlib
+import re
 import sys
 import zipfile
 
@@ -34,7 +39,8 @@ from sync_version import DEFAULT_VERSION_H, PROJECT_ROOT, parse_version_h  # noq
 
 DEFAULT_BIN_DIR = PROJECT_ROOT / "bin"
 MOD_FOLDER = "KenshiLua"
-REQUIRED_FILES = ("plugin/KenshiLua.dll", "KenshiLua.mod")
+DLL_FILE = "plugin/KenshiLua.dll"
+REQUIRED_FILES = (DLL_FILE, "KenshiLua.mod")
 EXCLUDED_CONTENT_DIRS = ("logs", "assets")
 EXCLUDED_FILES = (
     "plugin/KenshiLua.pdb",
@@ -46,6 +52,17 @@ EXCLUDED_FILES = (
 
 def zip_name(version: str) -> str:
     return f"KenshiLua v{version}.zip"
+
+
+def dll_versions(dll: pathlib.Path, name: str) -> list:
+    """Returns every version the DLL reports, sorted.
+
+    The DLL holds KENSHILUA_VERSION_FULL from Version.h as a string constant:
+    "<name> <major>.<minor>.<patch><suffix>" followed by a NUL byte. A DLL whose
+    sources were all compiled against one Version.h reports exactly one version.
+    """
+    pattern = re.compile(re.escape(name.encode("ascii")) + rb" (\d+\.\d+\.\d+[\x21-\x7e]*)\x00")
+    return sorted({match.group(1).decode("ascii") for match in pattern.finditer(dll.read_bytes())})
 
 
 def mod_entries(mod_dir: pathlib.Path):
@@ -97,10 +114,11 @@ def main() -> int:
     args = parser.parse_args()
 
     try:
-        version = parse_version_h(args.version_h)["version_str"]
+        version_info = parse_version_h(args.version_h)
     except (OSError, ValueError) as error:
         print(f"Error: {error}", file=sys.stderr)
         return 1
+    version = version_info["version_str"]
 
     mod_dir = args.bin_dir / MOD_FOLDER
     readme = args.bin_dir / "README.md"
@@ -109,6 +127,14 @@ def main() -> int:
         missing.append(str(readme))
     if missing:
         print("Error: cannot package the mod; missing " + ", ".join(missing), file=sys.stderr)
+        return 1
+
+    dll = mod_dir / DLL_FILE
+    reported = dll_versions(dll, version_info["name"])
+    if reported != [version]:
+        print(f"Error: {dll} reports {', '.join(reported) or 'no version'}, "
+              f"but {args.version_h} says {version}. The DLL was not built from this "
+              "Version.h; rebuild it before packaging.", file=sys.stderr)
         return 1
 
     output = (args.output_dir or args.bin_dir / "release") / zip_name(version)

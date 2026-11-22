@@ -82,7 +82,7 @@ Use `python tools/release/sync_version.py --help` for input/output overrides.
 
 The Release post-build step runs two packaging scripts that write the zips for a GitHub release to `bin/release/`, with the version taken from `src/Version.h`. Each creates its zip once per version: the first Release build after a version bump writes it, and later builds keep it. Pass `--force` to rebuild a zip after further changes to the same version.
 
-- `release/package_mod.py` writes `KenshiLua v<version>.zip` from `bin/KenshiLua/` and `bin/README.md` (copied from `assets/package/README.md` by the build). It leaves out the linker outputs next to the DLL (`KenshiLua.pdb`, `.lib`, `.exp`) and any files in `logs/`.
+- `release/package_mod.py` writes `KenshiLua v<version>.zip` from `bin/KenshiLua/` and `bin/README.md` (copied from `assets/package/README.md` by the build). It leaves out the linker outputs next to the DLL (`KenshiLua.pdb`, `.lib`, `.exp`) and any files in `logs/`. On every run, including runs that keep an existing zip, it first checks that `bin/KenshiLua/plugin/KenshiLua.dll` reports the version in `src/Version.h`. If the DLL reports another version, the script writes no zip and prints an error, which fails the build; rebuild the DLL and build again.
 - `release/package_luals_addon.py` writes `KenshiLua-LuaLS-Addon-v<version>.zip`. It never packages definitions generated for another version; it warns instead, without failing the build.
 
 ```powershell
