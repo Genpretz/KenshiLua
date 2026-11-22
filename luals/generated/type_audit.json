@@ -6924,9 +6924,9 @@
       "member": "valPtr"
     },
     {
-      "category": "unmapped_header_type",
+      "category": "binding_pushes_raw_pointer",
       "class": "DataPanelLine_Slider",
-      "expected": "?MyGUI::Slider*",
+      "expected": "Slider|nil",
       "header": "MyGUI::Slider*",
       "kind": "property",
       "lua": "lightuserdata",
@@ -8446,6 +8446,23 @@
       "kind": "method",
       "lua": "fun(self: ForgottenGUI, arg1?: MyGUI.Widget, arg2: integer, arg3: integer, arg4: integer, arg5: integer, arg6: string, arg7?: integer|string): MyGUI.TextBox",
       "member": "createLabelAbs"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "ForgottenGUI",
+      "expected": "fun(Lektor<Character>, CharacterEditMode, OgreVector<GameDataReference>)",
+      "header": "void showCharacterEditor(const lektor<Character*> characters, CharacterEditMode mode, const Ogre::vector<GameDataReference>::type* races)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "CharacterEditMode",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ForgottenGUI, characters: Lektor<Character>, mode: integer, races?: OgreVector<GameDataReference>)",
+      "member": "showCharacterEditor"
     },
     {
       "category": "enum_typed_as_integer",
@@ -10644,6 +10661,23 @@
       "kind": "method",
       "lua": "fun(self: MapItem, container: GameDataContainer, type: integer): GameData|nil",
       "member": "_serialise"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "MapMarkerTown",
+      "expected": "fun(MyGUI.IntPoint, MapZoomLevel)",
+      "header": "void update(const MyGUI::types::TPoint<int>& mapPosition, MapZoomLevel zoom)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "MapZoomLevel",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: MapMarkerTown, mapPosition: MyGUI.IntPoint, zoom: integer)",
+      "member": "update"
     },
     {
       "category": "enum_typed_as_integer",
@@ -17126,6 +17160,46 @@
       "member": "getPermaJobType"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "TaskData",
+      "expected": "fun(AI, hand, table, hand, boolean): boolean, StateType",
+      "header": "bool _isRequirementsComplete(AI* ai, const hand& target, const Ogre::Vector3& location, hand& subTarget, bool autoTargetFinder, StateType& failedOn)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "StateType",
+          "position": "return 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskData, ai: AI, target: hand, location: table, subTarget: hand, autoTargetFinder?: boolean): boolean, integer",
+      "member": "_isRequirementsComplete"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "TaskData",
+      "expected": "fun(AI, hand, hand, boolean): number",
+      "header": "float runTargetFind(AI* ai, const hand& _target, hand& out, bool justAsking)",
+      "issues": [
+        {
+          "actual": 3,
+          "category": "binding_shape_differs",
+          "expected": 4,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: TaskData, ai: AI, _target: hand, justAsking?: boolean): number, hand",
+      "member": "runTargetFind"
+    },
+    {
       "category": "no_header_declaration",
       "class": "TaskData",
       "kind": "property",
@@ -17304,6 +17378,29 @@
       "kind": "method",
       "lua": "fun(self: Tasker): integer",
       "member": "key"
+    },
+    {
+      "category": "binding_shape_differs",
+      "class": "Tasker",
+      "expected": "fun(AI, hand): number",
+      "header": "float findTarget(AI* ai, hand& out)",
+      "issues": [
+        {
+          "actual": 1,
+          "category": "binding_shape_differs",
+          "expected": 2,
+          "position": null
+        },
+        {
+          "actual": "number, hand",
+          "category": "binding_shape_differs",
+          "expected": "number",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: Tasker, ai: AI): number, hand",
+      "member": "findTarget"
     },
     {
       "category": "enum_typed_as_integer",
@@ -19237,6 +19334,23 @@
       "member": "isActivationType"
     },
     {
+      "category": "enum_typed_as_integer",
+      "class": "ZoneMap",
+      "expected": "fun(integer, ZoneActivationType, number): boolean",
+      "header": "bool _activate(int _range, ZoneActivationType type, float deactivationTimer)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "ZoneActivationType",
+          "position": "param 2"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: ZoneMap, _range: integer, type: integer, deactivationTimer: number): boolean",
+      "member": "_activate"
+    },
+    {
       "category": "unmapped_header_type",
       "class": "ZoneMap",
       "expected": "?MapFeatureList*",
@@ -19493,6 +19607,23 @@
       "member": "getExtendedInterface"
     },
     {
+      "category": "binding_shape_differs",
+      "class": "hkMemoryAllocator",
+      "expected": "fun(hkMemoryAllocator_MemoryStatistics)",
+      "header": "void getMemoryStatistics(hkMemoryAllocator::MemoryStatistics& _a1) const = 0",
+      "issues": [
+        {
+          "actual": "hkMemoryAllocator_MemoryStatistics|nil",
+          "category": "binding_shape_differs",
+          "expected": "(none)",
+          "position": "return"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(self: hkMemoryAllocator, arg1?: hkMemoryAllocator_MemoryStatistics): hkMemoryAllocator_MemoryStatistics|nil",
+      "member": "getMemoryStatistics"
+    },
+    {
       "category": "binding_converts",
       "class": "hkResult",
       "expected": "fun(hkResultEnum): boolean",
@@ -19534,6 +19665,23 @@
       "kind": "property",
       "lua": "integer",
       "member": "m_enum"
+    },
+    {
+      "category": "enum_typed_as_integer",
+      "class": "hkVector4f",
+      "expected": "fun(hkVectorConstant): hkVector4f",
+      "header": "const hkVector4f& getConstant(hkVectorConstant vectorConstant)",
+      "issues": [
+        {
+          "actual": "integer",
+          "category": "enum_typed_as_integer",
+          "expected": "hkVectorConstant",
+          "position": "param 1"
+        }
+      ],
+      "kind": "method",
+      "lua": "fun(vectorConstant: integer): hkVector4f",
+      "member": "getConstant"
     },
     {
       "category": "binding_converts",
@@ -19705,16 +19853,16 @@
   "schema_version": 1,
   "summary": {
     "binding_converts": 54,
-    "binding_pushes_raw_pointer": 49,
-    "binding_shape_differs": 200,
+    "binding_pushes_raw_pointer": 50,
+    "binding_shape_differs": 203,
     "blocking_issues": 0,
     "container_methods_typed": 1121,
-    "enum_typed_as_integer": 472,
-    "methods": 7417,
-    "methods_matching_header": 5413,
+    "enum_typed_as_integer": 477,
+    "methods": 7494,
+    "methods_matching_header": 5482,
     "no_header_declaration": 228,
     "properties": 3716,
     "properties_matching_header": 3172,
-    "unmapped_header_type": 439
+    "unmapped_header_type": 438
   }
 }

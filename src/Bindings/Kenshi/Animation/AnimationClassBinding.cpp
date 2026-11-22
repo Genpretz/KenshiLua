@@ -1578,7 +1578,7 @@ Skipped methods needing manual binding:
   line 469: bool setupRagdoll(Scythe::SkeletonData*) - unbound pointer argument
   line 521: void setDesiredPainOverlayAnims(std::set<StringValuePair, ...>) - StringValuePair is unbound
   line 522: void _NV_setDesiredPainOverlayAnims(std::set<StringValuePair, ...>) - StringValuePair is unbound
-  line 570: bool processActionAnims(...) - boost::unordered_map<std::string, AnimationData*> and AnimationRequirement are unbound
+  line 570: bool processActionAnims(...) - unavailable (KenshiLib.lib contains only AnimationClass_processActionAnims_PLACEHOLDER)
 */
 
 /*

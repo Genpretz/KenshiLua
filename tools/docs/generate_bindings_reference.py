@@ -20,6 +20,7 @@ import sys
 PROJECT_ROOT = pathlib.Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(PROJECT_ROOT / "tools" / "luals"))
 from kenshilib_headers import local_lua_argument_readers
+from generate_binding_inventory import infer_return_contract
 
 BINDINGS_DIR = PROJECT_ROOT / "src" / "Bindings"
 HEADERS_DIR = PROJECT_ROOT / "extern" / "KenshiLib" / "Include" / "kenshi"
@@ -230,8 +231,11 @@ def extract_args_from_body(body: str, instance_type=None):
             "userdata": "userdata",
         }.get(normalized, normalized)
     
-    # Pattern A: readVector2/readVector3/readVector4/readQuaternion(L, idx, var)
-    for m in re.finditer(r"\bread(Vector2|Vector3|Vector4|Quaternion)\s*\(\s*L\s*,\s*(\d+)\s*,\s*([\w_]+)\)", body):
+    # Vector and quaternion helpers write the checked argument into a local.
+    for m in re.finditer(
+        r"\b(?:read|check)(Vector[234]|Quaternion)\s*\(\s*L\s*,\s*(\d+)\s*,\s*(\w+)\s*\)",
+        body,
+    ):
         type_name = m.group(1)
         idx = int(m.group(2))
         var = m.group(3)
@@ -357,6 +361,12 @@ def extract_return_type_from_body(body: str, instance_type=None) -> str:
     """Extract returned type from a C++ function body by analyzing return/push statements."""
     if not body:
         return "void"
+
+    if re.search(r"\breturn\s+(?:[2-9]|[1-9]\d+)\s*;", body):
+        _, _, _, slots, _ = infer_return_contract(body)
+        scalar_types = {"boolean", "integer", "number", "string", "nil"}
+        if slots and all(scalar_types.issuperset(slot) for slot in slots):
+            return ", ".join("|".join(slot) for slot in slots)
 
     # Widgets: return MyGUIBindings::pushWidget(L, result), typed by the local's declaration.
     m = re.search(r"return\s+(?:MyGUIBindings::)?pushWidget\s*\(\s*L\s*,\s*([^;]+?)\s*\)\s*;", body)
@@ -1217,6 +1227,7 @@ def generate_markdown(data_by_class, enums, parents, mygui_metatables):
         "- **Instance Methods**: Called on userdata instances using colon syntax: `instance:methodName(args)`.",
         "- **Static Methods**: Functions that can be invoked statically via class table `ClassName.methodName(args)` or on an instance `instance:methodName(args)`.",
         "- **Overloaded Methods**: Methods supporting multiple argument counts or polymorphic parameter types are documented with explicit overload indexes (e.g. `[1]`, `[2]`), indicating each signature's parameter types and return type.",
+        "- **Return values.** Commas list the values returned in order. A vertical bar marks alternative types for one value.",
         "- **Enums**: Enum values are Lua integers. Enum type names identify the constant table documented in the [Enums Reference](EnumsReference.md); types marked as bitmasks may combine multiple enum flags.",
         "- **MyGUI User Interface**: For MyGUI widgets, dialogs, layouts, properties, and event callbacks, see the dedicated [MyGUI Reference](MyGUIReference.md).",
         "",

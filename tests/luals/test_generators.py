@@ -1589,6 +1589,28 @@ class BindingsReferenceTests(unittest.TestCase):
 
         cls.reference = generate_bindings_reference
 
+    def test_checked_vectors_are_documented_as_arguments(self):
+        body = """
+            checkVector3(L, 2, a);
+            checkVector3(L, 3, b);
+            float padding = (float)luaL_checknumber(L, 4);
+        """
+        self.assertEqual([
+            {"name": "a", "type": "Vector3"},
+            {"name": "b", "type": "Vector3"},
+            {"name": "padding", "type": "number"},
+        ], self.reference.extract_args_from_body(body))
+
+    def test_scalar_return_values_are_documented_in_order(self):
+        body = """
+            lua_pushinteger(L, result);
+            lua_pushnumber(L, out);
+            return 2;
+        """
+        self.assertEqual("integer, number", self.reference.extract_return_type_from_body(body))
+        self.assertEqual("integer, integer", self.reference.extract_return_type_from_body(
+            body.replace("lua_pushnumber", "lua_pushinteger")))
+
     def test_operator_argument_can_use_the_class_instance_reader(self):
         body = """
             Example* self = getInstance(L, 1);

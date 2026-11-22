@@ -8,6 +8,7 @@
 - **Instance Methods**: Called on userdata instances using colon syntax: `instance:methodName(args)`.
 - **Static Methods**: Functions that can be invoked statically via class table `ClassName.methodName(args)` or on an instance `instance:methodName(args)`.
 - **Overloaded Methods**: Methods supporting multiple argument counts or polymorphic parameter types are documented with explicit overload indexes (e.g. `[1]`, `[2]`), indicating each signature's parameter types and return type.
+- **Return values.** Commas list the values returned in order. A vertical bar marks alternative types for one value.
 - **Enums**: Enum values are Lua integers. Enum type names identify the constant table documented in the [Enums Reference](EnumsReference.md); types marked as bitmasks may combine multiple enum flags.
 - **MyGUI User Interface**: For MyGUI widgets, dialogs, layouts, properties, and event callbacks, see the dedicated [MyGUI Reference](MyGUIReference.md).
 
@@ -3221,6 +3222,7 @@
 | isVisible [1] | `pos: Vector3, radius: number` | `boolean` | `obj:isVisible(pos, radius)` |
 | isVisible [2] | `pos: Vector3` | `boolean` | `obj:isVisible(pos)` |
 | restrictPosition | `` | `void` | `obj:restrictPosition()` |
+| intersectScreenEdge | `a: Vector3, b: Vector3, padding: number` | `integer, number` | `obj:intersectScreenEdge(a, b, padding)` |
 
 ## CampaignData
 **Header:** `extern/KenshiLib/Include/kenshi/Campaign.h`
@@ -3975,6 +3977,12 @@
 | exportCharacter | `sender: MyGUI::Widget` | `void` | `obj:exportCharacter(sender)` |
 | toggleClothes | `sender: MyGUI::Widget` | `void` | `obj:toggleClothes(sender)` |
 | confirmButton | `sender: MyGUI::Widget` | `void` | `obj:confirmButton(sender)` |
+| updateAppearanceSlider | `sender: MyGUI::Slider, value: integer` | `void` | `obj:updateAppearanceSlider(sender, value)` |
+| updateAppearanceSliderPose | `sender: MyGUI::Slider, value: integer` | `void` | `obj:updateAppearanceSliderPose(sender, value)` |
+| updateAppearanceSliderVector | `sender: MyGUI::Slider, value: integer` | `void` | `obj:updateAppearanceSliderVector(sender, value)` |
+| updateAppearanceList | `sender: MyGUI::ListScrollBar, value: string, index: integer` | `void` | `obj:updateAppearanceList(sender, value, index)` |
+| updateAppearanceMultiSlider | `sender: MyGUI::MultiSlider, target: MyGUI::Slider, targetIndex: integer, value: integer` | `void` | `obj:updateAppearanceMultiSlider(sender, target, targetIndex, value)` |
+| updateAnimationIdle | `sender: MyGUI::Slider, value: integer` | `void` | `obj:updateAnimationIdle(sender, value)` |
 
 ### Inherited Members
 **From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
@@ -4075,6 +4083,8 @@
 | sumStats | `` | `integer` | `obj:sumStats()` |
 | getStatsPanel | `group: CharacterStatsWindow::StatGroup::Group` | `DatapanelGUI` | `obj:getStatsPanel(group)` |
 | autoChangeSelectedObject | `obj: hand` | `void` | `obj:autoChangeSelectedObject(obj)` |
+| closeWindow | `sender: MyGUI::Window, name: string` | `void` | `obj:closeWindow(sender, name)` |
+| statMouseOver | `sender: MyGUI::Widget, x: integer, y: integer` | `void` | `obj:statMouseOver(sender, x, y)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -4294,6 +4304,7 @@
 | setMovementMode | `mode: MovementMode` | `void` | `obj:setMovementMode(mode)` |
 | isStandingOnSomething | `` | `hand` | `obj:isStandingOnSomething()` |
 | combatMovementOffensive | `target: hand, minDistance: number, maxDistance: number, circle: number, power: boolean, speedLimit: number` | `void` | `obj:combatMovementOffensive(target, minDistance, maxDistance, circle, power, speedLimit)` |
+| formationUpdateCallback | `pos: Vector3, target: hand, heading: Vector3, caller: Formation` | `void` | `obj:formationUpdateCallback(pos, target, heading, caller)` |
 
 ### Inherited Members
 **From [`AbstractMovementBase`](#abstractmovementbase):**
@@ -4648,7 +4659,7 @@
 | getCombatState | `` | `swordStateEnum` | `obj:getCombatState()` |
 | getBlockStateEnum | `` | `swordStateEnum` | `obj:getBlockStateEnum()` |
 | periodicUpdate | `time: number` | `void` | `obj:periodicUpdate(time)` |
-| whoAttacksYouOrMe | `attacker: Character, dist: number` | `integer\|number` | `obj:whoAttacksYouOrMe(attacker, dist)` |
+| whoAttacksYouOrMe | `attacker: Character, dist: number` | `integer, number` | `obj:whoAttacksYouOrMe(attacker, dist)` |
 | _iHitYouAreYouHit | `dir: CutDirection, damage: Damages, who: Character` | `HitMaterialType` | `obj:_iHitYouAreYouHit(dir, damage, who)` |
 | _getHit | `dir: CutDirection, damage: Damages, who: RootObject, stumble: boolean` | `void` | `obj:_getHit(dir, damage, who, stumble)` |
 | _blockHit | `dir: CutDirection, damage: Damages, who: RootObject` | `void` | `obj:_blockHit(dir, damage, who)` |
@@ -4695,7 +4706,7 @@
 | getNearestEnemyInAttackZone | `` | `Character` | `obj:getNearestEnemyInAttackZone()` |
 | assessIncomingAttacks | `outLektor: lektor<Character*>` | `void` | `obj:assessIncomingAttacks(outLektor)` |
 | notifyBlockNeeded | `` | `void` | `obj:notifyBlockNeeded()` |
-| calculateCurrentTechniqueSection | `` | `integer\|number` | `obj:calculateCurrentTechniqueSection()` |
+| calculateCurrentTechniqueSection | `` | `integer, number` | `obj:calculateCurrentTechniqueSection()` |
 | weaponReach | `` | `number` | `obj:weaponReach()` |
 | getBiggestThreat | `list: lektor<Character*>, minThreshold: number` | `Character` | `obj:getBiggestThreat(list, minThreshold)` |
 | gotMoreImportantThingsToDoThanFightingYou | `who: Character` | `boolean` | `obj:gotMoreImportantThingsToDoThanFightingYou(who)` |
@@ -4813,6 +4824,7 @@
 | setForcedWP | `v: Vector3` | `void` | `obj:setForcedWP(v)` |
 | getGUIData | `panel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(panel, category)` |
 | combatMovementOffensive | `target: hand, minDistance: number, maxDistance: number, circle: number, power: boolean, speedLimit: number` | `void` | `obj:combatMovementOffensive(target, minDistance, maxDistance, circle, power, speedLimit)` |
+| combatMovementAnimationUpdate | `motion: Vector3, facingDirection: Vector3, animation: AnimationClass, crippled: boolean` | `void` | `obj:combatMovementAnimationUpdate(motion, facingDirection, animation, crippled)` |
 | disable | `` | `void` | `obj:disable()` |
 
 ## CombatState
@@ -5543,6 +5555,10 @@
 | getUserData | `` | `hand` | `obj:getUserData()` |
 | getNumWidgets | `` | `integer` | `obj:getNumWidgets()` |
 | getWidget | `index: integer` | `MyGUI::Widget` | `obj:getWidget(index)` |
+| setToolTip [1] | `s: string` | `void` | `obj:setToolTip(s)` |
+| setToolTip [2] | `s: string, tooltip: ToolTip` | `void` | `obj:setToolTip(s, tooltip)` |
+| setToolTipMainBar [1] | `s: string, updateable: boolean` | `void` | `obj:setToolTipMainBar(s, updateable)` |
+| setToolTipMainBar [2] | `s: lektor<StringPair>, updateable: boolean` | `void` | `obj:setToolTipMainBar(s, updateable)` |
 
 ## DataPanelLine_Button
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5564,12 +5580,14 @@
 |---|---|---|---|
 | getUserData | `` | `hand` | `obj:getUserData()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
+| pressCallback | `sender: MyGUI::Widget` | `void` | `obj:pressCallback(sender)` |
+| setToolTipMainBar | `pairs: lektor<StringPair>, updateable: boolean` | `void` | `obj:setToolTipMainBar(pairs, updateable)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setToolTip`, `setVisible`
 
 ## DataPanelLine_CheckBox
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5593,12 +5611,13 @@
 | getTextBox | `` | `MyGUI::Widget` | `obj:getTextBox()` |
 | getCheckBox | `` | `MyGUI::Widget` | `obj:getCheckBox()` |
 | createMe | `parent: DatapanelGUI, topReal: number, lastLine: boolean` | `void` | `obj:createMe(parent, topReal, lastLine)` |
+| notifyToggleCheck | `sender: MyGUI::Widget` | `void` | `obj:notifyToggleCheck(sender)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_DropBox
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5626,12 +5645,14 @@
 | getComboBox | `` | `MyGUI::ComboBox` | `obj:getComboBox()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
 | refresh | `` | `void` | `obj:refresh()` |
+| selectionChange | `sender: MyGUI::ComboBox, index: integer` | `void` | `obj:selectionChange(sender, index)` |
+| goPressed | `sender: MyGUI::Widget` | `void` | `obj:goPressed(sender)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_Faction
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5657,7 +5678,7 @@
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_KeyConfig
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5682,12 +5703,13 @@
 | cancel | `` | `void` | `obj:cancel()` |
 | createMe | `p: DatapanelGUI, vpos: number, lastLine: boolean` | `void` | `obj:createMe(p, vpos, lastLine)` |
 | getCommand | `` | `void` | `obj:getCommand()` |
+| clickButton | `sender: MyGUI::Widget` | `void` | `obj:clickButton(sender)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_Progress
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5713,7 +5735,7 @@
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_Research
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5736,12 +5758,13 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
+| setToolTipMainBar | `pairs: lektor<StringPair>, updateable: boolean` | `void` | `obj:setToolTipMainBar(pairs, updateable)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setToolTip`, `setVisible`
 
 ## DataPanelLine_Slider
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5765,12 +5788,13 @@
 | getValue | `` | `number` | `obj:getValue()` |
 | refresh | `` | `void` | `obj:refresh()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
+| sliderValueChanged | `sender: MyGUI::Slider, value: integer` | `void` | `obj:sliderValueChanged(sender, value)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_SliderEditable
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5801,12 +5825,14 @@
 | refresh | `` | `void` | `obj:refresh()` |
 | setPrecision | `dp: integer` | `void` | `obj:setPrecision(dp)` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
+| editCallback | `sender: MyGUI::EditBox` | `void` | `obj:editCallback(sender)` |
+| sliderCallback | `sender: MyGUI::ScrollBar, position: integer` | `void` | `obj:sliderCallback(sender, position)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_Text
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5829,7 +5855,7 @@
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DataPanelLine_TextEditable
 **Header:** `extern/KenshiLib/Include/kenshi/gui/DataPanelLine.h`
@@ -5852,12 +5878,13 @@
 | getEditBox | `` | `MyGUI::EditBox` | `obj:getEditBox()` |
 | getNameBox | `` | `MyGUI::EditBox` | `obj:getNameBox()` |
 | createMe | `parent: DatapanelGUI, top: number, lastLine: boolean` | `void` | `obj:createMe(parent, top, lastLine)` |
+| textChanged | `sender: MyGUI::EditBox` | `void` | `obj:textChanged(sender)` |
 
 ### Inherited Members
 **From [`DataPanelLine`](#datapanelline):**
 
 - Fields: `category`, `classType`, `hi`, `keyValue`, `lo`, `s1`, `s2`, `skinW1`, `skinW2`, `w1`, `w2`
-- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setVisible`
+- Methods: `getBottom`, `getNumWidgets`, `getType`, `getUserData`, `getWidget`, `refresh`, `resize`, `setEnabled`, `setToolTip`, `setToolTipMainBar`, `setVisible`
 
 ## DialogChoiceList
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
@@ -6664,6 +6691,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | update | `` | `void` | `obj:update()` |
+| attachToWidget | `widget: MyGUI::Widget` | `void` | `obj:attachToWidget(widget)` |
 
 ### Inherited Members
 **From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
@@ -7060,6 +7088,10 @@
 | updateFogName | `line: DataPanelLine` | `void` | `obj:updateFogName(line)` |
 | updateFogValues | `_a1: DataPanelLine` | `void` | `obj:updateFogValues(_a1)` |
 | selectNextEdge | `_a1: DataPanelLine` | `void` | `obj:selectNextEdge(_a1)` |
+| closeWindow | `sender: MyGUI::Window, name: string` | `void` | `obj:closeWindow(sender, name)` |
+| addFog | `sender: MyGUI::Widget` | `void` | `obj:addFog(sender)` |
+| removeFog | `sender: MyGUI::Widget` | `void` | `obj:removeFog(sender)` |
+| selectFog | `list: MyGUI::ListBox, index: integer` | `void` | `obj:selectFog(list, index)` |
 
 ### Inherited Members
 **From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
@@ -7320,6 +7352,7 @@
 | createEditBoxAbs [2] | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, name: string, multiLine: boolean` | `MyGUI::EditBox` | `obj:createEditBoxAbs(parent, top, left, width, height, name, multiLine)` |
 | createScrollBarAbs | `parent: MyGUI::Widget, top: integer, left: integer, width: integer, height: integer, range: integer, value: integer` | `MyGUI::ScrollBar` | `obj:createScrollBarAbs(parent, top, left, width, height, range, value)` |
 | createListbox | `parent: MyGUI::Window, top: number, left: number, width: number, height: number` | `MyGUI::ListBox` | `obj:createListbox(parent, top, left, width, height)` |
+| showCharacterEditor | `mode: CharacterEditMode, races: userdata` | `void` | `obj:showCharacterEditor(mode, races)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -7360,7 +7393,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | update | `` | `void` | `obj:update()` |
-| getSpeeds | `motion: Vector3, frameTime: number` | `number` | `obj:getSpeeds(motion, frameTime)` |
+| getSpeeds | `motion: Vector3, frameTime: number` | `number, number` | `obj:getSpeeds(motion, frameTime)` |
 | setFormationMode | `target: hand` | `void` | `obj:setFormationMode(target)` |
 | stopFormationMode | `` | `void` | `obj:stopFormationMode()` |
 
@@ -7384,7 +7417,7 @@
 | getDefaultTask | `` | `integer` | `obj:getDefaultTask()` |
 | updateInputs | `rate: number` | `void` | `obj:updateInputs(rate)` |
 | updateOutput | `rate: number` | `void` | `obj:updateOutput(rate)` |
-| limitInputsOutputRate | `rate: number` | `boolean\|number` | `obj:limitInputsOutputRate(rate)` |
+| limitInputsOutputRate | `rate: number` | `boolean, number` | `obj:limitInputsOutputRate(rate)` |
 | getGUIData | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(datapanel, category)` |
 | getInputValue | `item: Item` | `number` | `obj:getInputValue(item)` |
 | getResourcesNeededBecauseNotFull | `` | `void` | `obj:getResourcesNeededBecauseNotFull()` |
@@ -7637,6 +7670,8 @@
 ### Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
+| show [1] | `on: boolean` | `void` | `obj:show(on)` |
+| show [2] | `on: boolean, left: number, top: number, _data: GameData` | `void` | `obj:show(on, left, top, _data)` |
 | initDataValues | `` | `void` | `obj:initDataValues()` |
 
 ## GameDataEditorWindow::DataItem
@@ -7884,7 +7919,7 @@
 | sysMessage | `m: GameWorld::SysMessage` | `void` | `obj:sysMessage(m)` |
 | sysMessageUrgent | `m: GameWorld::SysMessage` | `void` | `obj:sysMessageUrgent(m)` |
 | sysMessage_noDuplicates | `m: GameWorld::SysMessage` | `void` | `obj:sysMessage_noDuplicates(m)` |
-| getCollisionGroupType | `type: itemType` | `integer` | `obj:getCollisionGroupType(type)` |
+| getCollisionGroupType | `type: itemType` | `integer, integer` | `obj:getCollisionGroupType(type)` |
 | getTimeFromStamp [1] | `stamp: TimeOfDay` | `TimeOfDay` | `obj:getTimeFromStamp(stamp)` |
 | getTimeFromStamp [2] | `stamp: number` | `number` | `obj:getTimeFromStamp(stamp)` |
 | getIsInKillList | `obj: RootObject` | `boolean` | `obj:getIsInKillList(obj)` |
@@ -8597,7 +8632,7 @@
 ### Inherited Members
 **From [`hkMemoryAllocator`](#hkmemoryallocator):**
 
-- Methods: `blockAlloc`, `getExtendedInterface`, `resetPeakMemoryStatistics`
+- Methods: `blockAlloc`, `getExtendedInterface`, `getMemoryStatistics`, `resetPeakMemoryStatistics`
 
 ## hkMemoryAllocator
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
@@ -8611,6 +8646,7 @@
 | blockAlloc | `_a1: integer` | `void` | `obj:blockAlloc(_a1)` |
 | resetPeakMemoryStatistics | `` | `void` | `obj:resetPeakMemoryStatistics()` |
 | getExtendedInterface | `` | `lightuserdata` | `obj:getExtendedInterface()` |
+| getMemoryStatistics | `stats: hkMemoryAllocator::MemoryStatistics` | `hkMemoryAllocator::MemoryStatistics` | `obj:getMemoryStatistics(stats)` |
 
 ## hkMemoryAllocator::ExtendedInterface
 **Header:** `extern/KenshiLib/Include/kenshi/Havok.h`
@@ -8726,6 +8762,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | getZero | `` | `void` | `hkVector4f.getZero()`<br>`obj:getZero()` |
+| getConstant | `vectorConstant: hkVectorConstant` | `void` | `hkVector4f.getConstant(vectorConstant)`<br>`obj:getConstant(vectorConstant)` |
 | operator_new | `` | `void*` | `hkVector4f.operator_new()`<br>`obj:operator_new()` |
 | operator_delete | `arg1: hkVector4f` | `void` | `hkVector4f.operator_delete(arg1)`<br>`obj:operator_delete(arg1)` |
 
@@ -8788,7 +8825,7 @@
 **From [`LoadSaveWindow`](#loadsavewindow):**
 
 - Fields: `games`, `infoPanel`, `list`
-- Methods: `addOption`, `close`, `createInfo`, `deleteSelectedSave`, `enableOption`, `getOptions`, `getWidget`, `keyPressed`, `selectGame`, `toggleCheck`, `updateInfo`
+- Methods: `addOption`, `close`, `createInfo`, `deleteSelectedSave`, `enableOption`, `getOptions`, `getWidget`, `keyPressed`, `selectGame`, `sortListComparer`, `toggleCheck`, `updateInfo`
 
 **From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
 
@@ -9258,14 +9295,14 @@
 | update | `` | `void` | `obj:update()` |
 | getWidget | `` | `MyGUI::Widget` | `obj:getWidget()` |
 | setPosition | `left: integer, top: integer` | `void` | `obj:setPosition(left, top)` |
-| getSize | `` | `integer` | `obj:getSize()` |
+| getSize | `` | `integer, integer` | `obj:getSize()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | createIconImage | `` | `iVector2` | `InventoryIcon.createIconImage()`<br>`obj:createIconImage()` |
-| getItemSize | `` | `integer` | `InventoryIcon.getItemSize()`<br>`obj:getItemSize()` |
-| getItemPosition | `` | `integer` | `InventoryIcon.getItemPosition()`<br>`obj:getItemPosition()` |
+| getItemSize | `` | `integer, integer` | `InventoryIcon.getItemSize()`<br>`obj:getItemSize()` |
+| getItemPosition | `` | `integer, integer` | `InventoryIcon.getItemPosition()`<br>`obj:getItemPosition()` |
 
 ### Inherited Members
 **From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
@@ -9462,11 +9499,11 @@
 | hasItem [2] | `item: Item` | `boolean` | `obj:hasItem(item)` |
 | isLimitedSlotCompatible [1] | `itemData: GameData` | `boolean` | `obj:isLimitedSlotCompatible(itemData)` |
 | isLimitedSlotCompatible [2] | `item: Item` | `boolean` | `obj:isLimitedSlotCompatible(item)` |
-| getValidInventoryPosition | `item: Item` | `boolean\|integer` | `obj:getValidInventoryPosition(item)` |
+| getValidInventoryPosition | `item: Item` | `boolean, integer, integer` | `obj:getValidInventoryPosition(item)` |
 | getAllItemsOfType [1] | `list: lektor<Item*>, item: Item` | `void` | `obj:getAllItemsOfType(list, item)` |
 | getAllItemsOfType [2] | `list: lektor<Item*>, type: itemType` | `void` | `obj:getAllItemsOfType(list, type)` |
 | getAllItemsOfName | `itemName: string` | `void` | `obj:getAllItemsOfName(itemName)` |
-| findNearestPlaceForItem | `item: Item` | `boolean\|integer` | `obj:findNearestPlaceForItem(item)` |
+| findNearestPlaceForItem | `item: Item` | `boolean, integer, integer` | `obj:findNearestPlaceForItem(item)` |
 | getItemsInFootprint [1] | `itemList: lektor<Item*>, itemWidth: integer, itemHeight: integer, x: integer, y: integer` | `integer` | `obj:getItemsInFootprint(itemList, itemWidth, itemHeight, x, y)` |
 | getItemsInFootprint [2] | `out: lektor<Item*>, item: Item, x: integer, y: integer` | `integer` | `obj:getItemsInFootprint(out, item, x, y)` |
 | getItems | `` | `Ogre::vector<InventorySection::SectionItem>::type` | `obj:getItems()` |
@@ -10092,6 +10129,7 @@
 | toggleCheck | `sender: MyGUI::Widget` | `void` | `obj:toggleCheck(sender)` |
 | createInfo | `panel: MyGUI::Widget` | `void` | `obj:createInfo(panel)` |
 | updateInfo | `index: integer` | `void` | `obj:updateInfo(index)` |
+| sortListComparer | `sender: MyGUI::MultiListBox, column: integer, arg3: string, arg4: string, less: boolean` | `boolean` | `obj:sortListComparer(sender, column, arg3, arg4, less)` |
 
 ### Inherited Members
 **From [`BaseLayout`](MyGUIReference.md#baselayout):** its fields and methods are listed in the MyGUI Reference.
@@ -10416,6 +10454,8 @@
 | addButtonPress | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: MyGUI::MouseButton` | `void` | `obj:addButtonPress(sender, a2, a3, a4)` |
 | removeButtonPress | `sender: MyGUI::Widget, a2: integer, a3: integer, a4: MyGUI::MouseButton` | `void` | `obj:removeButtonPress(sender, a2, a3, a4)` |
 | mouseOverCallback | `sender: MyGUI::Widget, a2: integer, a3: integer` | `void` | `obj:mouseOverCallback(sender, a2, a3)` |
+| researchRemoved | `idx: integer, item: ManagementScreen::TechItemViewData` | `void` | `obj:researchRemoved(idx, item)` |
+| researchValidateOrder | `a: integer, b: integer, result: boolean` | `boolean` | `obj:researchValidateOrder(a, b, result)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -10563,6 +10603,7 @@
 |---|---|---|---|
 | setVisible | `value: boolean` | `void` | `obj:setVisible(value)` |
 | getVisible | `` | `boolean` | `obj:getVisible()` |
+| update | `` | `void` | `obj:update()` |
 
 ## MapScreen::MapMarkerTown
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
@@ -10583,6 +10624,7 @@
 |---|---|---|---|
 | setVisible | `value: boolean` | `void` | `obj:setVisible(value)` |
 | getVisible | `` | `boolean` | `obj:getVisible()` |
+| update | `zoom: MapZoomLevel` | `void` | `obj:update(zoom)` |
 
 ## MapScreen::MapRoad
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MapScreen.h`
@@ -10607,6 +10649,7 @@
 | setup | `numFrames: integer, numSamples: integer, _isPositionsFilter: boolean` | `void` | `obj:setup(numFrames, numSamples, _isPositionsFilter)` |
 | reset | `` | `void` | `obj:reset()` |
 | applySilent | `delta_mouse_x: number` | `void` | `obj:applySilent(delta_mouse_x)` |
+| apply | `delta_mouse_x: number` | `number` | `obj:apply(delta_mouse_x)` |
 
 ## MedianFilter2DVector
 **Header:** `extern/KenshiLib/Include/kenshi/CharMovement.h`
@@ -10878,7 +10921,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | operator_assign | `other: ModInfo` | `ModInfo` | `obj:operator_assign(other)` |
-| getLocale | `` | `boolean\|string` | `obj:getLocale()` |
+| getLocale | `` | `boolean, string, string` | `obj:getLocale()` |
 
 ## MoneyItem
 **Header:** `extern/KenshiLib/Include/kenshi/Item.h`
@@ -10927,6 +10970,7 @@
 | Lua Name | Arguments | Return Type | Example |
 |---|---|---|---|
 | SetHistoryBufferLength | `length: integer, fill: number` | `boolean` | `obj:SetHistoryBufferLength(length, fill)` |
+| Apply | `x: number` | `number` | `obj:Apply(x)` |
 
 ## MultiSlider
 **Header:** `extern/KenshiLib/Include/kenshi/gui/MyGUI_MultiSlider.h`
@@ -11030,6 +11074,25 @@
 | pathExists [1] | `startKey: integer, goalKey: integer` | `boolean` | `obj:pathExists(startKey, goalKey)` |
 | pathExists [2] | `c: HavokCharacter, target: Vector3` | `integer` | `obj:pathExists(c, target)` |
 | getInterior | `building: hand, create: boolean` | `NavInstance` | `obj:getInterior(building, create)` |
+| generate [1] | `building: hand` | `void` | `obj:generate(building)` |
+| generate [2] | `box: Ogre::Aabb` | `void` | `obj:generate(box)` |
+| generate [3] | `zone: ZoneMap` | `void` | `obj:generate(zone)` |
+| getClosestPoint [1] | `point: Vector3, radius: number, inset: number, filter: hkaiSpatialQueryHitFilter, out: Vector3, key: integer` | `integer` | `obj:getClosestPoint(point, radius, inset, filter, out, key)` |
+| getClosestPoint [2] | `point: Vector3, radius: number, inset: number, water: boolean, out: Vector3, key: integer` | `integer` | `obj:getClosestPoint(point, radius, inset, water, out, key)` |
+| getClosestPoint [3] | `point: Vector3, radius: number, inset: number, water: boolean, out: Vector3` | `integer` | `obj:getClosestPoint(point, radius, inset, water, out)` |
+| getClosestBoundary | `face: integer, point: hkVector4f, radius: number, edge: EdgePathNode` | `integer` | `obj:getClosestBoundary(face, point, radius, edge)` |
+| projectToNavMesh | `point: hkVector4f, key: integer, limit: number` | `integer, integer` | `obj:projectToNavMesh(point, key, limit)` |
+| areEdgesConnected | `a: EdgePathNode, b: EdgePathNode, side: integer` | `integer` | `obj:areEdgesConnected(a, b, side)` |
+| checkCollision | `face: integer, pos: hkVector4f, move: hkVector4f` | `integer, number, integer` | `obj:checkCollision(face, pos, move)` |
+| fillEdgeCache | `faceKey: integer, point: hkVector4f, radius: number, cache: EdgeCache` | `integer` | `obj:fillEdgeCache(faceKey, point, radius, cache)` |
+| isCharacterStuck | `position: hkVector4f, key: integer, radius: number, threshold: number` | `boolean` | `obj:isCharacterStuck(position, key, radius, threshold)` |
+| deleteMesh [1] | `s: NavMeshSector` | `void` | `obj:deleteMesh(s)` |
+| deleteMesh [2] | `s: NavInstance` | `void` | `obj:deleteMesh(s)` |
+| createZone | `zone: ZoneMap, hash: integer` | `integer` | `obj:createZone(zone, hash)` |
+| shiftWorld | `pos: hkVector4f` | `void` | `obj:shiftWorld(pos)` |
+| validateStreamingData | `navInst: NavInstance` | `boolean` | `obj:validateStreamingData(navInst)` |
+| resolvePoint | `point: hkVector4f, building: hand, radius: number, search: number, output: hkVector4f` | `integer` | `obj:resolvePoint(point, building, radius, search, output)` |
+| getClearance | `faceKey: integer, edgeKey: integer` | `integer, number, number, number` | `obj:getClearance(faceKey, edgeKey)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -11099,6 +11162,17 @@
 | unlockTask | `task: userdata` | `void` | `obj:unlockTask(task)` |
 | hasJob | `zone: ZoneMap` | `boolean` | `obj:hasJob(zone)` |
 | update | `` | `void` | `obj:update()` |
+| lockZone | `zone: iVector2, wait: boolean` | `boolean` | `obj:lockZone(zone, wait)` |
+| unlockZone | `zone: iVector2` | `void` | `obj:unlockZone(zone)` |
+| stitch | `a: NavInstance, b: NavInstance` | `integer` | `obj:stitch(a, b)` |
+| stitchUnloadedZone | `a: NavInstance, bx: integer, by: integer, interiors: boolean` | `integer` | `obj:stitchUnloadedZone(a, bx, by, interiors)` |
+| getSeedPointsFromAdjacentZone | `zone: ZoneMap, dir: iVector2` | `integer` | `obj:getSeedPointsFromAdjacentZone(zone, dir)` |
+| getCompletedTask | `uid: integer` | `NavMeshGenerator::Task` | `obj:getCompletedTask(uid)` |
+| addJob [1] | `zone: ZoneMap, buildings: lektor<Building*>, splice: boolean` | `void` | `obj:addJob(zone, buildings, splice)` |
+| addJob [2] | `zone: ZoneMap, building: hand, hash: integer` | `void` | `obj:addJob(zone, building, hash)` |
+| addJob [3] | `zone: ZoneMap, box: Ogre::Aabb` | `void` | `obj:addJob(zone, box)` |
+| addJob [4] | `zone: ZoneMap, hash: integer` | `void` | `obj:addJob(zone, hash)` |
+| addStitchJob | `s: NavInstance` | `void` | `obj:addStitchJob(s)` |
 
 ### Inherited Members
 **From [`ThreadClass`](#threadclass):**
@@ -11844,6 +11918,7 @@
 | _createStaticBox | `pos: Vector3, dimensions: Vector3, rot: Quaternion, group: integer` | `lightuserdata` | `obj:_createStaticBox(pos, dimensions, rot, group)` |
 | _destroy | `actor: userdata` | `void` | `obj:_destroy(actor)` |
 | uncookMesh | `mesh: userdata, cId: string` | `boolean` | `obj:uncookMesh(mesh, cId)` |
+| convertXMLToBin | `filename: string, scale: Vector3` | `void` | `obj:convertXMLToBin(filename, scale)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -11946,6 +12021,7 @@
 | updateAim | `speed: number, target: Vector3` | `number` | `obj:updateAim(speed, target)` |
 | isRotatingEnt | `` | `boolean` | `obj:isRotatingEnt()` |
 | getRotationPower | `` | `number` | `obj:getRotationPower()` |
+| weatherUpdated | `weather: WeatherInstance, newWeather: boolean` | `void` | `obj:weatherUpdated(weather, newWeather)` |
 
 ### Inherited Members
 **From [`PhysicalEntity`](#physicalentity):**
@@ -12275,7 +12351,7 @@
 | updatePlayerSelection | `oldHandle: hand, newHandle: hand` | `void` | `obj:updatePlayerSelection(oldHandle, newHandle)` |
 | getAllSelectedObjects | `out: lektor<RootObject*>, type: itemType` | `void` | `obj:getAllSelectedObjects(out, type)` |
 | newPlayerTaskSelectedCharacters | `t: TaskType, targetH: hand, destinationIndoors: Building, clickpos: Vector3, addDontClear: boolean` | `void` | `obj:newPlayerTaskSelectedCharacters(t, targetH, destinationIndoors, clickpos, addDontClear)` |
-| getPlayerTaskProbability | `task: TaskType, target: RootObject` | `boolean\|number` | `obj:getPlayerTaskProbability(task, target)` |
+| getPlayerTaskProbability | `task: TaskType, target: RootObject` | `boolean, number` | `obj:getPlayerTaskProbability(task, target)` |
 | getAllPlayerCharacters [1] | `list: lektor<RootObject*>` | `void` | `obj:getAllPlayerCharacters(list)` |
 | getAllPlayerCharacters [2] | `` | `lektor<Character*>` | `obj:getAllPlayerCharacters()` |
 | updateFloorVisibility | `characters: lektor<Character*>` | `void` | `obj:updateFloorVisibility(characters)` |
@@ -12410,6 +12486,8 @@
 | updatePortraitImage | `characterHandle: hand` | `boolean` | `obj:updatePortraitImage(characterHandle)` |
 | setImageWidget | `characterHandle: hand, imgBox: MyGUI::ImageBox, force: boolean` | `void` | `obj:setImageWidget(characterHandle, imgBox, force)` |
 | setImageWidgetNPC | `character: Character, imgBox: MyGUI::ImageBox` | `void` | `obj:setImageWidgetNPC(character, imgBox)` |
+| createPortraitImage | `character: Character` | `PortraitImage` | `obj:createPortraitImage(character)` |
+| getNextIndices | `` | `integer, integer` | `obj:getNextIndices()` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -12516,6 +12594,7 @@
 | getCentreOffset | `` | `Vector3` | `obj:getCentreOffset()` |
 | isNoCollideWithThisBuilding [1] | `what: RootObject, shape: NxShape, node: boolean` | `boolean` | `obj:isNoCollideWithThisBuilding(what, shape, node)` |
 | isNoCollideWithThisBuilding [2] | `what: PreviewBuilding` | `boolean` | `obj:isNoCollideWithThisBuilding(what)` |
+| buildingPlacementUpdate | `hit: physHit, mRightUp: boolean, mLeftUp: boolean` | `boolean, boolean` | `obj:buildingPlacementUpdate(hit, mRightUp, mLeftUp)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -12632,7 +12711,7 @@
 | updateInputs | `rate: number` | `void` | `obj:updateInputs(rate)` |
 | updateOutput | `rate: number` | `void` | `obj:updateOutput(rate)` |
 | serialise | `container: GameDataContainer, refList: GameData, offset: userdata` | `GameSaveState` | `obj:serialise(container, refList, offset)` |
-| limitInputsOutputRate | `rate: number` | `boolean\|number` | `obj:limitInputsOutputRate(rate)` |
+| limitInputsOutputRate | `rate: number` | `boolean, number` | `obj:limitInputsOutputRate(rate)` |
 | operate | `who: Character, amount: number` | `void` | `obj:operate(who, amount)` |
 | getGUIData | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIData(datapanel, category)` |
 | getGUIToolTipForGroundResourceEfficiency | `` | `void` | `obj:getGUIToolTipForGroundResourceEfficiency()` |
@@ -13246,6 +13325,7 @@
 | destroy [3] | `obj: Ogre::MovableObject, destroyParent: boolean` | `void` | `obj:destroy(obj, destroyParent)` |
 | destroy [4] | `entity: Ogre::Entity, destroyParent: boolean` | `void` | `obj:destroy(entity, destroyParent)` |
 | destroy [5] | `` | `void` | `obj:destroy()` |
+| abortLoadRequest | `requestId: number` | `boolean` | `obj:abortLoadRequest(requestId)` |
 
 ### Static Methods
 | Lua Name | Arguments | Return Type | Example |
@@ -14807,6 +14887,9 @@
 | isResultsComplete_ignoreSubtasker | `ai: AI, target: hand, subTarget: hand, location: Vector3` | `boolean` | `obj:isResultsComplete_ignoreSubtasker(ai, target, subTarget, location)` |
 | isRequirementComplete | `ai: AI, obj: hand, req: integer, location: Vector3` | `boolean` | `obj:isRequirementComplete(ai, obj, req, location)` |
 | _targetsRemaining | `ai: AI, target: hand` | `boolean` | `obj:_targetsRemaining(ai, target)` |
+| getRequirementComplaint | `ai: AI, target: hand, location: Vector3, subTarget: hand, autoTargetFinder: boolean` | `void` | `obj:getRequirementComplaint(ai, target, location, subTarget, autoTargetFinder)` |
+| _isRequirementsComplete | `ai: AI, target: hand, location: Vector3, subTarget: hand, autoTargetFinder: boolean` | `boolean, integer` | `obj:_isRequirementsComplete(ai, target, location, subTarget, autoTargetFinder)` |
+| runTargetFind | `ai: AI, target: hand, justAsking: boolean` | `hand` | `obj:runTargetFind(ai, target, justAsking)` |
 
 ## Tasker
 **Header:** `extern/KenshiLib/Include/kenshi/Tasker.h`
@@ -14855,6 +14938,7 @@
 | isSubTaskerTargetFinishedWith | `ai: AI, target: hand` | `boolean` | `obj:isSubTaskerTargetFinishedWith(ai, target)` |
 | _targetsRemaining | `ai: AI` | `boolean` | `obj:_targetsRemaining(ai)` |
 | isSubTaskerComplete | `ai: AI` | `boolean` | `obj:isSubTaskerComplete(ai)` |
+| findTarget | `ai: AI` | `hand` | `obj:findTarget(ai)` |
 
 ## TaskMatch
 **Header:** `extern/KenshiLib/Include/kenshi/AI/AITaskSystem.h`
@@ -15446,6 +15530,8 @@
 | setHandle | `h: hand` | `void` | `obj:setHandle(h)` |
 | getPlayerTownTypeEnum | `` | `TownType` | `obj:getPlayerTownTypeEnum()` |
 | serialise | `container: GameDataContainer, refList: GameData, offset: userdata` | `GameSaveState` | `obj:serialise(container, refList, offset)` |
+| powerBuilding | `what: UseableStuff, numUnPoweredBuildings: integer, powerRemaining: number, addToStat: boolean` | `boolean, number` | `obj:powerBuilding(what, numUnPoweredBuildings, powerRemaining, addToStat)` |
+| drainBattery | `what: UseableStuff, numUnPoweredBuildings: integer, powerRemaining: number` | `boolean, number` | `obj:drainBattery(what, numUnPoweredBuildings, powerRemaining)` |
 
 ### Inherited Members
 **From [`TownBase`](#townbase):**
@@ -16423,6 +16509,7 @@
 | getGUIDestroyButton | `datapanel: DatapanelGUI, category: integer` | `void` | `obj:getGUIDestroyButton(datapanel, category)` |
 | dismantleButton_all | `line: DataPanelLine` | `void` | `obj:dismantleButton_all(line)` |
 | letsShare | `who: WallBuilding` | `boolean` | `obj:letsShare(who)` |
+| runLinkingCheck | `zone: ZoneMapContent` | `void` | `obj:runLinkingCheck(zone)` |
 
 ### Inherited Members
 **From [`Building`](#building):**
@@ -16633,6 +16720,11 @@
 **Header:** `extern/KenshiLib/Include/kenshi/Dialogue.h`
 **Enclosing Class:** [`WeatherRegion`](#weatherregion)
 **Metatable:** `KenshiLua.Listener`
+
+### Methods
+| Lua Name | Arguments | Return Type | Example |
+|---|---|---|---|
+| weatherUpdated | `weather: WeatherInstance, newWeather: boolean` | `void` | `obj:weatherUpdated(weather, newWeather)` |
 
 ## WeatherSystem
 **Header:** `extern/KenshiLib/Include/kenshi/Weather.h`
@@ -17000,6 +17092,7 @@
 | isActivationType | `type: ZoneActivationType` | `boolean` | `obj:isActivationType(type)` |
 | init | `loc: iVector2` | `void` | `obj:init(loc)` |
 | getCenterPos | `` | `Vector3` | `obj:getCenterPos()` |
+| _activate | `range: integer, type: ZoneActivationType, deactivationTimer: number` | `boolean` | `obj:_activate(range, type, deactivationTimer)` |
 
 ## ZoneMap::StateT
 **Header:** `extern/KenshiLib/Include/kenshi/ZoneManager.h`

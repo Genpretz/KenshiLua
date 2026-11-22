@@ -31459,6 +31459,36 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "CameraClassBinding::intersectScreenEdge",
+          "name": "intersectScreenEdge",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "b",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "padding",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "return_values": [
+              "integer",
+              "number"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -34615,6 +34645,37 @@
                 "name": "speedLimit",
                 "optional": false,
                 "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CharMovementBinding::formationUpdateCallback",
+          "name": "formationUpdateCallback",
+          "signature": {
+            "params": [
+              {
+                "name": "_pos",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "heading",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "caller",
+                "optional": true,
+                "type": "Formation"
               }
             ],
             "returns": [],
@@ -45429,6 +45490,147 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "CharacterEditWindowBinding::updateAppearanceSlider",
+          "name": "updateAppearanceSlider",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Slider|Slider"
+              },
+              {
+                "name": "_value",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CharacterEditWindowBinding::updateAppearanceSliderPose",
+          "name": "updateAppearanceSliderPose",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Slider|Slider"
+              },
+              {
+                "name": "_value",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CharacterEditWindowBinding::updateAppearanceSliderVector",
+          "name": "updateAppearanceSliderVector",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Slider|Slider"
+              },
+              {
+                "name": "_value",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CharacterEditWindowBinding::updateAppearanceList",
+          "name": "updateAppearanceList",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "ListScrollBar|MyGUI.ListScrollBar"
+              },
+              {
+                "name": "_value",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "_index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CharacterEditWindowBinding::updateAppearanceMultiSlider",
+          "name": "updateAppearanceMultiSlider",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MultiSlider|MyGUI.MultiSlider"
+              },
+              {
+                "name": "_target",
+                "optional": false,
+                "type": "MyGUI.Slider|Slider"
+              },
+              {
+                "name": "_targetIndex",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "_value",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CharacterEditWindowBinding::updateAnimationIdle",
+          "name": "updateAnimationIdle",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Slider|Slider"
+              },
+              {
+                "name": "_value",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "BaseLayoutBinding",
@@ -46475,6 +46677,53 @@
             "type_source": "header"
           },
           "static": true
+        },
+        {
+          "callback": "CharacterStatsWindowBinding::closeWindow",
+          "name": "closeWindow",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Window"
+              },
+              {
+                "name": "_name",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CharacterStatsWindowBinding::statMouseOver",
+          "name": "statMouseOver",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "arg3",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "GUIWindowBinding",
@@ -49037,6 +49286,37 @@
                 "name": "_speedLimit",
                 "optional": false,
                 "type": "number"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "CombatMovementControllerBinding::combatMovementAnimationUpdate",
+          "name": "combatMovementAnimationUpdate",
+          "signature": {
+            "params": [
+              {
+                "name": "motion",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "facingDirection",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "animation",
+                "optional": true,
+                "type": "AnimationClass"
+              },
+              {
+                "name": "crippled",
+                "optional": true,
+                "type": "boolean"
               }
             ],
             "returns": [],
@@ -53647,6 +53927,88 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "DataPanelLineBinding::setToolTip",
+          "name": "setToolTip",
+          "signature": {
+            "params": [
+              {
+                "name": "s",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "tooltip",
+                "optional": true,
+                "type": "ToolTip"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLineBinding::_NV_setToolTip",
+          "name": "_NV_setToolTip",
+          "signature": {
+            "params": [
+              {
+                "name": "s",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "tooltip",
+                "optional": true,
+                "type": "ToolTip"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLineBinding::setToolTipMainBar",
+          "name": "setToolTipMainBar",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLineBinding::_NV_setToolTipMainBar",
+          "name": "_NV_setToolTipMainBar",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -53792,6 +54154,62 @@
             ],
             "returns": [],
             "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_ButtonBinding::pressCallback",
+          "name": "pressCallback",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_ButtonBinding::setToolTipMainBar",
+          "name": "setToolTipMainBar",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_ButtonBinding::_NV_setToolTipMainBar",
+          "name": "_NV_setToolTipMainBar",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": []
           },
           "static": false
         }
@@ -53955,6 +54373,22 @@
                 "name": "lastLine",
                 "optional": true,
                 "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_CheckBoxBinding::notifyToggleCheck",
+          "name": "notifyToggleCheck",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Widget"
               }
             ],
             "returns": [],
@@ -54143,6 +54577,43 @@
           "signature": {
             "params": [],
             "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_DropBoxBinding::selectionChange",
+          "name": "selectionChange",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.ComboBox"
+              },
+              {
+                "name": "i",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_DropBoxBinding::goPressed",
+          "name": "goPressed",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         }
@@ -54419,6 +54890,22 @@
             ]
           },
           "static": false
+        },
+        {
+          "callback": "DataPanelLine_KeyConfigBinding::clickButton",
+          "name": "clickButton",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "DataPanelLineBinding",
@@ -54619,6 +55106,46 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "DataPanelLine_ResearchBinding::setToolTipMainBar",
+          "name": "setToolTipMainBar",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_ResearchBinding::_NV_setToolTipMainBar",
+          "name": "_NV_setToolTipMainBar",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
         }
       ],
       "parent_binding": "DataPanelLineBinding",
@@ -54765,6 +55292,27 @@
                 "name": "lastLine",
                 "optional": true,
                 "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_SliderBinding::sliderValueChanged",
+          "name": "sliderValueChanged",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.Slider|Slider"
+              },
+              {
+                "name": "_value",
+                "optional": false,
+                "type": "integer"
               }
             ],
             "returns": [],
@@ -54958,6 +55506,43 @@
                 "name": "lastLine",
                 "optional": true,
                 "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_SliderEditableBinding::editCallback",
+          "name": "editCallback",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.EditBox"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_SliderEditableBinding::sliderCallback",
+          "name": "sliderCallback",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.ScrollBar"
+              },
+              {
+                "name": "_position",
+                "optional": false,
+                "type": "integer"
               }
             ],
             "returns": [],
@@ -55179,6 +55764,22 @@
                 "name": "lastLine",
                 "optional": true,
                 "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "DataPanelLine_TextEditableBinding::textChanged",
+          "name": "textChanged",
+          "signature": {
+            "params": [
+              {
+                "name": "sender",
+                "optional": false,
+                "type": "MyGUI.EditBox"
               }
             ],
             "returns": [],
@@ -64191,6 +64792,22 @@
             "returns": []
           },
           "static": false
+        },
+        {
+          "callback": "FactionRelationsLineBinding::attachToWidget",
+          "name": "attachToWidget",
+          "signature": {
+            "params": [
+              {
+                "name": "widget",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "BaseLayoutBinding",
@@ -67324,6 +67941,80 @@
             "returns": []
           },
           "static": false
+        },
+        {
+          "callback": "FogEditorBinding::closeWindow",
+          "name": "closeWindow",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "MyGUI.Window"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "string"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FogEditorBinding::addFog",
+          "name": "addFog",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FogEditorBinding::removeFog",
+          "name": "removeFog",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "MyGUI.Widget"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "FogEditorBinding::selectFog",
+          "name": "selectFog",
+          "signature": {
+            "params": [
+              {
+                "name": "list",
+                "optional": false,
+                "type": "MyGUI.ListBox"
+              },
+              {
+                "name": "index",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "BaseLayoutBinding",
@@ -70317,6 +71008,32 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "ForgottenGUIBinding::showCharacterEditor",
+          "name": "showCharacterEditor",
+          "signature": {
+            "params": [
+              {
+                "name": "characters",
+                "optional": false,
+                "type": "Lektor<Character>"
+              },
+              {
+                "name": "mode",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "races",
+                "optional": true,
+                "type": "OgreVector<GameDataReference>"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -73022,6 +73739,37 @@
                 "name": "on",
                 "optional": true,
                 "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "GameDataEditorWindowBinding::show",
+          "name": "show",
+          "signature": {
+            "params": [
+              {
+                "name": "on",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "left",
+                "optional": true,
+                "type": "number"
+              },
+              {
+                "name": "top",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "_data",
+                "optional": true,
+                "type": "GameData"
               }
             ],
             "returns": [],
@@ -90860,7 +91608,28 @@
       "kind": "class",
       "lua_type": "Listener",
       "metatable": "KenshiLua.Listener",
-      "methods": [],
+      "methods": [
+        {
+          "callback": "ListenerBinding::weatherUpdated",
+          "name": "weatherUpdated",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": true,
+                "type": "WeatherInstance"
+              },
+              {
+                "name": "arg2",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        }
+      ],
       "parent_binding": null,
       "parent_metatable": "",
       "properties": [],
@@ -91106,6 +91875,44 @@
               }
             ],
             "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "LoadSaveWindowBinding::sortListComparer",
+          "name": "sortListComparer",
+          "signature": {
+            "params": [
+              {
+                "name": "_sender",
+                "optional": false,
+                "type": "MyGUI.MultiListBox"
+              },
+              {
+                "name": "_column",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "arg3",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "arg4",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "_less",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
             "type_source": "header"
           },
           "static": false
@@ -93410,6 +94217,55 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "ManagementScreenBinding::researchRemoved",
+          "name": "researchRemoved",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "item",
+                "optional": false,
+                "type": "ManagementScreen_TechItemViewData"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "ManagementScreenBinding::researchValidateOrder",
+          "name": "researchValidateOrder",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "b",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "result",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "BaseLayoutBinding",
@@ -93816,6 +94672,22 @@
             ]
           },
           "static": false
+        },
+        {
+          "callback": "MapMarkerCharacterBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "mapPosition",
+                "optional": false,
+                "type": "MyGUI.IntPoint"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -93869,6 +94741,27 @@
             "returns": [
               "boolean"
             ]
+          },
+          "static": false
+        },
+        {
+          "callback": "MapMarkerTownBinding::update",
+          "name": "update",
+          "signature": {
+            "params": [
+              {
+                "name": "mapPosition",
+                "optional": false,
+                "type": "MyGUI.IntPoint"
+              },
+              {
+                "name": "zoom",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         }
@@ -94630,6 +95523,24 @@
               }
             ],
             "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "MedianFilterBinding::apply",
+          "name": "apply",
+          "signature": {
+            "params": [
+              {
+                "name": "delta_mouse_x",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
             "type_source": "header"
           },
           "static": false
@@ -97281,6 +98192,24 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "MotionFilterBinding::Apply",
+          "name": "Apply",
+          "signature": {
+            "params": [
+              {
+                "name": "x",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "number"
+            ],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -98508,6 +99437,386 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "NavMeshBinding::generate",
+          "name": "generate",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "ZoneMap|hand"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::getClosestPoint",
+          "name": "getClosestPoint",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "arg3",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "arg4",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "return_values": [
+              "integer",
+              "table",
+              "integer"
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::getClosestBoundary",
+          "name": "getClosestBoundary",
+          "signature": {
+            "params": [
+              {
+                "name": "face",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "point",
+                "optional": false,
+                "type": "hkVector4f"
+              },
+              {
+                "name": "radius",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "edge",
+                "optional": false,
+                "type": "EdgePathNode"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::projectToNavMesh",
+          "name": "projectToNavMesh",
+          "signature": {
+            "params": [
+              {
+                "name": "point",
+                "optional": false,
+                "type": "hkVector4f"
+              },
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "limit",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "return_values": [
+              "integer",
+              "integer"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::areEdgesConnected",
+          "name": "areEdgesConnected",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "EdgePathNode"
+              },
+              {
+                "name": "b",
+                "optional": false,
+                "type": "EdgePathNode"
+              },
+              {
+                "name": "side",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::checkCollision",
+          "name": "checkCollision",
+          "signature": {
+            "params": [
+              {
+                "name": "face",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "hkVector4f"
+              },
+              {
+                "name": "move",
+                "optional": false,
+                "type": "hkVector4f"
+              }
+            ],
+            "return_values": [
+              "integer",
+              "number",
+              "integer"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::fillEdgeCache",
+          "name": "fillEdgeCache",
+          "signature": {
+            "params": [
+              {
+                "name": "faceKey",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "point",
+                "optional": false,
+                "type": "hkVector4f"
+              },
+              {
+                "name": "radius",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "cache",
+                "optional": false,
+                "type": "EdgeCache"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::isCharacterStuck",
+          "name": "isCharacterStuck",
+          "signature": {
+            "params": [
+              {
+                "name": "position",
+                "optional": false,
+                "type": "hkVector4f"
+              },
+              {
+                "name": "key",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "radius",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "threshold",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::deleteMesh",
+          "name": "deleteMesh",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "NavInstance"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::createZone",
+          "name": "createZone",
+          "signature": {
+            "params": [
+              {
+                "name": "zone",
+                "optional": false,
+                "type": "ZoneMap"
+              },
+              {
+                "name": "hash",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "interiors",
+                "optional": false,
+                "type": "Lektor<NavMesh_BuildingInfo>"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::shiftWorld",
+          "name": "shiftWorld",
+          "signature": {
+            "params": [
+              {
+                "name": "pos",
+                "optional": false,
+                "type": "hkVector4f"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::validateStreamingData",
+          "name": "validateStreamingData",
+          "signature": {
+            "params": [
+              {
+                "name": "instance",
+                "optional": false,
+                "type": "NavInstance"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::resolvePoint",
+          "name": "resolvePoint",
+          "signature": {
+            "params": [
+              {
+                "name": "point",
+                "optional": false,
+                "type": "hkVector4f"
+              },
+              {
+                "name": "building",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "radius",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "search",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "output",
+                "optional": false,
+                "type": "hkVector4f"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshBinding::getClearance",
+          "name": "getClearance",
+          "signature": {
+            "params": [
+              {
+                "name": "faceKey",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "edgeKey",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "return_values": [
+              "integer",
+              "number",
+              "number",
+              "number"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "ThreadClassBinding",
@@ -98786,6 +100095,185 @@
           "signature": {
             "params": [],
             "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::lockZone",
+          "name": "lockZone",
+          "signature": {
+            "params": [
+              {
+                "name": "zone",
+                "optional": false,
+                "type": "iVector2"
+              },
+              {
+                "name": "wait",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::unlockZone",
+          "name": "unlockZone",
+          "signature": {
+            "params": [
+              {
+                "name": "zone",
+                "optional": false,
+                "type": "iVector2"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::stitch",
+          "name": "stitch",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "NavInstance"
+              },
+              {
+                "name": "b",
+                "optional": false,
+                "type": "NavInstance"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::stitchUnloadedZone",
+          "name": "stitchUnloadedZone",
+          "signature": {
+            "params": [
+              {
+                "name": "a",
+                "optional": false,
+                "type": "NavInstance"
+              },
+              {
+                "name": "bx",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "by",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "interiors",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::getSeedPointsFromAdjacentZone",
+          "name": "getSeedPointsFromAdjacentZone",
+          "signature": {
+            "params": [
+              {
+                "name": "zone",
+                "optional": false,
+                "type": "ZoneMap"
+              },
+              {
+                "name": "dir",
+                "optional": false,
+                "type": "iVector2"
+              }
+            ],
+            "returns": [
+              "integer"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::getCompletedTask",
+          "name": "getCompletedTask",
+          "signature": {
+            "params": [
+              {
+                "name": "uid",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
+            "return_values": [
+              "NavInstance|nil",
+              "NavMeshGenerator_Task|nil"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::addJob",
+          "name": "addJob",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": false,
+                "type": "ZoneMap"
+              },
+              {
+                "name": "arg2",
+                "optional": false,
+                "type": "hand|integer"
+              },
+              {
+                "name": "arg3",
+                "optional": true,
+                "type": "boolean|integer"
+              }
+            ],
+            "returns": []
+          },
+          "static": false
+        },
+        {
+          "callback": "NavMeshGeneratorBinding::addStitchJob",
+          "name": "addStitchJob",
+          "signature": {
+            "params": [
+              {
+                "name": "s",
+                "optional": false,
+                "type": "NavInstance"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         }
@@ -104260,6 +105748,29 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "PhysicsActualBinding::convertXMLToBin",
+          "name": "convertXMLToBin",
+          "signature": {
+            "params": [
+              {
+                "name": "filename",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "name": "scale",
+                "optional": false,
+                "type": "table"
+              }
+            ],
+            "returns": [
+              "string"
+            ],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "PhysicsInterfaceBinding",
@@ -108327,6 +109838,39 @@
             ]
           },
           "static": true
+        },
+        {
+          "callback": "PortraitManagerBinding::createPortraitImage",
+          "name": "createPortraitImage",
+          "signature": {
+            "params": [
+              {
+                "name": "character",
+                "optional": false,
+                "type": "Character"
+              }
+            ],
+            "return_values": [
+              "boolean",
+              "PortraitImage|nil"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PortraitManagerBinding::getNextIndices",
+          "name": "getNextIndices",
+          "signature": {
+            "params": [],
+            "return_values": [
+              "integer",
+              "integer"
+            ],
+            "returns": []
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -109584,6 +111128,66 @@
             "returns": [
               "boolean"
             ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PreviewBuildingBinding::buildingPlacementUpdate",
+          "name": "buildingPlacementUpdate",
+          "signature": {
+            "params": [
+              {
+                "name": "hit",
+                "optional": false,
+                "type": "physHit"
+              },
+              {
+                "name": "mRightUp",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "mLeftUp",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "return_values": [
+              "boolean",
+              "boolean"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "PreviewBuildingBinding::_NV_buildingPlacementUpdate",
+          "name": "_NV_buildingPlacementUpdate",
+          "signature": {
+            "params": [
+              {
+                "name": "hit",
+                "optional": false,
+                "type": "physHit"
+              },
+              {
+                "name": "mRightUp",
+                "optional": true,
+                "type": "boolean"
+              },
+              {
+                "name": "mLeftUp",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "return_values": [
+              "boolean",
+              "boolean"
+            ],
+            "returns": [],
             "type_source": "header"
           },
           "static": false
@@ -114223,6 +115827,24 @@
             "returns": []
           },
           "static": false
+        },
+        {
+          "callback": "ResourceLoaderBinding::abortLoadRequest",
+          "name": "abortLoadRequest",
+          "signature": {
+            "params": [
+              {
+                "name": "requestId",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "ThreadClassBinding",
@@ -118018,6 +119640,48 @@
             "returns": [
               "number"
             ]
+          },
+          "static": false
+        },
+        {
+          "callback": "RotatingEntBinding::weatherUpdated",
+          "name": "weatherUpdated",
+          "signature": {
+            "params": [
+              {
+                "name": "weather",
+                "optional": true,
+                "type": "WeatherInstance"
+              },
+              {
+                "name": "newWeather",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "RotatingEntBinding::_NV_weatherUpdated",
+          "name": "_NV_weatherUpdated",
+          "signature": {
+            "params": [
+              {
+                "name": "weather",
+                "optional": true,
+                "type": "WeatherInstance"
+              },
+              {
+                "name": "newWeather",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
           },
           "static": false
         }
@@ -126381,6 +128045,114 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "TaskDataBinding::getRequirementComplaint",
+          "name": "getRequirementComplaint",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "subTarget",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "autoTargetFinder",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "returns": [
+              "string"
+            ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskDataBinding::_isRequirementsComplete",
+          "name": "_isRequirementsComplete",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "location",
+                "optional": false,
+                "type": "table"
+              },
+              {
+                "name": "subTarget",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "autoTargetFinder",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "return_values": [
+              "boolean",
+              "integer"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskDataBinding::runTargetFind",
+          "name": "runTargetFind",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              },
+              {
+                "name": "_target",
+                "optional": false,
+                "type": "hand"
+              },
+              {
+                "name": "justAsking",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "return_values": [
+              "number",
+              "hand"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -127349,6 +129121,26 @@
             "returns": [
               "boolean"
             ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TaskerBinding::findTarget",
+          "name": "findTarget",
+          "signature": {
+            "params": [
+              {
+                "name": "ai",
+                "optional": false,
+                "type": "AI"
+              }
+            ],
+            "return_values": [
+              "number",
+              "hand"
+            ],
+            "returns": [],
             "type_source": "header"
           },
           "static": false
@@ -134074,6 +135866,71 @@
             "returns": [
               "GameSaveState"
             ],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownBinding::powerBuilding",
+          "name": "powerBuilding",
+          "signature": {
+            "params": [
+              {
+                "name": "what",
+                "optional": false,
+                "type": "UseableStuff"
+              },
+              {
+                "name": "numUnPoweredBuildings",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "powerRemaining",
+                "optional": false,
+                "type": "number"
+              },
+              {
+                "name": "addToStat",
+                "optional": true,
+                "type": "boolean"
+              }
+            ],
+            "return_values": [
+              "boolean",
+              "number"
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
+        },
+        {
+          "callback": "TownBinding::drainBattery",
+          "name": "drainBattery",
+          "signature": {
+            "params": [
+              {
+                "name": "what",
+                "optional": false,
+                "type": "UseableStuff"
+              },
+              {
+                "name": "numUnPoweredBuildings",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "powerRemaining",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "return_values": [
+              "boolean",
+              "number"
+            ],
+            "returns": [],
             "type_source": "header"
           },
           "static": false
@@ -141835,6 +143692,22 @@
             "type_source": "header"
           },
           "static": false
+        },
+        {
+          "callback": "WallBuildingBinding::runLinkingCheck",
+          "name": "runLinkingCheck",
+          "signature": {
+            "params": [
+              {
+                "name": "zone",
+                "optional": false,
+                "type": "ZoneMapContent"
+              }
+            ],
+            "returns": [],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": "BuildingBinding",
@@ -147072,6 +148945,34 @@
             ]
           },
           "static": false
+        },
+        {
+          "callback": "ZoneMapBinding::_activate",
+          "name": "_activate",
+          "signature": {
+            "params": [
+              {
+                "name": "_range",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "type",
+                "optional": false,
+                "type": "integer"
+              },
+              {
+                "name": "deactivationTimer",
+                "optional": false,
+                "type": "number"
+              }
+            ],
+            "returns": [
+              "boolean"
+            ],
+            "type_source": "header"
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -148651,6 +150552,24 @@
             ]
           },
           "static": false
+        },
+        {
+          "callback": "hkMemoryAllocatorBinding::getMemoryStatistics",
+          "name": "getMemoryStatistics",
+          "signature": {
+            "params": [
+              {
+                "name": "arg1",
+                "optional": true,
+                "type": "hkMemoryAllocator_MemoryStatistics"
+              }
+            ],
+            "returns": [
+              "hkMemoryAllocator_MemoryStatistics",
+              "nil"
+            ]
+          },
+          "static": false
         }
       ],
       "parent_binding": null,
@@ -148893,6 +150812,24 @@
           "name": "getZero",
           "signature": {
             "params": [],
+            "returns": [
+              "hkVector4f"
+            ],
+            "type_source": "header"
+          },
+          "static": true
+        },
+        {
+          "callback": "hkVector4fBinding::getConstant",
+          "name": "getConstant",
+          "signature": {
+            "params": [
+              {
+                "name": "vectorConstant",
+                "optional": false,
+                "type": "integer"
+              }
+            ],
             "returns": [
               "hkVector4f"
             ],

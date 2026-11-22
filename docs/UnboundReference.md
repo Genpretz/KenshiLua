@@ -19,8 +19,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `ManagementScreen::TechItemViewData` | 1 |
 | `MyGUI::delegates::IDelegate1<int>*` | 1 |
 | `NXU::NxuPhysicsCollection*&` | 1 |
-| `NavMeshGenerator::Task*` | 4 |
-| `NavMeshGenerator::Task*&` | 4 |
+| `NavMeshGenerator::Task*` | 3 |
 | `NavMeshSector*` | 5 |
 | `NxActor*` | 3 |
 | `NxActor*const` | 2 |
@@ -41,7 +40,7 @@ This document registers all C++ SDK classes and complex types that are currently
 | `Ogre::Renderable::Visitor*` | 1 |
 | `Ogre::Root*` | 1 |
 | `Ogre::SceneMemoryMgrTypes` | 1 |
-| `Ogre::SceneNode*` | 9 |
+| `Ogre::SceneNode*` | 8 |
 | `Ogre::SharedPtr<Ogre::Material>` | 4 |
 | `Ogre::SharedPtr<Ogre::Resource>` | 6 |
 | `Ogre::SharedPtr<Ogre::Texture>` | 5 |
@@ -62,11 +61,9 @@ This document registers all C++ SDK classes and complex types that are currently
 | `boost::unordered::iterator_detail::c_iterator<boost::unordered::detail::ptr_node<std::pair<hand const, SeenSomeone*> > >` | 2 |
 | `boost::unordered::unordered_map<std::string, Ogre::InstanceManager*, boost::hash<std::string >, std::equal_to<std::string >, Ogre::STLAllocator<std::pair<std::string const, Ogre::InstanceManager*>, Ogre::GeneralAllocPolicy > >` | 1 |
 | `const FoliageEraser*` | 1 |
-| `const ManagementScreen::TechItemViewData&` | 1 |
 | `const Matrix&` | 5 |
 | `const MyGUI::IBDrawItemInfo&` | 4 |
 | `const MyGUI::ToolTipInfo&` | 1 |
-| `const MyGUI::types::TPoint<int>&` | 2 |
 | `const NxQuat&` | 1 |
 | `const Ogre::Aabb` | 15 |
 | `const Ogre::Aabb&` | 15 |
@@ -79,7 +76,6 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const Ogre::SharedPtr<Ogre::Material>&` | 1 |
 | `const Ogre::SharedPtr<Ogre::Mesh>&` | 1 |
 | `const Ogre::SharedPtr<Ogre::Texture>&` | 1 |
-| `const Ogre::vector<GameDataReference>::type*` | 1 |
 | `const Ogre::vector<TutorialItem*>::type&` | 1 |
 | `const PhysicsActorData*` | 2 |
 | `const PhysicsJointData*` | 2 |
@@ -89,14 +85,13 @@ This document registers all C++ SDK classes and complex types that are currently
 | `const hkArray<EdgePathNode, hkContainerHeapAllocator>&` | 1 |
 | `const hkSimdFloat32` | 8 |
 | `const hkSimdFloat32&` | 8 |
-| `const lektor<NavMesh::BuildingInfo>&` | 2 |
+| `const lektor<NavMesh::BuildingInfo>&` | 1 |
 | `const lektor<Road*>&` | 1 |
 | `const std::map<hand, Ogre::vector<UsageNode*>::type, std::less<hand>, Ogre::STLAllocator<std::pair<hand const, Ogre::vector<UsageNode*>::type >, Ogre::GeneralAllocPolicy > >*` | 2 |
 | `const type_info&` | 3 |
 | `float (AI::*` | 1 |
 | `hkArray<EdgePathNode, hkContainerHeapAllocator>&` | 5 |
 | `hkArray<unsigned int, hkContainerHeapAllocator>&` | 2 |
-| `hkMemoryAllocator::MemoryStatistics&` | 1 |
 | `hkSimdFloat32` | 6 |
 | `hkaiNavMesh*` | 2 |
 | `lektor<AttachmentData*>&` | 1 |
@@ -135,7 +130,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Animation/AnimationClassBinding.cpp | _NV_setDesiredPainOverlayAnims | `void` | StringValuePair is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | create | `bool` | initialisation only; Lua cannot construct an AnimationClass, and AnimationClassBase::create appends new layers on a live instance |
 | Kenshi/Animation/AnimationClassBinding.cpp | getRagdoll | `RagdollClass*` | unbound pointer |
-| Kenshi/Animation/AnimationClassBinding.cpp | processActionAnims | `bool` | boost::unordered_map<std::string, AnimationData*> and AnimationRequirement are unbound |
+| Kenshi/Animation/AnimationClassBinding.cpp | processActionAnims | `bool` | unavailable (KenshiLib.lib contains only AnimationClass_processActionAnims_PLACEHOLDER) |
 | Kenshi/Animation/AnimationClassBinding.cpp | setBodyEntity | `void` | unbound pointer argument |
 | Kenshi/Animation/AnimationClassBinding.cpp | setDesiredPainOverlayAnims | `void` | StringValuePair is unbound |
 | Kenshi/Animation/AnimationClassBinding.cpp | setupRagdoll | `bool` | unbound pointer argument |
@@ -190,24 +185,18 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Building/FootprintNodeBinding.cpp | getLocalAABB | `const Ogre::Aabb` | unsupported return type |
 | Kenshi/Building/FootprintNodeBinding.cpp | getWorldAABB | `const Ogre::Aabb` | unsupported return type |
 | Kenshi/Building/FurnaceInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only FurnaceInventoryLayout_setupSections_PLACEHOLDER) |
-| Kenshi/Building/PreviewBuildingBinding.cpp | _NV_buildingPlacementUpdate | `void` | non-string reference arg (physHit&, bool&, bool&) |
-| Kenshi/Building/PreviewBuildingBinding.cpp | buildingPlacementUpdate | `void` | non-string reference arg (physHit&, bool&, bool&) |
 | Kenshi/Building/PreviewBuildingBinding.cpp | getWorldAABB | `const Ogre::Aabb&` | reference return type |
 | Kenshi/Building/ResearchBuildingInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only ResearchBuildingInventoryLayout_setupSections_PLACEHOLDER) |
-| Kenshi/Building/WallBuildingBinding.cpp | runLinkingCheck | `void` | unsupported arg type; no unbound argument type found (ZoneMapContent*) |
-| Kenshi/CameraClassBinding.cpp | intersectScreenEdge | `int` | non-string reference arg (const Ogre::Vector3&, const Ogre::Vector3&, float&) |
 | Kenshi/CharMovementBinding.cpp | _NV_create | `void` | see above |
 | Kenshi/CharMovementBinding.cpp | _NV_onControllerHit | `NxControllerAction` | unsupported return type |
 | Kenshi/CharMovementBinding.cpp | _NV_onShapeHit | `NxControllerAction` | unsupported return type |
 | Kenshi/CharMovementBinding.cpp | _NV_setPatrolInput | `void` | unsupported arg type (PatrolInfo&) |
 | Kenshi/CharMovementBinding.cpp | create | `void` | movement setup step; replaces formation and enemyFormation without freeing them and resets movement and combat state |
-| Kenshi/CharMovementBinding.cpp | formationUpdateCallback | `void` | non-string reference arg (const Ogre::Vector3&, const hand&, const Ogre::Vector3&) |
 | Kenshi/CharMovementBinding.cpp | getAABB | `Ogre::Aabb` | unsupported return type |
 | Kenshi/CharMovementBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
 | Kenshi/CharMovementBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
 | Kenshi/CharMovementBinding.cpp | setPatrolInput | `void` | unsupported arg type (PatrolInfo&) |
 | Kenshi/CharacterInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only CharacterInventoryLayout_setupSections_PLACEHOLDER) |
-| Kenshi/CombatMovementControllerBinding.cpp | combatMovementAnimationUpdate | `void` | unsupported arg type; no unbound argument type found (const Ogre::Vector3&, const Ogre::Vector3&, AnimationClass*, bool) |
 | Kenshi/CrossbowBinding.cpp | _NV_createItemEntityCallback_Equipping | `void` | unsupported arg type (Ogre::Entity*, Ogre::SceneNode*) |
 | Kenshi/CrossbowBinding.cpp | createItemEntityCallback_Equipping | `void` | unsupported arg type (Ogre::Entity*, Ogre::SceneNode*) |
 | Kenshi/DataObjectContainerBinding.cpp | _NV_loadFromDisk | `bool` | see above |
@@ -221,53 +210,20 @@ Below are methods that were skipped during binding generation:
 | Kenshi/FoliageSystemBinding.cpp | setupWind | `void` | unsupported arg type (Forests::PagedGeometry*) |
 | Kenshi/Gui/BackpackInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only BackpackInventoryLayout_setupSections_PLACEHOLDER) |
 | Kenshi/Gui/CharacterEditWindowBinding.cpp | getCharacterEntity | `Ogre::Entity*` | unsupported arg type; no unbound argument type found (unsigned __int64) |
-| Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAnimationIdle | `void` | unsupported arg type; no unbound argument type found (MyGUI::Slider*, int) |
-| Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAppearanceList | `void` | unsupported arg type; no unbound argument type found (MyGUI::ListScrollBar*, const std::string&, int) |
-| Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAppearanceMultiSlider | `void` | unsupported arg type; no unbound argument type found (MyGUI::MultiSlider*, MyGUI::Slider*, int, int) |
-| Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAppearanceSlider | `void` | unsupported arg type; no unbound argument type found (MyGUI::Slider*, int) |
-| Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAppearanceSliderPose | `void` | unsupported arg type; no unbound argument type found (MyGUI::Slider*, int) |
-| Kenshi/Gui/CharacterEditWindowBinding.cpp | updateAppearanceSliderVector | `void` | unsupported arg type; no unbound argument type found (MyGUI::Slider*, int) |
-| Kenshi/Gui/CharacterStatsWindowBinding.cpp | closeWindow | `void` | unsupported arg type; no unbound argument type found (MyGUI::Window*, const std::string&) |
-| Kenshi/Gui/CharacterStatsWindowBinding.cpp | statMouseOver | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*, int, int) |
 | Kenshi/Gui/CharacterTradingWindowBinding.cpp | cancelButton | `void` | non-exported in KenshiLib |
 | Kenshi/Gui/CharacterTradingWindowBinding.cpp | confirmButton | `void` | non-exported in KenshiLib |
 | Kenshi/Gui/CharacterTradingWindowBinding.cpp | notifyMouseWheel | `void` | non-exported in KenshiLib |
 | Kenshi/Gui/CharacterTradingWindowBinding.cpp | updateSelected | `void` | non-exported in KenshiLib |
-| Kenshi/Gui/DataPanelLineBinding.cpp | _NV_setToolTip | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLineBinding.cpp | _NV_setToolTip | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLineBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLineBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLineBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLineBinding.cpp | setToolTip | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLineBinding.cpp | setToolTip | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLineBinding.cpp | setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLineBinding.cpp | setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLineBinding.cpp | updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | pressCallback | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*) |
-| Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLine_ButtonBinding.cpp | setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLine_CheckBoxBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLine_CheckBoxBinding.cpp | notifyToggleCheck | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*) |
 | Kenshi/Gui/DataPanelLine_CheckBoxBinding.cpp | updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
 | Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | goPressed | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*) |
-| Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | selectionChange | `void` | unsupported arg type; no unbound argument type found (MyGUI::ComboBox*, unsigned __int64) |
 | Kenshi/Gui/DataPanelLine_DropBoxBinding.cpp | updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLine_KeyConfigBinding.cpp | clickButton | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*) |
-| Kenshi/Gui/DataPanelLine_ResearchBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLine_ResearchBinding.cpp | _NV_setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLine_ResearchBinding.cpp | setToolTipMainBar | `void` | overloaded method |
-| Kenshi/Gui/DataPanelLine_ResearchBinding.cpp | setToolTipMainBar | `void` | overloaded method |
 | Kenshi/Gui/DataPanelLine_SliderBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLine_SliderBinding.cpp | sliderValueChanged | `void` | unsupported arg type; no unbound argument type found (MyGUI::Slider*, int) |
 | Kenshi/Gui/DataPanelLine_SliderBinding.cpp | updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
 | Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | _NV_updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | editCallback | `void` | unsupported arg type; no unbound argument type found (MyGUI::EditBox*) |
-| Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | sliderCallback | `void` | unsupported arg type; no unbound argument type found (MyGUI::ScrollBar*, unsigned __int64) |
 | Kenshi/Gui/DataPanelLine_SliderEditableBinding.cpp | updateValuePtr | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Gui/DataPanelLine_TextEditableBinding.cpp | textChanged | `void` | unsupported arg type; no unbound argument type found (MyGUI::EditBox*) |
 | Kenshi/Gui/DatapanelGUIBinding.cpp | _NV_setMouseOverCallback | `void` | unsupported callback delegate type |
 | Kenshi/Gui/DatapanelGUIBinding.cpp | closeButtonCallback | `void` | internal event handler |
 | Kenshi/Gui/DatapanelGUIBinding.cpp | mouseOverCallback | `void` | internal event handler |
@@ -275,18 +231,10 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/DatapanelGUIBinding.cpp | setCloseCallback | `void` | unsupported callback delegate type |
 | Kenshi/Gui/DatapanelGUIBinding.cpp | setMouseOverCallback | `void` | unsupported callback delegate type |
 | Kenshi/Gui/DatapanelGUIBinding.cpp | tabButton | `void` | internal event handler |
-| Kenshi/Gui/FactionRelationsLineBinding.cpp | attachToWidget | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*) |
-| Kenshi/Gui/FogEditorBinding.cpp | addFog | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*) |
-| Kenshi/Gui/FogEditorBinding.cpp | closeWindow | `void` | unsupported arg type; no unbound argument type found (MyGUI::Window*, const std::string&) |
-| Kenshi/Gui/FogEditorBinding.cpp | removeFog | `void` | unsupported arg type; no unbound argument type found (MyGUI::Widget*) |
-| Kenshi/Gui/FogEditorBinding.cpp | selectFog | `void` | unsupported arg type; no unbound argument type found (MyGUI::ListBox*, unsigned __int64) |
 | Kenshi/Gui/ForgottenGUIBinding.cpp | destroyWidgets | `void` | overloaded method |
 | Kenshi/Gui/ForgottenGUIBinding.cpp | destroyWidgets | `void` | overloaded method |
 | Kenshi/Gui/ForgottenGUIBinding.cpp | messageBox | `MyGUI::Window*` | unsupported arg type (MyGUI::delegates::IDelegate1<int>*) |
 | Kenshi/Gui/ForgottenGUIBinding.cpp | setup | `void` | unsupported arg type (Ogre::Root*, Ogre::RenderWindow*) |
-| Kenshi/Gui/ForgottenGUIBinding.cpp | showCharacterEditor | `void` | unsupported arg type (const Ogre::vector<GameDataReference>::type*) |
-| Kenshi/Gui/GameDataEditorWindowBinding.cpp | show | `void` | overloaded method |
-| Kenshi/Gui/GameDataEditorWindowBinding.cpp | show | `void` | overloaded method |
 | Kenshi/Gui/LevelEditorBinding.cpp | hitBuildingMesh | `std::pair<bool, float>` | static method |
 | Kenshi/Gui/LevelEditorBinding.cpp | hitFurnitureOrItemGroup | `RootObject*` | unsupported arg type (const Ogre::Ray&) |
 | Kenshi/Gui/LevelEditorBinding.cpp | hitOgreMesh | `std::pair<bool, float>` | static method |
@@ -294,20 +242,13 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Gui/LevelEditorBinding.cpp | paintRoads | `bool` | unsupported arg type (RealWorldEditableImage*, const lektor<Road*>&) |
 | Kenshi/Gui/LevelEditorBinding.cpp | selectRoad | `void` | unsupported arg type (Road*) |
 | Kenshi/Gui/ListScrollBarBinding.cpp | isType | `bool` | unsupported arg type (const type_info&) |
-| Kenshi/Gui/LoadSaveWindowBinding.cpp | sortListComparer | `void` | complex MyGUI::UString& and bool& params |
 | Kenshi/Gui/ManagementScreenBinding.cpp | researchQueueTooltip | `void` | unsupported arg type (const MyGUI::ToolTipInfo&, ManagementScreen::TechItemViewData) |
-| Kenshi/Gui/ManagementScreenBinding.cpp | researchRemoved | `void` | non-string reference arg (const ManagementScreen::TechItemViewData&) |
-| Kenshi/Gui/ManagementScreenBinding.cpp | researchValidateOrder | `void` | non-string reference arg (bool&) |
-| Kenshi/Gui/MapMarkerCharacterBinding.cpp | update | `void` | unsupported arg type (const MyGUI::types::TPoint<int>&) |
-| Kenshi/Gui/MapMarkerTownBinding.cpp | update | `void` | unsupported arg type (const MyGUI::types::TPoint<int>&) |
 | Kenshi/Gui/MultiSliderBinding.cpp | isType | `bool` | unsupported arg type (const type_info&) |
 | Kenshi/Gui/OpenSaveFileDialogBinding.cpp | setRecentFolders | `void` | unavailable (KenshiLib.lib contains only OpenSaveFileDialog_setRecentFolders_PLACEHOLDER) |
 | Kenshi/Gui/OrderCellViewBinding.cpp | update | `void` | unsupported arg type (const MyGUI::IBDrawItemInfo&) |
 | Kenshi/Gui/OrdersPanelBinding.cpp | notifyRequestDropOrder | `void` | non-string reference arg (bool&) |
 | Kenshi/Gui/OrdersPanelBinding.cpp | notifyStartDropOrder | `void` | non-string reference arg (bool&) |
 | Kenshi/Gui/PortraitMainCellViewBinding.cpp | update | `void` | unsupported arg type (const MyGUI::IBDrawItemInfo&) |
-| Kenshi/Gui/PortraitManagerBinding.cpp | createPortraitImage | `bool` | unsupported arg type; non-const reference arg (PortraitImage*&) |
-| Kenshi/Gui/PortraitManagerBinding.cpp | getNextIndices | `void` | non-string reference arg (unsigned char&, unsigned char&) |
 | Kenshi/Gui/PortraitSquadCellViewBinding.cpp | update | `void` | unsupported arg type (const MyGUI::IBDrawItemInfo&) |
 | Kenshi/Gui/ReorderableListBinding.cpp | notifyRequestDrop | `void` | non-string reference arg (bool&) |
 | Kenshi/Gui/ReorderableListBinding.cpp | notifyStartDrop | `void` | non-string reference arg (bool&) |
@@ -328,15 +269,14 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | _NV_bufAlloc | `void*` | non-string reference arg (int&) |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | _NV_bufFree | `void` | unsupported arg type; raw pointer arg (void*) |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | _NV_bufRealloc | `void*` | unsupported arg type; raw pointer arg (void*); non-const reference arg (int&) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockAllocBatch | `void` | unsupported arg type |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockAllocBatch | `void` | unsupported arg type; raw pointer arg (void**) |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockFree | `void` | unsupported arg type; raw pointer arg (void*) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockFreeBatch | `void` | unsupported arg type |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufAlloc | `void*` | non-string reference arg |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufFree | `void` | unsupported arg type |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufRealloc | `void*` | unsupported arg type |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | blockFreeBatch | `void` | unsupported arg type; raw pointer arg (void**) |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufAlloc | `void*` | non-string reference arg (int&) |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufFree | `void` | unsupported arg type; raw pointer arg (void*) |
+| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | bufRealloc | `void*` | unsupported arg type; raw pointer arg (void*); non-const reference arg (int&) |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | delete | `void operator` | static method |
 | Kenshi/Havok/hkMemoryAllocatorBinding.cpp | getAllocatedSize | `int` | unsupported arg type; raw pointer arg (const void*) |
-| Kenshi/Havok/hkMemoryAllocatorBinding.cpp | getMemoryStatistics | `void` | non-string reference arg (hkMemoryAllocator::MemoryStatistics&) |
 | Kenshi/Havok/hkVector4fBinding.cpp | _setRotatedDir | `void` | overloaded method |
 | Kenshi/Havok/hkVector4fBinding.cpp | _setRotatedDir | `void` | overloaded method |
 | Kenshi/Havok/hkVector4fBinding.cpp | _setRotatedInverseDir | `void` | overloaded method |
@@ -354,7 +294,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/Havok/hkVector4fBinding.cpp | dot3 | `hkSimdFloat32` | unsupported return type |
 | Kenshi/Havok/hkVector4fBinding.cpp | dot4xyz1 | `const hkSimdFloat32` | unsupported return type |
 | Kenshi/Havok/hkVector4fBinding.cpp | getComponent | `const hkSimdFloat32` | unsupported return type |
-| Kenshi/Havok/hkVector4fBinding.cpp | getConstant | `const hkVector4f&` | unsupported return type |
 | Kenshi/Havok/hkVector4fBinding.cpp | getW | `const hkSimdFloat32` | unsupported return type |
 | Kenshi/Havok/hkVector4fBinding.cpp | length3 | `hkSimdFloat32` | unsupported return type |
 | Kenshi/Havok/hkVector4fBinding.cpp | lengthSquared3 | `hkSimdFloat32` | unsupported return type |
@@ -379,85 +318,51 @@ Below are methods that were skipped during binding generation:
 | Kenshi/InputHandlerBinding.cpp | addKey | `void` | non-string reference arg (const std::string&, bool&) |
 | Kenshi/ItemBinding.cpp | createItemEntityCallback | `void` | unsupported arg type (Ogre::SharedPtr<Ogre::Resource>) |
 | Kenshi/LimbsInventoryLayoutBinding.cpp | _NV_setupSections | `void` | direct/non-virtual call unavailable (KenshiLib.lib contains only LimbsInventoryLayout_setupSections_PLACEHOLDER) |
-| Kenshi/ListenerBinding.cpp | weatherUpdated | `void` | unsupported arg type; no unbound argument type found (WeatherInstance*, bool) |
-| Kenshi/MedianFilterBinding.cpp | apply | `void` | non-string reference arg |
 | Kenshi/MeshDataLookupBinding.cpp | init | `void` | unsupported arg type |
-| Kenshi/MotionFilterBinding.cpp | Apply | `void` | non-string reference arg (float&) |
-| Kenshi/NavMeshBinding.cpp | areEdgesConnected | `int` | unsupported arg type; no unbound argument type found (const EdgePathNode&, const EdgePathNode&, int) |
 | Kenshi/NavMeshBinding.cpp | cancelMessage | `void` | unsupported arg type (HavokCharacterMessage*) |
 | Kenshi/NavMeshBinding.cpp | changeDoorState | `void` | unsupported arg type (const Ogre::Aabb&) |
-| Kenshi/NavMeshBinding.cpp | checkCollision | `int` | unsupported arg type; non-const reference arg (hkVector4f&, hkVector4f&, float&, unsigned int&) |
 | Kenshi/NavMeshBinding.cpp | createEdgePath | `int` | unsupported arg type (hkArray<unsigned int, hkContainerHeapAllocator>&, hkArray<EdgePathNode, hkContainerHeapAllocator>&) |
 | Kenshi/NavMeshBinding.cpp | createInstance | `void` | NavMesh loading step; overwrites an existing Havok instance without freeing it or removing it from the world |
-| Kenshi/NavMeshBinding.cpp | createZone | `int` | unsupported arg type (const lektor<NavMesh::BuildingInfo>&) |
 | Kenshi/NavMeshBinding.cpp | createZoneInstance | `bool` | unsupported arg type (NavMeshSector*, const lektor<NavMesh::BuildingInfo>&) |
 | Kenshi/NavMeshBinding.cpp | deleteInstance | `void` | NavMesh unloading step; crashes on an instance never created or already deleted, leaves graphInstance dangling and the sector and interior tables unchanged |
-| Kenshi/NavMeshBinding.cpp | deleteMesh | `void` | overloaded method |
-| Kenshi/NavMeshBinding.cpp | deleteMesh | `void` | overloaded method |
 | Kenshi/NavMeshBinding.cpp | directPath | `bool` | unsupported arg type (hkArray<EdgePathNode, hkContainerHeapAllocator>&) |
-| Kenshi/NavMeshBinding.cpp | fillEdgeCache | `int` | unsupported arg type; non-const reference arg (EdgeCache&) |
 | Kenshi/NavMeshBinding.cpp | findEdges | `int` | unsupported arg type (hkArray<unsigned int, hkContainerHeapAllocator>&) |
 | Kenshi/NavMeshBinding.cpp | findPath | `bool` | unsupported arg type (hkArray<EdgePathNode, hkContainerHeapAllocator>&) |
-| Kenshi/NavMeshBinding.cpp | generate | `void` | overloaded method |
-| Kenshi/NavMeshBinding.cpp | generate | `void` | overloaded method |
-| Kenshi/NavMeshBinding.cpp | generate | `void` | overloaded method |
-| Kenshi/NavMeshBinding.cpp | getClearance | `int` | non-string reference arg (float&, float&, float&) |
-| Kenshi/NavMeshBinding.cpp | getClosestBoundary | `int` | unsupported arg type; non-const reference arg (EdgePathNode&) |
-| Kenshi/NavMeshBinding.cpp | getClosestPoint | `int` | overloaded method |
-| Kenshi/NavMeshBinding.cpp | getClosestPoint | `int` | overloaded method |
-| Kenshi/NavMeshBinding.cpp | getClosestPoint | `int` | overloaded method |
 | Kenshi/NavMeshBinding.cpp | getEdgesAroundPoint | `int` | unsupported arg type (hkArray<EdgePathNode, hkContainerHeapAllocator>&) |
 | Kenshi/NavMeshBinding.cpp | getSector | `NavMeshSector*` | overloaded method |
 | Kenshi/NavMeshBinding.cpp | getSector | `NavMeshSector*` | overloaded method |
 | Kenshi/NavMeshBinding.cpp | getSectors | `int` | unsupported arg type (lektor<NavMeshSector*>&) |
-| Kenshi/NavMeshBinding.cpp | isCharacterStuck | `bool` | unsupported arg type; no unbound argument type found (const hkVector4f&, unsigned int, float, float) |
 | Kenshi/NavMeshBinding.cpp | isWater | `int` | unsupported arg type (const hkArray<EdgePathNode, hkContainerHeapAllocator>&) |
 | Kenshi/NavMeshBinding.cpp | postMessage | `void` | unsupported arg type (HavokCharacterMessage*) |
-| Kenshi/NavMeshBinding.cpp | projectToNavMesh | `int` | unsupported arg type; non-const reference arg (hkVector4f&, unsigned int&) |
 | Kenshi/NavMeshBinding.cpp | removeSector | `bool` | unsupported arg type (NavMeshSector*) |
-| Kenshi/NavMeshBinding.cpp | resolvePoint | `unsigned int` | unsupported arg type; non-const reference arg (hkVector4f&) |
 | Kenshi/NavMeshBinding.cpp | saveZone | `int` | unsupported arg type (NavMeshSector*) |
 | Kenshi/NavMeshBinding.cpp | shiftEdgePath | `void` | unsupported arg type (hkArray<EdgePathNode, hkContainerHeapAllocator>&) |
-| Kenshi/NavMeshBinding.cpp | shiftWorld | `void` | unsupported arg type; no unbound argument type found (const hkVector4f&) |
-| Kenshi/NavMeshBinding.cpp | validateStreamingData | `bool` | unsupported arg type; no unbound argument type found (NavInstance*) |
 | Kenshi/NavMeshGeneratorBinding.cpp | addFoliageCarvers | `int` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | addGeometry | `int` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | addGeometry | `int` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | addGeometry | `int` | static method |
-| Kenshi/NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
-| Kenshi/NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
-| Kenshi/NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
-| Kenshi/NavMeshGeneratorBinding.cpp | addJob | `void` | overloaded method |
-| Kenshi/NavMeshGeneratorBinding.cpp | addStitchJob | `void` | unsupported arg type; no unbound argument type found (NavInstance*) |
 | Kenshi/NavMeshGeneratorBinding.cpp | addWaterPlane | `bool` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | createHeightmapMesh | `bool` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | createVolume | `hkaiVolume*` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | generateBuildingMesh | `int` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | generateInteriorMesh | `int` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | getCollisionShapes | `int` | static method |
-| Kenshi/NavMeshGeneratorBinding.cpp | getCompletedTask | `NavInstance*` | non-string reference arg (NavMeshGenerator::Task*&) |
 | Kenshi/NavMeshGeneratorBinding.cpp | getDoorPainters | `void` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | getInteriorCavers | `void` | static method |
-| Kenshi/NavMeshGeneratorBinding.cpp | getSeedPointsFromAdjacentZone | `int` | non-string reference arg (const iVector2&) |
 | Kenshi/NavMeshGeneratorBinding.cpp | getVolumePoints | `int` | static method |
-| Kenshi/NavMeshGeneratorBinding.cpp | lockZone | `bool` | non-string reference arg (const iVector2&) |
 | Kenshi/NavMeshGeneratorBinding.cpp | newTask | `NavMeshGenerator::Task*` | unsupported arg type (const Ogre::Aabb&) |
 | Kenshi/NavMeshGeneratorBinding.cpp | setup | `void` | overloaded method |
 | Kenshi/NavMeshGeneratorBinding.cpp | setup | `void` | static method |
 | Kenshi/NavMeshGeneratorBinding.cpp | shiftEdge | `int` | unsupported arg type (NavMeshGenerator::Task*, hkaiNavMesh*) |
 | Kenshi/NavMeshGeneratorBinding.cpp | shiftHole | `int` | unsupported arg type (NavMeshGenerator::Task*, hkaiNavMesh*) |
-| Kenshi/NavMeshGeneratorBinding.cpp | stitch | `int` | unsupported arg type; no unbound argument type found (NavInstance*, NavInstance*) |
-| Kenshi/NavMeshGeneratorBinding.cpp | stitchUnloadedZone | `int` | unsupported arg type; no unbound argument type found (NavInstance*, int, int, bool) |
 | Kenshi/NavMeshGeneratorBinding.cpp | stitchWithInteriors | `int` | unsupported arg type; no unbound argument type found (NavInstance*, const lektor<NavInstance*>&) |
-| Kenshi/NavMeshGeneratorBinding.cpp | unlockZone | `void` | non-string reference arg (const iVector2&) |
 | Kenshi/NxMat33Binding.cpp | fromQuat | `void` | unsupported arg type (const NxQuat&) |
 | Kenshi/NxMat33Binding.cpp | toQuat | `void` | unsupported arg type (NxQuat&) |
 | Kenshi/NxUserControllerHitReportBinding.cpp | onControllerHit | `NxControllerAction` | unsupported return type |
 | Kenshi/NxUserControllerHitReportBinding.cpp | onShapeHit | `NxControllerAction` | unsupported return type |
 | Kenshi/NxUserTriggerReportBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/ObjectInstanceBinding.cpp | updateInstancedObjectAttachedDatas | `void` | unavailable (KenshiLib.lib contains only GameData_ObjectInstance_updateInstancedObjectAttachedDatas_PLACEHOLDER) |
-| Kenshi/ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type (Ogre::SceneNode*) |
-| Kenshi/PhysicsActualBinding.cpp | convertXMLToBin | `void` | non-string reference arg (std::string&, const Ogre::Vector3&) |
+| Kenshi/ParticlePoolBinding.cpp | addParticle | `bool` | unsupported arg type |
 | Kenshi/PhysicsActualBinding.cpp | loadPhysXFile | `NxActor*` | unsupported arg type (PhysFileParams&, lektor<NxActor*>*) |
 | Kenshi/PhysicsActualBinding.cpp | loadPhysXFileAsATrigger | `NxActor*` | unsupported arg type (PhysFileParams&, lektor<NxActor*>*) |
 | Kenshi/PhysicsActualBinding.cpp | scaleCollection | `void` | non-string reference arg (NXU::NxuPhysicsCollection*&, const NxVec3&) |
@@ -487,7 +392,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/ResourceLoaderBinding.cpp | SetMeshData | `void` | static method |
 | Kenshi/ResourceLoaderBinding.cpp | _NV_operationCompleted | `void` | unsupported arg type (const Ogre::BackgroundProcessResult&) |
 | Kenshi/ResourceLoaderBinding.cpp | __cdecl | `boost::function<void` | static method |
-| Kenshi/ResourceLoaderBinding.cpp | abortLoadRequest | `bool` | unsupported arg type; no unbound argument type found (unsigned __int64) |
 | Kenshi/ResourceLoaderBinding.cpp | createLoadRequestMesh | `Ogre::Entity*` | unsupported arg type (const Ogre::SharedPtr<Ogre::Mesh>&, const boost::function<void __cdecl(Ogre::SharedPtr<Ogre::Resource>, void*) |
 | Kenshi/ResourceLoaderBinding.cpp | getSceneNode | `Ogre::SceneNode*` | unsupported arg type (Ogre::SceneNode*, Ogre::SceneMemoryMgrTypes) |
 | Kenshi/ResourceLoaderBinding.cpp | isTextureLoaded | `bool` | unsupported arg type (Ogre::Entity*) |
@@ -499,13 +403,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/ResourceLoaderBinding.cpp | releaseSceneNode | `void` | unsupported arg type (Ogre::SceneNode*) |
 | Kenshi/ResourceLoaderBinding.cpp | removeRequest | `void` | unsupported arg type (Ogre::Entity*) |
 | Kenshi/ResourceLoaderBinding.cpp | setupResourceMesh | `unsigned __int64` | unsupported return type |
-| Kenshi/RotatingEntBinding.cpp | _NV_weatherUpdated | `void` | unsupported arg type; no unbound argument type found (WeatherInstance*, bool) |
-| Kenshi/RotatingEntBinding.cpp | weatherUpdated | `void` | unsupported arg type; no unbound argument type found (WeatherInstance*, bool) |
-| Kenshi/TaskDataBinding.cpp | _isRequirementsComplete | `bool` | unsupported arg type; non-const reference arg (hand&, StateType&) |
-| Kenshi/TaskDataBinding.cpp | getRequirementComplaint | `void` | non-string reference arg (std::string&, const hand&, const Ogre::Vector3&, const hand&) |
-| Kenshi/TaskDataBinding.cpp | runTargetFind | `float` | unsupported arg type; non-const reference arg (hand&) |
 | Kenshi/TaskDataBinding.cpp | setTargetingFunction | `void` | unsupported arg type (float (AI::*) |
-| Kenshi/TaskerBinding.cpp | findTarget | `float` | unsupported arg type; non-const reference arg (hand&) |
 | Kenshi/Terrain/TerrainBinding.cpp | __cdecl | `boost::function<Ogre::SharedPtr<Ogre::Material>` | overloaded method |
 | Kenshi/Terrain/TerrainBinding.cpp | __cdecl | `boost::function<void` | overloaded method |
 | Kenshi/Terrain/TerrainBinding.cpp | _notifyCurrentCamera | `void` | unsupported arg type (Ogre::Camera*) |
@@ -520,8 +418,6 @@ Below are methods that were skipped during binding generation:
 | Kenshi/TownBaseBinding.cpp | _NV_findAllBuildings | `void` | BuildingFinderClass is forward declared only |
 | Kenshi/TownBaseBinding.cpp | addArtifactItem | `void` | ArtifactItemData is forward declared only |
 | Kenshi/TownBaseBinding.cpp | findAllBuildings | `void` | BuildingFinderClass is forward declared only |
-| Kenshi/TownBinding.cpp | drainBattery | `bool` | non-string reference arg (float&) |
-| Kenshi/TownBinding.cpp | powerBuilding | `bool` | non-string reference arg (float&) |
 | Kenshi/TownBuildingsManagerBinding.cpp | addEntity | `Ogre::MovableObject*` | unsupported arg type (Ogre::MovableObject*) |
 | Kenshi/TownBuildingsManagerBinding.cpp | addInteriorShell | `void` | unsupported arg type (Ogre::MovableObject*) |
 | Kenshi/TownBuildingsManagerBinding.cpp | isEntity | `bool` | static method |
@@ -535,8 +431,7 @@ Below are methods that were skipped during binding generation:
 | Kenshi/TriggerCallbackBinding.cpp | _NV_onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/TriggerCallbackBinding.cpp | onTrigger | `void` | unsupported arg type (NxShape&, NxShape&) |
 | Kenshi/ZoneManagerBinding.cpp | getLoadedFeatureLists | `const lektor<MapFeatureList*>&` | reference return type |
-| Kenshi/ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg (const iVector2&) |
-| Kenshi/ZoneMapBinding.cpp | _activate | `bool` | unsupported arg type; no unbound argument type found (int, ZoneActivationType, float) |
+| Kenshi/ZoneManagerBinding.cpp | getOverlay | `ZoneMapOverlay*` | non-string reference arg |
 | Kenshi/ZoneMapBinding.cpp | createTextureArray | `Ogre::SharedPtr<Ogre::Texture>` | static method |
 | Kenshi/ZoneMapBinding.cpp | destroyMaterialCallback | `void` | static method |
 | Kenshi/ZoneMapBinding.cpp | getBiomeTextureArrayData | `std::string` | unavailable (KenshiLib.lib contains only ZoneMap_getBiomeTextureArrayData_PLACEHOLDER) |

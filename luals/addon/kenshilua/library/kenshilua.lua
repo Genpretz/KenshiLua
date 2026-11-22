@@ -4922,6 +4922,7 @@ taskPriority = {
 ---@field init fun(self: ZoneMap, coords: iVector2)
 --- Retrieves the precalculated 3D center position vector of the chunk.
 ---@field getCenterPos fun(self: ZoneMap): table
+---@field _activate fun(self: ZoneMap, _range: integer, type: integer, deactivationTimer: number): boolean
 --- 2D horizontal boundary extents (minX, minY, maxX, maxY).
 ---@field AABB table
 --- NavMesh regeneration required trigger flag.
@@ -5850,6 +5851,7 @@ taskPriority = {
 ---@field createScrollBarAbs fun(self: ForgottenGUI, parent?: MyGUI.Widget, top: integer, left: integer, width: integer, height: integer, range: integer, value: integer): MyGUI.ScrollBar
 --- Creates a scrollable multi-item list box with normalized relative coordinates.
 ---@field createListbox fun(self: ForgottenGUI, parent?: MyGUI.Window, top: number, left: number, width: number, height: number): MyGUI.ListBox
+---@field showCharacterEditor fun(self: ForgottenGUI, characters: Lektor<Character>, mode: integer, races?: OgreVector<GameDataReference>)
 --- GUI display scaling vector factoring display resolution.
 ---@field Scale table
 --- Queued message requesting trade window dismissal.
@@ -7200,6 +7202,7 @@ taskPriority = {
 ---@field normalize3 fun(self: hkVector4f)
 --- Static function returning an hkVector4f with all components set to zero.
 ---@field getZero fun(): hkVector4f
+---@field getConstant fun(vectorConstant: integer): hkVector4f
 --- Sets the four components (x, y, z, w) of this vector from four numeric arguments.
 ---@field set fun(self: hkVector4f, arg1: number, arg2: number, arg3: number, arg4: number)
 --- Sets this vector to the component-wise sum of vector arg1 and vector arg2.
@@ -7288,6 +7291,7 @@ taskPriority = {
 ---@overload fun(x?: number, y?: number, z?: number, w?: number): hkVector4f
 --- Returns a constant zero Havok vector4.
 ---@field getZero fun(): hkVector4f
+---@field getConstant fun(vectorConstant: hkVectorConstant|integer): hkVector4f
 --- Allocates a new Havok vector4.
 ---@field operator_new fun(size: integer): userdata
 --- Deallocates a Havok vector4.
@@ -7361,6 +7365,7 @@ taskPriority = {
 
 --- Weather-region change listener interface, exposed as an opaque Lua type without event-registration methods.
 ---@class Listener
+---@field weatherUpdated fun(self: Listener, arg1?: WeatherInstance, arg2?: boolean)
 
 --- Empty SDK compatibility marker, registered without Lua fields or methods.
 ---@class MustEndWithSemiColon
@@ -9077,6 +9082,7 @@ taskPriority = {
 ---@field resetPeakMemoryStatistics fun(self: hkMemoryAllocator)
 --- Returns a raw pointer (lightuserdata) to the allocator's extended interface, or nil if unsupported.
 ---@field getExtendedInterface fun(self: hkMemoryAllocator): lightuserdata
+---@field getMemoryStatistics fun(self: hkMemoryAllocator, arg1?: hkMemoryAllocator_MemoryStatistics): hkMemoryAllocator_MemoryStatistics|nil
 --- Nested enum table `hkMemoryAllocator.MemoryState`.
 ---@field MemoryState hkMemoryAllocator.MemoryState
 
@@ -9303,6 +9309,7 @@ taskPriority = {
 ---@field handle hand
 --- ImageBox widget rendering the character marker icon on the map.
 ---@field image MyGUI.Widget|nil
+---@field update fun(self: MapMarkerCharacter, mapPosition: MyGUI.IntPoint)
 
 --- Data panel line displaying multi-line text descriptions with optional word wrapping.
 ---@class DataPanelLine_Text : DataPanelLine
@@ -11750,6 +11757,7 @@ taskPriority = {
 ---@field win DatapanelGUI|nil
 --- Pointer to the GameData record currently displayed in the editor window.
 ---@field data GameData|nil
+---@field show fun(self: GameDataEditorWindow, on?: boolean, left?: number, top: number, _data?: GameData)
 
 --- Squad portrait list container displaying character portrait cell widgets in the squad management screen.
 ---@class PortraitSquadItemBox
@@ -14450,6 +14458,7 @@ taskPriority = {
 ---@field isVisible fun(self: CameraClass, pos: table, radius?: number): boolean
 --- Clamps camera bounds to remain within range of the provided lektor<Character*> character collection.
 ---@field restrictPosition fun(self: CameraClass, objects: Lektor<Character>)
+---@field intersectScreenEdge fun(self: CameraClass, a: table, b: table, padding: number): integer, number
 --- Current altitude offset of the camera above the terrain.
 ---@field altitude number
 --- Raw pointer (lightuserdata) to the underlying Ogre::Camera instance.
@@ -14726,6 +14735,7 @@ taskPriority = {
 ---@field isStandingOnSomething fun(self: CharMovement): hand
 --- Initiates offensive combat positioning toward target (hand) within [minDistance, maxDistance], with circling weight circle, powerThrough flag power, and speedLimit.
 ---@field combatMovementOffensive fun(self: CharMovement, target: hand, minDistance: number, maxDistance: number, circle: number, power?: boolean, speedLimit: number)
+---@field formationUpdateCallback fun(self: CharMovement, _pos: table, target: hand, heading: table, caller?: Formation)
 --- Cached combat movement speed multiplier.
 ---@field _combatMoveSpeedMult number
 --- Timestamp of the last off-navmesh recovery check.
@@ -14904,6 +14914,12 @@ taskPriority = {
 ---@field toggleClothes fun(self: CharacterEditWindow, _sender: MyGUI.Widget)
 --- Handles the 'Confirm' / 'Done' button click. Validates character names, prompts for plastic surgeon fee confirmation in midgame mode, or commits changes and closes the editor.
 ---@field confirmButton fun(self: CharacterEditWindow, _sender: MyGUI.Widget)
+---@field updateAppearanceSlider fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
+---@field updateAppearanceSliderPose fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
+---@field updateAppearanceSliderVector fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
+---@field updateAppearanceList fun(self: CharacterEditWindow, _sender: ListScrollBar|MyGUI.ListScrollBar, _value: string, _index: integer)
+---@field updateAppearanceMultiSlider fun(self: CharacterEditWindow, _sender: MultiSlider|MyGUI.MultiSlider, _target: MyGUI.Slider|Slider, _targetIndex: integer, _value: integer)
+---@field updateAnimationIdle fun(self: CharacterEditWindow, _sender: MyGUI.Slider|Slider, _value: integer)
 --- Active working copy of character appearance parameters.
 ---@field appearanceData GameDataCopyStandalone
 --- Cycle gender forward button.
@@ -15060,6 +15076,8 @@ taskPriority = {
 ---@field getStat fun(type: integer): nil|{ active: boolean, description: string, id: string, name: string, type: integer }
 --- Static method that retrieves a stat definition table by string identifier.
 ---@field getStatById fun(id: string): nil|{ active: boolean, description: string, id: string, name: string, type: integer }
+---@field closeWindow fun(self: CharacterStatsWindow, _sender: MyGUI.Window, _name: string)
+---@field statMouseOver fun(self: CharacterStatsWindow, _sender: MyGUI.Widget, arg2: integer, arg3: integer)
 --- The DatapanelGUI widget displaying core character attributes.
 ---@field attributesDatapanel DatapanelGUI
 --- Boolean flag indicating whether the stats display refreshes automatically.
@@ -15406,6 +15424,7 @@ taskPriority = {
 ---@field getGUIData fun(self: CombatMovementController, panel: DatapanelGUI, category: integer)
 --- Initiates offensive combat positioning toward target (hand) within [minDistance, maxDistance], with circling weight circle, powerThrough flag power, and speedLimit.
 ---@field combatMovementOffensive fun(self: CombatMovementController, target: hand, minDistance: number, maxDistance: number, circle: number, power?: boolean, _speedLimit: number)
+---@field combatMovementAnimationUpdate fun(self: CombatMovementController, motion: table, facingDirection: table, animation?: AnimationClass, crippled?: boolean)
 --- Disables active combat movement control and resets combat target state.
 ---@field disable fun(self: CombatMovementController)
 --- Acceleration rate used while maneuvering in combat mode.
@@ -15989,6 +16008,8 @@ taskPriority = {
 ---@field getNumWidgets fun(self: DataPanelLine): integer
 --- Returns the MyGUI::Widget at the given 0-based index.
 ---@field getWidget fun(self: DataPanelLine, index: integer): MyGUI.Widget
+---@field setToolTip fun(self: DataPanelLine, s: string, tooltip?: ToolTip)
+---@field setToolTipMainBar fun(self: DataPanelLine, arg1: string, arg2?: boolean)
 --- Category group index used to organize lines in the data panel.
 ---@field category integer
 --- The LineType enum identifying the line's class specialization.
@@ -16020,6 +16041,8 @@ taskPriority = {
 ---@field getUserData fun(self: DataPanelLine_Button): hand
 --- Instantiates and positions the button line widgets within the parent DatapanelGUI.
 ---@field createMe fun(self: DataPanelLine_Button, parent: DatapanelGUI, top: number, lastLine?: boolean)
+---@field pressCallback fun(self: DataPanelLine_Button, _sender: MyGUI.Widget)
+---@field setToolTipMainBar fun(self: DataPanelLine_Button, arg1: string, arg2?: boolean)
 --- Button widget created for this data panel row.
 ---@field button MyGUI.Button|nil
 --- Height dimension of the button widget.
@@ -16045,6 +16068,7 @@ taskPriority = {
 ---@field getCheckBox fun(self: DataPanelLine_CheckBox): MyGUI.Widget
 --- Instantiates MyGUI widgets for this checkbox line inside parent DatapanelGUI at topReal offset.
 ---@field createMe fun(self: DataPanelLine_CheckBox, parent: DatapanelGUI, topReal: number, lastLine?: boolean)
+---@field notifyToggleCheck fun(self: DataPanelLine_CheckBox, _sender: MyGUI.Widget)
 --- The MyGUI::Button widget functioning as the toggle checkbox.
 ---@field button MyGUI.Button|nil
 --- The MyGUI::EditBox widget displaying the label for this checkbox line.
@@ -16070,6 +16094,8 @@ taskPriority = {
 ---@field createMe fun(self: DataPanelLine_DropBox, parent: DatapanelGUI, top: number, lastLine?: boolean)
 --- Refreshes the drop-down selection display to reflect the current value.
 ---@field refresh fun(self: DataPanelLine_DropBox)
+---@field selectionChange fun(self: DataPanelLine_DropBox, _sender: MyGUI.ComboBox, i: integer)
+---@field goPressed fun(self: DataPanelLine_DropBox, _sender: MyGUI.Widget)
 --- The MyGUI Button widget acting as an optional trigger button adjacent to the drop-down.
 ---@field goBox MyGUI.Button|nil
 --- Boolean flag indicating whether the line displays a trigger action button.
@@ -16112,6 +16138,7 @@ taskPriority = {
 ---@field createMe fun(self: DataPanelLine_KeyConfig, p: DatapanelGUI, vpos: number, lastLine?: boolean)
 --- Returns the internal command identifier string associated with this key configuration row.
 ---@field getCommand fun(self: DataPanelLine_KeyConfig): string
+---@field clickButton fun(self: DataPanelLine_KeyConfig, _sender: MyGUI.Widget)
 --- Primary key binding button widget.
 ---@field btn0 MyGUI.Button|nil
 --- Secondary/alternate key binding button widget.
@@ -16138,6 +16165,7 @@ taskPriority = {
 ---@class DataPanelLine_Research : DataPanelLine
 --- Instantiates and positions the research row widgets within the parent DatapanelGUI.
 ---@field createMe fun(self: DataPanelLine_Research, parent: DatapanelGUI, top: number, lastLine?: boolean)
+---@field setToolTipMainBar fun(self: DataPanelLine_Research, arg1: string, arg2?: boolean)
 --- Button widget used to cancel or remove this project from the research queue.
 ---@field Xbut MyGUI.Button|nil
 --- ProgressBar widget displaying current technology research completion.
@@ -16163,6 +16191,7 @@ taskPriority = {
 ---@field refresh fun(self: DataPanelLine_Slider)
 --- Creates and attaches the slider line widget inside the parent DatapanelGUI.
 ---@field createMe fun(self: DataPanelLine_Slider, parent: DatapanelGUI, top: number, lastLine?: boolean)
+---@field sliderValueChanged fun(self: DataPanelLine_Slider, _sender: MyGUI.Slider|Slider, _value: integer)
 --- Maximum value reachable on the slider scale.
 ---@field max number
 --- Minimum value reachable on the slider scale.
@@ -16190,6 +16219,8 @@ taskPriority = {
 ---@field setPrecision fun(self: DataPanelLine_SliderEditable, dp: integer)
 --- Instantiates MyGUI widgets for this slider line inside parent DatapanelGUI at top offset.
 ---@field createMe fun(self: DataPanelLine_SliderEditable, parent: DatapanelGUI, top: number, lastLine?: boolean)
+---@field editCallback fun(self: DataPanelLine_SliderEditable, _sender: MyGUI.EditBox)
+---@field sliderCallback fun(self: DataPanelLine_SliderEditable, _sender: MyGUI.ScrollBar, _position: integer)
 --- Upper numeric bound of the slider range.
 ---@field max number
 --- Lower numeric bound of the slider range.
@@ -16217,6 +16248,7 @@ taskPriority = {
 ---@field getNameBox fun(self: DataPanelLine_TextEditable): MyGUI.EditBox
 --- Instantiates and positions the editable text row widgets within the parent DatapanelGUI.
 ---@field createMe fun(self: DataPanelLine_TextEditable, parent: DatapanelGUI, top: number, lastLine?: boolean)
+---@field textChanged fun(self: DataPanelLine_TextEditable, sender: MyGUI.EditBox)
 --- EditBox widget where the text value is entered or modified.
 ---@field editBox MyGUI.EditBox|nil
 --- Boolean flag indicating whether the text edit field allows multiple lines.
@@ -16619,6 +16651,7 @@ taskPriority = {
 ---@class FactionRelationsLine : BaseLayout
 --- Updates the displayed faction relation value, text, and relation bar graphics.
 ---@field update fun(self: FactionRelationsLine)
+---@field attachToWidget fun(self: FactionRelationsLine, widget: MyGUI.Widget)
 --- The Faction represented by this relation line.
 ---@field faction Faction
 --- The MyGUI::Widget representing the negative/hostile relation bar.
@@ -17040,6 +17073,10 @@ taskPriority = {
 ---@field updateFogValues fun(self: FogEditor, arg1: DataPanelLine)
 --- Cycles selection to the next edge of the fog volume boundary cage.
 ---@field selectNextEdge fun(self: FogEditor, arg1: DataPanelLine)
+---@field closeWindow fun(self: FogEditor, arg1: MyGUI.Window, arg2: string)
+---@field addFog fun(self: FogEditor, arg1: MyGUI.Widget)
+---@field removeFog fun(self: FogEditor, arg1: MyGUI.Widget)
+---@field selectFog fun(self: FogEditor, list: MyGUI.ListBox, index: integer)
 --- RGB color vector of the environmental fog volume.
 ---@field colour table
 --- Visual render distance or density threshold of the fog.
@@ -18281,6 +18318,7 @@ taskPriority = {
 ---@field createInfo fun(self: LoadSaveWindow, panel: MyGUI.Widget)
 --- Refreshes displayed save details (playtime, money, squad size, location) for the save at the given index.
 ---@field updateInfo fun(self: LoadSaveWindow, index: integer)
+---@field sortListComparer fun(self: LoadSaveWindow, _sender: MyGUI.MultiListBox, _column: integer, arg3: string, arg4: string, _less?: boolean): boolean
 --- Array of SaveInfo records representing discovered save files on disk.
 ---@field games Lektor<SaveInfo>
 --- DatapanelGUI widget displaying metadata and stats for the selected save.
@@ -18665,6 +18703,8 @@ taskPriority = {
 ---@field removeButtonPress fun(self: ManagementScreen, _sender: MyGUI.Widget, arg2: integer, arg3: integer, arg4: integer)
 --- Event callback invoked when the mouse hovers over interactive management screen widgets.
 ---@field mouseOverCallback fun(self: ManagementScreen, _sender: MyGUI.Widget, arg2: integer, arg3: integer)
+---@field researchRemoved fun(self: ManagementScreen, arg1: integer, item: ManagementScreen_TechItemViewData)
+---@field researchValidateOrder fun(self: ManagementScreen, a: integer, b: integer, result?: boolean): boolean
 --- DatapanelGUI widget displaying AI options and squad behavior toggles.
 ---@field aiScreen DatapanelGUI
 --- ToolTip instance used for AI panel options.
@@ -18740,6 +18780,7 @@ taskPriority = {
 ---@field setVisible fun(self: MapMarkerTown, value?: boolean)
 --- Returns true if this town map marker is currently visible.
 ---@field getVisible fun(self: MapMarkerTown): boolean
+---@field update fun(self: MapMarkerTown, mapPosition: MyGUI.IntPoint, zoom: integer)
 --- The hand handle referencing the represented TownBase.
 ---@field handle hand
 --- The MyGUI::ImageBox widget displaying the town marker icon.
@@ -18883,6 +18924,7 @@ taskPriority = {
 ---@field reset fun(self: MedianFilter)
 --- Feeds a new sample into the history buffer without returning a filtered value.
 ---@field applySilent fun(self: MedianFilter, delta_mouse_x: number)
+---@field apply fun(self: MedianFilter, delta_mouse_x: number): number
 --- Number of outlier samples skipped at the extremes of the median sample window.
 ---@field edgeSkips integer
 --- Boolean flag indicating whether the filter operates on absolute positions rather than deltas.
@@ -19211,6 +19253,7 @@ taskPriority = {
 ---@class MotionFilter
 --- Sets the number of frames stored in the movement smoothing history buffer and initializes them with a fill value.
 ---@field SetHistoryBufferLength fun(self: MotionFilter, length: integer, fill: number): boolean
+---@field Apply fun(self: MotionFilter, x: number): number
 --- Deque container holding historical movement speed and delta samples.
 ---@field mHistoryBufferX StdDeque<number>
 --- Weight multiplier applied to new motion samples relative to historical data.
@@ -19299,6 +19342,20 @@ taskPriority = {
 ---@field getGateCode fun(self: NavMesh, arg1: HavokCharacter|table): integer
 ---@field getFaceKey fun(self: NavMesh, local: hkVector4f|table, limit?: number): integer
 ---@field checkLineOfSight fun(self: NavMesh, arg1: HavokCharacter, arg2: HavokCharacter|table): integer
+---@field generate fun(self: NavMesh, arg1: ZoneMap|hand)
+---@field getClosestPoint fun(self: NavMesh, arg1: table, arg2: number, arg3: number, arg4?: boolean): integer, table, integer
+---@field getClosestBoundary fun(self: NavMesh, face: integer, point: hkVector4f, radius: number, edge: EdgePathNode): integer
+---@field projectToNavMesh fun(self: NavMesh, point: hkVector4f, key: integer, limit: number): integer, integer
+---@field areEdgesConnected fun(self: NavMesh, a: EdgePathNode, b: EdgePathNode, side: integer): integer
+---@field checkCollision fun(self: NavMesh, face: integer, pos: hkVector4f, move: hkVector4f): integer, number, integer
+---@field fillEdgeCache fun(self: NavMesh, faceKey: integer, point: hkVector4f, radius: number, cache: EdgeCache): integer
+---@field isCharacterStuck fun(self: NavMesh, position: hkVector4f, key: integer, radius: number, threshold: number): boolean
+---@field deleteMesh fun(self: NavMesh, arg1: NavInstance)
+---@field createZone fun(self: NavMesh, zone: ZoneMap, hash: integer, interiors: Lektor<NavMesh_BuildingInfo>): integer
+---@field shiftWorld fun(self: NavMesh, pos: hkVector4f)
+---@field validateStreamingData fun(self: NavMesh, instance: NavInstance): boolean
+---@field resolvePoint fun(self: NavMesh, point: hkVector4f, building: hand, radius: number, search: number, output: hkVector4f): integer
+---@field getClearance fun(self: NavMesh, faceKey: integer, edgeKey: integer): integer, number, number, number
 --- Navmesh grid voxelization cell resolution.
 ---@field cellSize number
 --- Secondary concurrency mutex protecting sector graph mutations.
@@ -19358,6 +19415,14 @@ taskPriority = {
 ---@field hasJob fun(self: NavMeshGenerator, zone: ZoneMap): boolean
 --- Main thread update tick called from `NavMesh::update`. Retrieves finished tasks from the `done` queue, registers completed `NavInstance` meshes into the world, and initiates adjacent zone border stitching.
 ---@field update fun(self: NavMeshGenerator)
+---@field lockZone fun(self: NavMeshGenerator, zone: iVector2, wait?: boolean): boolean
+---@field unlockZone fun(self: NavMeshGenerator, zone: iVector2)
+---@field stitch fun(self: NavMeshGenerator, a: NavInstance, b: NavInstance): integer
+---@field stitchUnloadedZone fun(self: NavMeshGenerator, a: NavInstance, bx: integer, by: integer, interiors?: boolean): integer
+---@field getSeedPointsFromAdjacentZone fun(self: NavMeshGenerator, zone: ZoneMap, dir: iVector2): integer
+---@field getCompletedTask fun(self: NavMeshGenerator, uid: integer): NavInstance|nil, NavMeshGenerator_Task|nil
+---@field addJob fun(self: NavMeshGenerator, arg1: ZoneMap, arg2: hand|integer, arg3?: boolean|integer)
+---@field addStitchJob fun(self: NavMeshGenerator, s: NavInstance)
 --- Task currently executing on worker thread.
 ---@field current lightuserdata
 --- Active task computation execution indicator flag.
@@ -20010,6 +20075,7 @@ taskPriority = {
 ---@field setActorMaterial fun(actor: lightuserdata, material: integer)
 --- Extracts vertex and triangle index buffers from cooked PhysX collision mesh data.
 ---@field uncookMesh fun(self: PhysicsActual, mesh: lightuserdata, cId: string): boolean
+---@field convertXMLToBin fun(self: PhysicsActual, filename: string, scale: table): string
 --- Whether hardware PhysX acceleration is enabled.
 ---@field HW boolean
 --- Pointer to the PhysX NxControllerManager managing character controllers.
@@ -20183,6 +20249,8 @@ taskPriority = {
 ---@field setImageWidgetNPC fun(self: PortraitManager, character: Character, imageBox: MyGUI.ImageBox)
 --- Returns the singleton `PortraitManager` instance coordinating character headshot renders and UI widgets.
 ---@field getInstance fun(): PortraitManager
+---@field createPortraitImage fun(self: PortraitManager, character: Character): boolean, PortraitImage|nil
+---@field getNextIndices fun(self: PortraitManager): integer, integer
 --- Freeze flag disabling offscreen portrait re-renders during high action.
 ---@field disableUpdate boolean
 --- Bitmask array of occupied atlas tile slots.
@@ -20329,6 +20397,7 @@ taskPriority = {
 ---@field getCentreOffset fun(self: PreviewBuilding): table
 --- Returns true if collision checks should ignore intersections with the specified PreviewBuilding.
 ---@field isNoCollideWithThisBuilding fun(self: PreviewBuilding, what: PreviewBuilding): boolean
+---@field buildingPlacementUpdate fun(self: PreviewBuilding, hit: physHit, mRightUp?: boolean, mLeftUp?: boolean): boolean, boolean
 --- True if the preview is currently blocking usage nodes of another building.
 ---@field blockedBuildings boolean
 --- The GameData template of the building being previewed.
@@ -20904,6 +20973,7 @@ taskPriority = {
 ---@field getInstance fun(): ResourceLoader|nil
 --- Stops background loading threads and cleans up resource queues.
 ---@field destroy fun(self: ResourceLoader)
+---@field abortLoadRequest fun(self: ResourceLoader, requestId: number): boolean
 --- Mutex protecting concurrent access to the mesh loading queue.
 ---@field loadingMeshQueueMutex lightuserdata
 --- Boolean flag indicating whether background loader worker threads are currently active.
@@ -20985,6 +21055,7 @@ taskPriority = {
 ---@field isRotatingEnt fun(self: RotatingEnt): boolean
 --- Returns the current normalized rotation power or output factor.
 ---@field getRotationPower fun(self: RotatingEnt): number
+---@field weatherUpdated fun(self: RotatingEnt, weather?: WeatherInstance, newWeather?: boolean)
 --- Boolean flag indicating whether the entity is currently rotating.
 ---@field isRotating boolean
 --- 3D axis vector around which the entity rotates.
@@ -22066,6 +22137,9 @@ taskPriority = {
 ---@field isResultsComplete_ignoreSubtasker fun(self: TaskData, ai: AI, target: hand, subTarget: hand, location: table): boolean
 ---@field isRequirementComplete fun(self: TaskData, ai: AI, obj: hand, req: integer, location: table): boolean
 ---@field _targetsRemaining fun(self: TaskData, ai: AI, _target: hand): boolean
+---@field getRequirementComplaint fun(self: TaskData, ai: AI, target: hand, location: table, subTarget: hand, autoTargetFinder?: boolean): string
+---@field _isRequirementsComplete fun(self: TaskData, ai: AI, target: hand, location: table, subTarget: hand, autoTargetFinder?: boolean): boolean, integer
+---@field runTargetFind fun(self: TaskData, ai: AI, _target: hand, justAsking?: boolean): number, hand
 --- Pointer to the C++ target-finder function object (exposed as read-only lightuserdata).
 ---@field _findTarget lightuserdata
 --- Whether unmet requirements are prevented from aborting the task once started.
@@ -22246,6 +22320,7 @@ taskPriority = {
 ---@field isSubTaskerTargetFinishedWith fun(self: Tasker, ai: AI, target: hand): boolean
 ---@field _targetsRemaining fun(self: Tasker, ai: AI): boolean
 ---@field isSubTaskerComplete fun(self: Tasker, ai: AI): boolean
+---@field findTarget fun(self: Tasker, ai: AI): number, hand
 --- Active item/resource sub-target handle.
 ---@field currentSubTarget hand
 --- Time-of-day end hour window.
@@ -22762,6 +22837,8 @@ taskPriority = {
 ---@field getPlayerTownTypeEnum fun(self: Town): integer
 --- Exports complete hierarchical town structure into a GameSaveState container for persistent disk serialization.
 ---@field serialise fun(self: Town, c: GameDataContainer, r: GameData, offsetPosToSubtract: lightuserdata): GameSaveState
+---@field powerBuilding fun(self: Town, what: UseableStuff, numUnPoweredBuildings: integer, powerRemaining: number, addToStat?: boolean): boolean, number
+---@field drainBattery fun(self: Town, what: UseableStuff, numUnPoweredBuildings: integer, powerRemaining: number): boolean, number
 --- Bitflags marking available municipal facilities.
 ---@field _facilitesWeHaveHere integer
 --- Town siren, alarm bell, and alert manager.
@@ -23709,6 +23786,7 @@ taskPriority = {
 ---@field dismantleButton_all fun(self: WallBuilding, arg1: DataPanelLine)
 --- Evaluates proximity and orientation compatibility with an adjacent wall piece, pooling construction material requirements under a unified scaffold.
 ---@field letsShare fun(self: WallBuilding, who: WallBuilding): boolean
+---@field runLinkingCheck fun(self: WallBuilding, zone: ZoneMapContent)
 --- Child wall segments linked to this construction scaffold.
 ---@field othersSharingMyBuildState Lektor<hand>
 --- Parent wall segment whose construction state is shared.
