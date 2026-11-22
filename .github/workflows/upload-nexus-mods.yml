@@ -3,12 +3,20 @@ name: Upload release to Nexus Mods
 on:
   release:
     types: [published]
+  # Run by hand for a release that already exists, for example after replacing
+  # its zip or after a failed upload.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag of the release to upload, such as v0.3.12-alpha
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 concurrency:
-  group: nexus-mods-release-${{ github.event.release.id }}
+  group: nexus-mods-release-${{ github.event.release.tag_name || inputs.tag }}
   cancel-in-progress: false
 
 jobs:
@@ -23,7 +31,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG_NAME: ${{ github.event.release.tag_name }}
+          TAG_NAME: ${{ github.event.release.tag_name || inputs.tag }}
         run: |
           set -euo pipefail
 
@@ -31,18 +39,34 @@ jobs:
           asset_name="KenshiLua ${TAG_NAME}.zip"
           asset_path="release-assets/${asset_name}"
 
-          gh release download "${TAG_NAME}" \
+          # GitHub replaces the space in an uploaded file name with a dot, so the
+          # release holds "KenshiLua.<tag>.zip" although the packaged file is
+          # "KenshiLua <tag>.zip". The pattern accepts either name.
+          if ! gh release download "${TAG_NAME}" \
             --repo "${GITHUB_REPOSITORY}" \
-            --pattern "${asset_name}" \
-            --dir release-assets
-
-          if [[ ! -f "${asset_path}" ]]; then
-            echo "Expected release asset was not downloaded: ${asset_name}" >&2
+            --pattern "KenshiLua?${TAG_NAME}.zip" \
+            --dir release-assets; then
+            echo "::error::Release ${TAG_NAME} has no asset named 'KenshiLua ${TAG_NAME}.zip' or 'KenshiLua.${TAG_NAME}.zip'. Attach the zip to the release, then run this workflow by hand with the tag."
             exit 1
           fi
 
-          echo "version=${version}" >> "${GITHUB_OUTPUT}"
-          echo "asset_path=${asset_path}" >> "${GITHUB_OUTPUT}"
+          downloaded="$(find release-assets -maxdepth 1 -type f -name "KenshiLua?${TAG_NAME}.zip" | head -n 1)"
+          if [[ -z "${downloaded}" ]]; then
+            echo "::error::The release asset was not downloaded: ${asset_name}"
+            exit 1
+          fi
+          if [[ "${downloaded}" != "${asset_path}" ]]; then
+            mv "${downloaded}" "${asset_path}"
+          fi
+
+          {
+            echo "version=${version}"
+            echo "tag=${TAG_NAME}"
+            echo "asset_path=${asset_path}"
+            echo "changelog<<KENSHILUA_CHANGELOG_END"
+            gh release view "${TAG_NAME}" --repo "${GITHUB_REPOSITORY}" --json body --jq .body
+            echo "KENSHILUA_CHANGELOG_END"
+          } >> "${GITHUB_OUTPUT}"
 
       - name: Upload release to Nexus Mods
         id: upload
@@ -53,7 +77,7 @@ jobs:
           mod_id: ${{ vars.NEXUSMODS_MOD_ID }}
           filename: ${{ steps.release.outputs.asset_path }}
           version: ${{ steps.release.outputs.version }}
-          display_name: KenshiLua ${{ github.event.release.tag_name }}
+          display_name: KenshiLua ${{ steps.release.outputs.tag }}
           description: |-
             Regular Users: Install and enable in launcher.
 
@@ -63,4 +87,4 @@ jobs:
           allow_mod_manager_download: true
           show_requirements_pop_up: true
           update_mod_version: true
-          changelog: ${{ github.event.release.body }}
+          changelog: ${{ steps.release.outputs.changelog }}
