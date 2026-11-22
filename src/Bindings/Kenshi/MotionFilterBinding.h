@@ -19,5 +19,6 @@ public:
     static int tostring(lua_State* L);
 
     static int SetHistoryBufferLength(lua_State* L);
+    static int Apply(lua_State* L);
 };
 }

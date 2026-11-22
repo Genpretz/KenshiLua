@@ -1099,11 +1099,25 @@ int CharMovementBinding::combatMovementOffensive(lua_State* L)
     return 0;
 }
 
+int CharMovementBinding::formationUpdateCallback(lua_State* L)
+{
+    CharMovement* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharMovement is nil");
+
+    Ogre::Vector3 pos;
+    checkVector3(L, 2, pos);
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    Ogre::Vector3 heading;
+    checkVector3(L, 4, heading);
+    Formation* caller = lua_isnoneornil(L, 5) ? nullptr : checkObject<Formation>(L, 5, FormationBinding::getMetatableName());
+    instance->formationUpdateCallback(pos, *target, heading, caller);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 390: void create(...) - movement setup step; replaces formation and enemyFormation without freeing them and resets movement and combat state
   line 391: void _NV_create(...) - see above
-  line 407: void formationUpdateCallback(...) - non-string reference arg
   line 448: void setPatrolInput(...) - unsupported arg type
   line 449: void _NV_setPatrolInput(...) - unsupported arg type
   line 457: Ogre::Aabb getAABB(...) - unsupported return type
@@ -1283,6 +1297,7 @@ void CharMovementBinding::registerBinding(lua_State* L)
         { "setMovementMode", CharMovementBinding::setMovementMode },
         { "isStandingOnSomething", CharMovementBinding::isStandingOnSomething },
         { "combatMovementOffensive", CharMovementBinding::combatMovementOffensive },
+        { "formationUpdateCallback", CharMovementBinding::formationUpdateCallback },
         { 0, 0 }
     };
 

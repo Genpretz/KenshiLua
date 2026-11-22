@@ -638,10 +638,22 @@ int CameraClassBinding::restrictPosition(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 25: int intersectScreenEdge(...) - non-string reference arg
-*/
+int CameraClassBinding::intersectScreenEdge(lua_State* L)
+{
+    CameraClass* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CameraClass is nil");
+
+    Ogre::Vector3 a;
+    checkVector3(L, 2, a);
+    Ogre::Vector3 b;
+    checkVector3(L, 3, b);
+    float padding = (float)luaL_checknumber(L, 4);
+    float out = 0.0f;
+    int result = instance->intersectScreenEdge(a, b, padding, out);
+    lua_pushinteger(L, result);
+    lua_pushnumber(L, out);
+    return 2;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -708,6 +720,7 @@ void CameraClassBinding::registerBinding(lua_State* L)
         { "getFollowObject", CameraClassBinding::getFollowObject },
         { "isVisible", CameraClassBinding::isVisible },
         { "restrictPosition", CameraClassBinding::restrictPosition },
+        { "intersectScreenEdge", CameraClassBinding::intersectScreenEdge },
         { 0, 0 }
     };
 

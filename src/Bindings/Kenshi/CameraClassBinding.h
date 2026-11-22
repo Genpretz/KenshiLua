@@ -47,5 +47,6 @@ public:
     static int getFollowObject(lua_State* L);
     static int isVisible(lua_State* L);
     static int restrictPosition(lua_State* L);
+    static int intersectScreenEdge(lua_State* L);
 };
 }

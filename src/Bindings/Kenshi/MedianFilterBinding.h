@@ -21,5 +21,6 @@ public:
     static int setup(lua_State* L);
     static int reset(lua_State* L);
     static int applySilent(lua_State* L);
+    static int apply(lua_State* L);
 };
 }

@@ -117,10 +117,16 @@ int MedianFilterBinding::applySilent(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 91: void apply(...) - non-string reference arg
-*/
+int MedianFilterBinding::apply(lua_State* L)
+{
+    MedianFilter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MedianFilter is nil");
+
+    float delta_mouse_x = (float)luaL_checknumber(L, 2);
+    instance->apply(delta_mouse_x);
+    lua_pushnumber(L, delta_mouse_x);
+    return 1;
+}
 
 int MedianFilterBinding::gc(lua_State* L)
 {
@@ -146,6 +152,7 @@ void MedianFilterBinding::registerBinding(lua_State* L)
         { "setup", MedianFilterBinding::setup },
         { "reset", MedianFilterBinding::reset },
         { "applySilent", MedianFilterBinding::applySilent },
+        { "apply", MedianFilterBinding::apply },
         { 0, 0 }
     };
 

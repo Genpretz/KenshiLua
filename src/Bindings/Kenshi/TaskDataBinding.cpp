@@ -832,12 +832,59 @@ int TaskDataBinding::_targetsRemaining(lua_State* L)
     return 1;
 }
 
+int TaskDataBinding::getRequirementComplaint(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    Ogre::Vector3 location;
+    checkVector3(L, 4, location);
+    hand* subTarget = checkObject<hand>(L, 5, HandBinding::getMetatableName());
+    bool autoTargetFinder = lua_toboolean(L, 6) != 0;
+    std::string out;
+    instance->getRequirementComplaint(out, ai, *target, location, *subTarget, autoTargetFinder);
+    lua_pushlstring(L, out.c_str(), out.size());
+    return 1;
+}
+
+int TaskDataBinding::_isRequirementsComplete(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    Ogre::Vector3 location;
+    checkVector3(L, 4, location);
+    hand* subTarget = checkObject<hand>(L, 5, HandBinding::getMetatableName());
+    bool autoTargetFinder = lua_toboolean(L, 6) != 0;
+    StateType failedOn = (StateType)0;
+    bool result = instance->_isRequirementsComplete(ai, *target, location, *subTarget, autoTargetFinder, failedOn);
+    lua_pushboolean(L, result ? 1 : 0);
+    lua_pushinteger(L, (lua_Integer)failedOn);
+    return 2;
+}
+
+int TaskDataBinding::runTargetFind(lua_State* L)
+{
+    TaskData* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "TaskData is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand* target = checkObject<hand>(L, 3, HandBinding::getMetatableName());
+    bool justAsking = lua_toboolean(L, 4) != 0;
+    hand out;
+    float result = instance->runTargetFind(ai, *target, out, justAsking);
+    lua_pushnumber(L, result);
+    HandBinding::push(L, out);
+    return 2;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 280: void getRequirementComplaint(...) - non-string reference arg
-  line 281: bool _isRequirementsComplete(...) - unsupported arg type
   line 283: void setTargetingFunction(...) - unsupported arg type
-  line 292: float runTargetFind(...) - unsupported arg type
 */
 
 /*
@@ -928,6 +975,9 @@ void TaskDataBinding::registerBinding(lua_State* L)
         { "isResultsComplete_ignoreSubtasker", TaskDataBinding::isResultsComplete_ignoreSubtasker },
         { "isRequirementComplete", TaskDataBinding::isRequirementComplete },
         { "_targetsRemaining", TaskDataBinding::_targetsRemaining },
+        { "getRequirementComplaint", TaskDataBinding::getRequirementComplaint },
+        { "_isRequirementsComplete", TaskDataBinding::_isRequirementsComplete },
+        { "runTargetFind", TaskDataBinding::runTargetFind },
         { 0, 0 }
     };
 

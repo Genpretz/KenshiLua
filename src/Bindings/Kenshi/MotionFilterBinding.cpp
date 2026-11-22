@@ -66,10 +66,16 @@ int MotionFilterBinding::SetHistoryBufferLength(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 268: void Apply(...) - non-string reference arg
-*/
+int MotionFilterBinding::Apply(lua_State* L)
+{
+    MotionFilter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MotionFilter is nil");
+
+    float x = (float)luaL_checknumber(L, 2);
+    instance->Apply(x);
+    lua_pushnumber(L, x);
+    return 1;
+}
 
 int MotionFilterBinding::gc(lua_State* L)
 {
@@ -93,6 +99,7 @@ void MotionFilterBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "SetHistoryBufferLength", MotionFilterBinding::SetHistoryBufferLength },
+        { "Apply", MotionFilterBinding::Apply },
         { 0, 0 }
     };
 

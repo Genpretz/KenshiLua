@@ -84,5 +84,6 @@ public:
     static int setMovementMode(lua_State* L);
     static int isStandingOnSomething(lua_State* L);
     static int combatMovementOffensive(lua_State* L);
+    static int formationUpdateCallback(lua_State* L);
 };
 }

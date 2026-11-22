@@ -43,5 +43,8 @@ public:
     static int isResultsComplete_ignoreSubtasker(lua_State* L);
     static int isRequirementComplete(lua_State* L);
     static int _targetsRemaining(lua_State* L);
+    static int getRequirementComplaint(lua_State* L);
+    static int _isRequirementsComplete(lua_State* L);
+    static int runTargetFind(lua_State* L);
 };
 }

@@ -10,6 +10,7 @@
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/FlockingToolsBinding.h"
 #include "Bindings/Kenshi/MotionFilterBinding.h"
+#include "Bindings/Kenshi/Animation/AnimationClassBinding.h"
 
 namespace KenshiLua
 {
@@ -729,6 +730,21 @@ int CombatMovementControllerBinding::combatMovementOffensive(lua_State* L)
     return 0;
 }
 
+int CombatMovementControllerBinding::combatMovementAnimationUpdate(lua_State* L)
+{
+    CombatMovementController* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CombatMovementController is nil");
+
+    Ogre::Vector3 motion;
+    checkVector3(L, 2, motion);
+    Ogre::Vector3 facingDirection;
+    checkVector3(L, 3, facingDirection);
+    AnimationClass* animation = lua_isnoneornil(L, 4) ? nullptr : checkObject<AnimationClass>(L, 4, AnimationClassBinding::getMetatableName());
+    bool crippled = lua_toboolean(L, 5) != 0;
+    instance->combatMovementAnimationUpdate(motion, facingDirection, animation, crippled);
+    return 0;
+}
+
 int CombatMovementControllerBinding::disable(lua_State* L)
 {
     CombatMovementController* instance = getInstance(L, 1);
@@ -737,11 +753,6 @@ int CombatMovementControllerBinding::disable(lua_State* L)
     instance->disable();
     return 0;
 }
-
-/*
-Skipped methods needing manual binding:
-  line 327: void combatMovementAnimationUpdate(...) - unsupported arg type
-*/
 
 /*
 Skipped properties needing manual binding:
@@ -783,6 +794,7 @@ void CombatMovementControllerBinding::registerBinding(lua_State* L)
         { "setForcedWP", CombatMovementControllerBinding::setForcedWP },
         { "getGUIData", CombatMovementControllerBinding::getGUIData },
         { "combatMovementOffensive", CombatMovementControllerBinding::combatMovementOffensive },
+        { "combatMovementAnimationUpdate", CombatMovementControllerBinding::combatMovementAnimationUpdate },
         { "disable", CombatMovementControllerBinding::disable },
         { 0, 0 }
     };

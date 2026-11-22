@@ -32,6 +32,7 @@ public:
     static int setForcedWP(lua_State* L);
     static int getGUIData(lua_State* L);
     static int combatMovementOffensive(lua_State* L);
+    static int combatMovementAnimationUpdate(lua_State* L);
     static int disable(lua_State* L);
 };
 }

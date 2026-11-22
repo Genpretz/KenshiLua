@@ -48,5 +48,6 @@ public:
     static int isSubTaskerTargetFinishedWith(lua_State* L);
     static int _targetsRemaining(lua_State* L);
     static int isSubTaskerComplete(lua_State* L);
+    static int findTarget(lua_State* L);
 };
 }

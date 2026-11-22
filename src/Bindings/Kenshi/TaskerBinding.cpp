@@ -358,10 +358,18 @@ int TaskerBinding::_NV_taskSaysItsFinished(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 358: float findTarget(...) - unsupported arg type
-*/
+int TaskerBinding::findTarget(lua_State* L)
+{
+    Tasker* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "Tasker is nil");
+
+    AI* ai = checkObject<AI>(L, 2, AIBinding::getMetatableName());
+    hand out;
+    float result = instance->findTarget(ai, out);
+    lua_pushnumber(L, result);
+    HandBinding::push(L, out);
+    return 2;
+}
 
 int TaskerBinding::gc(lua_State* L)
 {
@@ -532,6 +540,7 @@ void TaskerBinding::registerBinding(lua_State* L)
         { "isSubTaskerTargetFinishedWith", TaskerBinding::isSubTaskerTargetFinishedWith },
         { "_targetsRemaining", TaskerBinding::_targetsRemaining },
         { "isSubTaskerComplete", TaskerBinding::isSubTaskerComplete },
+        { "findTarget", TaskerBinding::findTarget },
         { 0, 0 }
     };
 
