@@ -16722,7 +16722,7 @@
   "metadata_only_functions": [
     "pcall"
   ],
-  "runtime_version": "0.3.11-alpha",
+  "runtime_version": "0.3.12-alpha",
   "schema_version": 2,
   "scope": "runtime bindings represented by binding_inventory.json",
   "summary": {
