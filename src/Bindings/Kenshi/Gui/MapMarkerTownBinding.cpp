@@ -91,10 +91,16 @@ int MapMarkerTownBinding::getVisible(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 31: void update(...) - unsupported arg type
-*/
+int MapMarkerTownBinding::update(lua_State* L)
+{
+    MapMarkerTown* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapMarkerTown is nil");
+
+    MyGUI::IntPoint mapPosition = MyGUIBindings::readIntPoint(L, 2);
+    MapZoomLevel zoom = (MapZoomLevel)luaL_checkinteger(L, 3);
+    instance->update(mapPosition, zoom);
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -131,6 +137,7 @@ void MapMarkerTownBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "setVisible", MapMarkerTownBinding::setVisible },
         { "getVisible", MapMarkerTownBinding::getVisible },
+        { "update", MapMarkerTownBinding::update },
         { 0, 0 }
     };
 

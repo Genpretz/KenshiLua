@@ -79,10 +79,15 @@ int FactionRelationsLineBinding::update(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 20: void attachToWidget(...) - unsupported arg type
-*/
+int FactionRelationsLineBinding::attachToWidget(lua_State* L)
+{
+    FactionRelationsLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FactionRelationsLine is nil");
+
+    MyGUI::Widget* widget = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    instance->attachToWidget(widget);
+    return 0;
+}
 
 int FactionRelationsLineBinding::gc(lua_State* L)
 {
@@ -106,6 +111,7 @@ void FactionRelationsLineBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "update", FactionRelationsLineBinding::update },
+        { "attachToWidget", FactionRelationsLineBinding::attachToWidget },
         { 0, 0 }
     };
 

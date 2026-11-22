@@ -50,5 +50,7 @@ public:
     static int addButtonPress(lua_State* L);
     static int removeButtonPress(lua_State* L);
     static int mouseOverCallback(lua_State* L);
+    static int researchRemoved(lua_State* L);
+    static int researchValidateOrder(lua_State* L);
 };
 }

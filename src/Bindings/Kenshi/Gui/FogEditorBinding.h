@@ -26,5 +26,9 @@ public:
     static int updateFogName(lua_State* L);
     static int updateFogValues(lua_State* L);
     static int selectNextEdge(lua_State* L);
+    static int closeWindow(lua_State* L);
+    static int addFog(lua_State* L);
+    static int removeFog(lua_State* L);
+    static int selectFog(lua_State* L);
 };
 }

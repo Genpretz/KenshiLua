@@ -57,5 +57,11 @@ public:
     static int exportCharacter(lua_State* L);
     static int toggleClothes(lua_State* L);
     static int confirmButton(lua_State* L);
+    static int updateAppearanceSlider(lua_State* L);
+    static int updateAppearanceSliderPose(lua_State* L);
+    static int updateAppearanceSliderVector(lua_State* L);
+    static int updateAppearanceList(lua_State* L);
+    static int updateAppearanceMultiSlider(lua_State* L);
+    static int updateAnimationIdle(lua_State* L);
 };
 }

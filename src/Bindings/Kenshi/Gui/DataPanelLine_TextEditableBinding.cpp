@@ -120,10 +120,15 @@ int DataPanelLine_TextEditableBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 226: void textChanged(...) - unsupported arg type
-*/
+int DataPanelLine_TextEditableBinding::textChanged(lua_State* L)
+{
+    DataPanelLine_TextEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_TextEditable is nil");
+
+    MyGUI::EditBox* sender = MyGUIBindings::checkWidget<MyGUI::EditBox>(L, 2);
+    instance->textChanged(sender);
+    return 0;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -155,6 +160,7 @@ void DataPanelLine_TextEditableBinding::registerBinding(lua_State* L)
         { "getNameBox", DataPanelLine_TextEditableBinding::getNameBox },
         { "createMe", DataPanelLine_TextEditableBinding::createMe },
         { "_NV_createMe", DataPanelLine_TextEditableBinding::_NV_createMe },
+        { "textChanged", DataPanelLine_TextEditableBinding::textChanged },
         { 0, 0 }
     };
 

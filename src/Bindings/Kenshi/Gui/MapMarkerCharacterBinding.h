@@ -20,5 +20,6 @@ public:
 
     static int setVisible(lua_State* L);
     static int getVisible(lua_State* L);
+    static int update(lua_State* L);
 };
 }

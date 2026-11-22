@@ -64,11 +64,26 @@ int GameDataEditorWindowBinding::initDataValues(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 18: void show(...) - overloaded method
-  line 20: void show(...) - overloaded method
-*/
+// Overloads: show(bool on) and show(bool on, float left, float top, GameData* data).
+int GameDataEditorWindowBinding::show(lua_State* L)
+{
+    GameDataEditorWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "GameDataEditorWindow is nil");
+
+    bool on = lua_toboolean(L, 2) != 0;
+    if (lua_gettop(L) >= 3)
+    {
+        float left = (float)luaL_checknumber(L, 3);
+        float top = (float)luaL_checknumber(L, 4);
+        GameData* data = lua_isnoneornil(L, 5) ? nullptr : checkObject<GameData>(L, 5, GameDataBinding::getMetatableName());
+        instance->show(on, left, top, data);
+    }
+    else
+    {
+        instance->show(on);
+    }
+    return 0;
+}
 
 int GameDataEditorWindowBinding::gc(lua_State* L)
 {
@@ -92,6 +107,7 @@ void GameDataEditorWindowBinding::registerBinding(lua_State* L)
 
     static const luaL_Reg methods[] = {
         { "_NV_show", GameDataEditorWindowBinding::_NV_show },
+        { "show", GameDataEditorWindowBinding::show },
         { "initDataValues", GameDataEditorWindowBinding::initDataValues },
         { 0, 0 }
     };

@@ -195,10 +195,20 @@ int LoadSaveWindowBinding::updateInfo(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 26: void sortListComparer(...) - complex MyGUI::UString& and bool& params
-*/
+int LoadSaveWindowBinding::sortListComparer(lua_State* L)
+{
+    LoadSaveWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "LoadSaveWindow is nil");
+
+    MyGUI::MultiListBox* sender = MyGUIBindings::checkWidget<MyGUI::MultiListBox>(L, 2);
+    unsigned __int64 column = (unsigned __int64)luaL_checkinteger(L, 3);
+    MyGUI::UString firstItem(luaL_checkstring(L, 4));
+    MyGUI::UString secondItem(luaL_checkstring(L, 5));
+    bool less = lua_toboolean(L, 6) != 0;
+    instance->sortListComparer(sender, column, firstItem, secondItem, less);
+    lua_pushboolean(L, less ? 1 : 0);
+    return 1;
+}
 
 /*
 Skipped properties needing manual binding:
@@ -240,6 +250,7 @@ void LoadSaveWindowBinding::registerBinding(lua_State* L)
         { "toggleCheck", LoadSaveWindowBinding::toggleCheck },
         { "createInfo", LoadSaveWindowBinding::createInfo },
         { "updateInfo", LoadSaveWindowBinding::updateInfo },
+        { "sortListComparer", LoadSaveWindowBinding::sortListComparer },
         { 0, 0 }
     };
 

@@ -28,5 +28,7 @@ public:
     static int _NV_createMe(lua_State* L);
     static int refresh(lua_State* L);
     static int _NV_refresh(lua_State* L);
+    static int selectionChange(lua_State* L);
+    static int goPressed(lua_State* L);
 };
 }

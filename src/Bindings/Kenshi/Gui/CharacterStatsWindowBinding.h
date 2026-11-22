@@ -40,5 +40,7 @@ public:
     static int addStat(lua_State* L);
     static int getStat(lua_State* L);
     static int getStatById(lua_State* L);
+    static int closeWindow(lua_State* L);
+    static int statMouseOver(lua_State* L);
 };
 }

@@ -137,10 +137,15 @@ int DataPanelLine_KeyConfigBinding::getCommand(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 368: void clickButton(...) - unsupported arg type
-*/
+int DataPanelLine_KeyConfigBinding::clickButton(lua_State* L)
+{
+    DataPanelLine_KeyConfig* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_KeyConfig is nil");
+
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    instance->clickButton(sender);
+    return 0;
+}
 
 int DataPanelLine_KeyConfigBinding::gc(lua_State* L)
 {
@@ -172,6 +177,7 @@ void DataPanelLine_KeyConfigBinding::registerBinding(lua_State* L)
         { "createMe", DataPanelLine_KeyConfigBinding::createMe },
         { "_NV_createMe", DataPanelLine_KeyConfigBinding::_NV_createMe },
         { "getCommand", DataPanelLine_KeyConfigBinding::getCommand },
+        { "clickButton", DataPanelLine_KeyConfigBinding::clickButton },
         { 0, 0 }
     };
 

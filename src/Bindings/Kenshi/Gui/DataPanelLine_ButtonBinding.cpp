@@ -7,6 +7,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/DataPanelLineBinding.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -130,14 +132,53 @@ int DataPanelLine_ButtonBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 140: void pressCallback(...) - unsupported arg type
-  line 150: void setToolTipMainBar(...) - overloaded method
-  line 151: void _NV_setToolTipMainBar(...) - overloaded method
-  line 152: void setToolTipMainBar(...) - overloaded method
-  line 153: void _NV_setToolTipMainBar(...) - overloaded method
-*/
+int DataPanelLine_ButtonBinding::pressCallback(lua_State* L)
+{
+    DataPanelLine_Button* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
+
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    instance->pressCallback(sender);
+    return 0;
+}
+
+int DataPanelLine_ButtonBinding::setToolTipMainBar(lua_State* L)
+{
+    DataPanelLine_Button* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
+
+    bool updateable = lua_toboolean(L, 3) != 0;
+    if (lua_type(L, 2) == LUA_TSTRING)
+    {
+        std::string s = luaL_checkstring(L, 2);
+        instance->setToolTipMainBar(s, updateable);
+        return 0;
+    }
+
+    lektor<StringPair>* pairs = testObject<lektor<StringPair> >(L, 2, LektorValueBinding<StringPair>::metaName);
+    if (!pairs) return luaL_argerror(L, 2, "string or lektor<StringPair> expected");
+    instance->setToolTipMainBar(*pairs, updateable);
+    return 0;
+}
+
+int DataPanelLine_ButtonBinding::_NV_setToolTipMainBar(lua_State* L)
+{
+    DataPanelLine_Button* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Button is nil");
+
+    bool updateable = lua_toboolean(L, 3) != 0;
+    if (lua_type(L, 2) == LUA_TSTRING)
+    {
+        std::string s = luaL_checkstring(L, 2);
+        instance->_NV_setToolTipMainBar(s, updateable);
+        return 0;
+    }
+
+    lektor<StringPair>* pairs = testObject<lektor<StringPair> >(L, 2, LektorValueBinding<StringPair>::metaName);
+    if (!pairs) return luaL_argerror(L, 2, "string or lektor<StringPair> expected");
+    instance->_NV_setToolTipMainBar(*pairs, updateable);
+    return 0;
+}
 
 int DataPanelLine_ButtonBinding::gc(lua_State* L)
 {
@@ -164,6 +205,9 @@ void DataPanelLine_ButtonBinding::registerBinding(lua_State* L)
         { "_NV_getUserData", DataPanelLine_ButtonBinding::_NV_getUserData },
         { "createMe", DataPanelLine_ButtonBinding::createMe },
         { "_NV_createMe", DataPanelLine_ButtonBinding::_NV_createMe },
+        { "pressCallback", DataPanelLine_ButtonBinding::pressCallback },
+        { "setToolTipMainBar", DataPanelLine_ButtonBinding::setToolTipMainBar },
+        { "_NV_setToolTipMainBar", DataPanelLine_ButtonBinding::_NV_setToolTipMainBar },
         { 0, 0 }
     };
 

@@ -9,6 +9,9 @@
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/GameDataCopyStandaloneBinding.h"
 #include "Bindings/Kenshi/Gui/OpenSaveFileDialogBinding.h"
+#include "Bindings/Kenshi/Gui/SliderBinding.h"
+#include "Bindings/Kenshi/Gui/ListScrollBarBinding.h"
+#include "Bindings/Kenshi/Gui/MultiSliderBinding.h"
 #include "Bindings/Kenshi/Util/OgreFastArrayBinding.h"
 #include "Bindings/MyGUI/MyGUIBinding.h"
 #include "Bindings/MyGUI/MyGuiTypes.h"
@@ -1133,14 +1136,77 @@ int CharacterEditWindowBinding::confirmButton(lua_State* L)
     return 0;
 }
 
+int CharacterEditWindowBinding::updateAppearanceSlider(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    MyGUI::Slider* sender = checkObject<MyGUI::Slider>(L, 2, SliderBinding::getMetatableName());
+    int value = (int)luaL_checkinteger(L, 3);
+    instance->updateAppearanceSlider(sender, value);
+    return 0;
+}
+
+int CharacterEditWindowBinding::updateAppearanceSliderPose(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    MyGUI::Slider* sender = checkObject<MyGUI::Slider>(L, 2, SliderBinding::getMetatableName());
+    int value = (int)luaL_checkinteger(L, 3);
+    instance->updateAppearanceSliderPose(sender, value);
+    return 0;
+}
+
+int CharacterEditWindowBinding::updateAppearanceSliderVector(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    MyGUI::Slider* sender = checkObject<MyGUI::Slider>(L, 2, SliderBinding::getMetatableName());
+    int value = (int)luaL_checkinteger(L, 3);
+    instance->updateAppearanceSliderVector(sender, value);
+    return 0;
+}
+
+int CharacterEditWindowBinding::updateAppearanceList(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    MyGUI::ListScrollBar* sender = checkObject<MyGUI::ListScrollBar>(L, 2, ListScrollBarBinding::getMetatableName());
+    std::string value = luaL_checkstring(L, 3);
+    int index = (int)luaL_checkinteger(L, 4);
+    instance->updateAppearanceList(sender, value, index);
+    return 0;
+}
+
+int CharacterEditWindowBinding::updateAppearanceMultiSlider(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    MyGUI::MultiSlider* sender = checkObject<MyGUI::MultiSlider>(L, 2, MultiSliderBinding::getMetatableName());
+    MyGUI::Slider* target = checkObject<MyGUI::Slider>(L, 3, SliderBinding::getMetatableName());
+    int targetIndex = (int)luaL_checkinteger(L, 4);
+    int value = (int)luaL_checkinteger(L, 5);
+    instance->updateAppearanceMultiSlider(sender, target, targetIndex, value);
+    return 0;
+}
+
+int CharacterEditWindowBinding::updateAnimationIdle(lua_State* L)
+{
+    CharacterEditWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterEditWindow is nil");
+
+    MyGUI::Slider* sender = checkObject<MyGUI::Slider>(L, 2, SliderBinding::getMetatableName());
+    int value = (int)luaL_checkinteger(L, 3);
+    instance->updateAnimationIdle(sender, value);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 68: void updateAppearanceSlider(...) - unsupported arg type
-  line 69: void updateAppearanceSliderPose(...) - unsupported arg type
-  line 70: void updateAppearanceSliderVector(...) - unsupported arg type
-  line 71: void updateAppearanceList(...) - unsupported arg type
-  line 72: void updateAppearanceMultiSlider(...) - unsupported arg type
-  line 73: void updateAnimationIdle(...) - unsupported arg type
   line 86: Ogre::Entity* getCharacterEntity(...) - unsupported arg type
 */
 
@@ -1222,6 +1288,12 @@ void CharacterEditWindowBinding::registerBinding(lua_State* L)
         { "exportCharacter", CharacterEditWindowBinding::exportCharacter },
         { "toggleClothes", CharacterEditWindowBinding::toggleClothes },
         { "confirmButton", CharacterEditWindowBinding::confirmButton },
+        { "updateAppearanceSlider", CharacterEditWindowBinding::updateAppearanceSlider },
+        { "updateAppearanceSliderPose", CharacterEditWindowBinding::updateAppearanceSliderPose },
+        { "updateAppearanceSliderVector", CharacterEditWindowBinding::updateAppearanceSliderVector },
+        { "updateAppearanceList", CharacterEditWindowBinding::updateAppearanceList },
+        { "updateAppearanceMultiSlider", CharacterEditWindowBinding::updateAppearanceMultiSlider },
+        { "updateAnimationIdle", CharacterEditWindowBinding::updateAnimationIdle },
         { 0, 0 }
     };
 

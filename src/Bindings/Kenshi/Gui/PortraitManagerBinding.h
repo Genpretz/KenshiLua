@@ -35,5 +35,7 @@ public:
     static int setImageWidget(lua_State* L);
     static int setImageWidgetNPC(lua_State* L);
     static int getInstanceMethod(lua_State* L);
+    static int createPortraitImage(lua_State* L);
+    static int getNextIndices(lua_State* L);
 };
 }

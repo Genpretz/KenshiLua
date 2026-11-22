@@ -6,6 +6,7 @@
 #include "CharacterStatsWindowBinding.h"
 #include "GUIWindowBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
+#include "Bindings/MyGUI/MyGuiTypes.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -460,11 +461,28 @@ int CharacterStatsWindowBinding::getStatById(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 88: void closeWindow(...) - unsupported arg type
-  line 89: void statMouseOver(...) - unsupported arg type
-*/
+int CharacterStatsWindowBinding::closeWindow(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+
+    MyGUI::Window* sender = MyGUIBindings::checkWidget<MyGUI::Window>(L, 2);
+    std::string name = luaL_checkstring(L, 3);
+    instance->closeWindow(sender, name);
+    return 0;
+}
+
+int CharacterStatsWindowBinding::statMouseOver(lua_State* L)
+{
+    CharacterStatsWindow* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "CharacterStatsWindow is nil");
+
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    int x = (int)luaL_checkinteger(L, 3);
+    int y = (int)luaL_checkinteger(L, 4);
+    instance->statMouseOver(sender, x, y);
+    return 0;
+}
 
 int CharacterStatsWindowBinding::gc(lua_State* L)
 {
@@ -509,6 +527,8 @@ void CharacterStatsWindowBinding::registerBinding(lua_State* L)
         { "addStat", CharacterStatsWindowBinding::addStat },
         { "getStat", CharacterStatsWindowBinding::getStat },
         { "getStatById", CharacterStatsWindowBinding::getStatById },
+        { "closeWindow", CharacterStatsWindowBinding::closeWindow },
+        { "statMouseOver", CharacterStatsWindowBinding::statMouseOver },
         { 0, 0 }
     };
 

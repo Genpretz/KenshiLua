@@ -20,6 +20,7 @@
 #include "Bindings/Kenshi/Gui/ScreenLabelInterfaceBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Lua/Containers/ArraysTypes.h"
 #include "Bindings/Kenshi/Util/OgreUnorderedBinding.h"
 #include "Bindings/MyGUI/WidgetBinding.h"
 #include "Bindings/MyGUI/WindowBinding.h"
@@ -1776,10 +1777,27 @@ int ForgottenGUIBinding::createListbox(lua_State* L)
     return MyGUIBindings::pushWidget(L, result);
 }
 
+int ForgottenGUIBinding::showCharacterEditor(lua_State* L)
+{
+    ForgottenGUI* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ForgottenGUI is nil");
+
+    lektor<Character*>* characters = LektorPtrBinding<Character*>::getInstance(L, 2);
+    if (!characters) return luaL_argerror(L, 2, "lektor<Character*> expected");
+    CharacterEditMode mode = (CharacterEditMode)luaL_checkinteger(L, 3);
+    const Ogre::vector<GameDataReference>::type* races = nullptr;
+    if (!lua_isnoneornil(L, 4))
+    {
+        races = Containers::OgreVectorValue_GameDataReferenceBinding::getInstance(L, 4);
+        if (!races) return luaL_argerror(L, 4, "ogre_vector<GameDataReference> expected");
+    }
+    instance->showCharacterEditor(*characters, mode, races);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 70: MyGUI::Window* messageBox(...) - unsupported arg type
-  line 82: void showCharacterEditor(...) - unsupported arg type
   line 122: void destroyWidgets(...) - overloaded method
   line 123: void destroyWidgets(...) - overloaded method
   line 132: void setup(...) - unsupported arg type
@@ -1924,6 +1942,7 @@ void ForgottenGUIBinding::registerBinding(lua_State* L)
         { "createEditBoxAbs", ForgottenGUIBinding::createEditBoxAbs },
         { "createScrollBarAbs", ForgottenGUIBinding::createScrollBarAbs },
         { "createListbox", ForgottenGUIBinding::createListbox },
+        { "showCharacterEditor", ForgottenGUIBinding::showCharacterEditor },
         { 0, 0 }
     };
 

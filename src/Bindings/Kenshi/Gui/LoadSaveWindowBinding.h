@@ -31,5 +31,6 @@ public:
     static int toggleCheck(lua_State* L);
     static int createInfo(lua_State* L);
     static int updateInfo(lua_State* L);
+    static int sortListComparer(lua_State* L);
 };
 }

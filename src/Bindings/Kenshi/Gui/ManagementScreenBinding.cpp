@@ -9,6 +9,7 @@
 #include "Bindings/Kenshi/GameDataBinding.h"
 #include "Bindings/Kenshi/PlatoonBinding.h"
 #include "Bindings/Kenshi/Gui/SquadManagementScreenBinding.h"
+#include "Bindings/Kenshi/Gui/ManagementScreen_TechItemViewDataBinding.h"
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/Kenshi/Util/LektorBinding.h"
@@ -706,11 +707,33 @@ int ManagementScreenBinding::mouseOverCallback(lua_State* L)
     return 0;
 }
 
+int ManagementScreenBinding::researchRemoved(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+
+    int idx = (int)luaL_checkinteger(L, 2);
+    ManagementScreen::TechItemViewData* item = checkObject<ManagementScreen::TechItemViewData>(L, 3, ManagementScreen_TechItemViewDataBinding::getMetatableName());
+    instance->researchRemoved(idx, *item);
+    return 0;
+}
+
+int ManagementScreenBinding::researchValidateOrder(lua_State* L)
+{
+    ManagementScreen* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ManagementScreen is nil");
+
+    int a = (int)luaL_checkinteger(L, 2);
+    int b = (int)luaL_checkinteger(L, 3);
+    bool result = lua_toboolean(L, 4) != 0;
+    instance->researchValidateOrder(a, b, result);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 134: void researchQueueTooltip(...) - unsupported arg type
-  line 135: void researchRemoved(...) - non-string reference arg
-  line 136: void researchValidateOrder(...) - non-string reference arg
 */
 
 /*
@@ -777,6 +800,8 @@ void ManagementScreenBinding::registerBinding(lua_State* L)
         { "addButtonPress", ManagementScreenBinding::addButtonPress },
         { "removeButtonPress", ManagementScreenBinding::removeButtonPress },
         { "mouseOverCallback", ManagementScreenBinding::mouseOverCallback },
+        { "researchRemoved", ManagementScreenBinding::researchRemoved },
+        { "researchValidateOrder", ManagementScreenBinding::researchValidateOrder },
         { 0, 0 }
     };
 

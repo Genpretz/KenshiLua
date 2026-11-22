@@ -267,13 +267,47 @@ int FogEditorBinding::selectNextEdge(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 26: void closeWindow(...) - unsupported arg type
-  line 27: void addFog(...) - unsupported arg type
-  line 28: void removeFog(...) - unsupported arg type
-  line 29: void selectFog(...) - unsupported arg type
-*/
+int FogEditorBinding::closeWindow(lua_State* L)
+{
+    FogEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FogEditor is nil");
+
+    MyGUI::Window* sender = MyGUIBindings::checkWidget<MyGUI::Window>(L, 2);
+    std::string name = luaL_checkstring(L, 3);
+    instance->closeWindow(sender, name);
+    return 0;
+}
+
+int FogEditorBinding::addFog(lua_State* L)
+{
+    FogEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FogEditor is nil");
+
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    instance->addFog(sender);
+    return 0;
+}
+
+int FogEditorBinding::removeFog(lua_State* L)
+{
+    FogEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FogEditor is nil");
+
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    instance->removeFog(sender);
+    return 0;
+}
+
+int FogEditorBinding::selectFog(lua_State* L)
+{
+    FogEditor* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "FogEditor is nil");
+
+    MyGUI::ListBox* list = MyGUIBindings::checkWidget<MyGUI::ListBox>(L, 2);
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->selectFog(list, index);
+    return 0;
+}
 
 int FogEditorBinding::gc(lua_State* L)
 {
@@ -304,6 +338,10 @@ void FogEditorBinding::registerBinding(lua_State* L)
         { "updateFogName", FogEditorBinding::updateFogName },
         { "updateFogValues", FogEditorBinding::updateFogValues },
         { "selectNextEdge", FogEditorBinding::selectNextEdge },
+        { "closeWindow", FogEditorBinding::closeWindow },
+        { "addFog", FogEditorBinding::addFog },
+        { "removeFog", FogEditorBinding::removeFog },
+        { "selectFog", FogEditorBinding::selectFog },
         { 0, 0 }
     };
 

@@ -22,5 +22,6 @@ public:
     static int getNameBox(lua_State* L);
     static int createMe(lua_State* L);
     static int _NV_createMe(lua_State* L);
+    static int textChanged(lua_State* L);
 };
 }

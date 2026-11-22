@@ -219,12 +219,31 @@ int DataPanelLine_SliderEditableBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
+int DataPanelLine_SliderEditableBinding::editCallback(lua_State* L)
+{
+    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
+
+    MyGUI::EditBox* sender = MyGUIBindings::checkWidget<MyGUI::EditBox>(L, 2);
+    instance->editCallback(sender);
+    return 0;
+}
+
+int DataPanelLine_SliderEditableBinding::sliderCallback(lua_State* L)
+{
+    DataPanelLine_SliderEditable* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_SliderEditable is nil");
+
+    MyGUI::ScrollBar* sender = MyGUIBindings::checkWidget<MyGUI::ScrollBar>(L, 2);
+    unsigned __int64 position = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->sliderCallback(sender, position);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 168: void updateValuePtr(...) - unsupported arg type
   line 169: void _NV_updateValuePtr(...) - unsupported arg type
-  line 179: void editCallback(...) - unsupported arg type
-  line 180: void sliderCallback(...) - unsupported arg type
 */
 
 int DataPanelLine_SliderEditableBinding::gc(lua_State* L)
@@ -257,6 +276,8 @@ void DataPanelLine_SliderEditableBinding::registerBinding(lua_State* L)
         { "setPrecision", DataPanelLine_SliderEditableBinding::setPrecision },
         { "createMe", DataPanelLine_SliderEditableBinding::createMe },
         { "_NV_createMe", DataPanelLine_SliderEditableBinding::_NV_createMe },
+        { "editCallback", DataPanelLine_SliderEditableBinding::editCallback },
+        { "sliderCallback", DataPanelLine_SliderEditableBinding::sliderCallback },
         { 0, 0 }
     };
 

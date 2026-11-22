@@ -62,10 +62,15 @@ int MapMarkerCharacterBinding::getVisible(lua_State* L)
     return 1;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 47: void update(...) - unsupported arg type
-*/
+int MapMarkerCharacterBinding::update(lua_State* L)
+{
+    MapMarkerCharacter* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "MapMarkerCharacter is nil");
+
+    MyGUI::IntPoint mapPosition = MyGUIBindings::readIntPoint(L, 2);
+    instance->update(mapPosition);
+    return 0;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -95,6 +100,7 @@ void MapMarkerCharacterBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "setVisible", MapMarkerCharacterBinding::setVisible },
         { "getVisible", MapMarkerCharacterBinding::getVisible },
+        { "update", MapMarkerCharacterBinding::update },
         { 0, 0 }
     };
 

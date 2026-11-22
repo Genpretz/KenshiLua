@@ -35,5 +35,9 @@ public:
     static int _NV_getUserData(lua_State* L);
     static int getNumWidgets(lua_State* L);
     static int getWidget(lua_State* L);
+    static int setToolTip(lua_State* L);
+    static int _NV_setToolTip(lua_State* L);
+    static int setToolTipMainBar(lua_State* L);
+    static int _NV_setToolTipMainBar(lua_State* L);
 };
 }

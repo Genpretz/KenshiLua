@@ -4,6 +4,7 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/DataPanelLineBinding.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Kenshi/Gui/SliderBinding.h"
 
 namespace KenshiLua
 {
@@ -141,9 +142,19 @@ int DataPanelLine_SliderBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
+int DataPanelLine_SliderBinding::sliderValueChanged(lua_State* L)
+{
+    DataPanelLine_Slider* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Slider is nil");
+
+    MyGUI::Slider* sender = checkObject<MyGUI::Slider>(L, 2, SliderBinding::getMetatableName());
+    int value = (int)luaL_checkinteger(L, 3);
+    instance->sliderValueChanged(sender, value);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
-  line 252: void sliderValueChanged(...) - unsupported arg type
   line 258: void updateValuePtr(...) - unsupported arg type
   line 259: void _NV_updateValuePtr(...) - unsupported arg type
 */
@@ -175,6 +186,7 @@ void DataPanelLine_SliderBinding::registerBinding(lua_State* L)
         { "_NV_refresh", DataPanelLine_SliderBinding::_NV_refresh },
         { "createMe", DataPanelLine_SliderBinding::createMe },
         { "_NV_createMe", DataPanelLine_SliderBinding::_NV_createMe },
+        { "sliderValueChanged", DataPanelLine_SliderBinding::sliderValueChanged },
         { 0, 0 }
     };
 

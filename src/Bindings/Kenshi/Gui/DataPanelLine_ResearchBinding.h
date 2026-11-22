@@ -20,5 +20,7 @@ public:
 
     static int createMe(lua_State* L);
     static int _NV_createMe(lua_State* L);
+    static int setToolTipMainBar(lua_State* L);
+    static int _NV_setToolTipMainBar(lua_State* L);
 };
 }

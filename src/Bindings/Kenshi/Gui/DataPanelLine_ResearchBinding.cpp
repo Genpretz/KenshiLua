@@ -5,6 +5,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/DataPanelLineBinding.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -125,13 +127,43 @@ int DataPanelLine_ResearchBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 121: void setToolTipMainBar(...) - overloaded method
-  line 122: void _NV_setToolTipMainBar(...) - overloaded method
-  line 123: void setToolTipMainBar(...) - overloaded method
-  line 124: void _NV_setToolTipMainBar(...) - overloaded method
-*/
+int DataPanelLine_ResearchBinding::setToolTipMainBar(lua_State* L)
+{
+    DataPanelLine_Research* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
+
+    bool updateable = lua_toboolean(L, 3) != 0;
+    if (lua_type(L, 2) == LUA_TSTRING)
+    {
+        std::string s = luaL_checkstring(L, 2);
+        instance->setToolTipMainBar(s, updateable);
+        return 0;
+    }
+
+    lektor<StringPair>* pairs = testObject<lektor<StringPair> >(L, 2, LektorValueBinding<StringPair>::metaName);
+    if (!pairs) return luaL_argerror(L, 2, "string or lektor<StringPair> expected");
+    instance->setToolTipMainBar(*pairs, updateable);
+    return 0;
+}
+
+int DataPanelLine_ResearchBinding::_NV_setToolTipMainBar(lua_State* L)
+{
+    DataPanelLine_Research* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_Research is nil");
+
+    bool updateable = lua_toboolean(L, 3) != 0;
+    if (lua_type(L, 2) == LUA_TSTRING)
+    {
+        std::string s = luaL_checkstring(L, 2);
+        instance->_NV_setToolTipMainBar(s, updateable);
+        return 0;
+    }
+
+    lektor<StringPair>* pairs = testObject<lektor<StringPair> >(L, 2, LektorValueBinding<StringPair>::metaName);
+    if (!pairs) return luaL_argerror(L, 2, "string or lektor<StringPair> expected");
+    instance->_NV_setToolTipMainBar(*pairs, updateable);
+    return 0;
+}
 
 int DataPanelLine_ResearchBinding::gc(lua_State* L)
 {
@@ -156,6 +188,8 @@ void DataPanelLine_ResearchBinding::registerBinding(lua_State* L)
     static const luaL_Reg methods[] = {
         { "createMe", DataPanelLine_ResearchBinding::createMe },
         { "_NV_createMe", DataPanelLine_ResearchBinding::_NV_createMe },
+        { "setToolTipMainBar", DataPanelLine_ResearchBinding::setToolTipMainBar },
+        { "_NV_setToolTipMainBar", DataPanelLine_ResearchBinding::_NV_setToolTipMainBar },
         { 0, 0 }
     };
 

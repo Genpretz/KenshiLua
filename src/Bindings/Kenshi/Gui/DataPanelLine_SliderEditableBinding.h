@@ -27,5 +27,7 @@ public:
     static int setPrecision(lua_State* L);
     static int createMe(lua_State* L);
     static int _NV_createMe(lua_State* L);
+    static int editCallback(lua_State* L);
+    static int sliderCallback(lua_State* L);
 };
 }

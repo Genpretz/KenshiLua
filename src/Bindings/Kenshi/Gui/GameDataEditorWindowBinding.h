@@ -19,6 +19,7 @@ public:
     static int tostring(lua_State* L);
 
     static int _NV_show(lua_State* L);
+    static int show(lua_State* L);
     static int initDataValues(lua_State* L);
 };
 }

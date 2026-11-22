@@ -120,5 +120,6 @@ public:
     static int createEditBoxAbs(lua_State* L);
     static int createScrollBarAbs(lua_State* L);
     static int createListbox(lua_State* L);
+    static int showCharacterEditor(lua_State* L);
 };
 }

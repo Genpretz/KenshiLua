@@ -7,6 +7,8 @@
 #include "Lua/BindingHelpers.h"
 #include "Bindings/Kenshi/Gui/DatapanelGUIBinding.h"
 #include "Bindings/Kenshi/Gui/ToolTipBinding.h"
+#include "Bindings/Kenshi/Util/LektorBinding.h"
+#include "Bindings/Kenshi/Util/StringPairBinding.h"
 
 namespace KenshiLua
 {
@@ -348,18 +350,86 @@ int DataPanelLineBinding::getWidget(lua_State* L)
     return MyGUIBindings::pushWidget(L, result);
 }
 
+// Overloads: setToolTip(string s) and setToolTip(string s, ToolTip* tooltip).
+int DataPanelLineBinding::setToolTip(lua_State* L)
+{
+    DataPanelLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine is nil");
+
+    std::string s = luaL_checkstring(L, 2);
+    if (lua_gettop(L) >= 3)
+    {
+        ToolTip* tooltip = lua_isnoneornil(L, 3) ? nullptr : checkObject<ToolTip>(L, 3, ToolTipBinding::getMetatableName());
+        instance->setToolTip(s, tooltip);
+    }
+    else
+    {
+        instance->setToolTip(s);
+    }
+    return 0;
+}
+
+int DataPanelLineBinding::_NV_setToolTip(lua_State* L)
+{
+    DataPanelLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine is nil");
+
+    std::string s = luaL_checkstring(L, 2);
+    if (lua_gettop(L) >= 3)
+    {
+        ToolTip* tooltip = lua_isnoneornil(L, 3) ? nullptr : checkObject<ToolTip>(L, 3, ToolTipBinding::getMetatableName());
+        instance->_NV_setToolTip(s, tooltip);
+    }
+    else
+    {
+        instance->_NV_setToolTip(s);
+    }
+    return 0;
+}
+
+// Overloads: setToolTipMainBar(string s, bool updateable) and setToolTipMainBar(lektor<StringPair> s, bool updateable).
+int DataPanelLineBinding::setToolTipMainBar(lua_State* L)
+{
+    DataPanelLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine is nil");
+
+    bool updateable = lua_toboolean(L, 3) != 0;
+    if (lua_type(L, 2) == LUA_TSTRING)
+    {
+        std::string s = luaL_checkstring(L, 2);
+        instance->setToolTipMainBar(s, updateable);
+        return 0;
+    }
+
+    lektor<StringPair>* pairs = testObject<lektor<StringPair> >(L, 2, LektorValueBinding<StringPair>::metaName);
+    if (!pairs) return luaL_argerror(L, 2, "string or lektor<StringPair> expected");
+    instance->setToolTipMainBar(*pairs, updateable);
+    return 0;
+}
+
+int DataPanelLineBinding::_NV_setToolTipMainBar(lua_State* L)
+{
+    DataPanelLine* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine is nil");
+
+    bool updateable = lua_toboolean(L, 3) != 0;
+    if (lua_type(L, 2) == LUA_TSTRING)
+    {
+        std::string s = luaL_checkstring(L, 2);
+        instance->_NV_setToolTipMainBar(s, updateable);
+        return 0;
+    }
+
+    lektor<StringPair>* pairs = testObject<lektor<StringPair> >(L, 2, LektorValueBinding<StringPair>::metaName);
+    if (!pairs) return luaL_argerror(L, 2, "string or lektor<StringPair> expected");
+    instance->_NV_setToolTipMainBar(*pairs, updateable);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 48: void updateValuePtr(...) - unsupported arg type
   line 49: void _NV_updateValuePtr(...) - unsupported arg type
-  line 51: void setToolTip(...) - overloaded method
-  line 52: void _NV_setToolTip(...) - overloaded method
-  line 53: void setToolTip(...) - overloaded method
-  line 54: void _NV_setToolTip(...) - overloaded method
-  line 55: void setToolTipMainBar(...) - overloaded method
-  line 56: void _NV_setToolTipMainBar(...) - overloaded method
-  line 57: void setToolTipMainBar(...) - overloaded method
-  line 58: void _NV_setToolTipMainBar(...) - overloaded method
 */
 
 /*
@@ -406,6 +476,10 @@ void DataPanelLineBinding::registerBinding(lua_State* L)
         { "_NV_getUserData", DataPanelLineBinding::_NV_getUserData },
         { "getNumWidgets", DataPanelLineBinding::getNumWidgets },
         { "getWidget", DataPanelLineBinding::getWidget },
+        { "setToolTip", DataPanelLineBinding::setToolTip },
+        { "_NV_setToolTip", DataPanelLineBinding::_NV_setToolTip },
+        { "setToolTipMainBar", DataPanelLineBinding::setToolTipMainBar },
+        { "_NV_setToolTipMainBar", DataPanelLineBinding::_NV_setToolTipMainBar },
         { 0, 0 }
     };
 

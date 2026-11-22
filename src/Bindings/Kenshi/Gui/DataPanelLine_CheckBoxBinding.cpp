@@ -120,11 +120,20 @@ int DataPanelLine_CheckBoxBinding::_NV_createMe(lua_State* L)
     return 0;
 }
 
+int DataPanelLine_CheckBoxBinding::notifyToggleCheck(lua_State* L)
+{
+    DataPanelLine_CheckBox* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_CheckBox is nil");
+
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    instance->notifyToggleCheck(sender);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 296: void updateValuePtr(...) - unsupported arg type
   line 297: void _NV_updateValuePtr(...) - unsupported arg type
-  line 307: void notifyToggleCheck(...) - unsupported arg type
 */
 
 int DataPanelLine_CheckBoxBinding::gc(lua_State* L)
@@ -156,6 +165,7 @@ void DataPanelLine_CheckBoxBinding::registerBinding(lua_State* L)
         { "getCheckBox", DataPanelLine_CheckBoxBinding::getCheckBox },
         { "createMe", DataPanelLine_CheckBoxBinding::createMe },
         { "_NV_createMe", DataPanelLine_CheckBoxBinding::_NV_createMe },
+        { "notifyToggleCheck", DataPanelLine_CheckBoxBinding::notifyToggleCheck },
         { 0, 0 }
     };
 

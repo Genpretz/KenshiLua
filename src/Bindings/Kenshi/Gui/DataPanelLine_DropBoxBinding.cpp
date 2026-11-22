@@ -171,12 +171,31 @@ int DataPanelLine_DropBoxBinding::_NV_refresh(lua_State* L)
     return 0;
 }
 
+int DataPanelLine_DropBoxBinding::selectionChange(lua_State* L)
+{
+    DataPanelLine_DropBox* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
+
+    MyGUI::ComboBox* sender = MyGUIBindings::checkWidget<MyGUI::ComboBox>(L, 2);
+    unsigned __int64 index = (unsigned __int64)luaL_checkinteger(L, 3);
+    instance->selectionChange(sender, index);
+    return 0;
+}
+
+int DataPanelLine_DropBoxBinding::goPressed(lua_State* L)
+{
+    DataPanelLine_DropBox* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "DataPanelLine_DropBox is nil");
+
+    MyGUI::Widget* sender = MyGUIBindings::checkWidget<MyGUI::Widget>(L, 2);
+    instance->goPressed(sender);
+    return 0;
+}
+
 /*
 Skipped methods needing manual binding:
   line 332: void updateValuePtr(...) - unsupported arg type
   line 333: void _NV_updateValuePtr(...) - unsupported arg type
-  line 344: void selectionChange(...) - unsupported arg type
-  line 345: void goPressed(...) - unsupported arg type
 */
 
 int DataPanelLine_DropBoxBinding::gc(lua_State* L)
@@ -210,6 +229,8 @@ void DataPanelLine_DropBoxBinding::registerBinding(lua_State* L)
         { "_NV_createMe", DataPanelLine_DropBoxBinding::_NV_createMe },
         { "refresh", DataPanelLine_DropBoxBinding::refresh },
         { "_NV_refresh", DataPanelLine_DropBoxBinding::_NV_refresh },
+        { "selectionChange", DataPanelLine_DropBoxBinding::selectionChange },
+        { "goPressed", DataPanelLine_DropBoxBinding::goPressed },
         { 0, 0 }
     };
 

@@ -19,5 +19,6 @@ public:
     static int tostring(lua_State* L);
 
     static int update(lua_State* L);
+    static int attachToWidget(lua_State* L);
 };
 }

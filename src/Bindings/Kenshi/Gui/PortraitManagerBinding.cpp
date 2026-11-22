@@ -5,6 +5,7 @@
 #include "Bindings/Kenshi/ActivePlatoonBinding.h"
 #include "Bindings/Kenshi/CharacterBinding.h"
 #include "Bindings/Kenshi/Gui/PortraitDataBinding.h"
+#include "Bindings/Kenshi/Gui/PortraitImageBinding.h"
 #include "Bindings/Kenshi/Util/iVector2Binding.h"
 #include "Bindings/Kenshi/Util/HandBinding.h"
 #include "Bindings/MyGUI/ImageBoxBinding.h"
@@ -281,11 +282,31 @@ int PortraitManagerBinding::setImageWidgetNPC(lua_State* L)
     return 0;
 }
 
-/*
-Skipped methods needing manual binding:
-  line 60: bool createPortraitImage(...) - unsupported arg type
-  line 61: void getNextIndices(...) - non-string reference arg
-*/
+int PortraitManagerBinding::createPortraitImage(lua_State* L)
+{
+    PortraitManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PortraitManager is nil");
+
+    Character* character = checkObject<Character>(L, 2, CharacterBinding::getMetatableName());
+    PortraitImage* portraitImage = nullptr;
+    bool result = instance->createPortraitImage(portraitImage, character);
+    lua_pushboolean(L, result ? 1 : 0);
+    pushObject<PortraitImage>(L, portraitImage, PortraitImageBinding::getMetatableName());
+    return 2;
+}
+
+int PortraitManagerBinding::getNextIndices(lua_State* L)
+{
+    PortraitManager* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PortraitManager is nil");
+
+    unsigned char indexX = 0;
+    unsigned char indexY = 0;
+    instance->getNextIndices(indexX, indexY);
+    lua_pushinteger(L, (lua_Integer)indexX);
+    lua_pushinteger(L, (lua_Integer)indexY);
+    return 2;
+}
 
 /*
 LIGHTUSERDATA DEPENDENCIES:
@@ -337,6 +358,8 @@ void PortraitManagerBinding::registerBinding(lua_State* L)
         { "setImageWidget", PortraitManagerBinding::setImageWidget },
         { "setImageWidgetNPC", PortraitManagerBinding::setImageWidgetNPC },
         { "getInstance", PortraitManagerBinding::getInstanceMethod },
+        { "createPortraitImage", PortraitManagerBinding::createPortraitImage },
+        { "getNextIndices", PortraitManagerBinding::getNextIndices },
         { 0, 0 }
     };
 
