@@ -34,5 +34,6 @@ public:
     static int getActorCollisionGroup(lua_State* L);
     static int setActorMaterial(lua_State* L);
     static int uncookMesh(lua_State* L);
+    static int convertXMLToBin(lua_State* L);
 };
 }

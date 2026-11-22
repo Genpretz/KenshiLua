@@ -26,5 +26,6 @@ public:
     static int _NV_threadProc(lua_State* L);
     static int getInstanceMethod(lua_State* L);
     static int destroy(lua_State* L);
+    static int abortLoadRequest(lua_State* L);
 };
 }

@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "kenshi\havok.h"
 #include "hkMemoryAllocatorBinding.h"
+#include "hkMemoryAllocator_MemoryStatisticsBinding.h"
 #include "Lua/BindingHelpers.h"
 
 namespace KenshiLua
@@ -61,6 +62,24 @@ int hkMemoryAllocatorBinding::_NV_getExtendedInterface(lua_State* L)
     return 1;
 }
 
+int hkMemoryAllocatorBinding::getMemoryStatistics(lua_State* L)
+{
+    hkMemoryAllocator* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "hkMemoryAllocator is nil");
+
+    if (lua_gettop(L) >= 2 && !lua_isnil(L, 2))
+    {
+        hkMemoryAllocator::MemoryStatistics* stats = checkObject<hkMemoryAllocator::MemoryStatistics>(L, 2, hkMemoryAllocator_MemoryStatisticsBinding::getMetatableName());
+        instance->getMemoryStatistics(*stats);
+        return 0;
+    }
+
+    hkMemoryAllocator::MemoryStatistics stats;
+    memset(&stats, 0, sizeof(stats));
+    instance->getMemoryStatistics(stats);
+    return pushValue<hkMemoryAllocator::MemoryStatistics>(L, stats, hkMemoryAllocator_MemoryStatisticsBinding::getMetatableName());
+}
+
 /*
 Skipped methods needing manual binding:
   line 426: void operator delete(...) - static method
@@ -75,7 +94,6 @@ Skipped methods needing manual binding:
   line 477: void _NV_blockAllocBatch(...) - unsupported arg type
   line 478: void blockFreeBatch(...) - unsupported arg type
   line 479: void _NV_blockFreeBatch(...) - unsupported arg type
-  line 480: void getMemoryStatistics(...) - non-string reference arg
   line 481: int getAllocatedSize(...) - unsupported arg type
 */
 
@@ -112,6 +130,7 @@ void hkMemoryAllocatorBinding::registerBinding(lua_State* L)
         { "_NV_resetPeakMemoryStatistics", hkMemoryAllocatorBinding::_NV_resetPeakMemoryStatistics },
         { "getExtendedInterface", hkMemoryAllocatorBinding::getExtendedInterface },
         { "_NV_getExtendedInterface", hkMemoryAllocatorBinding::_NV_getExtendedInterface },
+        { "getMemoryStatistics", hkMemoryAllocatorBinding::getMemoryStatistics },
         { 0, 0 }
     };
 

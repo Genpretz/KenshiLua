@@ -97,6 +97,20 @@ int hkVector4fBinding::getZero(lua_State* L)
     return pushObject(L, const_cast<hkVector4f*>(&result), hkVector4fBinding::getMetatableName());
 }
 
+int hkVector4fBinding::getConstant(lua_State* L)
+{
+    int idx = 1;
+    if (lua_istable(L, 1) || testObject<hkVector4f>(L, 1, hkVector4fBinding::getMetatableName()))
+        idx = 2;
+
+    int val = (int)luaL_checkinteger(L, idx);
+    if (val < (int)HK_QUADREAL_BEGIN || val >= (int)HK_QUADREAL_END)
+        return luaL_argerror(L, idx, "hkVectorConstant out of range");
+
+    const hkVector4f& result = hkVector4f::getConstant((hkVectorConstant)val);
+    return pushObject(L, const_cast<hkVector4f*>(&result), hkVector4fBinding::getMetatableName());
+}
+
 int hkVector4fBinding::set(lua_State* L)
 {
     hkVector4f* instance = getInstance(L, 1);
@@ -783,7 +797,6 @@ Skipped methods needing manual binding:
   line 273: const hkSimdFloat32 getComponent(...) - unsupported return type
   line 274: const hkSimdFloat32 getW(...) - unsupported return type
   line 277: void setComponent(...) - unsupported arg type
-  line 282: const hkVector4f& getConstant(...) - unsupported return type
   line 293: hkSimdFloat32 dot3(...) - unsupported return type
   line 328: hkSimdFloat32 normalizeWithLength3(...) - unsupported return type
   line 335: hkSimdFloat32 length3(...) - unsupported return type
@@ -842,6 +855,7 @@ void hkVector4fBinding::registerBinding(lua_State* L)
         { "setNeg3", hkVector4fBinding::setNeg3 },
         { "normalize3", hkVector4fBinding::normalize3 },
         { "getZero", hkVector4fBinding::getZero },
+        { "getConstant", hkVector4fBinding::getConstant },
         { "set", hkVector4fBinding::set },
         { "setAll", hkVector4fBinding::setAll },
         { "add", hkVector4fBinding::add },
@@ -916,6 +930,7 @@ void hkVector4fBinding::registerBinding(lua_State* L)
     // Register global class table with constructor (__call metamethod) and static methods
     pushGlobalTable(L, "hkVector4f");
     registerStaticMethod(L, "getZero", hkVector4fBinding::getZero);
+    registerStaticMethod(L, "getConstant", hkVector4fBinding::getConstant);
     registerConstructor(L, hkVector4fBinding::constructor);
     registerStaticMethod(L, "operator_new", hkVector4fBinding::operator_new);
     registerStaticMethod(L, "operator_delete", hkVector4fBinding::operator_delete);

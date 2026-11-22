@@ -305,10 +305,22 @@ int PhysicsActualBinding::setActorMaterial(lua_State* L)
     return 0;
 }
 
+int PhysicsActualBinding::convertXMLToBin(lua_State* L)
+{
+    PhysicsActual* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "PhysicsActual is nil");
+
+    std::string filename = luaL_checkstring(L, 2);
+    Ogre::Vector3 scale;
+    checkVector3(L, 3, scale);
+    instance->convertXMLToBin(filename, scale);
+    lua_pushlstring(L, filename.c_str(), filename.size());
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 231: bool scytheInsert(...) - unsupported arg type
-  line 232: void convertXMLToBin(...) - non-string reference arg
   line 233: NxActor* loadPhysXFile(...) - unsupported arg type
   line 234: NxActor* loadPhysXFileAsATrigger(...) - unsupported arg type
   line 242: void scaleCollection(...) - non-string reference arg
@@ -364,6 +376,7 @@ void PhysicsActualBinding::registerBinding(lua_State* L)
         { "getActorCollisionGroup", PhysicsActualBinding::getActorCollisionGroup },
         { "setActorMaterial", PhysicsActualBinding::setActorMaterial },
         { "uncookMesh", PhysicsActualBinding::uncookMesh },
+        { "convertXMLToBin", PhysicsActualBinding::convertXMLToBin },
         { 0, 0 }
     };
 

@@ -195,6 +195,17 @@ int ResourceLoaderBinding::destroy(lua_State* L)
     return 0;
 }
 
+int ResourceLoaderBinding::abortLoadRequest(lua_State* L)
+{
+    ResourceLoader* instance = getInstance(L, 1);
+    if (!instance) return luaL_error(L, "ResourceLoader is nil");
+
+    unsigned __int64 requestId = (unsigned __int64)luaL_checknumber(L, 2);
+    bool result = instance->abortLoadRequest(requestId);
+    lua_pushboolean(L, result ? 1 : 0);
+    return 1;
+}
+
 /*
 Skipped methods needing manual binding:
   line 97: boost::function<void __cdecl(...) - static method
@@ -210,7 +221,6 @@ Skipped methods needing manual binding:
   line 140: Ogre::Entity* createLoadRequestMesh(...) - unsupported arg type
   line 141: void operationCompleted(...) - unsupported arg type
   line 142: void _NV_operationCompleted(...) - unsupported arg type
-  line 143: bool abortLoadRequest(...) - unsupported arg type
   line 161: void SetMeshData(...) - static method
 */
 
@@ -263,6 +273,7 @@ void ResourceLoaderBinding::registerBinding(lua_State* L)
         { "_NV_threadProc", ResourceLoaderBinding::_NV_threadProc },
         { "getInstance", ResourceLoaderBinding::getInstanceMethod },
         { "destroy", ResourceLoaderBinding::destroy },
+        { "abortLoadRequest", ResourceLoaderBinding::abortLoadRequest },
         { 0, 0 }
     };
 

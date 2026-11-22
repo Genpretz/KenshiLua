@@ -27,6 +27,7 @@ public:
     static int setNeg3(lua_State* L);
     static int normalize3(lua_State* L);
     static int getZero(lua_State* L);
+    static int getConstant(lua_State* L);
     static int set(lua_State* L);
     static int setAll(lua_State* L);
     static int add(lua_State* L);

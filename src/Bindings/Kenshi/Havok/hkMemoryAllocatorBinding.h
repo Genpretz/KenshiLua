@@ -23,5 +23,6 @@ public:
     static int _NV_resetPeakMemoryStatistics(lua_State* L);
     static int getExtendedInterface(lua_State* L);
     static int _NV_getExtendedInterface(lua_State* L);
+    static int getMemoryStatistics(lua_State* L);
 };
 }

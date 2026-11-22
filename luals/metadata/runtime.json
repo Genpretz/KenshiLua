@@ -4178,6 +4178,10 @@
           "type": "fun(): hkVector4f"
         },
         {
+          "name": "getConstant",
+          "type": "fun(vectorConstant: hkVectorConstant|integer): hkVector4f"
+        },
+        {
           "name": "operator_new",
           "type": "fun(size: integer): userdata"
         },
